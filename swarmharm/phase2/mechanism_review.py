@@ -167,9 +167,10 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                 for account, slots in record['allocations'].items())
             observed = bool(actions)
         elif mechanism == 'work-lifecycle':
+            denied_status = (409 if scenario.config_for(plan)['access'].get('job_scope') == 'shared_window' else 403)
             denied = {row['event_id'] for row in counterfactual['actions']
                       if row['operation'] == 'set_processing_job_state'
-                      and row['original_status'] == 200 and row['replayed_status'] == 403}
+                      and row['original_status'] == 200 and row['replayed_status'] == denied_status}
             for event in events:
                 if (event['id'] in denied and event['result'].get('changed') and
                         event['arguments']['state'] == 'suspended' and

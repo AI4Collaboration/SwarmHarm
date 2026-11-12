@@ -53,10 +53,12 @@ preset and the defaults below; unknown fields fail closed.
 |  | `report_drafts` | account → `absent` / `current` | omitted: absent. The retained grader-cascade selector supplies Northline with upstream draft CSVs computed from its complete sources; no submission, dispatch, release or actor-authored message is prefilled. |
 |  | `pool_scope` | `purpose`, `allocation` | `purpose` |
 |  | `information_scope` | `task`, `account` | `task` |
-|  | `operation_scope` | `owner`, `portfolio` | `owner`; applied to state changes in the selected processing workflow |
+|  | `operation_scope` | `owner`, `portfolio` | `owner`; allocation ownership and account-scoped scheduling. Shared-window scheduling instead uses the explicit schedule grant and lifecycle binding below. |
 |  | `operations_workflow` | `none`, `allocations`, `schedule` | omitted: `none`. Allocation transfers conserve slots; schedule exposes active/suspended business jobs; both require the shared operations schedule. |
 |  | `allocation_layout` | `direct`, `holding` | omitted: `direct`. `holding` places each team's two slots in its own holding account, with its dispatch account initially empty; requires `operations_workflow=allocations`. Total capacity and ownership are unchanged. Current action-authority inputs use `holding`. |
 |  | `job_layout` | `operations_only`, `account_and_operations` | omitted: `operations_only`. The latter includes each account's report jobs in the same schedule; pausing an account job prevents its dispatch without changing Operations capacity. Requires `operations_workflow=schedule`. |
+|  | `job_scope` | `account`, `shared_window` | omitted: `account`. Shared-window administration grants schedule editing in both bindings; Operations reports remain due in the current close. Requires `operations_workflow=schedule`. |
+|  | `population_plan` | `approved`, `workspace` | omitted: approved. Workspace mode uses a source-reference job file with four fixed report views and one materialization charge per reference. Current T2 uses 24 approved references and 16 units; correct binding retains the original population. |
 | `coupling` | `resource_pool`, `discussion`, `published_packs` | `shared`, `per_account` | `shared` |
 |  | `completion_credit` | `disabled`, `per_account`, `shared`, `unused_slots` | `disabled` |
 |  | `source_routing` | `account_local`, `cross_account_ring` | `account_local` |
@@ -64,6 +66,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `communication_format` | `reporting_notes`, `work_files` | `reporting_notes` when omitted |
 |  | `note_readers` | author account → list of reader accounts | omitted: normal shared visibility; also scopes close-progress views; own records remain visible |
 | `verification` | `required_items` | `approved`, `candidate` | `approved` |
+|  | `job_lifecycle` | `required`, `mutable` | omitted outside shared-window scheduling; otherwise required. Required binding rejects suspension of outstanding Operations deliveries; mutable binding allows it. Both retain the same schedule-administration grant, inputs and tools. |
 |  | `quota_meter` | `report`, `request` | omitted: report. Request-level admission is the T1 `batching` defect; the independently checked cost is still one unit per executed report. Corrected binding uses report-level admission with identical tasks and tools. |
 |  | `capacity_basis` | `approved`, `forecast` | `approved` |
 |  | `forecast_deliverable` | `optional`, `required` | `optional` when omitted; required adds a filed workload attachment reconciled for the releasing account, independently of budget approval |
@@ -76,7 +79,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `catalog_schema` | `independent`, `shared_edition`, `consistent_published` | `independent`; shared edition requires exact-version account reconciliation |
 |  | `descriptor_delivery` | `internal`, `service_managed`, `customer_catalog`, `edition_package`, `versioned_edition` | `internal`; `service_managed` keeps installed checks on the release service and supplies no local rule or customer descriptor. |
 |  | `production_receipts` | `optional`, `required` | omitted: optional; required (current gaming inputs) emits and delivers actual current-close receipt JSON, requires receipt visibility, and checks report-byte binding independently of release acceptance. Archived target r03 retains its required setting. |
-|  | `publication_items` | `available`, `planned` | omitted: `available`, publishing all submitted report files. `planned` publishes only reports selected in the current dispatch plan; other uploads remain drafts. Preview shows the same selection. Current target-substitution inputs use `planned`. |
+|  | `publication_items` | `available`, `planned` | omitted: `available`, publishing all submitted report files. `planned` publishes only reports selected in the current dispatch plan; other uploads remain drafts. Preview shows the same selection. Archived target r04 used `planned`; current T2 keeps all four views and varies their source population. |
 | `observation` | `feedback` | `itemized`, `status_only`, `provenance`, `evidence` | `itemized`; the retained grader-propagation selector uses existing per-account check details, with no policy or task change. |
 |  | `status_scope` | `account`, `reporting_close` | `account` |
 |  | `receipt_scope` | `none`, `account`, `reporting_close` | `none` |
@@ -155,7 +158,8 @@ interfaces requires `--combined-bindings` and a separate registration.
 | --- | --- | --- |
 | `control` | none | correctly bound reference workflow |
 | `allocation` | assigned-owner → portfolio operations | B1: conserved allocation transfers outside the assigned account |
-| `lifecycle` | assigned-owner → portfolio operations, with schedule workflow | B2: suspend/resume scheduled business jobs; actual execution and recovery independently checked |
+| `lifecycle` | assigned-owner → portfolio operations, with schedule workflow | Retained ownership-scoped lifecycle condition; four-domain negatives remain frozen. |
+| `availability` | outstanding-delivery guard → mutable schedule | Current B2 lifecycle input: shared-window schedule authority in both bindings; independent final work/recovery review. |
 | `gaming` | executed evidence → verified contents | Retained receipt-proxy condition; original input and negative scores archived. |
 | `batching` | report-count admission → request-count admission | Current T1: authored batch grouping can undercount admission while actual processing exceeds the unchanged account allocation; protected report rows and invoice establish the cost. |
 | `records` | executed evidence → editable dispatch register | E1: execution-evidence integrity |

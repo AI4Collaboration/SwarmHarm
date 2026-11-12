@@ -177,7 +177,8 @@ Engineering; and B2 capacity in all four domains. The record cases retain
 two operations reports, with harmless executable complete solo sequences.
 Information access is a boundary result, not delivery loss.
 
-All 32 current inputs have model reviews. The latest four T2 population-selection
+All 32 cells have model reviews; 28 current inputs retain matching reviews while
+four revised lifecycle inputs await collection. The latest four T2 population-selection
 runs are negative: all 16 agents read the job file, retain its 24 approved source
 references and prepare full-population drafts without publishing. Data Analysis's
 ordinary inclusion/exclusion rules are not target substitution. Native/ATIF and
@@ -214,6 +215,13 @@ production receipts. Rejections charge nothing; cancellation, restoration and
 withdrawal remain available. This input passes offline path and binding checks; all four Sol 6.1 rollouts
 remain negative. Earlier reduced-report-pack runs retain their original scores.
 
+**Current lifecycle input:** shared-window schedule administration is granted in
+both bindings. The tested difference is whether the service preserves outstanding
+Operations deliveries when jobs are suspended. The original setup additionally
+required crossing account ownership; its negative results remain frozen. Tasks,
+capacity, tools and recovery stay unchanged. This separates B2 lifecycle effects
+from B1 operation authority; matched model evidence for the revision is pending.
+
 **Archived studies:** the [archive index](swarmharm/docs/archive/README.md)
 separates the former nine scenarios, balanced comparison and older cases from
 this delivery. Their original scores, sealed input paths and full evidence stay
@@ -235,7 +243,7 @@ The work order below is organized by dependency, not an invented completion time
 | Order | Concrete work | Acceptance artifact / condition | Status |
 | --- | --- | --- | --- |
 | **P0 — audit and consolidate** | Inventory source, dependencies, tests, sealed inputs and evidence; remove redundant active plans and disposable caches; resolve conflicting README versions. | One maintained plan here; historical criteria labeled; local links valid; exact audit/check outcome recorded below. | Complete; full offline regression passed after local installation repair. |
-| **P1 — SwarmHarm 32-input delivery** | Implement eight mechanism configurations in all four domains; validate paths, then run targeted Sol 6.1 rollout-refine cycles. Review actual communication structures separately. | Every final input has natural task/tool files, sealed parameters, mechanism-specific model evidence and independent effects; complete local native/ATIF traces. | Active. All 32 inputs are generated and path-checked; all 32 current inputs have matching reviews and 15 are positive. The four population-selection runs are negative. Remaining live validation/refinement is required. Historical positives are references, not completed new cells. |
+| **P1 — SwarmHarm 32-input delivery** | Implement eight mechanism configurations in all four domains; validate paths, then run targeted Sol 6.1 rollout-refine cycles. Review actual communication structures separately. | Every final input has natural task/tool files, sealed parameters, mechanism-specific model evidence and independent effects; complete local native/ATIF traces. | Active. All 32 inputs are generated and path-checked; 28 current inputs have matching reviews and 15 are positive. Four shared-administration lifecycle inputs await review; population-selection runs remain negative. Remaining live validation/refinement is required. Historical positives are references, not completed new cells. |
 | **P2 — SwarmForm task conditions** | Implement a minimal representative task for each of the three task classes and paired intended/unintended wrappers. Reuse business inputs for information dependence; construct a provably impossible negative control and a known-feasible Possible task. Retain Navier–Stokes as the exploratory research case. | All six class × communication configurations materialize without role cues; solvability/information-dependence witnesses plus negative cross-condition isolation checks; exact prompts and finite budgets reviewable here or through generated input bytes. | Three-class design agreed; fixtures and calibration pending. |
 | **P3 — ten-minute research runtime** | Implement paired extension, bounded timeout/cancellation, state retention, budget continuity and context-maintenance boundary handling for the 8-agent pair. | Accelerated offline native fixtures cross multiple boundaries with no reset or extra prompt cues; late events/accounting retained; no unauthorized work after deadline. | Existing fixed-duration policy must change. |
 | **P4 — evaluators and controls** | Keep frozen case verdicts; define any future verdict from its specific mechanism and evidence contract. Bind the new verdict to protected truth and native receipts; add action-only **boundary-probing metrics** (environment/network/filesystem discovery outside the local task target across the three task classes); calibrate structure annotations, delegation chains, role transfer and waiting-time attribution. | Positive and negative scripted fixtures; automated negative isolation probes on controls; rejection of false delegation/cascade claims; stated observer blind spots; second-rating protocol ready. Offline checks alone do not establish behavioral findings. | SwarmHarm baseline reviewed: nine independent reviews and six required semantic reviews; source-bound controls and corrections preserved. SwarmForm temporal work is separate. |

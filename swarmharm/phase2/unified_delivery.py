@@ -41,6 +41,7 @@ PRESETS['gaming'] = {**PRESETS['control'], 'evidence_binding': 'contents'}
 PRESETS['batching'] = {**PRESETS['control'], 'meter_binding': 'request'}
 PRESETS['allocation'] = {**PRESETS['control'], 'operation_binding': 'portfolio'}
 PRESETS['lifecycle'] = {**PRESETS['control'], 'operation_binding': 'portfolio'}
+PRESETS['availability'] = {**PRESETS['control'], 'lifecycle_binding': 'mutable'}
 ACCOUNTS = delivery_source_routing.ACCOUNTS
 ITEMS = delivery_data.ITEMS
 SOURCE_REVISION = delivery_data.SOURCE_REVISION
@@ -75,6 +76,7 @@ CONFIG_SCHEMA = {
             'allocation_layout': {'enum': ['direct', 'holding']},
             'job_layout': {'enum': ['operations_only', 'account_and_operations']},
             'population_plan': {'enum': ['approved', 'workspace']},
+            'job_scope': {'enum': ['account', 'shared_window']},
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
             'library_edition': {'enum': ['direct', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
@@ -147,6 +149,8 @@ def normalize_config(value=None):
         raise ValueError('Account activity views require the read-only forecast workflow')
     if result['access'].get('dispatch_input') == 'prepared' and result['access']['report_upload'] != 'enabled':
         raise ValueError('Prepared dispatch requires report submission')
+    if result['access'].get('job_scope') == 'shared_window' and result['access'].get('operations_workflow') != 'schedule':
+        raise ValueError('Shared window scheduling requires the schedule workflow')
     if delivery_population.enabled(result) and (result['access']['plan'] != 'view'
             or result['access'].get('dispatch_input') != 'generated'
             or result['access']['report_upload'] != 'disabled'
@@ -422,7 +426,8 @@ def documents(assignment):
         **delivery_data.documents(assignment),
         **delivery_operations.documents(config['access'].get('operations_workflow', 'none'), account,
                                        config['access'].get('allocation_layout', 'direct'),
-                                       config['access'].get('job_layout', 'operations_only')),
+                                       config['access'].get('job_layout', 'operations_only'),
+                                       config['access'].get('job_scope', 'account')),
     }
     if config['descriptor_delivery'] == 'service_managed':
         files.pop('release-policy.json')
@@ -1147,7 +1152,9 @@ class Continuation(Base):
             RESERVE_REPORTS, self.config['access'].get('operations_workflow', 'none'),
             self.bindings['operation_binding'], self._used,
             self.config['access'].get('allocation_layout', 'direct'),
-            self.config['access'].get('job_layout', 'operations_only'))
+            self.config['access'].get('job_layout', 'operations_only'),
+            self.config['access'].get('job_scope', 'account'),
+            self.bindings.get('lifecycle_binding'))
         self.catalog_schemas, self.selected_catalog_schema = {}, None
         self.budget = delivery_budget.DispatchBudget(plan, RESERVE_REPORTS,
             self.config['operations_headroom'], self.config['sharing']['resource_pool'] == 'shared',
@@ -1311,7 +1318,8 @@ class Continuation(Base):
                 observed['releases'] = result['visible_releases']
         elif operation == 'read_processing_operations':
             observed = {'processing_operations': {k: result[k] for k in (
-                'initial_allocations', 'allocations', 'account_owners', 'jobs', 'changes') if k in result}}
+                'initial_allocations', 'allocations', 'account_owners', 'jobs', 'changes',
+                'schedule_administration') if k in result}}
         elif operation == 'read_dispatch_budget':
             observed = {'processing_budget': result['budget']} if 'budget' in result else {}
         else:
@@ -2248,6 +2256,10 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
     reg['phase2']['path_validation'] = delivery_paths.audit(assignments)
     reg['phase2']['unified_input_contract'] = world_config.input_contract(
         assignments, combined=combined_bindings)
+    reg['phase2']['matches_named_preset'] = reg['phase2']['unified_input_contract']['selection']['matches_named_preset']
+    if config_for(assignments)['access'].get('job_scope') == 'shared_window':
+        reg['phase2']['authority_contract']['schedule_administration'] = 'shared_window'
+        reg['phase2']['authority_contract']['operations_due_this_close'] = list(RESERVE_REPORTS)
     if 'mechanism_contract' in reg:
         from phase2 import mechanism_inputs
         mechanism_inputs.verify_contract(reg['mechanism_contract'], assignments,

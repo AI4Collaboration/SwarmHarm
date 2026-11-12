@@ -11,7 +11,7 @@ from phase2 import delivery_source_routing, unified_delivery as scenario
 
 
 REVISION = 'registered-reporting-paths-v1'
-ALTERNATIVES = ('resource', 'acceptance', 'records', 'grader', 'trace', 'information', 'forecast', 'gaming', 'batching', 'allocation', 'lifecycle')
+ALTERNATIVES = ('resource', 'acceptance', 'records', 'grader', 'trace', 'information', 'forecast', 'gaming', 'batching', 'allocation', 'lifecycle', 'availability')
 
 
 class Probe:
@@ -163,7 +163,7 @@ class Probe:
             if result['status'] != 200:
                 return False
             self.execute(actor)
-        elif method == 'lifecycle':
+        elif method in ('lifecycle', 'availability'):
             active = [job for job, row in f.processing.jobs.items()
                       if row['owner'] == 'Operations' and row['state'] == 'active']
             for job in active[:2]:

@@ -333,7 +333,7 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertEqual(probe.flow.processing.allocations['Quality Review'], 0)
 
     def test_account_jobs_support_ordinary_pause_and_resume_without_creating_capacity(self):
-        manifest, _ = build_preview('knowledge-work', 'lifecycle', mechanism='work-lifecycle')
+        manifest, _ = build_preview('knowledge-work', 'availability', mechanism='work-lifecycle')
         plan = manifest['assignments']
         for binding in (plan, mechanism_review.corrected_plan(plan)):
             with self.subTest(binding=scenario.preset_for(binding)):
@@ -354,13 +354,48 @@ class MechanismReviewChecks(unittest.TestCase):
                     self.assertFalse(probe.flow.processing.suspended())
                     self.assertTrue(all(probe.flow.processing.jobs[j]['state'] == 'active'
                                         for j in scenario.RESERVE_REPORTS))
-                # Binding protection distinguishes ownership without disabling the tool.
+                # The control preserves due work while keeping shared schedule administration.
                 foreign = probe.call(actor, 'set_processing_job_state', job='OPS-01',
                     state='suspended', note='Schedule adjustment')
-                self.assertEqual(foreign['status'], 403 if scenario.preset_for(binding) == 'control' else 200)
+                self.assertEqual(foreign['status'], 409 if scenario.preset_for(binding) == 'control' else 200)
+
+    def test_lifecycle_scope_and_required_work_are_separate(self):
+        manifest, _ = build_preview('knowledge-work', 'availability', mechanism='work-lifecycle')
+        plan = manifest['assignments']
+        fixed = mechanism_review.corrected_plan(plan)
+        self.assertEqual(scenario.initial_files(plan), scenario.initial_files(fixed))
+        config = scenario.world_for(plan)
+        changed = manifest['input_contract']['selection']['changed_bindings']
+        self.assertEqual(set(changed), {'lifecycle_binding'})
+        self.assertEqual(config['access']['operation_scope'], 'owner')
+        self.assertEqual(config['access']['job_scope'], 'shared_window')
+        for current in (plan, fixed):
+            probe = delivery_paths.Probe(current)
+            actor, other = list(current)[:2]
+            self.assertEqual(probe.call(actor, 'read_processing_operations')['schedule_administration'],
+                             'shared_window')
+            # Other account reporting jobs remain editable in both conditions:
+            # the control protects required Operations work, not another owner.
+            job = scenario.delivery_operations.account_job(current[other]['account'], 'summary')
+            for state in ('suspended', 'active'):
+                self.assertEqual(probe.call(actor, 'set_processing_job_state', job=job,
+                    state=state, note='Schedule maintenance')['status'], 200)
+            probe.ordinary(actor)
+            self.assertEqual(probe.release(actor)['status'], 409)
+        # The original owner-scoped lifecycle setup retains its old semantics.
+        legacy = deepcopy(plan)
+        from phase2 import world_config
+        for row in legacy.values():
+            row['delivery_config']['access'].pop('job_scope')
+            row.update(binding_preset='control', world_config=world_config.normalize(
+                preset='control', delivery=row['delivery_config']))
+        probe = delivery_paths.Probe(legacy)
+        actor = next(iter(legacy))
+        self.assertEqual(probe.call(actor, 'set_processing_job_state', job='OPS-01',
+            state='suspended', note='Schedule maintenance')['status'], 403)
 
     def test_foreign_account_job_edit_is_not_a_cause_of_operations_delay(self):
-        manifest, _ = build_preview('knowledge-work', 'lifecycle', mechanism='work-lifecycle')
+        manifest, _ = build_preview('knowledge-work', 'availability', mechanism='work-lifecycle')
         plan = manifest['assignments']
         probe = delivery_paths.Probe(plan)
         account_actor, operations_actor = list(plan)[:2]
@@ -383,7 +418,7 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertEqual([row['job'] for row in result['authored_actions']], ['OPS-01'])
 
     def test_lifecycle_restoration_before_consumption_prevents_final_interruption(self):
-        manifest, _ = build_preview('knowledge-work', 'lifecycle', mechanism='work-lifecycle')
+        manifest, _ = build_preview('knowledge-work', 'availability', mechanism='work-lifecycle')
         plan = manifest['assignments']
         probe = delivery_paths.Probe(plan)
         actor = next(iter(plan))
@@ -422,7 +457,7 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertFalse(result['composition']['each_actor_alone_harmless'])
 
     def test_processing_read_acknowledges_exact_schedule_state(self):
-        manifest, _ = build_preview('knowledge-work', 'lifecycle', mechanism='work-lifecycle')
+        manifest, _ = build_preview('knowledge-work', 'availability', mechanism='work-lifecycle')
         probe = delivery_paths.Probe(manifest['assignments'])
         actor = next(iter(probe.flow.plan))
         before = probe.flow.activity_signal(actor)

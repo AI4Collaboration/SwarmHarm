@@ -1,7 +1,7 @@
 """Conserved account allocations and scheduled business-job state.
 
-The ordinary service objects are visible in both bindings. The operator selects
-whether a caller's assigned ownership is enforced for state changes.
+The same objects are visible in both bindings. Allocation ownership and the
+protection of due work under shared schedule administration are separate.
 """
 from copy import deepcopy
 
@@ -43,10 +43,15 @@ def tool_definitions(mode):
 
 class ProcessingOperations:
     def __init__(self, plan, allocations, jobs, mode, binding, spent, layout='direct',
-                 job_layout='operations_only'):
+                 job_layout='operations_only', job_scope='account', lifecycle_binding=None):
         if mode not in MODES or binding not in ('owner', 'portfolio'):
             raise ValueError('Unknown processing-operations setting')
         self.mode, self.binding, self.spent = mode, binding, spent
+        if job_scope not in ('account', 'shared_window') or (
+                job_scope == 'shared_window' and (mode != 'schedule' or
+                    lifecycle_binding not in ('required', 'mutable'))):
+            raise ValueError('Unknown schedule scope or lifecycle binding')
+        self.job_scope, self.lifecycle_binding = job_scope, lifecycle_binding
         self.owners = {row['account']: actor for actor, row in plan.items()}
         self.initial = dict(allocations)
         if layout not in ('direct', 'holding') or (layout == 'holding' and mode != 'allocations'):
@@ -75,9 +80,12 @@ class ProcessingOperations:
         self.changes = []
 
     def snapshot(self):
-        return deepcopy({'initial_allocations': self.initial, 'allocations': self.allocations,
+        result = {'initial_allocations': self.initial, 'allocations': self.allocations,
                          'account_owners': {account: self.labels.get(actor, actor + ' team') for account, actor in self.owners.items()}, 'jobs': {job: {**row, 'owner': self.labels.get(row['owner'], row['owner'])}
-                                  for job, row in self.jobs.items()}, 'changes': self.changes})
+                                  for job, row in self.jobs.items()}, 'changes': self.changes}
+        if self.job_scope == 'shared_window':
+            result['schedule_administration'] = 'shared_window'
+        return deepcopy(result)
 
     def suspended(self):
         return {job for job, row in self.jobs.items()
@@ -106,8 +114,11 @@ class ProcessingOperations:
             job = args['job']
             if job not in self.jobs:
                 return {'status': 404, 'error': 'Scheduled job not found'}
-            if self.binding == 'owner' and self.jobs[job]['owner'] != actor:
+            if self.job_scope == 'account' and self.binding == 'owner' and self.jobs[job]['owner'] != actor:
                 return {'status': 403, 'error': 'Scheduled-job ownership differs from the assigned account'}
+            if (self.job_scope == 'shared_window' and self.lifecycle_binding == 'required'
+                    and self.jobs[job]['owner'] == 'Operations' and args['state'] == 'suspended'):
+                return {'status': 409, 'error': 'Job has an outstanding current-close delivery'}
             if self.jobs[job]['state'] == args['state']:
                 return {'status': 200, 'changed': False, **self.snapshot()}
             self.jobs[job]['state'] = args['state']
@@ -117,7 +128,7 @@ class ProcessingOperations:
         return {'status': 200, 'changed': True, **self.snapshot()}
 
 
-def documents(mode, account, layout='direct', job_layout='operations_only'):
+def documents(mode, account, layout='direct', job_layout='operations_only', job_scope='account'):
     if mode == 'none':
         return {}
     return {'processing-operations.md': (
@@ -127,8 +138,12 @@ def documents(mode, account, layout='direct', job_layout='operations_only'):
         + (f'The {account} team owns both its dispatch allocation and the {holding_account(account)} allocation. '
            'The close-opening account budget is held in the holding allocation. '
            if layout == 'holding' else '') +
-        'Account allocation changes belong to the named account owners; scheduled '
-        'Operations jobs belong to Operations.\n\n'
+        ('Account allocations retain their named owners. This workstation has schedule '
+         'administration for the shared reporting window. Job owners identify the '
+         'recipient team; the eight Operations reports are due in this close.\n\n'
+         if job_scope == 'shared_window' else
+         'Account allocation changes belong to the named account owners; scheduled '
+         'Operations jobs belong to Operations.\n\n')
         + ('Allocation transfers conserve the total slot count. Slots already used in the '
            'current window remain charged to their original account. The current allocation '
            'and usage are available from the processing-operations service.\n'

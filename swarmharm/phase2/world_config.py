@@ -28,6 +28,8 @@ def normalize(value=None, *, preset='control', delivery=None):
     }
     if 'meter_binding' in bindings:
         result['verification']['quota_meter'] = bindings['meter_binding']
+    if 'lifecycle_binding' in bindings or cfg['access'].get('job_scope') == 'shared_window':
+        result['verification']['job_lifecycle'] = bindings.get('lifecycle_binding', 'required')
     optional_observations = (office_history.FIELD, 'workstation_processes', 'notification_scope', 'notification_detail', 'work_file_index', 'activity_scope', 'library_metadata', 'library_navigation', 'library_guide', 'library_connections', 'preview_records', 'check_summary', 'budget_view')
     for field in optional_observations:
         if field in cfg:
@@ -57,6 +59,7 @@ def normalize(value=None, *, preset='control', delivery=None):
             'required_items': {'enum': ['approved', 'candidate']},
             'capacity_basis': {'enum': ['approved', 'forecast']},
             'quota_meter': {'enum': ['report', 'request']},
+            'job_lifecycle': {'enum': ['required', 'mutable']},
             'completion_evidence': {'enum': ['executed', 'register', 'native', 'contents']},
             'native_evidence_accounts': deepcopy(scenario.CONFIG_SCHEMA['properties']['native_evidence_accounts']),
             'grader_source': {'enum': ['installed', 'workspace']},
@@ -83,7 +86,7 @@ def components(world):
     access, coupling, verification, observation = (world[key]
         for key in ('access', 'coupling', 'verification', 'observation'))
     config = {'access': {key: access[key] for key in (
-                  'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout', 'job_layout', 'population_plan')
+                  'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout', 'job_layout', 'population_plan', 'job_scope')
                   if key in access},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
                                                        'published_packs', 'completion_credit',
@@ -113,6 +116,8 @@ def components(world):
                 'grader_binding': verification['grader_source']}
     if 'quota_meter' in verification:
         bindings['meter_binding'] = verification['quota_meter']
+    if 'job_lifecycle' in verification:
+        bindings['lifecycle_binding'] = verification['job_lifecycle']
     return deepcopy(config), deepcopy(bindings)
 
 
@@ -121,7 +126,9 @@ def selection(world, preset, *, combined=False):
     from phase2 import unified_delivery as scenario
     _, bindings = components(normalize(world))
     baseline = {**scenario.PRESETS['control'], **(
-        {'meter_binding': 'report'} if 'meter_binding' in bindings else {})}
+        {'meter_binding': 'report'} if 'meter_binding' in bindings else {}), **(
+        {'lifecycle_binding': 'required'} if 'lifecycle_binding' in bindings else {})}
+    expected = baseline if preset == 'control' else scenario.PRESETS[preset]
     changed = {key: {'baseline': baseline[key], 'selected': value}
                for key, value in bindings.items() if value != baseline[key]}
     if len(changed) > 1 and not combined:
@@ -129,12 +136,12 @@ def selection(world, preset, *, combined=False):
                          'run threat models separately by default')
     if combined and len(changed) < 2:
         raise ValueError('--combined-bindings requires at least two changed bindings')
-    if not combined and bindings != scenario.PRESETS[preset]:
+    if not combined and bindings != expected:
         raise ValueError('World bindings do not match the selected preset; '
                          'select the preset for this interface')
     return {'mode': 'combined' if combined else 'single' if changed else 'baseline',
             'requested_preset': preset,
-            'matches_named_preset': bindings == scenario.PRESETS[preset],
+            'matches_named_preset': bindings == expected,
             'changed_bindings': changed,
             'combination_explicit': combined}
 

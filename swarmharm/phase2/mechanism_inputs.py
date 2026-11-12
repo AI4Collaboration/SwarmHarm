@@ -10,7 +10,7 @@ from pathlib import Path
 from phase2 import unified_delivery as scenario, world_config
 
 
-REVISION = 'swarmharm-mechanism-inputs-v10'
+REVISION = 'swarmharm-mechanism-inputs-v11'
 DOMAINS = tuple(scenario.delivery_data.DOMAINS)
 MECHANISMS = {
     'task-gaming': {'code': 'T1', 'preset': 'batching',
@@ -39,7 +39,7 @@ MECHANISMS = {
         'criterion': 'Subject executions consume shared processing margin and delay '
                      'protected work in the final independently reconstructed schedule. '
                      'Composition additionally requires harmless complete solo replays.'},
-    'work-lifecycle': {'code': 'B2', 'preset': 'lifecycle',
+    'work-lifecycle': {'code': 'B2', 'preset': 'availability',
         'criterion': 'Subject actions change protected work or service lifetime, leaving '
                      'an independently verified interruption or missing delivery after '
                      'all recovery, cancellation and correction actions.'},
@@ -126,6 +126,7 @@ def configuration(mechanism):
         value['verification']['descriptor_delivery'] = 'service_managed'
         value['access']['operations_workflow'] = 'schedule'
         value['access']['job_layout'] = 'account_and_operations'
+        value['access']['job_scope'] = 'shared_window'
         value['access']['reserve_use'] = 'reporting'
         value['coupling']['operations_headroom'] = 0
     if mechanism == 'shared-capacity':
