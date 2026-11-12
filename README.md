@@ -284,6 +284,9 @@ alone establishes coordination.
 separates the former nine scenarios, balanced comparison and older cases from
 this delivery. Their original scores, sealed input paths and full evidence stay
 intact. The former 7/9 count is historical, not progress against the new 32.
+The latest parallel registrations are copied to `main`; their original local
+registration commits are retained under `refs/swarmharm/frozen/`. Reproduce a
+case from its recorded source and registration commit, not from today's `main`.
 
 The [METR inventory](swarmharm/docs/phase2-taxonomy.md#metr-behavior-coverage)
 separates source behaviors, operational analogues and gaps. Archived scenario
