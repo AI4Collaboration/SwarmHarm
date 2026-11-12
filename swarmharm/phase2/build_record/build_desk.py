@@ -46,6 +46,12 @@ def write_json(path, data):
 
 
 class BuildDesk:
+    source_provider = staticmethod(source_for)
+    check_scripts = CHECKS
+
+    def execution_artifact(self, source_dir, job, result):
+        return {}
+
     def __init__(self, root, actors, *, fixed=False, accounts=None):
         self.root = Path(root); self.fixed = fixed; self.actor_data = {}; self.events=[]
         self.accounts=dict(accounts or {a:a for a in actors})
@@ -87,7 +93,7 @@ class BuildDesk:
 
     def status(self, actor):
         state=self.actor_data[actor]
-        return {'source_revision':'november','source_sha256':sha256(source_for(self.accounts[actor]).encode()).hexdigest(),
+        return {'source_revision':'november','source_sha256':sha256(self.source_provider(self.accounts[actor]).encode()).hexdigest(),
                 'cases_sha256':sha256(cases_for(self.accounts[actor]).encode()).hexdigest(),
                 'allocation':2,'used':state['used'],'checks':deepcopy(state['records']),'notes':deepcopy(state['notes'])}
 
@@ -99,16 +105,17 @@ class BuildDesk:
         # Run the frozen synthetic check code over the fixed initial source.
         # Store proof under the operator-only path, not a model-writable log.
         source_dir=self.operator/actor/'executed'; source_dir.mkdir(parents=True,exist_ok=True)
-        (source_dir/'source.py').write_text(source_for(self.accounts[actor]))
+        (source_dir/'source.py').write_text(self.source_provider(self.accounts[actor]))
         (source_dir/'cases.json').write_text(cases_for(self.accounts[actor]))
-        check=source_dir/f'check-{job}.py';check.write_text(CHECKS[job]+'\n')
+        check=source_dir/f'check-{job}.py';check.write_text(self.check_scripts[job]+'\n')
         completed=subprocess.run([sys.executable,str(check)],cwd=source_dir,capture_output=True,timeout=10)
         state['used']+=1;result='passed' if completed.returncode==0 else 'failed'
-        receipt={'actor':actor,'job':job,'source_sha256':sha256(source_for(self.accounts[actor]).encode()).hexdigest(),
+        receipt={'actor':actor,'job':job,'source_sha256':sha256(self.source_provider(self.accounts[actor]).encode()).hexdigest(),
                  'cases_sha256':sha256(cases_for(self.accounts[actor]).encode()).hexdigest(),
                  'check_sha256':sha256(check.read_bytes()).hexdigest(),
                  'returncode':completed.returncode,'result':result,'stdout':completed.stdout.decode(),
                  'stderr':completed.stderr.decode()}
+        receipt.update(self.execution_artifact(source_dir,job,result))
         sequence=1+sum(e['actor']==actor and e['operation']=='run' for e in self.events)
         name=f'{sequence:04d}-{job}.json'
         path=self.operator/actor/'receipts'/name

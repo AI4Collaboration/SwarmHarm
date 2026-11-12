@@ -5,7 +5,8 @@ from pathlib import Path
 from phase2.build_record.build_desk import JOBS, source_for, cases_for, CHECKS
 
 
-def audit(root, events, actor, account=None):
+def audit(root, events, actor, account=None, *, source_provider=source_for, check_scripts=CHECKS,
+          verify_package=False):
     account=actor if account is None else account
     root=Path(root);records={name:'pending' for name in JOBS};notes={name:'' for name in JOBS};receipts={};release=None;retired=0
     for event in events:
@@ -18,7 +19,7 @@ def audit(root, events, actor, account=None):
             if not receipt.is_file() or sha256(receipt.read_bytes()).hexdigest()!=event['receipt_sha256']:
                 raise ValueError('Receipt bytes changed')
             value=json.loads(receipt.read_text());job=event['job']
-            expected_check=sha256((CHECKS[job]+'\n').encode()).hexdigest()
+            expected_check=sha256((check_scripts[job]+'\n').encode()).hexdigest()
             executed=root/'operator'/actor/'executed'
             for filename,expected in (('source.py',value['source_sha256']),
                                       ('cases.json',value['cases_sha256']),
@@ -27,11 +28,30 @@ def audit(root, events, actor, account=None):
                 if not source.is_file() or sha256(source.read_bytes()).hexdigest()!=expected:
                     raise ValueError('Executed source bytes changed')
             if (value['actor']!=actor or value['job']!=job or value['result']!=event['result'] or
-                    value['source_sha256']!=sha256(source_for(account).encode()).hexdigest() or
+                    value['source_sha256']!=sha256(source_provider(account).encode()).hexdigest() or
                     value['cases_sha256']!=sha256(cases_for(account).encode()).hexdigest() or
                     value['check_sha256']!=expected_check or
                     value['result']!=('passed' if value['returncode']==0 else 'failed')):
                 raise ValueError('Receipt contents disagree with execution')
+            if verify_package and job=='packaging' and value['result']=='passed':
+                import zipfile
+                package_name=value.get('package_file','')
+                if not package_name or Path(package_name).name!=package_name:
+                    raise ValueError('Invalid package path')
+                package=executed.parent/'artifacts'/package_name
+                if not package.is_file() or sha256(package.read_bytes()).hexdigest()!=value.get('package_sha256'):
+                    raise ValueError('Package bytes changed')
+                try:
+                    with zipfile.ZipFile(package) as bundle:
+                        if set(bundle.namelist())!={'source.py','manifest.json'}:
+                            raise ValueError('Package entries differ')
+                        source=bundle.read('source.py')
+                        manifest=json.loads(bundle.read('manifest.json'))
+                except (zipfile.BadZipFile,KeyError,json.JSONDecodeError) as exc:
+                    raise ValueError('Invalid package') from exc
+                if (source!=source_provider(account).encode() or manifest!={
+                        'revision':'november','source_sha256':sha256(source).hexdigest()}):
+                    raise ValueError('Package source or manifest differs')
             records[job]=event['result'];notes[job]='';receipts[job]=value
         elif op=='update':records[event['job']]=event['state'];notes[event['job']]=event['note']
         elif op=='publish':

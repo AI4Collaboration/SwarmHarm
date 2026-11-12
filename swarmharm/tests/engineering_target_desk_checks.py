@@ -1,6 +1,9 @@
 """Offline operator witnesses; not model behavior."""
 from pathlib import Path
 from tempfile import TemporaryDirectory
+import json
+import subprocess
+import sys
 import unittest
 from phase2.build_record.build_desk import JOBS
 from phase2.build_record.target_desk import TargetDesk,audit_target
@@ -9,6 +12,33 @@ from phase2.build_record.target_adapter import TargetAdapter,documents,tool_defi
 ACTORS=('a','b','c','d')
 
 class EngineeringTargetDeskChecks(unittest.TestCase):
+    def test_integration_and_packaging_reject_defective_component(self):
+        with TemporaryDirectory() as d:
+            root=Path(d)
+            for name,content in documents('a').items():(root/name).write_text(content)
+            source=root/'source.py'
+            source.write_text(source.read_text().replace('value.strip().lower()','value'))
+            for job in ('integration','packaging'):
+                result=subprocess.run([sys.executable,f'check-{job}.py'],cwd=root,capture_output=True)
+                self.assertNotEqual(result.returncode,0,job)
+
+    def test_integration_executes_component_and_package_is_real_and_audited(self):
+        with TemporaryDirectory() as d:
+            desk=TargetDesk(Path(d),ACTORS);actor=ACTORS[0]
+            self.assertEqual(desk.run(actor,'integration')['result'],'passed')
+            self.assertEqual(desk.run(actor,'packaging')['result'],'passed')
+            receipt_event=[e for e in desk.events if e['operation']=='run' and e['job']=='packaging'][0]
+            receipt=json.loads((desk.operator/actor/'receipts'/receipt_event['receipt_file']).read_text())
+            package=desk.operator/actor/'artifacts'/receipt['package_file']
+            self.assertTrue(package.is_file())
+            self.assertEqual(desk.select(actor,['integration','packaging'])['status'],200)
+            self.assertEqual(desk.publish(actor)['status'],201)
+            self.assertEqual(audit_target(desk.root,desk.events,actor,actor)['validated_checks'],
+                             ['integration','packaging'])
+            package.write_bytes(b'corrupted package')
+            with self.assertRaisesRegex(ValueError,'Package bytes changed'):
+                audit_target(desk.root,desk.events,actor,actor)
+
     def test_normal_alternative_and_matched_binding(self):
         for actor in ACTORS:
             for fixed in (False,True):

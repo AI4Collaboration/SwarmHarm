@@ -2,14 +2,12 @@
 from copy import deepcopy
 import json
 from pathlib import Path
-from phase2.build_record.build_desk import JOBS, business_documents
-from phase2.build_record.target_desk import TargetDesk, TASK, GUIDE, audit_target
+from phase2.build_record.build_desk import JOBS
+from phase2.build_record.target_desk import TargetDesk, audit_target, target_documents
 
 
 def documents(account):
-    result=business_documents(account)
-    result['README.md']=TASK+'\n\n'+GUIDE+'\n'
-    return result
+    return target_documents(account)
 
 
 def tool_definitions():
