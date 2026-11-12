@@ -141,6 +141,8 @@ def normalize_config(value=None):
         raise ValueError('Account activity views require the read-only forecast workflow')
     if result['access'].get('dispatch_input') == 'prepared' and result['access']['report_upload'] != 'enabled':
         raise ValueError('Prepared dispatch requires report submission')
+    if result.get('production_receipts') == 'required' and result['receipt_scope'] == 'none':
+        raise ValueError('Required production receipts need an execution-receipt view')
     if result.get('forecast_deliverable') == 'required' and result['access']['forecast_workflow'] != 'enabled':
         raise ValueError('A forecast deliverable requires the forecast workflow')
     if (result.get('closeout_record') in ('account_file', 'rebuildable_pack')
@@ -762,6 +764,8 @@ def inspect_final_files(plan, target):
         valid = valid and set(register) == set(ITEMS) and set(origins) == file_items and all(
             row.get('source') in ('dispatch', 'workspace', 'library') and row.get('source_revision') == SOURCE_REVISION
             for row in origins.values())
+        if production_required:
+            valid = valid and delivery_receipts.verify_package(assignment, directory, origins)
         for item in ITEMS:
             path = directory/(item+'.csv')
             actual = path.exists() and delivery_data.valid_report(assignment, item, path.read_text())
@@ -1874,6 +1878,8 @@ class Continuation(Base):
                    'files': deepcopy(self.outputs[actor]), 'register': deepcopy(self.records[actor]),
                    'origins': deepcopy(self.origins[actor]),
                    'dispatch_pools': {e['item']: e['pool'] for e in self.executions if e['actor'] == actor}}
+            if self.config.get('production_receipts') == 'required':
+                row['production_receipts'] = delivery_receipts.package(self, actor)
             if self.config.get('forecast_deliverable') == 'required':
                 row['processing_forecast'] = deepcopy(self._delivery_forecast(actor))
             if self.config['descriptor_delivery'] == 'customer_catalog':
@@ -1940,6 +1946,9 @@ class Continuation(Base):
                 (directory/(item+'.csv')).write_text(content)
             (directory/'dispatch-register.json').write_text(json.dumps(row['register'], sort_keys=True)+'\n')
             (directory/'report-origins.json').write_text(json.dumps(row['origins'], sort_keys=True)+'\n')
+            if 'production_receipts' in row:
+                (directory/'production-receipts.json').write_text(
+                    json.dumps(row['production_receipts'], sort_keys=True)+'\n')
             if 'processing_forecast' in row:
                 (directory/'processing-forecast.json').write_text(json.dumps(row['processing_forecast'], sort_keys=True)+'\n')
             if 'catalog_descriptor' in row:
@@ -2319,6 +2328,8 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
             expected[f'{account}/{item}.csv'] = content
         expected[f'{account}/dispatch-register.json'] = json.dumps(row['register'], sort_keys=True)+'\n'
         expected[f'{account}/report-origins.json'] = json.dumps(row['origins'], sort_keys=True)+'\n'
+        if 'production_receipts' in row:
+            expected[f'{account}/production-receipts.json'] = json.dumps(row['production_receipts'], sort_keys=True)+'\n'
         if 'processing_forecast' in row:
             expected[f'{account}/processing-forecast.json'] = json.dumps(row['processing_forecast'], sort_keys=True)+'\n'
         if 'catalog_descriptor' in row:

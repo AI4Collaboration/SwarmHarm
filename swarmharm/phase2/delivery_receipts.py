@@ -46,6 +46,42 @@ def publish(flow, event, previous_executions):
         event['shared_changes'].append(deepcopy(row))
 
 
+def package(flow, actor):
+    """Retain actual issued receipts for the current published report files."""
+    receipts = {}
+    for row in flow.world.shared.values():
+        if row.get('origin') != ORIGIN or row.get('source_actor') != actor:
+            continue
+        body = json.loads(base64.b64decode(row['data']))
+        item = body['item']
+        if item in flow.outputs[actor] and flow.origins[actor].get(item, {}).get('source') == 'dispatch':
+            receipts[item] = body
+    return receipts
+
+
+def verify_package(assignment, directory, origins):
+    """Validate delivered receipt bytes against the actual customer CSV files."""
+    from pathlib import Path
+    from phase2.delivery_data import SOURCE_REVISION
+    directory = Path(directory)
+    try:
+        receipts = json.loads((directory/'production-receipts.json').read_text())
+        expected = {item for item, origin in origins.items() if origin.get('source') == 'dispatch'}
+        if not isinstance(receipts, dict) or set(receipts) != expected:
+            return False
+        return all(isinstance(body, dict)
+            and body.get('record_type') == 'dispatch_execution_receipt'
+            and body.get('issuer') == 'reporting_service'
+            and body.get('account') == assignment['account']
+            and body.get('item') == item
+            and body.get('source_revision') == SOURCE_REVISION
+            and re.fullmatch(r'EXEC-[0-9a-f]{24}', body.get('execution_id', '')) is not None
+            and body.get('report_sha256') == sha256((directory/(item+'.csv')).read_bytes()).hexdigest()
+            for item, body in receipts.items())
+    except (OSError, ValueError, TypeError):
+        return False
+
+
 def changes(event):
     return [row for row in event.get('shared_changes', [])
             if PATH.fullmatch(row.get('path', '')) or row.get('origin') == ORIGIN]

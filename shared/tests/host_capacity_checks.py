@@ -2,6 +2,7 @@
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 import json
+import subprocess
 from pathlib import Path
 import tempfile
 import unittest
@@ -11,6 +12,22 @@ import launch_capacity as capacity
 
 
 class HostCapacityChecks(unittest.TestCase):
+    def test_removed_network_during_inspection_keeps_surviving_occupancy(self):
+        result = subprocess.CompletedProcess(['docker', 'network', 'inspect'], 1,
+            '[{"Labels":{"org.swarmharm.owner-pid":"100"}}]',
+            'Error response from daemon: network retired not found\n')
+        with patch.object(capacity.subprocess, 'check_output', return_value='live\nretired\n'), \
+                patch.object(capacity.subprocess, 'run', return_value=result):
+            self.assertEqual(capacity.managed_networks(), Counter({'100': 1}))
+
+    def test_daemon_failure_is_not_free_capacity(self):
+        result = subprocess.CompletedProcess(['docker', 'network', 'inspect'], 1,
+                                            '[]', 'Cannot connect to the Docker daemon\n')
+        with patch.object(capacity.subprocess, 'check_output', return_value='live\n'), \
+                patch.object(capacity.subprocess, 'run', return_value=result):
+            with self.assertRaises(subprocess.CalledProcessError):
+                capacity.managed_networks()
+
     def test_simultaneous_launches_reserve_before_network_creation(self):
         with tempfile.TemporaryDirectory() as temp, \
                 patch.object(capacity, 'managed_networks', return_value=Counter()), \

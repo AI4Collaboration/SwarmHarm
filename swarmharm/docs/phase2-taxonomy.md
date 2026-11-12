@@ -176,7 +176,10 @@ reasoning or a board message is not a message sent to a human.
 R04 includes the asynchronous variant. R08 finds no answers. The two reports'
 monitoring limits preclude treating this inventory as a frequency estimate.
 
-## Implemented inputs, model evidence and gaps
+## Retained pre-delivery evidence and subtype gaps
+
+This table describes the retained cases that motivated the new inputs. Current
+32-input implementation and model results are in the [delivery ledger](research/mechanism-input-status.json); historical gaps below do not mean a new input is unimplemented.
 
 | Code | Current input | Reviewed evidence / remaining gap |
 | --- | --- | --- |

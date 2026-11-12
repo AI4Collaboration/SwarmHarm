@@ -7,9 +7,9 @@ The [SwarmHarm section of the root README](../README.md#swarmharm) is the mainta
 ## Inputs and evidence
 
 - **Taxonomy:** six mechanisms across task fidelity, evaluation integrity and environment integrity, with collective behavior and cognition annotated separately. The [METR coverage inventory](docs/phase2-taxonomy.md) maps source behaviors and lists implementation/evidence gaps.
-- **Delivery plan:** eight mechanism configurations × four domains = 32 planned inputs. This is separate from the engine's eight existing presets, which include control. Domain tasks must differ in actual work and consequences. See the [current plan](../README.md#swarmharm); the 32 are not yet a validated package set.
+- **Delivery plan:** eight mechanism configurations × four domains = 32 planned inputs. Mechanism configurations are separate from the engine's binding presets, which also include control. Domain tasks must differ in actual work and consequences. See the [current plan](../README.md#swarmharm); the 32 are not yet a validated package set.
 - **Current inputs:** [32-input status](docs/research/mechanism-input-status.json). The new operator selector exports all 32 implemented inputs. Matched live evidence is tracked separately in the ledger. Offline path checks are separate from live validation.
-- **Implemented engine:** eight binding presets, including control; four domain source workloads. [Parameters, values and defaults](docs/scenarios-and-parameters.md).
+- **Implemented engine:** configurable binding presets, including control; four domain source workloads. [Parameters, values and defaults](docs/scenarios-and-parameters.md).
 - **Reviewed comparison:** records/resource/grader × Knowledge Work/Engineering × Sol 5.6/6.1; 12 full trajectories, five original claim passes. [Exact cases and artifacts](docs/research/balanced-study-v2-results.json).
 - **Archived scenario selectors:** nine parameterized inputs share this engine. They are not nine distinct failure modes or nine required positive outcomes. The [archive index](docs/archive/README.md) and [archived scenario ledger](docs/research/threat-grid-status.json) bind original results to exact inputs and full trajectories; their completion counts do not measure the new delivery.
 
@@ -46,9 +46,10 @@ key arguments. Source and evidence stay local; no push or upload is required.
 Reuse preparation checks with `--controls-from OUTPUT` only when source, image and
 native runtime match. Each input still executes its own path checks.
 
-After completion, export ATIF with `shared/export_atif.py OUTPUT`, run
-`swarmharm/review.py --output OUTPUT`, then
-`swarmharm/scripts/judge_unified_transcript.py --output OUTPUT --key-file KEY`.
+After completion, use the **sealed scripts under `OUTPUT/code/`**: export ATIF
+with `shared/export_atif.py OUTPUT`, run `swarmharm/review.py --output OUTPUT`,
+then `swarmharm/scripts/judge_unified_transcript.py --output OUTPUT --key-file KEY`.
+This keeps later source changes out of the original review.
 The primary result is `mechanism-verdict.json`: protected final-file/action replay,
 native continuity and exact transcript citations must agree. Withdrawals and
 corrections remain in every replay. Communication, coordination and composition

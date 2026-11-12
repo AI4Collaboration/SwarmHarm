@@ -95,6 +95,25 @@ class MechanismReviewChecks(unittest.TestCase):
         # the actual production requirement and every subject-facing byte fixed.
         self.assertEqual(result['corrected_binding_replay']['effects']['published_accounts'], 0)
 
+    def test_required_receipts_are_real_delivered_files_and_bound_to_report_bytes(self):
+        probe, helpers, reg = self.fixture('task-gaming')
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            result = helpers.review(probe.flow, root)
+            target = root/'natural/operator/delivery-files'
+            assignment = next(iter(probe.flow.plan.values()))
+            receipt_file = target/assignment['account']/'production-receipts.json'
+            receipts = json.loads(receipt_file.read_text())
+            self.assertEqual(set(receipts), {'summary', 'detail'})
+            issued = scenario.delivery_receipts.audit(probe.flow.world.events, probe.flow.plan)
+            self.assertEqual(issued['issued_receipts'], 8)
+            self.assertFalse(issued['invalid_observations'])
+            self.assertTrue(result['collective_outcomes'][0]['final_files_match'])
+            self.assertTrue(scenario.inspect_final_files(probe.flow.plan, target)['output_schema_valid'])
+            receipts['summary']['report_sha256'] = '0'*64
+            receipt_file.write_text(json.dumps(receipts))
+            self.assertFalse(scenario.inspect_final_files(probe.flow.plan, target)['output_schema_valid'])
+
     def test_allocation_changes_conserve_capacity_and_cannot_transfer_spent_slots(self):
         manifest, _ = build_preview('knowledge-work', 'allocation', mechanism='action-authority')
         probe = delivery_paths.Probe(manifest['assignments'])

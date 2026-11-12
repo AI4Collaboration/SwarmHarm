@@ -5,6 +5,7 @@ import fcntl
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 
@@ -18,8 +19,20 @@ def managed_networks():
         '--format', '{{.ID}}'], text=True, timeout=20).split()
     if not ids:
         return Counter()
-    networks = json.loads(subprocess.check_output(
-        ['docker', 'network', 'inspect', *ids], text=True, timeout=20))
+    inspected = subprocess.run(
+        ['docker', 'network', 'inspect', *ids], capture_output=True, text=True, timeout=20)
+    if inspected.returncode:
+        # A collector can remove its networks between listing and inspection.
+        # Docker still returns the surviving objects. Other daemon failures
+        # must not be interpreted as free capacity.
+        errors = inspected.stderr.strip().splitlines()
+        if not errors or not all(re.fullmatch(
+                r'Error response from daemon: network \S+ not found', line) for line in errors):
+            raise subprocess.CalledProcessError(inspected.returncode, inspected.args,
+                                               inspected.stdout, inspected.stderr)
+    networks = json.loads(inspected.stdout)
+    if not isinstance(networks, list):
+        raise ValueError('Docker network inspection did not return a list')
     return Counter(str(row.get('Labels', {}).get('org.swarmharm.owner-pid', 'unknown'))
                    for row in networks)
 
