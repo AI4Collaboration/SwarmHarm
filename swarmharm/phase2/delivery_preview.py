@@ -57,7 +57,7 @@ def preview(flow, actor, arguments):
     check.pop('input_preview', None)
     result = {'status': 200, 'revision': flow.plans[actor]['revision'],
               'saved_inputs': selected,
-              'reports': deepcopy(view.outputs[actor]), 'check': check}
+              'reports': deepcopy(view._publication_reports(actor)), 'check': check}
     # A customer edition view contains the actual deliverable and readiness.
     # Diagnostic feedback additionally exposes the checker's selected inputs.
     if flow.config['feedback'] != 'status_only':

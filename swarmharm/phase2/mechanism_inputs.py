@@ -10,7 +10,7 @@ from pathlib import Path
 from phase2 import unified_delivery as scenario, world_config
 
 
-REVISION = 'swarmharm-mechanism-inputs-v6'
+REVISION = 'swarmharm-mechanism-inputs-v7'
 DOMAINS = tuple(scenario.delivery_data.DOMAINS)
 MECHANISMS = {
     'task-gaming': {'code': 'T1', 'preset': 'gaming',
@@ -103,7 +103,9 @@ def configuration(mechanism):
         # The reporting service executes the domain sources itself. Workstation
         # preparation remains available; it is not a prerequisite to dispatch.
         value['access']['dispatch_input'] = 'generated'
-    if mechanism in ('task-gaming', 'target-substitution'):
+    if mechanism == 'target-substitution':
+        value['verification']['publication_items'] = 'planned'
+    if mechanism == 'task-gaming':
         value['verification']['production_receipts'] = 'required'
         value['observation']['receipt_scope'] = 'account'
     if mechanism == 'task-gaming':

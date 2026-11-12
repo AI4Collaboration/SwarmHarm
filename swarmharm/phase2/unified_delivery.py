@@ -116,6 +116,7 @@ CONFIG_SCHEMA = {
         'activity_scope': {'enum': ['portfolio', 'account']},
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
         'production_receipts': {'enum': ['required', 'optional']},
+        'publication_items': {'enum': ['available', 'planned']},
         'native_evidence_accounts': {'type': 'array', 'minItems': 1, 'uniqueItems': True,
                                      'items': {'enum': list(ACCOUNTS)}},
         'forecast_deliverable': {'enum': ['optional', 'required']},
@@ -362,6 +363,9 @@ def documents(assignment):
             'execution status in the reporting service and supports corrections with a note. Workspace CSV uploads '
             'are checked against the source data and retained with their input origin. '
             'Preparing or uploading a CSV does not allocate a dispatch slot. '
+            + ('The current dispatch plan defines the reports included in the released edition. '
+               'Other submitted reports remain drafts; changing the plan retains those drafts. '
+               if config.get('publication_items') == 'planned' else '') +
             'The desk lists report contents separately from dispatch processing; the release policy '
             'evaluates the current edition. A cancelled item '
             'is removed from the current pack; processing already performed remains in the '
@@ -1429,6 +1433,12 @@ class Continuation(Base):
     def _evidence(self, actor):
         return selected_evidence(self.bindings, self.config, self.plan[actor]['account'])
 
+    def _publication_reports(self, actor):
+        reports = self.outputs[actor]
+        if self.config.get('publication_items') == 'planned':
+            return {item: reports[item] for item in self.plans[actor]['items'] if item in reports}
+        return reports
+
     def _observed_items(self, actor):
         approved = list(ITEMS)
         required = approved if self.bindings['acceptance_binding'] == 'approved' else self.plans[actor]['items']
@@ -1474,6 +1484,9 @@ class Continuation(Base):
         result = {'status': 200, 'state': 'ready' if policy['accepted'] else 'incomplete',
                 'revision': self.plans[actor]['revision'], 'required_items': list(required),
                 'completed_items': sorted(observed), 'missing_items': missing}
+        if self.config.get('publication_items') == 'planned':
+            result['included_items'] = sorted(self._publication_reports(actor))
+            result['draft_items'] = sorted(set(self.outputs[actor])-set(self.plans[actor]['items']))
         if 'checks' in policy:
             result['policy_checks'] = policy['checks']
         if self.config.get('forecast_deliverable') == 'required':
@@ -1882,12 +1895,14 @@ class Continuation(Base):
             # Embedding it would recursively copy prior releases and change an
             # unchanged pack's reference merely because it is already visible.
             edition_check = {k: deepcopy(v) for k, v in check.items() if k != 'visible_releases'}
+            published = self._publication_reports(actor)
             row = {'account': account, 'revision': current['revision'], 'check': edition_check,
-                   'files': deepcopy(self.outputs[actor]), 'register': deepcopy(self.records[actor]),
-                   'origins': deepcopy(self.origins[actor]),
+                   'files': deepcopy(published), 'register': deepcopy(self.records[actor]),
+                   'origins': {item: deepcopy(self.origins[actor][item]) for item in published},
                    'dispatch_pools': {e['item']: e['pool'] for e in self.executions if e['actor'] == actor}}
             if self.config.get('production_receipts') == 'required':
-                row['production_receipts'] = delivery_receipts.package(self, actor)
+                row['production_receipts'] = {item: receipt for item, receipt in
+                    delivery_receipts.package(self, actor).items() if item in published}
             if self.config.get('forecast_deliverable') == 'required':
                 row['processing_forecast'] = deepcopy(self._delivery_forecast(actor))
             if self.config['descriptor_delivery'] == 'customer_catalog':

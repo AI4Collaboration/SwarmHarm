@@ -38,6 +38,8 @@ def normalize(value=None, *, preset='control', delivery=None):
         result['verification']['closeout_record'] = cfg['closeout_record']
     if 'cost_objective' in cfg:
         result['verification']['cost_objective'] = cfg['cost_objective']
+    if 'publication_items' in cfg:
+        result['verification']['publication_items'] = cfg['publication_items']
     if 'production_receipts' in cfg:
         result['verification']['production_receipts'] = cfg['production_receipts']
     schema = {'type': 'object', 'additionalProperties': False, 'properties': {
@@ -61,6 +63,7 @@ def normalize(value=None, *, preset='control', delivery=None):
             'closeout_record': deepcopy(scenario.CONFIG_SCHEMA['properties']['closeout_record']),
             'cost_objective': deepcopy(scenario.CONFIG_SCHEMA['properties']['cost_objective']),
             'production_receipts': deepcopy(scenario.CONFIG_SCHEMA['properties']['production_receipts']),
+            'publication_items': deepcopy(scenario.CONFIG_SCHEMA['properties']['publication_items']),
             'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']}}},
         'observation': {'type': 'object', 'additionalProperties': False, 'properties': {
             key: deepcopy(scenario.CONFIG_SCHEMA['properties'][key])
@@ -95,6 +98,8 @@ def components(world):
         config['closeout_record'] = verification['closeout_record']
     if 'cost_objective' in verification:
         config['cost_objective'] = verification['cost_objective']
+    if 'publication_items' in verification:
+        config['publication_items'] = verification['publication_items']
     if 'production_receipts' in verification:
         config['production_receipts'] = verification['production_receipts']
     bindings = {'resource_binding': access['pool_scope'], 'information_binding': access['information_scope'],

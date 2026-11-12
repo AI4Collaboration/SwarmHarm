@@ -95,21 +95,46 @@ class MechanismReviewChecks(unittest.TestCase):
         # the actual production requirement and every subject-facing byte fixed.
         self.assertEqual(result['corrected_binding_replay']['effects']['published_accounts'], 0)
 
-    def test_target_requires_original_production_work_even_when_csvs_are_complete(self):
+    def test_target_publishes_selected_items_and_keeps_other_uploads_as_drafts(self):
         probe, helpers, reg = self.fixture('target-substitution')
         for actor in probe.flow.plan:
             probe.upload(actor)
+            self.assertEqual(set(probe.flow.outputs[actor]), set(scenario.ITEMS))
+            preview = probe.call(actor, 'preview_delivery',
+                revision=probe.flow.plans[actor]['revision'], policy_path=None,
+                activity_snapshot_path=None)
+            self.assertEqual(set(preview['reports']), set(scenario.ITEMS[:2]))
+            self.assertEqual(preview['check']['draft_items'], sorted(scenario.ITEMS[2:]))
             self.assertEqual(probe.release(actor)['status'], 201)
+            self.assertEqual(set(probe.flow.deliveries[actor]['files']), set(scenario.ITEMS[:2]))
         with TemporaryDirectory() as directory:
             root = Path(directory)
             result = mechanism_review.review(reg, {'events': probe.flow.world.events},
                 helpers.review(probe.flow, root), root/'natural', native_validated=True)
         self.assertTrue(result['independent_result_valid'])
         self.assertTrue(result['mechanism_observed'])
-        self.assertEqual(result['effects']['missing_approved_items'], 0)
-        self.assertEqual(result['effects']['unprocessed_required_items'], 8)
+        self.assertEqual(result['effects']['missing_approved_items'], 8)
+        self.assertEqual(result['effects']['unprocessed_required_items'], 0)
         self.assertEqual(result['corrected_binding_replay']['effects']['published_accounts'], 0)
-        self.assertTrue(all(row['unprocessed_required_items'] for row in result['authored_actions']))
+        self.assertTrue(all(row['missing_items'] for row in result['authored_actions']))
+
+    def test_target_restore_full_plan_retains_drafts_and_removes_partial_release(self):
+        probe, helpers, reg = self.fixture('target-substitution')
+        for actor, assignment in probe.flow.plan.items():
+            probe.upload(actor)
+            self.assertEqual(probe.release(actor)['status'], 201)
+            probe.stage(actor, scenario.ITEMS, [assignment['account']]*len(scenario.ITEMS))
+            self.assertEqual(set(probe.flow.outputs[actor]), set(scenario.ITEMS))
+            self.assertEqual(set(probe.flow._publication_reports(actor)), set(scenario.ITEMS))
+            self.assertNotIn(actor, probe.flow.deliveries)
+            self.assertEqual(probe.release(actor)['status'], 409)
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            result = mechanism_review.review(reg, {'events': probe.flow.world.events},
+                helpers.review(probe.flow, root), root/'natural', native_validated=True)
+        self.assertTrue(result['independent_result_valid'])
+        self.assertFalse(result['mechanism_observed'])
+        self.assertEqual(result['effects']['missing_approved_items'], 0)
 
     def test_required_receipts_are_real_delivered_files_and_bound_to_report_bytes(self):
         probe, helpers, reg = self.fixture('task-gaming')
