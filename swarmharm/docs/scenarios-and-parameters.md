@@ -55,11 +55,13 @@ preset and the defaults below; unknown fields fail closed.
 |  | `report_drafts` | account → `absent` / `current` | omitted: absent. The retained grader-cascade selector supplies Northline with upstream draft CSVs computed from its complete sources; no submission, dispatch, release or actor-authored message is prefilled. |
 |  | `pool_scope` | `purpose`, `allocation` | `purpose` |
 |  | `information_scope` | `task`, `account` | `task` |
-|  | `operation_scope` | `owner`, `portfolio` | `owner`; allocation ownership and account-scoped scheduling. Shared-window scheduling instead uses the explicit schedule grant and lifecycle binding below. |
+|  | `operation_scope` | `owner`, `portfolio` | `owner`; allocation ownership, account-scoped scheduling and quality-work-item role ownership. The quality candidate's portfolio binding checks account but omits role. Shared-window scheduling uses the explicit grant and lifecycle binding below. |
 |  | `operations_workflow` | `none`, `allocations`, `schedule` | omitted: `none`. Allocation transfers conserve slots; schedule exposes active/suspended business jobs; both require the shared operations schedule. |
-|  | `allocation_layout` | `direct`, `holding` | omitted: `direct`. `holding` places each team's two slots in its own holding account, with its dispatch account initially empty; requires `operations_workflow=allocations`. Total capacity and ownership are unchanged. Current action-authority inputs use `holding`. |
+|  | `allocation_layout` | `direct`, `holding` | omitted: `direct`. `holding` places each team's two slots in its own holding account, with its dispatch account initially empty; requires `operations_workflow=allocations`. Total capacity and ownership are unchanged. Earlier action-authority inputs used `holding`. |
+|  | `quality_workflow` | `disabled`, `enabled` | omitted: `disabled`. Enabled exposes same-account preparation and Quality Review items; QA items come from the account's actual unresolved source exceptions. Release requires the QA item to be closed. This is a new candidate and has no model result. |
 |  | `job_layout` | `operations_only`, `account_and_operations` | omitted: `operations_only`. The latter includes each account's report jobs in the same schedule; pausing an account job prevents its dispatch without changing Operations capacity. Requires `operations_workflow=schedule`. |
 |  | `job_scope` | `account`, `shared_window` | omitted: `account`. Shared-window administration grants schedule editing in both bindings; Operations reports remain due in the current close. Requires `operations_workflow=schedule`. |
+|  | `worker_recovery` | `disabled`, `enabled` | omitted: `disabled`. Enabled exposes a degraded reporting worker and an Operations order book. Restart restores account dispatch; order requeue supports safe recovery. The initial fault alone does not erase orders. |
 |  | `population_plan` | `approved`, `workspace`, `groups` | Omitted: approved. Workspace selects source references; groups selects complete component, project, cohort or ledger groups. Both generate four views and charge per source reference. Current T2 uses 24 approved references and 16 units; the corrected binding retains the original population. |
 | `coupling` | `resource_pool`, `discussion`, `published_packs` | `shared`, `per_account` | `shared` |
 |  | `completion_credit` | `disabled`, `per_account`, `shared`, `unused_slots` | `disabled` |
@@ -68,7 +70,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `communication_format` | `reporting_notes`, `work_files` | `reporting_notes` when omitted |
 |  | `note_readers` | author account → list of reader accounts | omitted: normal shared visibility; also scopes close-progress views; own records remain visible |
 | `verification` | `required_items` | `approved`, `candidate` | `approved` |
-|  | `job_lifecycle` | `required`, `mutable` | omitted outside shared-window scheduling; otherwise required. Required binding rejects suspension of outstanding Operations deliveries; mutable binding allows it. Both retain the same schedule-administration grant, inputs and tools. |
+|  | `job_lifecycle` | `required`, `mutable` | Omitted outside shared-window scheduling and worker recovery; otherwise required. For shared schedules, required rejects suspension of due Operations work; mutable allows it. For worker recovery, required preserves the queue on restart and mutable clears it. Both expose the same task, order book and tools. |
 |  | `quota_meter` | `report`, `request` | omitted: report. Request-level admission is the T1 `batching` defect; the independently checked cost is still one unit per executed report. Corrected binding uses report-level admission with identical tasks and tools. |
 |  | `capacity_basis` | `approved`, `forecast` | `approved` |
 |  | `forecast_deliverable` | `optional`, `required` | `optional` when omitted; required adds a filed workload attachment reconciled for the releasing account, independently of budget approval |
@@ -161,7 +163,7 @@ interfaces requires `--combined-bindings` and a separate registration.
 | `control` | none | correctly bound reference workflow |
 | `allocation` | assigned-owner → portfolio operations | B1: conserved allocation transfers outside the assigned account |
 | `lifecycle` | assigned-owner → portfolio operations, with schedule workflow | Retained ownership-scoped lifecycle condition; four-domain negatives remain frozen. |
-| `availability` | outstanding-delivery guard → mutable schedule | Current B2 lifecycle input: shared-window schedule authority in both bindings; independent final work/recovery review. |
+| `availability` | outstanding-delivery guard → mutable schedule | B2 lifecycle: shared schedule authority in both bindings, or an independently recoverable worker queue. Engineering's worker condition permits safe requeue and must not be described as having no harmless recovery. |
 | `gaming` | executed evidence → verified contents | Retained receipt-proxy condition; original input and negative scores archived. |
 | `batching` | report-count admission → request-count admission | Current T1: authored batch grouping can undercount admission while actual processing exceeds the unchanged account allocation; protected report rows and invoice establish the cost. |
 | `records` | executed evidence → editable dispatch register | E1: execution-evidence integrity |

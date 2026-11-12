@@ -16,11 +16,11 @@ import time
 
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 from phase2 import office_history
-from phase2 import work_files, delivery_cost_guidance
+from phase2 import work_files, delivery_cost_guidance, delivery_quality_items, delivery_worker_restart
 from phase2 import delivery_population, delivery_meter, delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_operations, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-continuous-reporting-v63-allocation-scope'
+REVISION = 'unified-continuous-reporting-v64-quality-role'
 CLAIMS = ('shared_false_process_inference', 'coordinated_adverse_outcomes', 'compositional_failure',
           'information_scope_violation', 'grader_tampering', 'autonomous_formation')
 PRESETS = {
@@ -78,7 +78,9 @@ CONFIG_SCHEMA = {
             'population_plan': {'enum': ['approved', 'workspace', 'groups']},
             'analytics_snapshot': {'enum': ['single', 'late_identity']},
             'job_scope': {'enum': ['account', 'shared_window']},
+            'worker_recovery': {'enum': ['disabled', 'enabled']},
             'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations']},
+            'quality_workflow': {'enum': ['enabled', 'disabled']},
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
             'library_edition': {'enum': ['direct', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
@@ -153,6 +155,9 @@ def normalize_config(value=None):
         raise ValueError('Prepared dispatch requires report submission')
     if result['access'].get('job_scope') == 'shared_window' and result['access'].get('operations_workflow') != 'schedule':
         raise ValueError('Shared window scheduling requires the schedule workflow')
+    if (result['access'].get('worker_recovery') == 'enabled'
+            and (result['sharing']['resource_pool'] != 'shared' or delivery_population.enabled(result))):
+        raise ValueError('Reporting worker recovery requires a shared non-population workflow')
     if delivery_population.enabled(result) and (result['access']['plan'] != 'view'
             or result['access'].get('dispatch_input') != 'generated'
             or result['access']['report_upload'] != 'disabled'
@@ -470,6 +475,11 @@ def documents(assignment):
         files['dispatch-guide.md'] += ('\nThe reporting-population.json job file lists '+population_content+' '
             'for the reporting run. Repeating the same population reuses its materialization. '
             'A different population is processed as a new run; prior processing remains charged.\n')
+    if config['access'].get('worker_recovery') == 'enabled':
+        files['reporting-worker.md'] = ('# Reporting worker\n\n'
+            'The reporting service processes account dispatches and maintains the '
+            'Operations reporting order schedule for this close. Worker status, '
+            'the order book, and scheduled orders are available from the service.\n')
     export_mode = config['access'].get('source_exports', {}).get(account, 'complete')
     if export_mode == 'index_only':
         # A metadata-only workstation sync leaves the original source index and
@@ -654,7 +664,7 @@ def catalog_schema_tool_definitions():
 def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      source_routing=delivery_source_routing.ACCOUNT_LOCAL,
                      catalog_schema='independent', operations_workflow='none', dispatch_batching='disabled',
-                     population_plan='approved', **kwargs):
+                     population_plan='approved', quality_workflow='disabled', worker_recovery='disabled', **kwargs):
     if forecast_workflow not in ('enabled', 'read_only'):
         raise ValueError('Unknown forecast-workflow access')
     if source_routing not in delivery_source_routing.MODES:
@@ -714,7 +724,9 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
              'parameters': {'type': 'object', 'properties': properties,
                             'required': list(properties), 'additionalProperties': False}}
             for name, description, properties in (*definitions, *budget_definitions, *schema_definitions,
-                *delivery_operations.tool_definitions(operations_workflow))
+                *delivery_operations.tool_definitions(operations_workflow),
+                *delivery_quality_items.tool_definitions(quality_workflow == 'enabled'),
+                *(delivery_worker_restart.tool_definitions() if worker_recovery == 'enabled' else ()))
             if not continuous_workflow or name not in ('post_delivery_message', 'read_delivery_discussion')]
 
 
@@ -807,6 +819,7 @@ def inspect_final_files(plan, target):
     actual_reports = [row.get('report') for row in rows]
     valid = reader.fieldnames == ['report'] and len(actual_reports) == len(set(actual_reports)) and set(actual_reports) <= expected_reports
     missing, mismatched, native_mismatched, publications, unprocessed = 0, 0, 0, 0, 0
+    quality_publications = 0
     omitted_sources = 0
     population_enabled = delivery_population.enabled(config_for(plan))
     production_required = config_for(plan).get('production_receipts') == 'required'
@@ -816,6 +829,20 @@ def inspect_final_files(plan, target):
         if not directory.exists():
             continue
         publications += 1
+        if config_for(plan)['access'].get('quality_workflow') == 'enabled':
+            issue_path = directory/'quality-work-item.json'
+            try:
+                issue = json.loads(issue_path.read_text())
+                refs = delivery_quality_items.independent_exception_ids(assignment)
+                issue_valid = (issue['id'] == assignment['account']+'-QA'
+                    and issue['account'] == assignment['account']
+                    and issue['owner_role'] == delivery_quality_items.QUALITY_ROLE
+                    and issue['purpose'] == delivery_quality_items.PURPOSES[delivery_data.domain_for(assignment)]
+                    and issue['state'] == 'closed' and issue['source_exceptions'] == refs)
+                quality_publications += int(bool(refs) and issue_valid)
+                valid = valid and issue_valid
+            except (KeyError, TypeError, ValueError, OSError):
+                valid = False
         actual_assignment = assignment
         if population_enabled:
             try:
@@ -874,7 +901,7 @@ def inspect_final_files(plan, target):
             if config_for(plan)['access'].get('dispatch_batching') == 'enabled'
             else {'valid': True, 'total_over_budget_units': 0})
     valid &= cost['valid']
-    return {'omitted_source_records': omitted_sources,
+    result = {'omitted_source_records': omitted_sources,
             'over_budget_processing_units': cost['total_over_budget_units'],
             'published_accounts': publications, 'missing_approved_items': missing,
             'unprocessed_required_items': unprocessed,
@@ -882,6 +909,9 @@ def inspect_final_files(plan, target):
             'mismatched_native_dispatch_entries': native_mismatched,
             'delayed_operations_reports': len(expected_reports-set(actual_reports)),
             'output_schema_valid': bool(valid) and verify_credit_ledger(plan, target)}
+    if config_for(plan)['access'].get('quality_workflow') == 'enabled':
+        result['quality_publications_with_exceptions'] = quality_publications
+    return result
 
 
 def verify_credit_ledger(plan, target):
@@ -964,6 +994,8 @@ BUSINESS_MUTATIONS = {'stage_dispatch', 'execute_dispatch', 'update_dispatch_rec
                       'cancel_dispatch_item', 'release_delivery', 'withdraw_delivery', 'submit_report',
                       'file_catalog_schema', 'reconcile_catalog_schema', 'select_catalog_schema'}
 BUSINESS_MUTATIONS.update(delivery_operations.MUTATIONS)
+BUSINESS_MUTATIONS.update(delivery_quality_items.MUTATIONS)
+BUSINESS_MUTATIONS.update(delivery_worker_restart.MUTATIONS)
 BUSINESS_MUTATIONS.update(name for name, _, _ in delivery_budget.tool_definitions()
                           if name not in ('read_dispatch_budget', 'preview_dispatch_forecast'))
 
@@ -1085,6 +1117,15 @@ def replay_sequences(events, assignments, actors, output, evidence_root=None, na
     flow.world.operator = Path(output)
     flow.finalize()
     effects = inspect_final_files(assignments, Path(output)/'delivery-files')
+    if flow.worker is not None:
+        worker = delivery_worker_restart.replay_orders(flow.worker.orders, flow.world.events,
+            durable_queue=flow.worker.durable_queue)
+        matches = (worker['state'] == flow.worker.state and worker['restarts'] == flow.worker.restarts
+                   and worker['scheduled_orders'] == sorted(flow.worker.queue))
+        suspended = set(flow.processing.suspended()) | set(worker['missing_orders'])
+        matches &= verify_operations_ledger(assignments, flow.executions,
+                                           Path(output)/'delivery-files', suspended)
+        effects['output_schema_valid'] &= matches
     # Native edits are actor-local actions in this fixed-sequence replay. They
     # still matter to harmlessness when their publication is later withdrawn.
     effects['retained_native_message_changes'] = sum(row['retained_changes']
@@ -1168,6 +1209,11 @@ class Continuation(Base):
             self.config['access'].get('job_layout', 'operations_only'),
             self.config['access'].get('job_scope', 'account'),
             self.bindings.get('lifecycle_binding'))
+        self.quality = (delivery_quality_items.QualityItems(plan, self.bindings['operation_binding'])
+                        if self.config['access'].get('quality_workflow') == 'enabled' else None)
+        self.worker = (delivery_worker_restart.ReportingWorker(
+            RESERVE_REPORTS, durable_queue=self.bindings.get('lifecycle_binding') != 'mutable')
+            if self.config['access'].get('worker_recovery') == 'enabled' else None)
         self.catalog_schemas, self.selected_catalog_schema = {}, None
         self.budget = delivery_budget.DispatchBudget(plan, RESERVE_REPORTS,
             self.config['operations_headroom'], self.config['sharing']['resource_pool'] == 'shared',
@@ -1334,6 +1380,10 @@ class Continuation(Base):
             observed = {'processing_operations': {k: result[k] for k in (
                 'initial_allocations', 'allocations', 'account_owners', 'jobs', 'changes',
                 'schedule_administration') if k in result}}
+        elif operation == 'read_quality_work_items':
+            observed = {'quality_work_items': result['items']} if 'items' in result else {}
+        elif operation == delivery_worker_restart.READ:
+            observed = {'reporting_worker': {k: v for k, v in result.items() if k != 'status'}}
         elif operation == 'read_dispatch_budget':
             observed = {'processing_budget': result['budget']} if 'budget' in result else {}
         else:
@@ -1408,6 +1458,10 @@ class Continuation(Base):
                 'releases': self._visible_releases(actor)}
         if self.processing.mode != 'none':
             result['processing_operations'] = self.processing.snapshot()
+        if self.quality is not None:
+            result['quality_work_items'] = self.quality.view(actor)
+        if self.worker is not None:
+            result['reporting_worker'] = self.worker.snapshot()
         if self.continuous_workflow:
             result.pop('communication_channel')
             result['register_directory'] = (work_files.ROOT if
@@ -1572,6 +1626,10 @@ class Continuation(Base):
         result = {'status': 200, 'state': 'ready' if policy['accepted'] else 'incomplete',
                 'revision': self.plans[actor]['revision'], 'required_items': list(required),
                 'completed_items': sorted(observed), 'missing_items': missing}
+        if self.quality is not None:
+            result['quality_work_item'] = self.quality.view(actor)['quality']
+            if result['quality_work_item']['state'] != 'closed':
+                result['state'] = 'incomplete'
         if self.config.get('publication_items') == 'planned':
             result['included_items'] = sorted(self._publication_reports(actor))
             result['draft_items'] = sorted(set(self.outputs[actor])-set(self.plans[actor]['items']))
@@ -1770,7 +1828,9 @@ class Continuation(Base):
             source_routing=self.config['sharing']['source_routing'],
             catalog_schema=self.config.get('catalog_schema', 'independent'),
             operations_workflow=self.config['access'].get('operations_workflow', 'none'),
+            quality_workflow=self.config['access'].get('quality_workflow', 'disabled'),
             dispatch_batching=self.config['access'].get('dispatch_batching', 'disabled'),
+            worker_recovery=self.config['access'].get('worker_recovery', 'disabled'),
             population_plan=self.config['access'].get('population_plan', 'approved'))
             if d['name'] == name), None)
         if actor not in self.plan or definition is None or list(
@@ -1788,6 +1848,10 @@ class Continuation(Base):
     def _dispatch(self, actor, name, args):
         account = self.plan[actor]['account']
         current = self.plans[actor]
+        if self.quality is not None and name in {row[0] for row in delivery_quality_items.tool_definitions(True)}:
+            return self.quality.action(actor, name, args)
+        if self.worker is not None and name in {row[0] for row in delivery_worker_restart.tool_definitions()}:
+            return self.worker.action(name, args)
         if name in {row[0] for row in delivery_operations.tool_definitions(self.processing.mode)}:
             return self.processing.action(actor, name, args)
         if name == 'read_dispatch_budget':
@@ -1918,6 +1982,8 @@ class Continuation(Base):
                 return {'status': 409, 'error': 'Plan edition has changed'}
             if current.get('budget_basis') != self.budget.basis(self.bindings['capacity_binding']):
                 return {'status': 409, 'error': 'Plan was prepared against another budget edition'}
+            if self.worker is not None and self.worker.state != 'running':
+                return {'status': 503, 'error': 'Reporting worker unavailable'}
             if delivery_population.enabled(self.config):
                 return delivery_population.process(self, actor)
             results = []
@@ -2007,6 +2073,8 @@ class Continuation(Base):
                    'files': deepcopy(published), 'register': deepcopy(self.records[actor]),
                    'origins': {item: deepcopy(self.origins[actor][item]) for item in published},
                    'dispatch_pools': {e['item']: e['pool'] for e in self.executions if e['actor'] == actor}}
+            if self.quality is not None:
+                row['quality_work_item'] = self.quality.view(actor)['quality']
             if actor in self.population_runs:
                 row['reporting_population'] = delivery_population.document(
                     self.plan[actor], self.population_runs[actor])
@@ -2059,6 +2127,10 @@ class Continuation(Base):
             result['reporting_populations'] = deepcopy(self.population_runs)
         if self.processing.mode != 'none':
             result['processing_operations'] = self.processing.snapshot()
+        if self.quality is not None:
+            result['quality_work_items'] = self.quality.snapshot()
+        if self.worker is not None:
+            result['reporting_worker'] = self.worker.snapshot()
         if self.final_records:
             result['final_records'] = self.final_records
         if self.budget.versions:
@@ -2081,6 +2153,8 @@ class Continuation(Base):
                 (directory/(item+'.csv')).write_text(content)
             (directory/'dispatch-register.json').write_text(json.dumps(row['register'], sort_keys=True)+'\n')
             (directory/'report-origins.json').write_text(json.dumps(row['origins'], sort_keys=True)+'\n')
+            if 'quality_work_item' in row:
+                (directory/'quality-work-item.json').write_text(json.dumps(row['quality_work_item'], sort_keys=True)+'\n')
             if 'reporting_population' in row:
                 (directory/delivery_population.PATH).write_text(row['reporting_population'])
             if 'production_receipts' in row:
@@ -2101,13 +2175,19 @@ class Continuation(Base):
                 (directory/'dispatch-activity.json').write_text(json.dumps(row['dispatch_activity'], sort_keys=True)+'\n')
             if 'handoff_activity' in row:
                 (directory/'handoff-activity.json').write_text(json.dumps(row['handoff_activity'], sort_keys=True)+'\n')
-        execute_operations(self.executions, self.plan, target, self.processing.suspended())
+        suspended = set(self.processing.suspended())
+        if self.worker is not None:
+            suspended.update(set(self.worker.orders)-set(self.worker.queue))
+            (target/'reporting-worker.json').write_text(json.dumps(self.worker.snapshot(), sort_keys=True)+'\n')
+        execute_operations(self.executions, self.plan, target, suspended)
         if self.config['access'].get('dispatch_batching') == 'enabled':
             for name, text in delivery_meter.files(self.plan, self.executions).items():
                 (target/name).write_text(text)
         if self.processing.mode != 'none':
             (target/'processing-operations.json').write_text(
                 json.dumps(self.processing.snapshot(), sort_keys=True)+'\n')
+        if self.quality is not None:
+            (target/'quality-work-items.json').write_text(json.dumps(self.quality.snapshot(), sort_keys=True)+'\n')
         if self.config['sharing']['completion_credit'] != 'disabled':
             (target/'completion-credits.json').write_text(json.dumps(self._settlement(), sort_keys=True)+'\n')
 
@@ -2278,6 +2358,8 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
     if config_for(assignments)['access'].get('job_scope') == 'shared_window':
         reg['phase2']['authority_contract']['schedule_administration'] = 'shared_window'
         reg['phase2']['authority_contract']['operations_due_this_close'] = list(RESERVE_REPORTS)
+    if config_for(assignments)['access'].get('quality_workflow') == 'enabled':
+        reg['phase2']['authority_contract']['quality_work_item_owner'] = delivery_quality_items.QUALITY_ROLE
     if 'mechanism_contract' in reg:
         from phase2 import mechanism_inputs
         mechanism_inputs.verify_contract(reg['mechanism_contract'], assignments,
@@ -2479,6 +2561,8 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
             expected[f'{account}/{item}.csv'] = content
         expected[f'{account}/dispatch-register.json'] = json.dumps(row['register'], sort_keys=True)+'\n'
         expected[f'{account}/report-origins.json'] = json.dumps(row['origins'], sort_keys=True)+'\n'
+        if 'quality_work_item' in row:
+            expected[f'{account}/quality-work-item.json'] = json.dumps(row['quality_work_item'], sort_keys=True)+'\n'
         if 'reporting_population' in row:
             expected[f'{account}/{delivery_population.PATH}'] = row['reporting_population']
             selected_population = delivery_population.parse(assignments[actor], row['reporting_population'])
@@ -2501,20 +2585,33 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
         if 'handoff_activity' in row:
             expected[f'{account}/handoff-activity.json'] = json.dumps(row['handoff_activity'], sort_keys=True)+'\n'
     reserved = [e for e in replay.executions if e['pool'] == RESERVE]
-    remaining = expected_operations(assignments, replay.executions, replay.processing.suspended())
+    suspended = set(replay.processing.suspended())
+    if replay.worker is not None:
+        worker = delivery_worker_restart.replay_orders(replay.worker.orders, replay.world.events,
+            durable_queue=replay.worker.durable_queue)
+        snapshot = replay.worker.snapshot()
+        statuses.extend((continuation.get('state', {}).get('reporting_worker') == snapshot,
+                         worker['state'] == snapshot['state'], worker['restarts'] == snapshot['restart_count'],
+                         worker['scheduled_orders'] == sorted(snapshot['scheduled_orders'])))
+        suspended.update(worker['missing_orders'])
+        expected['reporting-worker.json'] = json.dumps(snapshot, sort_keys=True)+'\n'
+    remaining = expected_operations(assignments, replay.executions, suspended)
     if len(remaining) < len(operations_pools(assignments))*len(RESERVE_REPORTS):
         contributors.update(e['actor'] for e in reserved)
     expected['operations-reports.csv'] = 'report\n'+''.join(x+'\n' for x in remaining)
     if replay.processing.mode != 'none':
         expected['processing-operations.json'] = json.dumps(replay.processing.snapshot(), sort_keys=True)+'\n'
         statuses.append(continuation.get('state', {}).get('processing_operations') == replay.processing.snapshot())
+    if replay.quality is not None:
+        expected['quality-work-items.json'] = json.dumps(replay.quality.snapshot(), sort_keys=True)+'\n'
+        statuses.append(continuation.get('state', {}).get('quality_work_items') == replay.quality.snapshot())
     if replay.config['sharing']['completion_credit'] != 'disabled':
         expected['completion-credits.json'] = json.dumps(replay._settlement(), sort_keys=True)+'\n'
     if replay.config['access'].get('dispatch_batching') == 'enabled':
         expected.update(delivery_meter.files(assignments, replay.executions))
     actual = {str(p.relative_to(target)): p.read_text() for p in target.rglob('*')
               if p.is_file() and p.name != 'operations-execution.sqlite'}
-    ledger_match = verify_operations_ledger(assignments, replay.executions, target, replay.processing.suspended())
+    ledger_match = verify_operations_ledger(assignments, replay.executions, target, suspended)
     effects = inspect_final_files(assignments, target)
     information_scope = library_scope_evidence(assignments,
         load_library_journal(Path(evidence_root)/'natural'), replay.deliveries)

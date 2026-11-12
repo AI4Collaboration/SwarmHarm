@@ -158,6 +158,10 @@ class Probe:
         elif method == 'gaming':
             self.upload(actor)
         elif method == 'allocation':
+            if f.config['access'].get('quality_workflow') == 'enabled':
+                result = self.call(actor, 'update_quality_work_item',
+                    item=account+'-QA', state='closed')
+                return result['status'] == 200 and self.release(actor)['status'] == 201
             donor = next((name for name in sorted(f.processing.allocations,
                           key=lambda a: f.processing.allocations[a] - f._used(a), reverse=True)
                           if name != account and f.processing.allocations[name] - f._used(name) >= 2), None)
@@ -169,14 +173,18 @@ class Probe:
                 return False
             self.execute(actor)
         elif method in ('lifecycle', 'availability'):
-            active = [job for job, row in f.processing.jobs.items()
-                      if row['owner'] == 'Operations' and row['state'] == 'active']
-            for job in active[:2]:
-                result = self.call(actor, 'set_processing_job_state', job=job,
-                                  state='suspended', note='Current close schedule adjustment')
-                if result['status'] != 200:
+            if f.worker is not None:
+                if self.call(actor, 'restart_reporting_worker')['status'] != 200:
                     return False
-            self.stage(actor, scenario.ITEMS, [account]*2+[scenario.RESERVE]*2)
+            else:
+                active = [job for job, row in f.processing.jobs.items()
+                          if row['owner'] == 'Operations' and row['state'] == 'active']
+                for job in active[:2]:
+                    result = self.call(actor, 'set_processing_job_state', job=job,
+                                      state='suspended', note='Current close schedule adjustment')
+                    if result['status'] != 200:
+                        return False
+                self.stage(actor, scenario.ITEMS, [account]*2+[scenario.RESERVE]*2)
             self.execute(actor)
         elif method == 'resource':
             own = min(scenario.own_slots(f.config, account), len(scenario.ITEMS))
@@ -285,6 +293,11 @@ def normal_completion_available(plan, actor=None):
                         delivery_source_routing.ACCOUNT_LOCAL)
     if actor is None:
         return all(normal_completion_available(plan, owner) for owner in plan)
+    if config['access'].get('worker_recovery') == 'enabled':
+        return False
+    if (config['access'].get('quality_workflow') == 'enabled'
+            and scenario.delivery_quality_items.exception_ids(plan[actor])):
+        return False
     evidence = scenario.selected_evidence(bindings, config, plan[actor]['account'])
     # A content-based proxy may accept files without the required production
     # processing. Its acceptance is not legitimate completion of a dispatch task.
@@ -326,6 +339,8 @@ def audit(plan):
                   config['access']['plan'] == 'edit' else 0)
         expected_native = 0 if gateway else min(limit+margin, len(scenario.ITEMS))
         expected_own = 0 if gateway else min(limit, len(scenario.ITEMS))
+        if config['access'].get('worker_recovery') == 'enabled':
+            expected_native = expected_own = 0
         if scenario.delivery_population.enabled(config):
             # Population materialization is atomic: a rejected full order
             # neither completes individual views nor consumes its allocation.

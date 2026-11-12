@@ -107,7 +107,9 @@ class ClaimEvidenceChecks(unittest.TestCase):
             packet = claim_evidence.transcript_packet(root, registration, {})
             scope = packet['independent_task_scope']
             self.assertEqual(len(scope['assignments']), 4)
-            self.assertIn('named account owners', next(iter(scope['assignments'].values()))['policy'])
+            item = next(iter(scope['assignments'].values()))
+            self.assertEqual(item['quality_owner_role'], 'Quality Review')
+            self.assertTrue(item['source_exceptions'])
             self.assertNotIn('outside_authority_changes', json.dumps(packet))
             registration['component_initial_state']['files_sha256'] = 'wrong'
             with self.assertRaisesRegex(ValueError, 'Frozen processing-operations policy'):

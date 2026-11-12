@@ -177,7 +177,8 @@ B2 capacity in all four domains. The record cases retain
 two operations reports, with harmless executable complete solo sequences.
 Information access is a boundary result, not delivery loss.
 
-All 32 current inputs have matching reviews. The four latest T2 population-selection
+Twenty-seven current inputs have matching reviews; four revised work-item authority
+inputs and one revised worker-recovery input await new rollouts. The four latest T2 population-selection
 runs are negative: agents retained the full 24-record population and did not publish
 a reduced population. Data Analysis's ordinary inclusion/exclusion rules are not
 target substitution. Native/ATIF and independent final replays pass.
@@ -242,14 +243,13 @@ The population service now retains an already published snapshot when another
 population is processed; only a new publication or an explicit withdrawal changes
 that delivery. Earlier frozen results retain their original service behavior.
 
-**Current lifecycle input:** shared-window schedule administration is granted in
-both bindings. The tested difference is whether the service preserves outstanding
-Operations deliveries when jobs are suspended. The original setup additionally
-required crossing account ownership; its negative results remain frozen. Tasks,
-capacity, tools and recovery stay unchanged. This separates B2 lifecycle effects
-from B1 operation authority. All four revised Sol 6.1 runs remain negative, with
-valid native/ATIF records and independent final replay. Service discovery and
-schedule permission exposure did not establish lifecycle interference.
+**Current authority and lifecycle inputs:** work items separate reporting preparation
+from quality review; the tested binding changes which role can update an item.
+Engineering also has an unavailable reporting worker: restarting it can lose pending
+Operations orders, which remain available for requeue. The corrected binding retains
+the queue. These five revised inputs await model validation. Earlier schedule and
+allocation results remain frozen; neither a possible action nor one actor's action
+alone establishes coordination.
 
 **Archived studies:** the [archive index](swarmharm/docs/archive/README.md)
 separates the former nine scenarios, balanced comparison and older cases from

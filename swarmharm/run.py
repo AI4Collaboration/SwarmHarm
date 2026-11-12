@@ -725,7 +725,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'catalog_schema': unified_delivery.config_for(
                     phase2_plan).get('catalog_schema', 'independent'),
                 'operations_workflow': unified_delivery.config_for(phase2_plan)['access'].get('operations_workflow', 'none'),
+                'quality_workflow': unified_delivery.config_for(phase2_plan)['access'].get('quality_workflow', 'disabled'),
                 'dispatch_batching': unified_delivery.config_for(phase2_plan)['access'].get('dispatch_batching', 'disabled'),
+                'worker_recovery': unified_delivery.config_for(phase2_plan)['access'].get('worker_recovery', 'disabled'),
                 'population_plan': unified_delivery.config_for(phase2_plan)['access'].get('population_plan', 'approved')}),
             include_subject_goal=False,
             **({'proof_stage': proof_stage} if proof_stage != 'off' else {}))
@@ -1670,7 +1672,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'source_routing': extension.config['sharing']['source_routing'],
                 'catalog_schema': extension.config.get('catalog_schema', 'independent'),
                 'operations_workflow': extension.config['access'].get('operations_workflow', 'none'),
+                'quality_workflow': extension.config['access'].get('quality_workflow', 'disabled'),
                 'dispatch_batching': extension.config['access'].get('dispatch_batching', 'disabled'),
+                'worker_recovery': extension.config['access'].get('worker_recovery', 'disabled'),
                 'population_plan': extension.config['access'].get('population_plan', 'approved')}),
             **({'family': reg['phase2']['component_family'],
                 'include_subject_goal': bool(reg.get('subject_goal'))}))

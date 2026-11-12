@@ -5,6 +5,7 @@ from pathlib import Path
 from copy import deepcopy
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 
 from phase2 import claim_evidence, delivery_paths, mechanism_inputs, mechanism_review, unified_delivery as scenario
 from scripts.inspect_unified_input import build_preview
@@ -13,6 +14,17 @@ from tests import claim_evidence_checks as evidence_fixtures
 
 
 class MechanismReviewChecks(unittest.TestCase):
+    def holding_allocation_plan(self, domain):
+        # Exercise the still-supported allocation service independently of the
+        # currently registered action-authority work-item scenario.
+        overrides = mechanism_inputs.configuration('action-authority', domain)
+        overrides['access'].pop('account_slots', None)
+        overrides['access'].update(quality_workflow='disabled',
+                                   operations_workflow='allocations',
+                                   allocation_layout='holding')
+        manifest, _ = build_preview(domain, 'allocation', overrides=overrides)
+        return manifest['assignments']
+
     def fixture(self, mechanism):
         manifest, _ = build_preview('knowledge-work', mechanism_inputs.MECHANISMS[mechanism]['preset'],
                                      mechanism=mechanism)
@@ -325,8 +337,7 @@ class MechanismReviewChecks(unittest.TestCase):
             self.assertFalse(scenario.inspect_final_files(probe.flow.plan, target)['output_schema_valid'])
 
     def test_allocation_changes_conserve_capacity_and_cannot_transfer_spent_slots(self):
-        manifest, _ = build_preview('knowledge-work', 'allocation', mechanism='action-authority')
-        probe = delivery_paths.Probe(manifest['assignments'])
+        probe = delivery_paths.Probe(self.holding_allocation_plan('knowledge-work'))
         actor = next(iter(probe.flow.plan))
         account = probe.flow.plan[actor]['account']
         donor = scenario.delivery_operations.holding_account(next(
@@ -347,8 +358,7 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertEqual(scenario.initial_files(fixed.flow.plan), scenario.initial_files(probe.flow.plan))
 
     def test_account_allocation_workflow_has_real_owner_authorized_transfers(self):
-        manifest, _ = build_preview('knowledge-work', 'allocation', mechanism='action-authority')
-        plan = manifest['assignments']
+        plan = self.holding_allocation_plan('knowledge-work')
         actor = next(iter(plan))
         account = plan[actor]['account']
         holding = scenario.delivery_operations.holding_account(account)
@@ -369,8 +379,7 @@ class MechanismReviewChecks(unittest.TestCase):
             destination_account=account, slots=2, note='Account allocation')['status'], 403)
 
     def test_allocation_alternative_remains_reachable_after_all_normal_attempts(self):
-        manifest, _ = build_preview('engineering-capacity', 'allocation', mechanism='action-authority')
-        probe = delivery_paths.Probe(manifest['assignments'])
+        probe = delivery_paths.Probe(self.holding_allocation_plan('engineering-capacity'))
         for actor in probe.flow.plan:
             probe.ordinary(actor)
             self.assertEqual(probe.release(actor)['status'], 409)
@@ -518,6 +527,15 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertEqual(after, probe.flow.activity_signal(actor))
 
     def test_returned_unspent_allocation_preserves_actual_boundary_crossing_and_recovery(self):
+        legacy = mechanism_inputs.configuration('action-authority', 'knowledge-work')
+        legacy['access'].pop('quality_workflow')
+        legacy['access'].pop('account_slots')
+        legacy['access']['operations_workflow'] = 'allocations'
+        legacy['access']['allocation_layout'] = 'holding'
+        with patch.object(mechanism_inputs, 'configuration', return_value=legacy):
+            self._assert_returned_allocation()
+
+    def _assert_returned_allocation(self):
         manifest, _ = build_preview('knowledge-work', 'allocation', mechanism='action-authority')
         plan = manifest['assignments']
         probe = delivery_paths.Probe(plan)
