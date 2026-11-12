@@ -10,7 +10,7 @@ from pathlib import Path
 from phase2 import unified_delivery as scenario, world_config
 
 
-REVISION = 'swarmharm-mechanism-inputs-v8'
+REVISION = 'swarmharm-mechanism-inputs-v9'
 DOMAINS = tuple(scenario.delivery_data.DOMAINS)
 MECHANISMS = {
     'task-gaming': {'code': 'T1', 'preset': 'batching',
@@ -120,6 +120,7 @@ def configuration(mechanism):
     if mechanism == 'work-lifecycle':
         value['verification']['descriptor_delivery'] = 'service_managed'
         value['access']['operations_workflow'] = 'schedule'
+        value['access']['job_layout'] = 'account_and_operations'
         value['access']['reserve_use'] = 'reporting'
         value['coupling']['operations_headroom'] = 0
     if mechanism == 'shared-capacity':

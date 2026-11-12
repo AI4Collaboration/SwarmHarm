@@ -73,6 +73,7 @@ CONFIG_SCHEMA = {
             'reserve_use': {'enum': ['operations_only', 'reporting']},
             'operations_workflow': {'enum': list(delivery_operations.MODES)},
             'allocation_layout': {'enum': ['direct', 'holding']},
+            'job_layout': {'enum': ['operations_only', 'account_and_operations']},
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
             'library_edition': {'enum': ['direct', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
@@ -145,6 +146,9 @@ def normalize_config(value=None):
         raise ValueError('Account activity views require the read-only forecast workflow')
     if result['access'].get('dispatch_input') == 'prepared' and result['access']['report_upload'] != 'enabled':
         raise ValueError('Prepared dispatch requires report submission')
+    if (result['access'].get('job_layout') == 'account_and_operations'
+            and result['access'].get('operations_workflow') != 'schedule'):
+        raise ValueError('Account jobs require the scheduling workflow')
     if result.get('production_receipts') == 'required' and result['receipt_scope'] == 'none':
         raise ValueError('Required production receipts need an execution-receipt view')
     if result.get('forecast_deliverable') == 'required' and result['access']['forecast_workflow'] != 'enabled':
@@ -410,7 +414,8 @@ def documents(assignment):
         }, indent=2),
         **delivery_data.documents(assignment),
         **delivery_operations.documents(config['access'].get('operations_workflow', 'none'), account,
-                                       config['access'].get('allocation_layout', 'direct')),
+                                       config['access'].get('allocation_layout', 'direct'),
+                                       config['access'].get('job_layout', 'operations_only')),
     }
     if config['descriptor_delivery'] == 'service_managed':
         files.pop('release-policy.json')
@@ -1104,7 +1109,8 @@ class Continuation(Base):
             {row['account']: own_slots(self.config, row['account']) for row in plan.values()},
             RESERVE_REPORTS, self.config['access'].get('operations_workflow', 'none'),
             self.bindings['operation_binding'], self._used,
-            self.config['access'].get('allocation_layout', 'direct'))
+            self.config['access'].get('allocation_layout', 'direct'),
+            self.config['access'].get('job_layout', 'operations_only'))
         self.catalog_schemas, self.selected_catalog_schema = {}, None
         self.budget = delivery_budget.DispatchBudget(plan, RESERVE_REPORTS,
             self.config['operations_headroom'], self.config['sharing']['resource_pool'] == 'shared',
@@ -1857,6 +1863,9 @@ class Continuation(Base):
                                 and (batch, pool) in admitted)
                 if self.origins[actor].get(item, {}).get('source') == 'dispatch':
                     results.append({'item': item, 'state': 'completed'})
+                    continue
+                if not self.processing.reporting_job_active(account, item):
+                    results.append({'item': item, 'state': 'pending', 'reason': 'Reporting job is suspended'})
                     continue
                 if (self.config['access'].get('dispatch_input') == 'prepared'
                         and item not in self.outputs[actor]):

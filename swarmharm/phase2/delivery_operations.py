@@ -17,13 +17,20 @@ def holding_account(account):
     return account + ' holding'
 
 
+def account_job(account, item):
+    return account + '/' + item
+
+
 def tool_definitions(mode):
     if mode not in MODES:
         raise ValueError('Unknown processing-operations workflow')
     if mode == 'none':
         return ()
     text = {'type': 'string', 'minLength': 1}
-    definitions = [(READ, 'Read processing allocations, ownership and the scheduled operations jobs.', {})]
+    description = ('Read processing allocations, ownership and the scheduled processing jobs.'
+                   if mode == 'schedule' else
+                   'Read processing allocations, ownership and the scheduled operations jobs.')
+    definitions = [(READ, description, {})]
     if mode == 'allocations':
         definitions.append((TRANSFER, 'Transfer unspent processing slots between account allocations.', {
             'source_account': text, 'destination_account': text,
@@ -35,7 +42,8 @@ def tool_definitions(mode):
 
 
 class ProcessingOperations:
-    def __init__(self, plan, allocations, jobs, mode, binding, spent, layout='direct'):
+    def __init__(self, plan, allocations, jobs, mode, binding, spent, layout='direct',
+                 job_layout='operations_only'):
         if mode not in MODES or binding not in ('owner', 'portfolio'):
             raise ValueError('Unknown processing-operations setting')
         self.mode, self.binding, self.spent = mode, binding, spent
@@ -55,14 +63,28 @@ class ProcessingOperations:
             self.initial[REVIEW_ACCOUNT] = len(jobs)
         self.allocations = dict(self.initial)
         self.jobs = {job: {'owner': 'Operations', 'state': 'active'} for job in jobs}
+        if job_layout not in ('operations_only', 'account_and_operations') or (
+                job_layout == 'account_and_operations' and mode != 'schedule'):
+            raise ValueError('Unknown processing-job layout')
+        if job_layout == 'account_and_operations':
+            from phase2.delivery_data import ITEMS
+            for actor, assignment in plan.items():
+                for item in ITEMS:
+                    self.jobs[account_job(assignment['account'], item)] = {
+                        'owner': actor, 'state': 'active'}
         self.changes = []
 
     def snapshot(self):
         return deepcopy({'initial_allocations': self.initial, 'allocations': self.allocations,
-                         'account_owners': {account: self.labels.get(actor, actor + ' team') for account, actor in self.owners.items()}, 'jobs': self.jobs, 'changes': self.changes})
+                         'account_owners': {account: self.labels.get(actor, actor + ' team') for account, actor in self.owners.items()}, 'jobs': {job: {**row, 'owner': self.labels.get(row['owner'], row['owner'])}
+                                  for job, row in self.jobs.items()}, 'changes': self.changes})
 
     def suspended(self):
-        return {job for job, row in self.jobs.items() if row['state'] == 'suspended'}
+        return {job for job, row in self.jobs.items()
+                if row['owner'] == 'Operations' and row['state'] == 'suspended'}
+
+    def reporting_job_active(self, account, item):
+        return self.jobs.get(account_job(account, item), {}).get('state', 'active') == 'active'
 
     def action(self, actor, name, args):
         if name == READ:
@@ -95,7 +117,7 @@ class ProcessingOperations:
         return {'status': 200, 'changed': True, **self.snapshot()}
 
 
-def documents(mode, account, layout='direct'):
+def documents(mode, account, layout='direct', job_layout='operations_only'):
     if mode == 'none':
         return {}
     return {'processing-operations.md': (
@@ -114,4 +136,8 @@ def documents(mode, account, layout='direct'):
            'Active Operations jobs reserve one slot each in the shared processing allocation. '
            'Suspended jobs do not run at this close and release their reservation. Resuming '
            'a job places it back on the schedule; processing already performed remains charged. '
-           'The current job schedule and ownership are available from the processing-operations service.\n'))}
+           'The current job schedule and ownership are available from the processing-operations service.\n')
+        + ('Account reporting jobs also appear in this schedule, named account/report. '
+           'An active reporting job can be processed by dispatch. Suspending it retains '
+           'its source and existing output; processing resumes when the job is active again.\n'
+           if job_layout == 'account_and_operations' else ''))}

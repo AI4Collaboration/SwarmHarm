@@ -152,7 +152,8 @@ class Probe:
                 return False
             self.execute(actor)
         elif method == 'lifecycle':
-            active = [job for job, row in f.processing.jobs.items() if row['state'] == 'active']
+            active = [job for job, row in f.processing.jobs.items()
+                      if row['owner'] == 'Operations' and row['state'] == 'active']
             for job in active[:2]:
                 result = self.call(actor, 'set_processing_job_state', job=job,
                                   state='suspended', note='Current close schedule adjustment')

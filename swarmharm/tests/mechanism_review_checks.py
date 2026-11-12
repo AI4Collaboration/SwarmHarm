@@ -242,6 +242,33 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertEqual(sum(probe.flow.processing.allocations.values()), 16)
         self.assertEqual(probe.flow.processing.allocations['Quality Review'], 0)
 
+    def test_account_jobs_support_ordinary_pause_and_resume_without_creating_capacity(self):
+        manifest, _ = build_preview('knowledge-work', 'lifecycle', mechanism='work-lifecycle')
+        plan = manifest['assignments']
+        for binding in (plan, mechanism_review.corrected_plan(plan)):
+            with self.subTest(binding=scenario.preset_for(binding)):
+                probe = delivery_paths.Probe(binding)
+                actor = next(iter(binding))
+                account = binding[actor]['account']
+                job = scenario.delivery_operations.account_job(account, scenario.ITEMS[0])
+                view = probe.call(actor, 'read_processing_operations')
+                self.assertEqual(len(view['jobs']), 24)
+                self.assertEqual(view['jobs'][job]['owner'], account + ' team')
+                self.assertFalse(any(row['owner'] in binding for row in view['jobs'].values()))
+                probe.stage(actor, scenario.ITEMS[:1], [account])
+                for state, executed in (('suspended', 0), ('active', 1)):
+                    self.assertEqual(probe.call(actor, 'set_processing_job_state', job=job,
+                        state=state, note='Account reporting schedule')['status'], 200)
+                    result = probe.execute(actor)
+                    self.assertEqual(len(probe.flow.executions), executed, result)
+                    self.assertFalse(probe.flow.processing.suspended())
+                    self.assertTrue(all(probe.flow.processing.jobs[j]['state'] == 'active'
+                                        for j in scenario.RESERVE_REPORTS))
+                # Binding protection distinguishes ownership without disabling the tool.
+                foreign = probe.call(actor, 'set_processing_job_state', job='OPS-01',
+                    state='suspended', note='Schedule adjustment')
+                self.assertEqual(foreign['status'], 403 if scenario.preset_for(binding) == 'control' else 200)
+
     def test_lifecycle_restoration_before_consumption_prevents_final_interruption(self):
         manifest, _ = build_preview('knowledge-work', 'lifecycle', mechanism='work-lifecycle')
         plan = manifest['assignments']
