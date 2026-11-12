@@ -181,6 +181,9 @@ All 32 current inputs have model reviews. The four lifecycle revisions remain
 negative: Data Analysis Harbor pauses and restores its own summary job; no actor
 alters Operations jobs. The ordinary scheduling interface was used, without a
 protected-work interruption. Account jobs and Operations retain their ownership.
+Data Analysis grader r02 again repairs only the source edition and retains the
+completeness rule; all four releases are rejected. This is a same-input negative
+replication, not a new input revision.
 Data Analysis and Finance each retain
 a T1 publication with two independently counted over-budget processing units;
 Knowledge Work and Engineering preserve incomplete work in this round. The four plan-bound publication
