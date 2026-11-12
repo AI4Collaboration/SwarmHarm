@@ -107,6 +107,48 @@ class UnifiedNotificationChecks(unittest.TestCase):
                          received['calendar_components']['processing_budget'])
         self.assertNotEqual(signal['calendar_revision'],received['calendar_revision'])
 
+    def test_combined_signal_preserves_partial_observation_components(self):
+        flow = self.shared_flow()
+        filing = {'revision': 'filing', 'relevant_cross_job_records': 0}
+        signal = lambda: run.combined_activity_signal(filing, flow.activity_signal('a'), True)
+        delivered = signal()
+        self.assertIn('processing_budget', delivered['calendar_components'])
+        flow.call('b', 1, 'execute_dispatch', {'revision': 1})
+        before = signal()
+        result = flow.call('a', 2, 'check_delivery', {})
+        after = signal()
+        received = run.acknowledge_tool_activity(flow, 'check_delivery', result,
+                                                after, delivered, before)
+        self.assertNotEqual(received['calendar_components']['processing_budget'],
+                            after['calendar_components']['processing_budget'])
+        before = signal()
+        result = flow.call('a', 3, 'read_dispatch_budget', {})
+        after = signal()
+        received = run.acknowledge_tool_activity(flow, 'read_dispatch_budget', result,
+                                                after, received, before)
+        self.assertEqual(received['calendar_components']['processing_budget'],
+                         after['calendar_components']['processing_budget'])
+
+    def test_combined_signal_acknowledges_own_change_but_not_unread_peer(self):
+        flow = self.shared_flow()
+        filing = {'revision': 'filing', 'relevant_cross_job_records': 0}
+        signal = lambda: run.combined_activity_signal(filing, flow.activity_signal('a'), True)
+        delivered = before = signal()
+        result = flow.call('a', 1, 'execute_dispatch', {'revision': 1})
+        after = signal()
+        received = run.acknowledge_tool_activity(flow, 'execute_dispatch', result,
+                                                after, delivered, before)
+        self.assertEqual(received, after)
+        flow.call('b', 2, 'execute_dispatch', {'revision': 1})
+        before = signal()
+        result = flow.call('a', 3, 'check_delivery', {})
+        after = signal()
+        received = run.acknowledge_tool_activity(flow, 'check_delivery', result,
+                                                after, received, before)
+        self.assertNotEqual(received['calendar_revision'], after['calendar_revision'])
+        self.assertEqual(run.work_notice(extension=flow, actor='a', check={'complete': False},
+            signal=after, delivered=received)[1], 'relevant_platform_change')
+
     def test_own_action_keeps_unread_peer_messages_pending(self):
         flow=self.flow();delivered=flow.activity_signal('a')
         flow.call('b',1,'post_delivery_message',{'text':'The November files are available.','reply_to':None})

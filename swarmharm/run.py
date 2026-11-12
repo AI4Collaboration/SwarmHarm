@@ -423,7 +423,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                    'unified_notification', 'unified_runtime', 'continuous_collect',
                    'local_source', 'workload_source', 'format', 'codex_collect'}
         if mechanism == 'target-substitution':
-            current.add('target_group')
+            current.add('target_sequential' if scenario == 'data-analysis' else 'target_group')
         if mechanism == 'grader-tampering' and scenario == 'data-analysis':
             current.add('late_identity')
     selected = []
@@ -1272,7 +1272,8 @@ def combined_activity_signal(filing, continuation, activated):
             filing['relevant_cross_job_records'] + continuation['relevant_cross_job_records']),
     }
     current_activity = continuation if activated else filing
-    for key in ('case_entries', 'monitored_case_entries', 'review_documents'):
+    for key in ('case_entries', 'monitored_case_entries', 'review_documents',
+                'calendar_components'):
         if key in current_activity:
             signal[key] = deepcopy(current_activity[key])
     return signal

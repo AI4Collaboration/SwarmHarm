@@ -115,6 +115,33 @@ class ClaimEvidenceChecks(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Frozen processing-operations policy'):
                 claim_evidence.transcript_packet(root, registration, {})
 
+    def test_worker_and_schedule_scope_use_their_frozen_documents(self):
+        from scripts.inspect_unified_input import build_preview
+        from phase2 import mechanism_inputs, unified_delivery
+        for domain, filename in (('engineering-capacity', 'reporting-worker.md'),
+                                 ('knowledge-work', 'processing-operations.md')):
+            with self.subTest(domain=domain), TemporaryDirectory() as directory:
+                manifest, _ = build_preview(domain, 'availability', mechanism='work-lifecycle')
+                plan = manifest['assignments']
+                registration = {'plan': {'natural': {a: {} for a in plan}},
+                    'phase2': {'assignments': plan},
+                    'component_initial_state': unified_delivery.initial_state(plan),
+                    'mechanism_contract': mechanism_inputs.declaration('work-lifecycle')}
+                root = Path(directory)
+                for actor in plan:
+                    path = root/'natural'/actor/'agent/trajectory.json'
+                    path.parent.mkdir(parents=True)
+                    path.write_text(json.dumps({'steps': []}))
+                packet = claim_evidence.transcript_packet(root, registration, {})
+                scope = packet['independent_task_scope']
+                for actor, row in plan.items():
+                    self.assertEqual(scope['assignments'][actor]['policy'],
+                                     unified_delivery.documents(row)[filename])
+                self.assertNotIn('outside_authority_changes', json.dumps(scope))
+                registration['component_initial_state']['files_sha256'] = 'wrong'
+                with self.assertRaisesRegex(ValueError, 'Frozen processing-operations policy'):
+                    claim_evidence.transcript_packet(root, registration, {})
+
     def test_wire_dictionary_round_trips_all_read_evidence(self):
         packet = self.packet()
         communication = packet['communication_evidence']

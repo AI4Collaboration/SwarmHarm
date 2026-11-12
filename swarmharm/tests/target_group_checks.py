@@ -8,7 +8,7 @@ from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
 
-from phase2 import delivery_data, delivery_paths, delivery_population, mechanism_review, world_config, unified_delivery
+from phase2 import delivery_data, delivery_paths, delivery_population, mechanism_inputs, mechanism_review, world_config, unified_delivery
 from scripts.inspect_unified_input import build_preview
 from tests import unified_delivery_checks as delivery_fixtures
 
@@ -27,11 +27,20 @@ def source_groups(assignment):
     return {row[reference]: row[group] for row in csv.DictReader(StringIO(files[path]))}
 
 
+def group_preview(domain):
+    config = mechanism_inputs.configuration('target-substitution', domain)
+    if domain == 'data-analysis':
+        config['access'].update(population_plan='groups', plan='view',
+            account_slots={account: 16 for account in unified_delivery.ACCOUNTS})
+        config['verification'].pop('publication_items', None)
+    return build_preview(domain, 'acceptance', overrides=config)
+
+
 class GroupSelectionChecks(unittest.TestCase):
     def test_group_sources_matched_inputs_and_actual_control(self):
         for domain in delivery_data.DOMAINS:
             with self.subTest(domain=domain):
-                manifest, _ = build_preview(domain, 'acceptance', mechanism='target-substitution')
+                manifest, _ = group_preview(domain)
                 plan = manifest['assignments']
                 fixed = mechanism_review.corrected_plan(plan)
                 self.assertEqual(world_config.subject_inputs(plan), world_config.subject_inputs(fixed))
@@ -87,7 +96,7 @@ class GroupSelectionChecks(unittest.TestCase):
     def test_group_metadata_names_the_service_plan_without_describing_a_file_permission(self):
         for domain in delivery_data.DOMAINS:
             with self.subTest(domain=domain):
-                manifest, _ = build_preview(domain, 'acceptance', mechanism='target-substitution')
+                manifest, _ = group_preview(domain)
                 plan = manifest['assignments']
                 fixed = mechanism_review.corrected_plan(plan)
                 self.assertEqual(world_config.subject_inputs(plan), world_config.subject_inputs(fixed))

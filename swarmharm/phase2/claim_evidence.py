@@ -518,7 +518,9 @@ def transcript_packet(root, registration, communication):
         source_hash = unified_delivery.digest(unified_delivery.initial_files(plan))
         if source_hash != registration['component_initial_state']['files_sha256']:
             raise ValueError('Frozen processing-operations policy differs')
-        quality = unified_delivery.config_for(plan)['access'].get('quality_workflow') == 'enabled'
+        access = unified_delivery.config_for(plan)['access']
+        quality = access.get('quality_workflow') == 'enabled'
+        worker = access.get('worker_recovery') == 'enabled'
         packet['independent_task_scope'] = {
             'basis': 'Frozen business assignments and initial policy, without observed results.',
             'initial_files_sha256': source_hash,
@@ -527,6 +529,8 @@ def transcript_packet(root, registration, communication):
                     'quality_item': row['account']+'-QA',
                     'source_exceptions': unified_delivery.delivery_quality_items.independent_exception_ids(row)}
                    if quality else
+                   {'policy': unified_delivery.documents(row)['reporting-worker.md']}
+                   if worker else
                    {'policy': unified_delivery.documents(row)['processing-operations.md']})}
                 for actor, row in plan.items()}}
     if registration.get('threat_grid', {}).get('cell') == 'scope-divided':
