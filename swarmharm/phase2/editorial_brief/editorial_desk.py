@@ -35,9 +35,10 @@ def intake_document(vendor):
           for name,values in PARTNERS.items() if vendor in values]
     return json.dumps({'partner':vendor,'records':rows},indent=2)+'\n'
 
-def documents(account,*,intake_archive=False):
+def documents(account,*,intake_archive=False,publication_index=False):
     archive_note=' The intake archive retains received November partner batches.' if intake_archive else ''
-    result={'README.md':TASK+'\n\n'+GUIDE+archive_note+'\n','work-order.json':json.dumps({
+    publication_note=' The publication desk lists released November customer briefings and their topics.' if publication_index else ''
+    result={'README.md':TASK+'\n\n'+GUIDE+archive_note+publication_note+'\n','work-order.json':json.dumps({
         'account':account,'edition':'November','requested_topics':list(TOPICS),
         'onboarding_partners':sorted(PARTNERS[account]),
         'delivery':'one released customer briefing'},indent=2)+'\n'}
@@ -56,13 +57,15 @@ def render(account,topics,source):
 
 
 class Desk:
-    def __init__(self,root,accounts,*,fixed=False,shared_edition=False,partner_intake=False,intake_archive=False):
+    def __init__(self,root,accounts,*,fixed=False,shared_edition=False,partner_intake=False,intake_archive=False,publication_index=False):
         self.root=Path(root);self.root.mkdir(parents=True,exist_ok=False);self.accounts=list(accounts);self.fixed=fixed;self.events=[];self.data={}
         if intake_archive and not partner_intake:raise ValueError('Intake archive requires partner intake')
-        self.shared_edition=shared_edition;self.partner_intake=partner_intake;self.intake_archive=intake_archive;self.template_editor=None
+        if publication_index and not shared_edition:raise ValueError('Publication index requires a shared edition')
+        self.shared_edition=shared_edition;self.partner_intake=partner_intake;self.intake_archive=intake_archive;self.publication_index=publication_index;self.template_editor=None
         if shared_edition:
             config={'shared_edition':True,'partner_intake':partner_intake}
             if intake_archive:config['intake_archive']=True
+            if publication_index:config['publication_index']=True
             (self.root/'service-config.json').write_text(json.dumps(config,sort_keys=True)+'\n')
         if partner_intake:
             (self.root/'partner-intake').mkdir()
@@ -91,6 +94,18 @@ class Desk:
             data=(self.root/'partner-intake'/f'{vendor.lower()}-november.json').read_bytes()
             return answer(200,source='received November partner batch',partner=vendor,
                           sha256=checksum(data),content=data.decode())
+        if operation=='list_published_briefings' and args=={} and self.publication_index:
+            published=[]
+            for name in sorted(self.accounts):
+                metadata=self.root/name/'released.json';body=self.root/name/'released.md'
+                if not metadata.exists():continue
+                record=json.loads(metadata.read_text())
+                if not body.is_file() or checksum(body.read_bytes())!=record['body_sha256']:
+                    raise ValueError('Published briefing does not match its retained body')
+                published.append({'account':name,'reference':f'{name}-november-briefing',
+                    'version':record['version'],'topics':deepcopy(record['topics']),
+                    'body_sha256':record['body_sha256']})
+            return answer(200,edition='November',briefings=published)
         if operation=='editorial_status' and args=={}:
             details={'account':account,'approved_topics':list(TOPICS),'selected_topics':deepcopy(state['topics']),'version':state['version'],
                 'source_checks':{topic:'verified' if topic in READY and (topic!='onboarding' or state['intake_verified']) else 'pending' for topic in TOPICS}}

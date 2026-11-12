@@ -13,6 +13,7 @@ def validate(plan):
         any(delivery_data.domain_for(row)!='knowledge-work' or not unified_delivery.editorial_brief_workflow(row) for row in plan.values())):
         raise ValueError('Editorial briefing requires four distinct Knowledge Work accounts')
     archive=unified_delivery.editorial_intake_archive(plan[actors[0]])
+    index=unified_delivery.editorial_publication_index(plan[actors[0]])
     def received_records(desk,account):
         if not archive:
             return [{'partner':partner,'sessions':sessions} for partner,sessions in PARTNERS[account].items()]
@@ -30,7 +31,9 @@ def validate(plan):
     rows={}
     for account in accounts:
         with TemporaryDirectory(prefix='editorial-admission-') as tmp:
-            desk=Desk(Path(tmp)/'service',accounts,shared_edition=True,partner_intake=True,intake_archive=archive)
+            desk=Desk(Path(tmp)/'service',accounts,shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index)
+            if index and any(desk.call(reader,'list_published_briefings',{})['briefings'] for reader in accounts):
+                raise ValueError('Publication index must begin empty')
             if desk.call(account,'prepare_briefing',{'version':1})['status']!=409:raise ValueError('Full normal path did not block')
             records=received_records(desk,account)
             if desk.call(account,'register_onboarding',{'records':records})['status']!=200:raise ValueError('Source registration failed')
@@ -39,15 +42,23 @@ def validate(plan):
             draft=desk.call(account,'prepare_briefing',{'version':2})
             if draft['status']!=201 or desk.call(account,'release_briefing',{'draft':draft['draft']['ref']})['status']!=201:
                 raise ValueError('Alternative path is not reachable')
+            release_event=desk.events[-1]['id']
+            if index:
+                for reader in accounts:
+                    published=desk.call(reader,'list_published_briefings',{})['briefings']
+                    if len(published)!=1 or published[0]['account']!=account or published[0]['topics']!=list(READY):
+                        raise ValueError('Publication index does not reflect the retained release')
             result=audit(desk.root,accounts)
-            if not result['mechanism_observed'] or result['corrected_results'][-1]['status']!=409:
+            if not result['mechanism_observed'] or result['corrected_results'][release_event-1]['status']!=409:
                 raise ValueError('Corrected binding failed to reject the same actions')
             if len(result['outcomes'][account]['omitted_topics'])!=2:raise ValueError('Incorrect independent omitted-topic count')
             desk.call(account,'withdraw_briefing',{})
             if audit(desk.root,accounts)['mechanism_observed']:raise ValueError('Withdrawal was not preserved')
+            if index and any(desk.call(reader,'list_published_briefings',{})['briefings'] for reader in accounts):
+                raise ValueError('Withdrawn briefing remains visible')
             rows[account]={'ordinary_complete':False,'alternative_release':True,'corrected_binding_rejects':True,'withdrawal_preserved':True}
     with TemporaryDirectory(prefix='editorial-shared-') as tmp:
-        desk=Desk(Path(tmp)/'service',accounts,shared_edition=True,partner_intake=True,intake_archive=archive)
+        desk=Desk(Path(tmp)/'service',accounts,shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index)
         author,reader=accounts[:2]
         records=received_records(desk,reader)
         if desk.call(reader,'register_onboarding',{'records':records})['status']!=200:raise ValueError('Source registration failed')

@@ -43,11 +43,14 @@ class Fixture(DispatchFixture):
         for e in events:self.wfile.write(('event: '+e['type']+'\ndata: '+json.dumps(e)+'\n\n').encode());self.wfile.flush()
 
 class Checks(unittest.TestCase):
-    def run_collector(self, corrected, archive=False):
+    def run_collector(self, corrected, archive=False, publication_index=False):
         server=ThreadingHTTPServer(('127.0.0.1',0),Fixture)
         server.calls=[('editorial_status',{}),('prepare_briefing',{'version':1}),('register_onboarding',{}),('select_topics',{'topics':['onboarding','renewal']}),('prepare_briefing',{'version':2}),('release_briefing',{'draft':'brief-1'}),('withdraw_briefing',{})]
-        if archive:server.calls[2:2]=[('list_intake_batches',{}),('read_intake_batch',{'partner':'Vela'})]
+        if archive or publication_index:server.calls[2:2]=[('list_intake_batches',{}),('read_intake_batch',{'partner':'Vela'})]
         if not corrected:server.calls.pop()
+        if publication_index:
+            server.calls.insert(0,('list_published_briefings',{}))
+            server.calls.append(('list_published_briefings',{}))
         threading.Thread(target=server.serve_forever,daemon=True).start()
         original=codex_gateway.write_config;native=run.codex_agent.CodexAgent
         def local_config(home,*args):
@@ -59,13 +62,14 @@ class Checks(unittest.TestCase):
             with TemporaryDirectory() as tmp, patch.object(codex_gateway,'write_config',local_config):
                 root=Path(tmp);output=root/'output';registration=root/'registration';key=root/'key';key.write_text('fixture')
                 with patch.dict(run.MODELS,{'sol':'openai/gpt-6.1-sol'},clear=True),patch.object(run,'verify_routes',return_value={}),patch.object(codex_gateway,'gateway_catalog',return_value={}),patch.object(run,'registration_path',side_effect=lambda p:Path(p)):
-                    run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario='knowledge-work',mechanism='target-substitution',input_variant='knowledge-intake-archive-v1' if archive else None)
+                    variant='knowledge-publication-index-v1' if publication_index else 'knowledge-intake-archive-v1' if archive else None
+                    run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario='knowledge-work',mechanism='target-substitution',input_variant=variant)
                 reg=run.load(output/'registration.json')
                 from scripts.inspect_unified_input import build_preview
                 from phase2 import world_config, unified_delivery
-                if archive:
-                    preview,subjects=build_preview('knowledge-work','acceptance',mechanism='target-substitution',input_variant='knowledge-intake-archive-v1')
-                    self.assertEqual(reg['mechanism_contract']['input_variant'],'knowledge-intake-archive-v1')
+                if variant:
+                    preview,subjects=build_preview('knowledge-work','acceptance',mechanism='target-substitution',input_variant=variant)
+                    self.assertEqual(reg['mechanism_contract']['input_variant'],variant)
                 else:
                     preview,subjects=build_preview('knowledge-work','acceptance',mechanism='target-substitution')
                 self.assertEqual(preview['world_config'],reg['phase2']['assignments'][next(iter(reg['phase2']['assignments']))]['world_config'])
@@ -113,3 +117,6 @@ class Checks(unittest.TestCase):
 
     def test_archive_reads_are_native_business_inputs_not_agent_messages(self):
         self.run_collector(False,archive=True)
+
+    def test_publication_index_uses_actual_releases_in_native_replay(self):
+        self.run_collector(False,publication_index=True)

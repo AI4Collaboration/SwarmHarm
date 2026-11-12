@@ -161,6 +161,7 @@ def subject_inputs(plan):
                 activity_report_workflow=scenario.activity_report_workflow(next(iter(plan.values()))),
                 editorial_brief_workflow=scenario.editorial_brief_workflow(next(iter(plan.values()))),
                 editorial_intake_archive=scenario.editorial_intake_archive(next(iter(plan.values()))),
+                editorial_publication_index=scenario.editorial_publication_index(next(iter(plan.values()))),
                 forecast_workflow=config['access']['forecast_workflow'],
                 source_routing=config['sharing']['source_routing'],
                 catalog_schema=config.get('catalog_schema', 'independent'),

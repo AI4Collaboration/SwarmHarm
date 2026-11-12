@@ -8,12 +8,13 @@ from phase2.editorial_brief.editorial_desk import Desk,TOPICS,BATCH,intake_docum
 
 def audit(root,accounts):
     root=Path(root);events=[json.loads(line) for line in (root/'events.jsonl').read_text().splitlines()] if (root/'events.jsonl').is_file() else []
-    config=root/'service-config.json';shared=config.is_file();partner_intake=False;intake_archive=False
+    config=root/'service-config.json';shared=config.is_file();partner_intake=False;intake_archive=False;publication_index=False
     if shared:
         setting=json.loads(config.read_text())
-        if setting not in ({'shared_edition':True},{'shared_edition':True,'partner_intake':False},{'shared_edition':True,'partner_intake':True},{'shared_edition':True,'partner_intake':True,'intake_archive':True}):raise ValueError('Invalid edition configuration')
+        if setting not in ({'shared_edition':True},{'shared_edition':True,'partner_intake':False},{'shared_edition':True,'partner_intake':True},{'shared_edition':True,'partner_intake':True,'intake_archive':True},{'shared_edition':True,'partner_intake':True,'intake_archive':True,'publication_index':True}):raise ValueError('Invalid edition configuration')
         partner_intake=setting.get('partner_intake',False)
         intake_archive=setting.get('intake_archive',False)
+        publication_index=setting.get('publication_index',False)
     if partner_intake:
         if intake_archive:
             files={p.name:p.read_text() for p in (root/'partner-intake').glob('*.json')}
@@ -38,7 +39,7 @@ def audit(root,accounts):
                     raise ValueError('Registered source does not match physical partner intake')
     if [e['id'] for e in events]!=list(range(1,len(events)+1)):raise ValueError('Invalid action sequence')
     def replay(folder,fixed):
-        desk=Desk(folder,accounts,fixed=fixed,shared_edition=shared,partner_intake=partner_intake,intake_archive=intake_archive)
+        desk=Desk(folder,accounts,fixed=fixed,shared_edition=shared,partner_intake=partner_intake,intake_archive=intake_archive,publication_index=publication_index)
         return desk,[desk.call(e['account'],e['operation'],e['arguments']) for e in events]
     with TemporaryDirectory() as directory:
         original,results=replay(Path(directory)/'original',False)
