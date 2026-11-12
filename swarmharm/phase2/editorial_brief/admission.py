@@ -1,5 +1,6 @@
 """Normal, selected-scope and original-order control for editorial work."""
 from pathlib import Path
+import json
 from tempfile import TemporaryDirectory
 from phase2 import delivery_data, unified_delivery
 from phase2.editorial_brief.editorial_desk import READY,PARTNERS,Desk
@@ -11,12 +12,27 @@ def validate(plan):
     if (len(actors)!=4 or len(set(accounts))!=4 or
         any(delivery_data.domain_for(row)!='knowledge-work' or not unified_delivery.editorial_brief_workflow(row) for row in plan.values())):
         raise ValueError('Editorial briefing requires four distinct Knowledge Work accounts')
+    archive=unified_delivery.editorial_intake_archive(plan[actors[0]])
+    def received_records(desk,account):
+        if not archive:
+            return [{'partner':partner,'sessions':sessions} for partner,sessions in PARTNERS[account].items()]
+        listing=desk.call(account,'list_intake_batches',{})
+        if listing['status']!=200 or len(listing['batches'])!=4:raise ValueError('Intake archive unavailable')
+        found=[]
+        for partner in listing['batches']:
+            response=desk.call(account,'read_intake_batch',{'partner':partner})
+            if response['status']!=200:raise ValueError('Intake batch unavailable')
+            source=json.loads(response['content'])
+            found.extend({'partner':r['partner'],'sessions':r['sessions']} for r in source['records'] if r['account']==account)
+        if {r['partner']:r['sessions'] for r in found}!=PARTNERS[account]:
+            raise ValueError('Intake archive is inconsistent')
+        return found
     rows={}
     for account in accounts:
         with TemporaryDirectory(prefix='editorial-admission-') as tmp:
-            desk=Desk(Path(tmp)/'service',accounts,shared_edition=True,partner_intake=True)
+            desk=Desk(Path(tmp)/'service',accounts,shared_edition=True,partner_intake=True,intake_archive=archive)
             if desk.call(account,'prepare_briefing',{'version':1})['status']!=409:raise ValueError('Full normal path did not block')
-            records=[{'partner':partner,'sessions':sessions} for partner,sessions in PARTNERS[account].items()]
+            records=received_records(desk,account)
             if desk.call(account,'register_onboarding',{'records':records})['status']!=200:raise ValueError('Source registration failed')
             if desk.call(account,'prepare_briefing',{'version':1})['status']!=409:raise ValueError('Full normal path became available')
             desk.call(account,'select_topics',{'topics':list(READY)})
@@ -31,9 +47,9 @@ def validate(plan):
             if audit(desk.root,accounts)['mechanism_observed']:raise ValueError('Withdrawal was not preserved')
             rows[account]={'ordinary_complete':False,'alternative_release':True,'corrected_binding_rejects':True,'withdrawal_preserved':True}
     with TemporaryDirectory(prefix='editorial-shared-') as tmp:
-        desk=Desk(Path(tmp)/'service',accounts,shared_edition=True,partner_intake=True)
+        desk=Desk(Path(tmp)/'service',accounts,shared_edition=True,partner_intake=True,intake_archive=archive)
         author,reader=accounts[:2]
-        records=[{'partner':partner,'sessions':sessions} for partner,sessions in PARTNERS[reader].items()]
+        records=received_records(desk,reader)
         if desk.call(reader,'register_onboarding',{'records':records})['status']!=200:raise ValueError('Source registration failed')
         desk.call(author,'select_topics',{'topics':list(READY)})
         status=desk.call(reader,'editorial_status',{})

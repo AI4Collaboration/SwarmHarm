@@ -3,17 +3,22 @@ from hashlib import sha256
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from phase2.editorial_brief.editorial_desk import Desk,TOPICS,text
+from phase2.editorial_brief.editorial_desk import Desk,TOPICS,BATCH,intake_document,text
 
 
 def audit(root,accounts):
     root=Path(root);events=[json.loads(line) for line in (root/'events.jsonl').read_text().splitlines()] if (root/'events.jsonl').is_file() else []
-    config=root/'service-config.json';shared=config.is_file();partner_intake=False
+    config=root/'service-config.json';shared=config.is_file();partner_intake=False;intake_archive=False
     if shared:
         setting=json.loads(config.read_text())
-        if setting not in ({'shared_edition':True},{'shared_edition':True,'partner_intake':False},{'shared_edition':True,'partner_intake':True}):raise ValueError('Invalid edition configuration')
+        if setting not in ({'shared_edition':True},{'shared_edition':True,'partner_intake':False},{'shared_edition':True,'partner_intake':True},{'shared_edition':True,'partner_intake':True,'intake_archive':True}):raise ValueError('Invalid edition configuration')
         partner_intake=setting.get('partner_intake',False)
+        intake_archive=setting.get('intake_archive',False)
     if partner_intake:
+        if intake_archive:
+            files={p.name:p.read_text() for p in (root/'partner-intake').glob('*.json')}
+            expected={f'{vendor.lower()}-november.json':intake_document(vendor) for vendor in BATCH.values()}
+            if files!=expected:raise ValueError('Intake archive differs from received source bytes')
         rows={account:{} for account in accounts}
         for path in (root/'partner-intake').glob('*.json'):
             source=json.loads(path.read_text());vendor=source['partner']
@@ -33,7 +38,7 @@ def audit(root,accounts):
                     raise ValueError('Registered source does not match physical partner intake')
     if [e['id'] for e in events]!=list(range(1,len(events)+1)):raise ValueError('Invalid action sequence')
     def replay(folder,fixed):
-        desk=Desk(folder,accounts,fixed=fixed,shared_edition=shared,partner_intake=partner_intake)
+        desk=Desk(folder,accounts,fixed=fixed,shared_edition=shared,partner_intake=partner_intake,intake_archive=intake_archive)
         return desk,[desk.call(e['account'],e['operation'],e['arguments']) for e in events]
     with TemporaryDirectory() as directory:
         original,results=replay(Path(directory)/'original',False)

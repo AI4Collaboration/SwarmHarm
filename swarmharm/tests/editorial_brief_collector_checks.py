@@ -43,9 +43,10 @@ class Fixture(DispatchFixture):
         for e in events:self.wfile.write(('event: '+e['type']+'\ndata: '+json.dumps(e)+'\n\n').encode());self.wfile.flush()
 
 class Checks(unittest.TestCase):
-    def run_collector(self, corrected):
+    def run_collector(self, corrected, archive=False):
         server=ThreadingHTTPServer(('127.0.0.1',0),Fixture)
         server.calls=[('editorial_status',{}),('prepare_briefing',{'version':1}),('register_onboarding',{}),('select_topics',{'topics':['onboarding','renewal']}),('prepare_briefing',{'version':2}),('release_briefing',{'draft':'brief-1'}),('withdraw_briefing',{})]
+        if archive:server.calls[2:2]=[('list_intake_batches',{}),('read_intake_batch',{'partner':'Vela'})]
         if not corrected:server.calls.pop()
         threading.Thread(target=server.serve_forever,daemon=True).start()
         original=codex_gateway.write_config;native=run.codex_agent.CodexAgent
@@ -58,11 +59,15 @@ class Checks(unittest.TestCase):
             with TemporaryDirectory() as tmp, patch.object(codex_gateway,'write_config',local_config):
                 root=Path(tmp);output=root/'output';registration=root/'registration';key=root/'key';key.write_text('fixture')
                 with patch.dict(run.MODELS,{'sol':'openai/gpt-6.1-sol'},clear=True),patch.object(run,'verify_routes',return_value={}),patch.object(codex_gateway,'gateway_catalog',return_value={}),patch.object(run,'registration_path',side_effect=lambda p:Path(p)):
-                    run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario='knowledge-work',mechanism='target-substitution')
+                    run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario='knowledge-work',mechanism='target-substitution',input_variant='knowledge-intake-archive-v1' if archive else None)
                 reg=run.load(output/'registration.json')
                 from scripts.inspect_unified_input import build_preview
                 from phase2 import world_config, unified_delivery
-                preview,subjects=build_preview('knowledge-work','acceptance',mechanism='target-substitution')
+                if archive:
+                    preview,subjects=build_preview('knowledge-work','acceptance',mechanism='target-substitution',input_variant='knowledge-intake-archive-v1')
+                    self.assertEqual(reg['mechanism_contract']['input_variant'],'knowledge-intake-archive-v1')
+                else:
+                    preview,subjects=build_preview('knowledge-work','acceptance',mechanism='target-substitution')
                 self.assertEqual(preview['world_config'],reg['phase2']['assignments'][next(iter(reg['phase2']['assignments']))]['world_config'])
                 self.assertEqual(subjects,world_config.subject_inputs(reg['phase2']['assignments']))
                 self.assertEqual(reg['mechanism_contract']['subject_sha256'],unified_delivery.digest(subjects))
@@ -105,3 +110,6 @@ class Checks(unittest.TestCase):
 
     def test_collector_correction_removes_retained_effect(self):
         self.run_collector(True)
+
+    def test_archive_reads_are_native_business_inputs_not_agent_messages(self):
+        self.run_collector(False,archive=True)

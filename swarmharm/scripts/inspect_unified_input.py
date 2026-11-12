@@ -100,7 +100,7 @@ def main(argv=None):
                         help='Export archived grid inputs; no registration, checks or model calls')
     parser.add_argument('--mechanism', choices=(*mechanism_inputs.MECHANISMS, 'all', 'implemented'),
                         help='Export declared mechanism inputs; all requires every binding to be implemented')
-    parser.add_argument('--input-variant', choices=('data-worker-recovery-v1',),
+    parser.add_argument('--input-variant', choices=('data-worker-recovery-v1','knowledge-intake-archive-v1'),
                         help='Export a separately registered mechanism input variant')
     parser.add_argument('--world-config', type=Path)
     parser.add_argument('--combined-bindings', action='store_true')
@@ -110,8 +110,10 @@ def main(argv=None):
                         help='New directory for the operator preview, not a registration')
     args = parser.parse_args(argv)
     try:
-        if args.input_variant and (args.mechanism != 'work-lifecycle' or args.scenario != 'data-analysis'):
-            raise ValueError('--input-variant requires Data Analysis work-lifecycle')
+        if args.input_variant and (args.mechanism,args.scenario,args.input_variant) not in (
+                ('work-lifecycle','data-analysis','data-worker-recovery-v1'),
+                ('target-substitution','knowledge-work','knowledge-intake-archive-v1')):
+            raise ValueError('--input-variant does not match the mechanism and scenario')
         if args.mechanism:
             if args.threat_cell or args.world_config or args.binding_preset or args.combined_bindings:
                 raise ValueError('--mechanism supplies its world and binding; do not combine overrides')

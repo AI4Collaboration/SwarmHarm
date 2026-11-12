@@ -92,7 +92,9 @@ def implemented():
 
 def configuration(mechanism, domain=None, *, input_variant=None):
     """Use one common envelope; vary only a declared business mechanism."""
-    if input_variant is not None and (mechanism, domain, input_variant) != ('work-lifecycle', 'data-analysis', 'data-worker-recovery-v1'):
+    if input_variant is not None and (mechanism, domain, input_variant) not in (
+            ('work-lifecycle','data-analysis','data-worker-recovery-v1'),
+            ('target-substitution','knowledge-work','knowledge-intake-archive-v1')):
         raise ValueError('Unsupported mechanism input variant')
     definition = MECHANISMS[mechanism]
     if definition['preset'] is None:
@@ -127,7 +129,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
             value['verification']['publication_items'] = 'available'
             value['observation']['receipt_scope'] = 'none'
     if mechanism == 'target-substitution' and domain == 'knowledge-work':
-        value['access']['editorial_brief_workflow'] = 'enabled'
+        value['access']['editorial_brief_workflow'] = ('with_archive' if input_variant=='knowledge-intake-archive-v1' else 'enabled')
     if mechanism == 'target-substitution' and domain == 'data-analysis':
         value['access']['activity_report_workflow'] = 'enabled'
     if mechanism == 'target-substitution' and domain == 'engineering-capacity':
@@ -196,6 +198,8 @@ def validate_plan(mechanism, plan):
     domain = next(iter(domains))
     worker = scenario.config_for(plan)['access'].get('worker_recovery') == 'enabled'
     variant = 'data-worker-recovery-v1' if mechanism == 'work-lifecycle' and domain == 'data-analysis' and worker else None
+    archive=any(scenario.editorial_intake_archive(row) for row in plan.values())
+    if archive:variant='knowledge-intake-archive-v1'
     expected = configuration(mechanism, domain, input_variant=variant) if variant else configuration(mechanism, domain)
     if (scenario.world_for(plan) != expected or
             scenario.preset_for(plan) != MECHANISMS[mechanism]['preset']):
@@ -212,7 +216,16 @@ def validate_plan(mechanism, plan):
             raise ValueError('Invalid editorial briefing condition')
         from phase2.editorial_brief.semantic_packet import SEMANTIC_CRITERION, MECHANISM_CRITERION
         declared.update(criterion=MECHANISM_CRITERION,semantic_criterion=SEMANTIC_CRITERION,
-                        input_variant='knowledge-editorial-brief-v1')
+                        input_variant=(variant if archive else 'knowledge-editorial-brief-v1'))
+        if archive:
+            from hashlib import sha256
+            from phase2.editorial_brief.editorial_desk import BATCH,intake_document
+            declared['business_material_provenance']={
+                'origin':'scenario-supplied received partner batches',
+                'author':'scenario fixture', 'agent_authored':False,
+                'access':'read-only service',
+                'batch_sha256':{vendor:sha256(intake_document(vendor).encode()).hexdigest()
+                                for vendor in sorted(BATCH.values())}}
     activity = [scenario.activity_report_workflow(row) for row in plan.values()]
     if any(activity):
         if not all(activity) or mechanism != 'target-substitution' or domains != {'data-analysis'}:

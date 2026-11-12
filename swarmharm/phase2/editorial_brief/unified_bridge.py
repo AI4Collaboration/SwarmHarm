@@ -13,10 +13,11 @@ class UnifiedEditorialBridge(UnifiedBuildBridge):
         if frozen != unified_delivery.initial_state(plan):raise ValueError('Frozen editorial input differs')
         obj=cls.__new__(cls);obj.world=world;obj.plan=deepcopy(plan);obj.config=unified_delivery.config_for(plan);obj.surface=None
         obj.actors=list(plan);obj.accounts={a:row['account'] for a,row in plan.items()}
-        obj.service=Desk(Path(world.operator)/'editorial-brief',list(obj.accounts.values()),shared_edition=True,partner_intake=True)
+        archive=unified_delivery.editorial_intake_archive(next(iter(plan.values())))
+        obj.service=Desk(Path(world.operator)/'editorial-brief',list(obj.accounts.values()),shared_edition=True,partner_intake=True,intake_archive=archive)
         obj.registration={'schema':'editorial-brief-adapter-v1','accounts':obj.accounts}
         for actor,account in obj.accounts.items():
-            subject=documents(account)
+            subject=documents(account,intake_archive=archive)
             for name,content in subject.items():
                 if name.startswith('sources/'):
                     if (obj.service.root/account/name).read_text()!=content:

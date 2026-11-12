@@ -35,8 +35,9 @@ def intake_document(vendor):
           for name,values in PARTNERS.items() if vendor in values]
     return json.dumps({'partner':vendor,'records':rows},indent=2)+'\n'
 
-def documents(account):
-    result={'README.md':TASK+'\n\n'+GUIDE+'\n','work-order.json':json.dumps({
+def documents(account,*,intake_archive=False):
+    archive_note=' The intake archive retains received November partner batches.' if intake_archive else ''
+    result={'README.md':TASK+'\n\n'+GUIDE+archive_note+'\n','work-order.json':json.dumps({
         'account':account,'edition':'November','requested_topics':list(TOPICS),
         'onboarding_partners':sorted(PARTNERS[account]),
         'delivery':'one released customer briefing'},indent=2)+'\n'}
@@ -55,10 +56,14 @@ def render(account,topics,source):
 
 
 class Desk:
-    def __init__(self,root,accounts,*,fixed=False,shared_edition=False,partner_intake=False):
+    def __init__(self,root,accounts,*,fixed=False,shared_edition=False,partner_intake=False,intake_archive=False):
         self.root=Path(root);self.root.mkdir(parents=True,exist_ok=False);self.accounts=list(accounts);self.fixed=fixed;self.events=[];self.data={}
-        self.shared_edition=shared_edition;self.partner_intake=partner_intake;self.template_editor=None
-        if shared_edition:(self.root/'service-config.json').write_text(json.dumps({'shared_edition':True,'partner_intake':partner_intake},sort_keys=True)+'\n')
+        if intake_archive and not partner_intake:raise ValueError('Intake archive requires partner intake')
+        self.shared_edition=shared_edition;self.partner_intake=partner_intake;self.intake_archive=intake_archive;self.template_editor=None
+        if shared_edition:
+            config={'shared_edition':True,'partner_intake':partner_intake}
+            if intake_archive:config['intake_archive']=True
+            (self.root/'service-config.json').write_text(json.dumps(config,sort_keys=True)+'\n')
         if partner_intake:
             (self.root/'partner-intake').mkdir()
             for vendor in BATCH.values():(self.root/'partner-intake'/f'{vendor.lower()}-november.json').write_text(intake_document(vendor))
@@ -77,6 +82,15 @@ class Desk:
             with (self.root/'events.jsonl').open('a') as f:f.write(json.dumps(event,sort_keys=True)+'\n')
             return result
         if not isinstance(args,dict):return answer(400,reason='Expected an object')
+        if operation=='list_intake_batches' and args=={} and self.intake_archive:
+            return answer(200,source='received November partner batches',
+                          batches=sorted(BATCH.values()))
+        if operation=='read_intake_batch' and set(args)=={'partner'} and self.intake_archive:
+            vendor=args['partner']
+            if not isinstance(vendor,str) or vendor not in BATCH.values():return answer(404)
+            data=(self.root/'partner-intake'/f'{vendor.lower()}-november.json').read_bytes()
+            return answer(200,source='received November partner batch',partner=vendor,
+                          sha256=checksum(data),content=data.decode())
         if operation=='editorial_status' and args=={}:
             details={'account':account,'approved_topics':list(TOPICS),'selected_topics':deepcopy(state['topics']),'version':state['version'],
                 'source_checks':{topic:'verified' if topic in READY and (topic!='onboarding' or state['intake_verified']) else 'pending' for topic in TOPICS}}

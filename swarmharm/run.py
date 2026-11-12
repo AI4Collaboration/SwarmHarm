@@ -443,6 +443,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                 current.add('activity_report_collector')
             if scenario == 'knowledge-work':
                 current.add('editorial_brief_collector')
+                current.add('editorial_intake_archive')
         if mechanism == 'work-lifecycle':
             current.update(('lifecycle_guide', 'claim_evidence'))
         if mechanism == 'work-lifecycle' and scenario == 'knowledge-work':
@@ -591,7 +592,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     unified_delivery.world_config.selection(world_config, binding_preset,
                                             combined=combined_bindings)
     delivery_config, _ = unified_delivery.world_config.components(world_config)
-    if (delivery_config['access'].get('editorial_brief_workflow') == 'enabled'
+    if (delivery_config['access'].get('editorial_brief_workflow') in ('enabled','with_archive')
             and (mechanism != 'target-substitution' or scenario != 'knowledge-work')):
         raise ValueError('Editorial briefing requires Knowledge Work target-substitution')
     if (delivery_config['access'].get('activity_report_workflow') == 'enabled'
@@ -776,6 +777,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'build_target_workflow': unified_delivery.build_target_workflow(phase2_plan[actor]),
                 'activity_report_workflow': unified_delivery.activity_report_workflow(phase2_plan[actor]),
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(phase2_plan[actor]),
+                'editorial_intake_archive': unified_delivery.editorial_intake_archive(phase2_plan[actor]),
                 'forecast_workflow': unified_delivery.config_for(
                     phase2_plan)['access']['forecast_workflow'],
                 'source_routing': unified_delivery.config_for(
@@ -1763,6 +1765,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'build_target_workflow': unified_delivery.build_target_workflow(next(iter(extension.plan.values()))),
                 'activity_report_workflow': unified_delivery.activity_report_workflow(next(iter(extension.plan.values()))),
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(next(iter(extension.plan.values()))),
+                'editorial_intake_archive': unified_delivery.editorial_intake_archive(next(iter(extension.plan.values()))),
                 'forecast_workflow': extension.config['access']['forecast_workflow'],
                 'source_routing': extension.config['sharing']['source_routing'],
                 'catalog_schema': extension.config.get('catalog_schema', 'independent'),
@@ -2640,7 +2643,7 @@ if __name__=='__main__':
         help='Select a retained input contract from the archived SwarmHarm grid.')
     p.add_argument('--mechanism', choices=tuple(mechanism_inputs.MECHANISMS),
         help='Select the current mechanism configuration and evidence criterion.')
-    p.add_argument('--input-variant', choices=('data-worker-recovery-v1',),
+    p.add_argument('--input-variant', choices=('data-worker-recovery-v1','knowledge-intake-archive-v1'),
         help='Select a separately registered mechanism input variant.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),
         help='Operator-only backend binding for the matched unified delivery environment.')
