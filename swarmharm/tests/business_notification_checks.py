@@ -10,6 +10,40 @@ from scripts.inspect_unified_input import build_preview
 from run import acknowledge_tool_activity, work_notice
 
 class NotificationChecks(unittest.TestCase):
+    def test_publication_catalogue_reports_only_real_new_state(self):
+        with TemporaryDirectory() as tmp:
+            preview,_=build_preview('data-analysis','acceptance',mechanism='target-substitution');plan=preview['assignments']
+            actors=list(plan);identities=iter(actors);base=schedule.compile_plan(4,'control',lambda:next(identities))[0]['natural']
+            world=lab.World(base,Path(tmp)/'operator')
+            try:
+                flow=UnifiedActivityBridge.from_plan(world,plan,scenario.initial_state(plan))
+                world.prepare_workstations(actors,max_workers=4,private_files=scenario.initial_files(plan));flow.activate()
+                author,reader=actors[:2];delivered=flow.activity_signal(reader);check={'complete':False,'actor_complete':False}
+                flow.call(author,1,'select_dates',{'dates':['2026-11-01','2026-11-02']})
+                job=flow.call(author,2,'run_report',{'version':2})['job']['ref']
+                before_publication=flow.activity_signal(reader)
+                self.assertEqual(work_notice(extension=flow,actor=reader,check=check,signal=before_publication,delivered=delivered),(None,None))
+                released=flow.call(author,3,'release_report',{'job':job})
+                signal=flow.activity_signal(reader)
+                self.assertEqual(work_notice(extension=flow,actor=reader,check=check,signal=signal,delivered=delivered)[1],'relevant_platform_change')
+                for step,operation,args in ((1,'select_dates',{'dates':['2026-11-01','2026-11-02']}),
+                                            (2,'run_report',{'version':2}),
+                                            (3,'release_report',{'job':'job-1'})):
+                    before=flow.activity_signal(reader);result=flow.call(reader,step,operation,args);signal=flow.activity_signal(reader)
+                    self.assertIn(result['status'],(200,201))
+                    delivered=acknowledge_tool_activity(flow,operation,result,signal,delivered,before)
+                    self.assertEqual(work_notice(extension=flow,actor=reader,check=check,signal=signal,delivered=delivered)[1],'relevant_platform_change')
+                before=signal;listing=flow.call(reader,1,'list_published_reports',{});signal=flow.activity_signal(reader)
+                delivered=acknowledge_tool_activity(flow,'list_published_reports',listing,signal,delivered,before)
+                self.assertEqual(work_notice(extension=flow,actor=reader,check=check,signal=signal,delivered=delivered),(None,None))
+                read=flow.call(reader,2,'read_published_report',{'account':plan[author]['account'],'reference':released['reference']})
+                self.assertEqual(read['status'],200);self.assertEqual(read['dates'],['2026-11-01','2026-11-02'])
+                self.assertEqual(flow.call(author,4,'withdraw_report',{})['status'],200)
+                signal=flow.activity_signal(reader)
+                self.assertEqual(work_notice(extension=flow,actor=reader,check=check,signal=signal,delivered=delivered)[1],'relevant_platform_change')
+                self.assertEqual(flow.call(reader,3,'read_published_report',{'account':plan[author]['account'],'reference':released['reference']})['status'],404)
+            finally:world.close()
+
     def test_status_and_own_action_do_not_hide_unread_peer_changes(self):
         cases=(('data-analysis',UnifiedActivityBridge,'desk_status','select_dates',{'dates':['2026-11-01','2026-11-02']}),
                ('knowledge-work',UnifiedEditorialBridge,'editorial_status','select_topics',{'topics':['onboarding','renewal']}))

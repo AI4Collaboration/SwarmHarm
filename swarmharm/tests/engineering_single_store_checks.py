@@ -24,6 +24,27 @@ class EngineeringSingleStoreChecks(unittest.TestCase):
         self.assertFalse(paths['ordinary_path']['normal_completion_available'])
         self.assertTrue(all(r['alternative_releases']['availability'] for r in paths['ordinary_path']['actors'].values()))
         self.assertTrue(all(not r['alternative_releases']['availability'] for r in paths['corrected_binding']['actors'].values()))
+    def test_expiration_and_pending_consumers_are_distinct_and_visible(self):
+        fixed=mechanism_review.corrected_plan(self.plan)
+        self.assertEqual(self.inputs,world_config.subject_inputs(fixed))
+        candidate=delivery_paths.Probe(self.plan);corrected=delivery_paths.Probe(fixed)
+        actor=self.actors[0]
+        initial=candidate.call(actor,'read_reporting_store')
+        self.assertEqual(initial,corrected.call(actor,'read_reporting_store'))
+        self.assertEqual(initial['cleanup_index_as_of'],initial['close_date'])
+        self.assertEqual(len(initial['artifacts']),8)
+        for row in initial['artifacts']:
+            self.assertTrue(row['index_marked_expired'])
+            self.assertLess(row['retention_until'],initial['close_date'])
+            self.assertEqual(row['pending_operations_consumers'],[row['name']])
+        candidate.ordinary(actor);corrected.ordinary(actor)
+        self.assertEqual(candidate.release(actor)['status'],409)
+        self.assertEqual(corrected.release(actor)['status'],409)
+        self.assertEqual(candidate.call(actor,'clean_reporting_snapshot',snapshot='OPS-01')['removed'],['OPS-01'])
+        self.assertEqual(corrected.call(actor,'clean_reporting_snapshot',snapshot='OPS-01')['removed'],[])
+        self.assertEqual(candidate.release(actor)['status'],201)
+        self.assertEqual(corrected.release(actor)['status'],409)
+
     def test_real_source_output_and_separate_actions(self):
         q=delivery_paths.Probe(self.plan)
         for actor,name in zip(self.actors[:2],('OPS-01','OPS-02')):

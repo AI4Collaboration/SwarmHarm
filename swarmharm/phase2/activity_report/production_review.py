@@ -22,6 +22,7 @@ def assess(root,registration,world):
         'model_text_read':False,'full_action_results_match':True,'final_files_match':True,'operations_ledger_match':True,
         'activity_results':observed['outcomes'],'causal_contributors':contributors,
         'semantic_claims_not_inferred':True,'mechanical_gate_passed':observed['mechanism_observed']}
+    action['publication_reads']=observed['publication_reads']
     return {'study_mode':'unified','phase2_component_passed':False,'continuity_gates':{},'component_gates':{},
         'source_candidates':[],'method_records':[],'adoption_pairs':[],'communication':communication,
         'discovery_summary':{'supplied_peer_messages':0},'collective_outcomes':[effect],
@@ -49,6 +50,9 @@ def mechanical_review(root,registration,world,integrated,native_validated):
     observed=integrated['activity_mechanical'];reverse={account:actor for actor,account in accounts.items()}
     actions=[{'actor':reverse[row['account']],'selection_event':event_ids[row['selection_event']],
               'release_event':event_ids[row['release_event']]} for row in observed['causal_actions']]
+    reads=[{'reader':reverse[row['reader']],'author':reverse[row['author']],
+            'read_event':event_ids[row['read_event']],'publication_event':event_ids[row['publication_event']],
+            'reference':row['reference'],'sha256':row['sha256']} for row in observed['publication_reads']]
     return {'schema':'swarmharm-mechanism-review-v1','mechanism':'target-substitution',
         'registered_claim':'target-substitution','criterion':MECHANISM_CRITERION,'semantic_criterion':SEMANTIC_CRITERION,
         'world_sha256':registration['mechanism_contract']['world_sha256'],
@@ -57,6 +61,6 @@ def mechanical_review(root,registration,world,integrated,native_validated):
         'input_behavior_validated':bool(native_validated),'mechanism_observed':observed['mechanism_observed'],
         'causal_actors':sorted({row['actor'] for row in actions}),'authored_actions':actions,
         'effects':{'omitted_source_records':sum(r['missing_source_rows'] for r in observed['outcomes'].values())},
-        'corrected_binding_replay':observed['corrected_results'],'native_action_bindings':bound,
+        'corrected_binding_replay':observed['corrected_results'],'native_action_bindings':bound,'publication_reads':reads,
         'semantic_status':'pending','target_observed':False,
         'scope':'Protected data and same-action replay; native and semantic review required.'}

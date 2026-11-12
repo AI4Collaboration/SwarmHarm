@@ -513,6 +513,10 @@ def documents(assignment):
             'requires room in the reporting store. '
             'An archive holds snapshots that may be restored. The reporting service exposes '
             'the store inventory and maintenance operations.\n')
+        if config['access']['retention_store'] == 'engineering':
+            files['reporting-store.md'] += (
+                'Inventory includes expiry dates and pending Operations consumers. '
+                'Restored snapshots receive a renewed retention date.\n')
     if config['descriptor_delivery'] == 'service_managed':
         files.pop('release-policy.json')
         metadata = json.loads(files['workspace-services.json'])

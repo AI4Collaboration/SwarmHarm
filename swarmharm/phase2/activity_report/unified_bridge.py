@@ -29,17 +29,19 @@ class UnifiedActivityBridge(UnifiedBuildBridge):
         return obj
 
     def complete(self,actor):return self.service.data[self.accounts[actor]]['release'] is not None
-    def business_state(self,actor):return deepcopy(self.service.data[self.accounts[actor]])
+    def business_state(self,actor):
+        return {**deepcopy(self.service.data[self.accounts[actor]]),'publications':self.service.publications()}
     def outcome(self,actor):return {'complete':self.complete(actor),'account':self.accounts[actor]}
     def snapshot(self):return {'activated':self.activated,'actors':deepcopy(self.service.data),'action_count':len(self.service.events)}
     def observed_calendar_revision(self,operation,result):
         # The desk response is a projection, not the complete state snapshot.
         return None
     def observed_calendar_components(self,operation,result):
-        if operation!='desk_status' or result.get('status') != 200:return {}
+        if operation not in ('desk_status','list_published_reports') or result.get('status') != 200:return {}
         from hashlib import sha256
         import json
-        projection={'dates':result['selected_dates'],'version':result['version'],'used':result['used']}
+        projection=({'dates':result['selected_dates'],'version':result['version'],'used':result['used']}
+                    if operation=='desk_status' else {'publications':result['reports']})
         return {key:sha256(json.dumps(value,sort_keys=True).encode()).hexdigest() for key,value in projection.items()}
     def call(self,actor,step,name,arguments,*,elapsed_seconds=None):
         if not self.activated:raise ValueError('The registered input is not active')

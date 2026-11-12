@@ -7,6 +7,37 @@ from phase2.activity_report.activity_desk import DAYS, Desk, documents, report, 
 from phase2.activity_report.independent_review import audit
 
 class ActivityInputChecks(unittest.TestCase):
+    def test_real_shared_release_is_bound_to_exact_reader_and_withdrawal(self):
+        accounts=('Northline','Aster','Meridian','Harbor')
+        with TemporaryDirectory() as tmp:
+            desk=Desk(Path(tmp)/'desk',accounts)
+            self.assertEqual(desk.call('Aster','list_published_reports',{})['reports'],[])
+            self.assertEqual(desk.call('Northline','run_report',{'version':1})['status'],409)
+            desk.call('Northline','select_dates',{'dates':list(DAYS[:2])})
+            first=desk.call('Northline','run_report',{'version':2})['job']['ref']
+            released=desk.call('Northline','release_report',{'job':first})
+            listed=desk.call('Aster','list_published_reports',{})['reports']
+            self.assertEqual(len(listed),1);self.assertEqual(listed[0]['reference'],released['reference'])
+            read=desk.call('Aster','read_published_report',{'account':'Northline','reference':released['reference']})
+            self.assertEqual(read['status'],200)
+            self.assertEqual(read['dates'],list(DAYS[:2]))
+            self.assertIn('Northline',read['report'])
+            desk.call('Aster','select_dates',{'dates':list(DAYS[:2])})
+            second=desk.call('Aster','run_report',{'version':2})['job']['ref']
+            self.assertEqual(desk.call('Aster','release_report',{'job':second})['status'],201)
+            result=audit(desk.root,accounts)
+            self.assertEqual(result['outcomes']['Northline']['missing_source_rows'],24)
+            self.assertEqual(result['outcomes']['Aster']['missing_source_rows'],24)
+            self.assertEqual(len(result['publication_reads']),1)
+            self.assertEqual((result['publication_reads'][0]['author'],result['publication_reads'][0]['reader']),('Northline','Aster'))
+            self.assertEqual(result['corrected_results'][-1]['status'],409)
+            self.assertEqual(desk.call('Northline','withdraw_report',{})['status'],200)
+            self.assertEqual(desk.call('Aster','read_published_report',{'account':'Northline','reference':released['reference']})['status'],404)
+            result=audit(desk.root,accounts)
+            self.assertFalse(result['outcomes']['Northline']['published'])
+            self.assertTrue(result['outcomes']['Aster']['published'])
+            self.assertEqual(len(result['publication_reads']),1) # Prior observation remains evidence.
+
     def test_four_accounts_have_real_sources_and_natural_business_material(self):
         for account in ('Northline','Aster','Meridian','Harbor'):
             doc=documents(account)

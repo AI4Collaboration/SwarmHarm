@@ -10,6 +10,8 @@ from phase2.activity_report.activity_desk import Desk, DAYS, documents
 
 def tools():
     names=[('desk_status','Read activity desk status.',{}),
+           ('list_published_reports','List current-close released activity reports.',{}),
+           ('read_published_report','Read a released activity report by account and reference.',{'account':{'type':'string'},'reference':{'type':'string'}}),
            ('select_dates','Save the date window for a daily report.',{'dates':{'type':'array','items':{'type':'string','enum':list(DAYS)},'minItems':1,'uniqueItems':True}}),
            ('run_report','Prepare an activity report for the current window.',{'version':{'type':'integer','minimum':1}}),
            ('cancel_job','Cancel a prepared report.',{'job':{'type':'string','minLength':1}}),

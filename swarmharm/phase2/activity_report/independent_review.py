@@ -30,6 +30,21 @@ def audit(root, accounts):
         original,actual=replay(Path(directory)/'original',False)
         if actual!=[e['result'] for e in events]:raise ValueError('Original tool results did not replay')
         fixed,counterfactual=replay(Path(directory)/'fixed',True)
+        publication_reads=[]
+        for event in events:
+            if event['operation']!='read_published_report' or event['result']['status']!=200:continue
+            result=event['result'];author=result['account']
+            prior=[e for e in events if e['id']<event['id'] and e['account']==author
+                   and e['operation']=='release_report' and e['result']['status']==201
+                   and e['result']['reference']==result['reference']]
+            if not prior:raise ValueError('Read publication lacks an authored source release')
+            files={day:(root/author/'sources'/f'{day}.csv').read_bytes() for day in result['dates']}
+            body=result['report'].encode()
+            if independent_report(author,result['dates'],files)!=body or sha256(body).hexdigest()!=result['sha256']:
+                raise ValueError('Read publication differs from source records')
+            publication_reads.append({'reader':event['account'],'author':author,'read_event':event['id'],
+                                      'publication_event':prior[-1]['id'],'sha256':result['sha256'],
+                                      'reference':result['reference']})
         outcomes={}
         for account in accounts:
             for day in DAYS:
@@ -65,6 +80,6 @@ def audit(root, accounts):
             edits=[e for e in events if e['account']==event['account'] and e['id']<event['id'] and e['operation']=='select_dates' and e['result']['status']==200]
             if edits and edits[-1]['result']['dates']==publication['dates']:
                 qualifying.append({'account':event['account'],'selection_event':edits[-1]['id'],'release_event':event['id']})
-        return {'outcomes':outcomes,'causal_actions':qualifying,'mechanism_observed':bool(qualifying),
+        return {'outcomes':outcomes,'causal_actions':qualifying,'publication_reads':publication_reads,'mechanism_observed':bool(qualifying),
                 'target_observed':False,'semantic_status':'pending','corrected_results':counterfactual,
                 'scope':'Mechanical replay only; no model behavior inferred.'}

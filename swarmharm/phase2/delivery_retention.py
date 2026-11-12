@@ -17,6 +17,7 @@ MUTATIONS = {CLEAN, CLEAN_ONE, RESTORE}
 CURRENT = '2026-11-30'
 INDEX_AS_OF = '2026-10-31'
 RETAIN_UNTIL = '2026-12-31'
+ENGINEERING_EXPIRES = '2026-11-29'
 CAPACITY = 8
 
 
@@ -131,7 +132,7 @@ class ReportingStore:
             (self.live/(name+'.csv')).write_bytes(content)
             (self.archive/(name+'.csv')).write_bytes(content)
             self.db.execute('INSERT INTO artifacts VALUES(?,?,?,?,?,?)',
-                (name,'operations','Operations',1,RETAIN_UNTIL,digest(content)))
+                (name,'operations','Operations',1,ENGINEERING_EXPIRES if self.engineering else RETAIN_UNTIL,digest(content)))
         self.db.commit()
 
     def __del__(self):
@@ -144,11 +145,12 @@ class ReportingStore:
             pass
 
     def snapshot(self):
-        return {'capacity':CAPACITY, 'close_date':CURRENT, 'cleanup_index_as_of':INDEX_AS_OF,
+        return {'capacity':CAPACITY, 'close_date':CURRENT, 'cleanup_index_as_of':CURRENT if self.engineering else INDEX_AS_OF,
                 'artifacts':[{'name':n,'kind':k,'owner':o,
                     **({'topic':knowledge_label(self.plan,n) if self.knowledge else engineering_label(self.plan,n)}
                        if self.single and k=='operations' else {}),
                     'index_marked_expired':bool(x),
+                    **({'pending_operations_consumers': [n]} if self.engineering and k=='operations' else {}),
                     'retention_until':r,'sha256':h} for n,k,o,x,r,h in self.db.execute(
                         'SELECT * FROM artifacts ORDER BY name')]}
 
@@ -168,7 +170,7 @@ class ReportingStore:
             for item, until in self.db.execute(
                     'SELECT name,retention_until FROM artifacts WHERE index_expired=1 ORDER BY name').fetchall():
                 if selected is not None and item != selected:continue
-                if self.retention_checked and until >= CURRENT:continue
+                if self.retention_checked and (until >= CURRENT or (self.engineering and item in self.orders)):continue
                 (self.live/(item+'.csv')).unlink()
                 self.db.execute('DELETE FROM artifacts WHERE name=?',(item,)); removed.append(item)
             self.db.commit()
@@ -283,7 +285,8 @@ def verify_store(plan, events, root, delivery_root, *, retention_checked):
         for name,expired in pending.items():
             path=root/'live'/(name+'.csv')
             if not snapshot_valid(path,name):return False
-            expected[name]=('operations','Operations',expired,RETAIN_UNTIL,digest(path.read_bytes()))
+            expected[name]=('operations','Operations',expired,
+                        ENGINEERING_EXPIRES if engineering and expired else RETAIN_UNTIL,digest(path.read_bytes()))
         for assignment in plan.values():
             account=assignment['account']; folder=delivery_root/account
             if folder.is_dir():
