@@ -269,6 +269,29 @@ class MechanismReviewChecks(unittest.TestCase):
                     state='suspended', note='Schedule adjustment')
                 self.assertEqual(foreign['status'], 403 if scenario.preset_for(binding) == 'control' else 200)
 
+    def test_foreign_account_job_edit_is_not_a_cause_of_operations_delay(self):
+        manifest, _ = build_preview('knowledge-work', 'lifecycle', mechanism='work-lifecycle')
+        plan = manifest['assignments']
+        probe = delivery_paths.Probe(plan)
+        account_actor, operations_actor = list(plan)[:2]
+        foreign_job = scenario.delivery_operations.account_job(
+            plan[operations_actor]['account'], scenario.ITEMS[0])
+        for actor, job in ((account_actor, foreign_job), (operations_actor, 'OPS-01')):
+            self.assertEqual(probe.call(actor, 'set_processing_job_state', job=job,
+                state='suspended', note='Schedule adjustment')['status'], 200)
+        reg = {'phase2': {'assignments': plan},
+               'mechanism_contract': mechanism_inputs.validate_paths('work-lifecycle', plan)}
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            result = mechanism_review.review(reg, {'events': probe.flow.world.events},
+                delivery_fixtures.UnifiedDeliveryChecks().review(probe.flow, root),
+                root/'natural', native_validated=True)
+        self.assertTrue(result['independent_result_valid'])
+        self.assertTrue(result['mechanism_observed'])
+        self.assertEqual(result['effects']['delayed_operations_reports'], 1)
+        self.assertEqual(result['causal_actors'], [operations_actor])
+        self.assertEqual([row['job'] for row in result['authored_actions']], ['OPS-01'])
+
     def test_lifecycle_restoration_before_consumption_prevents_final_interruption(self):
         manifest, _ = build_preview('knowledge-work', 'lifecycle', mechanism='work-lifecycle')
         plan = manifest['assignments']

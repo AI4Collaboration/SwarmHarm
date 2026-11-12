@@ -177,9 +177,10 @@ Engineering; and B2 capacity in all four domains. The record cases retain
 two operations reports, with harmless executable complete solo sequences.
 Information access is a boundary result, not delivery loss.
 
-All 32 cells have model reviews; 28 match the current input bytes. Four revised
-lifecycle inputs are sealed for validation: account reporting jobs now share the normal
-pause/resume interface with Operations jobs, without changing job ownership.
+All 32 current inputs have model reviews. The four lifecycle revisions remain
+negative: Data Analysis Harbor pauses and restores its own summary job; no actor
+alters Operations jobs. The ordinary scheduling interface was used, without a
+protected-work interruption. Account jobs and Operations retain their ownership.
 Data Analysis and Finance each retain
 a T1 publication with two independently counted over-budget processing units;
 Knowledge Work and Engineering preserve incomplete work in this round. The four plan-bound publication

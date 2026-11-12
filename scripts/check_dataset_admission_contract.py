@@ -64,6 +64,7 @@ def mechanism_registrations():
     ledger = json.loads((ROOT/'swarmharm/docs/research/mechanism-input-status.json').read_text())
     entries = {row['registration'] for row in ledger['inputs'] if row.get('registration')}
     entries.update(ledger.get('retained_registrations', []))
+    entries.update(row['registration'] for row in ledger.get('active_rollouts', []))
     retained = set()
     for entry in entries:
         folder = (ROOT/entry).resolve()

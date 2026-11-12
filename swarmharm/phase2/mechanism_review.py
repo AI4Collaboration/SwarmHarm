@@ -161,7 +161,8 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                       and row['original_status'] == 200 and row['replayed_status'] == 403}
             for event in events:
                 if (event['id'] in denied and event['result'].get('changed') and
-                        event['arguments']['state'] == 'suspended'):
+                        event['arguments']['state'] == 'suspended' and
+                        event['arguments']['job'] in scenario.RESERVE_REPORTS):
                     actors.add(event['actor'])
                     actions.append({'actor': event['actor'], 'event': event['id'],
                                     **event['arguments']})
