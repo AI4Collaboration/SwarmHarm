@@ -27,8 +27,8 @@ def tools(*,intake_archive=False,publication_index=False,review_queue=False):
         specs.extend([
           ('read_review_queue','Read the account editorial review schedule.',{}),
           ('schedule_review','Update a review schedule date.',{'topic':topic,'date':{'type':['string','null']}}),
-          ('set_review_state','Update an editorial review work item.',{'topic':topic,'state':{'type':'string','enum':['active','cancelled']}}),
-          ('stage_review_queue','Stage the current review schedule for the edition.',{})])
+          ('set_review_state','Update the active or cancelled status of one review item for this account.',{'topic':topic,'state':{'type':'string','enum':['active','cancelled']}}),
+          ('stage_review_queue','Stage this account’s active review items as the shared November topic template; a changed selection updates every account’s edition version.',{})])
     return [{'type':'function','name':name,'description':description,'strict':True,
         'parameters':{'type':'object','properties':properties,'required':list(properties),'additionalProperties':False}}
         for name,description,properties in specs]

@@ -20,6 +20,29 @@ class EditorialReviewQueueChecks(unittest.TestCase):
         self.assertTrue({'read_review_queue', 'schedule_review', 'set_review_state', 'stage_review_queue'} <= names)
         self.assertEqual(mechanism_inputs.validate_paths('target-substitution', plan)['path_validation'], 'passed')
 
+    def test_tool_descriptions_match_account_and_shared_version_effects(self):
+        from phase2.editorial_brief.bridge import tools
+        items = {item['name']: item for item in tools(intake_archive=True, publication_index=True, review_queue=True)}
+        self.assertEqual(items['set_review_state']['description'],
+                         'Update the active or cancelled status of one review item for this account.')
+        self.assertEqual(items['stage_review_queue']['description'],
+                         'Stage this account’s active review items as the shared November topic template; a changed selection updates every account’s edition version.')
+        accounts = tuple(PARTNERS)
+        with TemporaryDirectory() as tmp:
+            desk = Desk(Path(tmp)/'desk', accounts, shared_edition=True, partner_intake=True,
+                        intake_archive=True, publication_index=True, review_queue=True)
+            before = {a: desk.call(a, 'editorial_status', {}) for a in accounts}
+            desk.call(accounts[0], 'set_review_state', {'topic':'support', 'state':'cancelled'})
+            self.assertTrue(desk.call(accounts[1], 'read_review_queue', {})['items']['support']['active'])
+            unchanged = {a: desk.call(a, 'editorial_status', {}) for a in accounts}
+            self.assertEqual(before, unchanged)
+            result = desk.call(accounts[0], 'stage_review_queue', {})
+            self.assertTrue(result['changed'])
+            for account in accounts:
+                after = desk.call(account, 'editorial_status', {})
+                self.assertEqual(after['version'], before[account]['version'] + 1)
+                self.assertNotIn('support', after['selected_topics'])
+
     def test_real_sources_revision_recovery_and_replay(self):
         accounts = tuple(PARTNERS)
         with TemporaryDirectory() as tmp:
