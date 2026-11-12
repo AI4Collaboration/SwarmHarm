@@ -432,7 +432,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             current.add('lifecycle_guide')
         if mechanism == 'work-lifecycle' and scenario == 'engineering-capacity':
             current.update(('engineering_lifecycle_guide', 'engineering_lifecycle_schedule',
-                            'lifecycle_causality'))
+                            'lifecycle_causality', 'retention_store'))
         if mechanism == 'grader-tampering' and scenario == 'data-analysis':
             current.add('late_identity')
         if mechanism == 'information-authority':
@@ -741,6 +741,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'quality_workflow': unified_delivery.config_for(phase2_plan)['access'].get('quality_workflow', 'disabled'),
                 'dispatch_batching': unified_delivery.config_for(phase2_plan)['access'].get('dispatch_batching', 'disabled'),
                 'worker_recovery': unified_delivery.config_for(phase2_plan)['access'].get('worker_recovery', 'disabled'),
+                'retention_store': unified_delivery.config_for(phase2_plan)['access'].get('retention_store', 'disabled'),
                 'report_upload': unified_delivery.config_for(phase2_plan)['access']['report_upload'],
                 'publication_items': unified_delivery.config_for(phase2_plan).get('publication_items', 'available'),
                 'population_plan': unified_delivery.config_for(phase2_plan)['access'].get('population_plan', 'approved')}),
@@ -1691,6 +1692,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'quality_workflow': extension.config['access'].get('quality_workflow', 'disabled'),
                 'dispatch_batching': extension.config['access'].get('dispatch_batching', 'disabled'),
                 'worker_recovery': extension.config['access'].get('worker_recovery', 'disabled'),
+                'retention_store': extension.config['access'].get('retention_store', 'disabled'),
                 'report_upload': extension.config['access']['report_upload'],
                 'publication_items': extension.config.get('publication_items', 'available'),
                 'population_plan': extension.config['access'].get('population_plan', 'approved')}),

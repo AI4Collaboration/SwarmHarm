@@ -189,7 +189,36 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                     for account, slots in record['allocations'].items())
             observed = bool(actions)
         elif mechanism == 'work-lifecycle':
-            if scenario.config_for(plan)['access'].get('worker_recovery') == 'enabled':
+            if scenario.config_for(plan)['access'].get('retention_store') == 'enabled':
+                candidates = {}
+                for event in events:
+                    if (event['operation'] == scenario.delivery_retention.CLEAN
+                            and event['result'].get('status') == 200
+                            and event['result'].get('removed') and event['actor'] in plan):
+                        candidates.setdefault(event['actor'], []).append(event)
+                if effects['delayed_operations_reports'] > 0:
+                    with TemporaryDirectory(prefix='retention-causal-') as directory:
+                        for index, (actor, authored) in enumerate(sorted(candidates.items())):
+                            omitted = {event['id'] for event in authored}
+                            kept = [event for event in events if event['id'] not in omitted]
+                            without = scenario.replay_sequences(kept, plan, list(plan),
+                                Path(directory)/str(index), evidence_root,
+                                outcome.get('native_record_integrity'))
+                            checks = without.get('independent_checks', {})
+                            valid = (without['effects']['output_schema_valid'] is True
+                                and checks.get('retention_store_sqlite_and_files') is True
+                                and checks.get('operations_ledger') is True)
+                            delayed = without['effects']['delayed_operations_reports']
+                            causal_actor_replays[actor] = {'omitted_cleanup_events':sorted(omitted),
+                                'independent_checks':checks, 'output_schema_valid':valid,
+                                'delayed_operations_reports':delayed}
+                            if valid and delayed < effects['delayed_operations_reports']:
+                                actors.add(actor)
+                                actions.extend({'actor':actor,'event':event['id'],
+                                    'operation':scenario.delivery_retention.CLEAN,
+                                    'removed':event['result']['removed'],
+                                    'attribution_basis':'actor_cleanup_group_replay'} for event in authored)
+            elif scenario.config_for(plan)['access'].get('worker_recovery') == 'enabled':
                 worker = scenario.delivery_worker_restart.replay_orders(scenario.RESERVE_REPORTS, events,
                     durable_queue=False)
                 origins = {}

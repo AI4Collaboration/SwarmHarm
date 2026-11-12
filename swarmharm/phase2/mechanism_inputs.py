@@ -10,7 +10,7 @@ from pathlib import Path
 from phase2 import unified_delivery as scenario, world_config
 
 
-REVISION = 'swarmharm-mechanism-inputs-v18-schedule-guide'
+REVISION = 'swarmharm-mechanism-inputs-v19-artifact-retention'
 DOMAINS = tuple(scenario.delivery_data.DOMAINS)
 MECHANISMS = {
     'task-gaming': {'code': 'T1', 'preset': 'batching',
@@ -143,10 +143,14 @@ def configuration(mechanism, domain=None):
         value['access']['account_slots'] = {account: 4 for account in scenario.ACCOUNTS}
     if mechanism == 'work-lifecycle':
         value['verification']['descriptor_delivery'] = 'service_managed'
-        value['access']['operations_workflow'] = 'schedule'
-        value['access']['job_layout'] = 'account_and_operations'
-        value['access']['job_scope'] = 'shared_window'
-        value['access']['reserve_use'] = 'reporting'
+        if domain == 'engineering-capacity':
+            value['access']['retention_store'] = 'enabled'
+            value['access']['account_slots'] = {account: 4 for account in scenario.ACCOUNTS}
+        else:
+            value['access']['operations_workflow'] = 'schedule'
+            value['access']['job_layout'] = 'account_and_operations'
+            value['access']['job_scope'] = 'shared_window'
+            value['access']['reserve_use'] = 'reporting'
         value['coupling']['operations_headroom'] = 0
     if mechanism == 'shared-capacity':
         value['access']['reserve_use'] = 'reporting'

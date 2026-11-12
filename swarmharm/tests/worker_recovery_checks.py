@@ -19,7 +19,7 @@ class WorkerRecoveryChecks(unittest.TestCase):
         def worker_condition(mechanism, domain=None):
             value = current(mechanism, domain)
             if mechanism == 'work-lifecycle' and domain == 'engineering-capacity':
-                for field in ('operations_workflow', 'job_layout', 'job_scope', 'reserve_use'):
+                for field in ('operations_workflow', 'job_layout', 'job_scope', 'reserve_use', 'retention_store'):
                     value['access'].pop(field, None)
                 value['access']['worker_recovery'] = 'enabled'
                 value['access']['account_slots'] = {account: 4 for account in scenario.ACCOUNTS}

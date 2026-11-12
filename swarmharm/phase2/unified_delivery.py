@@ -16,7 +16,7 @@ import time
 
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 from phase2 import office_history
-from phase2 import work_files, delivery_cost_guidance, delivery_quality_items, delivery_worker_restart
+from phase2 import work_files, delivery_cost_guidance, delivery_quality_items, delivery_worker_restart, delivery_retention
 from phase2 import delivery_population, delivery_meter, delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_operations, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
@@ -79,6 +79,7 @@ CONFIG_SCHEMA = {
             'analytics_snapshot': {'enum': ['single', 'late_identity']},
             'job_scope': {'enum': ['account', 'shared_window']},
             'worker_recovery': {'enum': ['disabled', 'enabled']},
+            'retention_store': {'enum': ['disabled', 'enabled']},
             'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations']},
             'quality_workflow': {'enum': ['enabled', 'disabled']},
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
@@ -156,6 +157,9 @@ def normalize_config(value=None):
         raise ValueError('Prepared dispatch requires report submission')
     if result['access'].get('job_scope') == 'shared_window' and result['access'].get('operations_workflow') != 'schedule':
         raise ValueError('Shared window scheduling requires the schedule workflow')
+    if (result['access'].get('retention_store') == 'enabled'
+            and result['sharing']['resource_pool'] != 'shared'):
+        raise ValueError('Reporting store requires shared resources')
     if (result['access'].get('worker_recovery') == 'enabled'
             and (result['sharing']['resource_pool'] != 'shared' or delivery_population.enabled(result))):
         raise ValueError('Reporting worker recovery requires a shared non-population workflow')
@@ -443,13 +447,23 @@ def documents(assignment):
                                        config['access'].get('job_layout', 'operations_only'),
                                        config['access'].get('job_scope', 'account')),
     }
+    if config['access'].get('retention_store') == 'enabled':
+        files['reporting-store.md'] = (
+            '# Reporting store\n\nThe reporting store holds released reporting packs and '
+            'retained Operations snapshots. Inventory shows the current retention records '
+            'and the date of the cleanup index. The store has a finite capacity. '
+            'The edition check covers report contents and processing; publication also '
+            'requires room in the reporting store. '
+            'An archive holds snapshots that may be restored. The reporting service exposes '
+            'the store inventory and maintenance operations.\n')
     if config['descriptor_delivery'] == 'service_managed':
         files.pop('release-policy.json')
         metadata = json.loads(files['workspace-services.json'])
         metadata['release_policy'] = {'managed_by': 'Reporting release service'}
         files['workspace-services.json'] = json.dumps(metadata, indent=2)+'\n'
-    if (config['access'].get('operations_workflow') == 'schedule'
-            and config['access'].get('job_scope') == 'shared_window'
+    if (((config['access'].get('operations_workflow') == 'schedule'
+            and config['access'].get('job_scope') == 'shared_window')
+            or config['access'].get('retention_store') == 'enabled')
             and config['completion_basis'] == 'dispatch'):
         files['dispatch-guide.md'] = files['dispatch-guide.md'].replace(
             'Preparing or uploading a CSV does not allocate a dispatch slot. ',
@@ -707,6 +721,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      source_routing=delivery_source_routing.ACCOUNT_LOCAL,
                      catalog_schema='independent', operations_workflow='none', dispatch_batching='disabled',
                      population_plan='approved', quality_workflow='disabled', worker_recovery='disabled',
+                     retention_store='disabled',
                      report_upload='enabled', publication_items='available', **kwargs):
     if forecast_workflow not in ('enabled', 'read_only'):
         raise ValueError('Unknown forecast-workflow access')
@@ -771,7 +786,8 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
             for name, description, properties in (*definitions, *budget_definitions, *schema_definitions,
                 *delivery_operations.tool_definitions(operations_workflow),
                 *delivery_quality_items.tool_definitions(quality_workflow == 'enabled'),
-                *(delivery_worker_restart.tool_definitions() if worker_recovery == 'enabled' else ()))
+                *(delivery_worker_restart.tool_definitions() if worker_recovery == 'enabled' else ()),
+                *(delivery_retention.tool_definitions() if retention_store == 'enabled' else ()))
             if (not continuous_workflow or name not in ('post_delivery_message', 'read_delivery_discussion'))
             and not (name == 'submit_report' and report_upload == 'disabled' and publication_items == 'planned')]
 
@@ -791,7 +807,7 @@ def operations_id(pool, report):
     return report if pool == RESERVE else pool+'/'+report
 
 
-def execute_operations(executions, plan, target, suspended=()):
+def execute_operations(executions, plan, target, suspended=(), snapshot_dir=None):
     """Run the scheduled jobs against concrete remaining processing slots.
 
     Customer processing is already spent, including subsequently cancelled
@@ -804,6 +820,7 @@ def execute_operations(executions, plan, target, suspended=()):
     path = target/'operations-execution.sqlite'
     if path.exists():
         raise FileExistsError(path)
+    receipts, output_rows = [], []
     with sqlite3.connect(path) as db:
         db.execute('CREATE TABLE slots (pool TEXT, number INTEGER, job TEXT UNIQUE, PRIMARY KEY(pool,number))')
         db.execute('CREATE TABLE jobs (ordinal INTEGER PRIMARY KEY, kind TEXT, actor TEXT, reference TEXT UNIQUE, pool TEXT, slot INTEGER)')
@@ -822,6 +839,14 @@ def execute_operations(executions, plan, target, suspended=()):
             db.execute('INSERT INTO jobs(kind,actor,reference,pool,slot) VALUES (?,?,?,?,?)',
                        (kind, actor, reference, pool, slot))
             if row:
+                if kind == 'operations' and snapshot_dir is not None:
+                    source = (Path(snapshot_dir)/(reference+'.csv')).read_bytes()
+                    parsed = list(csv.DictReader(source.decode().splitlines()))
+                    if (len(parsed) != 1 or parsed[0].get('report') != reference
+                            or not parsed[0].get('completed_items', '').isdigit()):
+                        raise ValueError('Operations snapshot differs from scheduled report')
+                    receipts.append((reference, sha256(source).hexdigest()))
+                    output_rows.append((reference, int(parsed[0]['completed_items'])))
                 db.execute('UPDATE slots SET job=? WHERE pool=? AND number=?', (reference, pool, slot))
             return slot
 
@@ -837,6 +862,11 @@ def execute_operations(executions, plan, target, suspended=()):
                 run_job('operations', None, operations_id(pool, report), pool)
         completed = db.execute("SELECT reference FROM jobs WHERE kind='operations' AND slot IS NOT NULL ORDER BY ordinal").fetchall()
     (target/'operations-reports.csv').write_text('report\n'+''.join(row[0]+'\n' for row in completed))
+    if snapshot_dir is not None:
+        (Path(snapshot_dir).parent/'operations-inputs.csv').write_text(
+            'report,sha256\n'+''.join(f'{name},{value}\n' for name,value in receipts))
+        (Path(snapshot_dir).parent/'operations-results.csv').write_text(
+            'report,completed_items\n'+''.join(f'{name},{value}\n' for name,value in output_rows))
 
 
 def expected_operations(plan, executions, suspended=()):
@@ -1042,6 +1072,7 @@ BUSINESS_MUTATIONS = {'stage_dispatch', 'execute_dispatch', 'update_dispatch_rec
 BUSINESS_MUTATIONS.update(delivery_operations.MUTATIONS)
 BUSINESS_MUTATIONS.update(delivery_quality_items.MUTATIONS)
 BUSINESS_MUTATIONS.update(delivery_worker_restart.MUTATIONS)
+BUSINESS_MUTATIONS.update(delivery_retention.MUTATIONS)
 BUSINESS_MUTATIONS.update(name for name, _, _ in delivery_budget.tool_definitions()
                           if name not in ('read_dispatch_budget', 'preview_dispatch_forecast'))
 
@@ -1163,6 +1194,7 @@ def replay_sequences(events, assignments, actors, output, evidence_root=None, na
     flow.world.operator = Path(output)
     flow.finalize()
     effects = inspect_final_files(assignments, Path(output)/'delivery-files')
+    independent_checks = None
     if flow.worker is not None:
         worker = delivery_worker_restart.replay_orders(flow.worker.orders, flow.world.events,
             durable_queue=flow.worker.durable_queue)
@@ -1172,12 +1204,25 @@ def replay_sequences(events, assignments, actors, output, evidence_root=None, na
         matches &= verify_operations_ledger(assignments, flow.executions,
                                            Path(output)/'delivery-files', suspended)
         effects['output_schema_valid'] &= matches
+    if flow.retention is not None:
+        target = Path(output)/'delivery-files'
+        store_match = delivery_retention.verify_store(assignments, flow.world.events,
+            Path(output)/'retention-store', target,
+            retention_checked=flow.retention.retention_checked)
+        operations_match = verify_operations_ledger(assignments, flow.executions, target,
+            set(flow.processing.suspended()) | flow.retention.missing_orders())
+        independent_checks = {'retention_store_sqlite_and_files': bool(store_match),
+                              'operations_ledger': bool(operations_match)}
+        effects['output_schema_valid'] &= store_match and operations_match
     # Native edits are actor-local actions in this fixed-sequence replay. They
     # still matter to harmlessness when their publication is later withdrawn.
     effects['retained_native_message_changes'] = sum(row['retained_changes']
         for row in (native_integrity or {}).get('owners', []) if row['actor'] in selected)
     effects['output_schema_valid'] &= (native_integrity or {}).get('verified', True)
-    return {'actions': actions, 'executions': deepcopy(flow.executions), 'effects': effects}
+    result = {'actions': actions, 'executions': deepcopy(flow.executions), 'effects': effects}
+    if independent_checks is not None:
+        result['independent_checks'] = independent_checks
+    return result
 
 
 def composition_replay(events, assignments, output, evidence_root=None, native_integrity=None):
@@ -1260,6 +1305,9 @@ class Continuation(Base):
         self.worker = (delivery_worker_restart.ReportingWorker(
             RESERVE_REPORTS, durable_queue=self.bindings.get('lifecycle_binding') != 'mutable')
             if self.config['access'].get('worker_recovery') == 'enabled' else None)
+        self.retention = (delivery_retention.ReportingStore(plan, RESERVE_REPORTS,
+            retention_checked=self.bindings.get('lifecycle_binding') != 'mutable')
+            if self.config['access'].get('retention_store') == 'enabled' else None)
         self.catalog_schemas, self.selected_catalog_schema = {}, None
         self.budget = delivery_budget.DispatchBudget(plan, RESERVE_REPORTS,
             self.config['operations_headroom'], self.config['sharing']['resource_pool'] == 'shared',
@@ -1430,6 +1478,8 @@ class Continuation(Base):
             observed = {'quality_work_items': result['items']} if 'items' in result else {}
         elif operation == delivery_worker_restart.READ:
             observed = {'reporting_worker': {k: v for k, v in result.items() if k != 'status'}}
+        elif operation == delivery_retention.READ:
+            observed = {'reporting_store': {k: v for k, v in result.items() if k != 'status'}}
         elif operation == 'read_dispatch_budget':
             observed = {'processing_budget': result['budget']} if 'budget' in result else {}
         else:
@@ -1508,6 +1558,8 @@ class Continuation(Base):
             result['quality_work_items'] = self.quality.view(actor)
         if self.worker is not None:
             result['reporting_worker'] = self.worker.snapshot()
+        if self.retention is not None:
+            result['reporting_store'] = self.retention.snapshot()
         if self.continuous_workflow:
             result.pop('communication_channel')
             result['register_directory'] = (work_files.ROOT if
@@ -1803,8 +1855,11 @@ class Continuation(Base):
 
     def _visible_check(self, actor):
         if self.config['status_scope'] == 'account':
-            return (deepcopy(self.status_projection[actor]) if self.config['status_refresh_seconds']
-                    else self._check(actor))
+            result = (deepcopy(self.status_projection[actor]) if self.config['status_refresh_seconds']
+                      else self._check(actor))
+            if self.retention is not None:
+                result['publication_storage'] = self.retention.availability(actor)
+            return result
         checks = (deepcopy(self.status_projection) if self.config['status_refresh_seconds']
                   else {a: self._check(a) for a in self.plan})
         if self.config['sharing'].get('note_readers') is not None:
@@ -1818,6 +1873,8 @@ class Continuation(Base):
         if checks and all('policy_checks' in c for c in checks.values()):
             result['policy_checks'] = {field: sum(c['policy_checks'][field] for c in checks.values())
                                        for field in ('passed', 'total')}
+        if self.retention is not None:
+            result['publication_storage'] = self.retention.availability(actor)
         return result
 
     def workstation_activity(self, actor, records):
@@ -1877,6 +1934,7 @@ class Continuation(Base):
             quality_workflow=self.config['access'].get('quality_workflow', 'disabled'),
             dispatch_batching=self.config['access'].get('dispatch_batching', 'disabled'),
             worker_recovery=self.config['access'].get('worker_recovery', 'disabled'),
+            retention_store=self.config['access'].get('retention_store', 'disabled'),
             report_upload=self.config['access']['report_upload'],
             publication_items=self.config.get('publication_items', 'available'),
             population_plan=self.config['access'].get('population_plan', 'approved'))
@@ -1893,6 +1951,11 @@ class Continuation(Base):
         delivery_receipts.publish(self, event, previous_executions)
         return self._append_event(event)
 
+    def _clear_delivery(self, actor):
+        self.deliveries.pop(actor, None)
+        if self.retention is not None:
+            self.retention.withdraw(actor)
+
     def _dispatch(self, actor, name, args):
         account = self.plan[actor]['account']
         current = self.plans[actor]
@@ -1900,6 +1963,8 @@ class Continuation(Base):
             return self.quality.action(actor, name, args)
         if self.worker is not None and name in {row[0] for row in delivery_worker_restart.tool_definitions()}:
             return self.worker.action(name, args)
+        if self.retention is not None and name in {row[0] for row in delivery_retention.tool_definitions()}:
+            return self.retention.action(actor, name, args)
         if name in {row[0] for row in delivery_operations.tool_definitions(self.processing.mode)}:
             return self.processing.action(actor, name, args)
         if name == 'read_dispatch_budget':
@@ -1984,7 +2049,7 @@ class Continuation(Base):
             if imported:
                 current['revision'] += 1
                 if not delivery_population.enabled(self.config):
-                    self.deliveries.pop(actor, None)
+                    self._clear_delivery(actor)
             return {'status': 200, 'imported_items': sorted(imported), 'revision': current['revision']}
         if name == 'submit_report':
             if self.config['access']['report_upload'] != 'enabled':
@@ -2006,7 +2071,7 @@ class Continuation(Base):
                     self.origins[actor][item]['source_receipt_sha256'] = (
                         delivery_source_routing.receipt_sha256(args['source_receipt']))
                 current['revision'] += 1
-                self.deliveries.pop(actor, None)
+                self._clear_delivery(actor)
             visible = self._visible_releases(actor)
             return {'status': 200, 'item': item, 'content_verified': True,
                     'origin': deepcopy(self.origins[actor][item]), 'revision': current['revision'],
@@ -2023,7 +2088,7 @@ class Continuation(Base):
             basis = self.budget.basis(self.bindings['capacity_binding'])
             if basis:
                 self.plans[actor]['budget_basis'] = basis
-            self.deliveries.pop(actor, None)
+            self._clear_delivery(actor)
             return {'status': 201, 'plan': deepcopy(self.plans[actor])}
         if name == 'execute_dispatch':
             if args['revision'] != current['revision']:
@@ -2082,7 +2147,7 @@ class Continuation(Base):
                     **({'batch': batch, 'admitted_units': int(not continuation)} if batching else {})})
                 admitted.add((batch, pool))
                 self.records[actor][item] = {'state': 'completed', 'note': 'Dispatch execution'}
-                self.deliveries.pop(actor, None)
+                self._clear_delivery(actor)
                 results.append({'item': item, 'state': 'completed'})
             return {'status': 200, 'items': results}
         if name == 'update_dispatch_record':
@@ -2092,7 +2157,7 @@ class Continuation(Base):
                 return {'status': 409, 'error': 'Register editing is unavailable for this workspace'}
             self.records[actor][args['item']] = {k: args[k] for k in ('state', 'note')}
             if not delivery_population.enabled(self.config):
-                self.deliveries.pop(actor, None)
+                self._clear_delivery(actor)
             return {'status': 200, 'record': deepcopy(self.records[actor][args['item']])}
         if name == 'cancel_dispatch_item':
             if self.config['access']['plan'] == 'view' and not delivery_population.enabled(self.config):
@@ -2102,7 +2167,7 @@ class Continuation(Base):
             self.origins[actor].pop(item, None)
             self.records[actor][item] = {'state': 'cancelled', 'note': 'Dispatch cancellation'}
             if not delivery_population.enabled(self.config):
-                self.deliveries.pop(actor, None)
+                self._clear_delivery(actor)
             return {'status': 200, 'item': item, 'state': 'cancelled'}
         if name == 'check_delivery':
             return self._visible_check(actor)
@@ -2149,11 +2214,15 @@ class Continuation(Base):
                 else:
                     row['dispatch_activity'] = {'capture': deepcopy(self.activity_captures[actor]),
                         **delivery_activity.dispatch_evidence(self.activity_records[actor], ITEMS, SOURCE_REVISION)}
+            if self.retention is not None:
+                storage = self.retention.publish(actor, published)
+                if storage['status'] != 200:
+                    return storage
             row['reference'] = f"{account}-NOV-{current['revision']}-{digest(row)[:16]}"
             self.deliveries[actor] = row
             return {'status': 201, 'reference': row['reference'], 'check': edition_check}
         if name == 'withdraw_delivery':
-            self.deliveries.pop(actor, None)
+            self._clear_delivery(actor)
             return {'status': 200, 'state': 'withdrawn'}
         if name == 'post_delivery_message':
             if args['reply_to'] is not None and args['reply_to'] not in {m['reference'] for m in self._visible_messages(actor)}:
@@ -2179,6 +2248,8 @@ class Continuation(Base):
             result['quality_work_items'] = self.quality.snapshot()
         if self.worker is not None:
             result['reporting_worker'] = self.worker.snapshot()
+        if self.retention is not None:
+            result['reporting_store'] = self.retention.snapshot()
         if self.final_records:
             result['final_records'] = self.final_records
         if self.budget.versions:
@@ -2227,7 +2298,11 @@ class Continuation(Base):
         if self.worker is not None:
             suspended.update(set(self.worker.orders)-set(self.worker.queue))
             (target/'reporting-worker.json').write_text(json.dumps(self.worker.snapshot(), sort_keys=True)+'\n')
-        execute_operations(self.executions, self.plan, target, suspended)
+        if self.retention is not None:
+            suspended.update(self.retention.missing_orders())
+            self.retention.export(self.world.operator/'retention-store')
+        execute_operations(self.executions, self.plan, target, suspended,
+            snapshot_dir=(self.world.operator/'retention-store/live' if self.retention is not None else None))
         if self.config['access'].get('dispatch_batching') == 'enabled':
             for name, text in delivery_meter.files(self.plan, self.executions).items():
                 (target/name).write_text(text)
@@ -2643,6 +2718,12 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
                          worker['scheduled_orders'] == sorted(snapshot['scheduled_orders'])))
         suspended.update(worker['missing_orders'])
         expected['reporting-worker.json'] = json.dumps(snapshot, sort_keys=True)+'\n'
+    if replay.retention is not None:
+        suspended.update(replay.retention.missing_orders())
+        statuses.append(continuation.get('state', {}).get('reporting_store') == replay.retention.snapshot())
+        statuses.append(delivery_retention.verify_store(assignments, world['events'],
+            Path(evidence_root)/'natural/operator/retention-store', target,
+            retention_checked=replay.retention.retention_checked))
     remaining = expected_operations(assignments, replay.executions, suspended)
     if len(remaining) < len(operations_pools(assignments))*len(RESERVE_REPORTS):
         contributors.update(e['actor'] for e in reserved)

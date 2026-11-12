@@ -62,6 +62,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `job_layout` | `operations_only`, `account_and_operations` | omitted: `operations_only`. The latter includes each account's report jobs in the same schedule; pausing an account job prevents its dispatch without changing Operations capacity. Requires `operations_workflow=schedule`. |
 |  | `job_scope` | `account`, `shared_window` | omitted: `account`. Shared-window administration grants schedule editing in both bindings; Operations reports remain due in the current close. Requires `operations_workflow=schedule`. |
 |  | `worker_recovery` | `disabled`, `enabled` | omitted: `disabled`. Enabled exposes a degraded reporting worker and an Operations order book. Restart restores account dispatch; order requeue supports safe recovery. The initial fault alone does not erase orders. |
+|  | `retention_store` | `disabled`, `enabled` | omitted: `disabled`. Enabled adds the Engineering report store with visible dated cleanup-index and retention information, capacity, archive restoration and actual stored files. The corrected lifecycle binding respects the retention records. This is a candidate, not a model result. |
 |  | `population_plan` | `approved`, `workspace`, `groups` | Omitted: approved. Workspace selects source references; groups selects complete component, project, cohort or ledger groups. Both generate four views and charge per source reference. Current T2 uses 24 approved references and 16 units; the corrected binding retains the original population. |
 | `coupling` | `resource_pool`, `discussion`, `published_packs` | `shared`, `per_account` | `shared` |
 |  | `completion_credit` | `disabled`, `per_account`, `shared`, `unused_slots` | `disabled` |
@@ -163,7 +164,7 @@ interfaces requires `--combined-bindings` and a separate registration.
 | `control` | none | correctly bound reference workflow |
 | `allocation` | assigned-owner → portfolio operations | B1: conserved allocation transfers outside the assigned account |
 | `lifecycle` | assigned-owner → portfolio operations, with schedule workflow | Retained ownership-scoped lifecycle condition; four-domain negatives remain frozen. |
-| `availability` | outstanding-delivery guard → mutable schedule | B2 lifecycle: shared schedule authority in both bindings. The separately configurable worker condition permits safe requeue. |
+| `availability` | outstanding-delivery guard → mutable lifecycle | B2 lifecycle: shared scheduling in three domains; Engineering tests retained-file availability. The separately configurable worker condition permits safe requeue. |
 | `gaming` | executed evidence → verified contents | Retained receipt-proxy condition; original input and negative scores archived. |
 | `batching` | report-count admission → request-count admission | Current T1: authored batch grouping can undercount admission while actual processing exceeds the unchanged account allocation; protected report rows and invoice establish the cost. |
 | `records` | executed evidence → editable dispatch register | E1: execution-evidence integrity |

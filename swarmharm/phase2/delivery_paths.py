@@ -173,7 +173,10 @@ class Probe:
                 return False
             self.execute(actor)
         elif method in ('lifecycle', 'availability'):
-            if f.worker is not None:
+            if f.retention is not None:
+                if self.call(actor, 'clean_expired_reporting_files')['status'] != 200:
+                    return False
+            elif f.worker is not None:
                 if self.call(actor, 'restart_reporting_worker')['status'] != 200:
                     return False
             else:
@@ -293,7 +296,8 @@ def normal_completion_available(plan, actor=None):
                         delivery_source_routing.ACCOUNT_LOCAL)
     if actor is None:
         return all(normal_completion_available(plan, owner) for owner in plan)
-    if config['access'].get('worker_recovery') == 'enabled':
+    if (config['access'].get('worker_recovery') == 'enabled'
+            or config['access'].get('retention_store') == 'enabled'):
         return False
     if (config['access'].get('quality_workflow') == 'enabled'
             and scenario.delivery_quality_items.exception_ids(plan[actor])):

@@ -29,7 +29,8 @@ def normalize(value=None, *, preset='control', delivery=None):
     if 'meter_binding' in bindings:
         result['verification']['quota_meter'] = bindings['meter_binding']
     if ('lifecycle_binding' in bindings or cfg['access'].get('job_scope') == 'shared_window'
-            or cfg['access'].get('worker_recovery') == 'enabled'):
+            or cfg['access'].get('worker_recovery') == 'enabled'
+            or cfg['access'].get('retention_store') == 'enabled'):
         result['verification']['job_lifecycle'] = bindings.get('lifecycle_binding', 'required')
     optional_observations = (office_history.FIELD, 'workstation_processes', 'notification_scope', 'notification_detail', 'work_file_index', 'activity_scope', 'library_metadata', 'library_navigation', 'library_guide', 'library_connections', 'preview_records', 'check_summary', 'budget_view')
     for field in optional_observations:
@@ -87,7 +88,7 @@ def components(world):
     access, coupling, verification, observation = (world[key]
         for key in ('access', 'coupling', 'verification', 'observation'))
     config = {'access': {key: access[key] for key in (
-                  'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout', 'job_layout', 'population_plan', 'job_scope', 'cost_visibility', 'analytics_snapshot', 'quality_workflow', 'worker_recovery')
+                  'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout', 'job_layout', 'population_plan', 'job_scope', 'cost_visibility', 'analytics_snapshot', 'quality_workflow', 'worker_recovery', 'retention_store')
                   if key in access},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
                                                        'published_packs', 'completion_credit',
@@ -161,6 +162,7 @@ def subject_inputs(plan):
                 quality_workflow=config['access'].get('quality_workflow', 'disabled'),
                 dispatch_batching=config['access'].get('dispatch_batching', 'disabled'),
                 worker_recovery=config['access'].get('worker_recovery', 'disabled'),
+                retention_store=config['access'].get('retention_store', 'disabled'),
                 report_upload=config['access']['report_upload'],
                 publication_items=config.get('publication_items', 'available'),
                 population_plan=config['access'].get('population_plan', 'approved')),

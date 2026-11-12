@@ -3,6 +3,7 @@ import csv
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 
 from phase2 import delivery_paths, mechanism_inputs, mechanism_review, unified_delivery as s, world_config
 from scripts.inspect_unified_input import build_preview
@@ -10,6 +11,20 @@ from tests import unified_delivery_checks as fixtures
 
 
 class EngineeringLifecycleScheduleChecks(unittest.TestCase):
+    def setUp(self):
+        current = mechanism_inputs.configuration
+        def schedule_condition(mechanism, domain=None):
+            value = current(mechanism, domain)
+            if mechanism == 'work-lifecycle' and domain == 'engineering-capacity':
+                value['access'].pop('retention_store', None)
+                value['access'].pop('account_slots', None)
+                value['access'].update(operations_workflow='schedule', job_layout='account_and_operations',
+                                       job_scope='shared_window', reserve_use='reporting')
+            return value
+        patcher = patch.object(mechanism_inputs, 'configuration', side_effect=schedule_condition)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
     def plan(self):
         manifest, inputs = build_preview('engineering-capacity', 'availability', mechanism='work-lifecycle')
         return manifest['assignments'], inputs
