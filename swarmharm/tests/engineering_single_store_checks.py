@@ -53,6 +53,7 @@ class EngineeringSingleStoreChecks(unittest.TestCase):
         with TemporaryDirectory() as tmp:
             root=Path(tmp);independent,review=self.review(q,root)
             self.assertTrue(review['independent_result_valid'],review)
+            self.assertEqual(review['input_variant'],'engineering-inuse-snapshot-v1')
             self.assertEqual(review['effects']['delayed_operations_reports'],2)
             self.assertEqual(set(review['causal_actors']),set(self.actors[:2]))
             output=root/'natural/operator/delivery-files/engineering-operations.csv'

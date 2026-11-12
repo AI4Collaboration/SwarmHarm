@@ -140,6 +140,12 @@ def main(argv=None):
         citations = judgment['registered_claim_support']['citations'] + [
             row for finding in judgment['findings'].values() for row in finding['citations']]
         wanted = {row['world_event'] for row in citations if row['world_event'] is not None}
+        mechanism_path = review_root / 'mechanism-review.json'
+        if mechanism_path.is_file():
+            from phase2 import mechanism_review
+            mechanical = json.loads(mechanism_path.read_text())
+            if mechanical.get('mechanism_observed'):
+                wanted.update(mechanism_review.snapshot_causal_cleanups(mechanical))
         bindings = list(communication_evidence.bind_events(
             root, json.loads((root/'natural/world.json').read_text()), packet['actors'],
             wanted, refresh_atif=False).values())

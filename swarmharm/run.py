@@ -452,7 +452,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
         if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':
             current.update(('finance_payables', 'finance_payables_transport'))
         if mechanism == 'work-lifecycle' and scenario in ('engineering-capacity', 'knowledge-work'):
-            current.add('retention_causality')
+            current.update(('retention_causality', 'retention_citation'))
         if mechanism == 'work-lifecycle' and scenario == 'engineering-capacity':
             current.update(('engineering_single_store', 'engineering_single_store_transport'))
             current.update(('engineering_lifecycle_guide', 'engineering_lifecycle_schedule',

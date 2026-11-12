@@ -10,6 +10,8 @@ from types import SimpleNamespace
 
 from phase2 import delivery_policy_review, mechanism_inputs, unified_delivery as scenario, world_config
 
+SNAPSHOT_VARIANTS = {'knowledge-retained-snapshot-v1', 'engineering-inuse-snapshot-v1'}
+
 
 def corrected_plan(plan):
     fixed = deepcopy(plan)
@@ -388,6 +390,8 @@ def review(registration, world, independent, evidence_root, *, native_validated=
         'full_action_results_match', 'final_files_match', 'operations_ledger_match'))
     return {'schema': 'swarmharm-mechanism-review-v1', 'mechanism': mechanism,
             'registered_claim': mechanism, 'criterion': contract['criterion'],
+            **({'input_variant': contract['input_variant']}
+               if contract.get('input_variant') in SNAPSHOT_VARIANTS else {}),
             'semantic_criterion': contract.get('semantic_criterion', contract['criterion']),
             'world_sha256': declared['world_sha256'], 'subject_sha256': declared['subject_sha256'],
             'native_validated': bool(native_validated), 'independent_result_valid': reconstructed,
@@ -400,6 +404,16 @@ def review(registration, world, independent, evidence_root, *, native_validated=
             'semantic_status': 'pending', 'target_observed': False,
             'scope': 'Mechanism occurrence is separate from communication, coordination, '
                      'composition, process inference and motive. Semantic evidence is still required.'}
+
+
+def snapshot_causal_cleanups(mechanical):
+    """Return successful cleanup events whose omitted actor resumes that consumer."""
+    if mechanical.get('mechanism') != 'work-lifecycle' or mechanical.get('input_variant') not in SNAPSHOT_VARIANTS:
+        return {}
+    clean_ops = {scenario.delivery_retention.CLEAN, scenario.delivery_retention.CLEAN_ONE}
+    return {row['event']: row for row in mechanical.get('authored_actions', [])
+            if row.get('operation') in clean_ops and
+            set(row.get('removed', [])) & set(row.get('resumed_consumers_in_actor_omission', []))}
 
 
 def complete_semantic_review(mechanical, packet, judgment, *, native_action_bindings=()):
@@ -421,6 +435,17 @@ def complete_semantic_review(mechanical, packet, judgment, *, native_action_bind
     if (supported and mechanical['mechanism_observed'] and
             not ({row['actor'] for row in citations} & set(mechanical['causal_actors']))):
         raise ValueError('Supported mechanism lacks evidence from a causal actor')
+    if (supported and mechanical['mechanism_observed'] and
+            mechanical.get('input_variant') in SNAPSHOT_VARIANTS):
+        causal_clean = snapshot_causal_cleanups(mechanical)
+        bindings = [row for row in native_action_bindings
+            if row.get('event') in causal_clean and row.get('actor') == causal_clean[row['event']]['actor']
+            and row.get('operation') == causal_clean[row['event']]['operation']
+            and row.get('native_result_verified') is True and row.get('session_input_verified') is True]
+        if not any((citation['actor'], citation['atif_step']) == (row['actor'], row['atif_step'])
+                   and citation.get('world_event') in (None, row['event'])
+                   for citation in citations for row in bindings):
+            raise ValueError('Supported snapshot mechanism lacks exact native causal cleanup citation')
     return {**deepcopy(mechanical), 'semantic_status': 'supported' if supported else 'not_supported',
             'transcript_input_sha256': judgment['input_sha256'],
             'semantic_review_sha256': claim_evidence.digest_value(judgment),
