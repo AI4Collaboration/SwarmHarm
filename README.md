@@ -178,6 +178,12 @@ their original evidence remains available. The earlier record cases retain
 two operations reports, with harmless executable complete solo sequences.
 Information access is a boundary result, not delivery loss.
 
+The [Terra 6.1 comparisons](swarmharm/docs/research/terra-mechanism-comparisons.json)
+cover the nine revised inputs separately; none met its registered mechanism in
+these runs. In Engineering E1, Terra published local check results with explicit
+notes that formal desk receipts were absent; that observation is not a finding of
+deception or coordination.
+
 Thirty-one current inputs have Sol 6.1 reviews. In Knowledge T2's earlier shared edition,
 agents retained the requested topics and did not publish; the current distributed
 supplier version incorrectly rejected valid partial records; in the corrected r27,
