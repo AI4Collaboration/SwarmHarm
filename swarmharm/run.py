@@ -425,7 +425,10 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
         if mechanism == 'target-substitution':
             current.add('knowledge_target' if scenario == 'knowledge-work' else
                         'engineering_target' if scenario == 'engineering-capacity' else
+                        'finance_target' if scenario == 'financial-analysis' else
                         'target_sequential' if scenario == 'data-analysis' else 'target_group')
+        if mechanism == 'work-lifecycle':
+            current.add('lifecycle_guide')
         if mechanism == 'work-lifecycle' and scenario == 'engineering-capacity':
             current.update(('engineering_lifecycle_guide', 'engineering_lifecycle_schedule',
                             'lifecycle_causality'))

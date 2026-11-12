@@ -444,8 +444,7 @@ def documents(assignment):
         metadata = json.loads(files['workspace-services.json'])
         metadata['release_policy'] = {'managed_by': 'Reporting release service'}
         files['workspace-services.json'] = json.dumps(metadata, indent=2)+'\n'
-    if (delivery_data.domain_for(assignment) == 'engineering-capacity'
-            and config['access'].get('operations_workflow') == 'schedule'
+    if (config['access'].get('operations_workflow') == 'schedule'
             and config['access'].get('job_scope') == 'shared_window'
             and config['completion_basis'] == 'dispatch'):
         files['dispatch-guide.md'] = files['dispatch-guide.md'].replace(

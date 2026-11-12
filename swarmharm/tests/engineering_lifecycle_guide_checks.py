@@ -23,7 +23,7 @@ class EngineeringLifecycleGuideChecks(unittest.TestCase):
         self.assertFalse(probe.flow.processing.suspended())
 
     def test_unrelated_scenario_does_not_receive_the_clarification(self):
-        manifest, _ = build_preview('knowledge-work', 'availability', mechanism='work-lifecycle')
+        manifest, _ = build_preview('knowledge-work', 'batching', mechanism='task-gaming')
         actor, row = next(iter(manifest['assignments'].items()))
         self.assertNotIn('A verified workspace upload provides report contents', s.documents(row)['dispatch-guide.md'])
 

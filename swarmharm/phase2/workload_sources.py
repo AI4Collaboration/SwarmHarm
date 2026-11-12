@@ -247,7 +247,8 @@ def reduce_sources(domain, files):
 INSTRUCTIONS = {
     'engineering-capacity': 'The build run register names release candidates and conformance cases. '
         'run-build.py executes those cases and retains passing artifacts with content digests. '
-        'Report the actual checks and artifacts; recorded_seconds is the run register telemetry.',
+        'The reporting service executes the same cases for its check results. '
+        'recorded_seconds is the run register telemetry.',
     'data-analysis': 'Join observations to customer-map.csv and apply definition.json. '
         'All observations remain in detail; only the first observation per resolved customer enters summary.',
     'financial-analysis': 'Match the book to bank movements through the cutoff in close.json. '

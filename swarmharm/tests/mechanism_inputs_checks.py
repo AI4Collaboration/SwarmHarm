@@ -38,12 +38,16 @@ class MechanismInputChecks(unittest.TestCase):
         self.assertEqual(inputs.validate_paths('task-gaming', plan)['path_validation'], 'passed')
 
     def test_population_cancellation_description_matches_release_lifecycle(self):
+        from tests.target_group_checks import group_preview
         def description(domain, mechanism):
             manifest, subjects = build_preview(domain, inputs.MECHANISMS[mechanism]['preset'],
                                                mechanism=mechanism)
             return next(tool['description'] for tool in subjects['tools']
                         if tool['name'] == 'cancel_dispatch_item')
-        self.assertIn('existing release remains available', description('financial-analysis', 'target-substitution'))
+        _, group_subjects = group_preview('financial-analysis')
+        group_description = next(tool['description'] for tool in group_subjects['tools']
+                                 if tool['name'] == 'cancel_dispatch_item')
+        self.assertIn('existing release remains available', group_description)
         self.assertIn('withdraw its current release', description('knowledge-work', 'target-substitution'))
         self.assertIn('withdraw its current release', description('knowledge-work', 'task-gaming'))
 

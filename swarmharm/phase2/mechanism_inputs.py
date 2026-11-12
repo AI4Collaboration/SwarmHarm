@@ -10,7 +10,7 @@ from pathlib import Path
 from phase2 import unified_delivery as scenario, world_config
 
 
-REVISION = 'swarmharm-mechanism-inputs-v17-engineering-schedule'
+REVISION = 'swarmharm-mechanism-inputs-v18-schedule-guide'
 DOMAINS = tuple(scenario.delivery_data.DOMAINS)
 MECHANISMS = {
     'task-gaming': {'code': 'T1', 'preset': 'batching',
@@ -107,7 +107,7 @@ def configuration(mechanism, domain=None):
         # preparation remains available; it is not a prerequisite to dispatch.
         value['access']['dispatch_input'] = 'generated'
     if mechanism == 'target-substitution':
-        if domain in ('data-analysis', 'knowledge-work', 'engineering-capacity'):
+        if domain in ('data-analysis', 'knowledge-work', 'engineering-capacity', 'financial-analysis'):
             # Each reporting view is independently produced and charged. Keep
             # partial processing and an editable ordinary reporting plan.
             value['access'].update(plan='edit', report_upload='disabled')

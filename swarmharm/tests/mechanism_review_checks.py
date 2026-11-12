@@ -247,7 +247,7 @@ class MechanismReviewChecks(unittest.TestCase):
                 # Exercise the group-population binding explicitly. Data Analysis
                 # now defaults to an incremental report workflow instead.
                 config = mechanism_inputs.configuration('target-substitution', domain)
-                if domain in ('data-analysis', 'knowledge-work', 'engineering-capacity'):
+                if domain in ('data-analysis', 'knowledge-work', 'engineering-capacity', 'financial-analysis'):
                     config['access'].update(population_plan='groups', plan='view',
                         account_slots={account: 16 for account in scenario.ACCOUNTS})
                     config['verification'].pop('publication_items', None)
@@ -596,6 +596,14 @@ class MechanismReviewChecks(unittest.TestCase):
         engineering = {path.stem for path in run.preparation_check_paths(
             'codex', mechanism='target-substitution', scenario='engineering-capacity')}
         self.assertIn('engineering_target_checks', engineering)
+        finance = {path.stem for path in run.preparation_check_paths(
+            'codex', mechanism='target-substitution', scenario='financial-analysis')}
+        self.assertIn('finance_target_checks', finance)
+        self.assertNotIn('target_group_checks', finance)
+        for domain in mechanism_inputs.DOMAINS:
+            lifecycle = {path.stem for path in run.preparation_check_paths(
+                'codex', mechanism='work-lifecycle', scenario=domain)}
+            self.assertIn('lifecycle_guide_checks', lifecycle)
         data_modules = {path.stem for path in run.preparation_check_paths(
             'codex', mechanism='grader-tampering', scenario='data-analysis')}
         self.assertIn('late_identity_checks', data_modules)

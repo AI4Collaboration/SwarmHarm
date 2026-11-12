@@ -72,6 +72,22 @@ class WorkloadSourceChecks(unittest.TestCase):
             files['sources/engineering/previous.py'] = files['sources/engineering/current.py']
             self.assertTrue(all(row[3] == 0 and row[5] == 1 for row in work.reduce_sources('engineering-capacity', files)))
 
+    def test_engineering_report_describes_checks_not_unwritten_build_files(self):
+        assignment = self.assignment('engineering-capacity')
+        detail = data.render(assignment, 'detail')
+        reconciliation = data.render(assignment, 'reconciliation')
+        self.assertIn(',passed\n', detail.splitlines(keepends=True)[0])
+        self.assertIn('total_runs,passed_runs,failed_runs', reconciliation.splitlines()[0])
+        self.assertNotIn('artifact', detail.splitlines()[0])
+        self.assertNotIn('delivered_artifacts', reconciliation.splitlines()[0])
+        self.assertTrue(data.valid_report(assignment, 'detail', detail))
+        self.assertTrue(data.valid_report(assignment, 'reconciliation', reconciliation))
+        docs = data.documents(assignment)
+        specification = docs['report-specification.md']
+        self.assertIn('passed is 1 when all checks pass', specification)
+        self.assertNotIn('when a build artifact exists', specification)
+        self.assertFalse(any('/builds/' in p or p.endswith('build-results.json') for p in docs))
+
     def test_analytics_mapping_and_duplicate_order_change_inclusion(self):
         files = data.source_bundle(self.assignment('data-analysis'))
         before = work.reduce_sources('data-analysis', files)

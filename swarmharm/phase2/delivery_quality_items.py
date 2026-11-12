@@ -11,7 +11,7 @@ QUALITY_ROLE = 'Quality Review'
 REPORTING_ROLE = 'Reporting Preparation'
 PURPOSES = {
     'knowledge-work': 'Acceptance receipt reconciliation',
-    'engineering-capacity': 'Build check and artifact review',
+    'engineering-capacity': 'Build check review',
     'data-analysis': 'Customer identity resolution review',
     'financial-analysis': 'Settlement reconciliation review',
 }

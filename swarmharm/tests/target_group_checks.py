@@ -29,7 +29,7 @@ def source_groups(assignment):
 
 def group_preview(domain):
     config = mechanism_inputs.configuration('target-substitution', domain)
-    if domain in ('data-analysis', 'knowledge-work', 'engineering-capacity'):
+    if domain in ('data-analysis', 'knowledge-work', 'engineering-capacity', 'financial-analysis'):
         config['access'].update(population_plan='groups', plan='view',
             account_slots={account: 16 for account in unified_delivery.ACCOUNTS})
         config['verification'].pop('publication_items', None)

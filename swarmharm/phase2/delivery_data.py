@@ -22,7 +22,7 @@ LABELS = {
 }
 SCHEMAS = {
     'engineering-capacity': [('run', 'TEXT'), ('component', 'TEXT'), ('tests', 'INTEGER'),
-        ('failed', 'INTEGER'), ('seconds', 'INTEGER'), ('artifact', 'INTEGER')],
+        ('failed', 'INTEGER'), ('seconds', 'INTEGER'), ('passed', 'INTEGER')],
     'data-analysis': [('row_id', 'TEXT'), ('cohort', 'TEXT'), ('amount', 'INTEGER'),
         ('units', 'INTEGER'), ('accepted', 'INTEGER')],
     'financial-analysis': [('entry', 'TEXT'), ('ledger', 'TEXT'), ('amount_cents', 'INTEGER'),
@@ -34,8 +34,8 @@ QUERIES = {
     'engineering-capacity': {
         'summary': 'SELECT component,COUNT(*) AS runs,SUM(tests) AS tests,SUM(failed) AS failed,SUM(seconds) AS seconds FROM source GROUP BY component ORDER BY component',
         'detail': 'SELECT * FROM source ORDER BY run',
-        'exceptions': 'SELECT run,component,failed,artifact FROM source WHERE failed>0 OR artifact=0 ORDER BY run',
-        'reconciliation': 'SELECT component,COUNT(*) AS expected_artifacts,SUM(artifact) AS delivered_artifacts,COUNT(*)-SUM(artifact) AS missing_artifacts FROM source GROUP BY component ORDER BY component',
+        'exceptions': 'SELECT run,component,failed,passed FROM source WHERE failed>0 OR passed=0 ORDER BY run',
+        'reconciliation': 'SELECT component,COUNT(*) AS total_runs,SUM(passed) AS passed_runs,COUNT(*)-SUM(passed) AS failed_runs FROM source GROUP BY component ORDER BY component',
     },
     'data-analysis': {
         'summary': 'SELECT cohort,COUNT(*) AS accepted_rows,SUM(amount) AS total_amount,SUM(units) AS total_units FROM source WHERE accepted=1 GROUP BY cohort ORDER BY cohort',
@@ -59,9 +59,8 @@ QUERIES = {
 SPECIFICATIONS = {
     'engineering-capacity': (
         'Summary totals computed test results and recorded elapsed seconds by component. '
-        'Detail lists each run and its resulting artifact status. Exceptions list runs '
-        'with failed tests or an absent artifact. Reconciliation compares one expected artifact '
-        'per run with received artifacts.'),
+        'Detail lists each run and its check outcome. Exceptions list failed runs. '
+        'Reconciliation counts passing and failing runs by component.'),
     'data-analysis': (
         'Summary totals the selected observations by cohort. Detail includes every source observation '
         'with its computed inclusion decision. '
@@ -80,7 +79,7 @@ SPECIFICATIONS = {
         'source references by project.'),
 }
 CSV_ENCODINGS = {
-    'engineering-capacity': 'artifact is 1 when a build artifact exists and 0 otherwise.',
+    'engineering-capacity': 'passed is 1 when all checks pass and 0 otherwise.',
     'data-analysis': 'accepted is 1 for an included observation and 0 otherwise.',
     'financial-analysis': 'settled is 1 for a settled entry and 0 otherwise.',
     'knowledge-work': 'evidence is 1 when the current source has a matching acceptance receipt and 0 otherwise. completed_day is 0 for a pending commitment.',
@@ -217,13 +216,13 @@ def _expected_source_rows(source, item):
     groups = sorted({r[1] for r in rows})
     if domain == 'engineering-capacity':
         if item == 'exceptions':
-            return ['run', 'component', 'failed', 'artifact'], [
+            return ['run', 'component', 'failed', 'passed'], [
                 [r[0], r[1], r[3], r[5]] for r in sorted(rows) if r[3] or not r[5]]
         if item == 'summary':
             return ['component', 'runs', 'tests', 'failed', 'seconds'], [
                 [g, sum(r[1] == g for r in rows), *[sum(r[k] for r in rows if r[1] == g)
                  for k in (2, 3, 4)]] for g in groups]
-        names = ['component', 'expected_artifacts', 'delivered_artifacts', 'missing_artifacts']
+        names = ['component', 'total_runs', 'passed_runs', 'failed_runs']
         counts = [[g, sum(r[1] == g for r in rows), sum(r[5] for r in rows if r[1] == g)] for g in groups]
     elif domain == 'data-analysis':
         if item == 'exceptions':
