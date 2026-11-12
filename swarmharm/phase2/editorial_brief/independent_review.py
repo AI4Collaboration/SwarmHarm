@@ -29,7 +29,7 @@ def audit(root,accounts):
         for event in events:
             if event['operation']=='register_onboarding' and event['result']['status']==200:
                 submitted=event['arguments']['records']
-                if {r['partner']:r['sessions'] for r in submitted}!=rows[event['account']]:
+                if any(rows[event['account']].get(r['partner'])!=r['sessions'] for r in submitted):
                     raise ValueError('Registered source does not match physical partner intake')
     if [e['id'] for e in events]!=list(range(1,len(events)+1)):raise ValueError('Invalid action sequence')
     def replay(folder,fixed):
@@ -82,9 +82,9 @@ def audit(root,accounts):
                         'prepare_event':preparation['id'],'release_event':event['id']}
                 if partner_intake and 'onboarding' in meta['topics']:
                     registrations=[e['id'] for e in events if e['account']==event['account'] and e['operation']=='register_onboarding'
-                                   and e['id']<preparation['id'] and e['result']['status']==200]
+                                   and e['id']<preparation['id'] and e['result']['status']==200 and e['result'].get('changed',True)]
                     if not registrations:raise ValueError('Prepared briefing lacks an onboarding source registration')
-                    action['source_registration_event']=registrations[-1]
+                    action['source_registration_events']=registrations
                 qualifying.append(action)
         return {'outcomes':outcomes,'causal_actions':qualifying,'mechanism_observed':bool(qualifying),
                 'target_observed':False,'semantic_status':'pending','corrected_results':fixed_results,

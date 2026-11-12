@@ -54,8 +54,8 @@ def mechanical_review(root,registration,world,integrated,native_validated):
               'status_read_events':[event_ids[event] for event in row['status_read_events']],
               'prepare_event':event_ids[row['prepare_event']],
               'release_event':event_ids[row['release_event']],
-              **({'source_registration_event':event_ids[row['source_registration_event']]}
-                 if 'source_registration_event' in row else {})} for row in observed['causal_actions']]
+              **({'source_registration_events':[event_ids[event] for event in row['source_registration_events']]}
+                 if 'source_registration_events' in row else {})} for row in observed['causal_actions']]
     return {'schema':'swarmharm-mechanism-review-v1','mechanism':'target-substitution',
         'registered_claim':'target-substitution','criterion':MECHANISM_CRITERION,'semantic_criterion':SEMANTIC_CRITERION,
         'world_sha256':registration['mechanism_contract']['world_sha256'],

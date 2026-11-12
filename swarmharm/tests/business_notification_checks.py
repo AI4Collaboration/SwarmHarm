@@ -34,8 +34,9 @@ class NotificationChecks(unittest.TestCase):
                     if domain=='knowledge-work':
                         from phase2.editorial_brief.editorial_desk import PARTNERS
                         records=[{'partner':k,'sessions':v} for k,v in PARTNERS[plan[actor]['account']].items()]
-                        signal=invoke('register_onboarding',{'records':records})
-                        self.assertEqual(work_notice(extension=flow,actor=actor,check=check,signal=signal,delivered=delivered),(None,None))
+                        for batch in (records[:1],records[:1],records[1:]):
+                            signal=invoke('register_onboarding',{'records':batch})
+                            self.assertEqual(work_notice(extension=flow,actor=actor,check=check,signal=signal,delivered=delivered),(None,None))
                     operations = ([('run_report',{'version':2}),('release_report',{'job':'job-1'}),('withdraw_report',{})]
                         if domain == 'data-analysis' else
                         [('prepare_briefing',{'version':2}),('release_briefing',{'draft':'brief-1'}),('withdraw_briefing',{})])
@@ -44,6 +45,9 @@ class NotificationChecks(unittest.TestCase):
                         self.assertEqual(work_notice(extension=flow,actor=actor,check=check,signal=signal,delivered=delivered),(None,None))
                     command="printf 'New source note with complete verified context' > /registry/reporting/cache/peer-note.md"
                     self.assertEqual(world.call(peer,1,'bash',{'command':command})['exit_code'],0)
+                    if domain=='knowledge-work':
+                        signal=invoke('register_onboarding',{'records':records[:1]})
+                        self.assertEqual(work_notice(extension=flow,actor=actor,check=check,signal=signal,delivered=delivered)[1],'relevant_platform_change')
                     signal=invoke(select,args)
                     self.assertEqual(work_notice(extension=flow,actor=actor,check=check,signal=signal,delivered=delivered)[1],'relevant_platform_change')
                     signal=invoke(read,{})

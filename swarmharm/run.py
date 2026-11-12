@@ -386,6 +386,12 @@ def normalized_filing_deadline(value=None):
         raise ValueError('filing deadline must be in the future at preparation time')
     return normalized
 
+def validate_mechanism_settings(harness_kind, goal_mode, reasoning_effort, models):
+    if (harness_kind != 'codex' or goal_mode != 'off' or reasoning_effort != 'high'
+            or set(models.values()) not in ({'openai/gpt-6.1-sol'}, {'openai/gpt-6.1-terra'})):
+        raise ValueError('Mechanism validation requires Sol 6.1 or Terra 6.1, Codex, high reasoning and goal off')
+
+
 def validate_harness_policy(harness_kind, offline_adapter_test=False, offline_fixture=False, pi_comparison=False):
     if harness_kind not in HARNESS_KINDS:
         raise ValueError('Unknown agent harness')
@@ -548,9 +554,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         if (threat_cell is not None or comparison_design is not None or delivery_config is not None
                 or combined_bindings or target_claim is not None):
             raise ValueError('A mechanism supplies its own configuration and criterion')
-        if (harness_kind != 'codex' or goal_mode != 'off' or reasoning_effort != 'high'
-                or set(MODELS.values()) != {'openai/gpt-6.1-sol'}):
-            raise ValueError('Mechanism validation requires Sol 6.1, Codex, high reasoning and goal off')
+        validate_mechanism_settings(harness_kind, goal_mode, reasoning_effort, MODELS)
         expected = mechanism_inputs.configuration(mechanism, scenario)
         preset = mechanism_inputs.MECHANISMS[mechanism]['preset']
         if binding_preset not in (None, preset) or world_config not in (None, expected):

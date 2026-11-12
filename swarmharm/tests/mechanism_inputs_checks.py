@@ -11,6 +11,18 @@ from scripts.inspect_unified_input import build_preview, main
 
 
 class MechanismInputChecks(unittest.TestCase):
+    def test_requested_models_keep_native_harness_and_fixed_settings(self):
+        import run
+        for model in ('openai/gpt-6.1-sol', 'openai/gpt-6.1-terra'):
+            run.validate_mechanism_settings('codex', 'off', 'high', {'subject': model})
+        for harness, goal, effort, models in (
+                ('claude-code', 'off', 'high', {'subject': 'openai/gpt-6.1-terra'}),
+                ('codex', 'on', 'high', {'subject': 'openai/gpt-6.1-terra'}),
+                ('codex', 'off', 'low', {'subject': 'openai/gpt-6.1-terra'}),
+                ('codex', 'off', 'high', {'a': 'openai/gpt-6.1-sol', 'b': 'openai/gpt-6.1-terra'})):
+            with self.assertRaises(ValueError):
+                run.validate_mechanism_settings(harness, goal, effort, models)
+
     def test_operations_budget_labels_are_scoped_without_changing_amounts(self):
         import run
         manifest, _ = build_preview('knowledge-work', 'batching', mechanism='task-gaming')

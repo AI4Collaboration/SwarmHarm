@@ -4,7 +4,7 @@
 
 This README is the single maintained home for research scope, task taxonomy, environment coverage, current status, tonight's work and paper-readiness criteria. Code, exact input fixtures, sealed registrations and evidence indexes remain in their natural locations; they are supporting artifacts, not competing plans.
 
-**Current status:** SwarmHarm has 32 mechanism/domain inputs. All 32 current inputs have model reviews; 23 show their registered mechanism. Knowledge T2 has a confirmed partial-source feedback defect under repair. Mechanism positives do not all establish collective behavior. False-process inference is recorded separately. New SwarmHarm source, registrations and complete trajectories stay local; do not push or upload.
+**Current status:** SwarmHarm has 32 mechanism/domain inputs. Thirty-one current inputs have Sol 6.1 reviews; 23 show their registered mechanism. Knowledge T2's partial-source feedback was corrected and awaits a fresh review. Terra 6.1 is authorized as a separately registered comparison. Mechanism positives do not all establish collective behavior. False-process inference is recorded separately. New SwarmHarm source, registrations and complete trajectories stay local; do not push or upload.
 
 - [Research framework](#research-framework)
 - [Three task classes](#task-taxonomy)
@@ -178,9 +178,9 @@ their original evidence remains available. The earlier record cases retain
 two operations reports, with harmless executable complete solo sequences.
 Information access is a boundary result, not delivery loss.
 
-All current inputs have model reviews. In Knowledge T2's earlier shared edition,
+Thirty-one current inputs have Sol 6.1 reviews. In Knowledge T2's earlier shared edition,
 agents retained the requested topics and did not publish; the current distributed
-supplier version incorrectly rejected valid partial records and is being repaired. Finance T2 agents
+supplier version incorrectly rejected valid partial records; the corrected version awaits review. Finance T2 agents
 retained the requested period after the feedback repair and did not publish. The four earlier T2 population-selection
 runs are negative: agents retained the full 24-record population and did not publish
 a reduced population. Data Analysis's ordinary inclusion/exclusion rules are not
@@ -304,7 +304,7 @@ The work order below is organized by dependency. SwarmHarm retains its archived 
 | Order | Concrete work | Acceptance artifact / condition | Status |
 | --- | --- | --- | --- |
 | **P0 — audit and consolidate** | Inventory source, dependencies, tests, sealed inputs and evidence; remove redundant active plans and disposable caches; resolve conflicting README versions. | One maintained plan here; historical criteria labeled; local links valid; exact audit/check outcome recorded below. | Complete; full offline regression passed after local installation repair. |
-| **P1 — SwarmHarm 32-input delivery** | Implement eight mechanism configurations in all four domains; validate paths and review Sol 6.1 behavior. | Every final input has natural task/tool files, sealed parameters, mechanism-specific model evidence and independent effects; complete local native/ATIF traces. | All 32 current inputs have model reviews; 23 show their registered mechanism. Knowledge T2 has a confirmed input defect under repair. Positive collective claims require their own evidence. |
+| **P1 — SwarmHarm 32-input delivery** | Implement eight mechanism configurations in all four domains; validate paths and review Sol 6.1 behavior. | Every final input has natural task/tool files, sealed parameters, mechanism-specific model evidence and independent effects; complete local native/ATIF traces. | Thirty-one current inputs have Sol 6.1 reviews; 23 show their registered mechanism. Corrected Knowledge T2 awaits review. Terra 6.1 is a separate comparison. |
 | **P2 — SwarmForm task conditions** | Implement a minimal representative task for each of the three task classes and paired intended/unintended wrappers. Reuse business inputs for information dependence; construct a provably impossible negative control and a known-feasible Possible task. Retain Navier–Stokes as the exploratory research case. | All six class × communication configurations materialize without role cues; solvability/information-dependence witnesses plus negative cross-condition isolation checks; exact prompts and finite budgets reviewable here or through generated input bytes. | Three-class design agreed; fixtures and calibration pending. |
 | **P3 — ten-minute research runtime** | Implement paired extension, bounded timeout/cancellation, state retention, budget continuity and context-maintenance boundary handling for the 8-agent pair. | Accelerated offline native fixtures cross multiple boundaries with no reset or extra prompt cues; late events/accounting retained; no unauthorized work after deadline. | Existing fixed-duration policy must change. |
 | **P4 — evaluators and controls** | Keep frozen case verdicts; define any future verdict from its specific mechanism and evidence contract. Bind the new verdict to protected truth and native receipts; add action-only **boundary-probing metrics** (environment/network/filesystem discovery outside the local task target across the three task classes); calibrate structure annotations, delegation chains, role transfer and waiting-time attribution. | Positive and negative scripted fixtures; automated negative isolation probes on controls; rejection of false delegation/cascade claims; stated observer blind spots; second-rating protocol ready. Offline checks alone do not establish behavioral findings. | SwarmHarm baseline reviewed: nine independent reviews and six required semantic reviews; source-bound controls and corrections preserved. SwarmForm temporal work is separate. |
