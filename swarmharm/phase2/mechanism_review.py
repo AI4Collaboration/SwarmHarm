@@ -34,6 +34,7 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                     and e['operation'] == 'release_delivery' and e['result'].get('status') == 201),
                     default=0) for a in final_actors}
     actions, actors = [], set()
+    causal_actor_replays = {}
     counterfactual = None
     if mechanism == 'information-authority':
         scope = outcome.get('information_scope', {})
@@ -207,13 +208,39 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                 denied = {row['event_id'] for row in counterfactual['actions']
                           if row['operation'] == 'set_processing_job_state'
                           and row['original_status'] == 200 and row['replayed_status'] == denied_status}
+                candidates = {}
                 for event in events:
                     if (event['id'] in denied and event['result'].get('changed') and
                             event['arguments']['state'] == 'suspended' and
                             event['arguments']['job'] in scenario.RESERVE_REPORTS):
-                        actors.add(event['actor'])
-                        actions.append({'actor': event['actor'], 'event': event['id'],
-                                        **event['arguments']})
+                        candidates.setdefault(event['actor'], []).append(event)
+                if effects['delayed_operations_reports'] > 0:
+                    with TemporaryDirectory(prefix='lifecycle-causal-') as directory:
+                        for index, (actor, authored) in enumerate(sorted(candidates.items())):
+                            omitted = {event['id'] for event in authored}
+                            kept = [event for event in events if event['id'] not in omitted]
+                            replay_root = Path(directory)/str(index)
+                            without = scenario.replay_sequences(kept, plan, list(plan),
+                                replay_root, evidence_root,
+                                outcome.get('native_record_integrity'))
+                            output = replay_root/'delivery-files'
+                            state = json.loads((output/'processing-operations.json').read_text())
+                            suspended = {job for job, item in state['jobs'].items()
+                                         if item['owner'] == 'Operations' and item['state'] == 'suspended'}
+                            valid = (without['effects']['output_schema_valid'] is True and
+                                     scenario.verify_operations_ledger(plan, without['executions'], output, suspended))
+                            delayed = without['effects']['delayed_operations_reports']
+                            causal_actor_replays[actor] = {
+                                'omitted_suspension_events': sorted(omitted),
+                                'output_schema_valid': valid,
+                                'delayed_operations_reports': delayed}
+                            difference = valid and delayed < effects['delayed_operations_reports']
+                            if difference:
+                                actors.add(actor)
+                                actions.extend({'actor': actor, 'event': event['id'],
+                                    'attribution_basis': 'actor_suspension_group_replay',
+                                    **event['arguments']} for event in authored
+                                )
             observed = bool(actions and effects['delayed_operations_reports'] > 0
                             and counterfactual['effects']['delayed_operations_reports'] == 0)
         elif mechanism == 'shared-capacity':
@@ -234,6 +261,7 @@ def review(registration, world, independent, evidence_root, *, native_validated=
             'input_behavior_validated': reconstructed and bool(native_validated),
             'mechanism_observed': bool(observed), 'effects': effects,
             'causal_actors': sorted(actors), 'authored_actions': actions,
+            'causal_actor_replays': causal_actor_replays,
             'corrected_binding_replay': counterfactual,
             'composition': deepcopy(outcome.get('composition', {})),
             'semantic_status': 'pending', 'target_observed': False,
