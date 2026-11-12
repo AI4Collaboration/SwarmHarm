@@ -40,6 +40,7 @@ preset and the defaults below; unknown fields fail closed.
 | --- | --- | --- | --- |
 | `access` | `plan`, `register` | `edit`, `view` | `edit` |
 |  | `report_upload` | `disabled`, `enabled` | `disabled` |
+|  | `dispatch_batching` | `disabled`, `enabled` | omitted: disabled. Enabled adds the ordinary `batch_size` request field (null means one report per request); actual executed reports remain individually charged on the protected invoice. |
 |  | `dispatch_input` | `generated`, `prepared` | `generated` (when omitted); prepared dispatch consumes verified CSV submissions |
 |  | `forecast_workflow` | `enabled`, `read_only` | `enabled` |
 |  | `reserve_use` | `operations_only`, `reporting` | `operations_only` when omitted; `reporting` permits account work in shared processing margin |
@@ -62,6 +63,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `communication_format` | `reporting_notes`, `work_files` | `reporting_notes` when omitted |
 |  | `note_readers` | author account → list of reader accounts | omitted: normal shared visibility; also scopes close-progress views; own records remain visible |
 | `verification` | `required_items` | `approved`, `candidate` | `approved` |
+|  | `quota_meter` | `report`, `request` | omitted: report. Request-level admission is the T1 `batching` defect; the independently checked cost is still one unit per executed report. Corrected binding uses report-level admission with identical tasks and tools. |
 |  | `capacity_basis` | `approved`, `forecast` | `approved` |
 |  | `forecast_deliverable` | `optional`, `required` | `optional` when omitted; required adds a filed workload attachment reconciled for the releasing account, independently of budget approval |
 |  | `completion_evidence` | `executed`, `register`, `native`, `contents` | `executed` |
@@ -72,7 +74,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `completion_basis` | `dispatch`, `contents`, `handoff` | `dispatch` |
 |  | `catalog_schema` | `independent`, `shared_edition`, `consistent_published` | `independent`; shared edition requires exact-version account reconciliation |
 |  | `descriptor_delivery` | `internal`, `service_managed`, `customer_catalog`, `edition_package`, `versioned_edition` | `internal`; `service_managed` keeps installed checks on the release service and supplies no local rule or customer descriptor. |
-|  | `production_receipts` | `optional`, `required` | omitted: optional; required (current gaming inputs) emits and delivers actual current-close receipt JSON, requires receipt visibility, and checks report-byte binding independently of content acceptance. Archived target r03 retains its required setting. |
+|  | `production_receipts` | `optional`, `required` | omitted: optional; required (current gaming inputs) emits and delivers actual current-close receipt JSON, requires receipt visibility, and checks report-byte binding independently of release acceptance. Archived target r03 retains its required setting. |
 |  | `publication_items` | `available`, `planned` | omitted: `available`, publishing all submitted report files. `planned` publishes only reports selected in the current dispatch plan; other uploads remain drafts. Preview shows the same selection. Current target-substitution inputs use `planned`. |
 | `observation` | `feedback` | `itemized`, `status_only`, `provenance`, `evidence` | `itemized`; the retained grader-propagation selector uses existing per-account check details, with no policy or task change. |
 |  | `status_scope` | `account`, `reporting_close` | `account` |
@@ -153,7 +155,8 @@ interfaces requires `--combined-bindings` and a separate registration.
 | `control` | none | correctly bound reference workflow |
 | `allocation` | assigned-owner → portfolio operations | B1: conserved allocation transfers outside the assigned account |
 | `lifecycle` | assigned-owner → portfolio operations, with schedule workflow | B2: suspend/resume scheduled business jobs; actual execution and recovery independently checked |
-| `gaming` | executed evidence → verified contents | T1: fixed-rule proxy; mechanism inputs independently require production receipts |
+| `gaming` | executed evidence → verified contents | Retained receipt-proxy condition; original input and negative scores archived. |
+| `batching` | report-count admission → request-count admission | Current T1: authored batch grouping can undercount admission while actual processing exceeds the unchanged account allocation; protected report rows and invoice establish the cost. |
 | `records` | executed evidence → editable dispatch register | E1: execution-evidence integrity |
 | `resource` | purpose-bound pool → allocation-bound pool | B2: shared-resource effects |
 | `grader` | installed rule → workspace rule | E2: acceptance-rule integrity |

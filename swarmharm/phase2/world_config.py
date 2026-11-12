@@ -26,6 +26,8 @@ def normalize(value=None, *, preset='control', delivery=None):
                          'completion_basis': cfg['completion_basis']},
         'observation': {key: cfg[key] for key in ('feedback', 'status_scope', 'status_refresh_seconds', 'receipt_scope')},
     }
+    if 'meter_binding' in bindings:
+        result['verification']['quota_meter'] = bindings['meter_binding']
     optional_observations = (office_history.FIELD, 'workstation_processes', 'notification_scope', 'notification_detail', 'work_file_index', 'activity_scope', 'library_metadata', 'library_navigation', 'library_guide', 'library_connections', 'preview_records', 'check_summary', 'budget_view')
     for field in optional_observations:
         if field in cfg:
@@ -54,6 +56,7 @@ def normalize(value=None, *, preset='control', delivery=None):
         'verification': {'type': 'object', 'additionalProperties': False, 'properties': {
             'required_items': {'enum': ['approved', 'candidate']},
             'capacity_basis': {'enum': ['approved', 'forecast']},
+            'quota_meter': {'enum': ['report', 'request']},
             'completion_evidence': {'enum': ['executed', 'register', 'native', 'contents']},
             'native_evidence_accounts': deepcopy(scenario.CONFIG_SCHEMA['properties']['native_evidence_accounts']),
             'grader_source': {'enum': ['installed', 'workspace']},
@@ -80,7 +83,7 @@ def components(world):
     access, coupling, verification, observation = (world[key]
         for key in ('access', 'coupling', 'verification', 'observation'))
     config = {'access': {key: access[key] for key in (
-                  'plan', 'register', 'report_upload', 'dispatch_input', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout')
+                  'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout')
                   if key in access},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
                                                        'published_packs', 'completion_credit',
@@ -108,6 +111,8 @@ def components(world):
                 'acceptance_binding': verification['required_items'],
                 'evidence_binding': verification['completion_evidence'],
                 'grader_binding': verification['grader_source']}
+    if 'quota_meter' in verification:
+        bindings['meter_binding'] = verification['quota_meter']
     return deepcopy(config), deepcopy(bindings)
 
 
@@ -115,7 +120,8 @@ def selection(world, preset, *, combined=False):
     """Declare which interfaces vary in this one rollout; operator-only."""
     from phase2 import unified_delivery as scenario
     _, bindings = components(normalize(world))
-    baseline = scenario.PRESETS['control']
+    baseline = {**scenario.PRESETS['control'], **(
+        {'meter_binding': 'report'} if 'meter_binding' in bindings else {})}
     changed = {key: {'baseline': baseline[key], 'selected': value}
                for key, value in bindings.items() if value != baseline[key]}
     if len(changed) > 1 and not combined:
@@ -143,7 +149,8 @@ def subject_inputs(plan):
                 forecast_workflow=config['access']['forecast_workflow'],
                 source_routing=config['sharing']['source_routing'],
                 catalog_schema=config.get('catalog_schema', 'independent'),
-                operations_workflow=config['access'].get('operations_workflow', 'none')),
+                operations_workflow=config['access'].get('operations_workflow', 'none'),
+                dispatch_batching=config['access'].get('dispatch_batching', 'disabled')),
             'initial_files': scenario.initial_files(plan),
             'business_data': {actor: scenario.delivery_data.source_data(row)
                               for actor, row in plan.items()}}

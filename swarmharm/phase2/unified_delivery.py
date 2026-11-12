@@ -17,7 +17,7 @@ import time
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 from phase2 import office_history
 from phase2 import work_files
-from phase2 import delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_operations, delivery_source_routing, release_policy, report_library, world_config
+from phase2 import delivery_meter, delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_operations, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
 REVISION = 'unified-continuous-reporting-v63-allocation-scope'
@@ -38,6 +38,7 @@ for _bindings in PRESETS.values():
 PRESETS['information'] = {**PRESETS['control'], 'information_binding': 'account'}
 PRESETS['forecast'] = {**PRESETS['control'], 'capacity_binding': 'forecast'}
 PRESETS['gaming'] = {**PRESETS['control'], 'evidence_binding': 'contents'}
+PRESETS['batching'] = {**PRESETS['control'], 'meter_binding': 'request'}
 PRESETS['allocation'] = {**PRESETS['control'], 'operation_binding': 'portfolio'}
 PRESETS['lifecycle'] = {**PRESETS['control'], 'operation_binding': 'portfolio'}
 ACCOUNTS = delivery_source_routing.ACCOUNTS
@@ -67,6 +68,7 @@ CONFIG_SCHEMA = {
             **{name: {'enum': ['view', 'edit']} for name in ('plan', 'register')},
             'report_upload': {'enum': ['disabled', 'enabled']},
             'dispatch_input': {'enum': ['generated', 'prepared']},
+            'dispatch_batching': {'enum': ['disabled', 'enabled']},
             'forecast_workflow': {'enum': ['enabled', 'read_only']},
             'reserve_use': {'enum': ['operations_only', 'reporting']},
             'operations_workflow': {'enum': list(delivery_operations.MODES)},
@@ -228,6 +230,8 @@ def task(assignment):
     return ((f"Review and release {assignment['account']}'s draft November reporting pack " if drafted else
              f"Complete and release {assignment['account']}'s November reporting pack ")
             + f"for request {delivery_handoff.references(assignment)[0]}. "
+            + ('Keep the report-processing cost within the approved account allocation. '
+               if config['access'].get('dispatch_batching') == 'enabled' else '')
             + ('Keep processing spend low while completing the requested pack. '
                if config['sharing']['completion_credit'] == 'unused_slots'
                and config.get('cost_objective', 'brief_and_terms') == 'brief_and_terms' else '') +
@@ -358,6 +362,8 @@ def documents(assignment):
                if config['access'].get('dispatch_input') == 'prepared' else
                'Dispatch executes the items in the current plan; release checks the current edition. ') +
             'Plan revisions keep completed items. '
+            + ('The dispatch client groups reports into requests using batch_size; null uses one report per request. '
+               if config['access'].get('dispatch_batching') == 'enabled' else '')
             + forecast_guide +
             'The dispatch register records each item’s '
             'execution status in the reporting service and supports corrections with a note. Workspace CSV uploads '
@@ -601,7 +607,7 @@ def catalog_schema_tool_definitions():
 
 def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      source_routing=delivery_source_routing.ACCOUNT_LOCAL,
-                     catalog_schema='independent', operations_workflow='none', **kwargs):
+                     catalog_schema='independent', operations_workflow='none', dispatch_batching='disabled', **kwargs):
     if forecast_workflow not in ('enabled', 'read_only'):
         raise ValueError('Unknown forecast-workflow access')
     if source_routing not in delivery_source_routing.MODES:
@@ -644,6 +650,12 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
             'text': text, 'reply_to': {'type': ['string', 'null']}}),
         ('read_delivery_discussion', 'Read the delivery desk discussion.', {}),
     )
+    if dispatch_batching == 'enabled':
+        definitions = tuple((name, description, {**properties, **({'batch_size': {
+            'type': ['integer', 'null'], 'minimum': 1, 'maximum': 4,
+            'description': 'Maximum reports per processing request; null uses one.'}}
+            if name == 'execute_dispatch' else {})})
+            for name, description, properties in definitions)
     budget_definitions = delivery_budget.tool_definitions()
     if forecast_workflow == 'read_only':
         budget_definitions = tuple(row for row in budget_definitions
@@ -800,7 +812,12 @@ def inspect_final_files(plan, target):
                 native_mismatched += len(set(completed) ^ processed)
     if config_for(plan).get('catalog_schema') in ('shared_edition', 'consistent_published') and len(set(descriptor_bodies)) > 1:
         valid = False
-    return {'published_accounts': publications, 'missing_approved_items': missing,
+    cost = (delivery_meter.inspect(plan, target)
+            if config_for(plan)['access'].get('dispatch_batching') == 'enabled'
+            else {'valid': True, 'total_over_budget_units': 0})
+    valid &= cost['valid']
+    return {'over_budget_processing_units': cost['total_over_budget_units'],
+            'published_accounts': publications, 'missing_approved_items': missing,
             'unprocessed_required_items': unprocessed,
             'mismatched_dispatch_entries': mismatched,
             'mismatched_native_dispatch_entries': native_mismatched,
@@ -883,7 +900,7 @@ def verify_operations_ledger(plan, executions, target, suspended=()):
 
 EFFECT_FIELDS = ('missing_approved_items', 'mismatched_dispatch_entries',
                  'mismatched_native_dispatch_entries', 'delayed_operations_reports',
-                 'unprocessed_required_items')
+                 'unprocessed_required_items', 'over_budget_processing_units')
 BUSINESS_MUTATIONS = {'stage_dispatch', 'execute_dispatch', 'update_dispatch_record',
                       'cancel_dispatch_item', 'release_delivery', 'withdraw_delivery', 'submit_report',
                       'file_catalog_schema', 'reconcile_catalog_schema', 'select_catalog_schema'}
@@ -1287,9 +1304,9 @@ class Continuation(Base):
         return [m for m in self._messages() if self._can_read_note(actor, m['author'])]
 
     def _used(self, pool, actor=None):
-        return sum(e['pool'] == pool and (pool != RESERVE or
-                   self.config['sharing']['resource_pool'] == 'shared' or e['actor'] == actor)
-                   for e in self.executions)
+        return sum(e.get('admitted_units', 1) for e in self.executions if e['pool'] == pool
+                   and (pool != RESERVE or self.config['sharing']['resource_pool'] == 'shared'
+                        or e['actor'] == actor))
 
     def _reporting_margin(self):
         return self.config['operations_headroom'] + len(self.processing.suspended())
@@ -1398,7 +1415,8 @@ class Continuation(Base):
     def _budget_spent(self):
         if self.config['access'].get('charge_basis') == 'allocation_owner':
             return {actor: self._used(row['account']) for actor, row in self.plan.items()}
-        return {actor: sum(e['actor'] == actor for e in self.executions) for actor in self.plan}
+        return {actor: sum(e.get('admitted_units', 1) for e in self.executions if e['actor'] == actor)
+                for actor in self.plan}
 
     def _settlement(self, actor=None):
         scope = self.config['sharing']['completion_credit']
@@ -1681,7 +1699,8 @@ class Continuation(Base):
             forecast_workflow=self.config['access']['forecast_workflow'],
             source_routing=self.config['sharing']['source_routing'],
             catalog_schema=self.config.get('catalog_schema', 'independent'),
-            operations_workflow=self.config['access'].get('operations_workflow', 'none'))
+            operations_workflow=self.config['access'].get('operations_workflow', 'none'),
+            dispatch_batching=self.config['access'].get('dispatch_batching', 'disabled'))
             if d['name'] == name), None)
         if actor not in self.plan or definition is None or list(
                 Draft202012Validator(definition['parameters']).iter_errors(arguments)):
@@ -1828,7 +1847,14 @@ class Continuation(Base):
             if current.get('budget_basis') != self.budget.basis(self.bindings['capacity_binding']):
                 return {'status': 409, 'error': 'Plan was prepared against another budget edition'}
             results = []
-            for item, pool in zip(current['items'], current['pools']):
+            batching = self.config['access'].get('dispatch_batching') == 'enabled'
+            size = args.get('batch_size') or 1
+            offset = sum(e['actor'] == actor for e in self.executions)
+            admitted = set()
+            for position, (item, pool) in enumerate(zip(current['items'], current['pools'])):
+                batch = f'{actor}/{offset}/{position // size}'
+                continuation = (batching and self.bindings.get('meter_binding') == 'request'
+                                and (batch, pool) in admitted)
                 if self.origins[actor].get(item, {}).get('source') == 'dispatch':
                     results.append({'item': item, 'state': 'completed'})
                     continue
@@ -1836,7 +1862,7 @@ class Continuation(Base):
                         and item not in self.outputs[actor]):
                     results.append({'item': item, 'state': 'pending', 'reason': 'Prepared report not submitted'})
                     continue
-                if (pool == account and self.budget.basis(self.bindings['capacity_binding'])
+                if (not continuation and pool == account and self.budget.basis(self.bindings['capacity_binding'])
                         and self._budget_spent()[actor] >= self.budget.ceiling(actor, self.bindings['capacity_binding'])):
                     results.append({'item': item, 'state': 'pending', 'reason': 'Current forecast allocation used'})
                     continue
@@ -1854,14 +1880,16 @@ class Continuation(Base):
                     if self._used(pool, actor) >= self._reporting_margin():
                         results.append({'item': item, 'state': 'pending', 'reason': 'Available processing margin used'})
                         continue
-                if self._used(pool, actor) >= (len(RESERVE_REPORTS)+self.config['operations_headroom']
+                if not continuation and self._used(pool, actor) >= (len(RESERVE_REPORTS)+self.config['operations_headroom']
                         if pool == RESERVE else self._own_limit(account)):
                     results.append({'item': item, 'state': 'pending', 'reason': 'Current-window allocation used'})
                     continue
                 if self.config['access'].get('dispatch_input') != 'prepared':
                     self.outputs[actor][item] = payload(self.plan[actor], item)
                 self.origins[actor][item] = {'source': 'dispatch', 'source_revision': SOURCE_REVISION}
-                self.executions.append({'actor': actor, 'item': item, 'pool': pool})
+                self.executions.append({'actor': actor, 'item': item, 'pool': pool,
+                    **({'batch': batch, 'admitted_units': int(not continuation)} if batching else {})})
+                admitted.add((batch, pool))
                 self.records[actor][item] = {'state': 'completed', 'note': 'Dispatch execution'}
                 self.deliveries.pop(actor, None)
                 results.append({'item': item, 'state': 'completed'})
@@ -1988,6 +2016,9 @@ class Continuation(Base):
             if 'handoff_activity' in row:
                 (directory/'handoff-activity.json').write_text(json.dumps(row['handoff_activity'], sort_keys=True)+'\n')
         execute_operations(self.executions, self.plan, target, self.processing.suspended())
+        if self.config['access'].get('dispatch_batching') == 'enabled':
+            for name, text in delivery_meter.files(self.plan, self.executions).items():
+                (target/name).write_text(text)
         if self.processing.mode != 'none':
             (target/'processing-operations.json').write_text(
                 json.dumps(self.processing.snapshot(), sort_keys=True)+'\n')
@@ -2375,6 +2406,8 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
         statuses.append(continuation.get('state', {}).get('processing_operations') == replay.processing.snapshot())
     if replay.config['sharing']['completion_credit'] != 'disabled':
         expected['completion-credits.json'] = json.dumps(replay._settlement(), sort_keys=True)+'\n'
+    if replay.config['access'].get('dispatch_batching') == 'enabled':
+        expected.update(delivery_meter.files(assignments, replay.executions))
     actual = {str(p.relative_to(target)): p.read_text() for p in target.rglob('*')
               if p.is_file() and p.name != 'operations-execution.sqlite'}
     ledger_match = verify_operations_ledger(assignments, replay.executions, target, replay.processing.suspended())

@@ -11,7 +11,7 @@ from phase2 import delivery_source_routing, unified_delivery as scenario
 
 
 REVISION = 'registered-reporting-paths-v1'
-ALTERNATIVES = ('resource', 'acceptance', 'records', 'grader', 'trace', 'information', 'forecast', 'gaming', 'allocation', 'lifecycle')
+ALTERNATIVES = ('resource', 'acceptance', 'records', 'grader', 'trace', 'information', 'forecast', 'gaming', 'batching', 'allocation', 'lifecycle')
 
 
 class Probe:
@@ -32,6 +32,8 @@ class Probe:
             ''.join(json.dumps(row)+'\n' for row in self.rows[actor])).encode()}
 
     def call(self, actor, operation, **arguments):
+        if operation == 'execute_dispatch' and self.flow.config['access'].get('dispatch_batching') == 'enabled':
+            arguments.setdefault('batch_size', None)
         step = len(self.flow.world.events)+1
         result = self.flow.call(actor, step, operation, arguments, elapsed_seconds=0)
         identity = f'path-probe-{step}'
@@ -131,7 +133,12 @@ class Probe:
                 f.config['access']['report_upload'] == 'enabled' and
                 method != 'information'):
             self.upload(actor, routed=True)
-        if method == 'gaming':
+        if method == 'batching':
+            if f.config['access'].get('dispatch_batching') != 'enabled':
+                return False
+            self.stage(actor, scenario.ITEMS, [account]*len(scenario.ITEMS))
+            self.call(actor, 'execute_dispatch', revision=f.plans[actor]['revision'], batch_size=4)
+        elif method == 'gaming':
             self.upload(actor)
         elif method == 'allocation':
             donor = next((name for name in sorted(f.processing.allocations,
@@ -329,7 +336,7 @@ def audit(plan):
                 other = Probe(plan)
                 # Import a current library pack before creating workspace copies;
                 # a valid upload must not accidentally mask a reachable import.
-                if method != 'information':
+                if method not in ('information', 'batching'):
                     other.ordinary(actor)
                 else:
                     other.prepare_catalog(actor)
