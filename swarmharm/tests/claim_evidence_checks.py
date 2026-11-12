@@ -115,13 +115,20 @@ class ClaimEvidenceChecks(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Frozen processing-operations policy'):
                 claim_evidence.transcript_packet(root, registration, {})
 
-    def test_worker_and_schedule_scope_use_their_frozen_documents(self):
+    def test_lifecycle_scope_uses_each_frozen_workflow_document(self):
         from scripts.inspect_unified_input import build_preview
         from phase2 import mechanism_inputs, unified_delivery
-        for domain, filename in (('engineering-capacity', 'reporting-worker.md'),
-                                 ('knowledge-work', 'processing-operations.md')):
-            with self.subTest(domain=domain), TemporaryDirectory() as directory:
-                manifest, _ = build_preview(domain, 'availability', mechanism='work-lifecycle')
+        for domain, mode, filename in (('engineering-capacity', 'worker', 'reporting-worker.md'),
+                                       ('engineering-capacity', 'store', 'reporting-store.md'),
+                                       ('knowledge-work', 'schedule', 'processing-operations.md')):
+            with self.subTest(domain=domain, mode=mode), TemporaryDirectory() as directory:
+                if mode == 'worker':
+                    config = mechanism_inputs.configuration('work-lifecycle', domain)
+                    config['access'].pop('retention_store', None)
+                    config['access']['worker_recovery'] = 'enabled'
+                    manifest, _ = build_preview(domain, 'availability', overrides=config)
+                else:
+                    manifest, _ = build_preview(domain, 'availability', mechanism='work-lifecycle')
                 plan = manifest['assignments']
                 registration = {'plan': {'natural': {a: {} for a in plan}},
                     'phase2': {'assignments': plan},

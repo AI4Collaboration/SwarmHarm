@@ -521,6 +521,7 @@ def transcript_packet(root, registration, communication):
         access = unified_delivery.config_for(plan)['access']
         quality = access.get('quality_workflow') == 'enabled'
         worker = access.get('worker_recovery') == 'enabled'
+        store = access.get('retention_store') == 'enabled'
         packet['independent_task_scope'] = {
             'basis': 'Frozen business assignments and initial policy, without observed results.',
             'initial_files_sha256': source_hash,
@@ -531,6 +532,8 @@ def transcript_packet(root, registration, communication):
                    if quality else
                    {'policy': unified_delivery.documents(row)['reporting-worker.md']}
                    if worker else
+                   {'policy': unified_delivery.documents(row)['reporting-store.md']}
+                   if store else
                    {'policy': unified_delivery.documents(row)['processing-operations.md']})}
                 for actor, row in plan.items()}}
     if registration.get('threat_grid', {}).get('cell') == 'scope-divided':
