@@ -273,3 +273,5 @@ For a separately registered Engineering records input, `--mechanism evidence-tam
 The separate Knowledge Work `knowledge-publication-index-v1` variant adds a shared index of real retained publications; it starts empty and withdrawn publications disappear. Agent-authored publications and their reads remain distinct from scenario fixtures.
 
 The separate Engineering `engineering-receipt-visible-v2` variant exposes actual workstation test results and current, genuinely published build records. Local results are not desk receipts; withdrawn records disappear.
+
+The separate Knowledge Work `knowledge-review-queue-v1` variant represents source-backed editorial review items, including ordinary scheduling and cancellation. The original customer order stays unchanged; retained publications and corrected-binding replay are independently checked.

@@ -82,7 +82,7 @@ CONFIG_SCHEMA = {
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'engineering']},
             'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'receipt-defined', 'receipt-defined-visible']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled']},
-            'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications']},
+            'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled']},
             'payables_workflow': {'enum': ['disabled', 'enabled']},
             'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations']},
@@ -207,15 +207,19 @@ def activity_report_workflow(assignment):
 
 
 def editorial_brief_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('editorial_brief_workflow') in ('enabled','with_archive','with_publications')
+    return assignment.get('delivery_config', {}).get('access', {}).get('editorial_brief_workflow') in ('enabled','with_archive','with_publications','with_review_queue')
 
 
 def editorial_intake_archive(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('editorial_brief_workflow') in ('with_archive','with_publications')
+    return assignment.get('delivery_config', {}).get('access', {}).get('editorial_brief_workflow') in ('with_archive','with_publications','with_review_queue')
 
 
 def editorial_publication_index(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('editorial_brief_workflow') == 'with_publications'
+    return assignment.get('delivery_config', {}).get('access', {}).get('editorial_brief_workflow') in ('with_publications','with_review_queue')
+
+
+def editorial_review_queue(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('editorial_brief_workflow') == 'with_review_queue'
 
 
 def config_for(plan):
@@ -362,7 +366,8 @@ def documents(assignment):
     if editorial_brief_workflow(assignment):
         from phase2.editorial_brief.editorial_desk import documents as editorial_documents
         return editorial_documents(assignment['account'],intake_archive=editorial_intake_archive(assignment),
-                                   publication_index=editorial_publication_index(assignment))
+                                   publication_index=editorial_publication_index(assignment),
+                                   review_queue=editorial_review_queue(assignment))
     if activity_report_workflow(assignment):
         from phase2.activity_report.activity_desk import documents as activity_documents
         return activity_documents(assignment['account'])
@@ -854,13 +859,13 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      report_upload='enabled', publication_items='available',
                      build_record_workflow=False, build_target_workflow=False, reconciliation_workflow='disabled',
                      activity_report_workflow=False, payables_workflow='disabled', editorial_brief_workflow=False,
-                     editorial_intake_archive=False, editorial_publication_index=False, **kwargs):
+                     editorial_intake_archive=False, editorial_publication_index=False, editorial_review_queue=False, **kwargs):
     if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow == 'enabled',
             bool(activity_report_workflow), payables_workflow == 'enabled', bool(editorial_brief_workflow))) > 1:
         raise ValueError('Choose one business workflow')
     if editorial_brief_workflow:
         from phase2.editorial_brief.bridge import tools as editorial_tools
-        return editorial_tools(intake_archive=editorial_intake_archive,publication_index=editorial_publication_index)
+        return editorial_tools(intake_archive=editorial_intake_archive,publication_index=editorial_publication_index,review_queue=editorial_review_queue)
     if activity_report_workflow:
         from phase2.activity_report.bridge import tools as activity_tools
         return activity_tools()

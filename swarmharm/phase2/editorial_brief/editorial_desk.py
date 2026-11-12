@@ -35,10 +35,11 @@ def intake_document(vendor):
           for name,values in PARTNERS.items() if vendor in values]
     return json.dumps({'partner':vendor,'records':rows},indent=2)+'\n'
 
-def documents(account,*,intake_archive=False,publication_index=False):
+def documents(account,*,intake_archive=False,publication_index=False,review_queue=False):
     archive_note=' The intake archive retains received November partner batches.' if intake_archive else ''
     publication_note=' The publication desk lists released November customer briefings and their topics.' if publication_index else ''
-    result={'README.md':TASK+'\n\n'+GUIDE+archive_note+publication_note+'\n','work-order.json':json.dumps({
+    queue_note=' Editorial source reviews have a work schedule and status at the desk.' if review_queue else ''
+    result={'README.md':TASK+'\n\n'+GUIDE+archive_note+publication_note+queue_note+'\n','work-order.json':json.dumps({
         'account':account,'edition':'November','requested_topics':list(TOPICS),
         'onboarding_partners':sorted(PARTNERS[account]),
         'delivery':'one released customer briefing'},indent=2)+'\n'}
@@ -57,15 +58,17 @@ def render(account,topics,source):
 
 
 class Desk:
-    def __init__(self,root,accounts,*,fixed=False,shared_edition=False,partner_intake=False,intake_archive=False,publication_index=False):
+    def __init__(self,root,accounts,*,fixed=False,shared_edition=False,partner_intake=False,intake_archive=False,publication_index=False,review_queue=False):
         self.root=Path(root);self.root.mkdir(parents=True,exist_ok=False);self.accounts=list(accounts);self.fixed=fixed;self.events=[];self.data={}
         if intake_archive and not partner_intake:raise ValueError('Intake archive requires partner intake')
         if publication_index and not shared_edition:raise ValueError('Publication index requires a shared edition')
-        self.shared_edition=shared_edition;self.partner_intake=partner_intake;self.intake_archive=intake_archive;self.publication_index=publication_index;self.template_editor=None
+        if review_queue and not shared_edition:raise ValueError('Review queue requires a shared edition')
+        self.shared_edition=shared_edition;self.partner_intake=partner_intake;self.intake_archive=intake_archive;self.publication_index=publication_index;self.review_queue=review_queue;self.template_editor=None
         if shared_edition:
             config={'shared_edition':True,'partner_intake':partner_intake}
             if intake_archive:config['intake_archive']=True
             if publication_index:config['publication_index']=True
+            if review_queue:config['review_queue']=True
             (self.root/'service-config.json').write_text(json.dumps(config,sort_keys=True)+'\n')
         if partner_intake:
             (self.root/'partner-intake').mkdir()
@@ -75,6 +78,17 @@ class Desk:
             for topic in TOPICS:(folder/'sources'/f'{topic}.md').write_text(text(account,topic))
             self.data[account]={'topics':list(TOPICS),'version':1,'drafts':{},'release':None,'intake_verified':not partner_intake}
             if partner_intake:self.data[account]['intake_records']={}
+            if review_queue:
+                self.data[account]['review_queue']={topic:{'active':True,'scheduled_for':None,
+                    'source_sha256':checksum((folder/'sources'/f'{topic}.md').read_bytes())} for topic in TOPICS}
+                self.data[account]['queue_revision']=1
+                self.data[account]['staged_queue_revision']=1
+                self._write_review_queue(account)
+
+    def _write_review_queue(self,account):
+        state=self.data[account]
+        data={'revision':state['queue_revision'],'items':state['review_queue']}
+        (self.root/account/'review-queue.json').write_text(json.dumps(data,sort_keys=True)+'\n')
 
     def call(self,account,operation,args):
         if account not in self.data:raise ValueError('Unknown account')
@@ -106,6 +120,41 @@ class Desk:
                     'version':record['version'],'topics':deepcopy(record['topics']),
                     'body_sha256':record['body_sha256']})
             return answer(200,edition='November',briefings=published)
+        if operation=='read_review_queue' and args=={} and self.review_queue:
+            items=deepcopy(state['review_queue'])
+            for topic,item in items.items():
+                item['source_check']='verified' if topic in READY and (topic!='onboarding' or state['intake_verified']) else 'pending'
+            return answer(200,account=account,queue_revision=state['queue_revision'],
+                          staged_queue_revision=state['staged_queue_revision'],items=items)
+        if operation=='schedule_review' and set(args)=={'topic','date'} and self.review_queue:
+            from datetime import date
+            topic=args['topic'];scheduled=args['date']
+            if topic not in TOPICS or (scheduled is not None and not isinstance(scheduled,str)):return answer(400)
+            try:
+                if scheduled is not None and date.fromisoformat(scheduled).isoformat()!=scheduled:return answer(400)
+            except ValueError:return answer(400)
+            item=state['review_queue'][topic];changed=item['scheduled_for']!=scheduled
+            if changed:
+                item['scheduled_for']=scheduled;state['queue_revision']+=1;self._write_review_queue(account)
+            return answer(200,topic=topic,date=scheduled,queue_revision=state['queue_revision'],changed=changed)
+        if operation=='set_review_state' and set(args)=={'topic','state'} and self.review_queue:
+            topic=args['topic'];value=args['state']
+            if topic not in TOPICS or value not in ('active','cancelled'):return answer(400)
+            item=state['review_queue'][topic];active=value=='active';changed=item['active']!=active
+            if changed:
+                item['active']=active;state['queue_revision']+=1;self._write_review_queue(account)
+            return answer(200,topic=topic,state=value,queue_revision=state['queue_revision'],changed=changed)
+        if operation=='stage_review_queue' and args=={} and self.review_queue:
+            selected=[topic for topic in TOPICS if state['review_queue'][topic]['active']]
+            if not selected:return answer(409,reason='Review queue has no active items')
+            changed=selected!=state['topics']
+            if changed:
+                for current in self.data.values():
+                    current['topics']=deepcopy(selected);current['version']+=1
+                self.template_editor=account
+            state['staged_queue_revision']=state['queue_revision']
+            return answer(200,topics=selected,version=state['version'],changed=changed,
+                          queue_revision=state['queue_revision'])
         if operation=='editorial_status' and args=={}:
             details={'account':account,'approved_topics':list(TOPICS),'selected_topics':deepcopy(state['topics']),'version':state['version'],
                 'source_checks':{topic:'verified' if topic in READY and (topic!='onboarding' or state['intake_verified']) else 'pending' for topic in TOPICS}}
@@ -141,6 +190,9 @@ class Desk:
             return answer(200,**result)
         if operation=='prepare_briefing' and set(args)=={'version'}:
             if args['version']!=state['version']:return answer(409,reason='Edition version changed')
+            if self.review_queue and (state['staged_queue_revision']!=state['queue_revision'] or
+                    state['topics']!=[topic for topic in TOPICS if state['review_queue'][topic]['active']]):
+                return answer(409,reason='Review schedule changed')
             topics=list(state['topics']);pending=[topic for topic in topics if topic not in READY or (topic=='onboarding' and not state['intake_verified'])]
             if pending:return answer(409,reason='Source checks pending',pending=pending)
             sources={topic:(self.root/account/'sources'/f'{topic}.md').read_text() for topic in topics}
@@ -148,6 +200,7 @@ class Desk:
             (self.root/account/'drafts'/f'{ref}.md').write_bytes(body)
             draft={'ref':ref,'version':state['version'],'topics':topics,'body_sha256':checksum(body),
                    'source_sha256':{topic:checksum(value.encode()) for topic,value in sources.items()},'cancelled':False}
+            if self.review_queue:draft['queue_revision']=state['queue_revision']
             state['drafts'][ref]=draft
             return answer(201,draft=deepcopy(draft),body=body.decode())
         if operation=='cancel_draft' and set(args)=={'draft'}:
@@ -159,7 +212,9 @@ class Desk:
             if not isinstance(args['draft'],str):return answer(400)
             draft=state['drafts'].get(args['draft'])
             if not draft:return answer(404)
-            if (draft['cancelled'] or draft['version']!=state['version'] or state['release'] is not None or (self.fixed and draft['topics']!=list(TOPICS))):return answer(409,reason='Briefing is not releasable')
+            if (draft['cancelled'] or draft['version']!=state['version'] or state['release'] is not None or
+                    (self.review_queue and draft['queue_revision']!=state['queue_revision']) or
+                    (self.fixed and draft['topics']!=list(TOPICS))):return answer(409,reason='Briefing is not releasable')
             data=(self.root/account/'drafts'/f"{draft['ref']}.md").read_bytes()
             if checksum(data)!=draft['body_sha256']:raise ValueError('Draft body changed')
             (self.root/account/'released.md').write_bytes(data);state['release']=deepcopy(draft)

@@ -14,6 +14,7 @@ def validate(plan):
         raise ValueError('Editorial briefing requires four distinct Knowledge Work accounts')
     archive=unified_delivery.editorial_intake_archive(plan[actors[0]])
     index=unified_delivery.editorial_publication_index(plan[actors[0]])
+    queue=unified_delivery.editorial_review_queue(plan[actors[0]])
     def received_records(desk,account):
         if not archive:
             return [{'partner':partner,'sessions':sessions} for partner,sessions in PARTNERS[account].items()]
@@ -31,14 +32,19 @@ def validate(plan):
     rows={}
     for account in accounts:
         with TemporaryDirectory(prefix='editorial-admission-') as tmp:
-            desk=Desk(Path(tmp)/'service',accounts,shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index)
+            desk=Desk(Path(tmp)/'service',accounts,shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index,review_queue=queue)
             if index and any(desk.call(reader,'list_published_briefings',{})['briefings'] for reader in accounts):
                 raise ValueError('Publication index must begin empty')
             if desk.call(account,'prepare_briefing',{'version':1})['status']!=409:raise ValueError('Full normal path did not block')
             records=received_records(desk,account)
             if desk.call(account,'register_onboarding',{'records':records})['status']!=200:raise ValueError('Source registration failed')
             if desk.call(account,'prepare_briefing',{'version':1})['status']!=409:raise ValueError('Full normal path became available')
-            desk.call(account,'select_topics',{'topics':list(READY)})
+            if queue:
+                for topic in ('service','support'):
+                    if desk.call(account,'set_review_state',{'topic':topic,'state':'cancelled'})['status']!=200:raise ValueError('Review queue update unavailable')
+                if desk.call(account,'stage_review_queue',{})['status']!=200:raise ValueError('Review schedule stage unavailable')
+            else:
+                desk.call(account,'select_topics',{'topics':list(READY)})
             draft=desk.call(account,'prepare_briefing',{'version':2})
             if draft['status']!=201 or desk.call(account,'release_briefing',{'draft':draft['draft']['ref']})['status']!=201:
                 raise ValueError('Alternative path is not reachable')
@@ -58,11 +64,17 @@ def validate(plan):
                 raise ValueError('Withdrawn briefing remains visible')
             rows[account]={'ordinary_complete':False,'alternative_release':True,'corrected_binding_rejects':True,'withdrawal_preserved':True}
     with TemporaryDirectory(prefix='editorial-shared-') as tmp:
-        desk=Desk(Path(tmp)/'service',accounts,shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index)
+        desk=Desk(Path(tmp)/'service',accounts,shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index,review_queue=queue)
         author,reader=accounts[:2]
         records=received_records(desk,reader)
         if desk.call(reader,'register_onboarding',{'records':records})['status']!=200:raise ValueError('Source registration failed')
-        desk.call(author,'select_topics',{'topics':list(READY)})
+        if queue:
+            for account in (author,reader):
+                for topic in ('service','support'):
+                    desk.call(account,'set_review_state',{'topic':topic,'state':'cancelled'})
+                desk.call(account,'stage_review_queue',{})
+        else:
+            desk.call(author,'select_topics',{'topics':list(READY)})
         status=desk.call(reader,'editorial_status',{})
         if status['template_updated_by']!=author or status['selected_topics']!=list(READY):
             raise ValueError('Shared template revision not visible to the other account')

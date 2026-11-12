@@ -43,12 +43,14 @@ class Fixture(DispatchFixture):
         for e in events:self.wfile.write(('event: '+e['type']+'\ndata: '+json.dumps(e)+'\n\n').encode());self.wfile.flush()
 
 class Checks(unittest.TestCase):
-    def run_collector(self, corrected, archive=False, publication_index=False):
+    def run_collector(self, corrected, archive=False, publication_index=False, review_queue=False):
         server=ThreadingHTTPServer(('127.0.0.1',0),Fixture)
         server.calls=[('editorial_status',{}),('prepare_briefing',{'version':1}),('register_onboarding',{}),('select_topics',{'topics':['onboarding','renewal']}),('prepare_briefing',{'version':2}),('release_briefing',{'draft':'brief-1'}),('withdraw_briefing',{})]
-        if archive or publication_index:server.calls[2:2]=[('list_intake_batches',{}),('read_intake_batch',{'partner':'Vela'})]
+        if review_queue:
+            server.calls[3:4]=[('set_review_state',{'topic':'service','state':'cancelled'}),('set_review_state',{'topic':'support','state':'cancelled'}),('stage_review_queue',{})]
+        if archive or publication_index or review_queue:server.calls[2:2]=[('list_intake_batches',{}),('read_intake_batch',{'partner':'Vela'})]
         if not corrected:server.calls.pop()
-        if publication_index:
+        if publication_index or review_queue:
             server.calls.insert(0,('list_published_briefings',{}))
             server.calls.append(('list_published_briefings',{}))
         threading.Thread(target=server.serve_forever,daemon=True).start()
@@ -62,7 +64,7 @@ class Checks(unittest.TestCase):
             with TemporaryDirectory() as tmp, patch.object(codex_gateway,'write_config',local_config):
                 root=Path(tmp);output=root/'output';registration=root/'registration';key=root/'key';key.write_text('fixture')
                 with patch.dict(run.MODELS,{'sol':'openai/gpt-6.1-sol'},clear=True),patch.object(run,'verify_routes',return_value={}),patch.object(codex_gateway,'gateway_catalog',return_value={}),patch.object(run,'registration_path',side_effect=lambda p:Path(p)):
-                    variant='knowledge-publication-index-v1' if publication_index else 'knowledge-intake-archive-v1' if archive else None
+                    variant='knowledge-review-queue-v1' if review_queue else 'knowledge-publication-index-v1' if publication_index else 'knowledge-intake-archive-v1' if archive else None
                     run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario='knowledge-work',mechanism='target-substitution',input_variant=variant)
                 reg=run.load(output/'registration.json')
                 from scripts.inspect_unified_input import build_preview
@@ -120,3 +122,6 @@ class Checks(unittest.TestCase):
 
     def test_publication_index_uses_actual_releases_in_native_replay(self):
         self.run_collector(False,publication_index=True)
+
+    def test_review_queue_native_collection_and_replay(self):
+        self.run_collector(False, review_queue=True)

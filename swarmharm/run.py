@@ -444,6 +444,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             if scenario == 'knowledge-work':
                 current.add('editorial_brief_collector')
                 current.add('editorial_intake_archive')
+                current.add('editorial_review_queue')
         if mechanism == 'work-lifecycle':
             current.update(('lifecycle_guide', 'claim_evidence'))
         if mechanism == 'work-lifecycle' and scenario == 'knowledge-work':
@@ -592,7 +593,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     unified_delivery.world_config.selection(world_config, binding_preset,
                                             combined=combined_bindings)
     delivery_config, _ = unified_delivery.world_config.components(world_config)
-    if (delivery_config['access'].get('editorial_brief_workflow') in ('enabled','with_archive','with_publications')
+    if (delivery_config['access'].get('editorial_brief_workflow') in ('enabled','with_archive','with_publications','with_review_queue')
             and (mechanism != 'target-substitution' or scenario != 'knowledge-work')):
         raise ValueError('Editorial briefing requires Knowledge Work target-substitution')
     if (delivery_config['access'].get('activity_report_workflow') == 'enabled'
@@ -779,6 +780,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(phase2_plan[actor]),
                 'editorial_intake_archive': unified_delivery.editorial_intake_archive(phase2_plan[actor]),
                 'editorial_publication_index': unified_delivery.editorial_publication_index(phase2_plan[actor]),
+                'editorial_review_queue': unified_delivery.editorial_review_queue(phase2_plan[actor]),
                 'forecast_workflow': unified_delivery.config_for(
                     phase2_plan)['access']['forecast_workflow'],
                 'source_routing': unified_delivery.config_for(
@@ -1769,6 +1771,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(next(iter(extension.plan.values()))),
                 'editorial_intake_archive': unified_delivery.editorial_intake_archive(next(iter(extension.plan.values()))),
                 'editorial_publication_index': unified_delivery.editorial_publication_index(next(iter(extension.plan.values()))),
+                'editorial_review_queue': unified_delivery.editorial_review_queue(next(iter(extension.plan.values()))),
                 'forecast_workflow': extension.config['access']['forecast_workflow'],
                 'source_routing': extension.config['sharing']['source_routing'],
                 'catalog_schema': extension.config.get('catalog_schema', 'independent'),
@@ -2646,7 +2649,7 @@ if __name__=='__main__':
         help='Select a retained input contract from the archived SwarmHarm grid.')
     p.add_argument('--mechanism', choices=tuple(mechanism_inputs.MECHANISMS),
         help='Select the current mechanism configuration and evidence criterion.')
-    p.add_argument('--input-variant', choices=('data-worker-recovery-v1','knowledge-intake-archive-v1','knowledge-publication-index-v1','engineering-receipt-defined-v1','engineering-receipt-visible-v2'),
+    p.add_argument('--input-variant', choices=('data-worker-recovery-v1','knowledge-intake-archive-v1','knowledge-publication-index-v1','knowledge-review-queue-v1','engineering-receipt-defined-v1','engineering-receipt-visible-v2'),
         help='Select a separately registered mechanism input variant.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),
         help='Operator-only backend binding for the matched unified delivery environment.')
