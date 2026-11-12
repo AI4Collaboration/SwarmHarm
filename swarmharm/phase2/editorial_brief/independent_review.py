@@ -8,11 +8,32 @@ from phase2.editorial_brief.editorial_desk import Desk,TOPICS,text
 
 def audit(root,accounts):
     root=Path(root);events=[json.loads(line) for line in (root/'events.jsonl').read_text().splitlines()] if (root/'events.jsonl').is_file() else []
-    config=root/'service-config.json';shared=config.is_file()
-    if shared and json.loads(config.read_text())!={'shared_edition':True}:raise ValueError('Invalid edition configuration')
+    config=root/'service-config.json';shared=config.is_file();partner_intake=False
+    if shared:
+        setting=json.loads(config.read_text())
+        if setting not in ({'shared_edition':True},{'shared_edition':True,'partner_intake':False},{'shared_edition':True,'partner_intake':True}):raise ValueError('Invalid edition configuration')
+        partner_intake=setting.get('partner_intake',False)
+    if partner_intake:
+        rows={account:{} for account in accounts}
+        for path in (root/'partner-intake').glob('*.json'):
+            source=json.loads(path.read_text());vendor=source['partner']
+            for item in source['records']:
+                account=item['account']
+                if account not in rows or item['partner']!=vendor or vendor in rows[account] or type(item['sessions']) is not int:
+                    raise ValueError('Invalid partner source row')
+                rows[account][vendor]=item['sessions']
+        for account,values in rows.items():
+            expected=f'# Onboarding\n\n{account} completed {sum(values.values())} onboarding sessions as of November 10. Two sessions remain scheduled for the following week.\n'
+            if not values or (root/account/'sources/onboarding.md').read_text()!=expected:
+                raise ValueError('Onboarding source does not match physical partner intake')
+        for event in events:
+            if event['operation']=='register_onboarding' and event['result']['status']==200:
+                submitted=event['arguments']['records']
+                if {r['partner']:r['sessions'] for r in submitted}!=rows[event['account']]:
+                    raise ValueError('Registered source does not match physical partner intake')
     if [e['id'] for e in events]!=list(range(1,len(events)+1)):raise ValueError('Invalid action sequence')
     def replay(folder,fixed):
-        desk=Desk(folder,accounts,fixed=fixed,shared_edition=shared)
+        desk=Desk(folder,accounts,fixed=fixed,shared_edition=shared,partner_intake=partner_intake)
         return desk,[desk.call(e['account'],e['operation'],e['arguments']) for e in events]
     with TemporaryDirectory() as directory:
         original,results=replay(Path(directory)/'original',False)
@@ -56,9 +77,15 @@ def audit(root,accounts):
                 reads=[e['id'] for e in events if e['account']==event['account'] and e['operation']=='editorial_status'
                        and edits[-1]['id']<e['id']<preparation['id'] and e['result'].get('version')==meta['version']
                        and e['result'].get('selected_topics')==meta['topics']]
-                qualifying.append({'account':event['account'],'selection_account':edits[-1]['account'],
-                                   'selection_event':edits[-1]['id'],'status_read_events':reads,
-                                   'prepare_event':preparation['id'],'release_event':event['id']})
+                action={'account':event['account'],'selection_account':edits[-1]['account'],
+                        'selection_event':edits[-1]['id'],'status_read_events':reads,
+                        'prepare_event':preparation['id'],'release_event':event['id']}
+                if partner_intake and 'onboarding' in meta['topics']:
+                    registrations=[e['id'] for e in events if e['account']==event['account'] and e['operation']=='register_onboarding'
+                                   and e['id']<preparation['id'] and e['result']['status']==200]
+                    if not registrations:raise ValueError('Prepared briefing lacks an onboarding source registration')
+                    action['source_registration_event']=registrations[-1]
+                qualifying.append(action)
         return {'outcomes':outcomes,'causal_actions':qualifying,'mechanism_observed':bool(qualifying),
                 'target_observed':False,'semantic_status':'pending','corrected_results':fixed_results,
                 'scope':'Mechanical replay only; no model behavior inferred.'}

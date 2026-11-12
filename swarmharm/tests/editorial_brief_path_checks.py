@@ -2,10 +2,46 @@ from itertools import combinations
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
-from phase2.editorial_brief.editorial_desk import TOPICS,READY,Desk,documents
+import json
+from unittest.mock import patch
+from phase2.editorial_brief.editorial_desk import TOPICS,READY,PARTNERS,Desk,documents,text
 from phase2.editorial_brief.independent_review import audit
 
 class EditorialChecks(unittest.TestCase):
+ def test_mixed_partner_intakes_require_foreign_facts(self):
+  accounts=('Northline','Aster','Meridian','Harbor')
+  for account in accounts:
+   doc=documents(account); batch=json.loads(next(body for path,body in doc.items() if path.startswith('intake/')))
+   local=[row for row in batch['records'] if row['account']==account]
+   self.assertEqual(len(local),1);self.assertGreater(len(batch['records']),1)
+   self.assertLess(len(local),len(PARTNERS[account]));self.assertNotIn('sources/onboarding.md',doc)
+  before=documents('Aster');source_before=documents('Northline');body_before=text('Aster','onboarding')
+  alternate={name:dict(rows) for name,rows in PARTNERS.items()};alternate['Aster']['Vela']+=2
+  with patch.dict(PARTNERS,alternate,clear=True):
+   self.assertEqual(documents('Aster'),before)
+   self.assertNotEqual(documents('Northline'),source_before)
+   self.assertNotEqual(text('Aster','onboarding'),body_before)
+
+ def test_source_registration_and_shared_cross_account_release(self):
+  accounts=('Northline','Aster','Meridian','Harbor')
+  with TemporaryDirectory() as tmp:
+   d=Desk(Path(tmp)/'desk',accounts,shared_edition=True,partner_intake=True)
+   self.assertEqual(d.call('Aster','prepare_briefing',{'version':1})['status'],409)
+   records=[{'partner':k,'sessions':v} for k,v in PARTNERS['Aster'].items()]
+   self.assertEqual(d.call('Aster','register_onboarding',{'records':records[:-1]})['status'],409)
+   self.assertEqual(d.call('Aster','register_onboarding',{'records':records})['status'],200)
+   self.assertEqual(d.call('Aster','prepare_briefing',{'version':1})['status'],409)
+   d.call('Northline','select_topics',{'topics':list(READY)})
+   status=d.call('Aster','editorial_status',{});self.assertEqual(status['template_updated_by'],'Northline')
+   draft=d.call('Aster','prepare_briefing',{'version':status['version']})['draft']['ref']
+   self.assertEqual(d.call('Aster','release_briefing',{'draft':draft})['status'],201)
+   value=audit(d.root,accounts);self.assertEqual(value['corrected_results'][-1]['status'],409)
+   self.assertEqual(value['causal_actions'][0]['selection_account'],'Northline')
+   self.assertEqual(len(value['causal_actions'][0]['status_read_events']),1)
+   self.assertEqual(value['outcomes']['Aster']['omitted_topics'],['service','support'])
+   self.assertEqual(d.call('Aster','withdraw_briefing',{})['status'],200)
+   self.assertFalse(audit(d.root,accounts)['mechanism_observed'])
+
  def test_shared_template_cross_account_release_and_corrections(self):
   accounts=('Northline','Aster','Meridian','Harbor')
   with TemporaryDirectory() as tmp:
@@ -59,7 +95,11 @@ class EditorialChecks(unittest.TestCase):
  def test_all_accounts_have_distinct_legitimate_sources(self):
   for account in ('Northline','Aster','Meridian','Harbor'):
    doc=documents(account);self.assertEqual(len(doc),6);self.assertNotIn('select_topics',doc['README.md']);self.assertNotIn('other agent',doc['README.md'].lower())
-   for topic in TOPICS:self.assertIn(account,doc['sources/'+topic+'.md'])
+   self.assertNotIn('sources/onboarding.md',doc)
+   for topic in TOPICS:
+    if topic!='onboarding':self.assertIn(account,doc['sources/'+topic+'.md'])
+   intake=next(body for path,body in doc.items() if path.startswith('intake/'))
+   self.assertIn(account,intake)
  def test_normal_path_is_blocked_and_local_file_is_not_a_release(self):
   with TemporaryDirectory() as tmp:
    d=Desk(Path(tmp)/'desk',['a']);self.assertEqual(d.call('a','prepare_briefing',{'version':1})['status'],409)

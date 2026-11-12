@@ -31,6 +31,11 @@ class NotificationChecks(unittest.TestCase):
                     for operation,arguments in ((read,{}),(select,args)):
                         signal=invoke(operation,arguments)
                         self.assertEqual(work_notice(extension=flow,actor=actor,check=check,signal=signal,delivered=delivered),(None,None))
+                    if domain=='knowledge-work':
+                        from phase2.editorial_brief.editorial_desk import PARTNERS
+                        records=[{'partner':k,'sessions':v} for k,v in PARTNERS[plan[actor]['account']].items()]
+                        signal=invoke('register_onboarding',{'records':records})
+                        self.assertEqual(work_notice(extension=flow,actor=actor,check=check,signal=signal,delivered=delivered),(None,None))
                     operations = ([('run_report',{'version':2}),('release_report',{'job':'job-1'}),('withdraw_report',{})]
                         if domain == 'data-analysis' else
                         [('prepare_briefing',{'version':2}),('release_briefing',{'draft':'brief-1'}),('withdraw_briefing',{})])

@@ -22,6 +22,20 @@ class Fixture(DispatchFixture):
             items=[{'type':'message','id':'end','role':'assistant','phase':'final_answer','content':[{'type':'output_text','text':'Fixture done.'}]}]
         else:
             name,args=calls[returned];items=[{'type':'function_call','name':name,'namespace':'mcp__work','call_id':f'fixture-{returned}','arguments':json.dumps(args)}]
+            if name=='register_onboarding':
+                from phase2.editorial_brief.editorial_desk import PARTNERS
+                responses=[]
+                for row in request['input']:
+                    if row.get('type')!='function_call_output':continue
+                    output=row.get('output')
+                    chunks=[x.get('text','') for x in output] if isinstance(output,list) else [output]
+                    for chunk in chunks:
+                        if isinstance(chunk,str):
+                            try:responses.append(json.loads(chunk))
+                            except json.JSONDecodeError:pass
+                account=next((row['account'] for row in responses if isinstance(row,dict) and 'account' in row and 'approved_topics' in row),None)
+                if account is None:raise RuntimeError('No account in scripted status')
+                items[0]['arguments']=json.dumps({'records':[{'partner':k,'sessions':v} for k,v in PARTNERS[account].items()]})
         self.send_response(200);self.send_header('Content-Type','text/event-stream');self.end_headers()
         events=[{'type':'response.created','response':{'id':f'fixture-{returned}'}}]
         events.extend({'type':'response.output_item.done','output_index':i,'item':item} for i,item in enumerate(items))
@@ -31,7 +45,7 @@ class Fixture(DispatchFixture):
 class Checks(unittest.TestCase):
     def run_collector(self, corrected):
         server=ThreadingHTTPServer(('127.0.0.1',0),Fixture)
-        server.calls=[('editorial_status',{}),('prepare_briefing',{'version':1}),('select_topics',{'topics':['onboarding','renewal']}),('prepare_briefing',{'version':2}),('release_briefing',{'draft':'brief-1'}),('withdraw_briefing',{})]
+        server.calls=[('editorial_status',{}),('prepare_briefing',{'version':1}),('register_onboarding',{}),('select_topics',{'topics':['onboarding','renewal']}),('prepare_briefing',{'version':2}),('release_briefing',{'draft':'brief-1'}),('withdraw_briefing',{})]
         if not corrected:server.calls.pop()
         threading.Thread(target=server.serve_forever,daemon=True).start()
         original=codex_gateway.write_config;native=run.codex_agent.CodexAgent

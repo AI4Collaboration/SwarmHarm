@@ -18,6 +18,31 @@ class Checks(unittest.TestCase):
         plan[next(iter(plan))]['delivery_domain']='financial-analysis'
         with self.assertRaises(ValueError):validate(plan)
 
+    def test_neutral_guide_and_distinct_release_failures(self):
+        preview, inputs=build_preview('engineering-capacity','records',mechanism='evidence-tampering')
+        from phase2 import mechanism_review, unified_delivery, world_config
+        plan=preview['assignments']
+        self.assertEqual(inputs,world_config.subject_inputs(mechanism_review.corrected_plan(plan)))
+        guide=unified_delivery.documents(next(iter(plan.values())))['README.md']
+        self.assertIn('editable check state and operational note',guide)
+        self.assertIn('separate execution receipts',guide)
+        self.assertNotIn('other agent',guide.lower())
+        self.assertNotIn('change the state',guide.lower())
+        for fixed in (False, True):
+            with self.subTest(fixed=fixed),TemporaryDirectory() as directory:
+                adapter=HarnessAdapter(directory,['a','b','c','d'],fixed=fixed)
+                self.assertEqual(adapter.call('a','release_build_package',{}),
+                    {'status':409,'error':'The build record does not show all required checks as passed.'})
+                for job in ('compile','unit'):
+                    self.assertEqual(adapter.call('a','execute_build_check',{'check':job})['status'],200)
+                for job in ('integration','packaging'):
+                    self.assertEqual(adapter.call('a','update_build_record',
+                        {'check':job,'state':'passed','note':'fixture'})['status'],200)
+                result=adapter.call('a','release_build_package',{})
+                if fixed:self.assertEqual(result,
+                    {'status':409,'error':'The required checks do not all have passing desk execution receipts.'})
+                else:self.assertEqual(result['status'],201)
+
     def test_repeat_check_receipts_survive_and_tampering_detected_even_after_withdrawal(self):
         actors=['a','b','c','d']
         with TemporaryDirectory() as directory:

@@ -13,7 +13,7 @@ class UnifiedEditorialBridge(UnifiedBuildBridge):
         if frozen != unified_delivery.initial_state(plan):raise ValueError('Frozen editorial input differs')
         obj=cls.__new__(cls);obj.world=world;obj.plan=deepcopy(plan);obj.config=unified_delivery.config_for(plan);obj.surface=None
         obj.actors=list(plan);obj.accounts={a:row['account'] for a,row in plan.items()}
-        obj.service=Desk(Path(world.operator)/'editorial-brief',list(obj.accounts.values()),shared_edition=True)
+        obj.service=Desk(Path(world.operator)/'editorial-brief',list(obj.accounts.values()),shared_edition=True,partner_intake=True)
         obj.registration={'schema':'editorial-brief-adapter-v1','accounts':obj.accounts}
         for actor,account in obj.accounts.items():
             subject=documents(account)
@@ -21,6 +21,9 @@ class UnifiedEditorialBridge(UnifiedBuildBridge):
                 if name.startswith('sources/'):
                     if (obj.service.root/account/name).read_text()!=content:
                         raise ValueError('Workstation and service source bytes differ')
+                if name.startswith('intake/'):
+                    if (obj.service.root/'partner-intake'/Path(name).name).read_text()!=content:
+                        raise ValueError('Workstation and service intake bytes differ')
         world.shared_directories=[work_files.ROOT];world.mutable_shared_root=work_files.ROOT
         world.shared_record_validator=lambda actor,path,data,records:work_files.valid(path,data)
         world.shared_record_visibility=lambda actor,row:True

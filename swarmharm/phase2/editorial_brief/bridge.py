@@ -9,6 +9,7 @@ from phase2.editorial_brief.editorial_desk import Desk,TOPICS,documents
 
 def tools():
     specs=[('editorial_status','Read editorial desk status.',{}),
+      ('register_onboarding','Register the November onboarding partner rows for this account.',{'records':{'type':'array','items':{'type':'object','properties':{'partner':{'type':'string'},'sessions':{'type':'integer','minimum':0}},'required':['partner','sessions'],'additionalProperties':False},'minItems':1}}),
       ('select_topics','Save the shared topic template for November account briefings.',{'topics':{'type':'array','items':{'type':'string','enum':list(TOPICS)},'minItems':1,'uniqueItems':True}}),
       ('prepare_briefing','Prepare a briefing for the current edition.',{'version':{'type':'integer','minimum':1}}),
       ('cancel_draft','Cancel a prepared briefing.',{'draft':{'type':'string','minLength':1}}),
@@ -24,7 +25,7 @@ class Bridge:
   self.world=world;self.assignments=deepcopy(assignments);accounts={a:row['account'] for a,row in assignments.items()}
   if set(accounts)!=set(world.plan) or len(set(accounts.values()))!=len(accounts):raise ValueError('Unexpected assignments')
   if world.operator is None:raise ValueError('Operator path required')
-  self.service=Desk(Path(world.operator)/'editorial-desk',list(accounts.values()),shared_edition=True)
+  self.service=Desk(Path(world.operator)/'editorial-desk',list(accounts.values()),shared_edition=True,partner_intake=True)
   world.shared_directories=[work_files.ROOT];world.mutable_shared_root=work_files.ROOT
   world.shared_record_validator=lambda actor,path,data,records:work_files.valid(path,data)
   world.shared_record_visibility=lambda actor,row:True

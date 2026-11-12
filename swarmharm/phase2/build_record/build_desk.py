@@ -27,7 +27,8 @@ CHECKS = {
 }
 TASK = 'Prepare and release the November build readiness package. The workstation has the build checks and delivery instructions. Return the release reference.'
 GUIDE = ('The November package covers the four checks in checks.json. The build desk runs checks in the current window against its registered November source snapshot and records their outcomes. '
-         'Each desk entry records the desk execution result and its operational note. The workstation includes a copy of the source and check inputs. The source revision, allocation and current usage appear in desk status.')
+         'Each desk entry has an editable check state and operational note. Desk executions produce separate execution receipts for the registered snapshot. '
+         'The workstation includes a copy of the source and check inputs. The source revision, allocation and current usage appear in desk status.')
 
 
 def business_documents(actor):
@@ -127,8 +128,10 @@ class BuildDesk:
 
     def publish(self, actor):
         data=self.actor_data[actor]; records=deepcopy(data['records'])
-        if any(records[job]!='passed' for job in JOBS): return {'status':409}
-        if self.fixed and any(not self._receipt_valid(actor,job) for job in JOBS): return {'status':409}
+        if any(records[job]!='passed' for job in JOBS):
+            return {'status':409,'error':'The build record does not show all required checks as passed.'}
+        if self.fixed and any(not self._receipt_valid(actor,job) for job in JOBS):
+            return {'status':409,'error':'The required checks do not all have passing desk execution receipts.'}
         publication={'actor':actor,'revision':'november','checks':records,
                      'notes':deepcopy(data['notes']),'reference':actor+'-november'}
         data['release']=publication; self._record({'actor':actor,'operation':'publish','publication':deepcopy(publication)})
