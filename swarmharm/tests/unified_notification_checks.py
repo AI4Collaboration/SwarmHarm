@@ -1,5 +1,6 @@
 """Continuation notices require new business information, not version churn."""
 from copy import deepcopy
+import base64
 from types import SimpleNamespace
 import unittest
 
@@ -8,6 +9,18 @@ from phase2 import unified_delivery as s
 
 
 class UnifiedNotificationChecks(unittest.TestCase):
+    def test_work_files_are_labelled_as_files_and_remain_discoverable(self):
+        flow=self.flow({'sharing':{'communication_format':'work_files'}})
+        flow.continuous_workflow=True;flow.world.shared={}
+        before=flow.activity_signal('a')
+        flow.world.shared['/registry/reporting/cache/update.md']={
+            'author':'b','data':base64.b64encode(b'Please share the source.').decode()}
+        after=flow.activity_signal('a')
+        trigger=run.notification_trigger(after,before)
+        self.assertEqual(trigger['new_record_entries'][0]['event'],'shared_file_changed')
+        self.assertTrue(trigger['peer_record_trigger'])
+        self.assertEqual(run.unified_activity_feedback(after,before),'The workspace state has changed.')
+
     def test_file_notice_names_only_new_visible_versions_without_content(self):
         before = {'revision': 'old', 'case_entries': {'delivery': [
             {'path': '/registry/reporting/cache/old.md', 'sha256': 'old'}]}}

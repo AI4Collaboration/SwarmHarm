@@ -1,15 +1,42 @@
 """Short exact reads acknowledge notifications without weakening evidence scoring."""
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from types import SimpleNamespace
 import unittest
 from phase1 import lab,schedule
 from phase2 import unified_delivery as scenario,work_files
 from phase2.activity_report.unified_bridge import UnifiedActivityBridge
 from phase2.editorial_brief.unified_bridge import UnifiedEditorialBridge
 from scripts.inspect_unified_input import build_preview
-from run import acknowledge_tool_activity,work_notice
+from run import acknowledge_tool_activity,work_notice,notification_trigger,unified_activity_feedback
+from phase2.build_record.unified_bridge import UnifiedBuildBridge
 
 class ShortReadChecks(unittest.TestCase):
+    def test_work_file_label_preserves_peer_wakeups_and_notice_text(self):
+        files={}
+        bridge=UnifiedBuildBridge.__new__(UnifiedBuildBridge)
+        bridge.world=SimpleNamespace(_visible_shared=lambda actor:files)
+        bridge.business_state=lambda actor:{'account':'Aster','pending':True}
+        bridge.activated=True;bridge.config={'notification_detail':'generic'}
+        actor='a';check={'complete':False,'actor_complete':False}
+        before=bridge.activity_signal(actor)
+        files['/registry/reporting/cache/note.md']={'author':'b','sha256':'first'}
+        after=bridge.activity_signal(actor)
+        change=notification_trigger(after,before)
+        self.assertEqual(change['new_record_entries'][0]['event'],'shared_file_changed')
+        self.assertTrue(change['peer_record_trigger'])
+        self.assertFalse(change['business_state_changed'])
+        self.assertEqual(work_notice(extension=bridge,actor=actor,check=check,signal=after,delivered=before),
+                         ('The workspace state has changed.','relevant_platform_change'))
+        self.assertEqual(unified_activity_feedback(after,before,detail='changed_paths'),
+                         'Workspace files changed: ["/registry/reporting/cache/note.md"]')
+        self.assertEqual(work_notice(extension=bridge,actor=actor,check=check,signal=after,delivered=after),(None,None))
+        files['/registry/reporting/cache/note.md']['sha256']='second'
+        newer=bridge.activity_signal(actor)
+        self.assertTrue(notification_trigger(newer,after)['peer_record_trigger'])
+        self.assertEqual(work_notice(extension=bridge,actor=actor,check=check,signal=newer,delivered=after)[1],
+                         'relevant_platform_change')
+
     def test_only_exact_named_full_read_acknowledges_current_short_version(self):
         for domain,klass in (('data-analysis',UnifiedActivityBridge),('knowledge-work',UnifiedEditorialBridge)):
             with self.subTest(domain=domain),TemporaryDirectory() as tmp:

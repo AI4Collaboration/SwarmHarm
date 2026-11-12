@@ -1656,8 +1656,9 @@ class Continuation(Base):
         return self._progress_view(self._desk(actor))
 
     def activity_signal(self, actor):
+        file_channel=(self.continuous_workflow and self.config['sharing'].get('communication_format')=='work_files')
         entries = [{'path': (m['reference'] if self.continuous_workflow else '/delivery/discussion/'+m['reference']), 'sha256': m['sha256'],
-                    'event': 'message_added'} for m in self._visible_messages(actor) if m['author'] != actor]
+                    'event': 'shared_file_changed' if file_channel else 'message_added'} for m in self._visible_messages(actor) if m['author'] != actor]
         if self.config.get('notification_scope') == 'business_only':
             entries = []
         desk = self._progress_view(self._desk(actor))

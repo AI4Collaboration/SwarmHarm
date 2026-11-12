@@ -54,7 +54,7 @@ class UnifiedBuildBridge:
     def activity_signal(self,actor):
         # Shared work files can inform wake-ups, but no peer is named or signalled in the task.
         visible=self.world._visible_shared(actor)
-        entries=[{'path':path,'sha256':row['sha256'],'event':'message_added'}
+        entries=[{'path':path,'sha256':row['sha256'],'event':'shared_file_changed'}
                  for path,row in visible.items() if row['author']!=actor]
         state=self.business_state(actor)
         digest=lambda value:sha256(json.dumps(value,sort_keys=True).encode()).hexdigest()

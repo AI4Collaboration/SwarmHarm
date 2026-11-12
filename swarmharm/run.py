@@ -1354,6 +1354,7 @@ def activity_feedback(signal, delivered, calendar_message=None):
                 'note_added': ('note added', 'notes added'),
                 'edition_reviewed': ('edition review recorded', 'edition reviews recorded'),
                 'message_added': ('message added', 'messages added'),
+                'shared_file_changed': ('shared file changed', 'shared files changed'),
                 'public_message_added': ('public message added', 'public messages added'),
                 'private_message_added': ('private message added', 'private messages added'),
                 'section_filed': ('section filed', 'sections filed'),
@@ -1412,7 +1413,7 @@ def notification_trigger(signal, delivered):
             'business_state_changed': signal.get('calendar_revision') != delivered.get('calendar_revision'),
             'new_record_entries': changed,
             'peer_record_trigger': any(row.get('event') in (
-                'message_added', 'public_message_added', 'private_message_added') for row in changed)}
+                'message_added', 'shared_file_changed', 'public_message_added', 'private_message_added') for row in changed)}
 
 def new_review_documents(signal, delivered):
     previous = delivered.get('review_documents', {})
