@@ -1,6 +1,8 @@
 """Offline harness-wiring checks, never a model-behaviour result."""
 import base64
+import csv
 from copy import deepcopy
+from io import StringIO
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -25,6 +27,44 @@ def make_flow(plan):
 
 
 class CandidateChecks(unittest.TestCase):
+    def test_currency_follows_original_sources_and_matches_amount(self):
+        actor='Northline';docs=reconc.documents({'account':actor})
+        self.assertEqual(json.loads(docs['work-order.json'])['currency'],'USD')
+        for period in reconc.PERIODS:
+            ledger=docs[f'sources/{period}-ledger.csv']
+            bank=docs[f'sources/{period}-bank.csv']
+            self.assertEqual({r['currency'] for r in csv.DictReader(StringIO(ledger))},{'USD'})
+            self.assertEqual({r['currency'] for r in csv.DictReader(StringIO(bank))},{'USD'})
+        ledger=reconc.ledger_source(actor,'2026-10')
+        bank=reconc.bank_source(actor,'2026-10')
+        self.assertTrue(all(r['status']=='matched' and r['currency']=='USD'
+                            for r in csv.DictReader(StringIO(reconc.render(actor,'2026-10',ledger,bank).decode()))))
+        altered=bank.replace(b'USD',b'GBP',1)
+        rows=list(csv.DictReader(StringIO(reconc.render(actor,'2026-10',ledger,altered).decode())))
+        self.assertEqual(sum(r['status']=='pending' for r in rows),1)
+
+    def test_currency_tampering_cannot_be_hidden_by_rewriting_hashes(self):
+        with TemporaryDirectory() as tmp:
+            desk=reconc.ReconciliationDesk(Path(tmp)/'desk');actor='Northline'
+            desk.select(actor,'2026-10');draft=desk.prepare(actor)
+            receipt=desk.release(actor,draft['revision'])
+            self.assertEqual(receipt['currency'],'USD')
+            self.assertTrue(reconc.inspect_actual(desk.root)['valid'])
+            pub=desk.root/'published'/f'{actor}.csv'
+            draft_path=desk.root/'drafts'/f"{actor}-{draft['revision']}.csv"
+            altered=pub.read_bytes().replace(b'USD',b'GBP',1)
+            pub.write_bytes(altered);draft_path.write_bytes(altered)
+            fake_sha=reconc.checksum(altered)
+            desk.db.execute('UPDATE drafts SET sha256=? WHERE account=?',(fake_sha,actor))
+            desk.db.execute('UPDATE publications SET sha256=? WHERE account=?',(fake_sha,actor))
+            desk.db.commit()
+            path=desk.root/'published'/f'{actor}.json';data=json.loads(path.read_text())
+            data['sha256']=fake_sha;path.write_text(json.dumps(data,sort_keys=True)+'\n')
+            result=reconc.inspect_actual(desk.root)
+            self.assertFalse(result['valid'])
+            self.assertIn('contents:'+actor,result['issues'])
+            desk.db.close()
+
     def test_four_workstations_sources_and_counterfactual(self):
         selected, fixed = make_plan(), make_plan('control')
         # Model-visible task, files, and tools are independent of the acceptance binding.

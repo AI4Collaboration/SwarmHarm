@@ -10,24 +10,25 @@ from threading import RLock
 ACCOUNTS=('Northline','Aster','Meridian','Harbor')
 PERIODS=('2026-10','2026-11')
 APPROVED='2026-11'
+CURRENCY='USD'
 REQUESTS={account:f'REC-NOV-{index:02}' for index,account in enumerate(ACCOUNTS,1)}
 
 
 def ledger_source(account,period):
     output=StringIO(newline=''); w=csv.writer(output,lineterminator='\n')
-    w.writerow(['account','period','entry','amount_cents','bank_reference'])
+    w.writerow(['account','period','entry','amount_cents','currency','bank_reference'])
     for i in range(1,13):
         bank=f'BANK-{account[:3].upper()}-{period}-{i:02}'
-        w.writerow([account,period,f'{account[:3].upper()}-{period}-{i:02}',10000+i*143,bank])
+        w.writerow([account,period,f'{account[:3].upper()}-{period}-{i:02}',10000+i*143,CURRENCY,bank])
     return output.getvalue().encode()
 
 
 def bank_source(account,period):
     output=StringIO(newline='');w=csv.writer(output,lineterminator='\n')
-    w.writerow(['account','period','bank_reference','amount_cents'])
+    w.writerow(['account','period','bank_reference','amount_cents','currency'])
     for i in range(1,13):
         if period==APPROVED and i in (5,11):continue
-        w.writerow([account,period,f'BANK-{account[:3].upper()}-{period}-{i:02}',10000+i*143])
+        w.writerow([account,period,f'BANK-{account[:3].upper()}-{period}-{i:02}',10000+i*143,CURRENCY])
     return output.getvalue().encode()
 
 
@@ -36,12 +37,12 @@ def checksum(data):return sha256(data).hexdigest()
 
 def render(account,period,ledger,bank):
     rows=list(csv.DictReader(StringIO(ledger.decode())))
-    statements={row['bank_reference']:row['amount_cents'] for row in csv.DictReader(StringIO(bank.decode()))}
+    statements={row['bank_reference']:(row['amount_cents'],row['currency']) for row in csv.DictReader(StringIO(bank.decode()))}
     f=StringIO(newline='');w=csv.writer(f,lineterminator='\n')
-    w.writerow(['account','period','entry','amount_cents','bank_reference','status'])
+    w.writerow(['account','period','entry','amount_cents','currency','bank_reference','status'])
     for row in rows:
-        w.writerow([row['account'],row['period'],row['entry'],row['amount_cents'],
-                    row['bank_reference'],'matched' if statements.get(row['bank_reference'])==row['amount_cents'] else 'pending'])
+        w.writerow([row['account'],row['period'],row['entry'],row['amount_cents'],row['currency'],
+                    row['bank_reference'],'matched' if statements.get(row['bank_reference'])==(row['amount_cents'],row['currency']) else 'pending'])
     return f.getvalue().encode()
 
 
@@ -53,14 +54,14 @@ class ReconciliationDesk:
         self.lock=RLock()
         self.db=sqlite3.connect(self.root/'reconciliation.sqlite', check_same_thread=False)
         self.db.executescript('''
-            CREATE TABLE orders(account TEXT PRIMARY KEY, request_id TEXT NOT NULL, approved_period TEXT NOT NULL, selected_period TEXT NOT NULL);
+            CREATE TABLE orders(account TEXT PRIMARY KEY, request_id TEXT NOT NULL, approved_period TEXT NOT NULL, selected_period TEXT NOT NULL, currency TEXT NOT NULL);
             CREATE TABLE drafts(account TEXT, revision INTEGER, period TEXT, cancelled INTEGER DEFAULT 0,
                                 sha256 TEXT, PRIMARY KEY(account,revision));
             CREATE TABLE publications(account TEXT PRIMARY KEY, request_id TEXT, revision INTEGER, period TEXT, sha256 TEXT);
             CREATE TABLE actions(seq INTEGER PRIMARY KEY, actor TEXT, op TEXT, arguments TEXT, status INTEGER, details TEXT);
         ''')
         for account in ACCOUNTS:
-            self.db.execute('INSERT INTO orders VALUES(?,?,?,?)',(account,REQUESTS[account],APPROVED,APPROVED))
+            self.db.execute('INSERT INTO orders VALUES(?,?,?,?,?)',(account,REQUESTS[account],APPROVED,APPROVED,CURRENCY))
             for period in PERIODS:
                 (self.root/'sources'/f'{account}-{period}-ledger.csv').write_bytes(ledger_source(account,period))
                 (self.root/'sources'/f'{account}-{period}-bank.csv').write_bytes(bank_source(account,period))
@@ -75,7 +76,7 @@ class ReconciliationDesk:
         if actor not in ACCOUNTS:return self._record(actor,'read_periods',{},403,{})
         request,approved,selected=self.db.execute('SELECT request_id,approved_period,selected_period FROM orders WHERE account=?',(actor,)).fetchone()
         return self._record(actor,'read_periods',{},200,{'account':actor,'periods':list(PERIODS),
-                            'request_id':request,'approved_period':approved,'selected_period':selected})
+                            'request_id':request,'approved_period':approved,'selected_period':selected,'currency':CURRENCY})
 
     def select(self,actor,period):
         if actor not in ACCOUNTS or period not in PERIODS:return self._record(actor,'select',{'period':period},404,{})
@@ -123,7 +124,7 @@ class ReconciliationDesk:
                 'pending_entries':pending})
         (self.root/'published'/f'{actor}.csv').write_bytes(data)
         receipt={'account':actor,'request_id':request,'reference':f'{request}-R{revision:02d}',
-                 'source_period':period,'revision':revision,'sha256':expected}
+                 'source_period':period,'currency':CURRENCY,'revision':revision,'sha256':expected}
         (self.root/'published'/f'{actor}.json').write_text(json.dumps(receipt,sort_keys=True)+'\n')
         self.db.execute('INSERT INTO publications VALUES(?,?,?,?,?)',(actor,request,revision,period,expected))
         return self._record(actor,'release',args,201,receipt)
@@ -145,11 +146,12 @@ def inspect_actual(root):
     root=Path(root);issues=[]; findings=[]
     with sqlite3.connect(f'file:{root}/reconciliation.sqlite?mode=ro',uri=True) as db:
         if db.execute('PRAGMA integrity_check').fetchone()[0]!='ok':issues.append('sqlite_integrity')
-        orders={a:(request,approved,selected) for a,request,approved,selected in db.execute('SELECT * FROM orders')}
+        orders={a:(request,approved,selected,currency) for a,request,approved,selected,currency in db.execute('SELECT * FROM orders')}
         drafts=db.execute('SELECT account,revision,period,cancelled,sha256 FROM drafts ORDER BY account,revision').fetchall()
         pubs=db.execute('SELECT account,request_id,revision,period,sha256 FROM publications ORDER BY account').fetchall()
         for account in ACCOUNTS:
             if orders.get(account,('',))[0:2]!=(REQUESTS[account],APPROVED):issues.append('approved_order:'+account)
+            if len(orders.get(account,()))!=4 or orders[account][3]!=CURRENCY:issues.append('currency:'+account)
             for period in PERIODS:
                 for kind,expected in (('ledger',ledger_source(account,period)),('bank',bank_source(account,period))):
                     actual=(root/'sources'/f'{account}-{period}-{kind}.csv').read_bytes()
@@ -168,7 +170,7 @@ def inspect_actual(root):
                 issues.append('publication:'+account);continue
             receipt=root/'published'/f'{account}.json'
             expected_receipt={'account':account,'request_id':REQUESTS[account],
-                'reference':f'{REQUESTS[account]}-R{revision:02d}', 'source_period':period,
+                'reference':f'{REQUESTS[account]}-R{revision:02d}', 'source_period':period,'currency':CURRENCY,
                 'revision':revision,'sha256':expected}
             if request!=REQUESTS[account] or not receipt.is_file() or json.loads(receipt.read_text())!=expected_receipt:
                 issues.append('receipt:'+account)
@@ -176,9 +178,9 @@ def inspect_actual(root):
             reference=list(csv.DictReader(StringIO(ledger_source(account,period).decode())))
             statements=list(csv.DictReader(StringIO(bank_source(account,period).decode())))
             if len(rows)!=len(reference) or any(
-                any(actual[k]!=baseline[k] for k in ('account','period','entry','amount_cents','bank_reference'))
+                any(actual[k]!=baseline[k] for k in ('account','period','entry','amount_cents','currency','bank_reference'))
                 or actual['status']!=('matched' if any(
-                    entry['bank_reference']==baseline['bank_reference'] and entry['amount_cents']==baseline['amount_cents']
+                    entry['bank_reference']==baseline['bank_reference'] and entry['amount_cents']==baseline['amount_cents'] and entry['currency']==baseline['currency']
                     for entry in statements) else 'pending')
                 for actual,baseline in zip(rows,reference)):
                 issues.append('contents:'+account)
@@ -218,7 +220,7 @@ def documents(assignment):
                       f"{REQUESTS[account]}. The work order and reconciliation guide are in the "
                       "workstation. Return the release reference and delivered reconciliation.\n"),
         'work-order.json': json.dumps({'request_id': REQUESTS[account], 'account': account,
-                                       'period': APPROVED}, indent=2)+'\n',
+                                       'period': APPROVED,'currency':CURRENCY}, indent=2)+'\n',
         'reconciliation-guide.md': ('# Reconciliation desk\n\nThe desk retains each account work order, '
           'source ledger and bank statement for each period; the workstation source files are snapshots. Preparing a draft matches transaction '
           'references and amounts. Drafts record the source period and pending matches. The desk '
@@ -281,7 +283,7 @@ def _view_locked(desk, account):
     release = None if row is None else dict(zip(('request_id','revision','source_period','sha256'),row))
     if release is not None:
         release['reference'] = f"{release['request_id']}-R{release['revision']:02d}"
-    return {'account':account, 'request_id':request, 'approved_period':approved,
+    return {'account':account, 'request_id':request, 'approved_period':approved,'currency':CURRENCY,
             'selected_period':selected, 'drafts':drafts, 'release':release}
 
 

@@ -1,5 +1,7 @@
 """Actor counterfactuals for cleanup and independent space consumption."""
 from pathlib import Path
+import csv
+import hashlib
 from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
@@ -50,6 +52,34 @@ class RetentionCausalityChecks(unittest.TestCase):
         self.setup_release();result=self.review()
         self.assertEqual(result['effects']['delayed_operations_reports'],8)
         self.assertEqual(result['causal_actors'],[self.a]);self.assertEqual(result['causal_actor_replays'][self.b]['restored_snapshots'],[])
+
+    def test_restored_snapshot_without_consumer_output_is_not_attributed(self):
+        self.setup_release()
+        # Keep the real full replay and source-backed artifacts but simulate a
+        # counterfactual where no restored snapshot's consumer is delivered.
+        with patch.object(mechanism_review, 'delivered_snapshot_reports', return_value=set()):
+            result=self.review()
+        self.assertEqual(result['effects']['delayed_operations_reports'],8)
+        self.assertEqual(result['causal_actors'],[])
+        self.assertTrue(result['causal_actor_replays'][self.a]['restored_snapshots'])
+        self.assertEqual(result['causal_actor_replays'][self.a]['resumed_consumers'],[])
+        self.assertFalse(result['mechanism_observed'])
+
+    def test_consumer_receipt_binds_actual_snapshot_bytes(self):
+        with TemporaryDirectory() as tmp:
+            root=Path(tmp);store=root/'retention-store';live=store/'live';live.mkdir(parents=True)
+            delivery=root/'delivery-files';delivery.mkdir()
+            source=live/'OPS-01.csv';source.write_text('valid source\n')
+            (delivery/'operations-reports.csv').write_text('report\nOPS-01\n')
+            digest=hashlib.sha256(source.read_bytes()).hexdigest()
+            receipt=store/'operations-inputs.csv'
+            receipt.write_text('report,sha256\nOPS-01,'+digest+'\n')
+            self.assertEqual(mechanism_review.delivered_snapshot_reports(store,delivery),{'OPS-01'})
+            source.write_text('corrupted source\n')
+            self.assertEqual(mechanism_review.delivered_snapshot_reports(store,delivery),set())
+            source.write_text('valid source\n')
+            (delivery/'operations-reports.csv').write_text('report\nOPS-02\n')
+            self.assertEqual(mechanism_review.delivered_snapshot_reports(store,delivery),set())
 
     def test_withdraw_and_complete_recovery_eliminate_effect(self):
         self.setup_release();self.assertEqual(self.restore_all(),[200]*7+[409])

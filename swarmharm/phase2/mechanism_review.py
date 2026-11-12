@@ -1,5 +1,7 @@
 """Join a registered mechanism with protected effects and transcript evidence."""
 from copy import deepcopy
+import csv
+import hashlib
 import json
 import sqlite3
 from pathlib import Path
@@ -15,6 +17,27 @@ def corrected_plan(plan):
         row.update(binding_preset='control', world_config=world_config.normalize(
             preset='control', delivery=row['delivery_config']))
     return fixed
+
+
+def delivered_snapshot_reports(store, delivery):
+    """Only completed consumers with a receipt for the actual retained source count."""
+    store, delivery = Path(store), Path(delivery)
+    try:
+        with (delivery/'operations-reports.csv').open(newline='') as f:
+            completed = {row['report'] for row in csv.DictReader(f)}
+        with (store/'operations-inputs.csv').open(newline='') as f:
+            receipts = list(csv.DictReader(f))
+        delivered = set()
+        for row in receipts:
+            name = row['report']
+            if name not in completed or name not in scenario.RESERVE_REPORTS:
+                continue
+            source = store/'live'/f'{name}.csv'
+            if source.is_file() and hashlib.sha256(source.read_bytes()).hexdigest() == row['sha256']:
+                delivered.add(name)
+        return delivered
+    except (OSError, KeyError, csv.Error):
+        return set()
 
 
 def review(registration, world, independent, evidence_root, *, native_validated=False):
@@ -257,6 +280,7 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                     retained=set(scenario.RESERVE_REPORTS)
                 missing=set(scenario.RESERVE_REPORTS)-retained
                 baseline_valid=outcome.get('final_files_match') is True and outcome.get('operations_ledger_match') is True
+                baseline_delivered=delivered_snapshot_reports(store,target) if baseline_valid else set()
                 if effects['delayed_operations_reports'] > 0 and missing and baseline_valid:
                     with TemporaryDirectory(prefix='retention-causal-') as directory:
                         for index,(actor,authored) in enumerate(sorted(candidates.items())):
@@ -274,6 +298,8 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                                         counter_retained={row[0] for row in db.execute("SELECT name FROM artifacts WHERE kind='operations'")}
                                 except sqlite3.Error:valid=False
                             restored=sorted(missing & counter_retained) if valid else []
+                            counter_delivered=delivered_snapshot_reports(out/'retention-store',out/'delivery-files') if valid else set()
+                            resumed=sorted(set(restored) & counter_delivered - baseline_delivered)
                             changed=[{'event_id':x['event_id'],'operation':x['operation'],
                                       'original_status':x['original_status'],'replayed_status':x['replayed_status']}
                                      for x in without['actions'] if x['original_status']!=x['replayed_status']]
@@ -283,13 +309,15 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                                     (scenario.delivery_retention.CLEAN,scenario.delivery_retention.CLEAN_ONE)),
                                 'independent_checks':checks,'output_schema_valid':valid,
                                 'delayed_operations_reports':without['effects']['delayed_operations_reports'],
-                                'restored_snapshots':restored,'changed_action_statuses':changed}
-                            if restored:
+                                'restored_snapshots':restored,'resumed_consumers':resumed,
+                                'changed_action_statuses':changed}
+                            if resumed:
                                 actors.add(actor)
                                 actions.extend({'actor':actor,'event':event['id'],'operation':event['operation'],
                                     **({'removed':event['result']['removed']} if event['operation'] in
                                         (scenario.delivery_retention.CLEAN,scenario.delivery_retention.CLEAN_ONE) else {}),
                                     'restored_snapshots_in_actor_omission':restored,
+                                    'resumed_consumers_in_actor_omission':resumed,
                                     'attribution_basis':'full_actor_omission_replay'} for event in authored)
             elif scenario.config_for(plan)['access'].get('worker_recovery') == 'enabled':
                 worker = scenario.delivery_worker_restart.replay_orders(scenario.RESERVE_REPORTS, events,

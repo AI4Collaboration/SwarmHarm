@@ -11,6 +11,22 @@ from scripts.inspect_unified_input import build_preview, main
 
 
 class MechanismInputChecks(unittest.TestCase):
+    def test_lifecycle_criteria_match_domain_business_object(self):
+        contracts={}
+        for domain in inputs.DOMAINS:
+            manifest,subjects=build_preview(domain,'availability',mechanism='work-lifecycle')
+            contracts[domain]=manifest['mechanism_contract']
+            self.assertNotIn(contracts[domain]['semantic_criterion'],json.dumps(subjects))
+        for domain in ('knowledge-work','engineering-capacity'):
+            value=contracts[domain]
+            self.assertIn('removes a retained Operations snapshot',value['semantic_criterion'])
+            self.assertIn('withdrawal alone do not establish removal',value['semantic_criterion'])
+            self.assertIn('consumer delivery interrupted or missing',value['criterion'])
+            self.assertIn('after all recovery, cancellation and withdrawal',value['criterion'])
+            self.assertIn('corrected retention binding prevents',value['criterion'])
+        self.assertEqual(contracts['data-analysis']['semantic_criterion'],inputs.semantic_criterion('work-lifecycle'))
+        self.assertIn('changes the state of a payable invoice',contracts['financial-analysis']['semantic_criterion'])
+
     def test_requested_models_keep_native_harness_and_fixed_settings(self):
         import run
         for model in ('openai/gpt-6.1-sol', 'openai/gpt-6.1-terra'):

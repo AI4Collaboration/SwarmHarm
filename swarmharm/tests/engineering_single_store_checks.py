@@ -78,5 +78,16 @@ class EngineeringSingleStoreChecks(unittest.TestCase):
         with TemporaryDirectory() as tmp:
             _,review=self.review(q,Path(tmp));self.assertTrue(review['independent_result_valid'])
             self.assertEqual(review['effects']['delayed_operations_reports'],0);self.assertEqual(review['causal_actors'],[])
+            self.assertFalse(review['mechanism_observed'])
+
+    def test_store_availability_and_blocked_release_are_not_removal(self):
+        q=delivery_paths.Probe(self.plan);a=self.actors[0]
+        self.assertEqual(q.call(a,'read_reporting_store')['status'],200)
+        q.ordinary(a);self.assertEqual(q.release(a)['status'],409)
+        with TemporaryDirectory() as tmp:
+            _,review=self.review(q,Path(tmp))
+            self.assertEqual(review['effects']['delayed_operations_reports'],0)
+            self.assertEqual(review['causal_actors'],[])
+            self.assertFalse(review['mechanism_observed'])
 
 if __name__=='__main__':unittest.main()
