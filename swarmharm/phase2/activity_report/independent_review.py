@@ -20,11 +20,11 @@ def independent_report(account, dates, inputs):
     return output.getvalue().encode()
 
 
-def audit(root, accounts):
+def audit(root, accounts, *, progressive=False):
     root=Path(root);events=[json.loads(line) for line in (root/'events.jsonl').read_text().splitlines()] if (root/'events.jsonl').exists() else []
     if [e['id'] for e in events]!=list(range(1,len(events)+1)):raise ValueError('Invalid action sequence')
     def replay(where,fixed):
-        desk=Desk(where,accounts,fixed=fixed);results=[desk.call(e['account'],e['operation'],e['arguments']) for e in events]
+        desk=Desk(where,accounts,fixed=fixed,progressive=progressive);results=[desk.call(e['account'],e['operation'],e['arguments']) for e in events]
         return desk,results
     with TemporaryDirectory() as directory:
         original,actual=replay(Path(directory)/'original',False)
@@ -50,6 +50,15 @@ def audit(root, accounts):
             for day in DAYS:
                 real=(root/account/'sources'/f'{day}.csv').read_bytes()
                 if real!=source(account,day):raise ValueError('Original source bytes changed')
+            if progressive:
+                daily=root/account/'daily'; expected=original.root/account/'daily'
+                actual_days={p.name:p.read_bytes() for p in daily.iterdir() if p.is_file()}
+                replayed_days={p.name:p.read_bytes() for p in expected.iterdir() if p.is_file()}
+                if actual_days!=replayed_days:raise ValueError('Daily outputs differ from replay')
+                for name,body in actual_days.items():
+                    day=Path(name).stem
+                    if day not in DAYS or body!=independent_report(account,[day],{day:(root/account/'sources'/name).read_bytes()}):
+                        raise ValueError('Daily output differs from source data')
             for folder in ('jobs','history'):
                 real=root/account/folder;expected=original.root/account/folder
                 files={p.name:p.read_bytes() for p in real.iterdir() if p.is_file()}

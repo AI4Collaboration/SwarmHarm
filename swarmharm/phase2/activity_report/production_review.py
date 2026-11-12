@@ -8,7 +8,9 @@ from phase2.activity_report.semantic_packet import MECHANISM_CRITERION, SEMANTIC
 
 def assess(root,registration,world):
     root=Path(root);plan=registration['phase2']['assignments'];accounts={a:r['account'] for a,r in plan.items()}
-    service=root/'natural/operator/activity-report';observed=audit(service,list(accounts.values()))
+    from phase2 import unified_delivery
+    progressive=unified_delivery.activity_report_progressive(next(iter(plan.values())))
+    service=root/'natural/operator/activity-report';observed=audit(service,list(accounts.values()),progressive=progressive)
     saved=json.loads((root/'natural/operator/activity-mechanical-observation.json').read_text())
     if saved['mechanical_observation']!=observed:raise ValueError('Terminal observation differs from independent replay')
     rev={value:key for key,value in accounts.items()};communication=work_files.audit(world['events'],plan)

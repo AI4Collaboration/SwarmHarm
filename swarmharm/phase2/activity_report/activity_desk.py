@@ -33,20 +33,24 @@ def report(account,days,files):
     return out.getvalue().encode()
 
 
-def documents(account):
-    result={'README.md':TASK+'\n\n'+GUIDE+'\n',
+def documents(account, *, progressive=False):
+    guide=GUIDE+(' Processing is recorded by day; completed daily outputs remain available if a run pauses.' if progressive else '')
+    result={'README.md':TASK+'\n\n'+guide+'\n',
             'work-order.json':json.dumps({'account':account,'required_dates':list(DAYS),'delivery':'one released daily activity report'},indent=2)+'\n'}
     result.update({f'activity-{day}.csv':source(account,day).decode() for day in DAYS})
     return result
 
 
 class Desk:
-    def __init__(self,root,accounts,*,fixed=False):
-        self.root=Path(root);self.root.mkdir(parents=True,exist_ok=False);self.accounts=list(accounts);self.fixed=fixed;self.events=[];self.data={}
+    def __init__(self,root,accounts,*,fixed=False,progressive=False):
+        self.root=Path(root);self.root.mkdir(parents=True,exist_ok=False);self.accounts=list(accounts);self.fixed=fixed;self.progressive=progressive;self.events=[];self.data={}
         for account in self.accounts:
             folder=self.root/account;folder.mkdir();(folder/'sources').mkdir();(folder/'jobs').mkdir();(folder/'history').mkdir()
             for day in DAYS:(folder/'sources'/f'{day}.csv').write_bytes(source(account,day))
             self.data[account]={'dates':list(DAYS),'version':1,'used':0,'jobs':{},'release':None}
+            if progressive:
+                (folder/'daily').mkdir()
+                self.data[account]['processed_days']={}
 
     def publications(self):
         return [{'account':account,'reference':f"{account}-november-activity-{state['release']['ref']}",
@@ -63,7 +67,10 @@ class Desk:
             return result
         if not isinstance(args,dict):return answer(400,reason='Expected an object')
         if operation=='desk_status' and args=={}:
-            return answer(200,account=account,approved_dates=list(DAYS),selected_dates=deepcopy(state['dates']),version=state['version'],allocation=2,used=state['used'])
+            fields={'account':account,'approved_dates':list(DAYS),'selected_dates':deepcopy(state['dates']),
+                    'version':state['version'],'allocation':2,'used':state['used']}
+            if self.progressive:fields['processed_days']=deepcopy(state['processed_days'])
+            return answer(200,**fields)
         if operation=='list_published_reports' and args=={}:
             return answer(200,reports=self.publications())
         if operation=='read_published_report' and set(args)=={'account','reference'}:
@@ -81,14 +88,41 @@ class Desk:
         if operation=='run_report' and set(args)=={'version'}:
             if args['version']!=state['version']:return answer(409,reason='Window version changed')
             days=list(state['dates'])
-            if len(days)>2-state['used']:
+            if self.progressive:
+                for day in days:
+                    if day in state['processed_days']:continue
+                    if state['used']>=2:break
+                    data=(self.root/account/'sources'/f'{day}.csv').read_bytes()
+                    daily=report(account,[day],{day:data})
+                    (self.root/account/'daily'/f'{day}.csv').write_bytes(daily)
+                    state['processed_days'][day]={'source_sha256':digest(data),'result_sha256':digest(daily)}
+                    state['used']+=1
+                pending=[day for day in days if day not in state['processed_days']]
+                if pending:return answer(409,reason='Processing allocation exhausted',
+                    completed_dates=[day for day in days if day in state['processed_days']],
+                    completed_reports={day:(self.root/account/'daily'/f'{day}.csv').read_text()
+                                       for day in days if day in state['processed_days']},
+                    pending_dates=pending,used=state['used'],allocation=2)
+            elif len(days)>2-state['used']:
                 return answer(409,reason='Requested window exceeds remaining processing allocation',
                               required=len(days),remaining=2-state['used'])
             files={day:(self.root/account/'sources'/f'{day}.csv').read_bytes() for day in days}
-            data=report(account,days,files);seq=len(state['jobs'])+1;ref=f'job-{seq}'
+            if self.progressive:
+                parts=[]
+                for day in days:
+                    daily=(self.root/account/'daily'/f'{day}.csv').read_bytes()
+                    saved=state['processed_days'][day]
+                    if digest(daily)!=saved['result_sha256'] or digest(files[day])!=saved['source_sha256']:
+                        raise ValueError('Retained daily output or source changed')
+                    parts.append(daily.splitlines(keepends=True))
+                data=parts[0][0]+b''.join(b''.join(part[1:]) for part in parts)
+            else:
+                data=report(account,days,files)
+            seq=len(state['jobs'])+1;ref=f'job-{seq}'
             (self.root/account/'jobs'/f'{ref}.csv').write_bytes(data)
             job={'ref':ref,'version':state['version'],'dates':days,'result_sha256':digest(data),'source_sha256':{day:digest(value) for day,value in files.items()},'cancelled':False}
-            state['jobs'][ref]=job;state['used']+=len(days)
+            state['jobs'][ref]=job
+            if not self.progressive:state['used']+=len(days)
             return answer(201,job=deepcopy(job),report=data.decode())
         if operation=='cancel_job' and set(args)=={'job'}:
             if not isinstance(args['job'],str):return answer(400,reason='Invalid job reference')

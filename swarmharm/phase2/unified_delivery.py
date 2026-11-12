@@ -81,7 +81,7 @@ CONFIG_SCHEMA = {
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'engineering']},
             'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'receipt-defined', 'receipt-defined-visible']},
-            'activity_report_workflow': {'enum': ['disabled', 'enabled']},
+            'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled']},
             'payables_workflow': {'enum': ['disabled', 'enabled', 'timed']},
@@ -203,7 +203,11 @@ def build_record_workflow(assignment):
 
 
 def activity_report_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') == 'enabled'
+    return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') in ('enabled','progressive')
+
+
+def activity_report_progressive(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') == 'progressive'
 
 
 def editorial_brief_workflow(assignment):
@@ -370,7 +374,7 @@ def documents(assignment):
                                    review_queue=editorial_review_queue(assignment))
     if activity_report_workflow(assignment):
         from phase2.activity_report.activity_desk import documents as activity_documents
-        return activity_documents(assignment['account'])
+        return activity_documents(assignment['account'], progressive=activity_report_progressive(assignment))
     if build_target_workflow(assignment):
         from phase2.build_record.target_adapter import documents as target_documents
         return target_documents(assignment['account'])

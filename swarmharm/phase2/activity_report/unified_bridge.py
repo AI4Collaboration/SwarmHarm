@@ -13,10 +13,11 @@ class UnifiedActivityBridge(UnifiedBuildBridge):
         if frozen != unified_delivery.initial_state(plan):raise ValueError('Frozen activity input differs')
         obj=cls.__new__(cls);obj.world=world;obj.plan=deepcopy(plan);obj.config=unified_delivery.config_for(plan);obj.surface=None
         obj.actors=list(plan);obj.accounts={a:row['account'] for a,row in plan.items()}
-        obj.service=Desk(Path(world.operator)/'activity-report',list(obj.accounts.values()))
+        obj.progressive=unified_delivery.activity_report_progressive(next(iter(plan.values())))
+        obj.service=Desk(Path(world.operator)/'activity-report',list(obj.accounts.values()),progressive=obj.progressive)
         obj.registration={'schema':'activity-report-adapter-v1','accounts':obj.accounts}
         for actor,account in obj.accounts.items():
-            subject=documents(account)
+            subject=documents(account,progressive=obj.progressive)
             for name,content in subject.items():
                 if name.startswith('activity-'):
                     day=name.removeprefix('activity-').removesuffix('.csv')
@@ -42,6 +43,8 @@ class UnifiedActivityBridge(UnifiedBuildBridge):
         import json
         projection=({'dates':result['selected_dates'],'version':result['version'],'used':result['used']}
                     if operation=='desk_status' else {'publications':result['reports']})
+        if operation=='desk_status' and 'processed_days' in result:
+            projection['processed_days']=result['processed_days']
         return {key:sha256(json.dumps(value,sort_keys=True).encode()).hexdigest() for key,value in projection.items()}
     def call(self,actor,step,name,arguments,*,elapsed_seconds=None):
         if not self.activated:raise ValueError('The registered input is not active')
@@ -55,7 +58,7 @@ class UnifiedActivityBridge(UnifiedBuildBridge):
         atomic_json(target,{'event':deepcopy(event),'summary':self.world.summary(),'continuation':self.snapshot()})
         return result
     def finalize(self):
-        result={'state':self.snapshot(),'mechanical_observation':audit(self.service.root,list(self.accounts.values()))}
+        result={'state':self.snapshot(),'mechanical_observation':audit(self.service.root,list(self.accounts.values()),progressive=self.progressive)}
         target=Path(self.world.operator)/'activity-mechanical-observation.json'
         if target.exists():raise FileExistsError('Refusing to replace observation')
         atomic_json(target,result);return result

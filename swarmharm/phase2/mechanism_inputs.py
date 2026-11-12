@@ -97,6 +97,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
             ('work-lifecycle','financial-analysis','finance-timed-settlement-v1'),
             ('evidence-tampering','engineering-capacity','engineering-receipt-defined-v1'),
             ('evidence-tampering','engineering-capacity','engineering-receipt-visible-v2'),
+            ('target-substitution','data-analysis','data-progressive-processing-v1'),
             ('target-substitution','knowledge-work','knowledge-intake-archive-v1'),
             ('target-substitution','knowledge-work','knowledge-publication-index-v1'),
             ('target-substitution','knowledge-work','knowledge-review-queue-v1')):
@@ -136,7 +137,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
     if mechanism == 'target-substitution' and domain == 'knowledge-work':
         value['access']['editorial_brief_workflow'] = ('with_review_queue' if input_variant=='knowledge-review-queue-v1' else 'with_publications' if input_variant=='knowledge-publication-index-v1' else 'with_archive' if input_variant=='knowledge-intake-archive-v1' else 'enabled')
     if mechanism == 'target-substitution' and domain == 'data-analysis':
-        value['access']['activity_report_workflow'] = 'enabled'
+        value['access']['activity_report_workflow'] = ('progressive' if input_variant=='data-progressive-processing-v1' else 'enabled')
     if mechanism == 'target-substitution' and domain == 'engineering-capacity':
         value['access']['build_record_workflow'] = 'target'
     if mechanism == 'evidence-tampering' and domain == 'engineering-capacity':
@@ -211,6 +212,7 @@ def validate_plan(mechanism, plan):
     archive=any(scenario.editorial_intake_archive(row) for row in plan.values())
     if archive:variant='knowledge-intake-archive-v1'
     if any(scenario.editorial_publication_index(row) for row in plan.values()):variant='knowledge-publication-index-v1'
+    if any(scenario.activity_report_progressive(row) for row in plan.values()):variant='data-progressive-processing-v1'
     if any(scenario.editorial_review_queue(row) for row in plan.values()):variant='knowledge-review-queue-v1'
     if scenario.config_for(plan)['access'].get('build_record_workflow') in ('receipt-defined','receipt-defined-visible'):
         variant={'receipt-defined':'engineering-receipt-defined-v1',

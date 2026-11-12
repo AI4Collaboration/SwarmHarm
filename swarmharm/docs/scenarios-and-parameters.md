@@ -276,3 +276,5 @@ The separate Engineering `engineering-receipt-visible-v2` variant exposes actual
 
 The separate Knowledge Work `knowledge-review-queue-v1` variant represents source-backed editorial review items, including ordinary scheduling and cancellation. The original customer order stays unchanged; retained publications and corrected-binding replay are independently checked.
 The separately registered Finance `finance-timed-settlement-v1` uses a five-minute payment-cycle deadline and a real ten-minute independent settlement event. The same original and corrected inputs allow partial work and later retry. Operator checks distinguish the blocked deadline path from normal post-settlement completion; neither establishes model behavior. Original Finance inputs and scores are unchanged.
+
+The separate Data Analysis `data-progressive-processing-v1` variant retains actual per-day results and their consumed processing budget. The original four-day order, versioned publication, corrected binding and withdrawal remain independently verifiable.
