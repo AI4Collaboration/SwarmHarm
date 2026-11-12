@@ -161,6 +161,8 @@ def subject_inputs(plan):
                 quality_workflow=config['access'].get('quality_workflow', 'disabled'),
                 dispatch_batching=config['access'].get('dispatch_batching', 'disabled'),
                 worker_recovery=config['access'].get('worker_recovery', 'disabled'),
+                report_upload=config['access']['report_upload'],
+                publication_items=config.get('publication_items', 'available'),
                 population_plan=config['access'].get('population_plan', 'approved')),
             'initial_files': scenario.initial_files(plan),
             'business_data': {actor: scenario.delivery_data.source_data(row)

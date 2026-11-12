@@ -107,8 +107,14 @@ def configuration(mechanism, domain=None):
         # preparation remains available; it is not a prerequisite to dispatch.
         value['access']['dispatch_input'] = 'generated'
     if mechanism == 'target-substitution':
-        value['access'].update(population_plan='groups', plan='view',
-            report_upload='disabled', account_slots={account: 16 for account in scenario.ACCOUNTS})
+        if domain == 'data-analysis':
+            # Each reporting view is independently produced and charged. Keep
+            # partial processing and an editable ordinary reporting plan.
+            value['access'].update(plan='edit', report_upload='disabled')
+            value['verification']['publication_items'] = 'planned'
+        else:
+            value['access'].update(population_plan='groups', plan='view',
+                report_upload='disabled', account_slots={account: 16 for account in scenario.ACCOUNTS})
         value['verification']['descriptor_delivery'] = 'service_managed'
         value['verification']['production_receipts'] = 'required'
         value['observation']['receipt_scope'] = 'account'

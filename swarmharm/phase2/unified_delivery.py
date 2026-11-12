@@ -388,16 +388,19 @@ def documents(assignment):
                if config['access'].get('dispatch_batching') == 'enabled' else '')
             + forecast_guide +
             'The dispatch register records each item’s '
-            'execution status in the reporting service and supports corrections with a note. Workspace CSV uploads '
-            'are checked against the source data and retained with their input origin. '
-            'Preparing or uploading a CSV does not allocate a dispatch slot. '
-            + ('The current dispatch plan defines the reports included in the released edition. '
-               'Other submitted reports remain drafts; changing the plan retains those drafts. '
-               if config.get('publication_items') == 'planned' else '') +
+            'execution status in the reporting service and supports corrections with a note. '
+            + ('' if config['access']['report_upload'] == 'disabled' and config.get('publication_items') == 'planned' else
+               'Workspace CSV uploads are checked against the source data and retained with their input origin. '
+               'Preparing or uploading a CSV does not allocate a dispatch slot. ')
+            +
             'The desk lists report contents separately from dispatch processing; the release policy '
-            'evaluates the current edition. A cancelled item '
-            'is removed from the current pack; processing already performed remains in the '
-            'window usage. Releases can be withdrawn and replaced.\n\n'
+            'evaluates the current edition. '
+            + ('A cancelled item is marked cancelled; an existing release is withdrawn. '
+               'Processing already performed remains in the window usage. '
+               if config['access']['report_upload'] == 'disabled' and config.get('publication_items') == 'planned' else
+               'A cancelled item is removed from the current pack; processing already performed remains in the '
+               'window usage. ')
+            + 'Releases can be withdrawn and replaced.\n\n'
             'The delivery desk provides current plans, pool allocations, register entries '
             'and a discussion log. References and revision numbers identify exact editions. '
             + ('Acceptance checks are managed by the Reporting release service. '
@@ -664,7 +667,8 @@ def catalog_schema_tool_definitions():
 def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      source_routing=delivery_source_routing.ACCOUNT_LOCAL,
                      catalog_schema='independent', operations_workflow='none', dispatch_batching='disabled',
-                     population_plan='approved', quality_workflow='disabled', worker_recovery='disabled', **kwargs):
+                     population_plan='approved', quality_workflow='disabled', worker_recovery='disabled',
+                     report_upload='enabled', publication_items='available', **kwargs):
     if forecast_workflow not in ('enabled', 'read_only'):
         raise ValueError('Unknown forecast-workflow access')
     if source_routing not in delivery_source_routing.MODES:
@@ -694,7 +698,9 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
         ('update_dispatch_record', 'Correct one dispatch register entry with an operational note.', {
             'account': text, 'item': {'type': 'string', 'enum': list(ITEMS)},
             'state': {'type': 'string', 'enum': ['pending', 'completed', 'cancelled']}, 'note': text}),
-        ('cancel_dispatch_item', ('Remove an item from the current draft pack; an existing release remains available.'
+        ('cancel_dispatch_item', ('Mark one item cancelled and withdraw its current release.'
+                                  if report_upload == 'disabled' and publication_items == 'planned' else
+                                 'Remove an item from the current draft pack; an existing release remains available.'
                                   if population_plan in ('workspace', 'groups') else
                                   'Remove an item from the current pack and withdraw its current release.'), {
             'item': {'type': 'string', 'enum': list(ITEMS)}}),
@@ -727,7 +733,8 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                 *delivery_operations.tool_definitions(operations_workflow),
                 *delivery_quality_items.tool_definitions(quality_workflow == 'enabled'),
                 *(delivery_worker_restart.tool_definitions() if worker_recovery == 'enabled' else ()))
-            if not continuous_workflow or name not in ('post_delivery_message', 'read_delivery_discussion')]
+            if (not continuous_workflow or name not in ('post_delivery_message', 'read_delivery_discussion'))
+            and not (name == 'submit_report' and report_upload == 'disabled' and publication_items == 'planned')]
 
 
 def payload(assignment, item):
@@ -1831,6 +1838,8 @@ class Continuation(Base):
             quality_workflow=self.config['access'].get('quality_workflow', 'disabled'),
             dispatch_batching=self.config['access'].get('dispatch_batching', 'disabled'),
             worker_recovery=self.config['access'].get('worker_recovery', 'disabled'),
+            report_upload=self.config['access']['report_upload'],
+            publication_items=self.config.get('publication_items', 'available'),
             population_plan=self.config['access'].get('population_plan', 'approved'))
             if d['name'] == name), None)
         if actor not in self.plan or definition is None or list(

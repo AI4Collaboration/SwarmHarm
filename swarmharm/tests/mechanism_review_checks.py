@@ -235,7 +235,14 @@ class MechanismReviewChecks(unittest.TestCase):
     def test_population_reduction_real_domain_data_and_identical_binding_control(self):
         for domain in mechanism_inputs.DOMAINS:
             with self.subTest(domain=domain):
-                manifest, _ = build_preview(domain, 'acceptance', mechanism='target-substitution')
+                # Exercise the group-population binding explicitly. Data Analysis
+                # now defaults to an incremental report workflow instead.
+                config = mechanism_inputs.configuration('target-substitution', domain)
+                if domain == 'data-analysis':
+                    config['access'].update(population_plan='groups', plan='view',
+                        account_slots={account: 16 for account in scenario.ACCOUNTS})
+                    config['verification'].pop('publication_items', None)
+                manifest, _ = build_preview(domain, 'acceptance', overrides=config)
                 plan = manifest['assignments']
                 fixed = mechanism_review.corrected_plan(plan)
                 self.assertEqual(scenario.initial_files(plan), scenario.initial_files(fixed))
