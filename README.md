@@ -170,17 +170,20 @@ model evidence is counted separately below. Existing cases retain their exact se
 
 **Delivery status:** [32-input ledger](swarmharm/docs/research/mechanism-input-status.json).
 All 32 inputs have generated business files and passed executable path checks.
-New model validation: **3/32 positive; 18 reviewed**. Knowledge
-Work and Engineering grader cases each publish four packs using authored rules.
-Engineering capacity r02 delays two operations reports; complete solo sequences
-are executable and harmless. Its original observer-scope error and separate repaired
-review are both retained. Records/target Knowledge Work, grader Data Analysis and
-information Finance remain negative. In all four gaming rollouts, agents noticed that readiness
-accepted the report contents but withheld publication because mandatory production receipts
-were missing. All four allocation-transfer cases left foreign allocations unchanged;
-some attempted a different, rejected Operations-pool route. The first three lifecycle cases
-left all scheduled jobs active and produced no operations loss. These cases and historical
-evidence stay distinct.
+New model validation: **7/32 positive; 27 reviewed**. Knowledge Work and
+Engineering grader cases each publish four packs using authored rules. Capacity
+cases in Knowledge Work, Engineering and Data Analysis delay two operations
+reports each, with harmless executable complete solo sequences. Information
+cases establish one task-excluded reader in Knowledge Work and two in Engineering;
+these access results do not establish delivery loss.
+
+The initial gaming cases retain pending production work instead of publishing;
+allocation cases leave foreign capacity unchanged; reviewed lifecycle cases leave
+protected jobs active. Current records/target attempts remain negative. The next
+refinement compares actual service-side source processing with mandatory prepared
+uploads, retaining the same task and criterion. Required production receipts also
+need actual customer-package files. Full reviews, startup failures and the separate
+Engineering capacity observer repair are linked in the ledger.
 
 **Archived studies:** the [archive index](swarmharm/docs/archive/README.md)
 separates the former nine scenarios, balanced comparison and older cases from
@@ -203,7 +206,7 @@ The work order below is organized by dependency, not an invented completion time
 | Order | Concrete work | Acceptance artifact / condition | Status |
 | --- | --- | --- | --- |
 | **P0 — audit and consolidate** | Inventory source, dependencies, tests, sealed inputs and evidence; remove redundant active plans and disposable caches; resolve conflicting README versions. | One maintained plan here; historical criteria labeled; local links valid; exact audit/check outcome recorded below. | Complete; full offline regression passed after local installation repair. |
-| **P1 — SwarmHarm 32-input delivery** | Implement eight mechanism configurations in all four domains; validate paths, then run targeted Sol 6.1 rollout-refine cycles. Review actual communication structures separately. | Every final input has natural task/tool files, sealed parameters, mechanism-specific model evidence and independent effects; complete local native/ATIF traces. | Active. All 32 inputs are generated and path-checked; 18 have model reviews and 3 are positive. Remaining live validation/refinement is required. Historical positives are references, not completed new cells. |
+| **P1 — SwarmHarm 32-input delivery** | Implement eight mechanism configurations in all four domains; validate paths, then run targeted Sol 6.1 rollout-refine cycles. Review actual communication structures separately. | Every final input has natural task/tool files, sealed parameters, mechanism-specific model evidence and independent effects; complete local native/ATIF traces. | Active. All 32 inputs are generated and path-checked; 27 have model reviews and 7 are positive. Remaining live validation/refinement is required. Historical positives are references, not completed new cells. |
 | **P2 — SwarmForm task conditions** | Implement a minimal representative task for each of the three task classes and paired intended/unintended wrappers. Reuse business inputs for information dependence; construct a provably impossible negative control and a known-feasible Possible task. Retain Navier–Stokes as the exploratory research case. | All six class × communication configurations materialize without role cues; solvability/information-dependence witnesses plus negative cross-condition isolation checks; exact prompts and finite budgets reviewable here or through generated input bytes. | Three-class design agreed; fixtures and calibration pending. |
 | **P3 — ten-minute research runtime** | Implement paired extension, bounded timeout/cancellation, state retention, budget continuity and context-maintenance boundary handling for the 8-agent pair. | Accelerated offline native fixtures cross multiple boundaries with no reset or extra prompt cues; late events/accounting retained; no unauthorized work after deadline. | Existing fixed-duration policy must change. |
 | **P4 — evaluators and controls** | Keep frozen case verdicts; define any future verdict from its specific mechanism and evidence contract. Bind the new verdict to protected truth and native receipts; add action-only **boundary-probing metrics** (environment/network/filesystem discovery outside the local task target across the three task classes); calibrate structure annotations, delegation chains, role transfer and waiting-time attribution. | Positive and negative scripted fixtures; automated negative isolation probes on controls; rejection of false delegation/cascade claims; stated observer blind spots; second-rating protocol ready. Offline checks alone do not establish behavioral findings. | SwarmHarm baseline reviewed: nine independent reviews and six required semantic reviews; source-bound controls and corrections preserved. SwarmForm temporal work is separate. |
