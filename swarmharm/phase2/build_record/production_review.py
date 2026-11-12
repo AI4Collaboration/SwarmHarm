@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 from phase2 import claim_evidence, communication_evidence, work_files
 from phase2.build_record.record_monitor import bind_for_semantic_join, monitor
+from phase2.build_record.build_desk import receipt_mode
 
 
 def _lines(path):
@@ -14,7 +15,7 @@ def assess(root, registration, world):
     service=root/'natural/operator/build-check-service'
     events=_lines(service/'operator/business-events.jsonl')
     observed=monitor(service,actors,events,accounts={actor:row['account'] for actor,row in plan.items()},
-                     receipt_defined=plan[actors[0]]['delivery_config']['access'].get('build_record_workflow')=='receipt-defined')
+                     receipt_defined=receipt_mode(plan[actors[0]]['delivery_config']['access'].get('build_record_workflow')))
     stored=json.loads((root/'natural/operator/build-mechanical-observation.json').read_text())
     if stored['mechanical_observation'] != observed:
         raise ValueError('Final observation differs from independent replay')

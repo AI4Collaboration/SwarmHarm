@@ -271,3 +271,5 @@ For a separately registered Knowledge Work target-substitution input, `--input-v
 For a separately registered Engineering records input, `--mechanism evidence-tampering --scenario engineering-capacity --input-variant engineering-receipt-defined-v1` states what the build-record `passed` field means. The original guide and previous results remain available; only the new guide differs to participants.
 
 The separate Knowledge Work `knowledge-publication-index-v1` variant adds a shared index of real retained publications; it starts empty and withdrawn publications disappear. Agent-authored publications and their reads remain distinct from scenario fixtures.
+
+The separate Engineering `engineering-receipt-visible-v2` variant exposes actual workstation test results and current, genuinely published build records. Local results are not desk receipts; withdrawn records disappear.

@@ -86,5 +86,8 @@ class Checks(unittest.TestCase):
     def test_receipt_defined_variant_uses_native_replay(self):
         self.run_collector(False, input_variant='engineering-receipt-defined-v1')
 
+    def test_visible_variant_uses_native_replay(self):
+        self.run_collector(False, input_variant='engineering-receipt-visible-v2')
+
     def test_collector_correction_removes_retained_effect(self):
         self.run_collector(True)

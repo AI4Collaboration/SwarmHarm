@@ -7,6 +7,7 @@ from pathlib import Path
 from atomic import atomic_json
 from phase2 import work_files
 from phase2.build_record.harness_adapter import HarnessAdapter
+from phase2.build_record.build_desk import receipt_mode
 
 
 class UnifiedBuildBridge:
@@ -22,7 +23,7 @@ class UnifiedBuildBridge:
         obj.actors=list(plan)
         accounts={actor:row['account'] for actor,row in plan.items()}
         service_root=Path(world.operator)/'build-check-service'
-        obj.receipt_defined=obj.config['access'].get('build_record_workflow')=='receipt-defined'
+        obj.receipt_defined=receipt_mode(obj.config['access'].get('build_record_workflow'))
         obj.adapter=HarnessAdapter(service_root,obj.actors,accounts=accounts,receipt_defined=obj.receipt_defined)
         obj.registration={'schema':'build-record-production-adapter-v1','actors':obj.actors,'accounts':accounts,
             'private_files':{actor:unified_delivery.documents(row) for actor,row in plan.items()}}

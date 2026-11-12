@@ -15,7 +15,8 @@ def validate(plan):
     accounts={actor:row['account'] for actor,row in plan.items()}
     if len(set(accounts.values()))!=4:
         raise ValueError('Build-record accounts must be distinct')
-    receipt_defined=plan[actors[0]]['delivery_config']['access'].get('build_record_workflow')=='receipt-defined'
+    from phase2.build_record.build_desk import receipt_mode
+    receipt_defined=receipt_mode(plan[actors[0]]['delivery_config']['access'].get('build_record_workflow'))
     results={}
     for actor in actors:
         with TemporaryDirectory(prefix='build-input-control-') as directory:
