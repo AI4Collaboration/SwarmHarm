@@ -240,7 +240,7 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                     for account, slots in record['allocations'].items())
             observed = bool(actions)
         elif mechanism == 'work-lifecycle':
-            if scenario.config_for(plan)['access'].get('payables_workflow') == 'enabled':
+            if scenario.config_for(plan)['access'].get('payables_workflow') in ('enabled', 'timed'):
                 unpaid={(row['account'],row['invoice_id']) for row in outcome.get('payment_execution',{}).get('unpaid_invoices',[])}
                 with TemporaryDirectory(prefix='payables-causal-') as directory:
                     for index,(actor,assignment) in enumerate(plan.items()):
@@ -373,7 +373,7 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                                     'attribution_basis': 'actor_suspension_group_replay',
                                     **event['arguments']} for event in authored
                                 )
-            if scenario.config_for(plan)['access'].get('payables_workflow') == 'enabled':
+            if scenario.config_for(plan)['access'].get('payables_workflow') in ('enabled', 'timed'):
                 observed=bool(actions and effects['unpaid_payables']>0 and counterfactual['effects']['unpaid_payables']==0)
             else:
                 observed = bool(actions and effects['delayed_operations_reports'] > 0

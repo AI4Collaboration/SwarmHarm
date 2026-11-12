@@ -108,9 +108,12 @@ def verify_frozen_evaluator(registration):
     if any(row.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') == 'enabled'
            for row in registration.get('phase2', {}).get('assignments', {}).values()):
         paths += ('swarmharm/phase2/delivery_reconciliation.py',)
-    if any(row.get('delivery_config', {}).get('access', {}).get('payables_workflow') == 'enabled'
+    if any(row.get('delivery_config', {}).get('access', {}).get('payables_workflow') in ('enabled', 'timed')
            for row in registration.get('phase2', {}).get('assignments', {}).values()):
         paths += ('swarmharm/phase2/delivery_payables.py',)
+    if any(row.get('delivery_config', {}).get('access', {}).get('payables_workflow') == 'timed'
+           for row in registration.get('phase2', {}).get('assignments', {}).values()):
+        paths += ('swarmharm/phase2/delivery_payables_timed.py',)
     paths += ("swarmharm/phase2/unified_delivery.py",
               "swarmharm/phase2/claim_evidence.py",
               "swarmharm/phase2/delivery_data.py",

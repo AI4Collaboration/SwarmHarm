@@ -453,6 +453,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             current.update(('data_lifecycle_pipeline', 'data_worker_lifecycle', 'worker_recovery'))
         if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':
             current.update(('finance_payables', 'finance_payables_transport'))
+        if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':
+            current.add('finance_timed_payables')
         if mechanism == 'work-lifecycle' and scenario in ('engineering-capacity', 'knowledge-work'):
             current.update(('retention_causality', 'retention_citation'))
         if mechanism == 'work-lifecycle' and scenario == 'engineering-capacity':
@@ -686,6 +688,10 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'all_workstations_ready_before_release':True,
         'first_request_start_barrier':True}
     budget=deepcopy(BUDGET)
+    if input_variant=='finance-timed-settlement-v1':
+        from phase2 import delivery_payables_timed
+        if min(budget['max_actor_seconds'],budget['max_batch_seconds']) <= delivery_payables_timed.SETTLEMENT_SECONDS:
+            raise ValueError('Registered observation window must include the actual settlement time')
     if harness_kind in ('claude-code','codex'):
         if harness_kind=='codex':budget['max_output_tokens_per_response']=None
         budget.update(max_transport_attempts_per_request=1,transport_retry_backoff_seconds=0)
@@ -1856,6 +1862,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     extension.surface.bind(actor,value['session_file'], writer_guard=agents[actor].record_guard)
                 states[actor][f'{harness_folder}_session']=value
             activation_time=utc()
+            if getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') == 'timed':
+                extension.start_payables_cycle(activation_time)
             save(root/name/'activation.json',{
                 'policy':'simultaneous_start_barrier',
                 'activated_at':activation_time,
@@ -2409,7 +2417,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     for candidate in active.copy():
                         if states[candidate]['status']=='waiting_for_platform_change':
                             submit(candidate)
-                if continuation_update_pending() and extension.advance_business_time(time.monotonic()-continuation_began):
+                if continuation_update_pending() and extension.advance_business_time(time.monotonic()-(extension._clock_start if getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') == 'timed' else continuation_began)):
                     export();wake_waiting()
                 if phase2_pending is not None and not running and not source_handoff_ready(reg,world):
                     if publication_pending() or followup_pending():
@@ -2649,7 +2657,7 @@ if __name__=='__main__':
         help='Select a retained input contract from the archived SwarmHarm grid.')
     p.add_argument('--mechanism', choices=tuple(mechanism_inputs.MECHANISMS),
         help='Select the current mechanism configuration and evidence criterion.')
-    p.add_argument('--input-variant', choices=('data-worker-recovery-v1','knowledge-intake-archive-v1','knowledge-publication-index-v1','knowledge-review-queue-v1','engineering-receipt-defined-v1','engineering-receipt-visible-v2'),
+    p.add_argument('--input-variant', choices=('finance-timed-settlement-v1','data-worker-recovery-v1','knowledge-intake-archive-v1','knowledge-publication-index-v1','knowledge-review-queue-v1','engineering-receipt-defined-v1','engineering-receipt-visible-v2'),
         help='Select a separately registered mechanism input variant.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),
         help='Operator-only backend binding for the matched unified delivery environment.')

@@ -522,7 +522,7 @@ def transcript_packet(root, registration, communication):
             raise ValueError('Frozen processing-operations policy differs')
         access = unified_delivery.config_for(plan)['access']
         quality = access.get('quality_workflow') == 'enabled'
-        payables = access.get('payables_workflow') == 'enabled'
+        payables = access.get('payables_workflow') in ('enabled', 'timed')
         worker = access.get('worker_recovery') == 'enabled'
         store = access.get('retention_store') in ('enabled', 'knowledge', 'engineering')
         packet['independent_task_scope'] = {
