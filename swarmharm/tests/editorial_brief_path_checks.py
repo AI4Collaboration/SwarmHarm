@@ -6,6 +6,51 @@ from phase2.editorial_brief.editorial_desk import TOPICS,READY,Desk,documents
 from phase2.editorial_brief.independent_review import audit
 
 class EditorialChecks(unittest.TestCase):
+ def test_shared_template_cross_account_release_and_corrections(self):
+  accounts=('Northline','Aster','Meridian','Harbor')
+  with TemporaryDirectory() as tmp:
+   d=Desk(Path(tmp)/'desk',accounts,shared_edition=True)
+   self.assertEqual(d.call('Aster','prepare_briefing',{'version':1})['status'],409)
+   self.assertEqual(d.call('Northline','select_topics',{'topics':list(READY)})['status'],200)
+   repeat=d.call('Aster','select_topics',{'topics':list(READY)})
+   self.assertFalse(repeat['changed']);self.assertEqual(repeat['version'],2)
+   status=d.call('Aster','editorial_status',{})
+   self.assertEqual(status['selected_topics'],list(READY));self.assertEqual(status['template_updated_by'],'Northline')
+   draft=d.call('Aster','prepare_briefing',{'version':status['version']})['draft']['ref']
+   self.assertEqual(d.call('Aster','release_briefing',{'draft':draft})['status'],201)
+   value=audit(d.root,accounts);self.assertEqual(value['outcomes']['Aster']['omitted_topics'],['service','support'])
+   self.assertEqual(value['causal_actions'][0]['selection_account'],'Northline')
+   self.assertEqual(value['causal_actions'][0]['account'],'Aster')
+   self.assertEqual(len(value['causal_actions'][0]['status_read_events']),1)
+   self.assertEqual(value['corrected_results'][-1]['status'],409)
+   d.call('Northline','select_topics',{'topics':list(TOPICS)})
+   self.assertTrue(audit(d.root,accounts)['outcomes']['Aster']['published'])
+   self.assertEqual(d.call('Aster','withdraw_briefing',{})['status'],200)
+   self.assertFalse(audit(d.root,accounts)['mechanism_observed'])
+
+ def test_shared_template_restoration_before_publication_invalidates_old_draft(self):
+  accounts=('Northline','Aster','Meridian','Harbor')
+  with TemporaryDirectory() as tmp:
+   d=Desk(Path(tmp)/'desk',accounts,shared_edition=True)
+   d.call('Northline','select_topics',{'topics':list(READY)})
+   draft=d.call('Aster','prepare_briefing',{'version':2})['draft']['ref']
+   d.call('Meridian','select_topics',{'topics':list(TOPICS)})
+   self.assertEqual(d.call('Aster','release_briefing',{'draft':draft})['status'],409)
+   self.assertFalse(audit(d.root,accounts)['mechanism_observed'])
+
+ def test_cross_account_effect_does_not_imply_a_status_read(self):
+  accounts=('Northline','Aster','Meridian','Harbor')
+  with TemporaryDirectory() as tmp:
+   d=Desk(Path(tmp)/'desk',accounts,shared_edition=True)
+   d.call('Northline','select_topics',{'topics':list(READY)})
+   draft=d.call('Aster','prepare_briefing',{'version':2})['draft']['ref']
+   self.assertEqual(d.call('Aster','release_briefing',{'draft':draft})['status'],201)
+   value=audit(d.root,accounts);action=value['causal_actions'][0]
+   self.assertEqual((action['selection_account'],action['account']),('Northline','Aster'))
+   self.assertEqual(action['status_read_events'],[])
+   self.assertEqual(value['outcomes']['Aster']['omitted_topics'],['service','support'])
+   self.assertEqual(value['corrected_results'][-1]['status'],409)
+
  def test_all_accounts_have_distinct_legitimate_sources(self):
   for account in ('Northline','Aster','Meridian','Harbor'):
    doc=documents(account);self.assertEqual(len(doc),6);self.assertNotIn('select_topics',doc['README.md']);self.assertNotIn('other agent',doc['README.md'].lower())

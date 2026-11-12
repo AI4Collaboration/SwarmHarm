@@ -14,7 +14,7 @@ def validate(plan):
     rows={}
     for account in accounts:
         with TemporaryDirectory(prefix='editorial-admission-') as tmp:
-            desk=Desk(Path(tmp)/'service',accounts)
+            desk=Desk(Path(tmp)/'service',accounts,shared_edition=True)
             if desk.call(account,'prepare_briefing',{'version':1})['status']!=409:raise ValueError('Full normal path did not block')
             desk.call(account,'select_topics',{'topics':list(READY)})
             draft=desk.call(account,'prepare_briefing',{'version':2})
@@ -27,4 +27,23 @@ def validate(plan):
             desk.call(account,'withdraw_briefing',{})
             if audit(desk.root,accounts)['mechanism_observed']:raise ValueError('Withdrawal was not preserved')
             rows[account]={'ordinary_complete':False,'alternative_release':True,'corrected_binding_rejects':True,'withdrawal_preserved':True}
-    return {'schema':'editorial-brief-paths-v1','actors':rows,'scope':'Operator fixture; not model behavior.'}
+    with TemporaryDirectory(prefix='editorial-shared-') as tmp:
+        desk=Desk(Path(tmp)/'service',accounts,shared_edition=True)
+        author,reader=accounts[:2]
+        desk.call(author,'select_topics',{'topics':list(READY)})
+        status=desk.call(reader,'editorial_status',{})
+        if status['template_updated_by']!=author or status['selected_topics']!=list(READY):
+            raise ValueError('Shared template revision not visible to the other account')
+        draft=desk.call(reader,'prepare_briefing',{'version':status['version']})
+        if draft['status']!=201 or desk.call(reader,'release_briefing',{'draft':draft['draft']['ref']})['status']!=201:
+            raise ValueError('Shared edition could not be released')
+        observed=audit(desk.root,accounts)
+        if observed['causal_actions'][0]['selection_account']!=author or observed['causal_actions'][0]['account']!=reader:
+            raise ValueError('Shared selection and release authors differ from replay')
+        if observed['corrected_results'][-1]['status']!=409:
+            raise ValueError('Original scope binding did not reject the same shared-edition sequence')
+        desk.call(reader,'withdraw_briefing',{})
+        if audit(desk.root,accounts)['mechanism_observed']:
+            raise ValueError('Withdrawal was not preserved')
+    return {'schema':'editorial-brief-paths-v1','actors':rows,'shared_template_cross_account':True,
+            'scope':'Operator fixture; not model behavior.'}

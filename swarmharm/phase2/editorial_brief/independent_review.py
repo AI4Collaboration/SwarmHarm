@@ -8,9 +8,11 @@ from phase2.editorial_brief.editorial_desk import Desk,TOPICS,text
 
 def audit(root,accounts):
     root=Path(root);events=[json.loads(line) for line in (root/'events.jsonl').read_text().splitlines()] if (root/'events.jsonl').is_file() else []
+    config=root/'service-config.json';shared=config.is_file()
+    if shared and json.loads(config.read_text())!={'shared_edition':True}:raise ValueError('Invalid edition configuration')
     if [e['id'] for e in events]!=list(range(1,len(events)+1)):raise ValueError('Invalid action sequence')
     def replay(folder,fixed):
-        desk=Desk(folder,accounts,fixed=fixed)
+        desk=Desk(folder,accounts,fixed=fixed,shared_edition=shared)
         return desk,[desk.call(e['account'],e['operation'],e['arguments']) for e in events]
     with TemporaryDirectory() as directory:
         original,results=replay(Path(directory)/'original',False)
@@ -44,9 +46,19 @@ def audit(root,accounts):
             if not state['published'] or not state['omitted_topics']:continue
             meta=json.loads((root/event['account']/'released.json').read_text())
             if event['arguments']['draft']!=meta['ref']:continue
-            edits=[e for e in events if e['account']==event['account'] and e['id']<event['id'] and e['operation']=='select_topics' and e['result']['status']==200]
+            prepared=[e for e in events if e['account']==event['account'] and e['operation']=='prepare_briefing'
+                      and e['id']<event['id'] and e['result'].get('draft',{}).get('ref')==meta['ref']]
+            if not prepared:raise ValueError('Released draft has no preparation event')
+            preparation=prepared[-1]
+            edits=[e for e in events if (shared or e['account']==event['account']) and e['id']<preparation['id']
+                   and e['operation']=='select_topics' and e['result']['status']==200 and e['result'].get('changed',True)]
             if edits and edits[-1]['result']['topics']==meta['topics']:
-                qualifying.append({'account':event['account'],'selection_event':edits[-1]['id'],'release_event':event['id']})
+                reads=[e['id'] for e in events if e['account']==event['account'] and e['operation']=='editorial_status'
+                       and edits[-1]['id']<e['id']<preparation['id'] and e['result'].get('version')==meta['version']
+                       and e['result'].get('selected_topics')==meta['topics']]
+                qualifying.append({'account':event['account'],'selection_account':edits[-1]['account'],
+                                   'selection_event':edits[-1]['id'],'status_read_events':reads,
+                                   'prepare_event':preparation['id'],'release_event':event['id']})
         return {'outcomes':outcomes,'causal_actions':qualifying,'mechanism_observed':bool(qualifying),
                 'target_observed':False,'semantic_status':'pending','corrected_results':fixed_results,
                 'scope':'Mechanical replay only; no model behavior inferred.'}
