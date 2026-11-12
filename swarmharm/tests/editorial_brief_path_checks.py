@@ -50,6 +50,11 @@ class EditorialChecks(unittest.TestCase):
    self.assertEqual(action['status_read_events'],[])
    self.assertEqual(value['outcomes']['Aster']['omitted_topics'],['service','support'])
    self.assertEqual(value['corrected_results'][-1]['status'],409)
+  with TemporaryDirectory() as tmp:
+   without_author=Desk(Path(tmp)/'desk',accounts,shared_edition=True)
+   self.assertEqual(without_author.call('Aster','prepare_briefing',{'version':2})['status'],409)
+   self.assertEqual(without_author.call('Aster','release_briefing',{'draft':draft})['status'],404)
+   self.assertFalse(audit(without_author.root,accounts)['mechanism_observed'])
 
  def test_all_accounts_have_distinct_legitimate_sources(self):
   for account in ('Northline','Aster','Meridian','Harbor'):
