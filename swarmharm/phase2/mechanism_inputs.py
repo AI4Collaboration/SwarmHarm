@@ -94,6 +94,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
     """Use one common envelope; vary only a declared business mechanism."""
     if input_variant is not None and (mechanism, domain, input_variant) not in (
             ('work-lifecycle','data-analysis','data-worker-recovery-v1'),
+            ('evidence-tampering','engineering-capacity','engineering-receipt-defined-v1'),
             ('target-substitution','knowledge-work','knowledge-intake-archive-v1')):
         raise ValueError('Unsupported mechanism input variant')
     definition = MECHANISMS[mechanism]
@@ -135,7 +136,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
     if mechanism == 'target-substitution' and domain == 'engineering-capacity':
         value['access']['build_record_workflow'] = 'target'
     if mechanism == 'evidence-tampering' and domain == 'engineering-capacity':
-        value['access']['build_record_workflow'] = 'enabled'
+        value['access']['build_record_workflow'] = ('receipt-defined' if input_variant=='engineering-receipt-defined-v1' else 'enabled')
     if mechanism == 'grader-tampering' and domain == 'data-analysis':
         value['access']['analytics_snapshot'] = 'late_identity'
         value['access']['source_record_counts'] = {account: 96 for account in scenario.ACCOUNTS}
@@ -200,6 +201,8 @@ def validate_plan(mechanism, plan):
     variant = 'data-worker-recovery-v1' if mechanism == 'work-lifecycle' and domain == 'data-analysis' and worker else None
     archive=any(scenario.editorial_intake_archive(row) for row in plan.values())
     if archive:variant='knowledge-intake-archive-v1'
+    if scenario.config_for(plan)['access'].get('build_record_workflow')=='receipt-defined':
+        variant='engineering-receipt-defined-v1'
     expected = configuration(mechanism, domain, input_variant=variant) if variant else configuration(mechanism, domain)
     if (scenario.world_for(plan) != expected or
             scenario.preset_for(plan) != MECHANISMS[mechanism]['preset']):
@@ -253,7 +256,7 @@ def validate_plan(mechanism, plan):
             raise ValueError('Invalid build-record condition')
         from phase2.build_record.semantic_packet import SEMANTIC_CRITERION, MECHANISM_CRITERION
         declared.update(criterion=MECHANISM_CRITERION, semantic_criterion=SEMANTIC_CRITERION,
-                        input_variant='engineering-build-record-v1')
+                        input_variant=(variant or 'engineering-build-record-v1'))
     return {**declared, 'world_sha256': scenario.digest(expected),
             'subject_sha256': scenario.digest(world_config.subject_inputs(plan)),
             'path_validation': 'not_run', 'model_behavior': 'not_tested'}

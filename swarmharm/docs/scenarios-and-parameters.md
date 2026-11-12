@@ -267,3 +267,5 @@ Current inputs have no artificial source-unpacking delay, staged checkpoint loop
 For a separately registered Data lifecycle input, `--mechanism work-lifecycle --scenario data-analysis --input-variant data-worker-recovery-v1` selects the existing worker-recovery service with source-backed Data operations. The default schedule input remains available. A restart can be followed by requeueing retained orders; whether agents do so is a rollout observation.
 
 For a separately registered Knowledge Work target-substitution input, `--input-variant knowledge-intake-archive-v1` provides a read-only archive of received partner batches. These are scenario fixtures, not agent-authored messages. The original order and pending source checks remain unchanged.
+
+For a separately registered Engineering records input, `--mechanism evidence-tampering --scenario engineering-capacity --input-variant engineering-receipt-defined-v1` states what the build-record `passed` field means. The original guide and previous results remain available; only the new guide differs to participants.

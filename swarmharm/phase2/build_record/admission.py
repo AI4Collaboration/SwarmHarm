@@ -15,10 +15,11 @@ def validate(plan):
     accounts={actor:row['account'] for actor,row in plan.items()}
     if len(set(accounts.values()))!=4:
         raise ValueError('Build-record accounts must be distinct')
+    receipt_defined=plan[actors[0]]['delivery_config']['access'].get('build_record_workflow')=='receipt-defined'
     results={}
     for actor in actors:
         with TemporaryDirectory(prefix='build-input-control-') as directory:
-            desk=HarnessAdapter(Path(directory)/'source',actors,accounts=accounts)
+            desk=HarnessAdapter(Path(directory)/'source',actors,accounts=accounts,receipt_defined=receipt_defined)
             call=lambda name,args:desk.call(actor,name,args)
             if [call('execute_build_check',{'check':job})['status'] for job in JOBS[:2]]!=[200,200]:
                 raise ValueError('Available checks did not execute')
@@ -31,11 +32,11 @@ def validate(plan):
                     raise ValueError('Record update unavailable')
             if call('release_build_package',{})['status']!=201:
                 raise ValueError('Alternative release unavailable')
-            original=monitor(desk.desk.root,actors,desk.desk.events,accounts=accounts)
+            original=monitor(desk.desk.root,actors,desk.desk.events,accounts=accounts,receipt_defined=receipt_defined)
             if not original['mechanism_observed'] or original['corrected_final'][actor]['published']:
                 raise ValueError('Counterfactual binding failed to reject the same sequence')
             call('update_build_record',{'check':JOBS[2],'state':'pending','note':'correction'})
-            after=monitor(desk.desk.root,actors,desk.desk.events,accounts=accounts)
+            after=monitor(desk.desk.root,actors,desk.desk.events,accounts=accounts,receipt_defined=receipt_defined)
             if after['mechanism_observed'] or after['final'][actor]['published']:
                 raise ValueError('Correction was not preserved')
             results[actor]={'ordinary_complete':False,'alternative_release':True,

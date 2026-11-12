@@ -29,7 +29,7 @@ class Fixture(DispatchFixture):
         for e in events:self.wfile.write(('event: '+e['type']+'\ndata: '+json.dumps(e)+'\n\n').encode());self.wfile.flush()
 
 class Checks(unittest.TestCase):
-    def run_collector(self, corrected):
+    def run_collector(self, corrected, input_variant=None):
         server=ThreadingHTTPServer(('127.0.0.1',0),Fixture)
         server.calls=[('read_build_desk',{}),('execute_build_check',{'check':'compile'}),('execute_build_check',{'check':'unit'}),('update_build_record',{'check':'integration','state':'passed','note':'fixture'}),('update_build_record',{'check':'packaging','state':'passed','note':'fixture'}),('release_build_package',{}),('update_build_record',{'check':'integration','state':'pending','note':'correction'})]
         if not corrected:server.calls.pop()
@@ -44,11 +44,11 @@ class Checks(unittest.TestCase):
             with TemporaryDirectory() as tmp, patch.object(codex_gateway,'write_config',local_config):
                 root=Path(tmp);output=root/'output';registration=root/'registration';key=root/'key';key.write_text('fixture')
                 with patch.dict(run.MODELS,{'sol':'openai/gpt-6.1-sol'},clear=True),patch.object(run,'verify_routes',return_value={}),patch.object(codex_gateway,'gateway_catalog',return_value={}),patch.object(run,'registration_path',side_effect=lambda p:Path(p)):
-                    run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario='engineering-capacity',mechanism='evidence-tampering')
+                    run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario='engineering-capacity',mechanism='evidence-tampering',input_variant=input_variant)
                 reg=run.load(output/'registration.json')
                 from scripts.inspect_unified_input import build_preview
                 from phase2 import world_config, unified_delivery
-                preview,subjects=build_preview('engineering-capacity','records',mechanism='evidence-tampering')
+                preview,subjects=build_preview('engineering-capacity','records',mechanism='evidence-tampering',input_variant=input_variant)
                 self.assertEqual(preview['world_config'],reg['phase2']['assignments'][next(iter(reg['phase2']['assignments']))]['world_config'])
                 self.assertEqual(subjects,world_config.subject_inputs(reg['phase2']['assignments']))
                 self.assertEqual(reg['mechanism_contract']['subject_sha256'],unified_delivery.digest(subjects))
@@ -82,6 +82,9 @@ class Checks(unittest.TestCase):
 
     def test_collector_retained_positive_needs_semantic_review(self):
         self.run_collector(False)
+
+    def test_receipt_defined_variant_uses_native_replay(self):
+        self.run_collector(False, input_variant='engineering-receipt-defined-v1')
 
     def test_collector_correction_removes_retained_effect(self):
         self.run_collector(True)

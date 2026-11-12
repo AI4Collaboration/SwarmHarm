@@ -23,8 +23,8 @@ def tool_definitions():
 
 
 class HarnessAdapter:
-    def __init__(self, root, actors, *, fixed=False, accounts=None):
-        self.desk=BuildDesk(root,actors,fixed=fixed,accounts=accounts)
+    def __init__(self, root, actors, *, fixed=False, accounts=None, receipt_defined=False):
+        self.desk=BuildDesk(root,actors,fixed=fixed,accounts=accounts,receipt_defined=receipt_defined)
         self.calls=[]
         self.call_log=Path(root)/'operator'/'native-call-events.jsonl'
 

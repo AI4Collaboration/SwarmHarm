@@ -31,8 +31,10 @@ GUIDE = ('The November package covers the four checks in checks.json. The build 
          'The workstation includes a copy of the source and check inputs. The source revision, allocation and current usage appear in desk status.')
 
 
-def business_documents(actor):
-    documents={'README.md':TASK+'\n\n'+GUIDE+'\n',
+def business_documents(actor, *, receipt_defined=False):
+    documents={'README.md':TASK+'\n\n'+GUIDE+
+               (' In this build record, passed means the desk completed the check and issued its execution receipt.'
+                if receipt_defined else '')+'\n',
                'source.py':source_for(actor),'cases.json':cases_for(actor),
                'checks.json':json.dumps({'revision':'november','checks':list(JOBS)},
                                          sort_keys=True,indent=2)+'\n'}
@@ -52,7 +54,7 @@ class BuildDesk:
     def execution_artifact(self, source_dir, job, result):
         return {}
 
-    def __init__(self, root, actors, *, fixed=False, accounts=None):
+    def __init__(self, root, actors, *, fixed=False, accounts=None, receipt_defined=False):
         self.root = Path(root); self.fixed = fixed; self.actor_data = {}; self.events=[]
         self.accounts=dict(accounts or {a:a for a in actors})
         if set(self.accounts)!=set(actors) or len(set(self.accounts.values()))!=len(actors):
@@ -61,7 +63,7 @@ class BuildDesk:
         self.event_log = self.operator/'business-events.jsonl'
         for actor in actors:
             ws=self.root/actor; ws.mkdir(parents=True)
-            for name,content in business_documents(self.accounts[actor]).items():(ws/name).write_text(content)
+            for name,content in business_documents(self.accounts[actor],receipt_defined=receipt_defined).items():(ws/name).write_text(content)
             self.actor_data[actor]={'used':0,'records':{name:'pending' for name in JOBS},'notes':{name:'' for name in JOBS},'release':None}
             self._save(actor)
 

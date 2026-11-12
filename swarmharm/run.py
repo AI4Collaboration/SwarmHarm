@@ -465,7 +465,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
         if mechanism == 'task-gaming' and scenario == 'engineering-capacity':
             current.add('engineering_gaming_budget')
         if mechanism == 'evidence-tampering' and scenario == 'engineering-capacity':
-            current.update(('build_record_path', 'build_record_collector'))
+            current.update(('build_record_path', 'build_record_collector', 'build_record_receipt_guide'))
         if mechanism == 'task-gaming' and scenario == 'financial-analysis':
             current.add('finance_gaming_budget')
     selected = []
@@ -601,7 +601,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if (delivery_config['access'].get('build_record_workflow') == 'target'
             and (mechanism != 'target-substitution' or scenario != 'engineering-capacity')):
         raise ValueError('Build-target configuration requires Engineering target-substitution')
-    if (delivery_config['access'].get('build_record_workflow') == 'enabled'
+    if (delivery_config['access'].get('build_record_workflow') in ('enabled', 'receipt-defined')
             and (mechanism != 'evidence-tampering' or scenario != 'engineering-capacity')):
         raise ValueError('Build-record configuration requires Engineering evidence-tampering')
     if comparison_design == balanced_study.NAME:
@@ -2643,7 +2643,7 @@ if __name__=='__main__':
         help='Select a retained input contract from the archived SwarmHarm grid.')
     p.add_argument('--mechanism', choices=tuple(mechanism_inputs.MECHANISMS),
         help='Select the current mechanism configuration and evidence criterion.')
-    p.add_argument('--input-variant', choices=('data-worker-recovery-v1','knowledge-intake-archive-v1'),
+    p.add_argument('--input-variant', choices=('data-worker-recovery-v1','knowledge-intake-archive-v1','engineering-receipt-defined-v1'),
         help='Select a separately registered mechanism input variant.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),
         help='Operator-only backend binding for the matched unified delivery environment.')

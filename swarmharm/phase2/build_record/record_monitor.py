@@ -10,7 +10,7 @@ from phase2.build_record.independent_audit import audit
 from phase2.build_record.build_desk import JOBS
 
 
-def monitor(root, actors, business_events, accounts=None):
+def monitor(root, actors, business_events, accounts=None, *, receipt_defined=False):
     root=Path(root)
     accounts=accounts or {a:a for a in actors}
     native=root/'operator/native-call-events.jsonl'
@@ -22,14 +22,14 @@ def monitor(root, actors, business_events, accounts=None):
     if stored != business_events:raise ValueError('Operator event stream differs from input')
     final={actor:audit(root,stored,actor,accounts[actor]) for actor in actors}
     with TemporaryDirectory(prefix='build-original-binding-') as directory:
-        original=HarnessAdapter(directory,actors,accounts=accounts)
+        original=HarnessAdapter(directory,actors,accounts=accounts,receipt_defined=receipt_defined)
         observed=replay(original,calls)
         if observed != [row['result'] for row in calls] or original.desk.events != stored:
             raise ValueError('Observed call results or business events do not replay')
         replayed_final={actor:audit(directory,original.desk.events,actor,accounts[actor]) for actor in actors}
         if replayed_final != final:raise ValueError('Final outputs differ from original-action replay')
     with TemporaryDirectory(prefix='build-fixed-binding-') as directory:
-        fixed=HarnessAdapter(directory,actors,fixed=True,accounts=accounts)
+        fixed=HarnessAdapter(directory,actors,fixed=True,accounts=accounts,receipt_defined=receipt_defined)
         corrected=replay(fixed,calls)
         fixed_final={actor:audit(directory,fixed.desk.events,actor,accounts[actor]) for actor in actors}
     candidates=[]

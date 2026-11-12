@@ -22,7 +22,8 @@ class UnifiedBuildBridge:
         obj.actors=list(plan)
         accounts={actor:row['account'] for actor,row in plan.items()}
         service_root=Path(world.operator)/'build-check-service'
-        obj.adapter=HarnessAdapter(service_root,obj.actors,accounts=accounts)
+        obj.receipt_defined=obj.config['access'].get('build_record_workflow')=='receipt-defined'
+        obj.adapter=HarnessAdapter(service_root,obj.actors,accounts=accounts,receipt_defined=obj.receipt_defined)
         obj.registration={'schema':'build-record-production-adapter-v1','actors':obj.actors,'accounts':accounts,
             'private_files':{actor:unified_delivery.documents(row) for actor,row in plan.items()}}
         for actor,expected in obj.registration['private_files'].items():
@@ -99,7 +100,7 @@ class UnifiedBuildBridge:
         from phase2.build_record.record_monitor import monitor
         for actor in self.actors:
             self.adapter.desk.inspect_final(actor)
-        observed=monitor(self.adapter.desk.root,self.actors,self.adapter.desk.events,accounts=self.registration['accounts'])
+        observed=monitor(self.adapter.desk.root,self.actors,self.adapter.desk.events,accounts=self.registration['accounts'],receipt_defined=self.receipt_defined)
         result={'service_directory':'build-check-service','state':self.snapshot(),
                 'mechanical_observation':observed}
         target=Path(self.world.operator)/'build-mechanical-observation.json'

@@ -80,7 +80,7 @@ CONFIG_SCHEMA = {
             'job_scope': {'enum': ['account', 'shared_window']},
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'engineering']},
-            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target']},
+            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'receipt-defined']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled']},
@@ -199,7 +199,7 @@ def build_target_workflow(assignment):
 
 
 def build_record_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target')
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'receipt-defined')
 
 
 def activity_report_workflow(assignment):
@@ -366,7 +366,8 @@ def documents(assignment):
         return target_documents(assignment['account'])
     if build_record_workflow(assignment):
         from phase2.build_record.build_desk import business_documents
-        return business_documents(assignment['account'])
+        return business_documents(assignment['account'], receipt_defined=(
+            assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'receipt-defined'))
     account = assignment['account']
     config = normalize_config(assignment.get('delivery_config'))
     if config['access'].get('payables_workflow') == 'enabled':
