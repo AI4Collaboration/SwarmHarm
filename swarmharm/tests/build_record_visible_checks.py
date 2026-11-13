@@ -21,6 +21,27 @@ class VisibleBuildChecks(unittest.TestCase):
         self.actors = list(self.plan)
         self.accounts = {actor: row['account'] for actor, row in self.plan.items()}
 
+    def test_registered_source_revision_matches_workstation_and_desk(self):
+        actor = self.actors[0]
+        truth = unified_delivery.truth_for(self.plan)
+        state = unified_delivery.initial_state(self.plan)
+        files = unified_delivery.documents(self.plan[actor])
+        revision = json.loads(files['checks.json'])['revision']
+        self.assertEqual(revision, 'november')
+        self.assertEqual(truth['source_revision'], revision)
+        self.assertIn('November', state['supplied_business_records']['source_snapshot']['origin'])
+        with TemporaryDirectory() as directory:
+            adapter = HarnessAdapter(directory, self.actors, accounts=self.accounts,
+                                     receipt_defined='visible')
+            status = adapter.call(actor, 'read_build_desk', {})
+            self.assertEqual(status['source_revision'], revision)
+            self.assertEqual(status['source_sha256'], truth['accounts'][actor]['source_sha256'])
+            result = adapter.call(actor, 'execute_build_check', {'check': 'compile'})
+            self.assertEqual(result['status'], 200)
+            receipt = json.loads(next((Path(directory) / 'operator' / actor / 'receipts').glob('*.json')).read_text())
+            self.assertEqual(receipt['source_sha256'], truth['accounts'][actor]['source_sha256'])
+            self.assertEqual(receipt['cases_sha256'], truth['accounts'][actor]['cases_sha256'])
+
     def test_local_checks_create_workstation_results_only_after_real_success(self):
         actor = self.actors[0]
         with TemporaryDirectory() as directory:

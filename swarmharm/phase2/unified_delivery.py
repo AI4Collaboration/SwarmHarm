@@ -963,7 +963,7 @@ def truth_for(plan):
             'accounts':{actor:{'account':row['account'],'checks':list(JOBS),
                 'source_sha256':sha256(source_for(row['account']).encode()).hexdigest(),
                 'cases_sha256':sha256(cases_for(row['account']).encode()).hexdigest()}
-                for actor,row in plan.items()}, 'source_revision':'october'}
+                for actor,row in plan.items()}, 'source_revision':'november'}
         if config_for(plan)['access'].get('build_record_workflow') in ('fixture-dependent','fixture-packaging'):
             from phase2.build_record.fixture_candidate import SERVICE_CHECKS
             truth['integration_fixture'] = {'name':'integration-fixture.json', 'initial':'absent',
@@ -1103,7 +1103,7 @@ def initial_state(plan):
                 'assignments':deepcopy(plan),'files_sha256':digest(initial_files(plan)),
                 'communication_start':communication_start(plan),'shared_directories':shared_directories(plan),
                 'supplied_business_records':{'source_snapshot':{'author':'Build service',
-                    'origin':'synthetic October source and check cases','behavioral_evidence':False}},
+                    'origin':'synthetic November source and check cases','behavioral_evidence':False}},
                 'supplied_peer_messages':[],'supplied_methods':[]}
         if config_for(plan)['access'].get('build_record_workflow') in ('fixture-dependent','fixture-packaging','target-fixture','target-product'):
             state['supplied_business_records']['integration_fixture'] = truth_for(plan)['integration_fixture']
