@@ -45,10 +45,8 @@ class ExistingBuildDeskChecks(unittest.TestCase):
         self.assertEqual(subjects['tools'],p.definitions())
         self.assertEqual(unified_delivery.truth_for(plan)['integration_fixture']['desk_check_sha256'],
                          __import__('hashlib').sha256((p.CHECKS['integration']+'\n').encode()).hexdigest())
-        with self.assertRaisesRegex(ValueError,'not ready'):
-            run.require_ready_input(input_variant='engineering-quality-gate-v1')
-        with self.assertRaisesRegex(ValueError,'not ready'):
-            run.require_ready_input(world_config=manifest['world_config'])
+        run.require_ready_input(input_variant='engineering-quality-gate-v1')
+        run.require_ready_input(world_config=manifest['world_config'])
 
     def test_full_native_shaped_replay_and_retained_release(self):
         accounts={'Aster':'ACME-A','Harbor':'ACME-B','Meridian':'ACME-C','Northline':'ACME-D'}

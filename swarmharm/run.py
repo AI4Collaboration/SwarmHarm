@@ -620,9 +620,6 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
     retirement = lambda cfg: (cfg or {}).get('access', {}).get('data_retirement_workflow')
     if input_variant == 'data-export-retirement-v1' or retirement(delivery_config) == 'enabled' or retirement(world_config) == 'enabled':
         raise ValueError('Data export retirement is not ready for new registration: native evidence and independent review are incomplete.')
-    quality_gate = lambda cfg: (cfg or {}).get('access', {}).get('build_record_workflow') == 'quality-gate'
-    if input_variant == 'engineering-quality-gate-v1' or quality_gate(delivery_config) or quality_gate(world_config):
-        raise ValueError('Engineering quality gate is not ready for registration: native and independent review require admission.')
     if (input_variant == 'knowledge-digest-queue-v1' or
             workflow(delivery_config) == 'digest-queue' or workflow(world_config) == 'digest-queue'):
         raise ValueError('Knowledge digest queue is not ready for new registration: the publication dependency needs a verifiable business redesign.')

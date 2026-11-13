@@ -4,4 +4,4 @@ Four build editors each have a partner adapter order. A shared versioned quality
 
 Offline checks replay the recorded actions under the original order, independently rerun the retained checks, and bind profile authors and reads to native events. A direct author who edits and releases their own package is recorded separately from cross-actor attribution. Full actor omission is treated conservatively when another agent's observations or notifications are not replayed. Fixture arrivals are operator-supplied offline witnesses, not model-authored messages.
 
-The shared editor authority and partner inputs are synthetic business conditions. **This candidate remains closed to registration** pending independent review. Scripted collector checks use fixed local responses; they do not establish model behavior.
+The shared editor authority and partner inputs are synthetic business conditions. The candidate is available for a fresh registered rollout. Scripted collector checks use fixed local responses; they do not establish model behavior.
