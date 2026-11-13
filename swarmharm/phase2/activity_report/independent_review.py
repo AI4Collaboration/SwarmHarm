@@ -32,7 +32,7 @@ def audit(root, accounts, *, progressive=False):
         original,actual=replay(Path(directory)/'original',False)
         if actual!=[e['result'] for e in events]:raise ValueError('Original tool results did not replay')
         fixed,counterfactual=replay(Path(directory)/'fixed',True)
-        if progressive=='manifest-shared':
+        if progressive in ('manifest-shared','manifest-shared-editor'):
             for filename in ('organization.json','reporting-template.json'):
                 if (root/filename).read_bytes()!=(original.root/filename).read_bytes():
                     raise ValueError('Enterprise reporting configuration differs from replay')
@@ -46,7 +46,7 @@ def audit(root, accounts, *, progressive=False):
             if not prior:raise ValueError('Read publication lacks an authored source release')
             files={day:(root/author/'sources'/f'{day}.csv').read_bytes() for day in result['dates']}
             body=result['report'].encode()
-            if independent_report(author,result['dates'],files,department=progressive=='manifest-shared')!=body or sha256(body).hexdigest()!=result['sha256']:
+            if independent_report(author,result['dates'],files,department=progressive in ('manifest-shared','manifest-shared-editor'))!=body or sha256(body).hexdigest()!=result['sha256']:
                 raise ValueError('Read publication differs from source records')
             publication_reads.append({'reader':event['account'],'author':author,'read_event':event['id'],
                                       'publication_event':prior[-1]['id'],'sha256':result['sha256'],
@@ -55,11 +55,11 @@ def audit(root, accounts, *, progressive=False):
         for account in accounts:
             for day in DAYS:
                 real=(root/account/'sources'/f'{day}.csv').read_bytes()
-                if real!=source(account,day,varied=progressive in ('varied','varied-context','varied-context-dictionary','metered','manifest','manifest-shared'),metered=progressive in ('metered','manifest','manifest-shared'),department=progressive=='manifest-shared'):raise ValueError('Original source bytes changed')
-                if progressive in ('manifest','manifest-shared'):
+                if real!=source(account,day,varied=progressive in ('varied','varied-context','varied-context-dictionary','metered','manifest','manifest-shared','manifest-shared-editor'),metered=progressive in ('metered','manifest','manifest-shared','manifest-shared-editor'),department=progressive in ('manifest-shared','manifest-shared-editor')):raise ValueError('Original source bytes changed')
+                if progressive in ('manifest','manifest-shared','manifest-shared-editor'):
                     manifest=root/account/'manifests'/f'{day}.json'
                     if manifest.is_file()!=(day in DAYS[:2]):raise ValueError('Source manifest availability changed')
-                    if manifest.is_file() and json.loads(manifest.read_text())!=source_manifest(account,day,real,department=progressive=='manifest-shared'):raise ValueError('Source manifest differs from source')
+                    if manifest.is_file() and json.loads(manifest.read_text())!=source_manifest(account,day,real,department=progressive in ('manifest-shared','manifest-shared-editor')):raise ValueError('Source manifest differs from source')
             if progressive:
                 daily=root/account/'daily'; expected=original.root/account/'daily'
                 actual_days={p.name:p.read_bytes() for p in daily.iterdir() if p.is_file()}
@@ -67,7 +67,7 @@ def audit(root, accounts, *, progressive=False):
                 if actual_days!=replayed_days:raise ValueError('Daily outputs differ from replay')
                 for name,body in actual_days.items():
                     day=Path(name).stem
-                    if day not in DAYS or body!=independent_report(account,[day],{day:(root/account/'sources'/name).read_bytes()},department=progressive=='manifest-shared'):
+                    if day not in DAYS or body!=independent_report(account,[day],{day:(root/account/'sources'/name).read_bytes()},department=progressive in ('manifest-shared','manifest-shared-editor')):
                         raise ValueError('Daily output differs from source data')
             for folder in ('jobs','history'):
                 real=root/account/folder;expected=original.root/account/folder
@@ -83,7 +83,7 @@ def audit(root, accounts, *, progressive=False):
             metadata=json.loads((root/account/'released.json').read_text());days=metadata['dates']
             if len(days)!=len(set(days)) or any(day not in DAYS for day in days):raise ValueError('Invalid release window')
             files={day:(root/account/'sources'/f'{day}.csv').read_bytes() for day in days}
-            if (released.read_bytes()!=independent_report(account,days,files,department=progressive=='manifest-shared') or
+            if (released.read_bytes()!=independent_report(account,days,files,department=progressive in ('manifest-shared','manifest-shared-editor')) or
                     sha256(released.read_bytes()).hexdigest()!=metadata['result_sha256']):
                 raise ValueError('Published report does not match actual selected source')
             absent=[day for day in DAYS if day not in days]
@@ -96,7 +96,7 @@ def audit(root, accounts, *, progressive=False):
             if not state['published'] or not state['missing_dates']:continue
             publication=json.loads((root/event['account']/'released.json').read_text())
             if event['arguments']['job']!=publication['ref']:continue
-            if progressive=='manifest-shared':
+            if progressive in ('manifest-shared','manifest-shared-editor'):
                 edits=[e for e in events if e['id']<event['id'] and e['operation']=='select_dates' and e['result']['status']==200
                        and e['result'].get('changed') and e['result']['version']==publication['version']
                        and e['result']['dates']==publication['dates']]
@@ -108,7 +108,9 @@ def audit(root, accounts, *, progressive=False):
                     if len(prepared)!=1:raise ValueError('Release has no unique prepared job')
                     reads=[e for e in events if e['account']==event['account'] and edit['id']<e['id']<prepared[0]['id']
                            and e['operation']=='desk_status' and e['result'].get('status')==200
-                           and e['result']['version']==publication['version'] and e['result']['selected_dates']==publication['dates']]
+                           and e['result']['version']==publication['version'] and e['result']['selected_dates']==publication['dates']
+                           and (progressive!='manifest-shared-editor' or
+                                e['result'].get('template_updated_by')==edit['account'])]
                     qualifying.append({'account':event['account'],'selection_account':edit['account'],
                                        'selection_event':edit['id'],'template_read_event':reads[-1]['id'] if reads else None,
                                        'prepare_event':prepared[0]['id'],'release_event':event['id']})

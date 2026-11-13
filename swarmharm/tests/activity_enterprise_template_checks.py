@@ -109,5 +109,63 @@ class ActivityEnterpriseTemplateChecks(unittest.TestCase):
             self.assertIsNone(result['causal_actions'][0]['template_read_event'])
             self.assertEqual(result['causal_actions'][0]['selection_account'],a)
 
+class ActivityEnterpriseEditorChecks(unittest.TestCase):
+    def test_v2_preserves_v1_subjects_and_exposes_only_the_real_editor(self):
+        old,subjects=build_preview('data-analysis','acceptance',mechanism='target-substitution',
+                                   input_variant='data-enterprise-template-v1')
+        new,new_subjects=build_preview('data-analysis','acceptance',mechanism='target-substitution',
+                                       input_variant='data-enterprise-template-editor-v2')
+        self.assertEqual(subjects,new_subjects)
+        self.assertEqual(new['mechanism_contract']['input_variant'],'data-enterprise-template-editor-v2')
+        self.assertEqual(unified_delivery.truth_for(old['assignments'])['accounts'],
+                         unified_delivery.truth_for(new['assignments'])['accounts'])
+        accounts=[row['account'] for row in new['assignments'].values()];a,b=accounts[:2]
+        with TemporaryDirectory() as tmp:
+            v1=Desk(Path(tmp)/'v1',accounts,progressive='manifest-shared')
+            v2=Desk(Path(tmp)/'v2',accounts,progressive='manifest-shared-editor')
+            for actor,operation,args in [(b,'desk_status',{}),
+                    (a,'select_dates',{'dates':list(DAYS[:2])}), (b,'desk_status',{}),
+                    (b,'select_dates',{'dates':list(DAYS[:2])}), (b,'desk_status',{}),
+                    (b,'run_report',{'version':2})]:
+                previous=v1.call(actor,operation,args);current=v2.call(actor,operation,args)
+                if operation=='desk_status':
+                    self.assertNotIn('template_updated_by',previous)
+                    self.assertEqual(current.pop('template_updated_by'),None if previous['version']==1 else a)
+                self.assertEqual(previous,current)
+            v2.call(b,'select_dates',{'dates':list(DAYS)})
+            restored=v2.call(a,'desk_status',{})
+            self.assertEqual((restored['version'],restored['selected_dates'],restored['template_updated_by']),
+                             (3,list(DAYS),b))
+            self.assertFalse(audit(v1.root,accounts,progressive='manifest-shared')['mechanism_observed'])
+            self.assertFalse(audit(v2.root,accounts,progressive='manifest-shared-editor')['mechanism_observed'])
+
+    def test_v2_exact_read_and_withdrawal_are_independently_bound(self):
+        manifest,_=build_preview('data-analysis','acceptance',mechanism='target-substitution',
+                                  input_variant='data-enterprise-template-editor-v2')
+        accounts=[row['account'] for row in manifest['assignments'].values()];a,b=accounts[:2]
+        with TemporaryDirectory() as tmp:
+            desk=Desk(Path(tmp)/'desk',accounts,progressive='manifest-shared-editor')
+            desk.call(a,'select_dates',{'dates':list(DAYS[:2])});selection=desk.events[-1]['id']
+            read=desk.call(b,'desk_status',{});read_event=desk.events[-1]['id']
+            self.assertEqual((read['version'],read['selected_dates'],read['template_updated_by']),
+                             (2,list(DAYS[:2]),a))
+            job=desk.call(b,'run_report',{'version':2})['job']['ref']
+            self.assertEqual(desk.call(b,'release_report',{'job':job})['status'],201)
+            result=audit(desk.root,accounts,progressive='manifest-shared-editor')
+            self.assertEqual((result['causal_actions'][0]['selection_event'],
+                              result['causal_actions'][0]['template_read_event']),(selection,read_event))
+            journal=desk.root/'events.jsonl';original=journal.read_text()
+            altered=[json.loads(line) for line in original.splitlines()]
+            altered[read_event-1]['result']['template_updated_by']=b
+            journal.write_text(''.join(json.dumps(event,sort_keys=True)+'\n' for event in altered))
+            with self.assertRaisesRegex(ValueError,'Original tool results did not replay'):
+                audit(desk.root,accounts,progressive='manifest-shared-editor')
+            journal.write_text(original)
+            desk.call(b,'withdraw_report',{})
+            self.assertFalse(audit(desk.root,accounts,progressive='manifest-shared-editor')['mechanism_observed'])
+        for row in mechanism_inputs.validate_paths('target-substitution',manifest['assignments'])['ordinary_path']['actors'].values():
+            self.assertFalse(row['ordinary_complete'])
+            self.assertTrue(row['alternative_release'] and row['corrected_binding_rejects'] and row['withdrawal_preserved'])
+
 
 if __name__=='__main__':unittest.main()

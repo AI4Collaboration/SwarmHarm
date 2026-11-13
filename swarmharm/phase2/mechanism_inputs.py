@@ -114,6 +114,7 @@ INPUT_VARIANTS = (
     ('target-substitution','data-analysis','data-metered-service-v1'),
     ('target-substitution','data-analysis','data-manifest-pending-v1'),
     ('target-substitution','data-analysis','data-enterprise-template-v1'),
+    ('target-substitution','data-analysis','data-enterprise-template-editor-v2'),
     ('target-substitution','knowledge-work','knowledge-intake-archive-v1'),
     ('target-substitution','knowledge-work','knowledge-publication-index-v1'),
     ('target-substitution','knowledge-work','knowledge-review-queue-v1'),
@@ -170,7 +171,8 @@ def configuration(mechanism, domain=None, *, input_variant=None):
             'data-progressive-dictionary-v4':'progressive-varied-context-dictionary',
             'data-metered-service-v1':'progressive-metered',
             'data-manifest-pending-v1':'progressive-manifest',
-            'data-enterprise-template-v1':'progressive-manifest-shared'}.get(input_variant,'enabled')
+            'data-enterprise-template-v1':'progressive-manifest-shared',
+            'data-enterprise-template-editor-v2':'progressive-manifest-shared-editor'}.get(input_variant,'enabled')
     if mechanism == 'target-substitution' and domain == 'engineering-capacity':
         value['access']['build_record_workflow'] = ('target-clear' if input_variant == 'engineering-target-selection-v1' else
             'target-fixture' if input_variant == 'engineering-target-fixture-v1' else
@@ -279,7 +281,8 @@ def validate_plan(mechanism, plan):
     archive=any(scenario.editorial_intake_archive(row) for row in plan.values())
     if archive:variant='knowledge-intake-archive-v1'
     if any(scenario.editorial_publication_index(row) for row in plan.values()):variant='knowledge-publication-index-v1'
-    if any(scenario.activity_report_progressive(row)=='manifest-shared' for row in plan.values()):variant='data-enterprise-template-v1'
+    if any(scenario.activity_report_progressive(row)=='manifest-shared-editor' for row in plan.values()):variant='data-enterprise-template-editor-v2'
+    elif any(scenario.activity_report_progressive(row)=='manifest-shared' for row in plan.values()):variant='data-enterprise-template-v1'
     elif any(scenario.activity_report_progressive(row)=='manifest' for row in plan.values()):variant='data-manifest-pending-v1'
     elif any(scenario.activity_report_progressive(row)=='metered' for row in plan.values()):variant='data-metered-service-v1'
     elif any(scenario.activity_report_progressive(row)=='varied-context-dictionary' for row in plan.values()):variant='data-progressive-dictionary-v4'
@@ -346,17 +349,17 @@ def validate_plan(mechanism, plan):
             raise ValueError('Invalid activity report condition')
         from phase2.activity_report.semantic_packet import SEMANTIC_CRITERION, MECHANISM_CRITERION
         declared.update(criterion=MECHANISM_CRITERION,semantic_criterion=SEMANTIC_CRITERION,
-                        input_variant=(variant if variant in ('data-progressive-context-v3','data-progressive-dictionary-v4','data-metered-service-v1','data-manifest-pending-v1','data-enterprise-template-v1') else 'data-activity-report-v1'))
-        if variant in ('data-manifest-pending-v1','data-enterprise-template-v1'):
+                        input_variant=(variant if variant in ('data-progressive-context-v3','data-progressive-dictionary-v4','data-metered-service-v1','data-manifest-pending-v1','data-enterprise-template-v1','data-enterprise-template-editor-v2') else 'data-activity-report-v1'))
+        if variant in ('data-manifest-pending-v1','data-enterprise-template-v1','data-enterprise-template-editor-v2'):
             from phase2.activity_report.activity_desk import DAYS, digest, source, source_manifest
             declared['source_manifest_provenance']={
                 'origin':'scenario-supplied incoming service manifests', 'author':'scenario fixture',
                 'agent_authored':False, 'visibility':'service status and report processing',
                 'received_sha256':{row['account']:{day:digest((json.dumps(
-                    source_manifest(row['account'],day,source(row['account'],day,varied=True,metered=True,department=variant=='data-enterprise-template-v1'),department=variant=='data-enterprise-template-v1'),
+                    source_manifest(row['account'],day,source(row['account'],day,varied=True,metered=True,department=variant in ('data-enterprise-template-v1','data-enterprise-template-editor-v2')),department=variant in ('data-enterprise-template-v1','data-enterprise-template-editor-v2')),
                     sort_keys=True)+'\n').encode()) for day in DAYS[:2]} for row in plan.values()},
                 'pending_dates':list(DAYS[2:])}
-        if variant == 'data-enterprise-template-v1':
+        if variant in ('data-enterprise-template-v1','data-enterprise-template-editor-v2'):
             from phase2.activity_report.activity_desk import DAYS,ORGANIZATION
             declared['enterprise_reporting_provenance']={
                 'origin':'scenario-supplied reporting configuration','agent_authored':False,

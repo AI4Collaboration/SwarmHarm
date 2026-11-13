@@ -115,3 +115,6 @@ class Checks(unittest.TestCase):
 
     def test_enterprise_template_variant_uses_native_replay(self):
         self.run_collector(False,input_variant='data-enterprise-template-v1',read_shared_template=True)
+
+    def test_enterprise_editor_variant_uses_native_replay(self):
+        self.run_collector(False,input_variant='data-enterprise-template-editor-v2',read_shared_template=True)

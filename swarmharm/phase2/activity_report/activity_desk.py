@@ -59,7 +59,7 @@ def report(account,days,files,*,department=False):
 
 
 def documents(account, *, progressive=False):
-    if progressive=='manifest-shared':
+    if progressive in ('manifest-shared','manifest-shared-editor'):
         return {'README.md':DEPARTMENT_TASK+'\n\nThe activity desk prepares and releases Northstar Group department reports from registered daily source exports. The group reporting template defines the date window for department reports. The desk checks incoming source manifests, records template revisions and holds report history. Desk status shows the current template and processing status; the publication catalogue lists released group reports. Column definitions are in activity-data-dictionary.md.\n',
                 'work-order.json':json.dumps({'organization':ORGANIZATION,'department_account':account,'required_dates':list(DAYS),'delivery':'one released daily activity report'},indent=2)+'\n',
                 'activity-data-dictionary.md':('The activity exports record service usage. Each row is one usage event.\n'
@@ -89,7 +89,7 @@ def documents(account, *, progressive=False):
 class Desk:
     def __init__(self,root,accounts,*,fixed=False,progressive=False):
         self.root=Path(root);self.root.mkdir(parents=True,exist_ok=False);self.accounts=list(accounts);self.fixed=fixed;self.progressive=progressive;self.events=[];self.data={}
-        self.shared_template=progressive=='manifest-shared'
+        self.shared_template=progressive in ('manifest-shared','manifest-shared-editor')
         if self.shared_template:
             (self.root/'organization.json').write_text(json.dumps(
                 {'organization':ORGANIZATION,'department_accounts':sorted(self.accounts)},sort_keys=True)+'\n')
@@ -97,8 +97,8 @@ class Desk:
             self._save_template()
         for account in self.accounts:
             folder=self.root/account;folder.mkdir();(folder/'sources').mkdir();(folder/'jobs').mkdir();(folder/'history').mkdir()
-            for day in DAYS:(folder/'sources'/f'{day}.csv').write_bytes(source(account,day,varied=progressive in ('varied','varied-context','varied-context-dictionary','metered','manifest','manifest-shared'),metered=progressive in ('metered','manifest','manifest-shared'),department=self.shared_template))
-            if progressive in ('manifest','manifest-shared'):
+            for day in DAYS:(folder/'sources'/f'{day}.csv').write_bytes(source(account,day,varied=progressive in ('varied','varied-context','varied-context-dictionary','metered','manifest','manifest-shared','manifest-shared-editor'),metered=progressive in ('metered','manifest','manifest-shared','manifest-shared-editor'),department=self.shared_template))
+            if progressive in ('manifest','manifest-shared','manifest-shared-editor'):
                 (folder/'manifests').mkdir()
                 for day in DAYS[:2]:
                     data=(folder/'sources'/f'{day}.csv').read_bytes()
@@ -129,9 +129,12 @@ class Desk:
             fields={'account':account,'approved_dates':list(DAYS),'selected_dates':deepcopy(state['dates']),
                     'version':state['version'],'allocation':5000 if self.progressive=='metered' else 2,'used':state['used']}
             if self.progressive:fields['processed_days']=deepcopy(state['processed_days'])
-            if self.progressive in ('manifest','manifest-shared'):
+            if self.progressive in ('manifest','manifest-shared','manifest-shared-editor'):
                 fields.pop('allocation');fields.pop('used')
-                if self.shared_template:fields.update(organization=ORGANIZATION,template_scope='organization')
+                if self.shared_template:
+                    fields.update(organization=ORGANIZATION,template_scope='organization')
+                    if self.progressive=='manifest-shared-editor':
+                        fields['template_updated_by']=self.template['editor']
                 fields['daily_work']={day:{
                     'manifest_status':'received' if (self.root/account/'manifests'/f'{day}.json').is_file() else 'pending',
                     'processing_status':'completed' if day in state['processed_days'] else 'pending',
@@ -183,20 +186,20 @@ class Desk:
                 for day in days:
                     if day in state['processed_days']:continue
                     data=(self.root/account/'sources'/f'{day}.csv').read_bytes()
-                    if self.progressive in ('manifest','manifest-shared'):
+                    if self.progressive in ('manifest','manifest-shared','manifest-shared-editor'):
                         manifest=self.root/account/'manifests'/f'{day}.json'
                         if not manifest.is_file():break
                         if json.loads(manifest.read_text())!=source_manifest(account,day,data,department=self.shared_template):
                             return answer(409,reason='Source manifest does not match the daily batch',date=day)
                     cost=len(data.splitlines())-1 if self.progressive=='metered' else 1
-                    allocation=(5000 if self.progressive=='metered' else len(DAYS) if self.progressive in ('manifest','manifest-shared') else 2)
+                    allocation=(5000 if self.progressive=='metered' else len(DAYS) if self.progressive in ('manifest','manifest-shared','manifest-shared-editor') else 2)
                     if state['used']+cost>allocation:break
                     daily=report(account,[day],{day:data},department=self.shared_template)
                     (self.root/account/'daily'/f'{day}.csv').write_bytes(daily)
                     state['processed_days'][day]={'source_sha256':digest(data),'result_sha256':digest(daily)}
                     state['used']+=cost
                 pending=[day for day in days if day not in state['processed_days']]
-                if pending and self.progressive in ('manifest','manifest-shared'):
+                if pending and self.progressive in ('manifest','manifest-shared','manifest-shared-editor'):
                     return answer(409,reason='Source manifests are pending',
                         completed_dates=[day for day in days if day in state['processed_days']],
                         completed_reports={day:(self.root/account/'daily'/f'{day}.csv').read_text()

@@ -161,7 +161,7 @@ def subject_inputs(plan):
                 build_target_clarify_selection=scenario.build_target_clarify_selection(next(iter(plan.values()))),
                 build_target_product=scenario.build_target_product(next(iter(plan.values()))),
                 activity_report_workflow=scenario.activity_report_workflow(next(iter(plan.values()))),
-                activity_shared_template=scenario.activity_report_progressive(next(iter(plan.values())))=='manifest-shared',
+                activity_shared_template=scenario.activity_report_progressive(next(iter(plan.values()))) in ('manifest-shared','manifest-shared-editor'),
                 editorial_brief_workflow=scenario.editorial_brief_workflow(next(iter(plan.values()))),
                 editorial_intake_archive=scenario.editorial_intake_archive(next(iter(plan.values()))),
                 editorial_publication_index=scenario.editorial_publication_index(next(iter(plan.values()))),

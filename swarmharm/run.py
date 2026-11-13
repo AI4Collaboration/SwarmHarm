@@ -461,7 +461,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                     current.add('activity_metered_service')
                 if input_variant == 'data-manifest-pending-v1':
                     current.add('activity_manifest_pending')
-                if input_variant == 'data-enterprise-template-v1':
+                if input_variant in ('data-enterprise-template-v1','data-enterprise-template-editor-v2'):
                     current.update(('activity_manifest_pending','activity_enterprise_template'))
             if scenario == 'knowledge-work':
                 current.add('editorial_brief_collector')
@@ -659,7 +659,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if (delivery_config['access'].get('editorial_brief_workflow') in ('enabled','with_archive','with_publications','with_review_queue','with_review_context')
             and (mechanism != 'target-substitution' or scenario != 'knowledge-work')):
         raise ValueError('Editorial briefing requires Knowledge Work target-substitution')
-    if (delivery_config['access'].get('activity_report_workflow') in ('enabled','progressive','progressive-varied','progressive-varied-context','progressive-varied-context-dictionary','progressive-metered','progressive-manifest','progressive-manifest-shared')
+    if (delivery_config['access'].get('activity_report_workflow') in ('enabled','progressive','progressive-varied','progressive-varied-context','progressive-varied-context-dictionary','progressive-metered','progressive-manifest','progressive-manifest-shared','progressive-manifest-shared-editor')
             and (mechanism != 'target-substitution' or scenario != 'data-analysis')):
         raise ValueError('Activity report requires Data Analysis target-substitution')
     if (delivery_config['access'].get('build_record_workflow') in ('target','target-clear')
@@ -850,7 +850,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'build_target_clarify_selection': unified_delivery.build_target_clarify_selection(phase2_plan[actor]),
                 'build_target_product': unified_delivery.build_target_product(phase2_plan[actor]),
                 'activity_report_workflow': unified_delivery.activity_report_workflow(phase2_plan[actor]),
-                'activity_shared_template': unified_delivery.activity_report_progressive(phase2_plan[actor])=='manifest-shared',
+                'activity_shared_template': unified_delivery.activity_report_progressive(phase2_plan[actor]) in ('manifest-shared','manifest-shared-editor'),
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(phase2_plan[actor]),
                 'editorial_intake_archive': unified_delivery.editorial_intake_archive(phase2_plan[actor]),
                 'editorial_publication_index': unified_delivery.editorial_publication_index(phase2_plan[actor]),
@@ -1867,7 +1867,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'build_target_clarify_selection': unified_delivery.build_target_clarify_selection(next(iter(extension.plan.values()))),
                 'build_target_product': unified_delivery.build_target_product(next(iter(extension.plan.values()))),
                 'activity_report_workflow': unified_delivery.activity_report_workflow(next(iter(extension.plan.values()))),
-                'activity_shared_template': unified_delivery.activity_report_progressive(next(iter(extension.plan.values())))=='manifest-shared',
+                'activity_shared_template': unified_delivery.activity_report_progressive(next(iter(extension.plan.values()))) in ('manifest-shared','manifest-shared-editor'),
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(next(iter(extension.plan.values()))),
                 'editorial_intake_archive': unified_delivery.editorial_intake_archive(next(iter(extension.plan.values()))),
                 'editorial_publication_index': unified_delivery.editorial_publication_index(next(iter(extension.plan.values()))),

@@ -81,7 +81,7 @@ CONFIG_SCHEMA = {
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions']},
             'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent']},
-            'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared']},
+            'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation']},
             'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2', 'account-retirement']},
@@ -224,12 +224,12 @@ def build_record_workflow(assignment):
 
 
 def activity_report_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') in ('enabled','progressive','progressive-varied','progressive-varied-context','progressive-varied-context-dictionary','progressive-metered','progressive-manifest','progressive-manifest-shared')
+    return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') in ('enabled','progressive','progressive-varied','progressive-varied-context','progressive-varied-context-dictionary','progressive-metered','progressive-manifest','progressive-manifest-shared','progressive-manifest-shared-editor')
 
 
 def activity_report_progressive(assignment):
     workflow=assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow')
-    return {'progressive-varied':'varied','progressive-varied-context':'varied-context', 'progressive-varied-context-dictionary':'varied-context-dictionary','progressive-metered':'metered','progressive-manifest':'manifest','progressive-manifest-shared':'manifest-shared'}.get(workflow, workflow == 'progressive')
+    return {'progressive-varied':'varied','progressive-varied-context':'varied-context', 'progressive-varied-context-dictionary':'varied-context-dictionary','progressive-metered':'metered','progressive-manifest':'manifest','progressive-manifest-shared':'manifest-shared','progressive-manifest-shared-editor':'manifest-shared-editor'}.get(workflow, workflow == 'progressive')
 
 
 def editorial_brief_workflow(assignment):
@@ -326,7 +326,7 @@ def task(assignment):
         return TASK
     if activity_report_workflow(assignment):
         from phase2.activity_report.activity_desk import TASK,DEPARTMENT_TASK
-        return DEPARTMENT_TASK if activity_report_progressive(assignment)=='manifest-shared' else TASK
+        return DEPARTMENT_TASK if activity_report_progressive(assignment) in ('manifest-shared','manifest-shared-editor') else TASK
     if build_target_workflow(assignment):
         if build_target_product(assignment):
             from phase2.build_record.product_fixture import task as product_task
@@ -823,12 +823,12 @@ def truth_for(plan):
     if activity_report_workflow(next(iter(plan.values()))):
         from phase2.activity_report.activity_desk import DAYS,ORGANIZATION,source,digest as source_digest
         progressive=activity_report_progressive(next(iter(plan.values())))
-        metered=progressive in ('metered','manifest','manifest-shared')
-        varied=progressive in ('varied','varied-context','varied-context-dictionary','metered','manifest','manifest-shared')
+        metered=progressive in ('metered','manifest','manifest-shared','manifest-shared-editor')
+        varied=progressive in ('varied','varied-context','varied-context-dictionary','metered','manifest','manifest-shared','manifest-shared-editor')
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
             'accounts':{actor:{'account':row['account'],'approved_dates':list(DAYS),
-                **({'organization':ORGANIZATION,'account_type':'department'} if progressive=='manifest-shared' else {}),
-                'source_sha256':{day:source_digest(source(row['account'],day,varied=varied,metered=metered,department=progressive=='manifest-shared')) for day in DAYS}}
+                **({'organization':ORGANIZATION,'account_type':'department'} if progressive in ('manifest-shared','manifest-shared-editor') else {}),
+                'source_sha256':{day:source_digest(source(row['account'],day,varied=varied,metered=metered,department=progressive in ('manifest-shared','manifest-shared-editor'))) for day in DAYS}}
                 for actor,row in plan.items()}}
     if build_record_workflow(next(iter(plan.values()))):
         from phase2.build_record.build_desk import JOBS, source_for, cases_for
