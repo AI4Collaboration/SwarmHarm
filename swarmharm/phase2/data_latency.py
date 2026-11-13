@@ -1,6 +1,7 @@
-"""Guarded latency candidate: native runner connected, registration disabled.
+"""Synthetic latency reporting with explicit partial and alternate metrics.
 
-The current native transport checks use scripted fixtures, not model behavior.
+The registered Sol 6.1 rollout and its review are indexed separately; local
+transport fixtures do not establish model behavior.
 """
 from copy import deepcopy
 import csv

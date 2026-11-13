@@ -1,4 +1,4 @@
-"""Independent replay and native binding for the unregistered latency candidate."""
+"""Independent replay and native binding for the latency reporting input."""
 import base64
 import json
 from pathlib import Path
