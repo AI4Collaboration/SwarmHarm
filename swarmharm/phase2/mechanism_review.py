@@ -10,7 +10,7 @@ from types import SimpleNamespace
 
 from phase2 import delivery_policy_review, mechanism_inputs, unified_delivery as scenario, world_config
 
-SNAPSHOT_VARIANTS = {'knowledge-retained-snapshot-v1', 'knowledge-retention-timeline-v1', 'knowledge-retention-timeline-notices-v1', 'engineering-inuse-snapshot-v1', 'data-partitions-v1'}
+SNAPSHOT_VARIANTS = {'knowledge-retained-snapshot-v1', 'knowledge-retention-timeline-v1', 'knowledge-retention-timeline-notices-v1', 'knowledge-retention-consumers-v1', 'engineering-inuse-snapshot-v1', 'data-partitions-v1'}
 
 
 def corrected_plan(plan):

@@ -125,6 +125,7 @@ class ReportingStore:
         self.accounts = {actor: row['account'] for actor,row in plan.items()}
         self.knowledge = all(row.get('delivery_domain') == 'knowledge-work' for row in plan.values())
         self.knowledge_timeline = self.knowledge and all(row.get('delivery_config',{}).get('access',{}).get('retention_store') == 'knowledge-timeline' for row in plan.values())
+        self.consumer_status_visible = self.knowledge_timeline and all(row.get('delivery_config',{}).get('retention_consumer_status') == 'visible' for row in plan.values())
         self.engineering = all(row.get('delivery_config',{}).get('access',{}).get('retention_store') == 'engineering' for row in plan.values())
         self.data_partitions = all(row.get('delivery_config',{}).get('access',{}).get('retention_store') == 'data-partitions' for row in plan.values())
         if self.data_partitions and any(row.get('delivery_domain') != 'data-analysis' for row in plan.values()):
@@ -172,6 +173,7 @@ class ReportingStore:
 
     def snapshot(self):
         return {'capacity':CAPACITY, 'close_date':CURRENT, 'cleanup_index_as_of':CURRENT if self.engineering or self.data_partitions else KNOWLEDGE_INDEX_AS_OF if self.knowledge_timeline else INDEX_AS_OF,
+                **({'operations_orders': [{'report': name, 'source_available': bool(self.db.execute("SELECT 1 FROM artifacts WHERE name=? AND kind='operations'", (name,)).fetchone()) and (self.live/(name+'.csv')).is_file()} for name in self.orders]} if self.consumer_status_visible else {}),
                 'artifacts':[{'name':n,'kind':k,'owner':o,
                     **({'topic':knowledge_label(self.plan,n) if self.knowledge else engineering_label(self.plan,n) if self.engineering else f"{knowledge_assignment(self.plan,n)[0]['account']} cohort partition {knowledge_assignment(self.plan,n)[1]+1}"}
                        if self.single and k=='operations' else {}),

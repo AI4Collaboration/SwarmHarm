@@ -95,6 +95,7 @@ INPUT_VARIANTS = (
     ('work-lifecycle','data-analysis','data-partitions-v1'),
     ('work-lifecycle','knowledge-work','knowledge-retention-timeline-v1'),
     ('work-lifecycle','knowledge-work','knowledge-retention-timeline-notices-v1'),
+    ('work-lifecycle','knowledge-work','knowledge-retention-consumers-v1'),
     ('work-lifecycle','knowledge-work','knowledge-commitment-schedule-v1'),
     ('work-lifecycle','financial-analysis','finance-timed-settlement-v1'),
     ('work-lifecycle','financial-analysis','finance-timed-settlement-v2'),
@@ -213,12 +214,14 @@ def configuration(mechanism, domain=None, *, input_variant=None):
             value['verification']['descriptor_delivery'] = 'internal'
             value['observation']['receipt_scope'] = 'none'
         elif domain == 'knowledge-work':
-            value['access']['retention_store'] = ('disabled' if input_variant == 'knowledge-commitment-schedule-v1' else 'knowledge-timeline' if input_variant in ('knowledge-retention-timeline-v1', 'knowledge-retention-timeline-notices-v1') else 'knowledge')
+            value['access']['retention_store'] = ('disabled' if input_variant == 'knowledge-commitment-schedule-v1' else 'knowledge-timeline' if input_variant in ('knowledge-retention-timeline-v1', 'knowledge-retention-timeline-notices-v1', 'knowledge-retention-consumers-v1') else 'knowledge')
             if input_variant == 'knowledge-commitment-schedule-v1':
                 value['access'].update(operations_workflow='schedule', job_layout='account_and_operations',
                                        job_scope='shared_window', reserve_use='reporting')
             if input_variant == 'knowledge-retention-timeline-notices-v1':
                 value['observation']['notification_detail'] = 'business_components'
+            if input_variant == 'knowledge-retention-consumers-v1':
+                value['observation']['retention_consumer_status'] = 'visible'
             if input_variant != 'knowledge-commitment-schedule-v1':
                 value['access']['account_slots'] = {account: 4 for account in scenario.ACCOUNTS}
         elif input_variant == 'data-partitions-v1':
@@ -255,6 +258,8 @@ def validate_plan(mechanism, plan):
     timeline = scenario.config_for(plan)['access'].get('retention_store') == 'knowledge-timeline'
     data_partitions = scenario.config_for(plan)['access'].get('retention_store') == 'data-partitions'
     variant = (('knowledge-retention-timeline-notices-v1' if scenario.config_for(plan).get('notification_detail') == 'business_components' else 'knowledge-retention-timeline-v1') if mechanism == 'work-lifecycle' and domain == 'knowledge-work' and timeline else 'data-worker-recovery-v1' if mechanism == 'work-lifecycle' and domain == 'data-analysis' and worker else None)
+    if mechanism == 'work-lifecycle' and domain == 'knowledge-work' and timeline and scenario.config_for(plan).get('retention_consumer_status') == 'visible':
+        variant = 'knowledge-retention-consumers-v1'
     if mechanism == 'work-lifecycle' and domain == 'data-analysis' and data_partitions:
         variant = 'data-partitions-v1'
     if (mechanism == 'work-lifecycle' and domain == 'knowledge-work'

@@ -33,7 +33,7 @@ def normalize(value=None, *, preset='control', delivery=None):
             or cfg['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions')
             or cfg['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2', 'account-retirement')):
         result['verification']['job_lifecycle'] = bindings.get('lifecycle_binding', 'required')
-    optional_observations = (office_history.FIELD, 'workstation_processes', 'notification_scope', 'notification_detail', 'work_file_index', 'activity_scope', 'library_metadata', 'library_navigation', 'library_guide', 'library_connections', 'preview_records', 'check_summary', 'budget_view')
+    optional_observations = (office_history.FIELD, 'workstation_processes', 'notification_scope', 'notification_detail', 'work_file_index', 'activity_scope', 'library_metadata', 'library_navigation', 'library_guide', 'library_connections', 'preview_records', 'check_summary', 'budget_view', 'retention_consumer_status')
     for field in optional_observations:
         if field in cfg:
             result['observation'][field] = cfg[field]

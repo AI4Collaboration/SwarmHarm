@@ -474,8 +474,10 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
         if mechanism == 'work-lifecycle' and scenario == 'knowledge-work':
             if input_variant != 'knowledge-commitment-schedule-v1':
                 current.add('knowledge_lifecycle_store')
-            if input_variant in ('knowledge-retention-timeline-v1', 'knowledge-retention-timeline-notices-v1'):
+            if input_variant in ('knowledge-retention-timeline-v1', 'knowledge-retention-timeline-notices-v1', 'knowledge-retention-consumers-v1'):
                 current.add('knowledge_retention_timeline')
+            if input_variant == 'knowledge-retention-consumers-v1':
+                current.add('knowledge_retention_consumers')
             if input_variant == 'knowledge-commitment-schedule-v1':
                 current.add('knowledge_commitment_schedule')
         if mechanism == 'work-lifecycle' and scenario == 'data-analysis':

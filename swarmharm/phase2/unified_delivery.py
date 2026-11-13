@@ -129,6 +129,7 @@ CONFIG_SCHEMA = {
         'preview_records': {'enum': ['none', 'selected']},
         'check_summary': {'enum': ['state', 'counts']},
         'budget_view': {'enum': ['current', 'opening_snapshot']},
+        'retention_consumer_status': {'enum': ['visible']},
         'work_file_index': {'enum': ['none', 'paths', 'document_previews', 'text_previews']},
         'activity_scope': {'enum': ['portfolio', 'account']},
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
