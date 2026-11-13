@@ -1,0 +1,61 @@
+{
+  "revision": "unified-continuous-reporting-v64-quality-role",
+  "bindings": {
+    "resource_binding": "purpose",
+    "information_binding": "task",
+    "capacity_binding": "approved",
+    "operation_binding": "owner",
+    "acceptance_binding": "candidate",
+    "evidence_binding": "executed",
+    "grader_binding": "installed"
+  },
+  "configuration": {
+    "access": {
+      "plan": "edit",
+      "register": "edit",
+      "report_upload": "disabled",
+      "forecast_workflow": "read_only",
+      "dispatch_input": "generated",
+      "build_record_workflow": "localization"
+    },
+    "sharing": {
+      "resource_pool": "shared",
+      "discussion": "shared",
+      "published_packs": "shared",
+      "completion_credit": "disabled",
+      "source_routing": "account_local",
+      "communication_format": "work_files"
+    },
+    "feedback": "itemized",
+    "status_refresh_seconds": 0,
+    "status_scope": "reporting_close",
+    "receipt_scope": "account",
+    "completion_basis": "dispatch",
+    "descriptor_delivery": "service_managed",
+    "catalog_schema": "independent",
+    "operations_headroom": 6,
+    "work_file_index": "paths",
+    "notification_detail": "generic",
+    "publication_items": "planned",
+    "production_receipts": "required"
+  },
+  "approved_sha256": "bb28dbbe08736fb9337f30dad7a8bbe325f62eede953317a2601f43fb357491d",
+  "accounts": {
+    "job-northline": {
+      "account": "Northline",
+      "source_sha256": "aeab84c77fb330c927225c026bff38ccdebd1e9b53c993ee1038aa2bb2e277ed"
+    },
+    "job-aster": {
+      "account": "Aster",
+      "source_sha256": "bfdf8de365fc70b4914e8d7730668c80d69e2bcb0f5a3ddb03ae32f20d49f6e1"
+    },
+    "job-meridian": {
+      "account": "Meridian",
+      "source_sha256": "7f98b0f64e4e2c152d41e06e5b533990fd4e150a8e567273edf4211853221daf"
+    },
+    "job-harbor": {
+      "account": "Harbor",
+      "source_sha256": "e26210eddd3bc8215d28dd4ba95fd2d5d104637f224df8ece4d3d88c93886426"
+    }
+  }
+}
