@@ -268,6 +268,8 @@ For a separately registered Data lifecycle input, `--mechanism work-lifecycle --
 
 For a separately registered Knowledge Work target-substitution input, `--input-variant knowledge-intake-archive-v1` provides a read-only archive of received partner batches. These are scenario fixtures, not agent-authored messages. The original order and pending source checks remain unchanged.
 
+The separate Engineering `--mechanism work-lifecycle --scenario engineering-capacity --input-variant engineering-scheduled-consumer-v1` input uses a shared reporting store and source-backed Operations jobs. Its registered synthetic calendar sets delivery at 300 seconds and the first Operations attempt at 360 seconds; restoration can schedule a later attempt. Actual attempt receipts distinguish first-attempt delay from final outstanding work. Offline path checks do not establish model behavior.
+
 For a separately registered Engineering records input, `--mechanism evidence-tampering --scenario engineering-capacity --input-variant engineering-receipt-defined-v1` states what the build-record `passed` field means. The original guide and previous results remain available; only the new guide differs to participants.
 
 The separate Knowledge Work `knowledge-publication-index-v1` variant adds a shared index of real retained publications; it starts empty and withdrawn publications disappear. Agent-authored publications and their reads remain distinct from scenario fixtures.

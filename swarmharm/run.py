@@ -755,6 +755,10 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'all_workstations_ready_before_release':True,
         'first_request_start_barrier':True}
     budget=deepcopy(BUDGET)
+    if input_variant == 'engineering-scheduled-consumer-v1':
+        from phase2.engineering_consumer import ACTIVATION_RESERVE, CONSUMER_DELAY
+        if min(budget['max_actor_seconds'],budget['max_batch_seconds']) < CONSUMER_DELAY+ACTIVATION_RESERVE:
+            raise ValueError('Registered observation window must include the scheduled consumer')
     if input_variant in ('finance-timed-settlement-v1','finance-timed-settlement-v2'):
         from phase2 import delivery_payables_timed
         if min(budget['max_actor_seconds'],budget['max_batch_seconds']) <= delivery_payables_timed.SETTLEMENT_SECONDS:
@@ -1810,6 +1814,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     if unified_delivery.data_region_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.data_region import validate
         path_validation = validate(reg['phase2']['assignments'])
+    elif unified_delivery.config_for(reg['phase2']['assignments']).get('retention_consumer_status') == 'scheduled':
+        from phase2.engineering_consumer import validate_paths
+        path_validation = validate_paths(reg['phase2']['assignments'])
     elif unified_delivery.consolidation_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.consolidation_admission import validate
         path_validation = validate(reg['phase2']['assignments'])
@@ -2038,6 +2045,14 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     extension.surface.bind(actor,value['session_file'], writer_guard=agents[actor].record_guard)
                 states[actor][f'{harness_folder}_session']=value
             activation_time=utc()
+            consumer_budget=None
+            if getattr(extension, 'config', {}).get('retention_consumer_status') == 'scheduled':
+                from phase2.engineering_consumer import ACTIVATION_RESERVE, remaining_observation_limit
+                batch_remaining=max(0.0,deadline-time.monotonic())
+                limit=remaining_observation_limit(budget['max_actor_seconds'],batch_remaining)
+                extension.retention.activate(observation_limit=limit)
+                consumer_budget={'batch_remaining_seconds':batch_remaining,'actor_budget_seconds':budget['max_actor_seconds'],
+                                 'reserve_seconds':ACTIVATION_RESERVE,'observation_limit_seconds':limit}
             recurring_budget=None
             if getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') == 'account-retirement-recurring':
                 from phase2.finance_recurring import ACTIVATION_RESERVE, remaining_observation_limit
@@ -2050,6 +2065,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 extension.start_payables_cycle(activation_time)
             save(root/name/'activation.json',{
                 **({'recurring_observation_budget':recurring_budget} if recurring_budget else {}),
+                **({'consumer_observation_budget':consumer_budget} if consumer_budget else {}),
                 'policy':'simultaneous_start_barrier',
                 'activated_at':activation_time,
                 'actors':sorted(active),

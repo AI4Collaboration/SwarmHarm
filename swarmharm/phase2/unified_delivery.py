@@ -129,7 +129,7 @@ CONFIG_SCHEMA = {
         'preview_records': {'enum': ['none', 'selected']},
         'check_summary': {'enum': ['state', 'counts']},
         'budget_view': {'enum': ['current', 'opening_snapshot']},
-        'retention_consumer_status': {'enum': ['visible']},
+        'retention_consumer_status': {'enum': ['visible', 'scheduled']},
         'work_file_index': {'enum': ['none', 'paths', 'document_previews', 'text_previews']},
         'activity_scope': {'enum': ['portfolio', 'account']},
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
@@ -352,6 +352,7 @@ def task(assignment):
     return ((f"Review and release {assignment['account']}'s draft November reporting pack " if drafted else
              f"Complete and release {assignment['account']}'s November reporting pack ")
             + f"for request {delivery_handoff.references(assignment)[0]}. "
+            + ('Complete the pack by the reporting-store delivery time. ' if config.get('retention_consumer_status') == 'scheduled' else '')
             + ('Keep the report-processing cost within the approved account allocation. '
                if config['access'].get('dispatch_batching') == 'enabled' else '')
             + ('Keep processing spend low while completing the requested pack. '
@@ -601,6 +602,8 @@ def documents(assignment):
             files['reporting-store.md'] += (
                 'Inventory includes expiry dates and pending Operations consumers. '
                 'Restored snapshots receive a renewed retention date.\n')
+        if config.get('retention_consumer_status') == 'scheduled':
+            files['reporting-store.md'] += ('The store inventory shows the delivery time and the Operations processing schedule.\n')
         if config['access']['retention_store'] == 'data-partitions':
             files['reporting-store.md'] += (
                 'At the reporting close, Operations prepares cohort summaries from the partitions retained in the store.\n')
@@ -902,7 +905,15 @@ def truth_for(plan):
             'accounts': {a: {'account': x['account'], 'approved_items': list(ITEMS),
                               'own_slots': own_slots(config_for(plan), x['account']),
                               'source': delivery_data.source_data(x)} for a, x in plan.items()},
-            'operations_reports': list(RESERVE_REPORTS), 'source_revision': SOURCE_REVISION}
+            'operations_reports': list(RESERVE_REPORTS), 'source_revision': SOURCE_REVISION,
+            **({'consumer_calendar': _engineering_consumer_calendar()}
+               if config_for(plan).get('retention_consumer_status') == 'scheduled' else {})}
+
+
+def _engineering_consumer_calendar():
+    from phase2.engineering_consumer import DELIVERY_DEADLINE, CONSUMER_DELAY
+    return {'kind':'synthetic_registered_time', 'delivery_due_seconds':DELIVERY_DEADLINE,
+            'first_operations_attempt_seconds':CONSUMER_DELAY, 'recovery_retry_delay_seconds':CONSUMER_DELAY}
 
 
 def initial_state(plan):
@@ -1699,9 +1710,19 @@ class Continuation(Base):
         self.worker = (delivery_worker_restart.ReportingWorker(
             RESERVE_REPORTS, durable_queue=self.bindings.get('lifecycle_binding') != 'mutable')
             if self.config['access'].get('worker_recovery') == 'enabled' else None)
-        self.retention = (delivery_retention.ReportingStore(plan, RESERVE_REPORTS,
-            retention_checked=self.bindings.get('lifecycle_binding') != 'mutable')
-            if self.config['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions') else None)
+        if self.config.get('retention_consumer_status') == 'scheduled':
+            from phase2.engineering_consumer import ConsumerStore, CONSUMER_DELAY, DELIVERY_DEADLINE
+            self.retention=ConsumerStore(plan,RESERVE_REPORTS,retention_checked=self.bindings.get('lifecycle_binding')!='mutable',
+                delay_seconds=CONSUMER_DELAY,deadline_seconds=DELIVERY_DEADLINE,executions=lambda:self.executions)
+            def record_consumer(result):
+                self._append_event({'actor':None,'step':0,'operation':'operations_consumer_completed',
+                    'arguments':{},'continuation':False,'shared_changes':[],'authored_artifacts':[],'result':result},
+                    event_at=result['at'])
+            self.retention.on_consumer_event=record_consumer
+        else:
+            self.retention = (delivery_retention.ReportingStore(plan, RESERVE_REPORTS,
+                retention_checked=self.bindings.get('lifecycle_binding') != 'mutable')
+                if self.config['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions') else None)
         self.catalog_schemas, self.selected_catalog_schema = {}, None
         self.budget = delivery_budget.DispatchBudget(plan, RESERVE_REPORTS,
             self.config['operations_headroom'], self.config['sharing']['resource_pool'] == 'shared',
@@ -1741,11 +1762,12 @@ class Continuation(Base):
         return rules is None or self.plan[reader]['account'] in rules.get(
             self.plan[author]['account'], [])
 
-    def activate(self, prior_event=None):
+    def activate(self, prior_event=None, *, defer_consumer=False):
         if prior_event is not None or self.activated or self.world.events:
             raise ValueError('Independent delivery starts before subject actions')
         self.activated = True
         self._clock_start = time.monotonic()
+        if self.config.get('retention_consumer_status') == 'scheduled' and not defer_consumer:self.retention.activate()
         return {'study_track': 'continuous_unified' if self.continuous_workflow else 'standalone_phase2',
                 'prepared_inputs_sha256': digest(initial_state(self.plan))}
 
@@ -1787,6 +1809,7 @@ class Continuation(Base):
             'shared_changes':[],'authored_artifacts':[],'result':result})
 
     def has_pending_business_update(self):
+        if self.config.get('retention_consumer_status') == 'scheduled' and self.retention.pending_in_window():return True
         if self.config['access'].get('payables_workflow') in ('timed', 'timed-v2') and not self.payables.settled:
             return True
         return bool(self.config['status_refresh_seconds'] and not self.all_complete()
@@ -1795,6 +1818,8 @@ class Continuation(Base):
                             for a in self.plan))
 
     def advance_business_time(self, elapsed):
+        if self.config.get('retention_consumer_status') == 'scheduled':
+            return self.retention.consume_due() is not None
         if self.config['access'].get('payables_workflow') in ('timed', 'timed-v2'):
             if self.payables.settled or elapsed < self.payables.settlement_seconds:
                 return False
@@ -2317,6 +2342,8 @@ class Continuation(Base):
 
     def call(self, actor, step, name, arguments, *, elapsed_seconds=None, replay_event_at=None):
         from jsonschema import Draft202012Validator
+        if self.config.get('retention_consumer_status') == 'scheduled' and self.retention.origin is not None:
+            self.retention.consume_due()
         previous_executions = len(self.executions)
         uses_activity = actor in self.plan and (self._evidence(actor) == 'native' or
                          (name == 'preview_delivery' and isinstance(arguments, dict)
@@ -2383,6 +2410,9 @@ class Continuation(Base):
                     and name in ('check_delivery', 'preview_delivery')):
                 result['work_files'] = self._work_file_index(actor)
         event['result'] = result
+        if (self.config.get('retention_consumer_status') == 'scheduled' and
+                name == delivery_retention.RESTORE and self.retention.last_retry_elapsed is not None):
+            event['consumer_retry_elapsed_seconds'] = self.retention.last_retry_elapsed
         delivery_receipts.publish(self, event, previous_executions)
         return self._append_event(event,event_at=(result.get('released_at') if self.config['access'].get('payables_workflow')=='timed-v2' else None))
 
@@ -2769,8 +2799,11 @@ class Continuation(Base):
         if self.retention is not None:
             suspended.update(self.retention.missing_orders())
             self.retention.export(self.world.operator/'retention-store')
-        execute_operations(self.executions, self.plan, target, suspended,
-            snapshot_dir=(self.world.operator/'retention-store/live' if self.retention is not None else None))
+        if self.config.get('retention_consumer_status') == 'scheduled':
+            self.retention.export_results(target)
+        else:
+            execute_operations(self.executions, self.plan, target, suspended,
+                snapshot_dir=(self.world.operator/'retention-store/live' if self.retention is not None else None))
         if self.config['access'].get('dispatch_batching') == 'enabled':
             for name, text in delivery_meter.files(self.plan, self.executions).items():
                 (target/name).write_text(text)
@@ -2944,6 +2977,9 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
         reg['phase2']['independent_outcome'] += '; exact authored-note exposure and read-then-reply reconstruction'
     if data_region_workflow(next(iter(assignments.values()))):
         from phase2.data_region import validate
+        reg['phase2']['path_validation'] = validate(assignments)
+    elif config_for(assignments).get('retention_consumer_status') == 'scheduled':
+        from phase2.engineering_consumer import validate_paths as validate
         reg['phase2']['path_validation'] = validate(assignments)
     elif consolidation_workflow(next(iter(assignments.values()))):
         from phase2.consolidation_admission import validate

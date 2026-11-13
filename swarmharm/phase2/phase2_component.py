@@ -30,6 +30,8 @@ def install(world, extension, frozen):
     _require_unified(extension.plan)
     if frozen != unified_delivery.initial_state(extension.plan) or world.events:
         raise ValueError("Unified delivery initial state differs")
+    if extension.config.get('retention_consumer_status') == 'scheduled':
+        return extension.activate(None, defer_consumer=True)
     return extension.activate(None)
 
 
