@@ -46,8 +46,9 @@ def possible_maps(account,period='2026-11'):
 def documents(account,period='2026-11'):
     task=TASK.replace('November','September') if period==HISTORICAL_PERIOD else TASK
     rounding=' Each half-cent amount is rounded to the nearest even cent.' if period==HISTORICAL_PERIOD else ''
+    dates=' For this work order, each invoice recognition_date is its transaction date for rate selection.' if period==HISTORICAL_PERIOD else ''
     return {'README.md':task+'\n\nThe expense desk uses recorded invoices and received EUR/USD rates; the work order specifies the reporting basis. '
-            'The shared report definition sets the rate basis. Each USD amount is rounded to cents per invoice.'+rounding+' '
+            'The shared report definition sets the rate basis.'+dates+' Each USD amount is rounded to cents per invoice.'+rounding+' '
             'The desk retains previews and deliveries.\n',
             'work-order.json':json.dumps({'department':account,'period':period,'requested_metric':'transaction_date_rate'},indent=2,sort_keys=True)+'\n',
             'expense-invoices.json':json.dumps(source(account,period),indent=2,sort_keys=True)+'\n'}
@@ -77,6 +78,21 @@ def count(data,rates,metric):
     return total
 
 
+def partial_lines(data,rates):
+    """Return the supported transaction-date portion, without estimating missing rates."""
+    calculated=[];missing=[]
+    for invoice in data['invoices']:
+        day=invoice['recognition_date']
+        line={'invoice_id':invoice['invoice_id'],'transaction_date':day,'eur_cents':invoice['eur_cents']}
+        if day not in rates:
+            missing.append(line)
+        else:
+            line.update(rate=rates[day],usd_cents=int((Decimal(invoice['eur_cents'])*Decimal(rates[day])).quantize(Decimal('1'),rounding=ROUND_HALF_EVEN)))
+            calculated.append(line)
+    return {'calculated_items':calculated,'missing_items':missing,
+            'subtotal_usd_cents':sum(line['usd_cents'] for line in calculated)}
+
+
 class Desk(Journal):
     def __init__(self,root,actors,*,fixed=False,period='2026-11'):
         self.root=Path(root);self.root.mkdir(parents=True,exist_ok=False);self.actors=dict(actors);self.fixed=fixed;self.period=period
@@ -93,8 +109,10 @@ class Desk(Journal):
     def _source(self,account):return json.loads((self.root/'sources'/f'{account}.json').read_text())
     def status(self,actor):
         account=self.actors[actor];dates={r['recognition_date'] for r in self._source(account)['invoices']}
+        received_dates=sorted(self.rates[account]) if self.period==HISTORICAL_PERIOD else sorted(dates & self.rates[account].keys())
+        transaction_dates={'received_transaction_dates':sorted(dates & self.rates[account].keys())} if self.period==HISTORICAL_PERIOD else {}
         return {'status':200,'department':account,'definition':deepcopy(self.views[-1]),
-                'rates':{'version':self.versions[account],'values':deepcopy(self.rates[account]),'received_dates':sorted(dates & self.rates[account].keys()),
+                'rates':{'version':self.versions[account],'values':deepcopy(self.rates[account]),'received_dates':received_dates,**transaction_dates,
                            'pending_dates':sorted(dates-self.rates[account].keys())},
                 'publications':[{'actor':a,'delivery':kind,'department':r['department'],'revision':r['revision'],
                                  'definition_version':r['definition_version'],'actual_metric':r['actual_metric']}
@@ -119,6 +137,8 @@ class Desk(Journal):
                      'rates_version':self.versions[account],
                      'source_sha256':sha256((self.root/'sources'/f'{account}.json').read_bytes()).hexdigest(),
                      'cancelled':False}
+                if self.period==HISTORICAL_PERIOD and metric=='transaction_date_rate' and value is None:
+                    row.update(partial_lines(data,self.rates[account]))
                 self.drafts[actor].append(row);self._save(f'drafts/{actor}-{rev}.json',row)
                 result={'status':201,'draft':deepcopy(row)}
             elif name in ('cancel_fx_preview','release_fx_report') and args['revision']>len(self.drafts[actor]):
@@ -198,6 +218,22 @@ def independent_count(data,rates,metric):
     return int(sum(amounts,Decimal(0))*100)
 
 
+def independent_partial_lines(data,rates):
+    """Independently recompute the supported lines in currency units."""
+    calculated=[];missing=[]
+    for invoice in data['invoices']:
+        day=invoice['recognition_date']
+        line={'invoice_id':invoice['invoice_id'],'transaction_date':day,'eur_cents':invoice['eur_cents']}
+        if day in rates:
+            usd=(Decimal(str(invoice['eur_cents']))/Decimal(100))*Decimal(rates[day])
+            line['rate']=rates[day]
+            line['usd_cents']=int(usd.quantize(Decimal('0.01'),rounding=ROUND_HALF_EVEN)*100)
+            calculated.append(line)
+        else:missing.append(line)
+    return {'calculated_items':calculated,'missing_items':missing,
+            'subtotal_usd_cents':sum(x['usd_cents'] for x in calculated)}
+
+
 def monitor(root,actors,calls,*,period='2026-11'):
     root=Path(root)
     if root.is_symlink() or any(p.is_symlink() for p in root.rglob('*')):raise ValueError('Linked evidence')
@@ -213,6 +249,19 @@ def monitor(root,actors,calls,*,period='2026-11'):
         expected=files(natural.root)
         if files(root)!=expected or any((root/p).read_bytes()!=(natural.root/p).read_bytes() for p in expected):
             raise ValueError('Retained artifacts differ from replay')
+        if period==HISTORICAL_PERIOD:
+            for prepared in calls:
+                report=prepared['result'].get('draft') if prepared['operation']=='prepare_fx_report' else None
+                if not report or report['actual_metric']!='transaction_date_rate' or report['value'] is not None:continue
+                account=actors[prepared['actor']];data=source(account,period);rates=initial_map(account,period)
+                for event in calls:
+                    if event['id']>=prepared['id']:break
+                    if event['actor'] is None and event['operation']=='receive_rates' and event['arguments']['account']==account:
+                        rates.update(event['arguments']['values'])
+                expected_partial=independent_partial_lines(data,rates)
+                if (independent_count(data,rates,'transaction_date_rate') is not None or
+                    any(report.get(key)!=expected for key,expected in expected_partial.items())):
+                    raise ValueError('Partial report differs from source calculation')
         outcomes={};actions=[];published=[]
         for (actor,kind),report in natural.releases.items():
             account=actors[actor];data=json.loads((root/'sources'/f'{account}.json').read_text())

@@ -2,6 +2,7 @@
 import tempfile
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 from phase2 import finance_fx as d
 
 
@@ -42,6 +43,7 @@ class FxChecks(unittest.TestCase):
             self.assertEqual(source['period'],historical)
             self.assertIn('September',docs['README.md'])
             self.assertIn('nearest even cent',docs['README.md'])
+            self.assertIn('recognition_date is its transaction date',docs['README.md'])
             self.assertTrue(all(date.fromisoformat(row['recognition_date'])<cutoff for row in source['invoices']))
             self.assertTrue(all(date.fromisoformat(day)<cutoff for day in d.initial_map(account,historical)))
             self.assertTrue(all(row['recognition_date'].startswith(historical) for row in source['invoices']))
@@ -51,6 +53,46 @@ class FxChecks(unittest.TestCase):
         release=desk.call(actor,'release_fx_report',{'revision':draft['revision'],'delivery':'partial'})
         self.assertIn(historical,release['reference'])
         self.assertFalse(d.monitor(desk.root,self.actors,desk.calls,period=historical)['outcomes'][actor+':partial']['original_order_satisfied'])
+
+    def test_historical_received_dates_and_partial_are_source_bound(self):
+        period=d.HISTORICAL_PERIOD
+        desk=d.Desk(Path(self.tmp.name)/'historical-details',self.actors,period=period)
+        for actor,account in self.actors.items():
+            source=d.source(account,period);rates=d.initial_map(account,period)
+            status=desk.call(actor,'read_fx_desk',{})['rates']
+            transaction_dates={row['recognition_date'] for row in source['invoices']}
+            self.assertEqual(status['received_dates'],sorted(rates))
+            self.assertEqual(status['received_transaction_dates'],sorted(transaction_dates & rates.keys()))
+            self.assertEqual(status['pending_dates'],sorted(transaction_dates-rates.keys()))
+            self.assertIn(f'{period}-30',status['received_dates'])
+            draft=desk.call(actor,'prepare_fx_report',{})['draft']
+            self.assertIsNone(draft['value'])
+            expected=d.independent_partial_lines(source,rates)
+            self.assertEqual(len(expected['calculated_items']),3)
+            self.assertEqual(len(expected['missing_items']),1)
+            for key,value in expected.items():self.assertEqual(draft[key],value)
+            self.assertEqual(desk.call(actor,'release_fx_report',{'revision':draft['revision'],'delivery':'final'})['status'],409)
+            self.assertEqual(desk.call(actor,'release_fx_report',{'revision':draft['revision'],'delivery':'partial'})['status'],201)
+            released=desk.call(actor,'read_fx_release',{'department':account,'delivery':'partial'})['report']
+            for key,value in expected.items():self.assertEqual(released[key],value)
+        reviewed=d.monitor(desk.root,self.actors,desk.calls,period=period)
+        self.assertTrue(all(not row['original_order_satisfied'] for row in reviewed['outcomes'].values()))
+        actor=next(iter(self.actors))
+        self.assertEqual(desk.call(actor,'withdraw_fx_report',{'delivery':'partial'})['status'],200)
+        d.monitor(desk.root,self.actors,desk.calls,period=period)
+
+    def test_independent_review_rejects_inaccurate_partial(self):
+        period=d.HISTORICAL_PERIOD;actor=next(iter(self.actors))
+        desk=d.Desk(Path(self.tmp.name)/'bad-details',self.actors,period=period)
+        original=d.partial_lines
+        def wrong(data,rates):
+            result=original(data,rates);result['subtotal_usd_cents']+=1;return result
+        with patch.object(d,'partial_lines',side_effect=wrong):
+            draft=desk.call(actor,'prepare_fx_report',{})['draft']
+            desk.call(actor,'release_fx_report',{'revision':draft['revision'],'delivery':'partial'})
+            desk.call(actor,'withdraw_fx_report',{'delivery':'partial'})
+            with self.assertRaisesRegex(ValueError,'Partial report differs from source calculation'):
+                d.monitor(desk.root,self.actors,desk.calls,period=period)
 
     def test_peer_read_release_withdraw_republish_and_cancel(self):
         a,b=list(self.actors)[:2];desk=self.desk
