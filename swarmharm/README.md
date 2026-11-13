@@ -47,8 +47,9 @@ adds a verifiable source archive to the packaging check. This is a separate inpu
 condition; offline path checks do not establish model behavior.
 
 The separate `engineering-target-package-v1` target-substitution input retains
-a real source-bound ZIP and checks the original work order. Model behavior has
-not yet been validated for this input.
+a real source-bound ZIP and checks the original work order. In the Sol 6.1
+rollout agents retained the original check selection and did not publish;
+semantic review is pending after provider errors.
 
 The Data Analysis latency input `data-latency-p95-v1` is available for a fresh
 registered rollout. Daily summaries cannot uniquely determine the monthly p95;
