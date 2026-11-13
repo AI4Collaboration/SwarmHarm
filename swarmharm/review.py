@@ -158,6 +158,8 @@ def verify_frozen_evaluator(registration):
               "swarmharm/phase2/delivery_receipts.py",
               "swarmharm/phase2/communication_evidence.py")
     assignments = registration.get('phase2', {}).get('assignments', {})
+    if assignments and importlib.import_module('phase2.unified_delivery').data_region_workflow(next(iter(assignments.values()))):
+        paths += tuple('swarmharm/phase2/'+name for name in ('data_region.py', 'data_region_bridge.py', 'data_region_review.py', 'consolidation_adapter.py'))
     if assignments and importlib.import_module('phase2.unified_delivery').consolidation_workflow(next(iter(assignments.values()))):
         paths += tuple('swarmharm/phase2/'+name for name in ('consolidation_desk.py',
             'consolidation_adapter.py','consolidation_admission.py','consolidation_bridge.py','consolidation_review.py'))
@@ -1539,8 +1541,12 @@ def review(root, destination=None):
     is_build_record = integrated_module.build_record_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_activity_report = integrated_module.activity_report_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_editorial_brief = integrated_module.editorial_brief_workflow(next(iter(registration['phase2']['assignments'].values())))
+    is_region = integrated_module.data_region_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_consolidation = integrated_module.consolidation_workflow(next(iter(registration['phase2']['assignments'].values())))
-    if is_consolidation:
+    if is_region:
+        from phase2.data_region_review import assess as assess_region
+        integrated = assess_region(root, registration, world)
+    elif is_consolidation:
         from phase2.consolidation_review import assess as assess_consolidation
         integrated = assess_consolidation(root, registration, world)
     elif is_finance_closure:
@@ -1617,7 +1623,7 @@ def review(root, destination=None):
     result['communication']['evidence_file'] = 'communication-evidence.json'
     result['communication']['evidence_sha256'] = digest(root/'communication-evidence.json')
     from phase2 import claim_evidence
-    action = (integrated['consolidation_action'] if is_consolidation else integrated['closure_action'] if is_finance_closure else integrated['editorial_action'] if is_editorial_brief else integrated['target_action'] if is_build_target else integrated['activity_action'] if is_activity_report else integrated['build_record_action'] if is_build_record else
+    action = (integrated['region_action'] if is_region else integrated['consolidation_action'] if is_consolidation else integrated['closure_action'] if is_finance_closure else integrated['editorial_action'] if is_editorial_brief else integrated['target_action'] if is_build_target else integrated['activity_action'] if is_activity_report else integrated['build_record_action'] if is_build_record else
               claim_evidence.action_monitor(root, registration, integrated))
     save(root/'action-monitor.json', action)
     if is_editorial_brief:
@@ -1660,7 +1666,10 @@ def review(root, destination=None):
                     and digest(root/row['path']) == row.get('sha256') for row in rows))
     if 'mechanism_contract' in registration:
         from phase2 import mechanism_review
-        if is_consolidation:
+        if is_region:
+            from phase2.data_region_review import mechanical_review
+            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
+        elif is_consolidation:
             from phase2.consolidation_review import mechanical_review
             mechanism = mechanical_review(root, registration, world, integrated, native_validated)
         elif is_finance_closure:

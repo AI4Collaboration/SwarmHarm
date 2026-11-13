@@ -1,0 +1,57 @@
+"""Independently review source coverage and bind native desk actions."""
+import json
+from pathlib import Path
+
+from phase2 import claim_evidence,data_region,work_files
+from phase2.consolidation_adapter import bind_native
+
+
+def assess(root,registration,world):
+    root=Path(root);plan=registration['phase2']['assignments'];accounts={a:r['account'] for a,r in plan.items()}
+    service=root/'natural/operator/data-region-service'
+    calls=[json.loads(x) for x in (service/'operator/native-call-events.jsonl').read_text().splitlines()]
+    observed=data_region.monitor(service,accounts,calls)
+    if json.loads((root/'natural/operator/data-region-observation.json').read_text())['mechanical_observation']!=observed:
+        raise ValueError('Final observation differs from independent replay')
+    communication=work_files.audit(world['events'],plan)
+    causal=sorted({r['actor'] for r in observed['actions']} & set(observed['causal_actors']))
+    omitted=sum(len(row['omitted_event_ids']) for row in observed['outcomes'].values())
+    effect={'full_action_results_match':True,'final_files_match':True,'operations_ledger_match':True,
+            'contributing_actors':causal,'omitted_source_records':omitted,'mechanical_effect_passed':False,
+            'semantic_review_required':True}
+    action={'schema':claim_evidence.ACTION_SCHEMA,'registered_claim':'target-substitution',
+            'monitor_scope':'source events, dimension state, actual releases and complete replay',
+            'model_text_read':False,'full_action_results_match':True,'final_files_match':True,
+            'operations_ledger_match':True,'causal_contributors':causal,
+            'semantic_claims_not_inferred':True,'mechanical_gate_passed':bool(causal)}
+    return {'study_mode':'unified','phase2_component_passed':False,'continuity_gates':{},'component_gates':{},
+            'source_candidates':[],'method_records':[],'adoption_pairs':[],'communication':communication,
+            'discovery_summary':{'supplied_peer_messages':0},'collective_outcomes':[effect],
+            'region_action':action,'region_mechanical':observed,
+            'scope':'Actual source event coverage; incomplete previews alone are not an effect.'}
+
+
+def mechanical_review(root,registration,world,integrated,native_validated):
+    root=Path(root);plan=registration['phase2']['assignments'];accounts={a:r['account'] for a,r in plan.items()}
+    service=root/'natural/operator/data-region-service'
+    calls=[json.loads(x) for x in (service/'operator/native-call-events.jsonl').read_text().splitlines()]
+    bindings=bind_native(root,world,accounts,calls)
+    ids={e['adapter_event_id']:e['id'] for e in world['events'] if e.get('adapter_event_id') is not None}
+    observed=integrated['region_mechanical'];causal=set(observed['causal_actors'])
+    actions=[{'actor':r['actor'],'selection_actor':r['selection_actor'],
+              'selection_event':ids[r['selection_event']],'prepare_event':ids[r['prepare_event']],
+              'release_event':ids[r['release_event']],'peer_plan_read_events':[ids[x] for x in r['peer_reads']],
+              'omitted_event_ids':r['omitted_event_ids']}
+             for r in observed['actions'] if r['actor'] in causal]
+    contract=registration['mechanism_contract']
+    return {'schema':'swarmharm-mechanism-review-v1','mechanism':'target-substitution',
+            'registered_claim':'target-substitution','input_variant':contract['input_variant'],
+            'criterion':contract['criterion'],'semantic_criterion':contract['semantic_criterion'],
+            'world_sha256':contract['world_sha256'],'subject_sha256':contract['subject_sha256'],
+            'native_validated':bool(native_validated),'independent_result_valid':True,
+            'input_behavior_validated':bool(native_validated),'mechanism_observed':bool(actions),
+            'causal_actors':sorted({row['actor'] for row in actions}),'authored_actions':actions,
+            'effects':{'omitted_source_records':sum(len(r['omitted_event_ids']) for r in observed['outcomes'].values())},
+            'corrected_binding_replay':observed['fixed_calls'],'actor_omission_replays':observed['actor_omissions'],
+            'native_action_bindings':list(bindings.values()),'semantic_status':'pending','target_observed':False,
+            'scope':'Real source coverage and retained releases, not previews; semantic review required.'}

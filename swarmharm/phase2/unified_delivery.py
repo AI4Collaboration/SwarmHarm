@@ -81,7 +81,7 @@ CONFIG_SCHEMA = {
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions']},
             'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging']},
-            'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor']},
+            'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor', 'region-dimension']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation']},
             'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring']},
@@ -223,6 +223,10 @@ def build_record_workflow(assignment):
     return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging')
 
 
+def data_region_workflow(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') == 'region-dimension'
+
+
 def activity_report_workflow(assignment):
     return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') in ('enabled','progressive','progressive-varied','progressive-varied-context','progressive-varied-context-dictionary','progressive-metered','progressive-manifest','progressive-manifest-shared','progressive-manifest-shared-editor')
 
@@ -315,6 +319,9 @@ def world_for(plan):
 
 
 def task(assignment):
+    if data_region_workflow(assignment):
+        from phase2.data_region import TASK
+        return TASK
     if consolidation_workflow(assignment):
         from phase2.consolidation_desk import files_for
         return files_for(assignment['account'])['README.md'].strip()
@@ -402,6 +409,9 @@ def communication_start(plan):
 
 
 def documents(assignment):
+    if data_region_workflow(assignment):
+        from phase2.data_region import documents as region_documents
+        return region_documents(assignment['account'])
     if consolidation_workflow(assignment):
         from phase2.consolidation_desk import files_for
         return files_for(assignment['account'])
@@ -811,6 +821,13 @@ def shared_directories(plan):
 
 
 def truth_for(plan):
+    if data_region_workflow(next(iter(plan.values()))):
+        from hashlib import sha256
+        from phase2.data_region import PERIOD, INITIAL_DIMENSION, source_csv, digest as region_digest
+        return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
+            'dimension_sha256':region_digest(INITIAL_DIMENSION),
+            'accounts':{actor:{'account':row['account'],'period':PERIOD,
+                'source_sha256':sha256(source_csv(row['account']).encode()).hexdigest()} for actor,row in plan.items()}}
     if consolidation_workflow(next(iter(plan.values()))):
         from phase2.consolidation_desk import GROUP, PERIOD, initial_sources, metric_for
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
@@ -890,6 +907,13 @@ def truth_for(plan):
 
 
 def initial_state(plan):
+    if data_region_workflow(next(iter(plan.values()))):
+        return {'origin':'prepared_business_records','study_track':'continuous_unified',
+            'assignments':deepcopy(plan),'files_sha256':digest(initial_files(plan)),
+            'communication_start':communication_start(plan),'shared_directories':shared_directories(plan),
+            'supplied_business_records':{'regional_sources':{'origin':'synthetic events and dimension',
+                'visibility':'own events and shared reporting dimension','behavioral_evidence':False}},
+            'supplied_peer_messages':[],'supplied_methods':[]}
     if consolidation_workflow(next(iter(plan.values()))):
         return {'origin':'prepared_business_records','study_track':'continuous_unified',
             'assignments':deepcopy(plan),'files_sha256':digest(initial_files(plan)),
@@ -981,11 +1005,14 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      retention_store='disabled',
                      report_upload='enabled', publication_items='available',
                      build_record_workflow=False, build_target_workflow=False, build_target_clarify_selection=False, build_target_product=False, reconciliation_workflow='disabled',
-                     activity_report_workflow=False, activity_shared_template=False, payables_workflow='disabled', editorial_brief_workflow=False,
+                     activity_report_workflow=False, activity_shared_template=False, data_region_workflow=False, payables_workflow='disabled', editorial_brief_workflow=False,
                      editorial_intake_archive=False, editorial_publication_index=False, editorial_review_queue=False, **kwargs):
     if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation'),
-            bool(activity_report_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring'), bool(editorial_brief_workflow))) > 1:
+            bool(activity_report_workflow), bool(data_region_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring'), bool(editorial_brief_workflow))) > 1:
         raise ValueError('Choose one business workflow')
+    if data_region_workflow:
+        from phase2.data_region import definitions
+        return definitions()
     if editorial_brief_workflow:
         from phase2.editorial_brief.bridge import tools as editorial_tools
         return editorial_tools(intake_archive=editorial_intake_archive,publication_index=editorial_publication_index,review_queue=editorial_review_queue)
@@ -2916,7 +2943,10 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             reg['phase2']['communication_condition'] = 'ordinary_work_files'
             reg['input_contract']['supplied_message_schema'] = False
         reg['phase2']['independent_outcome'] += '; exact authored-note exposure and read-then-reply reconstruction'
-    if consolidation_workflow(next(iter(assignments.values()))):
+    if data_region_workflow(next(iter(assignments.values()))):
+        from phase2.data_region import validate
+        reg['phase2']['path_validation'] = validate(assignments)
+    elif consolidation_workflow(next(iter(assignments.values()))):
         from phase2.consolidation_admission import validate
         reg['phase2']['path_validation'] = validate(assignments)
     elif finance_closure_workflow(next(iter(assignments.values()))):

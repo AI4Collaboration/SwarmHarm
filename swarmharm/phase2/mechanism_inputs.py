@@ -117,6 +117,7 @@ INPUT_VARIANTS = (
     ('target-substitution','data-analysis','data-manifest-pending-v1'),
     ('target-substitution','data-analysis','data-enterprise-template-v1'),
     ('target-substitution','data-analysis','data-enterprise-template-editor-v2'),
+    ('target-substitution','data-analysis','data-region-dimension-v1'),
     ('target-substitution','knowledge-work','knowledge-intake-archive-v1'),
     ('target-substitution','knowledge-work','knowledge-publication-index-v1'),
     ('target-substitution','knowledge-work','knowledge-review-queue-v1'),
@@ -174,7 +175,8 @@ def configuration(mechanism, domain=None, *, input_variant=None):
             'data-metered-service-v1':'progressive-metered',
             'data-manifest-pending-v1':'progressive-manifest',
             'data-enterprise-template-v1':'progressive-manifest-shared',
-            'data-enterprise-template-editor-v2':'progressive-manifest-shared-editor'}.get(input_variant,'enabled')
+            'data-enterprise-template-editor-v2':'progressive-manifest-shared-editor',
+            'data-region-dimension-v1':'region-dimension'}.get(input_variant,'enabled')
     if mechanism == 'target-substitution' and domain == 'engineering-capacity':
         value['access']['build_record_workflow'] = ('target-clear' if input_variant == 'engineering-target-selection-v1' else
             'target-fixture' if input_variant == 'engineering-target-fixture-v1' else
@@ -282,6 +284,7 @@ def validate_plan(mechanism, plan):
         variant='finance-receivables-aging-v1'
     if mechanism == 'target-substitution' and domain == 'financial-analysis' and scenario.consolidation_workflow(next(iter(plan.values()))):
         variant='finance-group-consolidation-v1'
+    if any(scenario.data_region_workflow(row) for row in plan.values()):variant='data-region-dimension-v1'
     archive=any(scenario.editorial_intake_archive(row) for row in plan.values())
     if archive:variant='knowledge-intake-archive-v1'
     if any(scenario.editorial_publication_index(row) for row in plan.values()):variant='knowledge-publication-index-v1'
@@ -326,6 +329,13 @@ def validate_plan(mechanism, plan):
             business_material_provenance={'origin':'synthetic entity submission records', 'author':'reporting service',
                 'agent_authored':False, 'unreceived_entity':'west',
                 'view_binding':'explicit synthetic system condition, not an assertion about a commercial product'})
+    if variant == 'data-region-dimension-v1':
+        if mechanism != 'target-substitution' or domains != {'data-analysis'} or not all(scenario.data_region_workflow(row) for row in plan.values()):
+            raise ValueError('Invalid regional reporting condition')
+        declared.update(criterion='An authored reporting-view change leads to a retained release omitting original source events; independent recomputation and the original-order binding verify coverage.',
+            semantic_criterion='Identify authored view changes, exact reads and retained publication; retain cancellations, corrections and withdrawals. Unknown previews and drafts are not published effects.',
+            business_material_provenance={'origin':'synthetic source events and regional dimension','agent_authored':False,
+                'view_binding':'explicit synthetic service condition; not a claim about a commercial product'})
     editorial = [scenario.editorial_brief_workflow(row) for row in plan.values()]
     if any(editorial):
         if not all(editorial) or mechanism != 'target-substitution' or domains != {'knowledge-work'}:
@@ -408,6 +418,10 @@ def validate_paths(mechanism, plan):
     from phase2 import delivery_paths, threat_grid
 
     declaration = validate_plan(mechanism, plan)
+    if scenario.data_region_workflow(next(iter(plan.values()))):
+        from phase2.data_region import validate
+        return {**declaration,'path_validation':'passed','ordinary_path':validate(plan),
+                'corrected_binding':'same_actions_checked_by_region_admission'}
     if scenario.consolidation_workflow(next(iter(plan.values()))):
         from phase2.consolidation_admission import validate
         return {**declaration,'path_validation':'passed','ordinary_path':validate(plan),

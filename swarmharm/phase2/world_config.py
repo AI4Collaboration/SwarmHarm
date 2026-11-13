@@ -161,6 +161,7 @@ def subject_inputs(plan):
                 build_target_clarify_selection=scenario.build_target_clarify_selection(next(iter(plan.values()))),
                 build_target_product=scenario.build_target_product(next(iter(plan.values()))),
                 activity_report_workflow=scenario.activity_report_workflow(next(iter(plan.values()))),
+                data_region_workflow=scenario.data_region_workflow(next(iter(plan.values()))),
                 activity_shared_template=scenario.activity_report_progressive(next(iter(plan.values()))) in ('manifest-shared','manifest-shared-editor'),
                 editorial_brief_workflow=scenario.editorial_brief_workflow(next(iter(plan.values()))),
                 editorial_intake_archive=scenario.editorial_intake_archive(next(iter(plan.values()))),
@@ -180,7 +181,7 @@ def subject_inputs(plan):
                 reconciliation_workflow=config['access'].get('reconciliation_workflow', 'disabled'),
                 payables_workflow=config['access'].get('payables_workflow', 'disabled')),
             'initial_files': scenario.initial_files(plan),
-            'business_data': (scenario.truth_for(plan)['accounts'] if scenario.consolidation_workflow(next(iter(plan.values()))) else
+            'business_data': (scenario.truth_for(plan)['accounts'] if (scenario.consolidation_workflow(next(iter(plan.values()))) or scenario.data_region_workflow(next(iter(plan.values())))) else
                 scenario.truth_for(plan)['accounts'] if config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring') else
                 {actor: {'request_id':scenario.delivery_reconciliation.REQUESTS[row['account']],
                  'approved_period':scenario.delivery_reconciliation.APPROVED,

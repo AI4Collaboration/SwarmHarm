@@ -436,6 +436,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                         'engineering_target_desk' if scenario == 'engineering-capacity' else
                         'reconciliation_candidate' if scenario == 'financial-analysis' else
                         'activity_report_path' if scenario == 'data-analysis' else 'target_group')
+            if input_variant == 'data-region-dimension-v1':
+                current.update(('data_region', 'data_region_collector'))
             if scenario == 'financial-analysis':
                 current.update(('reconciliation_transport', 'reconciliation_exception_context'))
                 if input_variant == 'finance-group-consolidation-v1':
@@ -858,6 +860,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'build_target_clarify_selection': unified_delivery.build_target_clarify_selection(phase2_plan[actor]),
                 'build_target_product': unified_delivery.build_target_product(phase2_plan[actor]),
                 'activity_report_workflow': unified_delivery.activity_report_workflow(phase2_plan[actor]),
+                'data_region_workflow': unified_delivery.data_region_workflow(phase2_plan[actor]),
                 'activity_shared_template': unified_delivery.activity_report_progressive(phase2_plan[actor]) in ('manifest-shared','manifest-shared-editor'),
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(phase2_plan[actor]),
                 'editorial_intake_archive': unified_delivery.editorial_intake_archive(phase2_plan[actor]),
@@ -1804,7 +1807,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     unified_delivery.world_config.verify_input_contract(
         reg['phase2']['assignments'], reg['phase2'].get('unified_input_contract'))
     from phase2 import delivery_paths
-    if unified_delivery.consolidation_workflow(next(iter(reg['phase2']['assignments'].values()))):
+    if unified_delivery.data_region_workflow(next(iter(reg['phase2']['assignments'].values()))):
+        from phase2.data_region import validate
+        path_validation = validate(reg['phase2']['assignments'])
+    elif unified_delivery.consolidation_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.consolidation_admission import validate
         path_validation = validate(reg['phase2']['assignments'])
     elif unified_delivery.finance_closure_workflow(next(iter(reg['phase2']['assignments'].values()))):
@@ -1905,7 +1911,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     def phase(name):
         plan=reg['plan'][name];world=lab.World(plan,root/name/'operator',reg.get('topology'));states={};histories={};starts={}
         extension_plan=load(root/'phase2-plan.json')
-        if unified_delivery.consolidation_workflow(next(iter(extension_plan.values()))):
+        if unified_delivery.data_region_workflow(next(iter(extension_plan.values()))):
+            from phase2.data_region_bridge import RegionBridge
+            extension=RegionBridge.from_plan(world,extension_plan,reg['component_initial_state'])
+        elif unified_delivery.consolidation_workflow(next(iter(extension_plan.values()))):
             from phase2.consolidation_bridge import ConsolidationBridge
             extension=ConsolidationBridge.from_plan(world,extension_plan,reg['component_initial_state'])
         elif unified_delivery.finance_closure_workflow(next(iter(extension_plan.values()))):
@@ -1939,6 +1948,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'build_target_clarify_selection': unified_delivery.build_target_clarify_selection(next(iter(extension.plan.values()))),
                 'build_target_product': unified_delivery.build_target_product(next(iter(extension.plan.values()))),
                 'activity_report_workflow': unified_delivery.activity_report_workflow(next(iter(extension.plan.values()))),
+                'data_region_workflow': unified_delivery.data_region_workflow(next(iter(extension.plan.values()))),
                 'activity_shared_template': unified_delivery.activity_report_progressive(next(iter(extension.plan.values()))) in ('manifest-shared','manifest-shared-editor'),
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(next(iter(extension.plan.values()))),
                 'editorial_intake_archive': unified_delivery.editorial_intake_archive(next(iter(extension.plan.values()))),
