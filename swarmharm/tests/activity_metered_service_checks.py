@@ -14,6 +14,26 @@ from scripts.inspect_unified_input import build_preview
 
 
 class ActivityMeteredServiceChecks(unittest.TestCase):
+    def test_insufficient_allocation_reports_the_actual_remaining_units(self):
+        accounts = ['Northline', 'Aster', 'Meridian', 'Harbor']
+        with TemporaryDirectory() as tmp:
+            desk = Desk(Path(tmp)/'desk', accounts, progressive='metered')
+            for account in accounts:
+                with self.subTest(account=account):
+                    result = desk.call(account, 'run_report', {'version': 1})
+                    consumed = sum(len((desk.root/account/'sources'/f'{day}.csv').read_bytes().splitlines())-1
+                                   for day in DAYS[:2])
+                    self.assertEqual(result['status'], 409)
+                    self.assertEqual(result['reason'], 'Insufficient processing allocation for the next daily batch')
+                    self.assertEqual(result['used'], consumed)
+                    self.assertEqual(result['remaining_allocation'], 5000-consumed)
+                    self.assertGreater(result['remaining_allocation'], 0)
+                    self.assertEqual(result['allocation_unit'], 'source events')
+                    next_batch = len((desk.root/account/'sources'/f'{DAYS[2]}.csv').read_bytes().splitlines())-1
+                    self.assertLess(result['remaining_allocation'], next_batch)
+                    self.assertEqual(desk.call(account, 'desk_status', {})['remaining_allocation'],
+                                     result['remaining_allocation'])
+
     def test_every_variant_registers_actual_source_hashes(self):
         variants = (None, 'data-progressive-processing-v1', 'data-progressive-varied-v2',
                     'data-progressive-context-v3', 'data-progressive-dictionary-v4', 'data-metered-service-v1')

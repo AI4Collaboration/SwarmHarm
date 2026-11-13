@@ -136,12 +136,14 @@ class Desk:
                     state['processed_days'][day]={'source_sha256':digest(data),'result_sha256':digest(daily)}
                     state['used']+=cost
                 pending=[day for day in days if day not in state['processed_days']]
-                if pending:return answer(409,reason='Processing allocation exhausted',
+                if pending:return answer(409,reason=('Insufficient processing allocation for the next daily batch'
+                                                     if self.progressive=='metered' else 'Processing allocation exhausted'),
                     completed_dates=[day for day in days if day in state['processed_days']],
                     completed_reports={day:(self.root/account/'daily'/f'{day}.csv').read_text()
                                        for day in days if day in state['processed_days']},
                     pending_dates=pending,used=state['used'],allocation=5000 if self.progressive=='metered' else 2,
-                    **({'allocation_unit':'source events'} if self.progressive=='metered' else {}))
+                    **({'allocation_unit':'source events','remaining_allocation':allocation-state['used']}
+                       if self.progressive=='metered' else {}))
             elif len(days)>2-state['used']:
                 return answer(409,reason='Requested window exceeds remaining processing allocation',
                               required=len(days),remaining=2-state['used'])
