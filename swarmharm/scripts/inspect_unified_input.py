@@ -100,7 +100,7 @@ def main(argv=None):
                         help='Export archived grid inputs; no registration, checks or model calls')
     parser.add_argument('--mechanism', choices=(*mechanism_inputs.MECHANISMS, 'all', 'implemented'),
                         help='Export declared mechanism inputs; all requires every binding to be implemented')
-    parser.add_argument('--input-variant', choices=('knowledge-retention-timeline-v1','knowledge-retention-timeline-notices-v1','finance-category-template-v1','finance-exception-context-v1','finance-timed-settlement-v2','finance-timed-settlement-v1','data-worker-recovery-v1','data-progressive-processing-v1','data-progressive-varied-v2','data-progressive-context-v3','data-progressive-dictionary-v4','data-metered-service-v1','data-manifest-pending-v1','knowledge-intake-archive-v1','knowledge-publication-index-v1','knowledge-review-queue-v1','knowledge-review-context-v2','engineering-receipt-defined-v1','engineering-receipt-visible-v2','engineering-target-selection-v1'),
+    parser.add_argument('--input-variant', choices=mechanism_inputs.INPUT_VARIANT_NAMES,
                         help='Export a separately registered mechanism input variant')
     parser.add_argument('--world-config', type=Path)
     parser.add_argument('--combined-bindings', action='store_true')
@@ -110,27 +110,7 @@ def main(argv=None):
                         help='New directory for the operator preview, not a registration')
     args = parser.parse_args(argv)
     try:
-        if args.input_variant and (args.mechanism,args.scenario,args.input_variant) not in (
-                ('work-lifecycle','data-analysis','data-worker-recovery-v1'),
-                ('work-lifecycle','knowledge-work','knowledge-retention-timeline-v1'),
-                ('work-lifecycle','knowledge-work','knowledge-retention-timeline-notices-v1'),
-                ('target-substitution','financial-analysis','finance-exception-context-v1'),
-                ('target-substitution','financial-analysis','finance-category-template-v1'),
-                ('target-substitution','data-analysis','data-progressive-processing-v1'),
-                ('target-substitution','data-analysis','data-progressive-varied-v2'),
-                ('target-substitution','data-analysis','data-progressive-context-v3'),
-                ('target-substitution','data-analysis','data-progressive-dictionary-v4'),
-                ('target-substitution','data-analysis','data-metered-service-v1'),
-                ('target-substitution','data-analysis','data-manifest-pending-v1'),
-                ('work-lifecycle','financial-analysis','finance-timed-settlement-v1'),
-                ('work-lifecycle','financial-analysis','finance-timed-settlement-v2'),
-                ('evidence-tampering','engineering-capacity','engineering-receipt-defined-v1'),
-                ('evidence-tampering','engineering-capacity','engineering-receipt-visible-v2'),
-                ('target-substitution','knowledge-work','knowledge-intake-archive-v1'),
-                ('target-substitution','knowledge-work','knowledge-publication-index-v1'),
-                ('target-substitution','knowledge-work','knowledge-review-queue-v1'),
-                ('target-substitution','knowledge-work','knowledge-review-context-v2'),
-                ('target-substitution','engineering-capacity','engineering-target-selection-v1')):
+        if args.input_variant and (args.mechanism,args.scenario,args.input_variant) not in mechanism_inputs.INPUT_VARIANTS:
             raise ValueError('--input-variant does not match the mechanism and scenario')
         if args.mechanism:
             if args.threat_cell or args.world_config or args.binding_preset or args.combined_bindings:

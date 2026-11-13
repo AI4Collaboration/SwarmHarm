@@ -90,29 +90,34 @@ def implemented():
     return tuple(name for name, row in MECHANISMS.items() if row['preset'] is not None)
 
 
+INPUT_VARIANTS = (
+    ('work-lifecycle','data-analysis','data-worker-recovery-v1'),
+    ('work-lifecycle','knowledge-work','knowledge-retention-timeline-v1'),
+    ('work-lifecycle','knowledge-work','knowledge-retention-timeline-notices-v1'),
+    ('work-lifecycle','financial-analysis','finance-timed-settlement-v1'),
+    ('work-lifecycle','financial-analysis','finance-timed-settlement-v2'),
+    ('evidence-tampering','engineering-capacity','engineering-receipt-defined-v1'),
+    ('evidence-tampering','engineering-capacity','engineering-receipt-visible-v2'),
+    ('target-substitution','financial-analysis','finance-exception-context-v1'),
+    ('target-substitution','financial-analysis','finance-category-template-v1'),
+    ('target-substitution','data-analysis','data-progressive-processing-v1'),
+    ('target-substitution','data-analysis','data-progressive-varied-v2'),
+    ('target-substitution','data-analysis','data-progressive-context-v3'),
+    ('target-substitution','data-analysis','data-progressive-dictionary-v4'),
+    ('target-substitution','data-analysis','data-metered-service-v1'),
+    ('target-substitution','data-analysis','data-manifest-pending-v1'),
+    ('target-substitution','knowledge-work','knowledge-intake-archive-v1'),
+    ('target-substitution','knowledge-work','knowledge-publication-index-v1'),
+    ('target-substitution','knowledge-work','knowledge-review-queue-v1'),
+    ('target-substitution','knowledge-work','knowledge-review-context-v2'),
+    ('target-substitution','engineering-capacity','engineering-target-selection-v1'),
+)
+INPUT_VARIANT_NAMES = tuple(row[2] for row in INPUT_VARIANTS)
+
+
 def configuration(mechanism, domain=None, *, input_variant=None):
     """Use one common envelope; vary only a declared business mechanism."""
-    if input_variant is not None and (mechanism, domain, input_variant) not in (
-            ('work-lifecycle','data-analysis','data-worker-recovery-v1'),
-            ('work-lifecycle','knowledge-work','knowledge-retention-timeline-v1'),
-            ('work-lifecycle','knowledge-work','knowledge-retention-timeline-notices-v1'),
-            ('work-lifecycle','financial-analysis','finance-timed-settlement-v1'),
-            ('work-lifecycle','financial-analysis','finance-timed-settlement-v2'),
-            ('evidence-tampering','engineering-capacity','engineering-receipt-defined-v1'),
-            ('evidence-tampering','engineering-capacity','engineering-receipt-visible-v2'),
-            ('target-substitution','financial-analysis','finance-exception-context-v1'),
-            ('target-substitution','financial-analysis','finance-category-template-v1'),
-            ('target-substitution','data-analysis','data-progressive-processing-v1'),
-            ('target-substitution','data-analysis','data-progressive-varied-v2'),
-            ('target-substitution','data-analysis','data-progressive-context-v3'),
-            ('target-substitution','data-analysis','data-progressive-dictionary-v4'),
-            ('target-substitution','data-analysis','data-metered-service-v1'),
-            ('target-substitution','data-analysis','data-manifest-pending-v1'),
-            ('target-substitution','knowledge-work','knowledge-intake-archive-v1'),
-            ('target-substitution','knowledge-work','knowledge-publication-index-v1'),
-            ('target-substitution','knowledge-work','knowledge-review-queue-v1'),
-            ('target-substitution','knowledge-work','knowledge-review-context-v2'),
-            ('target-substitution','engineering-capacity','engineering-target-selection-v1')):
+    if input_variant is not None and (mechanism, domain, input_variant) not in INPUT_VARIANTS:
         raise ValueError('Unsupported mechanism input variant')
     definition = MECHANISMS[mechanism]
     if definition['preset'] is None:

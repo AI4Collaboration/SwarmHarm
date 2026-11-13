@@ -1,7 +1,11 @@
 """Executable mechanism paths, domain isolation and honest input exports."""
 from copy import deepcopy
+from contextlib import redirect_stderr, redirect_stdout
+from io import StringIO
 import json
 from pathlib import Path
+import subprocess
+import sys
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 import unittest
@@ -11,6 +15,46 @@ from scripts.inspect_unified_input import build_preview, main
 
 
 class MechanismInputChecks(unittest.TestCase):
+    def test_variant_registry_drives_both_cli_choices(self):
+        self.assertEqual(len(inputs.INPUT_VARIANT_NAMES), len(set(inputs.INPUT_VARIANT_NAMES)))
+        self.assertEqual(inputs.INPUT_VARIANT_NAMES, tuple(row[2] for row in inputs.INPUT_VARIANTS))
+        root = Path(__file__).resolve().parents[2]
+        for script in ('swarmharm/run.py', 'swarmharm/scripts/inspect_unified_input.py'):
+            help_text = subprocess.check_output([sys.executable, str(root/script), '--help'], text=True)
+            for mechanism, domain, variant in inputs.INPUT_VARIANTS:
+                with self.subTest(script=script, variant=variant):
+                    self.assertIn(variant, help_text)
+                    self.assertIsInstance(inputs.configuration(mechanism, domain, input_variant=variant), dict)
+
+    def test_inspect_variant_keeps_combination_validation(self):
+        with TemporaryDirectory() as tmp, redirect_stdout(StringIO()), redirect_stderr(StringIO()):
+            output = Path(tmp)/'valid'
+            main(['--scenario','data-analysis','--mechanism','target-substitution',
+                  '--input-variant','data-manifest-pending-v1','--output',str(output)])
+            self.assertTrue((output/'manifest.json').is_file())
+            for mechanism, domain in [('work-lifecycle','data-analysis'),
+                                      ('target-substitution','engineering-capacity'),
+                                      (None,'data-analysis'), ('target-substitution','all')]:
+                with self.subTest(mechanism=mechanism, domain=domain):
+                    args=['--scenario',domain,'--input-variant','data-manifest-pending-v1',
+                          '--output',str(Path(tmp)/'invalid')]
+                    if mechanism is not None: args.extend(['--mechanism',mechanism])
+                    with self.assertRaises(SystemExit): main(args)
+                    self.assertFalse((Path(tmp)/'invalid').exists())
+
+    def test_prepare_rejects_mismatched_variant_before_output(self):
+        import run
+        with TemporaryDirectory() as tmp, patch.dict(run.MODELS,{'sol':'openai/gpt-6.1-sol'},clear=True), \
+             patch.object(run,'registration_path',side_effect=lambda value:Path(value)), \
+             patch.object(run.guardrails,'credential_file',side_effect=lambda value,repo:Path(value)):
+            output=Path(tmp)/'output'
+            with self.assertRaisesRegex(ValueError, 'Unsupported mechanism input variant'):
+                run.prepare(output,Path(tmp)/'registration',Path(tmp)/'key',run_controls=False,
+                            study_mode='unified',harness_kind='codex',goal_mode='off',reasoning_effort='high',
+                            scenario='engineering-capacity',mechanism='target-substitution',
+                            input_variant='data-manifest-pending-v1')
+            self.assertFalse(output.exists())
+
     def test_lifecycle_criteria_match_domain_business_object(self):
         contracts={}
         for domain in inputs.DOMAINS:
