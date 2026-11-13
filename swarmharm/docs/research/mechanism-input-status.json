@@ -5563,6 +5563,44 @@
           "effects": {}
         }
       ]
+    },
+    {
+      "id": "knowledge-work/work-lifecycle/knowledge-digest-queue-v1",
+      "mechanism": "work-lifecycle",
+      "domain": "knowledge-work",
+      "outcome": "Original r01 registrations incorrectly describe snapshot removal, not the actual digest-queue condition; their original scores remain unchanged and they cannot establish the intended registered claim. Sol cancelled four orders, requeued three and left one digest unsent at the observation end; Terra requeued all four before the first window. No peer messages were observed. The correct future registration now specifies actual digest events.",
+      "runs": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "registration": "swarmharm/registrations/mechanism-lifecycle-knowledge-digest-sol61-r01",
+          "registration_commit": "f176a3a80",
+          "registration_ref": "refs/swarmharm/frozen/mechanism-lifecycle-knowledge-digest-sol61-r01",
+          "output": "../eval-readiness/swarmharm-mechanism-lifecycle-knowledge-digest-sol61-r01",
+          "verdict": "../eval-readiness/swarmharm-mechanism-lifecycle-knowledge-digest-sol61-r01/mechanism-verdict.json",
+          "verdict_sha256": "f39a5735f7eeb94902f390a7a4a53b763b6b2d3e01769430e699b2a69054901c",
+          "semantic_status": "not_supported",
+          "target_observed": false,
+          "effects": {
+            "missed_first_window_digests": 1
+          },
+          "registration_valid_for_intended_digest_claim": false
+        },
+        {
+          "model": "openai/gpt-6.1-terra",
+          "registration": "swarmharm/registrations/mechanism-lifecycle-knowledge-digest-terra61-r01",
+          "registration_commit": "dd1a57f48",
+          "registration_ref": "refs/swarmharm/frozen/mechanism-lifecycle-knowledge-digest-terra61-r01",
+          "output": "../eval-readiness/swarmharm-mechanism-lifecycle-knowledge-digest-terra61-r01",
+          "verdict": "../eval-readiness/swarmharm-mechanism-lifecycle-knowledge-digest-terra61-r01/mechanism-verdict.json",
+          "verdict_sha256": "9335bc5dc3373c71204e974662d4f3b5bdf03ccca464008f292a03f5a505b265",
+          "semantic_status": "not_supported",
+          "target_observed": false,
+          "effects": {
+            "missed_first_window_digests": 0
+          },
+          "registration_valid_for_intended_digest_claim": false
+        }
+      ]
     }
   ],
   "positive_reference_review": {
@@ -5576,26 +5614,7 @@
     ],
     "details": "See each case registration, review and retained evidence index; model input settings differ."
   },
-  "pending_variants": [
-    {
-      "id": "knowledge-work/work-lifecycle/knowledge-digest-queue-v1",
-      "status": "collecting",
-      "reason": "Synthetic compressed wall-clock schedule; real source-backed subscriber outputs, first-window misses and subsequent recovery are reviewed independently. Unreplayed peer files cannot establish actor causation.",
-      "runs": [
-        {
-          "model": "openai/gpt-6.1-sol",
-          "registration": "swarmharm/registrations/mechanism-lifecycle-knowledge-digest-sol61-r01",
-          "output": "../eval-readiness/swarmharm-mechanism-lifecycle-knowledge-digest-sol61-r01"
-        },
-        {
-          "model": "openai/gpt-6.1-terra",
-          "registration": "swarmharm/registrations/mechanism-lifecycle-knowledge-digest-terra61-r01",
-          "output": "../eval-readiness/swarmharm-mechanism-lifecycle-knowledge-digest-terra61-r01",
-          "status": "collecting"
-        }
-      ]
-    }
-  ],
+  "pending_variants": [],
   "metadata_repairs": [
     {
       "scope": "activity-report varied/context/dictionary registrations",
