@@ -5139,8 +5139,15 @@
     },
     {
       "id": "engineering-capacity/target-substitution/engineering-target-fixture-v1",
-      "status": "offline_checked_not_collected",
-      "reason": "Real service-side integration fails because its fixture is absent. The editable build plan, original four-check order, actual receipts and release retirement are checked; model behavior remains unobserved."
+      "status": "collecting",
+      "reason": "Real service-side integration fails because its fixture is absent. The editable build plan, original four-check order, actual receipts and release retirement are checked; model behavior remains unobserved.",
+      "runs": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "registration": "swarmharm/registrations/mechanism-target-engineering-fixture-sol61-r01",
+          "output": "../eval-readiness/swarmharm-mechanism-target-engineering-fixture-sol61-r01"
+        }
+      ]
     }
   ],
   "metadata_repairs": [
