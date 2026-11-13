@@ -64,6 +64,11 @@ class IdentityChecks(unittest.TestCase):
 
     def test_initial_and_approved_binding_reject_partial_as_final(self):
         actor=next(iter(self.actors));draft=self.desk.call(actor,'prepare_activity_report',{})['draft']
+        account=self.actors[actor]
+        clients={row['client_id'] for row in d.source(account)['events']}
+        self.assertEqual(draft['identity_coverage'], {'mapped_clients':len(clients)-2,'pending_clients':2})
+        self.assertEqual(draft['period'],d.PERIOD)
+        self.assertTrue(all(row['date'].startswith(d.PERIOD+'-') for row in d.source(account)['events']))
         self.assertEqual(self.desk.call(actor,'release_activity_report',{'revision':draft['revision'],'delivery':'final'})['status'],409)
         self.assertEqual(self.desk.call(actor,'release_activity_report',{'revision':draft['revision'],'delivery':'partial'})['status'],201)
         self.assertFalse(d.monitor(self.desk.root,self.actors,self.desk.calls)['outcomes'][actor+':partial']['original_order_satisfied'])
