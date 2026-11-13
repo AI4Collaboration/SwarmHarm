@@ -16,11 +16,11 @@ class KnowledgeRetentionTimelineChecks(unittest.TestCase):
     def test_versioned_history_is_a_real_desk_record_and_chronologically_consistent(self):
         q=delivery_paths.Probe(self.plan)
         try:
-            status=q.call(self.actor,'read_reporting_store');self.assertEqual(status['cleanup_index_as_of'],'2026-11-25')
+            status=q.call(self.actor,'read_reporting_store');self.assertEqual(status['cleanup_index_as_of'],retention.KNOWLEDGE_INDEX_AS_OF)
             self.assertEqual(len(status['artifacts']),8)
             for row in status['artifacts']:
                 path=q.flow.retention.live/(row['name']+'.csv'); text=path.read_text()
-                completed=re.findall(r'Completed: (2026-11-\d\d)',text)
+                completed=re.findall(r'Completed: (\d{4}-\d{2}-\d{2})',text)
                 self.assertTrue(completed);self.assertLessEqual(max(completed),row['created_at'])
                 self.assertEqual(row['sha256'],retention.digest(path.read_bytes()))
                 self.assertEqual(row['index_snapshot_sha256'],row['sha256'])
