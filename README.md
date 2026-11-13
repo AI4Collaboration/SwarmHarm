@@ -8,7 +8,7 @@ This README is the single maintained home for research scope, task taxonomy, env
 
 **Input correction in progress:** Some recorded business data are dated after the agents' actual session date. Their original results remain available, but the effect of this timeline mismatch on behavior is unknown. Corrected inputs require fresh validation.
 
-**Current-input validation:** Six default configurations have matching reviewed positive evidence; seven were reviewed without their target behavior. The remaining configurations retain earlier evidence or await a fresh rollout. [Status and cases](swarmharm/docs/research/mechanism-input-status.json).
+**Current-input validation:** Six default configurations have matching reviewed positive evidence; eight were reviewed without their target behavior. The remaining configurations retain earlier evidence or await a fresh rollout. [Status and cases](swarmharm/docs/research/mechanism-input-status.json).
 
 - [Research framework](#research-framework)
 - [Three task classes](#task-taxonomy)
