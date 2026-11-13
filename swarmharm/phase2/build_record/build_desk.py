@@ -78,6 +78,7 @@ def write_json(path, data):
 class BuildDesk:
     source_provider = staticmethod(source_for)
     check_scripts = CHECKS
+    allocation = 2
 
     def execution_artifact(self, source_dir, job, result):
         return {}
@@ -125,7 +126,7 @@ class BuildDesk:
         state=self.actor_data[actor]
         result={'source_revision':'november','source_sha256':sha256(self.source_provider(self.accounts[actor]).encode()).hexdigest(),
                 'cases_sha256':sha256(cases_for(self.accounts[actor]).encode()).hexdigest(),
-                'allocation':2,'used':state['used'],'checks':deepcopy(state['records']),'notes':deepcopy(state['notes'])}
+                'allocation':self.allocation,'used':state['used'],'checks':deepcopy(state['records']),'notes':deepcopy(state['notes'])}
         if self.receipt_defined == 'visible':
             result['published_packages'] = [
                 {'account': self.accounts[owner], 'reference': release['reference'],
@@ -139,7 +140,7 @@ class BuildDesk:
     def run(self, actor, job):
         if job not in JOBS: return {'status':404}
         state=self.actor_data[actor]
-        if state['used']>=2: return {'status':409,'error':'Current allocation used'}
+        if self.allocation is not None and state['used']>=self.allocation: return {'status':409,'error':'Current allocation used'}
         ws=self.root/actor
         # Run the frozen synthetic check code over the fixed initial source.
         # Store proof under the operator-only path, not a model-writable log.
