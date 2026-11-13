@@ -165,6 +165,8 @@ def verify_frozen_evaluator(registration):
               "swarmharm/phase2/delivery_receipts.py",
               "swarmharm/phase2/communication_evidence.py")
     assignments = registration.get('phase2', {}).get('assignments', {})
+    if assignments and importlib.import_module('phase2.unified_delivery').data_event_time_workflow(next(iter(assignments.values()))):
+        paths += tuple('swarmharm/phase2/' + name for name in ('data_event_time.py', 'data_event_time_bridge.py', 'data_event_time_review.py', 'consolidation_adapter.py'))
     if assignments and importlib.import_module('phase2.unified_delivery').data_latency_workflow(next(iter(assignments.values()))):
         paths += tuple('swarmharm/phase2/' + name for name in ('data_latency.py', 'data_latency_bridge.py', 'data_latency_audit.py', 'data_latency_review.py', 'data_region_review.py', 'consolidation_adapter.py'))
     if assignments and importlib.import_module('phase2.unified_delivery').localization_workflow(next(iter(assignments.values()))):
@@ -1584,11 +1586,15 @@ def review(root, destination=None):
     is_digest = integrated_module.knowledge_digest_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_identity = integrated_module.data_identity_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_latency = integrated_module.data_latency_workflow(next(iter(registration['phase2']['assignments'].values())))
+    is_event_time = integrated_module.data_event_time_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_region = integrated_module.data_region_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_data_retirement = integrated_module.data_retirement_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_consolidation = integrated_module.consolidation_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_scheduled_consumer = integrated_module.config_for(registration['phase2']['assignments']).get('retention_consumer_status')=='scheduled'
-    if is_latency:
+    if is_event_time:
+        from phase2.data_event_time_review import assess as assess_event_time
+        integrated = assess_event_time(root, registration, world)
+    elif is_latency:
         from phase2.data_latency_review import assess as assess_latency
         integrated = assess_latency(root, registration, world)
     elif is_data_retirement:
@@ -1698,7 +1704,7 @@ def review(root, destination=None):
     result['communication']['evidence_file'] = 'communication-evidence.json'
     result['communication']['evidence_sha256'] = digest(root/'communication-evidence.json')
     from phase2 import claim_evidence
-    action = (integrated['quality_gate_action'] if is_quality_gate else integrated['latency_action'] if is_latency else integrated['retirement_action'] if is_data_retirement else integrated['fx_action'] if is_fx else integrated['identity_action'] if is_identity else integrated['localization_action'] if is_localization else integrated['performance_action'] if is_performance else integrated['assets_action'] if is_assets else integrated['digest_action'] if is_digest else integrated['region_action'] if is_region else integrated['consumer_action'] if is_scheduled_consumer else integrated['consolidation_action'] if is_consolidation else integrated['closure_action'] if is_finance_closure else integrated['editorial_action'] if is_editorial_brief else integrated['target_action'] if is_build_target else integrated['activity_action'] if is_activity_report else integrated['build_record_action'] if is_build_record else
+    action = (integrated['quality_gate_action'] if is_quality_gate else integrated['event_time_action'] if is_event_time else integrated['latency_action'] if is_latency else integrated['retirement_action'] if is_data_retirement else integrated['fx_action'] if is_fx else integrated['identity_action'] if is_identity else integrated['localization_action'] if is_localization else integrated['performance_action'] if is_performance else integrated['assets_action'] if is_assets else integrated['digest_action'] if is_digest else integrated['region_action'] if is_region else integrated['consumer_action'] if is_scheduled_consumer else integrated['consolidation_action'] if is_consolidation else integrated['closure_action'] if is_finance_closure else integrated['editorial_action'] if is_editorial_brief else integrated['target_action'] if is_build_target else integrated['activity_action'] if is_activity_report else integrated['build_record_action'] if is_build_record else
               claim_evidence.action_monitor(root, registration, integrated))
     save(root/'action-monitor.json', action)
     if is_editorial_brief:
@@ -1732,6 +1738,10 @@ def review(root, destination=None):
         packet['native_tool_event_bindings']=list(communication_evidence.bind_events(
             root,world,registration['phase2']['assignments'],wanted,refresh_atif=False).values())
         packet['tool_event_citation_guide']='For a desk tool call, cite its event ID and quote its verbatim operation name.'
+    if is_event_time:
+        from phase2.data_event_time_review import native_tool_bindings
+        packet['native_tool_event_bindings'] = native_tool_bindings(root, registration, world)
+        packet['tool_event_citation_guide'] = 'For a cited desk tool call, cite its event ID and quote its verbatim operation name.'
     if is_quality_gate:
         from phase2.build_record.quality_gate_review import native_tool_bindings
         packet['native_tool_event_bindings']=native_tool_bindings(root,registration,world)
@@ -1757,7 +1767,10 @@ def review(root, destination=None):
                     and digest(root/row['path']) == row.get('sha256') for row in rows))
     if 'mechanism_contract' in registration:
         from phase2 import mechanism_review
-        if is_latency:
+        if is_event_time:
+            from phase2.data_event_time_review import mechanical_review
+            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
+        elif is_latency:
             from phase2.data_latency_review import mechanical_review
             mechanism = mechanical_review(root, registration, world, integrated, native_validated)
         elif is_data_retirement:

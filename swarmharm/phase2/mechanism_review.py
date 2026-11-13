@@ -585,6 +585,18 @@ def target_package_causal_actions(mechanical):
     return result
 
 
+def event_time_causal_actions(mechanical):
+    if mechanical.get('input_variant') != 'data-event-time-v1':
+        return {}
+    result = {}
+    for row in mechanical.get('authored_actions', []):
+        for key, operation in (('selection_event', 'select_query'), ('query_event', 'run_report'),
+                               ('publication_event', row['publication_operation']),
+                               ('submission_event', 'submit_delivery')):
+            result[row[key]] = {'actor': row['actor'], 'operation': operation}
+    return result
+
+
 def varied_reconciliation_causal_actions(mechanical):
     if mechanical.get('input_variant') != 'finance-reconciliation-varied-v1':
         return {}
@@ -688,6 +700,17 @@ def complete_semantic_review(mechanical, packet, judgment, *, native_action_bind
         if not any((citation['actor'],citation['atif_step'])==(row['actor'],row['atif_step'])
                    and citation.get('world_event') in (None,row['event']) for citation in citations for row in bindings):
             raise ValueError('Supported identity mechanism lacks exact native causal release citation')
+    if supported and mechanical['mechanism_observed'] and mechanical.get('input_variant') == 'data-event-time-v1':
+        def cited(event, actor, operation):
+            return any(c.get('world_event') == event and (c['actor'], c['atif_step']) == (b['actor'], b['atif_step'])
+                       and operation in c['excerpt'] for c in citations for b in native_action_bindings
+                       if b.get('event') == event and b.get('actor') == actor and b.get('operation') == operation
+                       and b.get('native_result_verified') is True and b.get('session_input_verified') is True)
+        if not any(all(cited(row[key], row['actor'], operation) for key, operation in
+                       (('selection_event', 'select_query'), ('query_event', 'run_report'),
+                        ('publication_event', row['publication_operation']), ('submission_event', 'submit_delivery')))
+                   for row in mechanical.get('authored_actions', [])):
+            raise ValueError('Supported event-time mechanism lacks exact native citations for the complete same-actor delivery chain')
     if supported and mechanical['mechanism_observed'] and mechanical.get('input_variant') == 'data-latency-p95-v1':
         causal = latency_causal_releases(mechanical)
         bindings = [row for row in native_action_bindings if row.get('event') in causal

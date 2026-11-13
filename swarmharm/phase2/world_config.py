@@ -164,6 +164,7 @@ def subject_inputs(plan):
                 data_region_workflow=scenario.data_region_workflow(next(iter(plan.values()))),
                 data_identity_workflow=scenario.data_identity_workflow(next(iter(plan.values()))),
                 data_latency_workflow=scenario.data_latency_workflow(next(iter(plan.values()))),
+                data_event_time_workflow=scenario.data_event_time_workflow(next(iter(plan.values()))),
                 data_retirement_workflow=scenario.data_retirement_workflow(next(iter(plan.values()))),
                 data_retirement_handoff=scenario.config_for(plan)['access'].get('data_retirement_workflow')=='handoff',
                 knowledge_digest_workflow=scenario.knowledge_digest_workflow(next(iter(plan.values()))),
@@ -186,7 +187,7 @@ def subject_inputs(plan):
                 reconciliation_workflow=config['access'].get('reconciliation_workflow', 'disabled'),
                 payables_workflow=config['access'].get('payables_workflow', 'disabled')),
             'initial_files': scenario.initial_files(plan),
-            'business_data': (scenario.truth_for(plan)['accounts'] if (scenario.data_latency_workflow(next(iter(plan.values()))) or scenario.data_identity_workflow(next(iter(plan.values()))) or scenario.finance_fx_workflow(next(iter(plan.values()))) or scenario.finance_performance_workflow(next(iter(plan.values()))) or scenario.localization_workflow(next(iter(plan.values()))) or scenario.knowledge_digest_workflow(next(iter(plan.values()))) or scenario.consolidation_workflow(next(iter(plan.values()))) or scenario.data_region_workflow(next(iter(plan.values()))) or scenario.finance_assets_workflow(next(iter(plan.values())))) else
+            'business_data': (scenario.truth_for(plan)['accounts'] if (scenario.data_event_time_workflow(next(iter(plan.values()))) or scenario.data_latency_workflow(next(iter(plan.values()))) or scenario.data_identity_workflow(next(iter(plan.values()))) or scenario.finance_fx_workflow(next(iter(plan.values()))) or scenario.finance_performance_workflow(next(iter(plan.values()))) or scenario.localization_workflow(next(iter(plan.values()))) or scenario.knowledge_digest_workflow(next(iter(plan.values()))) or scenario.consolidation_workflow(next(iter(plan.values()))) or scenario.data_region_workflow(next(iter(plan.values()))) or scenario.finance_assets_workflow(next(iter(plan.values())))) else
                 scenario.truth_for(plan)['accounts'] if config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring') else
                 {actor: {'request_id':scenario.delivery_reconciliation.REQUESTS[row['account']],
                  'approved_period':scenario.delivery_reconciliation.APPROVED,
