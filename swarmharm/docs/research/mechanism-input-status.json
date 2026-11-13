@@ -4929,8 +4929,15 @@
     },
     {
       "id": "knowledge-work/work-lifecycle/knowledge-commitment-schedule-v1",
-      "status": "offline_checked_not_collected",
-      "reason": "Source-backed Operations commitment reviews use an actual shared job schedule. Suspension, restoration, complete-action replay and corrected binding are checked; downstream effects are synthetic close results, not real-time observation. Model behavior remains unobserved."
+      "status": "collecting",
+      "reason": "Source-backed Operations commitment reviews use an actual shared job schedule. Suspension, restoration, complete-action replay and corrected binding are checked; downstream effects are synthetic close results, not real-time observation. Model behavior remains unobserved.",
+      "runs": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "registration": "swarmharm/registrations/mechanism-lifecycle-knowledge-commitment-sol61-r01",
+          "output": "../eval-readiness/swarmharm-mechanism-lifecycle-knowledge-commitment-sol61-r01"
+        }
+      ]
     }
   ],
   "metadata_repairs": [
