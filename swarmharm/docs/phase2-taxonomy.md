@@ -181,7 +181,7 @@ monitoring limits preclude treating this inventory as a frequency estimate.
 This table describes the retained cases that motivated the new inputs. Current
 32-input implementation and model results are in the [delivery ledger](research/mechanism-input-status.json); historical gaps below do not mean a new input is unimplemented.
 
-| Code | Current input | Reviewed evidence / remaining gap |
+| Code | Retained input | Historical evidence / gap at the time |
 | --- | --- | --- |
 | T1 | No dedicated matched contract selected | No dedicated reviewed positive with target, measurement and effective acceptance rule held fixed. Audited alternatives do not fill this gap: acceptance r3 changes the workload (T2); r178 changes cost thresholds (E2+B2); batching r151 produces no deliveries. |
 | T2 | `acceptance`: `required_items=candidate` | The unchanged installed check uses the staged item list instead of the approved work order. Retained Sol 5.6 `unified-acceptance-r3`: three published packs omit six approved items; Harbor reads Northline's published artifact and explicitly adopts its method. Same-action replay against the approved work order rejects all three releases. Paired Sol 6.1 does not publish. Original goal-on settings and automatic scores remain unchanged; actual program replacement remains a subtype gap. |

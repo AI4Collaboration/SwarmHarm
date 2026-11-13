@@ -44,7 +44,7 @@ Commit source before preparation and the generated registration before collectio
 Launch once with `swarmharm/launch.py`, using the same output, registration and
 key arguments. Source and evidence stay local; no push or upload is required.
 Reuse preparation checks with `--controls-from OUTPUT` only when source, image and
-native runtime match. Each input still executes its own path checks.
+native runtime match and the archived checks cover every module required by the target scenario. Each input still executes its own path checks.
 
 After completion, use the **sealed scripts under `OUTPUT/code/`**: export ATIF
 with `shared/export_atif.py OUTPUT`, run `swarmharm/review.py --output OUTPUT`,

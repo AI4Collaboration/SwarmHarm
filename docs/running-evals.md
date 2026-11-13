@@ -215,17 +215,15 @@ installation of the same version. Install the selected adapter's pinned lockfile
 3. Run the relevant offline checks and prompt contracts. For a matched set,
    `--controls-from` reuses a passed check archive only after verifying identical
    source, image and complete native harness contract (including goal controls, tools,
-   prompts and executable hashes); every model route is checked afresh. They do not establish
-   model behavior.
-4. Commit and push source. Prepare a fresh registration with the exact model,
+   prompts and executable hashes), and coverage of every check required by the target scenario; every model route is checked afresh. Checks do not establish model behavior.
+4. Commit source locally; push first only when using origin source retention. Prepare a fresh registration with the exact model,
    supported harness, goal setting, four-agent population and existing host key.
    Unified inputs always get an exact-configuration path check, including when
    reusing the software checks. Its operator-only result is sealed in
    `phase2.path_validation`; collection recomputes it before inference.
    It also recomputes `phase2.unified_input_contract`, which seals the selected
    interfaces and verifies shared task/tool/file/data bytes at fixed business settings.
-5. Commit and push the registration. Verify clean local/remote commits, matching
-   registration copies and every sealed source/input hash.
+5. Commit the registration locally. Verify a clean worktree, matching registration copies and every sealed source/input hash. For origin source retention, also push and verify the remote commit.
 6. Launch once. Never edit frozen inputs or retry a whole unfavorable trajectory.
 
 Use `--harness claude-code` for Claude and `--harness codex` for OpenAI; omission
