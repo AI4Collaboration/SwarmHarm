@@ -16,11 +16,12 @@ class PerformanceBridge(UnifiedBuildBridge):
         if frozen!=unified_delivery.initial_state(plan):raise ValueError('Frozen performance input differs')
         obj=cls.__new__(cls);obj.world=world;obj.plan=deepcopy(plan);obj.config=unified_delivery.config_for(plan)
         obj.surface=None;obj.actors=list(plan);obj.accounts={a:r['account'] for a,r in plan.items()}
-        obj.adapter=finance_performance.Desk(Path(world.operator)/'finance-performance-service',obj.accounts,
+        obj.period=finance_performance.period_for(plan)
+        obj.adapter=finance_performance.Desk(Path(world.operator)/'finance-performance-service',obj.accounts,period=obj.period,
                                      fixed=unified_delivery.bindings_for(plan)['acceptance_binding']=='approved')
         for actor,row in plan.items():
-            if unified_delivery.documents(row)!=finance_performance.documents(row['account']):raise ValueError('Frozen documents differ')
-            if json.loads((obj.adapter.root/'sources'/f"{row['account']}.json").read_text())!=finance_performance.source(row['account']):
+            if unified_delivery.documents(row)!=finance_performance.documents(row['account'],obj.period):raise ValueError('Frozen documents differ')
+            if json.loads((obj.adapter.root/'sources'/f"{row['account']}.json").read_text())!=finance_performance.source(row['account'],obj.period):
                 raise ValueError('Frozen source differs')
         obj.registration={'schema':'finance-performance-adapter-v1','actors':obj.actors,'accounts':obj.accounts}
         world.shared_directories=[work_files.ROOT];world.mutable_shared_root=work_files.ROOT
@@ -44,7 +45,7 @@ class PerformanceBridge(UnifiedBuildBridge):
         if operation!='read_performance_desk':return {}
         return {key:sha256(json.dumps(value,sort_keys=True).encode()).hexdigest() for key,value in result.items()}
     def finalize(self):
-        result={'state':self.snapshot(),'mechanical_observation':finance_performance.monitor(self.adapter.root,self.accounts,self.adapter.calls)}
+        result={'state':self.snapshot(),'mechanical_observation':finance_performance.monitor(self.adapter.root,self.accounts,self.adapter.calls,period=self.period)}
         target=Path(self.world.operator)/'finance-performance-observation.json'
         if target.exists():raise FileExistsError('Refusing to replace final observation')
         atomic_json(target,result);return result

@@ -83,7 +83,7 @@ CONFIG_SCHEMA = {
             'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'localization']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor', 'region-dimension', 'identity-metric']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context', 'digest-queue']},
-            'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule', 'performance', 'fx-expense', 'fx-expense-history']},
+            'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule', 'performance', 'performance-history', 'fx-expense', 'fx-expense-history']},
             'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring']},
             'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations']},
             'quality_workflow': {'enum': ['enabled', 'disabled']},
@@ -204,7 +204,7 @@ def finance_fx_workflow(assignment):
 
 
 def finance_performance_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') == 'performance'
+    return assignment.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') in ('performance','performance-history')
 
 
 def finance_assets_workflow(assignment):
@@ -350,8 +350,8 @@ def task(assignment):
         from phase2.data_identity import TASK
         return TASK
     if finance_performance_workflow(assignment):
-        from phase2.finance_performance import TASK
-        return TASK
+        from phase2.finance_performance import documents as performance_documents,period_for
+        return performance_documents(assignment['account'],period_for({'subject':assignment}))['README.md'].split('\n',1)[0]
     if localization_workflow(assignment):
         from phase2.engineering_localization import TASK
         return TASK
@@ -459,8 +459,8 @@ def documents(assignment):
         from phase2.data_identity import documents as identity_documents
         return identity_documents(assignment['account'])
     if finance_performance_workflow(assignment):
-        from phase2.finance_performance import documents as performance_documents
-        return performance_documents(assignment['account'])
+        from phase2.finance_performance import documents as performance_documents,period_for
+        return performance_documents(assignment['account'],period_for({'subject':assignment}))
     if localization_workflow(assignment):
         from phase2.engineering_localization import documents as resource_documents
         return resource_documents(assignment['account'])
@@ -902,9 +902,10 @@ def truth_for(plan):
                 'initial_map_sha256':source_digest(initial_map(row['account']))} for actor,row in plan.items()},
             'identity_mappings':'initially incomplete; no scheduled arrival'}
     if finance_performance_workflow(next(iter(plan.values()))):
-        from phase2.finance_performance import source,digest as source_digest
+        from phase2.finance_performance import source,period_for,digest as source_digest
+        period=period_for(plan)
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
-            'accounts':{actor:{'account':row['account'],'source_sha256':source_digest(source(row['account']))}
+            'accounts':{actor:{'account':row['account'],'source_sha256':source_digest(source(row['account'],period))}
                         for actor,row in plan.items()},'cash_flow_valuations':'initially unavailable; no scheduled arrival'}
     if localization_workflow(next(iter(plan.values()))):
         from phase2.engineering_localization import source,initial_approved,digest as resource_digest
@@ -1162,7 +1163,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      build_record_workflow=False, build_target_workflow=False, build_target_clarify_selection=False, build_target_product=False, reconciliation_workflow='disabled',
                      activity_report_workflow=False, activity_shared_template=False, data_region_workflow=False, data_identity_workflow=False, knowledge_digest_workflow=False, payables_workflow='disabled', editorial_brief_workflow=False,
                      editorial_intake_archive=False, editorial_publication_index=False, editorial_review_queue=False, **kwargs):
-    if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule', 'performance', 'fx-expense', 'fx-expense-history'),
+    if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule', 'performance', 'performance-history', 'fx-expense', 'fx-expense-history'),
             bool(activity_report_workflow), bool(data_region_workflow), bool(data_identity_workflow), bool(knowledge_digest_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring'), bool(editorial_brief_workflow))) > 1:
         raise ValueError('Choose one business workflow')
     if knowledge_digest_workflow:
@@ -1192,7 +1193,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
     if reconciliation_workflow in ('fx-expense','fx-expense-history'):
         from phase2.finance_fx import definitions
         return definitions()
-    if reconciliation_workflow == 'performance':
+    if reconciliation_workflow in ('performance','performance-history'):
         from phase2.finance_performance import definitions
         return definitions()
     if reconciliation_workflow == 'asset-schedule':

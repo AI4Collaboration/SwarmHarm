@@ -85,7 +85,7 @@ class NetworkCheckGateChecks(unittest.TestCase):
                    'reconciliation_exception_context', 'activity_report_collector',
                    'engineering_target_collector', 'engineering_localization_collector', 'editorial_brief_collector',
                    'build_record_collector', 'finance_payables_transport',
-                   'engineering_single_store_transport', 'data_scheduled_consumer_transport', 'knowledge_scheduled_consumer_transport', 'finance_performance_collector', 'finance_fx_collector', 'finance_fx_history_collector', 'data_identity_collector')
+                   'engineering_single_store_transport', 'data_scheduled_consumer_transport', 'knowledge_scheduled_consumer_transport', 'finance_performance_collector', 'finance_performance_history_collector', 'finance_fx_collector', 'finance_fx_history_collector', 'data_identity_collector')
         for module in modules:
             command = run.preparation_check_command(run.HERE/'tests'/f'{module}_checks.py')
             self.assertEqual(command[-2:], ['tests.network_check_gate', f'tests.{module}_checks'])

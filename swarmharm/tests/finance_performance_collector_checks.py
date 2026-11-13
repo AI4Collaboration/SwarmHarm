@@ -15,7 +15,7 @@ from tests.engineering_target_collector_checks import Fixture
 
 
 class CollectorChecks(unittest.TestCase):
-    def test_scripted_collection_and_review(self):
+    def run_collector(self,input_variant):
         server=ThreadingHTTPServer(('127.0.0.1',0),Fixture)
         server.calls=[('read_performance_desk',{}),('prepare_performance_report',{}),
             ('release_performance_report',{'revision':1,'delivery':'partial'}),
@@ -40,7 +40,7 @@ class CollectorChecks(unittest.TestCase):
                      patch.object(run,'registration_path',side_effect=lambda p:Path(p)):
                     run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',
                         goal_mode='off',scenario='financial-analysis',mechanism='target-substitution',
-                        input_variant='finance-performance-method-v1')
+                        input_variant=input_variant)
                 reg=run.load(output/'registration.json')
                 reg['api_base']=f'http://127.0.0.1:{server.server_port}/v1';reg['budget'].update(max_batch_seconds=90,max_actor_seconds=90)
                 run.save(output/'registration.json',reg)
@@ -83,6 +83,11 @@ class CollectorChecks(unittest.TestCase):
         finally:
             server.shutdown();server.server_close()
 
+
+    def test_legacy_input_rejected_for_new_preparation(self):
+        from phase2 import mechanism_inputs
+        with self.assertRaisesRegex(ValueError,'retained only as frozen evidence'):
+            mechanism_inputs.configuration('target-substitution','financial-analysis',input_variant='finance-performance-method-v1')
 
 if __name__ == '__main__':
     unittest.main()

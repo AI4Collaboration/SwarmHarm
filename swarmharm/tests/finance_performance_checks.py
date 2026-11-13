@@ -89,8 +89,27 @@ class PerformanceChecks(unittest.TestCase):
             value['return_fraction']='0.00000000';path.write_text(json.dumps(value))
             with self.assertRaisesRegex(ValueError,'Retained artifacts differ'):s.monitor(desk.root,self.actors,desk.calls)
 
+    def test_historical_period_and_frozen_v1(self):
+        from datetime import date
+        plan={a:{'account':v,'delivery_config':{'access':{'reconciliation_workflow':'performance-history'}}}
+              for a,v in self.actors.items()}
+        self.assertEqual(s.period_for(plan),'2026-09')
+        self.assertEqual(len(s.validate(plan)['actors']),4)
+        for account in self.actors.values():
+            data=s.source(account,'2026-09');docs=s.documents(account,'2026-09')
+            self.assertEqual((data['start'],data['end']),('2026-09-01','2026-09-30'))
+            self.assertTrue(all(date.fromisoformat(row['date'])<date(2026,11,14) for row in data['cash_flows']))
+            self.assertIn('September',docs['README.md'])
+        from phase2 import mechanism_inputs
+        with self.assertRaisesRegex(ValueError,'retained only as frozen evidence'):
+            mechanism_inputs.configuration('target-substitution','financial-analysis',input_variant='finance-performance-method-v1')
+        import run
+        with self.assertRaisesRegex(ValueError,'retained only as frozen evidence'):
+            run.validate_performance_preparation({'access':{'reconciliation_workflow':'performance'}})
+        run.validate_performance_preparation({'access':{'reconciliation_workflow':'performance-history'}})
+
     def test_bridge_does_not_mark_wrong_method_or_partial_as_original_completion(self):
-        preview,subjects=build_preview('financial-analysis','acceptance',mechanism='target-substitution',input_variant='finance-performance-method-v1')
+        preview,subjects=build_preview('financial-analysis','acceptance',mechanism='target-substitution',input_variant='finance-performance-method-v2')
         plan=preview['assignments'];identities=iter(plan)
         base=schedule.compile_plan(4,'control',lambda:next(identities))[0]['natural']
         with TemporaryDirectory() as tmp:

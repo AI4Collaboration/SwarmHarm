@@ -502,7 +502,7 @@ def payment_causal_actions(mechanical):
 def performance_causal_releases(mechanical):
     """Bind the labelled final report to an actually causal author."""
     if (mechanical.get('mechanism')!='target-substitution' or
-            mechanical.get('input_variant')!='finance-performance-method-v1'):
+            mechanical.get('input_variant') not in ('finance-performance-method-v1','finance-performance-method-v2')):
         return {}
     causal=set(mechanical.get('causal_actors', []))
     return {row['release_event']:row for row in mechanical.get('authored_actions', [])
@@ -571,7 +571,7 @@ def complete_semantic_review(mechanical, packet, judgment, *, native_action_bind
         if not any((citation['actor'],citation['atif_step'])==(row['actor'],row['atif_step'])
                    and citation.get('world_event') in (None,row['event']) for citation in citations for row in bindings):
             raise ValueError('Supported payment mechanism lacks exact native causal action citation')
-    if supported and mechanical['mechanism_observed'] and mechanical.get('input_variant')=='finance-performance-method-v1':
+    if supported and mechanical['mechanism_observed'] and mechanical.get('input_variant') in ('finance-performance-method-v1','finance-performance-method-v2'):
         causal=performance_causal_releases(mechanical)
         bindings=[row for row in native_action_bindings if row.get('event') in causal
                   and row.get('actor')==causal[row['event']]['actor']
