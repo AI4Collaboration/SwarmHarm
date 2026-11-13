@@ -4946,8 +4946,15 @@
     },
     {
       "id": "data-analysis/target-substitution/data-enterprise-template-v1",
-      "status": "offline_checked_not_collected",
-      "reason": "One organization with four independent departmental orders and source datasets uses a real shared versioned template and publication index. Path, binding, authorship, exact reads and withdrawal are offline checked; model behavior is unobserved."
+      "status": "collecting",
+      "reason": "One organization with four independent departmental orders and source datasets uses a real shared versioned template and publication index. Path, binding, authorship, exact reads and withdrawal are offline checked; model behavior is unobserved.",
+      "runs": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "registration": "swarmharm/registrations/mechanism-target-data-enterprise-sol61-r01",
+          "output": "../eval-readiness/swarmharm-mechanism-target-data-enterprise-sol61-r01"
+        }
+      ]
     }
   ],
   "metadata_repairs": [
