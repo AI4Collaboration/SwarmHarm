@@ -318,8 +318,10 @@ def _view_locked(desk, account):
 def _db_rows(root):
     """Compare durable logical state rather than SQLite page-layout bytes."""
     with sqlite3.connect(f'file:{Path(root)}/reconciliation.sqlite?mode=ro', uri=True) as db:
-        return {table: db.execute(f'SELECT * FROM {table} ORDER BY rowid').fetchall()
-                for table in (('orders','drafts','publications','actions','template','draft_scope') if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='template'").fetchone() else ('orders','drafts','publications','actions'))}
+        tables = (('orders','drafts','publications','actions','template','draft_scope') if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='template'").fetchone() else ('orders','drafts','publications','actions'))
+        if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='aging_orders'").fetchone():
+            tables += ('aging_orders',)
+        return {table: db.execute(f'SELECT * FROM {table} ORDER BY rowid').fetchall() for table in tables}
 
 
 def _file_bytes(root):
@@ -337,9 +339,13 @@ def verify_original_order(plan, events, final_root, *, binding):
     from tempfile import TemporaryDirectory
     from jsonschema import Draft202012Validator
     from phase2 import unified_delivery as scenario
-    scope=scenario.config_for(plan)['access'].get('reconciliation_workflow')=='category-template'
+    workflow=scenario.config_for(plan)['access'].get('reconciliation_workflow')
+    scope=workflow in ('category-template','receivables-aging')
     if scope:
-        from phase2 import delivery_reconciliation_scope as variant
+        if workflow == 'receivables-aging':
+            from phase2 import delivery_receivables_scope as variant
+        else:
+            from phase2 import delivery_reconciliation_scope as variant
     operations={tool['name']:tool for tool in (variant.definitions() if scope else definitions())}
     selected=[event for event in events if event.get('continuation')]
     errors=[]

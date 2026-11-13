@@ -439,6 +439,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                 current.update(('reconciliation_transport', 'reconciliation_exception_context'))
                 if input_variant == 'finance-category-template-v1':
                     current.update(('reconciliation_category_template', 'reconciliation_category_transport'))
+                if input_variant == 'finance-receivables-aging-v1':
+                    current.add('receivables_aging')
             if scenario == 'engineering-capacity':
                 current.add('engineering_target_collector')
                 if input_variant == 'engineering-target-selection-v1':

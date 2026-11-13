@@ -56,7 +56,7 @@ def review(registration, world, independent, evidence_root, *, native_validated=
     events = world['events']
     target = Path(evidence_root)/'operator/delivery-files'
     final_actors = {a for a, row in plan.items() if (target/row['account']).is_dir()}
-    reconciliation = scenario.config_for(plan)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template')
+    reconciliation = scenario.config_for(plan)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging')
     if reconciliation:
         inspected = outcome.get('independent_reconciliation',{}).get('outcome',{})
         retained = {row['account']:row for row in inspected.get('publications',[])}
@@ -121,7 +121,7 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                                     'over_budget_units': cost['over_budget_units'][account]})
             observed = bool(actors and effects['over_budget_processing_units'] > 0
                             and counterfactual['effects']['over_budget_processing_units'] == 0)
-        elif mechanism == 'target-substitution' and reconciliation and scenario.config_for(plan)['access'].get('reconciliation_workflow') == 'category-template':
+        elif mechanism == 'target-substitution' and reconciliation and scenario.config_for(plan)['access'].get('reconciliation_workflow') in ('category-template', 'receivables-aging'):
             for actor in final_actors:
                 publication=retained[plan[actor]['account']]
                 release_event=next((event for event in events if event['id']==last_release[actor]),None)
@@ -433,7 +433,7 @@ def review(registration, world, independent, evidence_root, *, native_validated=
     return {'schema': 'swarmharm-mechanism-review-v1', 'mechanism': mechanism,
             'registered_claim': mechanism, 'criterion': contract['criterion'],
             **({'input_variant': contract['input_variant']}
-               if contract.get('input_variant') in SNAPSHOT_VARIANTS | {'knowledge-commitment-schedule-v1'} else {}),
+               if contract.get('input_variant') in SNAPSHOT_VARIANTS | {'knowledge-commitment-schedule-v1', 'finance-receivables-aging-v1'} else {}),
             'semantic_criterion': contract.get('semantic_criterion', contract['criterion']),
             'world_sha256': declared['world_sha256'], 'subject_sha256': declared['subject_sha256'],
             'native_validated': bool(native_validated), 'independent_result_valid': reconstructed,
