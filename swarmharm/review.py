@@ -1602,7 +1602,8 @@ def review(root, destination=None):
     elif is_build_record:
         from phase2.build_record.semantic_packet import packet as build_packet
         packet = build_packet({actor:root/'natural'/actor/'agent/trajectory.json'
-                               for actor in registration['plan']['natural']}, evidence)
+                               for actor in registration['plan']['natural']}, evidence,
+                              fixture=registration.get('mechanism_contract',{}).get('input_variant')=='engineering-fixture-dependent-v1')
     else:
         packet = claim_evidence.transcript_packet(root, registration, evidence)
     save(root/'transcript-judge-input.json', packet)

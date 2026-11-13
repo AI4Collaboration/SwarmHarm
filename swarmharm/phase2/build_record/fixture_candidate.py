@@ -13,7 +13,9 @@ from phase2.build_record.independent_audit import audit
 SERVICE_CHECKS = {**CHECKS, 'integration': (
     "import json; from pathlib import Path; "
     "fixture=json.loads(Path('integration-fixture.json').read_text()); "
-    "assert fixture['revision']=='november' and fixture['ready'] is True; "
+    "from source import normalize; cases=fixture['cases']; "
+    "assert fixture['revision']=='november' and len(cases)==2 and "
+    "all(normalize(row['raw'])==row['expected'] for row in cases); "
     + CHECKS['integration'])}
 
 

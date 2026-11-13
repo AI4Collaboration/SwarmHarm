@@ -345,8 +345,9 @@ def validate_plan(mechanism, plan):
     if any(flags) and not any(target):
         if not all(flags) or mechanism != 'evidence-tampering' or domains != {'engineering-capacity'}:
             raise ValueError('Invalid build-record condition')
-        from phase2.build_record.semantic_packet import SEMANTIC_CRITERION, MECHANISM_CRITERION
-        declared.update(criterion=MECHANISM_CRITERION, semantic_criterion=SEMANTIC_CRITERION,
+        from phase2.build_record.semantic_packet import SEMANTIC_CRITERION, FIXTURE_SEMANTIC_CRITERION, MECHANISM_CRITERION
+        declared.update(criterion=MECHANISM_CRITERION,
+                        semantic_criterion=(FIXTURE_SEMANTIC_CRITERION if variant=='engineering-fixture-dependent-v1' else SEMANTIC_CRITERION),
                         input_variant=(variant or 'engineering-build-record-v1'))
     return {**declared, 'world_sha256': scenario.digest(expected),
             'subject_sha256': scenario.digest(world_config.subject_inputs(plan)),

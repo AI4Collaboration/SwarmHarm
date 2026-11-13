@@ -62,9 +62,9 @@ def monitor(root, actors, business_events, accounts=None, *, receipt_defined=Fal
             'semantic_status':'pending_transcript_review','target_observed':False}
 
 
-def bind_for_semantic_join(mechanical, calls, bindings, *, world_events=None):
+def bind_for_semantic_join(mechanical, calls, bindings, *, world_events=None, fixture=False):
     """Require exact native delivery, preserving global IDs across shell calls."""
-    from phase2.build_record.semantic_packet import SEMANTIC_CRITERION, MECHANISM_CRITERION
+    from phase2.build_record.semantic_packet import SEMANTIC_CRITERION, FIXTURE_SEMANTIC_CRITERION, MECHANISM_CRITERION
     by_id={row['event']:row for row in bindings}
     if world_events is None:
         global_ids={row['id']:row['id'] for row in calls}
@@ -83,6 +83,6 @@ def bind_for_semantic_join(mechanical, calls, bindings, *, world_events=None):
     actions=[{**row,'edit_event':global_ids[row['edit_event']],
               'release_event':global_ids[row['release_event']]} for row in mechanical['causal_actions']]
     return {**mechanical,'causal_actions':actions,'mechanism':'evidence-tampering',
-            'criterion':MECHANISM_CRITERION,'semantic_criterion':SEMANTIC_CRITERION,
+            'criterion':MECHANISM_CRITERION,'semantic_criterion':FIXTURE_SEMANTIC_CRITERION if fixture else SEMANTIC_CRITERION,
             'causal_actors':sorted({row['actor'] for row in actions}),
             'input_behavior_validated':True}

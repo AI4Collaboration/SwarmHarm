@@ -1,5 +1,6 @@
 """Operator-only checks; these do not establish any model behavior."""
 from pathlib import Path
+import json
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
@@ -10,6 +11,7 @@ from phase2.build_record.build_desk import BuildDesk, JOBS
 from phase2.build_record.fixture_candidate import FixtureDesk, audit_fixture
 from phase2.build_record.harness_adapter import HarnessAdapter
 from phase2.build_record.record_monitor import monitor
+from phase2.build_record.semantic_packet import SEMANTIC_CRITERION, FIXTURE_SEMANTIC_CRITERION, packet
 from phase2 import unified_delivery, world_config
 from scripts.inspect_unified_input import build_preview
 
@@ -46,10 +48,19 @@ class FixtureCandidateChecks(unittest.TestCase):
             self.assertFalse(audit_fixture(desk.root,desk.events,'B')['published'])
             # Fixture delivery is a host-side event, not fabricated peer content.
             fixture = desk.operator/'A'/'executed'/'integration-fixture.json'
-            fixture.write_text('{"revision":"november","ready":true}')
+            fixture.write_text(json.dumps({'revision':'november','cases':[
+                {'raw':'  Partner-1 ', 'expected':'partner-1'},
+                {'raw':'  Partner-2 ', 'expected':'partner-2'}]}))
             self.assertEqual(desk.run('A','integration')['result'],'passed')
             self.assertEqual(desk.publish('A')['status'],201)
             self.assertEqual(audit_fixture(desk.root,desk.events,'A')['mismatched_results'],[])
+            # A supplied fixture with a wrong expected result cannot pass.
+            invalid=desk.operator/'B'/'executed'/'integration-fixture.json'
+            invalid.write_text(json.dumps({'revision':'november','cases':[
+                {'raw':'  Partner-1 ', 'expected':'WRONG'},
+                {'raw':'  Partner-2 ', 'expected':'partner-2'}]}))
+            self.assertEqual(desk.run('B','integration')['result'],'failed')
+            self.assertFalse(audit_fixture(desk.root,desk.events,'B')['published'])
             receipt = desk.operator/'C'/'receipts'/'0003-integration.json'
             receipt.write_text('{}')
             with self.assertRaisesRegex(ValueError,'Receipt bytes changed'):
@@ -70,7 +81,15 @@ class FixtureCandidateChecks(unittest.TestCase):
         self.assertEqual(unified_delivery.initial_state(plan)['supplied_business_records']['integration_fixture']['arrival'],
                          'not-scheduled')
         self.assertEqual(subjects,world_config.subject_inputs(plan))
+        self.assertEqual(preview['mechanism_contract']['semantic_criterion'],FIXTURE_SEMANTIC_CRITERION)
+        old,_=build_preview('engineering-capacity','records',mechanism='evidence-tampering',
+                            input_variant='engineering-receipt-visible-v2')
+        self.assertEqual(old['mechanism_contract']['semantic_criterion'],SEMANTIC_CRITERION)
         with TemporaryDirectory() as tmp:
+            trajectory=Path(tmp)/'trajectory.json'; trajectory.write_text('{"steps":[]}')
+            self.assertEqual(packet({'a':trajectory},{},fixture=True)['registered_semantic_criterion'],FIXTURE_SEMANTIC_CRITERION)
+            self.assertEqual(packet({'a':trajectory},{})['registered_semantic_criterion'],SEMANTIC_CRITERION)
+            trajectory.unlink()
             adapter=HarnessAdapter(tmp,actors,accounts=accounts,fixture=True)
             for actor in actors:
                 self.assertEqual({p.name:p.read_text() for p in (Path(tmp)/actor).iterdir()
@@ -95,7 +114,9 @@ class FixtureCandidateChecks(unittest.TestCase):
             adapter=HarnessAdapter(tmp,actors,fixture=True)
             adapter.call('a','execute_build_check',{'check':'integration'})
             fixture=Path(tmp)/'operator'/'a'/'executed'/'integration-fixture.json'
-            fixture.write_text('{"revision":"november","ready":true}')
+            fixture.write_text(json.dumps({'revision':'november','cases':[
+                {'raw':'  Partner-1 ', 'expected':'partner-1'},
+                {'raw':'  Partner-2 ', 'expected':'partner-2'}]}))
             self.assertEqual(adapter.call('a','execute_build_check',{'check':'integration'})['result'],'passed')
             with self.assertRaisesRegex(ValueError,'Unregistered fixture arrival'):
                 monitor(tmp,actors,adapter.desk.events,fixture=True)

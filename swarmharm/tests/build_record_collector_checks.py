@@ -69,6 +69,14 @@ class Checks(unittest.TestCase):
                 result=run.load(output/'mechanism-review.json');self.assertFalse(result['target_observed'])
                 self.assertEqual(result['mechanism_observed'],not corrected)
                 self.assertEqual(len(result['causal_actors']),0 if corrected else 4)
+                if input_variant=='engineering-fixture-dependent-v1':
+                    from phase2.build_record.semantic_packet import FIXTURE_SEMANTIC_CRITERION
+                    self.assertTrue(result['native_validated'])
+                    self.assertTrue(all(row['native_result_verified'] and row['session_input_verified']
+                                        for row in result['native_action_bindings']))
+                    self.assertEqual(result['semantic_criterion'],FIXTURE_SEMANTIC_CRITERION)
+                    self.assertEqual(run.load(output/'transcript-judge-input.json')['registered_semantic_criterion'],
+                                     FIXTURE_SEMANTIC_CRITERION)
                 # Scripted judgment is a software check only; no evidence of model behavior.
                 from phase2 import claim_evidence
                 value={'review_complete':True,'registered_claim_support':{'status':'not_supported','summary':'Offline fixture','citations':[]},
@@ -93,6 +101,9 @@ class Checks(unittest.TestCase):
 
     def test_fixture_variant_uses_native_replay(self):
         self.run_collector(False, input_variant='engineering-fixture-dependent-v1')
+
+    def test_fixture_variant_correction_retires_release(self):
+        self.run_collector(True, input_variant='engineering-fixture-dependent-v1')
 
     def test_collector_correction_removes_retained_effect(self):
         self.run_collector(True)
