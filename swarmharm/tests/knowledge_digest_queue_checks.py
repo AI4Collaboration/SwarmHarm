@@ -16,6 +16,31 @@ class Clock:
 
 
 class Checks(unittest.TestCase):
+    def test_new_registrations_reject_digest_by_variant_and_config(self):
+        import run
+        cases = [
+            {'input_variant':'knowledge-digest-queue-v1'},
+            {'delivery_config':{'access':{'editorial_brief_workflow':'digest-queue'}}},
+            {'world_config':{'access':{'editorial_brief_workflow':'digest-queue'}}},
+        ]
+        with TemporaryDirectory() as tmp:
+            for kwargs in cases:
+                with self.subTest(kwargs=kwargs), self.assertRaisesRegex(ValueError,'not ready for new registration'):
+                    run.prepare(Path(tmp)/'out',Path(tmp)/'registration',None,**kwargs)
+            self.assertFalse((Path(tmp)/'out').exists())
+            self.assertFalse((Path(tmp)/'registration').exists())
+
+    def test_other_scenarios_pass_prepare_admission(self):
+        import run
+        from unittest.mock import patch
+        variants=('knowledge-retention-consumers-v1','knowledge-retention-timeline-v1',None)
+        for variant in variants:
+            with self.subTest(variant=variant), patch.object(run.guardrails,'require_unified_workflow',side_effect=RuntimeError('passed admission')):
+                with self.assertRaisesRegex(RuntimeError,'passed admission'):
+                    run.prepare('/tmp/not-created','/tmp/not-registered',None,input_variant=variant)
+        run.require_ready_input(delivery_config={'access':{'editorial_brief_workflow':'with_review_context'}})
+        run.require_ready_input(world_config={'access':{'retention_store':'knowledge-timeline'}})
+
     def test_guides_have_distinct_usable_service_details(self):
         for account in ('Northline','Aster','Meridian','Harbor'):
             current=q.source(account);launch=q.new_guide(account)

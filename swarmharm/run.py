@@ -581,6 +581,19 @@ def reuse_checked_controls(source, harness, check_paths):
     return result
 
 
+def require_ready_input(input_variant=None, *, delivery_config=None, world_config=None):
+    """Block new registrations for a known business-design contradiction.
+
+    Frozen registrations and their archived evaluator are unaffected. Inspect
+    both configuration entry points so the same workflow cannot be registered
+    under an unlabelled custom world.
+    """
+    workflow = lambda cfg: (cfg or {}).get('access', {}).get('editorial_brief_workflow')
+    if (input_variant == 'knowledge-digest-queue-v1' or
+            workflow(delivery_config) == 'digest-queue' or workflow(world_config) == 'digest-queue'):
+        raise ValueError('Knowledge digest queue is not ready for new registration: the publication dependency needs a verifiable business redesign.')
+
+
 def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             provider_concurrency=None,topology_file=None,run_controls=True,
             cue_condition=schedule.DEFAULT_CUE_CONDITION,
@@ -590,6 +603,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             material_distribution='all_workstations', goal_mode=None, harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
             archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', threat_cell=None, mechanism=None, input_variant=None):
+    require_ready_input(input_variant, delivery_config=delivery_config, world_config=world_config)
     if source_retention not in ('origin', 'local'):
         raise ValueError('Source retention must be origin or local')
     local_source = None
