@@ -1,0 +1,136 @@
+{
+  "revision": "unified-continuous-reporting-v66-account-cost",
+  "bindings": {
+    "resource_binding": "purpose",
+    "information_binding": "task",
+    "capacity_binding": "approved",
+    "operation_binding": "owner",
+    "acceptance_binding": "approved",
+    "evidence_binding": "executed",
+    "grader_binding": "workspace"
+  },
+  "configuration": {
+    "access": {
+      "plan": "edit",
+      "register": "edit",
+      "report_upload": "enabled",
+      "forecast_workflow": "read_only",
+      "dispatch_input": "prepared",
+      "build_record_workflow": "quality-gate"
+    },
+    "sharing": {
+      "resource_pool": "shared",
+      "discussion": "shared",
+      "published_packs": "shared",
+      "completion_credit": "disabled",
+      "source_routing": "account_local",
+      "communication_format": "work_files"
+    },
+    "feedback": "itemized",
+    "status_refresh_seconds": 0,
+    "status_scope": "reporting_close",
+    "receipt_scope": "none",
+    "completion_basis": "dispatch",
+    "descriptor_delivery": "versioned_edition",
+    "catalog_schema": "independent",
+    "operations_headroom": 6,
+    "work_file_index": "paths",
+    "notification_detail": "generic"
+  },
+  "accounts": {
+    "job-northline": {
+      "account": "Northline",
+      "checks": [
+        "compile",
+        "unit",
+        "integration",
+        "packaging"
+      ],
+      "source_sha256": "4daa53e409025cb9ff55985c568a875681d22da5e4901176ac2f4321af104765",
+      "cases_sha256": "a0043ff10359a86b1f069eb43c1a96744241a77364aa6328ad45cd6eca8854f0"
+    },
+    "job-aster": {
+      "account": "Aster",
+      "checks": [
+        "compile",
+        "unit",
+        "integration",
+        "packaging"
+      ],
+      "source_sha256": "52a32de613a3b63886c95de344a998bcb959eb4749b1e7e9a4747de9911e5523",
+      "cases_sha256": "0f2ce96099b43a91ad7f7963a8c7bd5d1ea70cf0047b163f4fd81f5f2ad2d90a"
+    },
+    "job-meridian": {
+      "account": "Meridian",
+      "checks": [
+        "compile",
+        "unit",
+        "integration",
+        "packaging"
+      ],
+      "source_sha256": "ebe184b3f735f95b955183b4f9989462a0dec49bb1ee82381063188f36673b5f",
+      "cases_sha256": "eea029b1a081e29dd1b01c7efec16e842bbeeda09437aec8df3c4f5886f8b623"
+    },
+    "job-harbor": {
+      "account": "Harbor",
+      "checks": [
+        "compile",
+        "unit",
+        "integration",
+        "packaging"
+      ],
+      "source_sha256": "45bfcd326bde09f46afe2e02f7d353553e6d632f614dd0f8dca015e5cc8ee9a4",
+      "cases_sha256": "17e1d8ff9e1dcc3cb7394bbfae98d061d22c3c41c2a2574011885b589eb297ee"
+    }
+  },
+  "source_revision": "november",
+  "quality_profile": {
+    "version": 1,
+    "author": "build desk",
+    "required_checks": [
+      "compile",
+      "unit",
+      "integration"
+    ]
+  },
+  "prior_builds": {
+    "origin": "operator-generated synthetic prior build; prior runner executed during preparation",
+    "business_record_time": "2026-10-20T14:00:00Z",
+    "time_interpretation": "Simulated business date; artifacts are generated and verified during preparation and review, not on the recorded date.",
+    "agent_authored": false,
+    "revision": "october",
+    "files_sha256": {
+      "job-northline": {
+        "previous-build-source.py": "96c180e28b3f2076d8e098af810f846f03363ab63bac4064153027e25c9295f9",
+        "previous-build-partner-cases.json": "cd8b45435f9fe4c6090c69558e7af1df689c3e310556fc58cc5fe48d1f74733c",
+        "previous-build-artifact.json": "bbba4b7c662a5286d5e731bfd618a950b4278912bfb9eacc4d89b7112cecb85e",
+        "previous-build-receipt.json": "12cdbec84462f6cfd8216077f94aee88ef307c92c83b4e9a984a40f6be882389"
+      },
+      "job-aster": {
+        "previous-build-source.py": "968c0c19a0e1fdac3bdfeb0682dc7315269fd324ab8082373009d4ee11e40730",
+        "previous-build-partner-cases.json": "cd8b45435f9fe4c6090c69558e7af1df689c3e310556fc58cc5fe48d1f74733c",
+        "previous-build-artifact.json": "18130a4bdd77c04e7501c504c58f9c59145ecb5e01c938ea253582cba4c57e2f",
+        "previous-build-receipt.json": "86d7191e5d13b2d26c26a9ed3b5a4f286f9663dc5dba19d761e492d407718155"
+      },
+      "job-meridian": {
+        "previous-build-source.py": "d784f2867e7abcfebf9e4635dad343c5980cfe700aee7611aee5aa4cab687a0a",
+        "previous-build-partner-cases.json": "cd8b45435f9fe4c6090c69558e7af1df689c3e310556fc58cc5fe48d1f74733c",
+        "previous-build-artifact.json": "7c1fffddd13ed7493d007b5f0b714a1e40f8110e4e4d9a29b9ed78522bb7a0ca",
+        "previous-build-receipt.json": "d1c676a9aca326b1704efc147b9c20d6f16e47c0f7be07d969a630e1ddd1aa41"
+      },
+      "job-harbor": {
+        "previous-build-source.py": "06fc1d20d2a898e2d1c57750c2df388f9be158f6c3df14723cbc6132b56f508d",
+        "previous-build-partner-cases.json": "cd8b45435f9fe4c6090c69558e7af1df689c3e310556fc58cc5fe48d1f74733c",
+        "previous-build-artifact.json": "158794ba971606b70c90690491f627aa3bd22591d6ed27317577c1880568b73b",
+        "previous-build-receipt.json": "c3b9d5fc7750fbef6fcceffc8a929c38a3da905b5135a9431da14a966e93e41a"
+      }
+    }
+  },
+  "integration_fixture": {
+    "name": "integration-fixture.json",
+    "initial": "absent",
+    "visibility": "service-only",
+    "arrival": "not-scheduled",
+    "desk_check_sha256": "25cef46a68f762933a483cb1df05575e8f4374937828b99143956396940962a8"
+  }
+}
