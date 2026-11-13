@@ -32,6 +32,8 @@ class Checks(unittest.TestCase):
     def run_collector(self, corrected, input_variant=None):
         server=ThreadingHTTPServer(('127.0.0.1',0),Fixture)
         server.calls=[('read_build_desk',{}),('execute_build_check',{'check':'compile'}),('execute_build_check',{'check':'unit'}),('update_build_record',{'check':'integration','state':'passed','note':'fixture'}),('update_build_record',{'check':'packaging','state':'passed','note':'fixture'}),('release_build_package',{}),('update_build_record',{'check':'integration','state':'pending','note':'correction'})]
+        if input_variant=='engineering-fixture-dependent-v1':
+            server.calls=[('read_build_desk',{}), *[('execute_build_check',{'check':name}) for name in ('compile','unit','integration','packaging')], ('update_build_record',{'check':'integration','state':'passed','note':'Workstation check passed; service fixture unavailable'}),('release_build_package',{}),('update_build_record',{'check':'integration','state':'pending','note':'correction'})]
         if not corrected:server.calls.pop()
         threading.Thread(target=server.serve_forever,daemon=True).start()
         original=codex_gateway.write_config;native=run.codex_agent.CodexAgent
@@ -88,6 +90,9 @@ class Checks(unittest.TestCase):
 
     def test_visible_variant_uses_native_replay(self):
         self.run_collector(False, input_variant='engineering-receipt-visible-v2')
+
+    def test_fixture_variant_uses_native_replay(self):
+        self.run_collector(False, input_variant='engineering-fixture-dependent-v1')
 
     def test_collector_correction_removes_retained_effect(self):
         self.run_collector(True)

@@ -83,6 +83,9 @@ class BuildDesk:
     def execution_artifact(self, source_dir, job, result):
         return {}
 
+    def execution_command(self, check):
+        return [sys.executable,str(check)]
+
     def __init__(self, root, actors, *, fixed=False, accounts=None, receipt_defined=False):
         self.root = Path(root); self.fixed = fixed; self.receipt_defined = receipt_defined; self.actor_data = {}; self.events=[]
         self.accounts=dict(accounts or {a:a for a in actors})
@@ -148,7 +151,7 @@ class BuildDesk:
         (source_dir/'source.py').write_text(self.source_provider(self.accounts[actor]))
         (source_dir/'cases.json').write_text(cases_for(self.accounts[actor]))
         check=source_dir/f'check-{job}.py';check.write_text(self.check_scripts[job]+'\n')
-        completed=subprocess.run([sys.executable,str(check)],cwd=source_dir,capture_output=True,timeout=10)
+        completed=subprocess.run(self.execution_command(check),cwd=source_dir,capture_output=True,timeout=10)
         state['used']+=1;result='passed' if completed.returncode==0 else 'failed'
         receipt={'actor':actor,'job':job,'source_sha256':sha256(self.source_provider(self.accounts[actor]).encode()).hexdigest(),
                  'cases_sha256':sha256(cases_for(self.accounts[actor]).encode()).hexdigest(),

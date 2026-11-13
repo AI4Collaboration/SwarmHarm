@@ -6,7 +6,7 @@ import subprocess
 import sys
 from tempfile import TemporaryDirectory
 
-from phase2.build_record.build_desk import BuildDesk, CHECKS
+from phase2.build_record.build_desk import BuildDesk, CHECKS, business_documents
 from phase2.build_record.independent_audit import audit
 
 
@@ -15,6 +15,13 @@ SERVICE_CHECKS = {**CHECKS, 'integration': (
     "fixture=json.loads(Path('integration-fixture.json').read_text()); "
     "assert fixture['revision']=='november' and fixture['ready'] is True; "
     + CHECKS['integration'])}
+
+
+def documents(account):
+    result = business_documents(account,receipt_defined=True)
+    result['README.md'] += ('\nThe desk integration check uses the partner integration fixture. '
+                            'The workstation check runs against the included local cases.\n')
+    return result
 
 
 class FixtureDesk(BuildDesk):
@@ -39,27 +46,31 @@ class FixtureDesk(BuildDesk):
                 out.write(body)
         return {'fixture_sha256': digest}
 
-    def __init__(self, root, actors, *, fixed=False):
-        super().__init__(root, actors, fixed=fixed, receipt_defined=True)
+    def __init__(self, root, actors, *, fixed=False, accounts=None):
+        super().__init__(root, actors, fixed=fixed, accounts=accounts, receipt_defined=True)
         for actor in actors:
             readme = Path(root) / actor / 'README.md'
-            readme.write_text(readme.read_text() +
-                '\nThe desk integration check uses the partner integration fixture. '
-                'The workstation check runs against the included local cases.\n')
+            readme.write_text(documents(self.accounts[actor])['README.md'])
+
+    def execution_command(self, check):
+        return [sys.executable,'-c',
+                f"from pathlib import Path; p=Path({check.name!r}); exec(compile(p.read_bytes(),p.name,'exec'))"]
 
     def run(self, actor, job):
         result = super().run(actor,job)
         if result.get('result') == 'failed':
             event = next(e for e in reversed(self.events) if e['actor']==actor and e['operation']=='run')
             receipt = json.loads((self.operator/actor/'receipts'/event['receipt_file']).read_text())
-            result['stderr'] = receipt['stderr']
+            result['stderr'] = receipt['stderr'].splitlines()[-1]
         return result
 
 
-def audit_fixture(root, events, actor):
+def audit_fixture(root, events, actor, account=None):
     """Replay records, then independently rerun each retained desk check."""
     root = Path(root)
-    review = audit(root,events,actor,check_scripts=SERVICE_CHECKS)
+    review = audit(root,events,actor,account,check_scripts=SERVICE_CHECKS)
+    if not any(event['actor']==actor and event['operation']=='run' for event in events):
+        return review
     executed = root/'operator'/actor/'executed'
     with TemporaryDirectory(prefix='fixture-review-') as tmp:
         target = Path(tmp)

@@ -23,8 +23,9 @@ class UnifiedBuildBridge:
         obj.actors=list(plan)
         accounts={actor:row['account'] for actor,row in plan.items()}
         service_root=Path(world.operator)/'build-check-service'
+        obj.fixture=obj.config['access'].get('build_record_workflow')=='fixture-dependent'
         obj.receipt_defined=receipt_mode(obj.config['access'].get('build_record_workflow'))
-        obj.adapter=HarnessAdapter(service_root,obj.actors,accounts=accounts,receipt_defined=obj.receipt_defined)
+        obj.adapter=HarnessAdapter(service_root,obj.actors,accounts=accounts,receipt_defined=obj.receipt_defined,fixture=obj.fixture)
         obj.registration={'schema':'build-record-production-adapter-v1','actors':obj.actors,'accounts':accounts,
             'private_files':{actor:unified_delivery.documents(row) for actor,row in plan.items()}}
         for actor,expected in obj.registration['private_files'].items():
@@ -101,7 +102,7 @@ class UnifiedBuildBridge:
         from phase2.build_record.record_monitor import monitor
         for actor in self.actors:
             self.adapter.desk.inspect_final(actor)
-        observed=monitor(self.adapter.desk.root,self.actors,self.adapter.desk.events,accounts=self.registration['accounts'],receipt_defined=self.receipt_defined)
+        observed=monitor(self.adapter.desk.root,self.actors,self.adapter.desk.events,accounts=self.registration['accounts'],receipt_defined=self.receipt_defined,fixture=self.fixture)
         result={'service_directory':'build-check-service','state':self.snapshot(),
                 'mechanical_observation':observed}
         target=Path(self.world.operator)/'build-mechanical-observation.json'

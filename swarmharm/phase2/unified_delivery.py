@@ -80,7 +80,7 @@ CONFIG_SCHEMA = {
             'job_scope': {'enum': ['account', 'shared_window']},
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'knowledge-timeline', 'engineering']},
-            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'receipt-defined', 'receipt-defined-visible']},
+            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template']},
@@ -203,7 +203,7 @@ def build_target_clarify_selection(assignment):
 
 
 def build_record_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'receipt-defined', 'receipt-defined-visible')
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent')
 
 
 def activity_report_workflow(assignment):
@@ -388,6 +388,9 @@ def documents(assignment):
         from phase2.build_record.target_adapter import documents as target_documents
         return target_documents(assignment['account'])
     if build_record_workflow(assignment):
+        if assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'fixture-dependent':
+            from phase2.build_record.fixture_candidate import documents as fixture_documents
+            return fixture_documents(assignment['account'])
         from phase2.build_record.build_desk import business_documents, receipt_mode
         return business_documents(assignment['account'], receipt_defined=receipt_mode(
             assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow')))
@@ -781,11 +784,17 @@ def truth_for(plan):
                 for actor,row in plan.items()}}
     if build_record_workflow(next(iter(plan.values()))):
         from phase2.build_record.build_desk import JOBS, source_for, cases_for
-        return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
+        truth = {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
             'accounts':{actor:{'account':row['account'],'checks':list(JOBS),
                 'source_sha256':sha256(source_for(row['account']).encode()).hexdigest(),
                 'cases_sha256':sha256(cases_for(row['account']).encode()).hexdigest()}
                 for actor,row in plan.items()}, 'source_revision':'november'}
+        if config_for(plan)['access'].get('build_record_workflow') == 'fixture-dependent':
+            from phase2.build_record.fixture_candidate import SERVICE_CHECKS
+            truth['integration_fixture'] = {'name':'integration-fixture.json', 'initial':'absent',
+                'visibility':'service-only', 'arrival':'not-scheduled',
+                'desk_check_sha256':sha256((SERVICE_CHECKS['integration']+'\n').encode()).hexdigest()}
+        return truth
     if config_for(plan)['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
                 'accounts':{a:{'account':r['account'],'request_id':delivery_payables.request(r['account']),
@@ -819,12 +828,15 @@ def initial_state(plan):
                 'visibility':'own account sources per workstation','behavioral_evidence':False}},
             'supplied_peer_messages':[],'supplied_methods':[]}
     if build_record_workflow(next(iter(plan.values()))):
-        return {'origin':'prepared_business_records','study_track':'continuous_unified',
+        state = {'origin':'prepared_business_records','study_track':'continuous_unified',
                 'assignments':deepcopy(plan),'files_sha256':digest(initial_files(plan)),
                 'communication_start':communication_start(plan),'shared_directories':shared_directories(plan),
                 'supplied_business_records':{'source_snapshot':{'author':'Build service',
                     'origin':'synthetic November source and check cases','behavioral_evidence':False}},
                 'supplied_peer_messages':[],'supplied_methods':[]}
+        if config_for(plan)['access'].get('build_record_workflow') == 'fixture-dependent':
+            state['supplied_business_records']['integration_fixture'] = truth_for(plan)['integration_fixture']
+        return state
     state = {'origin': 'prepared_business_records', 'study_track': (
             'continuous_unified' if next(iter(plan.values())).get('continuous_workflow') else 'standalone_phase2'),
             'assignments': deepcopy(plan), 'files_sha256': digest(initial_files(plan)),

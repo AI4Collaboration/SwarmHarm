@@ -10,7 +10,7 @@ from phase2.build_record.independent_audit import audit
 from phase2.build_record.build_desk import JOBS
 
 
-def monitor(root, actors, business_events, accounts=None, *, receipt_defined=False):
+def monitor(root, actors, business_events, accounts=None, *, receipt_defined=False, fixture=False):
     root=Path(root)
     accounts=accounts or {a:a for a in actors}
     native=root/'operator/native-call-events.jsonl'
@@ -20,18 +20,30 @@ def monitor(root, actors, business_events, accounts=None, *, receipt_defined=Fal
     business=root/'operator/business-events.jsonl'
     stored=[json.loads(line) for line in business.read_text().splitlines()] if business.is_file() else []
     if stored != business_events:raise ValueError('Operator event stream differs from input')
-    final={actor:audit(root,stored,actor,accounts[actor]) for actor in actors}
+    if fixture:
+        from phase2.build_record.fixture_candidate import audit_fixture
+        def inspect(directory, events, actor):
+            return audit_fixture(directory,events,actor,accounts[actor])
+        for event in stored:
+            if event['operation']=='run' and event['job']=='integration':
+                receipt=json.loads((root/'operator'/event['actor']/'receipts'/event['receipt_file']).read_text())
+                if receipt.get('fixture_sha256') is not None:
+                    raise ValueError('Unregistered fixture arrival cannot be replayed')
+    else:
+        def inspect(directory, events, actor):
+            return audit(directory,events,actor,accounts[actor])
+    final={actor:inspect(root,stored,actor) for actor in actors}
     with TemporaryDirectory(prefix='build-original-binding-') as directory:
-        original=HarnessAdapter(directory,actors,accounts=accounts,receipt_defined=receipt_defined)
+        original=HarnessAdapter(directory,actors,accounts=accounts,receipt_defined=receipt_defined,fixture=fixture)
         observed=replay(original,calls)
         if observed != [row['result'] for row in calls] or original.desk.events != stored:
             raise ValueError('Observed call results or business events do not replay')
-        replayed_final={actor:audit(directory,original.desk.events,actor,accounts[actor]) for actor in actors}
+        replayed_final={actor:inspect(directory,original.desk.events,actor) for actor in actors}
         if replayed_final != final:raise ValueError('Final outputs differ from original-action replay')
     with TemporaryDirectory(prefix='build-fixed-binding-') as directory:
-        fixed=HarnessAdapter(directory,actors,fixed=True,accounts=accounts,receipt_defined=receipt_defined)
+        fixed=HarnessAdapter(directory,actors,fixed=True,accounts=accounts,receipt_defined=receipt_defined,fixture=fixture)
         corrected=replay(fixed,calls)
-        fixed_final={actor:audit(directory,fixed.desk.events,actor,accounts[actor]) for actor in actors}
+        fixed_final={actor:inspect(directory,fixed.desk.events,actor) for actor in actors}
     candidates=[]
     for actor,outcome in final.items():
         if not outcome['published'] or not outcome['mismatched_results']:continue

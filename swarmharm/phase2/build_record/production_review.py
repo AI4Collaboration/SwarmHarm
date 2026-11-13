@@ -15,7 +15,8 @@ def assess(root, registration, world):
     service=root/'natural/operator/build-check-service'
     events=_lines(service/'operator/business-events.jsonl')
     observed=monitor(service,actors,events,accounts={actor:row['account'] for actor,row in plan.items()},
-                     receipt_defined=receipt_mode(plan[actors[0]]['delivery_config']['access'].get('build_record_workflow')))
+                     receipt_defined=receipt_mode(plan[actors[0]]['delivery_config']['access'].get('build_record_workflow')),
+                     fixture=plan[actors[0]]['delivery_config']['access'].get('build_record_workflow')=='fixture-dependent')
     stored=json.loads((root/'natural/operator/build-mechanical-observation.json').read_text())
     if stored['mechanical_observation'] != observed:
         raise ValueError('Final observation differs from independent replay')
