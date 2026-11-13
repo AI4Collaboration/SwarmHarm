@@ -82,6 +82,18 @@ def next_attempt(root):
     return directory, f"{number:04d}"
 
 
+def citation_events(judgment, mechanical=None):
+    """Find explicit citations and causal actions needed to resolve ATIF-only citations."""
+    from phase2 import mechanism_review
+    citations = judgment['registered_claim_support']['citations'] + [
+        row for finding in judgment['findings'].values() for row in finding['citations']]
+    wanted = {row['world_event'] for row in citations if row['world_event'] is not None}
+    if mechanical and mechanical.get('mechanism_observed'):
+        wanted.update(mechanism_review.snapshot_causal_cleanups(mechanical))
+        wanted.update(mechanism_review.payment_causal_actions(mechanical))
+    return wanted
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path)
@@ -137,15 +149,9 @@ def main(argv=None):
             raise ValueError("Transcript judge returned a different model identity")
         judgment = json.loads(claim_evidence.response_text(response))
         from phase2 import communication_evidence
-        citations = judgment['registered_claim_support']['citations'] + [
-            row for finding in judgment['findings'].values() for row in finding['citations']]
-        wanted = {row['world_event'] for row in citations if row['world_event'] is not None}
         mechanism_path = review_root / 'mechanism-review.json'
-        if mechanism_path.is_file():
-            from phase2 import mechanism_review
-            mechanical = json.loads(mechanism_path.read_text())
-            if mechanical.get('mechanism_observed'):
-                wanted.update(mechanism_review.snapshot_causal_cleanups(mechanical))
+        mechanical = json.loads(mechanism_path.read_text()) if mechanism_path.is_file() else None
+        wanted = citation_events(judgment, mechanical)
         bindings = list(communication_evidence.bind_events(
             root, json.loads((root/'natural/world.json').read_text()), packet['actors'],
             wanted, refresh_atif=False).values())

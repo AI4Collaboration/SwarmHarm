@@ -488,7 +488,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             current.update(('finance_payables', 'finance_payables_transport'))
         if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':
             current.update(('finance_timed_payables', 'finance_timed_v2'))
-            if input_variant == 'finance-account-retirement-v1':current.update(('finance_closure','finance_closure_collector'))
+            if input_variant == 'finance-account-retirement-v1':current.update(('finance_closure','finance_closure_collector','finance_citation'))
         if mechanism == 'work-lifecycle' and scenario in ('engineering-capacity', 'knowledge-work'):
             current.update(('retention_causality', 'retention_citation'))
         if mechanism == 'work-lifecycle' and scenario == 'engineering-capacity':

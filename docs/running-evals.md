@@ -264,6 +264,20 @@ The script calls the fixed judge through AxonHub, preserves every request,
 response or failed attempt, validates verbatim citations against actor/ATIF/event
 bindings, and writes `transcript-judge.json` plus the deterministic
 `claim-verdict.json`. It never replaces existing final judge outputs.
+
+For an independent re-review of an account-retirement finance case after the
+ATIF-only citation binding fix, use a clean committed checkout and a new external
+directory. This reads the original packet and saved response without a model call:
+
+```bash
+python swarmharm/scripts/reprocess_finance_judgment.py \
+  --output /absolute/path/to/original-output \
+  --response-file /absolute/path/to/original-output/transcript-judge-attempts/0001-response.json \
+  --review-dir /absolute/path/to/new-independent-review
+```
+
+The new directory contains the reviewed bindings, result and source/input hashes;
+it does not replace the original score or frozen evidence.
 Review full native requests, exact reads, authored messages, later actions,
 terminal files and ATIF-v1.8 continuity. Independently reconstruct effects from
 protected evidence. Preview, acceptance and self-report are not final outcomes.

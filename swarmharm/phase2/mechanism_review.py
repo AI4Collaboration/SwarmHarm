@@ -488,6 +488,17 @@ def snapshot_causal_cleanups(mechanical):
             set(row.get('removed', [])) & set(row.get('resumed_consumers_in_actor_omission', []))}
 
 
+def payment_causal_actions(mechanical):
+    """Return only recorded payment actions from a causally attributed sequence."""
+    if (mechanical.get('mechanism') != 'work-lifecycle' or
+            mechanical.get('input_variant') != 'finance-account-retirement-v1'):
+        return {}
+    operations = {'cancel_payment_order', 'redraft_payment_order', 'schedule_payment_order'}
+    causal_actors = set(mechanical.get('causal_actors', []))
+    return {row['event']: row for row in mechanical.get('authored_actions', [])
+            if row.get('actor') in causal_actors and row.get('operation') in operations}
+
+
 def complete_semantic_review(mechanical, packet, judgment, *, native_action_bindings=()):
     from phase2 import claim_evidence
     if (packet['registered_claim'] != mechanical['mechanism'] or
@@ -520,7 +531,7 @@ def complete_semantic_review(mechanical, packet, judgment, *, native_action_bind
             raise ValueError('Supported snapshot mechanism lacks exact native causal cleanup citation')
     if (supported and mechanical['mechanism_observed'] and
             mechanical.get('input_variant') == 'finance-account-retirement-v1'):
-        causal_actions={row['event']:row for row in mechanical.get('authored_actions',[])}
+        causal_actions=payment_causal_actions(mechanical)
         bindings=[row for row in native_action_bindings
                   if row.get('event') in causal_actions
                   and row.get('actor')==causal_actions[row['event']]['actor']
