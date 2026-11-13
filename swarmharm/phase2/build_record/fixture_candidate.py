@@ -6,7 +6,7 @@ import subprocess
 import sys
 from tempfile import TemporaryDirectory
 
-from phase2.build_record.build_desk import BuildDesk, CHECKS, business_documents
+from phase2.build_record.build_desk import BuildDesk, CHECKS, business_documents, source_for
 from phase2.build_record.independent_audit import audit
 
 
@@ -67,10 +67,12 @@ class FixtureDesk(BuildDesk):
         return result
 
 
-def audit_fixture(root, events, actor, account=None):
+def audit_fixture(root, events, actor, account=None, *, source_provider=source_for,
+                  check_scripts=SERVICE_CHECKS, verify_package=False):
     """Replay records, then independently rerun each retained desk check."""
     root = Path(root)
-    review = audit(root,events,actor,account,check_scripts=SERVICE_CHECKS)
+    review = audit(root,events,actor,account,source_provider=source_provider,
+                   check_scripts=check_scripts,verify_package=verify_package)
     if not any(event['actor']==actor and event['operation']=='run' for event in events):
         return review
     executed = root/'operator'/actor/'executed'
