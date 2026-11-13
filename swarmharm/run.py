@@ -486,6 +486,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             current.update(('finance_payables', 'finance_payables_transport'))
         if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':
             current.update(('finance_timed_payables', 'finance_timed_v2'))
+            if input_variant == 'finance-account-retirement-v1':current.update(('finance_closure','finance_closure_collector'))
         if mechanism == 'work-lifecycle' and scenario in ('engineering-capacity', 'knowledge-work'):
             current.update(('retention_causality', 'retention_citation'))
         if mechanism == 'work-lifecycle' and scenario == 'engineering-capacity':
@@ -750,6 +751,10 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         from phase2 import delivery_payables_timed
         if min(budget['max_actor_seconds'],budget['max_batch_seconds']) <= delivery_payables_timed.SETTLEMENT_SECONDS:
             raise ValueError('Registered observation window must include the actual settlement time')
+    if input_variant == 'finance-account-retirement-v1':
+        from phase2 import finance_closure
+        if min(budget['max_actor_seconds'],budget['max_batch_seconds']) <= finance_closure.SECOND_WINDOW:
+            raise ValueError('Registered observation window must include both payment windows')
     if harness_kind in ('claude-code','codex'):
         if harness_kind=='codex':budget['max_output_tokens_per_response']=None
         budget.update(max_transport_attempts_per_request=1,transport_retry_backoff_seconds=0)
@@ -1731,6 +1736,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     if unified_delivery.consolidation_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.consolidation_admission import validate
         path_validation = validate(reg['phase2']['assignments'])
+    elif unified_delivery.finance_closure_workflow(next(iter(reg['phase2']['assignments'].values()))):
+        from phase2.finance_closure import validate
+        path_validation = validate(reg['phase2']['assignments'])
     elif unified_delivery.editorial_brief_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.editorial_brief.admission import validate
         path_validation = validate(reg['phase2']['assignments'])
@@ -1826,6 +1834,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         if unified_delivery.consolidation_workflow(next(iter(extension_plan.values()))):
             from phase2.consolidation_bridge import ConsolidationBridge
             extension=ConsolidationBridge.from_plan(world,extension_plan,reg['component_initial_state'])
+        elif unified_delivery.finance_closure_workflow(next(iter(extension_plan.values()))):
+            from phase2.finance_closure_bridge import ClosureBridge
+            extension=ClosureBridge.from_plan(world,extension_plan,reg['component_initial_state'])
         elif unified_delivery.editorial_brief_workflow(next(iter(extension_plan.values()))):
             from phase2.editorial_brief.unified_bridge import UnifiedEditorialBridge
             extension=UnifiedEditorialBridge.from_plan(world,extension_plan,reg['component_initial_state'])
@@ -1943,7 +1954,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     extension.surface.bind(actor,value['session_file'], writer_guard=agents[actor].record_guard)
                 states[actor][f'{harness_folder}_session']=value
             activation_time=utc()
-            if getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') in ('timed', 'timed-v2'):
+            if getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') in ('timed', 'timed-v2', 'account-retirement'):
                 extension.start_payables_cycle(activation_time)
             save(root/name/'activation.json',{
                 'policy':'simultaneous_start_barrier',
@@ -2498,7 +2509,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     for candidate in active.copy():
                         if states[candidate]['status']=='waiting_for_platform_change':
                             submit(candidate)
-                if continuation_update_pending() and extension.advance_business_time(time.monotonic()-(extension._clock_start if getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') in ('timed', 'timed-v2') else continuation_began)):
+                if continuation_update_pending() and extension.advance_business_time(time.monotonic()-(extension._clock_start if getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') in ('timed', 'timed-v2', 'account-retirement') else continuation_began)):
                     export();wake_waiting()
                 if phase2_pending is not None and not running and not source_handoff_ready(reg,world):
                     if publication_pending() or followup_pending():

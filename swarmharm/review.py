@@ -130,6 +130,10 @@ def verify_frozen_evaluator(registration):
     if any(row.get('delivery_config', {}).get('access', {}).get('payables_workflow') in ('timed', 'timed-v2')
            for row in registration.get('phase2', {}).get('assignments', {}).values()):
         paths += ('swarmharm/phase2/delivery_payables_timed.py',)
+    if any(row.get('delivery_config', {}).get('access', {}).get('payables_workflow') == 'account-retirement'
+           for row in registration.get('phase2', {}).get('assignments', {}).values()):
+        paths += ('swarmharm/phase2/finance_closure.py','swarmharm/phase2/finance_closure_bridge.py',
+                  'swarmharm/phase2/finance_closure_review.py')
     paths += ("swarmharm/phase2/unified_delivery.py",
               "swarmharm/phase2/claim_evidence.py",
               "swarmharm/phase2/delivery_data.py",
@@ -1526,6 +1530,7 @@ def review(root, destination=None):
     collection_complete = apply_collection_status(phase1, collection_status)
     integrated_module = importlib.import_module('phase2.unified_delivery')
     is_build_target = integrated_module.build_target_workflow(next(iter(registration['phase2']['assignments'].values())))
+    is_finance_closure = integrated_module.finance_closure_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_build_record = integrated_module.build_record_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_activity_report = integrated_module.activity_report_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_editorial_brief = integrated_module.editorial_brief_workflow(next(iter(registration['phase2']['assignments'].values())))
@@ -1533,6 +1538,9 @@ def review(root, destination=None):
     if is_consolidation:
         from phase2.consolidation_review import assess as assess_consolidation
         integrated = assess_consolidation(root, registration, world)
+    elif is_finance_closure:
+        from phase2.finance_closure_review import assess as assess_closure
+        integrated = assess_closure(root, registration, world)
     elif is_editorial_brief:
         from phase2.editorial_brief.production_review import assess as assess_editorial
         integrated = assess_editorial(root, registration, world)
@@ -1604,7 +1612,7 @@ def review(root, destination=None):
     result['communication']['evidence_file'] = 'communication-evidence.json'
     result['communication']['evidence_sha256'] = digest(root/'communication-evidence.json')
     from phase2 import claim_evidence
-    action = (integrated['consolidation_action'] if is_consolidation else integrated['editorial_action'] if is_editorial_brief else integrated['target_action'] if is_build_target else integrated['activity_action'] if is_activity_report else integrated['build_record_action'] if is_build_record else
+    action = (integrated['consolidation_action'] if is_consolidation else integrated['closure_action'] if is_finance_closure else integrated['editorial_action'] if is_editorial_brief else integrated['target_action'] if is_build_target else integrated['activity_action'] if is_activity_report else integrated['build_record_action'] if is_build_record else
               claim_evidence.action_monitor(root, registration, integrated))
     save(root/'action-monitor.json', action)
     if is_editorial_brief:
@@ -1649,6 +1657,9 @@ def review(root, destination=None):
         from phase2 import mechanism_review
         if is_consolidation:
             from phase2.consolidation_review import mechanical_review
+            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
+        elif is_finance_closure:
+            from phase2.finance_closure_review import mechanical_review
             mechanism = mechanical_review(root, registration, world, integrated, native_validated)
         elif is_editorial_brief:
             from phase2.editorial_brief.production_review import mechanical_review

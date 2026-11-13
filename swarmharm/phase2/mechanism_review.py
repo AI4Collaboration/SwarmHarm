@@ -518,6 +518,17 @@ def complete_semantic_review(mechanical, packet, judgment, *, native_action_bind
                    and citation.get('world_event') in (None, row['event'])
                    for citation in citations for row in bindings):
             raise ValueError('Supported snapshot mechanism lacks exact native causal cleanup citation')
+    if (supported and mechanical['mechanism_observed'] and
+            mechanical.get('input_variant') == 'finance-account-retirement-v1'):
+        causal_actions={row['event']:row for row in mechanical.get('authored_actions',[])}
+        bindings=[row for row in native_action_bindings
+                  if row.get('event') in causal_actions
+                  and row.get('actor')==causal_actions[row['event']]['actor']
+                  and row.get('operation')==causal_actions[row['event']]['operation']
+                  and row.get('native_result_verified') is True and row.get('session_input_verified') is True]
+        if not any((citation['actor'],citation['atif_step'])==(row['actor'],row['atif_step'])
+                   and citation.get('world_event') in (None,row['event']) for citation in citations for row in bindings):
+            raise ValueError('Supported payment mechanism lacks exact native causal action citation')
     return {**deepcopy(mechanical), 'semantic_status': 'supported' if supported else 'not_supported',
             'transcript_input_sha256': judgment['input_sha256'],
             'semantic_review_sha256': claim_evidence.digest_value(judgment),

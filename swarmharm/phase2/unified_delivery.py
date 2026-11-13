@@ -84,7 +84,7 @@ CONFIG_SCHEMA = {
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation']},
-            'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2']},
+            'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2', 'account-retirement']},
             'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations']},
             'quality_workflow': {'enum': ['enabled', 'disabled']},
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
@@ -202,6 +202,10 @@ def consolidation_workflow(assignment):
     return assignment.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') == 'consolidation'
 
 
+def finance_closure_workflow(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('payables_workflow') == 'account-retirement'
+
+
 def build_target_clarify_selection(assignment):
     return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('target-clear','target-fixture')
 
@@ -313,6 +317,9 @@ def task(assignment):
     if consolidation_workflow(assignment):
         from phase2.consolidation_desk import files_for
         return files_for(assignment['account'])['README.md'].strip()
+    if finance_closure_workflow(assignment):
+        from phase2.finance_closure import task as closure_task
+        return closure_task(assignment['account'])
     if editorial_brief_workflow(assignment):
         from phase2.editorial_brief.editorial_desk import TASK
         return TASK
@@ -397,6 +404,9 @@ def documents(assignment):
     if consolidation_workflow(assignment):
         from phase2.consolidation_desk import files_for
         return files_for(assignment['account'])
+    if finance_closure_workflow(assignment):
+        from phase2.finance_closure import documents as closure_documents
+        return closure_documents(assignment['account'])
     if editorial_brief_workflow(assignment):
         from phase2.editorial_brief.editorial_desk import documents as editorial_documents
         return editorial_documents(assignment['account'],intake_archive=editorial_intake_archive(assignment),
@@ -847,6 +857,13 @@ def truth_for(plan):
                 'desk_check_sha256':sha256((SERVICE_CHECKS['integration']+'\n').encode()).hexdigest()}
             truth['product_components'] = {actor:COMPONENTS[row['account']] for actor,row in plan.items()}
         return truth
+    if finance_closure_workflow(next(iter(plan.values()))):
+        from phase2 import finance_closure
+        return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
+                'accounts':{a:finance_closure.invoice_for(r['account']) for a,r in plan.items()},
+                'bank_calendar':{'deadline':finance_closure.DEADLINE,'first_window':finance_closure.FIRST_WINDOW,
+                                 'activation':finance_closure.ACTIVATION,'second_window':finance_closure.SECOND_WINDOW},
+                'account_scope':'one current and one replacement account per assignment; synthetic configured rail'}
     if config_for(plan)['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
                 'accounts':{a:{'account':r['account'],'request_id':delivery_payables.request(r['account']),
@@ -872,6 +889,13 @@ def initial_state(plan):
             'supplied_business_records':{'sources':{'origin':'synthetic entity submissions',
                 'author':'reporting service','behavioral_evidence':False}},
             'supplied_peer_messages':[],'supplied_methods':[]}
+    if finance_closure_workflow(next(iter(plan.values()))):
+        return {'origin':'prepared_business_records','study_track':'continuous_unified',
+                'assignments':deepcopy(plan),'files_sha256':digest(initial_files(plan)),
+                'communication_start':communication_start(plan),'shared_directories':shared_directories(plan),
+                'supplied_business_records':{'payment_orders':{'origin':'synthetic approved orders and bank calendar',
+                    'visibility':'own account per workstation','behavioral_evidence':False}},
+                'supplied_peer_messages':[],'supplied_methods':[]}
     if editorial_brief_workflow(next(iter(plan.values()))):
         return {'origin':'prepared_business_records','study_track':'continuous_unified',
             'assignments':deepcopy(plan),'files_sha256':digest(initial_files(plan)),
@@ -952,7 +976,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      activity_report_workflow=False, activity_shared_template=False, payables_workflow='disabled', editorial_brief_workflow=False,
                      editorial_intake_archive=False, editorial_publication_index=False, editorial_review_queue=False, **kwargs):
     if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation'),
-            bool(activity_report_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2'), bool(editorial_brief_workflow))) > 1:
+            bool(activity_report_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2', 'account-retirement'), bool(editorial_brief_workflow))) > 1:
         raise ValueError('Choose one business workflow')
     if editorial_brief_workflow:
         from phase2.editorial_brief.bridge import tools as editorial_tools
@@ -971,6 +995,9 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
         return definitions()
     if reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging'):
         return (delivery_receivables_scope.definitions() if reconciliation_workflow == 'receivables-aging' else delivery_reconciliation_scope.definitions() if reconciliation_workflow == 'category-template' else delivery_reconciliation.definitions())
+    if payables_workflow == 'account-retirement':
+        from phase2.finance_closure import definitions
+        return definitions()
     if payables_workflow in ('enabled', 'timed', 'timed-v2'):
         return delivery_payables.definitions()
     if forecast_workflow not in ('enabled', 'read_only'):
@@ -2883,6 +2910,9 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
         reg['phase2']['independent_outcome'] += '; exact authored-note exposure and read-then-reply reconstruction'
     if consolidation_workflow(next(iter(assignments.values()))):
         from phase2.consolidation_admission import validate
+        reg['phase2']['path_validation'] = validate(assignments)
+    elif finance_closure_workflow(next(iter(assignments.values()))):
+        from phase2.finance_closure import validate
         reg['phase2']['path_validation'] = validate(assignments)
     elif editorial_brief_workflow(next(iter(assignments.values()))):
         from phase2.editorial_brief.admission import validate
