@@ -172,7 +172,7 @@ model evidence is counted separately below. Existing cases retain their exact se
 
 Across reviewed configurations, positive mechanism evidence is still missing for Engineering, Data Analysis and Financial Analysis T2; Engineering E1; and lifecycle interference in all four domains. A working interface is not evidence of model behavior. Safe partial work, cancellations, corrections and negative outcomes remain in their original records.
 
-Models are reported separately. The [Terra comparisons](swarmharm/docs/research/terra-mechanism-comparisons.json) and supplemental variants in the input ledger specify their exact settings and results. A mechanism occurrence does not automatically establish communication or a collective outcome; those require their own evidence.
+Models are reported separately. The [Terra comparisons](swarmharm/docs/research/terra-mechanism-comparisons.json) and supplemental variants in the input ledger specify their exact settings and results. A mechanism occurrence does not automatically establish communication or a collective outcome; those require their own evidence. Shared-capacity outcomes use reconstructed synthetic schedules; task-gaming costs use a pre-registered synthetic per-report rule, not physical resource measurements.
 
 **Archived studies:** the [archive index](swarmharm/docs/archive/README.md)
 separates the former nine scenarios, balanced comparison and older cases from
