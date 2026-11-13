@@ -581,13 +581,35 @@ class CheckedControlsReuse(unittest.TestCase):
         second['environment']['DISABLE_COMPACT']='0'
         self.assertNotEqual(run.control_harness_contract(first),run.control_harness_contract(second))
 
+    def test_reuse_requires_the_target_scenario_checks(self):
+        from tempfile import TemporaryDirectory
+        from unittest.mock import patch
+        data=run.preparation_check_paths('codex',mechanism='target-substitution',
+            scenario='data-analysis',input_variant='data-progressive-dictionary-v4')
+        engineering=run.preparation_check_paths('codex',mechanism='target-substitution',
+            scenario='engineering-capacity',input_variant='engineering-target-selection-v1')
+        with TemporaryDirectory() as folder:
+            root=Path(folder); controls={'passed':True,'prompt_contract_passed':True,
+                'model_calls':0,'test_methods':1,'check_modules':[str(p.relative_to(run.HERE)) for p in data]}
+            run.save(root/'controls.json',controls)
+            harness={'kind':'codex','goal_mode':'off'}
+            reg={'code_hashes':{},'image':run.lab.IMAGE,'runtime':{'harbor_version':run.HARBOR_VERSION,
+                'python':run.sys.version.split()[0]},'harness':harness,'input_hashes':{'controls.json':run.sha(root/'controls.json')}}
+            run.save(root/'registration.json',reg)
+            run.save(root/'registration-seal.json',{'sha256':run.sha(root/'registration.json')})
+            with patch.object(run,'code_paths',return_value=[]):
+                self.assertTrue(run.reuse_checked_controls(root,harness,data)['passed'])
+                with self.assertRaisesRegex(RuntimeError,'engineering_target_collector_checks'):
+                    run.reuse_checked_controls(root,harness,engineering)
+
     def test_reuse_rejects_modified_result_source_and_runtime(self):
         from tempfile import TemporaryDirectory
         from unittest.mock import patch
         import run
         with TemporaryDirectory() as folder:
             root=Path(folder); source=root/'source'; source.mkdir()
-            controls={'passed':True,'prompt_contract_passed':True,'model_calls':0,'test_methods':1}
+            controls={'passed':True,'prompt_contract_passed':True,'model_calls':0,'test_methods':1,
+                      'check_modules':['tests/format_checks.py','tests/unified_runtime_checks.py']}
             run.save(source/'controls.json',controls)
             harness={'kind':'claude-code','installed':{'sdk':'fixture'},'goal_mode':'off'}
             reg={'code_hashes':{},'image':run.lab.IMAGE,'runtime':{'harbor_version':run.HARBOR_VERSION,
@@ -595,18 +617,22 @@ class CheckedControlsReuse(unittest.TestCase):
             run.save(source/'registration.json',reg)
             run.save(source/'registration-seal.json',{'sha256':run.sha(source/'registration.json')})
             with patch.object(run,'code_paths',return_value=[]):
-                self.assertTrue(run.reuse_checked_controls(source,harness)['passed'])
+                self.assertTrue(run.reuse_checked_controls(source,harness,[run.HERE/'tests/format_checks.py'])['passed'])
+                with self.assertRaisesRegex(RuntimeError,'lack required modules'):
+                    run.reuse_checked_controls(source,harness,[run.HERE/'tests/engineering_target_collector_checks.py'])
+                with self.assertRaisesRegex(RuntimeError,'coverage is missing'):
+                    run.reuse_checked_controls(source,harness,[])
                 with self.assertRaisesRegex(RuntimeError,'harness differs'):
-                    run.reuse_checked_controls(source,{**harness,'goal_mode':'changed'})
+                    run.reuse_checked_controls(source,{**harness,'goal_mode':'changed'},[run.HERE/'tests/format_checks.py'])
                 for field in ('codex_cli','goal_progress_guard','goal_settings','settings','tool_profile','native_catalog_sha256'):
                     with self.subTest(field=field), self.assertRaisesRegex(RuntimeError,'harness differs'):
-                        run.reuse_checked_controls(source,{**harness,field:{'changed':True}})
+                        run.reuse_checked_controls(source,{**harness,field:{'changed':True}},[run.HERE/'tests/format_checks.py'])
                 run.save(source/'controls.json',{**controls,'passed':False})
                 with self.assertRaisesRegex(RuntimeError,'results changed'):
-                    run.reuse_checked_controls(source,harness)
+                    run.reuse_checked_controls(source,harness,[run.HERE/'tests/format_checks.py'])
                 run.save(source/'controls.json',controls)
                 reg['code_hashes']={'different.py':'unmatched'}
                 run.save(source/'registration.json',reg)
                 run.save(source/'registration-seal.json',{'sha256':run.sha(source/'registration.json')})
                 with self.assertRaisesRegex(RuntimeError,'source differs'):
-                    run.reuse_checked_controls(source,harness)
+                    run.reuse_checked_controls(source,harness,[run.HERE/'tests/format_checks.py'])

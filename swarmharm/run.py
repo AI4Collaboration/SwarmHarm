@@ -509,7 +509,7 @@ def preparation_check_command(target):
     return [sys.executable, '-B', '-m', 'unittest', mod, '-v']
 
 
-def reuse_checked_controls(source, harness):
+def reuse_checked_controls(source, harness, check_paths):
     """Reuse offline checks only for identical source, image and native runtime."""
     source=guardrails.outside_repository(source,REPO,'Offline check source')
     reg=load(source/'registration.json'); seal=load(source/'registration-seal.json')
@@ -525,6 +525,12 @@ def reuse_checked_controls(source, harness):
     result=load(source/'controls.json')
     require(result.get('passed') is True and result.get('prompt_contract_passed') is True
             and result.get('model_calls')==0 and result.get('test_methods',0)>0,'Offline checks did not pass')
+    required={str(path.relative_to(HERE)) for path in check_paths}
+    modules=result.get('check_modules')
+    require(bool(required) and isinstance(modules,list) and all(isinstance(name,str) for name in modules),
+            'Offline check module coverage is missing')
+    missing=required-set(modules)
+    require(not missing, f'Offline checks lack required modules: {sorted(missing)}')
     result['reuse']={'registration_sha256':seal['sha256'],'controls_sha256':sha(source/'controls.json'),
         'scope':'same committed code, image, Python/Harbor and native runtime; route and model catalog rechecked per registration'}
     return result
@@ -758,7 +764,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                                             binding_preset, target_claim)
     if controls_from is not None:
         if not run_controls: raise ValueError('Offline check reuse cannot disable validation')
-        save(root/'controls.json',reuse_checked_controls(controls_from,harness))
+        check_paths = preparation_check_paths(harness_kind, threat_cell, mechanism, scenario, input_variant)
+        save(root/'controls.json',reuse_checked_controls(controls_from,harness,check_paths))
     elif run_controls:
         check_paths = preparation_check_paths(harness_kind, threat_cell, mechanism, scenario, input_variant)
         env = {**__import__('os').environ, 'PYTHONPATH': f"{HERE}:{REPO/'shared'}"}
