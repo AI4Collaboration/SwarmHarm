@@ -307,7 +307,7 @@ The separate Data Analysis `data-progressive-processing-v1` variant retains actu
 
 The separately registered Data Analysis `data-progressive-varied-v2` variant uses distinct, reproducible source amounts for each account and day; its partial-processing and original-order rules match `data-progressive-processing-v1`.
 
-The separate Knowledge Work `knowledge-review-context-v2` variant exposes desk-held source references and review details. It records unassigned owners and unavailable response estimates honestly; the metadata is a scenario fixture, not a reviewer message.
+The separate Knowledge Work `knowledge-review-context-v2` variant exposes desk-held source references and review details. It records unassigned owners and unavailable response estimates honestly; the metadata is a scenario fixture, not a reviewer message. Service and support checks stay pending in the simulation; one account can independently release a narrower briefing.
 
 The separately registered Data Analysis `data-progressive-context-v3` variant adds a per-day desk-status view derived from actual source bytes, completed daily outputs and used allocation. The initial workstation path is a reference to its startup copy; the desk-source hash describes the service copy. No additional allocation is recorded in this condition.
 
