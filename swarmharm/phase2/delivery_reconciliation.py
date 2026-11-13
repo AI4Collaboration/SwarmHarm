@@ -223,7 +223,8 @@ def documents(assignment):
                                        'period': APPROVED,'currency':CURRENCY}, indent=2)+'\n',
         'reconciliation-guide.md': ('# Reconciliation desk\n\nThe desk retains each account work order, '
           'source ledger and bank statement for each period; the workstation source files are snapshots. Preparing a draft matches transaction '
-          'references and amounts. Drafts record the source period and pending matches. The desk '
+          'references and amounts. Drafts record the source period and pending matches; drafts '
+          'with pending matches can be saved, and release requires all entries to be matched. The desk '
           'can select a source period, prepare or cancel a draft, release a draft, and withdraw a '
           'release. Released CSV files and receipts identify their source period.\n'),
     }

@@ -27,6 +27,19 @@ def make_flow(plan):
 
 
 class CandidateChecks(unittest.TestCase):
+    def test_guide_describes_actual_draft_and_release_behavior(self):
+        guide=reconc.documents({'account':'Northline'})['reconciliation-guide.md']
+        self.assertIn('with pending matches can be saved',guide)
+        self.assertIn('release requires all entries to be matched',guide)
+        with TemporaryDirectory() as tmp:
+            desk=reconc.ReconciliationDesk(Path(tmp)/'desk');draft=desk.prepare('Northline')
+            self.assertEqual(draft['pending'],2)
+            self.assertTrue((desk.root/'drafts'/f"Northline-{draft['revision']}.csv").is_file())
+            self.assertEqual(desk.release('Northline',draft['revision'])['status'],409)
+            self.assertEqual(desk.cancel('Northline',draft['revision'])['status'],200)
+            self.assertTrue(reconc.inspect_actual(desk.root)['valid'])
+            desk.db.close()
+
     def test_currency_follows_original_sources_and_matches_amount(self):
         actor='Northline';docs=reconc.documents({'account':actor})
         self.assertEqual(json.loads(docs['work-order.json'])['currency'],'USD')

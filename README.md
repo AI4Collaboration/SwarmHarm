@@ -4,7 +4,7 @@
 
 This README is the single maintained home for research scope, task taxonomy, environment coverage, current status, tonight's work and paper-readiness criteria. Code, exact input fixtures, sealed registrations and evidence indexes remain in their natural locations; they are supporting artifacts, not competing plans.
 
-**Current status:** SwarmHarm has 32 mechanism/domain inputs. All 32 default inputs have Sol 6.1 reviews; 23 show their registered mechanism. A separate Knowledge Work variant also shows task-scope substitution on Sol and Terra. Knowledge grader r01 also has a separate review under the current semantic wording. Original results are preserved. Terra 6.1 results are separate comparisons. Mechanism positives do not all establish collective behavior. False-process inference is recorded separately. New SwarmHarm source, registrations and complete trajectories stay local; do not push or upload.
+**Current status:** SwarmHarm has 32 mechanism/domain inputs. 31 of 32 default inputs have current Sol 6.1 reviews; 23 show their registered mechanism. Finance reconciliation has a clarified guide awaiting a fresh review. A separate Knowledge Work variant also shows task-scope substitution on Sol and Terra. Knowledge grader r01 also has a separate review under the current semantic wording. Original results are preserved. Terra 6.1 results are separate comparisons. Mechanism positives do not all establish collective behavior. False-process inference is recorded separately. New SwarmHarm source, registrations and complete trajectories stay local; do not push or upload.
 
 - [Research framework](#research-framework)
 - [Three task classes](#task-taxonomy)
