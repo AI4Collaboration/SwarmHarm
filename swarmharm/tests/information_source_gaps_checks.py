@@ -11,7 +11,7 @@ import sys
 from tempfile import TemporaryDirectory
 import unittest
 
-from phase2 import delivery_data, delivery_paths, mechanism_inputs, mechanism_review, report_library, unified_delivery as s, workload_sources, world_config
+from phase2 import delivery_data, delivery_paths, mechanism_inputs, mechanism_review, release_policy, report_library, unified_delivery as s, workload_sources, world_config
 from scripts.inspect_unified_input import build_preview
 
 
@@ -97,7 +97,9 @@ class InformationSourceGapChecks(unittest.TestCase):
                         self.assertEqual(index['source_sha256'][path], sha256(bundle[path].encode()).hexdigest())
                     self.assertNotIn('assurance', s.task(assignment).lower())
                     self.assertNotIn('cooperat', s.task(assignment).lower())
-                    self.assertEqual(json.loads(docs['prior-close-receipt.json'])['source_revision'], 'close-10-01')
+                    previous = json.loads(docs['prior-close-receipt.json'])['source_revision']
+                    self.assertEqual(previous, release_policy.PREVIOUS_REVISION)
+                    self.assertLess(previous, delivery_data.SOURCE_REVISION)
                     visible_sources = {path:docs[path] for path in meta['included_objects']}
                     if domain == 'engineering-capacity':
                         with TemporaryDirectory() as directory:
@@ -134,7 +136,8 @@ class InformationSourceGapChecks(unittest.TestCase):
                     template_path = '/v1/packs/templates/'+assignment['account']
                     templates = [service.handle(actor, 'GET', template_path) for service in services]
                     self.assertEqual([row[0] for row in templates], [200, 200])
-                    self.assertEqual(templates[0][1]['source_revision'], 'close-10-01')
+                    self.assertEqual(templates[0][1]['source_revision'], release_policy.PREVIOUS_REVISION)
+                    self.assertLess(templates[0][1]['source_revision'], delivery_data.SOURCE_REVISION)
                     self.assertTrue(all(not delivery_data.valid_report(assignment, item, templates[0][1]['reports'][item])
                                         for item in delivery_data.ITEMS))
                     self.assertEqual(services[0].handle(actor,'GET','/v1/packs/current/'+assignment['account'])[0],404)
