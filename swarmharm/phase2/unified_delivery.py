@@ -70,6 +70,7 @@ CONFIG_SCHEMA = {
             'report_upload': {'enum': ['disabled', 'enabled']},
             'dispatch_input': {'enum': ['generated', 'prepared']},
             'dispatch_batching': {'enum': ['disabled', 'enabled']},
+            'data_retirement_workflow': {'enum': ['disabled', 'enabled', 'handoff']},
             'forecast_workflow': {'enum': ['enabled', 'read_only']},
             'reserve_use': {'enum': ['operations_only', 'reporting']},
             'operations_workflow': {'enum': list(delivery_operations.MODES)},
@@ -247,6 +248,10 @@ def data_latency_workflow(assignment):
     return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') == 'latency-p95'
 
 
+def data_retirement_workflow(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('data_retirement_workflow') in ('enabled','handoff')
+
+
 def data_region_workflow(assignment):
     return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') == 'region-dimension'
 
@@ -350,6 +355,9 @@ def task(assignment):
     if data_latency_workflow(assignment):
         from phase2.data_latency import documents
         return documents(assignment['account'])['README.md'].split('\n', 1)[0]
+    if data_retirement_workflow(assignment):
+        from phase2.data_retirement import task as retirement_task
+        return retirement_task(assignment)
     if finance_fx_workflow(assignment):
         from phase2.finance_fx import documents as fx_documents,period_for
         return fx_documents(assignment['account'],period_for({'subject':assignment}))['README.md'].split('\n',1)[0]
@@ -462,6 +470,9 @@ def documents(assignment):
     if data_latency_workflow(assignment):
         from phase2.data_latency import documents as latency_documents
         return latency_documents(assignment['account'])
+    if data_retirement_workflow(assignment):
+        from phase2.data_retirement import documents as retirement_documents
+        return retirement_documents(assignment)
     if finance_fx_workflow(assignment):
         from phase2.finance_fx import documents as fx_documents,period_for
         return fx_documents(assignment['account'],period_for({'subject':assignment}))
@@ -904,6 +915,18 @@ def truth_for(plan):
                 'accounts': {actor: {'account': row['account'], 'source_sha256': digest(source_bytes(row['account']))}
                              for actor, row in plan.items()},
                 'individual_request_durations': 'not provided; no scheduled arrival'}
+    if data_retirement_workflow(next(iter(plan.values()))):
+        from phase2 import delivery_data_partitions,data_retirement
+        orders={}
+        for name in RESERVE_REPORTS:
+            assignment,part=delivery_retention.knowledge_assignment(plan,name)
+            content=delivery_data_partitions.partition(assignment,part,independent=True)
+            orders[name]={'account':assignment['account'],'source_id':name,'migrated_source_id':'MIG-'+name,
+                          'source_sha256':sha256(content).hexdigest(),'consumer':'Operations'}
+        parameters=data_retirement.parameters(plan)
+        return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
+                'accounts':{actor:{'account':row['account'],'source':delivery_data.source_manifest(row)} for actor,row in plan.items()},
+                'operations_orders':orders,'consumer_calendar':parameters}
     if finance_fx_workflow(next(iter(plan.values()))):
         from phase2.finance_fx import source,initial_map,period_for,digest as source_digest
         period=period_for(plan)
@@ -1045,6 +1068,13 @@ def initial_state(plan):
                 'supplied_business_records': {'daily_latency': {'origin': 'synthetic summary fixture',
                     'individual_durations': 'not provided', 'scheduled_arrival': False, 'behavioral_evidence': False}},
                 'supplied_peer_messages': [], 'supplied_methods': []}
+    if data_retirement_workflow(next(iter(plan.values()))):
+        return {'origin':'prepared_business_records','study_track':'continuous_unified',
+                'assignments':deepcopy(plan),'files_sha256':digest(initial_files(plan)),
+                'communication_start':communication_start(plan),'shared_directories':shared_directories(plan),
+                'supplied_business_records':{'legacy_exports':{'origin':'synthetic source, migrated copy and consumer orders',
+                    'visibility':'own export and Operations consumer','behavioral_evidence':False}},
+                'supplied_peer_messages':[],'supplied_methods':[]}
     if finance_fx_workflow(next(iter(plan.values()))):
         return {'origin':'prepared_business_records','study_track':'continuous_unified',
             'assignments':deepcopy(plan),'files_sha256':digest(initial_files(plan)),
@@ -1184,11 +1214,14 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      retention_store='disabled',
                      report_upload='enabled', publication_items='available',
                      build_record_workflow=False, build_target_workflow=False, build_target_clarify_selection=False, build_target_product=False, reconciliation_workflow='disabled',
-                     activity_report_workflow=False, activity_shared_template=False, data_region_workflow=False, data_identity_workflow=False, data_latency_workflow=False, knowledge_digest_workflow=False, payables_workflow='disabled', editorial_brief_workflow=False,
+                     activity_report_workflow=False, activity_shared_template=False, data_region_workflow=False, data_identity_workflow=False, data_latency_workflow=False, data_retirement_workflow=False, data_retirement_handoff=False, knowledge_digest_workflow=False, payables_workflow='disabled', editorial_brief_workflow=False,
                      editorial_intake_archive=False, editorial_publication_index=False, editorial_review_queue=False, **kwargs):
     if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule', 'performance', 'performance-history', 'fx-expense', 'fx-expense-history'),
-            bool(activity_report_workflow), bool(data_region_workflow), bool(data_identity_workflow), bool(data_latency_workflow), bool(knowledge_digest_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring'), bool(editorial_brief_workflow))) > 1:
+            bool(activity_report_workflow), bool(data_region_workflow), bool(data_identity_workflow), bool(data_latency_workflow), bool(data_retirement_workflow), bool(knowledge_digest_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring'), bool(editorial_brief_workflow))) > 1:
         raise ValueError('Choose one business workflow')
+    if data_retirement_workflow:
+        from phase2.data_retirement import definitions
+        return definitions(include_partial=data_retirement_handoff)
     if knowledge_digest_workflow:
         from phase2.knowledge_digest_queue import definitions
         return definitions()
@@ -1319,7 +1352,7 @@ def operations_id(pool, report):
     return report if pool == RESERVE else pool+'/'+report
 
 
-def execute_operations(executions, plan, target, suspended=(), snapshot_dir=None):
+def execute_operations(executions, plan, target, suspended=(), snapshot_dir=None, snapshot_paths=None):
     """Run the scheduled jobs against concrete remaining processing slots.
 
     Customer processing is already spent, including subsequently cancelled
@@ -1352,7 +1385,8 @@ def execute_operations(executions, plan, target, suspended=(), snapshot_dir=None
                        (kind, actor, reference, pool, slot))
             if row:
                 if kind == 'operations' and snapshot_dir is not None:
-                    source = (Path(snapshot_dir)/(reference+'.csv')).read_bytes()
+                    source_path=(snapshot_paths or {}).get(reference,Path(snapshot_dir)/(reference+'.csv'))
+                    source = Path(source_path).read_bytes()
                     if config['access'].get('retention_store') == 'data-partitions':
                         from phase2 import delivery_data_partitions
                         parsed = list(csv.DictReader(delivery_data_partitions.consumer(source).decode().splitlines()))
@@ -3360,6 +3394,9 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
         reg['phase2']['independent_outcome'] += '; exact authored-note exposure and read-then-reply reconstruction'
     if data_latency_workflow(next(iter(assignments.values()))):
         from phase2.data_latency import validate
+        reg['phase2']['path_validation'] = validate(assignments)
+    elif data_retirement_workflow(next(iter(assignments.values()))):
+        from phase2.data_retirement import validate
         reg['phase2']['path_validation'] = validate(assignments)
     elif finance_fx_workflow(next(iter(assignments.values()))):
         from phase2.finance_fx import validate

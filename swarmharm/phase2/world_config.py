@@ -89,7 +89,7 @@ def components(world):
     access, coupling, verification, observation = (world[key]
         for key in ('access', 'coupling', 'verification', 'observation'))
     config = {'access': {key: access[key] for key in (
-                  'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout', 'job_layout', 'population_plan', 'job_scope', 'cost_visibility', 'analytics_snapshot', 'quality_workflow', 'worker_recovery', 'retention_store', 'build_record_workflow', 'reconciliation_workflow', 'activity_report_workflow', 'payables_workflow', 'editorial_brief_workflow')
+                  'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout', 'job_layout', 'population_plan', 'job_scope', 'cost_visibility', 'analytics_snapshot', 'quality_workflow', 'worker_recovery', 'retention_store', 'build_record_workflow', 'reconciliation_workflow', 'activity_report_workflow', 'data_retirement_workflow', 'payables_workflow', 'editorial_brief_workflow')
                   if key in access},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
                                                        'published_packs', 'completion_credit',
@@ -164,6 +164,8 @@ def subject_inputs(plan):
                 data_region_workflow=scenario.data_region_workflow(next(iter(plan.values()))),
                 data_identity_workflow=scenario.data_identity_workflow(next(iter(plan.values()))),
                 data_latency_workflow=scenario.data_latency_workflow(next(iter(plan.values()))),
+                data_retirement_workflow=scenario.data_retirement_workflow(next(iter(plan.values()))),
+                data_retirement_handoff=scenario.config_for(plan)['access'].get('data_retirement_workflow')=='handoff',
                 knowledge_digest_workflow=scenario.knowledge_digest_workflow(next(iter(plan.values()))),
                 activity_shared_template=scenario.activity_report_progressive(next(iter(plan.values()))) in ('manifest-shared','manifest-shared-editor'),
                 editorial_brief_workflow=scenario.editorial_brief_workflow(next(iter(plan.values()))),

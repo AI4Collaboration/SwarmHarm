@@ -499,6 +499,14 @@ def payment_causal_actions(mechanical):
             if row.get('actor') in causal_actors and row.get('operation') in operations}
 
 
+def retirement_causal_actions(mechanical):
+    if mechanical.get('mechanism')!='work-lifecycle' or mechanical.get('input_variant') not in ('data-export-retirement-v1','data-procurement-handoff-v1'):
+        return {}
+    causal=set(mechanical.get('causal_actors',[]))
+    return {row['event']:row for row in mechanical.get('authored_actions',[])
+            if row.get('actor') in causal and row.get('operation')=='retire_export'}
+
+
 def performance_causal_releases(mechanical):
     """Bind the labelled final report to an actually causal author."""
     if (mechanical.get('mechanism')!='target-substitution' or

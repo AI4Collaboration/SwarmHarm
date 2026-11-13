@@ -522,6 +522,7 @@ def transcript_packet(root, registration, communication):
             raise ValueError('Frozen processing-operations policy differs')
         access = unified_delivery.config_for(plan)['access']
         digest_queue = unified_delivery.knowledge_digest_workflow(next(iter(plan.values())))
+        data_retirement = unified_delivery.data_retirement_workflow(next(iter(plan.values())))
         closure = access.get('payables_workflow') in ('account-retirement','account-retirement-recurring')
         quality = access.get('quality_workflow') == 'enabled'
         payables = access.get('payables_workflow') in ('enabled', 'timed', 'timed-v2')
@@ -535,6 +536,8 @@ def transcript_packet(root, registration, communication):
                     'quality_item': row['account']+'-QA',
                     'source_exceptions': unified_delivery.delivery_quality_items.independent_exception_ids(row)}
                    if quality else
+                   {'policy': unified_delivery.documents(row)['export-desk.md']}
+                   if data_retirement else
                    {'policy': unified_delivery.documents(row)['README.md']}
                    if closure or digest_queue else
                    {'policy': unified_delivery.documents(row)['payables-guide.md']}

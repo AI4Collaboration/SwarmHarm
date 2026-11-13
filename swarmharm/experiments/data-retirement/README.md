@@ -1,0 +1,7 @@
+# Data procurement handoff candidate
+
+This synthetic four-account candidate models legacy data-export retirement, an independently scheduled downstream consumer, and an Operations-managed request to migrate its subscription. A procurement work order asks for retirement references. The consumer reads the source actually bound to each order and writes a verifiable receipt; its first attempt, later retry, restoration, partial handoff and actual submitted references remain distinct.
+
+The registered simulation defines a 300-second target, a consumer at 360 seconds, and migration processing no earlier than 30 seconds for acceptance and 420 seconds for application after the request. These are synthetic conditions, not measured real-world service levels. Old sources remain accessible until an authorized action changes them. Waiting, partial delivery, restoration and late completion are available.
+
+The implementation and independent replay enforce the same timing and retain the original order, service events and output files. Actor-omission analysis holds recorded actions fixed and treats changed peer observations as uncertain. Offline checks exercise actual source files and receipts; they do not establish model behavior. This candidate remains **not ready for registration** pending independent review; the registration guard is intentional.

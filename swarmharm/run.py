@@ -512,7 +512,11 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             if input_variant == 'knowledge-commitment-schedule-v1':
                 current.add('knowledge_commitment_schedule')
         if mechanism == 'work-lifecycle' and scenario == 'data-analysis':
-            current.update(('data_lifecycle_pipeline', 'data_worker_lifecycle', 'worker_recovery'))
+            if input_variant in ('data-export-retirement-v1','data-procurement-handoff-v1'):
+                current.update(('data_retirement', 'data_retirement_bridge', 'data_retirement_collector'))
+                if input_variant=='data-procurement-handoff-v1':current.add('data_procurement_handoff')
+            else:
+                current.update(('data_lifecycle_pipeline', 'data_worker_lifecycle', 'worker_recovery'))
             if input_variant == 'data-partitions-v1':
                 current.update(('data_partition_lifecycle', 'data_partition_transport', 'retention_causality', 'retention_citation'))
             if input_variant == 'data-scheduled-consumer-v1':
@@ -559,7 +563,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
 # These integration modules start real workstations or collectors. Serialize
 # them across preparations; ordinary checks still run in parallel.
 NETWORK_CHECK_MODULES = frozenset({
-    'activity_report_collector', 'build_record_collector', 'business_notification',
+    'activity_report_collector', 'build_record_collector', 'business_notification', 'data_retirement_collector',
     'collector', 'continuous_collect', 'continuous_reporting', 'data_scheduled_consumer_transport', 'knowledge_scheduled_consumer_transport', 'editorial_brief_collector',
     'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector', 'data_identity_collector', 'data_latency_collector',
     'finance_payables_transport', 'finance_fx_history_collector', 'finance_fx_collector', 'finance_performance_history_collector', 'finance_performance_collector', 'native_harness', 'pi_collect', 'query_gateway',
@@ -610,6 +614,9 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
     under an unlabelled custom world.
     """
     workflow = lambda cfg: (cfg or {}).get('access', {}).get('editorial_brief_workflow')
+    retirement = lambda cfg: (cfg or {}).get('access', {}).get('data_retirement_workflow')
+    if input_variant in ('data-export-retirement-v1','data-procurement-handoff-v1') or retirement(delivery_config) in ('enabled','handoff') or retirement(world_config) in ('enabled','handoff'):
+        raise ValueError('Data export retirement is not ready for new registration: native evidence and independent review are incomplete.')
     if (input_variant == 'knowledge-digest-queue-v1' or
             workflow(delivery_config) == 'digest-queue' or workflow(world_config) == 'digest-queue'):
         raise ValueError('Knowledge digest queue is not ready for new registration: the publication dependency needs a verifiable business redesign.')
@@ -926,6 +933,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'data_region_workflow': unified_delivery.data_region_workflow(phase2_plan[actor]),
                 'data_identity_workflow': unified_delivery.data_identity_workflow(phase2_plan[actor]),
                 'data_latency_workflow': unified_delivery.data_latency_workflow(phase2_plan[actor]),
+                'data_retirement_workflow': unified_delivery.data_retirement_workflow(phase2_plan[actor]),
+                'data_retirement_handoff': unified_delivery.config_for(phase2_plan)['access'].get('data_retirement_workflow')=='handoff',
                 'knowledge_digest_workflow': unified_delivery.knowledge_digest_workflow(phase2_plan[actor]),
                 'activity_shared_template': unified_delivery.activity_report_progressive(phase2_plan[actor]) in ('manifest-shared','manifest-shared-editor'),
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(phase2_plan[actor]),
@@ -1903,6 +1912,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     if unified_delivery.data_latency_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.data_latency import validate
         path_validation = validate(reg['phase2']['assignments'])
+    elif unified_delivery.data_retirement_workflow(next(iter(reg['phase2']['assignments'].values()))):
+        from phase2.data_retirement import validate
+        path_validation=validate(reg['phase2']['assignments'])
     elif unified_delivery.localization_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.engineering_localization import validate
         path_validation = validate(reg['phase2']['assignments'])
@@ -2052,6 +2064,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         elif unified_delivery.consolidation_workflow(next(iter(extension_plan.values()))):
             from phase2.consolidation_bridge import ConsolidationBridge
             extension=ConsolidationBridge.from_plan(world,extension_plan,reg['component_initial_state'])
+        elif unified_delivery.data_retirement_workflow(next(iter(extension_plan.values()))):
+            from phase2.data_retirement_bridge import RetirementBridge
+            extension=RetirementBridge.from_plan(world,extension_plan,reg['component_initial_state'])
         elif unified_delivery.finance_closure_workflow(next(iter(extension_plan.values()))):
             from phase2.finance_closure_bridge import ClosureBridge
             extension=ClosureBridge.from_plan(world,extension_plan,reg['component_initial_state'])
@@ -2089,6 +2104,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'data_region_workflow': unified_delivery.data_region_workflow(next(iter(extension.plan.values()))),
                 'data_identity_workflow': unified_delivery.data_identity_workflow(next(iter(extension.plan.values()))),
                 'data_latency_workflow': unified_delivery.data_latency_workflow(next(iter(extension.plan.values()))),
+                'data_retirement_workflow': unified_delivery.data_retirement_workflow(next(iter(extension.plan.values()))),
+                'data_retirement_handoff': unified_delivery.config_for(extension.plan)['access'].get('data_retirement_workflow')=='handoff',
                 'knowledge_digest_workflow': unified_delivery.knowledge_digest_workflow(next(iter(extension.plan.values()))),
                 'activity_shared_template': unified_delivery.activity_report_progressive(next(iter(extension.plan.values()))) in ('manifest-shared','manifest-shared-editor'),
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(next(iter(extension.plan.values()))),
@@ -2180,7 +2197,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 states[actor][f'{harness_folder}_session']=value
             activation_time=utc()
             consumer_budget=None
-            if getattr(extension, 'config', {}).get('retention_consumer_status') == 'scheduled':
+            if (getattr(extension, 'config', {}).get('retention_consumer_status') == 'scheduled'
+                    and not unified_delivery.data_retirement_workflow(next(iter(extension.plan.values())))):
                 from phase2.engineering_consumer import ACTIVATION_RESERVE, remaining_observation_limit
                 batch_remaining=max(0.0,deadline-time.monotonic())
                 limit=remaining_observation_limit(budget['max_actor_seconds'],batch_remaining)
@@ -2189,6 +2207,13 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                                  'reserve_seconds':ACTIVATION_RESERVE,'observation_limit_seconds':limit}
             recurring_budget=None
             digest_budget=None
+            retirement_budget=None
+            if unified_delivery.data_retirement_workflow(next(iter(extension.plan.values()))):
+                batch_remaining=max(0.0,deadline-time.monotonic())
+                limit=min(budget['max_actor_seconds'],batch_remaining)-5.0
+                extension.start_cycle(limit)
+                retirement_budget={'batch_remaining_seconds':batch_remaining,'actor_budget_seconds':budget['max_actor_seconds'],
+                                   'reserve_seconds':5.0,'observation_limit_seconds':limit}
             if unified_delivery.knowledge_digest_workflow(next(iter(extension.plan.values()))):
                 from phase2.knowledge_digest_queue import OBSERVATION_MIN, ACTIVATION_RESERVE
                 batch_remaining=max(0.0,deadline-time.monotonic())
@@ -2211,6 +2236,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 **({'recurring_observation_budget':recurring_budget} if recurring_budget else {}),
                 **({'consumer_observation_budget':consumer_budget} if consumer_budget else {}),
                 **({'digest_observation_budget':digest_budget} if digest_budget else {}),
+                **({'retirement_observation_budget':retirement_budget} if retirement_budget else {}),
                 'policy':'simultaneous_start_barrier',
                 'activated_at':activation_time,
                 'actors':sorted(active),

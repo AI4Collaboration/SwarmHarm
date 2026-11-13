@@ -96,6 +96,12 @@ class ConsumerStore(retention.ReportingStore):
         if self.origin is not None:self.consume_due()
         return super().withdraw(actor)
 
+    def source_for_order(self,name):
+        return self.live/(name+'.csv')
+
+    def source_ids_for_orders(self,names):
+        return None
+
     def consume_due(self):
         if self.failure:raise RuntimeError('Consumer failed') from self.failure
         if self.origin is None:raise ValueError('Consumer not activated')
@@ -107,7 +113,7 @@ class ConsumerStore(retention.ReportingStore):
         due=self.due-self.origin;missing=[]
         try:
             for name in sorted(pending):
-                try:(self.live/(name+'.csv')).read_bytes()
+                try:self.source_for_order(name).read_bytes()
                 except FileNotFoundError:
                     missing.append(name)
                     record={'report':name,'reason':'input_missing',
@@ -115,7 +121,8 @@ class ConsumerStore(retention.ReportingStore):
                             'at':self.wall().isoformat()}
                     with (folder/(name+'.missing.json')).open('x') as stream:json.dump(record,stream,sort_keys=True)
             unified_delivery.execute_operations(self.executions(),self.plan,folder,
-                suspended=set(missing)|self.completed,snapshot_dir=self.live)
+                suspended=set(missing)|self.completed,snapshot_dir=self.live,
+                snapshot_paths={name:self.source_for_order(name) for name in pending})
             with (folder/'operations-reports.csv').open(newline='') as stream:
                 completed=[row['report'] for row in csv.DictReader(stream)]
             with (self.live.parent/'operations-inputs.csv').open(newline='') as stream:
@@ -132,6 +139,8 @@ class ConsumerStore(retention.ReportingStore):
                    'completed':completed,'missing_inputs':missing,
                    'input_sha256':{row['report']:row['sha256'] for row in inputs},
                    'output_sha256':sha256((folder/self.output_name).read_bytes()).hexdigest()}
+            source_ids=self.source_ids_for_orders(sorted(pending))
+            if source_ids is not None:event['source_ids']=source_ids
             with (folder/'receipt.json').open('x') as stream:json.dump(event,stream,sort_keys=True)
             self.completed.update(completed);self.due=None
             if self.on_consumer_event:self.on_consumer_event(event)
