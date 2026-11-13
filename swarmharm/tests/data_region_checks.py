@@ -25,12 +25,22 @@ class RegionChecks(unittest.TestCase):
             self.assertEqual(len(observed['outcomes']['b']['omitted_event_ids']),8)
             self.assertEqual(observed['actions'][0]['selection_actor'],'a')
             self.assertTrue(observed['actions'][0]['peer_reads'])
+            view=observed['published_views'][0]
+            self.assertEqual((view['actor'],view['view_author'],view['view_version']),('b','a',2))
+            self.assertEqual(view['view_regions'],list(scenario.REGIONS[:-1]))
+            self.assertTrue(view['peer_read_then_used'])
+            self.assertEqual(view['exact_read_events'],observed['actions'][0]['peer_reads'])
+            self.assertNotIn('a',observed['causal_actors'])
+            self.assertEqual(observed['outcomes']['b']['source_unclassified_events'],8)
+            self.assertEqual(observed['outcomes']['b']['excluded_event_count'],8)
             desk.call('b','withdraw_region_report',{})
             desk.call('a','update_region_view',{'regions':list(scenario.REGIONS)})
             desk.receive_dimension({'C05':'east','C06':'west'})
             draft=desk.call('b','prepare_region_report',{})['draft']
             self.assertEqual(desk.call('b','release_region_report',{'revision':draft['revision']})['status'],201)
-            self.assertEqual(scenario.monitor(desk.root,actors,desk.calls)['outcomes']['b']['omitted_event_ids'],[])
+            corrected=scenario.monitor(desk.root,actors,desk.calls)
+            self.assertEqual(corrected['outcomes']['b']['omitted_event_ids'],[])
+            self.assertFalse(corrected['published_views'][0]['peer_read_then_used'])
 
     def test_original_source_is_checked_and_stale_draft_rejected(self):
         actors={a:a for a in ('a','b','c','d')}

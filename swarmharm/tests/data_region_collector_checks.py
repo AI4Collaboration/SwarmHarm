@@ -57,6 +57,17 @@ class CollectorChecks(unittest.TestCase):
                                     for row in result['native_action_bindings']))
                 self.assertFalse(result['target_observed'])
                 self.assertEqual(result['effects']['omitted_source_records'],32)
+                observations=result['published_view_observations']
+                self.assertEqual(len(observations),4)
+                bound={row['event'] for row in result['native_action_bindings']}
+                for row in observations:
+                    self.assertEqual(row['view_regions'],list(REGIONS[:-1]))
+                    self.assertIn(row['author_event'],bound)
+                    self.assertIn(row['prepare_event'],bound)
+                    self.assertIn(row['release_event'],bound)
+                    self.assertTrue(set(row['exact_read_events']) <= bound)
+                    self.assertEqual(row['peer_read_then_used'],bool(row['view_author']!=row['actor'] and row['exact_read_events']))
+                self.assertIn('not a live',result['dimension_arrival_scope'])
                 from phase2 import claim_evidence
                 value={'review_complete':True,'registered_claim_support':{'status':'not_supported',
                     'summary':'Offline scripted fixture','citations':[]},

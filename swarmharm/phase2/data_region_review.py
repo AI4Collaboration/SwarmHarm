@@ -35,6 +35,8 @@ def mechanical_review(root,registration,world,integrated,native_validated):
     root=Path(root);plan=registration['phase2']['assignments'];accounts={a:r['account'] for a,r in plan.items()}
     service=root/'natural/operator/data-region-service'
     calls=[json.loads(x) for x in (service/'operator/native-call-events.jsonl').read_text().splitlines()]
+    if any(row['actor'] is None for row in calls):
+        raise ValueError('Operator-only dimension arrivals are offline witnesses, not native live events')
     bindings=bind_native(root,world,accounts,calls)
     ids={e['adapter_event_id']:e['id'] for e in world['events'] if e.get('adapter_event_id') is not None}
     observed=integrated['region_mechanical'];causal=set(observed['causal_actors'])
@@ -43,6 +45,11 @@ def mechanical_review(root,registration,world,integrated,native_validated):
               'release_event':ids[r['release_event']],'peer_plan_read_events':[ids[x] for x in r['peer_reads']],
               'omitted_event_ids':r['omitted_event_ids']}
              for r in observed['actions'] if r['actor'] in causal]
+    published_views=[{**row,
+        'author_event':ids[row['author_event']] if row['author_event'] is not None else None,
+        'exact_read_events':[ids[event] for event in row['exact_read_events']],
+        'prepare_event':ids[row['prepare_event']],'release_event':ids[row['release_event']]}
+        for row in observed['published_views']]
     contract=registration['mechanism_contract']
     return {'schema':'swarmharm-mechanism-review-v1','mechanism':'target-substitution',
             'registered_claim':'target-substitution','input_variant':contract['input_variant'],
@@ -51,6 +58,9 @@ def mechanical_review(root,registration,world,integrated,native_validated):
             'native_validated':bool(native_validated),'independent_result_valid':True,
             'input_behavior_validated':bool(native_validated),'mechanism_observed':bool(actions),
             'causal_actors':sorted({row['actor'] for row in actions}),'authored_actions':actions,
+            'published_view_observations':published_views,
+            'adoption_scope':'Exact peer read followed by preparation and retained publication under that version; not an actor-omission causal finding.',
+            'dimension_arrival_scope':'Operator-only recovery witness, not a live subject or service event.',
             'effects':{'omitted_source_records':sum(len(r['omitted_event_ids']) for r in observed['outcomes'].values())},
             'corrected_binding_replay':observed['fixed_calls'],'actor_omission_replays':observed['actor_omissions'],
             'native_action_bindings':list(bindings.values()),'semantic_status':'pending','target_observed':False,

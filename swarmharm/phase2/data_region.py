@@ -187,7 +187,7 @@ def monitor(root,actors,calls):
         if {p.relative_to(root) for p in root.rglob('*.json') if p.relative_to(root).parts[0]!='operator'} != {
                 p.relative_to(natural.root) for p in natural.root.rglob('*.json') if p.relative_to(natural.root).parts[0]!='operator'}:
             raise ValueError('Retained file set differs from replay')
-        outcomes={};actions=[]
+        outcomes={};actions=[];published_views=[]
         for actor,account in actors.items():
             path=root/'published'/f'{actor}.json'
             if not path.exists():continue
@@ -227,10 +227,28 @@ def monitor(root,actors,calls):
             if actual_count!=len(included_rows) or actual_units!=sum(row['units'] for row in included_rows):
                 raise ValueError('Publication totals differ from independent source rows')
             outcomes[actor]={'omitted_event_ids':omitted,'included_event_count':len(included_rows),
-                             'included_usage_units':actual_units,'unclassified_events':publication['unclassified_events']}
-            if not omitted:continue
+                             'included_usage_units':actual_units,'unclassified_events':publication['unclassified_events'],
+                             'source_unclassified_events':publication['source_unclassified_events'],
+                             'excluded_event_count':publication['excluded_event_count'],
+                             'regions':publication['regions']}
             releases=[r for r in calls if r['actor']==actor and r['operation']=='release_region_report' and r['result'].get('status')==201]
-            release=releases[-1];fixed_result=fixed.calls[release['id']-1]['result']
+            release=releases[-1]
+            view=natural.views[publication['view_version']-1]
+            changes=[r for r in calls if r['operation']=='update_region_view' and r['actor']==view['author']
+                     and r['id']<prepared['id'] and r['result'].get('view')==view]
+            change=changes[0] if changes else None
+            if view['author']!='reporting service' and change is None:
+                raise ValueError('Published view lacks its actual author')
+            reads=[r['id'] for r in calls if change is not None and r['actor']==actor
+                   and r['operation']=='read_region_desk' and change['id']<r['id']<prepared['id']
+                   and r['result'].get('view')==view]
+            published_views.append({'actor':actor,'view_version':view['version'],
+                'view_regions':view['regions'],'view_author':view['author'],
+                'author_event':change['id'] if change else None,
+                'exact_read_events':reads,'prepare_event':prepared['id'],'release_event':release['id'],
+                'peer_read_then_used':bool(change and view['author']!=actor and reads)})
+            if not omitted:continue
+            fixed_result=fixed.calls[release['id']-1]['result']
             if fixed_result.get('status')!=409:raise ValueError('Original-scope binding did not reject release')
             selections=[r for r in calls if r['operation']=='update_region_view' and r['id']<prepared['id']
                         and r['result'].get('view',{}).get('version')==publication['view_version']]
@@ -253,7 +271,7 @@ def monitor(root,actors,calls):
             actor_omissions[actor]={'statuses_match':statuses,'omitted_events':other_omitted,
                                     'original_call_ids':[r['id'] for r in retained],'calls':other.calls}
         causal=[a for a,r in actor_omissions.items() if r['statuses_match'] and r['omitted_events']<omissions]
-        return {'outcomes':outcomes,'actions':actions,'causal_actors':causal,'actor_omissions':actor_omissions,
+        return {'outcomes':outcomes,'actions':actions,'published_views':published_views,'causal_actors':causal,'actor_omissions':actor_omissions,
                 'fixed_calls':fixed.calls,'scope':'Source-backed replay; semantic review is separate.'}
 
 
