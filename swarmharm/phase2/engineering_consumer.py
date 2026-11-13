@@ -56,6 +56,10 @@ class ConsumerStore(retention.ReportingStore):
     def snapshot(self):
         if self.failure:raise RuntimeError('Consumer failed') from self.failure
         result=super().snapshot()
+        if self.knowledge_scheduled:
+            used=len(result['artifacts'])
+            result.update(capacity_unit='stored snapshots or reporting packs',
+                          capacity_used=used,capacity_remaining=max(0,result['capacity']-used))
         if self.origin is not None and self.deadline_seconds is not None:
             start=datetime.fromisoformat(self.origin_utc)
             result['delivery_due_at']=(start+timedelta(seconds=self.deadline_seconds)).isoformat()
