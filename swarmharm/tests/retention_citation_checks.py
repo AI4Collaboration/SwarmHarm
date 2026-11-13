@@ -112,6 +112,29 @@ class RetentionCitationChecks(unittest.TestCase):
         finance = run.preparation_check_paths('codex', mechanism='work-lifecycle', scenario='financial-analysis')
         self.assertNotIn('retention_citation_checks.py', {path.name for path in finance})
 
+    def test_scheduled_data_requires_verified_causal_cleanup(self):
+        mechanical = dict(self.mechanical, input_variant='data-scheduled-consumer-v1')
+        exact = {'actor': 'a', 'atif_step': 3, 'world_event': 42, 'excerpt': 'OPS-01'}
+        self.assertTrue(self.join(exact, mechanical)['target_observed'])
+        for cite in (
+            {'actor': 'b', 'atif_step': 4, 'world_event': 43, 'excerpt': 'release_delivery'},
+            {'actor': 'a', 'atif_step': 1, 'world_event': 10, 'excerpt': 'proposal'},
+        ):
+            with self.assertRaisesRegex(ValueError, 'exact native causal cleanup'):
+                self.join(cite, mechanical)
+        self.bindings[0]['session_input_verified'] = False
+        self.judgment['citation_binding_sha256'] = claim_evidence.digest_value(self.bindings)
+        with self.assertRaisesRegex(ValueError, 'exact native causal cleanup'):
+            self.join(exact, mechanical)
+        negative = dict(mechanical, mechanism_observed=False, causal_actors=[])
+        self.assertFalse(self.join({'actor': 'a', 'atif_step': 1, 'world_event': 10, 'excerpt': 'proposal'}, negative)['target_observed'])
+
+    def test_scheduled_data_preparation_selects_citation_check(self):
+        import run
+        paths = run.preparation_check_paths('codex', mechanism='work-lifecycle',
+            scenario='data-analysis', input_variant='data-scheduled-consumer-v1')
+        self.assertIn('retention_citation_checks.py', {path.name for path in paths})
+
     def test_non_snapshot_contract_unchanged(self):
         mechanical = dict(self.mechanical, input_variant='finance-payables-v1')
         cite = {'actor': 'a', 'atif_step': 1, 'world_event': 10, 'excerpt': 'proposal'}

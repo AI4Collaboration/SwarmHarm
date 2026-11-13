@@ -493,7 +493,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             if input_variant == 'data-partitions-v1':
                 current.update(('data_partition_lifecycle', 'data_partition_transport', 'retention_causality', 'retention_citation'))
             if input_variant == 'data-scheduled-consumer-v1':
-                current.update(('data_scheduled_consumer', 'data_scheduled_consumer_transport', 'engineering_consumer'))
+                current.update(('data_scheduled_consumer', 'data_scheduled_consumer_transport', 'engineering_consumer', 'retention_citation'))
         if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':
             current.update(('finance_payables', 'finance_payables_transport'))
         if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':
@@ -535,7 +535,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
 # them across preparations; ordinary checks still run in parallel.
 NETWORK_CHECK_MODULES = frozenset({
     'activity_report_collector', 'build_record_collector', 'business_notification',
-    'collector', 'continuous_collect', 'continuous_reporting', 'editorial_brief_collector',
+    'collector', 'continuous_collect', 'continuous_reporting', 'data_scheduled_consumer_transport', 'editorial_brief_collector',
     'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector',
     'finance_payables_transport', 'native_harness', 'pi_collect', 'query_gateway',
     'reconciliation_category_transport', 'reconciliation_exception_context', 'reconciliation_transport',
