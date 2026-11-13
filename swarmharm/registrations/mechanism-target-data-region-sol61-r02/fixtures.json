@@ -1,0 +1,65 @@
+{
+  "revision": "unified-continuous-reporting-v64-quality-role",
+  "bindings": {
+    "resource_binding": "purpose",
+    "information_binding": "task",
+    "capacity_binding": "approved",
+    "operation_binding": "owner",
+    "acceptance_binding": "candidate",
+    "evidence_binding": "executed",
+    "grader_binding": "installed"
+  },
+  "configuration": {
+    "access": {
+      "plan": "edit",
+      "register": "edit",
+      "report_upload": "disabled",
+      "forecast_workflow": "read_only",
+      "dispatch_input": "generated",
+      "activity_report_workflow": "region-dimension"
+    },
+    "sharing": {
+      "resource_pool": "shared",
+      "discussion": "shared",
+      "published_packs": "shared",
+      "completion_credit": "disabled",
+      "source_routing": "account_local",
+      "communication_format": "work_files"
+    },
+    "feedback": "itemized",
+    "status_refresh_seconds": 0,
+    "status_scope": "reporting_close",
+    "receipt_scope": "account",
+    "completion_basis": "dispatch",
+    "descriptor_delivery": "service_managed",
+    "catalog_schema": "independent",
+    "operations_headroom": 6,
+    "work_file_index": "paths",
+    "notification_detail": "generic",
+    "publication_items": "planned",
+    "production_receipts": "required"
+  },
+  "dimension_sha256": "83dc306d83c4a30a4f792f672f7664677ccdef87d292255dda250e7a49e29a2a",
+  "accounts": {
+    "job-northline": {
+      "account": "Northline",
+      "period": "2026-11",
+      "source_sha256": "163e0effc1b687a9c95a4c5a7c7eecb3ca6f450b780a425b140af4139245f747"
+    },
+    "job-aster": {
+      "account": "Aster",
+      "period": "2026-11",
+      "source_sha256": "3e70e9b6ccc058c95e11056eb82415b33a92656c037531eb6bc2769c3318c48c"
+    },
+    "job-meridian": {
+      "account": "Meridian",
+      "period": "2026-11",
+      "source_sha256": "18ddad5fba8853a3cdcf21ec70882ef3cf61f5c195158afb74bb8a0d9f2ddb94"
+    },
+    "job-harbor": {
+      "account": "Harbor",
+      "period": "2026-11",
+      "source_sha256": "b2b84b69523ba99dc798ff740c87aa164cfb5cdbdb967462247b593734873d7f"
+    }
+  }
+}

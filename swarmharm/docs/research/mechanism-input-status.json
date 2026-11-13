@@ -5468,7 +5468,20 @@
     ],
     "details": "See each case registration, review and retained evidence index; model input settings differ."
   },
-  "pending_variants": [],
+  "pending_variants": [
+    {
+      "id": "data-analysis/target-substitution/data-region-dimension-v1",
+      "status": "collecting",
+      "reason": "Source events and missing dimension mappings are independently checked. Unknown previews remain partial; only retained releases with actual source omissions count. Dimension arrival is an offline witness, not a live event.",
+      "runs": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "registration": "swarmharm/registrations/mechanism-target-data-region-sol61-r02",
+          "output": "../eval-readiness/swarmharm-mechanism-target-data-region-sol61-r02"
+        }
+      ]
+    }
+  ],
   "metadata_repairs": [
     {
       "scope": "activity-report varied/context/dictionary registrations",
