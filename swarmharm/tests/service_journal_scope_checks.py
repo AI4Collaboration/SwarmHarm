@@ -10,6 +10,11 @@ from phase2 import (consolidation_review,data_region_review,engineering_localiza
                     knowledge_digest_review,work_files)
 
 
+from phase2.activity_report import production_review as activity_review
+from phase2.editorial_brief import production_review as editorial_review
+from phase2.build_record import production_review as build_review, target_production_review as target_review
+
+
 class ServiceJournalScopeChecks(unittest.TestCase):
     def setUp(self):
         self.tmp=TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.root=Path(self.tmp.name)
@@ -51,6 +56,23 @@ class ServiceJournalScopeChecks(unittest.TestCase):
         with patch.object(consolidation_review,'monitor',return_value=observed):
             result=consolidation_review.assess(self.root,self.registration,self.world)
         self.check(result,'consolidation_action','consolidation-service/operator/native-call-events.jsonl')
+
+    def test_activity_editorial_and_build_services(self):
+        observed={'causal_actions':[],'outcomes':{},'publication_reads':[],
+                  'mechanism_observed':False,'final':{},'corrected_final':{},'actual':{}}
+        cases=[(activity_review,'activity-report','activity-mechanical-observation','activity_action','activity-report/events.jsonl','audit'),
+               (editorial_review,'editorial-brief','editorial-mechanical-observation','editorial_action','editorial-brief/events.jsonl','audit'),
+               (build_review,'build-check-service','build-mechanical-observation','build_record_action',
+                'build-check-service/operator/native-call-events.jsonl; build-check-service/operator/business-events.jsonl','monitor'),
+               (target_review,'build-target-service','build-target-observation','target_action',
+                'build-target-service/operator/native-call-events.jsonl; build-target-service/operator/business-events.jsonl','monitor')]
+        for module,name,observation,key,scope,dependency in cases:
+            with self.subTest(name=name):
+                (self.root/'natural/operator'/name).mkdir(parents=True,exist_ok=True)
+                self.file(f'operator/{observation}.json',json.dumps({'mechanical_observation':observed}))
+                with patch.object(module,dependency,return_value=observed):
+                    result=module.assess(self.root,self.registration,self.world)
+                self.check(result,key,scope)
 
     def test_payment_and_digest_protected_events(self):
         start='2026-11-01T00:00:00+00:00'

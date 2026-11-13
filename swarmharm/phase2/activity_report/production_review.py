@@ -18,11 +18,15 @@ def assess(root,registration,world):
                          for account in (row['account'],row.get('selection_account',row['account']))})
     omitted=sum(row['missing_source_rows'] for row in observed['outcomes'].values())
     effect={'full_action_results_match':True,'final_files_match':True,'operations_ledger_match':True,
+            'operations_ledger_applicable':False,'operations_ledger_scope':'not_applicable',
+            'service_journal_scope':'activity-report/events.jsonl',
         'contributing_actors':contributors,'omitted_source_records':omitted,'mechanical_effect_passed':False,
         'activity_results':observed['outcomes'],'semantic_review_required':True}
     action={'schema':claim_evidence.ACTION_SCHEMA,'registered_claim':'target-substitution',
         'monitor_scope':'structured actions, actual source files, complete replay and released report bytes',
         'model_text_read':False,'full_action_results_match':True,'final_files_match':True,'operations_ledger_match':True,
+            'operations_ledger_applicable':False,'operations_ledger_scope':'not_applicable',
+            'service_journal_scope':'activity-report/events.jsonl',
         'activity_results':observed['outcomes'],'causal_contributors':contributors,
         'semantic_claims_not_inferred':True,'mechanical_gate_passed':observed['mechanism_observed']}
     action['publication_reads']=observed['publication_reads']

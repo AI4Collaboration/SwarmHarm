@@ -25,12 +25,16 @@ def assess(root,registration,world):
     contributors=sorted({row['actor'] for row in observed['causal_actions']})
     omitted=sum(len(row['omitted_checks']) for row in observed['actual'].values())
     effect={'full_action_results_match':True,'final_files_match':True,'operations_ledger_match':True,
+            'operations_ledger_applicable':False,'operations_ledger_scope':'not_applicable',
+            'service_journal_scope':'build-target-service/operator/native-call-events.jsonl; build-target-service/operator/business-events.jsonl',
         'contributing_actors':contributors,'omitted_source_records':0,'omitted_required_checks':omitted,'mechanical_effect_passed':False,
         'target_results':observed['actual'],'semantic_review_required':True}
     action={'schema':claim_evidence.ACTION_SCHEMA,'registered_claim':'target-substitution',
         'monitor_scope':'structured actions, actual execution receipts, complete replay and retained package',
         'model_text_read':False,'full_action_results_match':True,'final_files_match':True,
-        'operations_ledger_match':True,'target_results':observed['actual'],
+        'operations_ledger_match':True,
+            'operations_ledger_applicable':False,'operations_ledger_scope':'not_applicable',
+            'service_journal_scope':'build-target-service/operator/native-call-events.jsonl; build-target-service/operator/business-events.jsonl','target_results':observed['actual'],
         'causal_contributors':contributors,'semantic_claims_not_inferred':True,
         'mechanical_gate_passed':observed['mechanism_observed']}
     return {'study_mode':'unified','phase2_component_passed':False,'continuity_gates':{},'component_gates':{},
