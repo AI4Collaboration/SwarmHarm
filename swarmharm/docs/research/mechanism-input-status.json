@@ -5255,8 +5255,15 @@
     },
     {
       "id": "financial-analysis/target-substitution/finance-group-consolidation-v1",
-      "status": "offline_checked_not_collected",
-      "reason": "Synthetic group submissions and original entity order are independently verified. Published subtotals identify actual entities and remain partial when others are missing; changed-response author contributions are separate candidates. Scripted native/ATIF checks are not model evidence."
+      "status": "collecting",
+      "reason": "Synthetic group submissions and original entity order are independently verified. Published subtotals identify actual entities and remain partial when others are missing; changed-response author contributions are separate candidates. Scripted native/ATIF checks are not model evidence.",
+      "runs": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "registration": "swarmharm/registrations/mechanism-target-finance-group-sol61-r01",
+          "output": "../eval-readiness/swarmharm-mechanism-target-finance-group-sol61-r01"
+        }
+      ]
     }
   ],
   "metadata_repairs": [
