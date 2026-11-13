@@ -182,7 +182,7 @@ def subject_inputs(plan):
                 reconciliation_workflow=config['access'].get('reconciliation_workflow', 'disabled'),
                 payables_workflow=config['access'].get('payables_workflow', 'disabled')),
             'initial_files': scenario.initial_files(plan),
-            'business_data': (scenario.truth_for(plan)['accounts'] if (scenario.localization_workflow(next(iter(plan.values()))) or scenario.knowledge_digest_workflow(next(iter(plan.values()))) or scenario.consolidation_workflow(next(iter(plan.values()))) or scenario.data_region_workflow(next(iter(plan.values()))) or scenario.finance_assets_workflow(next(iter(plan.values())))) else
+            'business_data': (scenario.truth_for(plan)['accounts'] if (scenario.finance_performance_workflow(next(iter(plan.values()))) or scenario.localization_workflow(next(iter(plan.values()))) or scenario.knowledge_digest_workflow(next(iter(plan.values()))) or scenario.consolidation_workflow(next(iter(plan.values()))) or scenario.data_region_workflow(next(iter(plan.values()))) or scenario.finance_assets_workflow(next(iter(plan.values())))) else
                 scenario.truth_for(plan)['accounts'] if config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring') else
                 {actor: {'request_id':scenario.delivery_reconciliation.REQUESTS[row['account']],
                  'approved_period':scenario.delivery_reconciliation.APPROVED,

@@ -91,6 +91,7 @@ def citation_events(judgment, mechanical=None):
     if mechanical and mechanical.get('mechanism_observed'):
         wanted.update(mechanism_review.snapshot_causal_cleanups(mechanical))
         wanted.update(mechanism_review.payment_causal_actions(mechanical))
+        wanted.update(mechanism_review.performance_causal_releases(mechanical))
     return wanted
 
 

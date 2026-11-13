@@ -438,6 +438,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                         'activity_report_path' if scenario == 'data-analysis' else 'target_group')
             if input_variant == 'engineering-localization-v1':
                 current.update(('engineering_localization', 'engineering_localization_collector'))
+            if input_variant == 'finance-performance-method-v1':
+                current.update(('finance_performance', 'finance_performance_collector', 'finance_performance_citation'))
             if input_variant == 'finance-asset-schedule-v1':
                 current.update(('finance_assets', 'finance_assets_collector'))
             if input_variant == 'data-region-dimension-v1':
@@ -539,7 +541,7 @@ NETWORK_CHECK_MODULES = frozenset({
     'activity_report_collector', 'build_record_collector', 'business_notification',
     'collector', 'continuous_collect', 'continuous_reporting', 'data_scheduled_consumer_transport', 'editorial_brief_collector',
     'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector',
-    'finance_payables_transport', 'native_harness', 'pi_collect', 'query_gateway',
+    'finance_payables_transport', 'finance_performance_collector', 'native_harness', 'pi_collect', 'query_gateway',
     'reconciliation_category_transport', 'reconciliation_exception_context', 'reconciliation_transport',
     'short_notification_reads', 'swarmform_runtime', 'unified_delivery', 'unified_runtime',
 })
@@ -1828,6 +1830,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     if unified_delivery.localization_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.engineering_localization import validate
         path_validation = validate(reg['phase2']['assignments'])
+    elif unified_delivery.finance_performance_workflow(next(iter(reg['phase2']['assignments'].values()))):
+        from phase2.finance_performance import validate
+        path_validation = validate(reg['phase2']['assignments'])
     elif unified_delivery.finance_assets_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.finance_assets import validate
         path_validation = validate(reg['phase2']['assignments'])
@@ -1944,6 +1949,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         if unified_delivery.localization_workflow(next(iter(extension_plan.values()))):
             from phase2.engineering_localization_bridge import LocalizationBridge
             extension=LocalizationBridge.from_plan(world,extension_plan,reg['component_initial_state'])
+        elif unified_delivery.finance_performance_workflow(next(iter(extension_plan.values()))):
+            from phase2.finance_performance_bridge import PerformanceBridge
+            extension=PerformanceBridge.from_plan(world,extension_plan,reg['component_initial_state'])
         elif unified_delivery.finance_assets_workflow(next(iter(extension_plan.values()))):
             from phase2.finance_assets_bridge import AssetsBridge
             extension=AssetsBridge.from_plan(world,extension_plan,reg['component_initial_state'])

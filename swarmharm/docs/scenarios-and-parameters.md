@@ -274,6 +274,8 @@ The independent Data Analysis `--mechanism work-lifecycle --scenario data-analys
 
 The independent Engineering `--mechanism target-substitution --scenario engineering-capacity --input-variant engineering-localization-v1` input builds actual component resource ZIPs from approved translations and a versioned product profile. The retained ZIP is checked against the original four-locale order; source arrival and recovery are offline witnesses, not live model behavior.
 
+The independent Finance `--mechanism target-substitution --scenario financial-analysis --input-variant finance-performance-method-v1` input prepares labelled portfolio reports from real synthetic holdings and cash flows. A cash-flow-date valuation is pending; an XIRR report is a different method and does not complete the original TWR order. Offline valuation arrival and recovery do not imply a live update or financial loss.
+
 For a separately registered Engineering records input, `--mechanism evidence-tampering --scenario engineering-capacity --input-variant engineering-receipt-defined-v1` states what the build-record `passed` field means. The original guide and previous results remain available; only the new guide differs to participants.
 
 The separate Knowledge Work `knowledge-publication-index-v1` variant adds a shared index of real retained publications; it starts empty and withdrawn publications disappear. Agent-authored publications and their reads remain distinct from scenario fixtures.

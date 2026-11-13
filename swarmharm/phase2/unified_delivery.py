@@ -83,7 +83,7 @@ CONFIG_SCHEMA = {
             'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'localization']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor', 'region-dimension']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context', 'digest-queue']},
-            'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule']},
+            'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule', 'performance']},
             'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring']},
             'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations']},
             'quality_workflow': {'enum': ['enabled', 'disabled']},
@@ -197,6 +197,10 @@ def normalize_config(value=None):
 
 def build_target_workflow(assignment):
     return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('target','target-clear','target-fixture','target-product')
+
+
+def finance_performance_workflow(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') == 'performance'
 
 
 def finance_assets_workflow(assignment):
@@ -331,6 +335,9 @@ def world_for(plan):
 
 
 def task(assignment):
+    if finance_performance_workflow(assignment):
+        from phase2.finance_performance import TASK
+        return TASK
     if localization_workflow(assignment):
         from phase2.engineering_localization import TASK
         return TASK
@@ -431,6 +438,9 @@ def communication_start(plan):
 
 
 def documents(assignment):
+    if finance_performance_workflow(assignment):
+        from phase2.finance_performance import documents as performance_documents
+        return performance_documents(assignment['account'])
     if localization_workflow(assignment):
         from phase2.engineering_localization import documents as resource_documents
         return resource_documents(assignment['account'])
@@ -854,6 +864,11 @@ def shared_directories(plan):
 
 
 def truth_for(plan):
+    if finance_performance_workflow(next(iter(plan.values()))):
+        from phase2.finance_performance import source,digest as source_digest
+        return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
+            'accounts':{actor:{'account':row['account'],'source_sha256':source_digest(source(row['account']))}
+                        for actor,row in plan.items()},'cash_flow_valuations':'initially unavailable; no scheduled arrival'}
     if localization_workflow(next(iter(plan.values()))):
         from phase2.engineering_localization import source,initial_approved,digest as resource_digest
         accounts={actor:row['account'] for actor,row in plan.items()}
@@ -965,6 +980,13 @@ def _engineering_consumer_calendar():
 
 
 def initial_state(plan):
+    if finance_performance_workflow(next(iter(plan.values()))):
+        return {'origin':'prepared_business_records','study_track':'continuous_unified',
+            'assignments':deepcopy(plan),'files_sha256':digest(initial_files(plan)),
+            'communication_start':communication_start(plan),'shared_directories':shared_directories(plan),
+            'supplied_business_records':{'portfolios':{'origin':'synthetic independent holdings and cash-flow records',
+                'visibility':'own portfolio and shared report format','behavioral_evidence':False}},
+            'supplied_peer_messages':[],'supplied_methods':[]}
     if localization_workflow(next(iter(plan.values()))):
         return {'origin':'prepared_business_records','study_track':'continuous_unified',
             'assignments':deepcopy(plan),'files_sha256':digest(initial_files(plan)),
@@ -1085,7 +1107,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      build_record_workflow=False, build_target_workflow=False, build_target_clarify_selection=False, build_target_product=False, reconciliation_workflow='disabled',
                      activity_report_workflow=False, activity_shared_template=False, data_region_workflow=False, knowledge_digest_workflow=False, payables_workflow='disabled', editorial_brief_workflow=False,
                      editorial_intake_archive=False, editorial_publication_index=False, editorial_review_queue=False, **kwargs):
-    if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule'),
+    if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule', 'performance'),
             bool(activity_report_workflow), bool(data_region_workflow), bool(knowledge_digest_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring'), bool(editorial_brief_workflow))) > 1:
         raise ValueError('Choose one business workflow')
     if knowledge_digest_workflow:
@@ -1109,6 +1131,9 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
     if build_record_workflow:
         from phase2.build_record.harness_adapter import tool_definitions as build_tools
         return build_tools()
+    if reconciliation_workflow == 'performance':
+        from phase2.finance_performance import definitions
+        return definitions()
     if reconciliation_workflow == 'asset-schedule':
         from phase2.finance_assets import definitions
         return definitions()
@@ -3052,7 +3077,10 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             reg['phase2']['communication_condition'] = 'ordinary_work_files'
             reg['input_contract']['supplied_message_schema'] = False
         reg['phase2']['independent_outcome'] += '; exact authored-note exposure and read-then-reply reconstruction'
-    if localization_workflow(next(iter(assignments.values()))):
+    if finance_performance_workflow(next(iter(assignments.values()))):
+        from phase2.finance_performance import validate
+        reg['phase2']['path_validation'] = validate(assignments)
+    elif localization_workflow(next(iter(assignments.values()))):
         from phase2.engineering_localization import validate
         reg['phase2']['path_validation'] = validate(assignments)
     elif finance_assets_workflow(next(iter(assignments.values()))):
