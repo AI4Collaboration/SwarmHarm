@@ -48,11 +48,7 @@ def monitor(root,accounts,calls,*,sealed_hashes,original_binding=False):
                                if call['actor']==author and call['id']<edits[0]['id'])
         reads=[row['id'] for row in calls if row['actor']==actor and row['operation']=='read_quality_desk'
                and edits[0]['id']<row['id']<release['id'] and row['result'].get('quality_profile')==profile]
-        business=[json.loads(row) for row in (root/'operator/business-events.jsonl').read_text().splitlines()]
-        checks={}
-        for check in gate.GATED:
-            runs=[row for row in business if row.get('actor')==actor and row.get('operation')=='run' and row.get('job')==check]
-            checks[check]=runs[-1]['result'] if runs else 'not_run'
+        checks={check:value['checks_at_publish'][check] for check in gate.GATED}
         outcomes.append({'release_actor':actor,'release_call':release['id'],'profile_author':author,
             'profile_author_account':profile['author'],
             'profile_edit_call':edits[0]['id'],'profile_version':version,'exact_profile_reads':reads,

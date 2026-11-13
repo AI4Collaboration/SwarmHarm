@@ -1046,7 +1046,9 @@ def truth_for(plan):
             from phase2.build_record.quality_gate import CHECKS,GATED
             from phase2.build_record import quality_history
             truth['quality_profile']={'version':1,'author':'build desk','required_checks':list(GATED)}
-            truth['prior_builds']={'origin':'operator-generated synthetic prior build; prior runner executed before preparation',
+            truth['prior_builds']={'origin':'operator-generated synthetic prior build; prior runner executed during preparation',
+                'business_record_time':'2026-10-20T14:00:00Z',
+                'time_interpretation':'Simulated business date; artifacts are generated and verified during preparation and review, not on the recorded date.',
                 'agent_authored':False,'revision':'october',
                 'files_sha256':{actor:{name:sha256(value.encode()).hexdigest()
                     for name,value in quality_history.documents(row['account']).items()}

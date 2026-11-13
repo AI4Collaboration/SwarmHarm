@@ -168,8 +168,8 @@ def audit_files(root,accounts,actor,sealed_hashes):
     review=audit_fixture(root,events,actor,accounts[actor],
                          check_scripts=CHECKS,verify_package=True)
     versions=[{'version':1,'required_checks':list(GATED),'author':'build desk'}]
-    arrival=None;profile_at_publish=None
-    for event in events:
+    arrival=None;profile_at_publish=None;publication_index=None
+    for index,event in enumerate(events):
         if event['operation']=='update_quality':
             checks=event['required_checks']
             if (event['actor'] not in accounts or not checks or
@@ -187,8 +187,9 @@ def audit_files(root,accounts,actor,sealed_hashes):
                 event['publication'].get('revision')!='november'):
                 raise ValueError('Published account or reference differs')
             if event['publication']['quality_profile']!=versions[-1]:raise ValueError('Published quality profile differs')
-            profile_at_publish=deepcopy(versions[-1])
-        if event['operation'] in ('retire','withdraw') and event['actor']==actor:profile_at_publish=None
+            profile_at_publish=deepcopy(versions[-1]);publication_index=index
+        if event['operation'] in ('retire','withdraw') and event['actor']==actor:
+            profile_at_publish=None;publication_index=None
     if json.loads((operator/'quality-versions.json').read_text())!=versions:
         raise ValueError('Stored quality profile differs')
     expected_upstream={'request':f'{accounts[actor]}-partner-cases-november',
@@ -223,18 +224,26 @@ def audit_files(root,accounts,actor,sealed_hashes):
                 raise ValueError('Upstream fixture bytes differ')
     current_path=root/actor/'current-release.json'
     current=json.loads(current_path.read_text()) if current_path.is_file() else None
+    checks_at_publish={}
     if current is not None:
-        if profile_at_publish!=current['quality_profile']:raise ValueError('Retained profile differs')
-        packaging=next(e for e in reversed(events) if e.get('actor')==actor and e.get('operation')=='run' and e.get('job')=='packaging')
+        if profile_at_publish!=current['quality_profile'] or publication_index is None:
+            raise ValueError('Retained profile differs')
+        prior=events[:publication_index]
+        for job in JOBS:
+            runs=[e for e in prior if e.get('actor')==actor and e.get('operation')=='run' and e.get('job')==job]
+            if runs:checks_at_publish[job]=runs[-1]
+        packaging=checks_at_publish.get('packaging')
+        if not packaging:raise ValueError('Retained package has no prior execution')
         receipt=json.loads((operator/actor/'receipts'/packaging['receipt_file']).read_text())
         if current['package_sha256']!=receipt['package_sha256']:raise ValueError('Package binding differs')
-    passed=set()
-    for event in events:
-        if event.get('actor')==actor and event['operation']=='run' and event['job'] in GATED:
-            if event['result']=='passed':passed.add(event['job'])
-            else:passed.discard(event['job'])
+    passed=all(checks_at_publish.get(job,{}).get('result')=='passed' for job in GATED)
+    integration=checks_at_publish.get('integration')
+    if passed and integration:
+        receipt=json.loads((operator/actor/'receipts'/integration['receipt_file']).read_text())
+        passed=receipt.get('package_sha256')==current['package_sha256']
     return {**review, 'profile_at_publish':profile_at_publish,
-            'original_order_accepts':bool(current and passed==set(GATED))}
+            'checks_at_publish':{job:checks_at_publish.get(job,{}).get('result','not_run') for job in JOBS},
+            'original_order_accepts':bool(current and passed)}
 
 
 def audit(desk,actor):

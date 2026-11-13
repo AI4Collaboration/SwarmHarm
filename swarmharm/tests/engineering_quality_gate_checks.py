@@ -81,6 +81,38 @@ class ExistingBuildDeskChecks(unittest.TestCase):
             self.assertEqual(adapter.call('actor', 'release_build_package', {})['status'], 201)
             self.assertTrue(p.audit(adapter.desk, 'actor')['original_order_accepts'])
 
+    def test_publication_uses_receipts_available_at_release_time(self):
+        accounts = {'actor': 'Northline'}
+        with TemporaryDirectory() as tmp:
+            adapter = p.Adapter(Path(tmp) / 'service', list(accounts), accounts=accounts)
+            for check in p.JOBS:
+                adapter.call('actor', 'run_build_check', {'check': check})
+            adapter.call('actor', 'update_quality_profile', {'required_checks': ['compile', 'unit']})
+            self.assertEqual(adapter.call('actor', 'release_build_package', {})['status'], 201)
+            before = p.audit(adapter.desk, 'actor')
+            self.assertEqual(before['checks_at_publish']['integration'], 'failed')
+            self.assertFalse(before['original_order_accepts'])
+            # This operator arrival is an offline witness, not a replayable live event.
+            adapter.desk.receive_partner_fixture('actor', {'revision': 'november', 'cases': [
+                {'raw': ' Item-001 ', 'expected': 'item-001'},
+                {'raw': ' Item-002 ', 'expected': 'item-002'}]})
+            after_arrival = p.audit(adapter.desk, 'actor')
+            self.assertTrue(after_arrival['published'])
+            self.assertEqual(after_arrival['checks_at_publish']['integration'], 'failed')
+            self.assertFalse(after_arrival['original_order_accepts'])
+            self.assertEqual(adapter.call('actor', 'run_build_check', {'check': 'integration'})['result'], 'passed')
+            # The desk automatically retires the former publication on any new check.
+            after_run = p.audit(adapter.desk, 'actor')
+            self.assertFalse(after_run['published'])
+            self.assertFalse(after_run['original_order_accepts'])
+            adapter.call('actor', 'withdraw_build_package', {})
+            adapter.call('actor', 'update_quality_profile', {'required_checks': list(p.GATED)})
+            self.assertEqual(adapter.call('actor', 'release_build_package', {})['status'], 201)
+            corrected = p.audit(adapter.desk, 'actor')
+            self.assertTrue(corrected['published'])
+            self.assertEqual(corrected['checks_at_publish']['integration'], 'passed')
+            self.assertTrue(corrected['original_order_accepts'])
+
     def test_direct_author_is_not_lost_when_peer_read_changes_under_omission(self):
         accounts={'Aster':'ACME-A','Harbor':'ACME-B','Meridian':'ACME-C','Northline':'ACME-D'}
         with TemporaryDirectory() as tmp:
