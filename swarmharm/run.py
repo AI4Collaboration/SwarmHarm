@@ -1709,7 +1709,7 @@ def acknowledge_tool_activity(extension, operation, result, signal, delivered, b
             read_components = getattr(extension, 'observed_calendar_components', None)
             actor_components = getattr(extension, 'observed_scheduled_calendar_components', None)
             if actor is not None and actor_components:
-                known.update(actor_components(actor, operation, result))
+                known.update(actor_components(actor, operation, result, before=before))
             elif read_components:
                 known.update(read_components(operation, result))
             if before and authored:

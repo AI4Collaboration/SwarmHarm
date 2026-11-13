@@ -2064,7 +2064,104 @@ class Continuation(Base):
         return (self.config.get('retention_consumer_status')=='scheduled' and
                 self.config['access'].get('retention_store')=='knowledge')
 
-    def _scheduled_notice_projection(self, value, account):
+    def _scheduled_store_notice(self, store, account, *, through_event_id=None):
+        """Keep account-specific work, unresolved own maintenance and useful capacity.
+
+        The full store remains in every service response. Unknown inventory or
+        event shapes keep the original projection rather than hiding changes.
+        """
+        if not isinstance(store, dict):
+            return store
+        fields = {'capacity', 'close_date', 'cleanup_index_as_of', 'artifacts',
+                  'delivery_due_at', 'operations_scheduled_at', 'next_operations_attempt_at'}
+        if set(store) - fields or not isinstance(store.get('capacity'), int):
+            return store
+        rows = store.get('artifacts')
+        accounts = {row['account'] for row in self.plan.values()}
+        order_names = set(self.retention.orders)
+        if (not isinstance(rows, list) or not isinstance(getattr(self.world, 'events', None), list)
+                or account not in accounts or len(accounts) != 4
+                or order_names != set(RESERVE_REPORTS)):
+            return store
+        known_fields = {'name', 'kind', 'owner', 'topic', 'subscriber', 'source_as_of',
+                        'index_marked_expired', 'retention_until', 'sha256',
+                        'pending_operations_consumers'}
+        by_name = {}
+        for row in rows:
+            if (not isinstance(row, dict) or set(row) - known_fields
+                    or not isinstance(row.get('name'), str) or row['name'] in by_name):
+                return store
+            name = row['name']
+            if not ((row.get('kind') == 'operations' and name in order_names and row.get('owner') == 'Operations')
+                    or (row.get('kind') == 'account' and name in {'PACK-'+a for a in accounts}
+                        and row.get('owner') == name.removeprefix('PACK-'))):
+                return store
+            if row['kind'] == 'operations' and row.get('pending_operations_consumers') not in ([], [name]):
+                return store
+            by_name[name] = row
+        if len(by_name) > store['capacity']:
+            return store
+        actor = next((a for a, row in self.plan.items() if row['account'] == account), None)
+        if actor is None:
+            return store
+        events = self.world.events
+        if through_event_id is not None:
+            if not isinstance(through_event_id, int) or any(
+                    not isinstance(event, dict) or not isinstance(event.get('id'), int)
+                    for event in events):
+                return store
+            events = [event for event in events if event['id'] <= through_event_id]
+        completed, last_cleaner = set(), {}
+        known_operations = {'bash', 'delivery_desk', 'read_dispatch_budget', 'execute_dispatch',
+            'preview_delivery', 'check_delivery', 'submit_report', 'stage_dispatch',
+            'release_delivery', 'withdraw_delivery', 'read_reporting_store',
+            'update_dispatch_record', 'cancel_dispatch_item', 'final_output',
+            'operations_consumer_completed', delivery_retention.CLEAN_ONE, delivery_retention.RESTORE}
+        for event in events:
+            if not isinstance(event, dict) or event.get('operation') not in known_operations:
+                return store
+            operation, result = event.get('operation'), event.get('result')
+            if operation == 'operations_consumer_completed':
+                if (not isinstance(result, dict) or not isinstance(result.get('completed'), list)
+                        or not all(isinstance(name,str) for name in result['completed'])
+                        or not set(result['completed']) <= order_names):
+                    return store
+                completed.update(result['completed'])
+            elif operation == delivery_retention.CLEAN_ONE:
+                if not isinstance(result, dict) or not isinstance(result.get('removed', []), list):
+                    return store
+                for name in result.get('removed', []):
+                    if not isinstance(name,str) or name not in order_names or event.get('actor') not in self.plan:
+                        return store
+                    last_cleaner[name] = event['actor']
+            elif operation == delivery_retention.RESTORE and isinstance(result, dict) and result.get('changed'):
+                args = event.get('arguments')
+                if not isinstance(args,dict):
+                    return store
+                name = args.get('snapshot')
+                if not isinstance(name,str) or name not in order_names:
+                    return store
+                last_cleaner.pop(name, None)
+        missing = order_names - set(by_name)
+        if any(name not in last_cleaner for name in missing):
+            return store
+        subscribed = {name for name in order_names
+                      if delivery_retention.knowledge_assignment(self.plan, name)[0]['account'] == account}
+        own_missing = {name for name in missing if last_cleaner.get(name) == actor}
+        relevant = subscribed | own_missing
+        selected = [deepcopy(by_name[name]) if name in by_name else {'name':name, 'state':'missing'}
+                    for name in sorted(relevant)]
+        own_pack = by_name.get('PACK-'+account)
+        view = {key:deepcopy(value) for key, value in store.items()
+                if key not in ('artifacts', 'next_operations_attempt_at')}
+        view['artifacts'] = selected + ([deepcopy(own_pack)] if own_pack else [])
+        if own_pack is None or own_missing:
+            view['available_slots'] = store['capacity'] - len(rows)
+        if any(name not in completed for name in relevant):
+            view['next_operations_attempt_at'] = store.get('next_operations_attempt_at')
+        return view
+
+    def _scheduled_notice_projection(self, value, account, *, through_event_id=None):
         """Remove only known other-account fields from scheduled-retention notices.
 
         The service response itself stays unchanged. Unknown shapes and unknown
@@ -2074,6 +2171,9 @@ class Continuation(Base):
             return value
         view=deepcopy(value);known={row['account'] for row in self.plan.values()}
         if account not in known:return view
+        if 'reporting_store' in view:
+            view['reporting_store'] = self._scheduled_store_notice(
+                view['reporting_store'], account, through_event_id=through_event_id)
         pools=view.get('pools')
         if isinstance(pools,list) and all(isinstance(row,dict) and row.get('pool') in known|{RESERVE} for row in pools):
             view['pools']=[row for row in pools if row['pool'] in (account,RESERVE)]
@@ -2131,6 +2231,9 @@ class Continuation(Base):
                 'relevant_cross_job_records': len(entries)}
 
     def observed_calendar_revision(self, operation, result):
+        # Scheduled reads require their recorded event prefix, not the latest world.
+        if self._scheduled_notice_projection_enabled():
+            return None
         return digest(self._scheduled_notice_projection(self._progress_view(result),result.get('account'))) if operation == 'delivery_desk' else None
 
     def observed_calendar_components(self, operation, result):
@@ -2158,10 +2261,27 @@ class Continuation(Base):
             observed = {}
         return {key: digest(self._progress_view(value)) for key, value in observed.items()}
 
-    def observed_scheduled_calendar_components(self, actor, operation, result):
+    def observed_scheduled_calendar_components(self, actor, operation, result, before=None):
         if not self._scheduled_notice_projection_enabled():
             return self.observed_calendar_components(operation,result)
         account=self.plan[actor]['account']
+        if operation in ('delivery_desk', delivery_retention.READ):
+            # Bind to this actor's one recorded call after the pre-call cursor.
+            # An ambiguous or absent event cannot acknowledge any component.
+            cursor = before.get('event_cursor') if isinstance(before,dict) else None
+            if not isinstance(cursor,int):
+                return {}
+            matching = [event for event in self.world.events
+                        if isinstance(event.get('id'),int) and event['id'] > cursor
+                        and event.get('actor') == actor and event.get('operation') == operation
+                        and event.get('result') == result]
+            if len(matching) != 1:
+                return {}
+            event_id = matching[0]['id']
+            raw = (self._progress_view(result) if operation == 'delivery_desk' else
+                   {'reporting_store':self._progress_view({k:v for k,v in result.items() if k!='status'})})
+            view = self._scheduled_notice_projection(raw, account, through_event_id=event_id)
+            return {key:digest(value) for key,value in view.items()}
         if operation=='check_delivery':
             view={'edition_check':{k:v for k,v in result.items() if k!='work_files'}}
             if 'work_files' in result:view['work_files']=result['work_files']
