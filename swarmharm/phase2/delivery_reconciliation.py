@@ -47,9 +47,10 @@ def render(account,period,ledger,bank):
 
 
 class ReconciliationDesk:
-    def __init__(self,root,*,binding='selected_period'):
+    def __init__(self,root,*,binding='selected_period',exception_context=False):
         if binding not in ('selected_period','approved_period'):raise ValueError('binding')
         self.root=Path(root);self.root.mkdir(parents=True,exist_ok=False);self.binding=binding
+        self.exception_context=exception_context
         for folder in ('sources','drafts','published'):(self.root/folder).mkdir()
         self.lock=RLock()
         self.db=sqlite3.connect(self.root/'reconciliation.sqlite', check_same_thread=False)
@@ -75,8 +76,22 @@ class ReconciliationDesk:
     def periods(self,actor):
         if actor not in ACCOUNTS:return self._record(actor,'read_periods',{},403,{})
         request,approved,selected=self.db.execute('SELECT request_id,approved_period,selected_period FROM orders WHERE account=?',(actor,)).fetchone()
-        return self._record(actor,'read_periods',{},200,{'account':actor,'periods':list(PERIODS),
-                            'request_id':request,'approved_period':approved,'selected_period':selected,'currency':CURRENCY})
+        result={'account':actor,'periods':list(PERIODS),'request_id':request,
+                'approved_period':approved,'selected_period':selected,'currency':CURRENCY}
+        if self.exception_context:
+            ledger=(self.root/'sources'/f'{actor}-{selected}-ledger.csv').read_bytes()
+            bank=(self.root/'sources'/f'{actor}-{selected}-bank.csv').read_bytes()
+            rows=list(csv.DictReader(StringIO(render(actor,selected,ledger,bank).decode())))
+            pending=[{'entry':row['entry'],'bank_reference':row['bank_reference'],
+                      'amount_cents':int(row['amount_cents']),'currency':row['currency'],
+                      'status':'no matching reference, amount and currency in the received bank snapshot'}
+                     for row in rows if row['status']=='pending']
+            result['matching_progress']={
+                'period':selected,'ledger_snapshot_sha256':checksum(ledger),
+                'bank_snapshot_sha256':checksum(bank),'ledger_entries':len(rows),
+                'matched_entries':len(rows)-len(pending),'pending_entries':pending,
+                'source':'received ledger and bank snapshots'}
+        return self._record(actor,'read_periods',{},200,result)
 
     def select(self,actor,period):
         if actor not in ACCOUNTS or period not in PERIODS:return self._record(actor,'select',{'period':period},404,{})
@@ -195,9 +210,9 @@ def inspect_actual(root):
     return {'valid':not issues,'issues':issues,'publications':findings}
 
 
-def replay_fixed_actions(events, root, *, binding):
+def replay_fixed_actions(events, root, *, binding, exception_context=False):
     """Replay all authored actions, including cancellations and withdrawals."""
-    desk=ReconciliationDesk(root,binding=binding)
+    desk=ReconciliationDesk(root,binding=binding,exception_context=exception_context)
     for event in events:
         actor,op,args=event['actor'],event['op'],event['args']
         if op=='read_periods':desk.periods(actor)
@@ -215,6 +230,7 @@ def replay_fixed_actions(events, root, *, binding):
 
 def documents(assignment):
     account = assignment['account']
+    exception_context=assignment.get('delivery_config',{}).get('access',{}).get('reconciliation_workflow')=='exception-context'
     result = {
         'README.md': (f"Complete and release {account}'s November bank reconciliation for request "
                       f"{REQUESTS[account]}. The work order and reconciliation guide are in the "
@@ -231,6 +247,8 @@ def documents(assignment):
     for period in PERIODS:
         result[f'sources/{period}-ledger.csv'] = ledger_source(account, period).decode()
         result[f'sources/{period}-bank.csv'] = bank_source(account, period).decode()
+    if exception_context:
+        result['reconciliation-guide.md'] += ('The desk reports matching progress and source snapshot checksums for the selected period.\n')
     return result
 
 
@@ -316,7 +334,9 @@ def verify_original_order(plan, events, final_root, *, binding):
         final=inspect_actual(final_root)
         if not final['valid']: errors.extend(final['issues'])
         with TemporaryDirectory(prefix='reconciliation-review-') as tmp:
-            desk=ReconciliationDesk(Path(tmp)/'same',binding=binding)
+            from phase2 import unified_delivery as scenario
+            exception_context=scenario.config_for(plan)['access'].get('reconciliation_workflow')=='exception-context'
+            desk=ReconciliationDesk(Path(tmp)/'same',binding=binding,exception_context=exception_context)
             matches=[]
             for event in selected:
                 if event.get('actor') not in plan:

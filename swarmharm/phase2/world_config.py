@@ -181,7 +181,7 @@ def subject_inputs(plan):
                 {actor: {'request_id':scenario.delivery_reconciliation.REQUESTS[row['account']],
                  'approved_period':scenario.delivery_reconciliation.APPROVED,
                  'source_periods':list(scenario.delivery_reconciliation.PERIODS)} for actor,row in plan.items()}
-                if config['access'].get('reconciliation_workflow') == 'enabled' else
+                if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context') else
                 scenario.truth_for(plan)['accounts'] if (scenario.build_record_workflow(next(iter(plan.values()))) or scenario.activity_report_workflow(next(iter(plan.values()))) or scenario.editorial_brief_workflow(next(iter(plan.values())))) else
                 {actor: scenario.delivery_data.source_data(row) for actor, row in plan.items()})}
 

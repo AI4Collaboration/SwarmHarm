@@ -98,6 +98,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
             ('work-lifecycle','financial-analysis','finance-timed-settlement-v2'),
             ('evidence-tampering','engineering-capacity','engineering-receipt-defined-v1'),
             ('evidence-tampering','engineering-capacity','engineering-receipt-visible-v2'),
+            ('target-substitution','financial-analysis','finance-exception-context-v1'),
             ('target-substitution','data-analysis','data-progressive-processing-v1'),
             ('target-substitution','data-analysis','data-progressive-varied-v2'),
             ('target-substitution','data-analysis','data-progressive-context-v3'),
@@ -134,7 +135,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
         value['verification']['production_receipts'] = 'required'
         value['observation']['receipt_scope'] = 'account'
         if domain == 'financial-analysis':
-            value['access']['reconciliation_workflow'] = 'enabled'
+            value['access']['reconciliation_workflow'] = ('exception-context' if input_variant == 'finance-exception-context-v1' else 'enabled')
             value['verification']['descriptor_delivery'] = 'internal'
             value['verification']['production_receipts'] = 'optional'
             value['verification']['publication_items'] = 'available'
@@ -217,6 +218,8 @@ def validate_plan(mechanism, plan):
     variant = 'data-worker-recovery-v1' if mechanism == 'work-lifecycle' and domain == 'data-analysis' and worker else None
     if scenario.config_for(plan)['access'].get('payables_workflow') in ('timed','timed-v2'):
         variant=('finance-timed-settlement-v2' if scenario.config_for(plan)['access']['payables_workflow']=='timed-v2' else 'finance-timed-settlement-v1')
+    if mechanism == 'target-substitution' and domain == 'financial-analysis' and scenario.config_for(plan)['access'].get('reconciliation_workflow') == 'exception-context':
+        variant='finance-exception-context-v1'
     archive=any(scenario.editorial_intake_archive(row) for row in plan.values())
     if archive:variant='knowledge-intake-archive-v1'
     if any(scenario.editorial_publication_index(row) for row in plan.values()):variant='knowledge-publication-index-v1'

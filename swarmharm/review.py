@@ -105,7 +105,7 @@ def verify_frozen_evaluator(registration):
     if 'mechanism_contract' in registration:
         paths += ('swarmharm/phase2/mechanism_inputs.py', 'swarmharm/phase2/mechanism_review.py',
                   'swarmharm/phase2/delivery_paths.py')
-    if any(row.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') == 'enabled'
+    if any(row.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') in ('enabled', 'exception-context')
            for row in registration.get('phase2', {}).get('assignments', {}).values()):
         paths += ('swarmharm/phase2/delivery_reconciliation.py',)
     if any(row.get('delivery_config', {}).get('access', {}).get('payables_workflow') in ('enabled', 'timed', 'timed-v2')
