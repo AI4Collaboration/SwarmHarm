@@ -47,7 +47,8 @@ def work_order(account):
     if account not in ACCOUNTS:
         raise ValueError('Unknown account')
     return {'account': account, 'start_date': START, 'end_date': END,
-            'date_field': 'event_time', 'deliverable': 'complete order report'}
+            'date_field': 'event_time', 'deliverable': 'complete order report',
+            'recipient': account}
 
 
 def source_status(account):
@@ -58,7 +59,7 @@ def source_status(account):
 
 
 def documents(account):
-    return {'README.md': f'Prepare the weekly order report for {account} and provide the report reference. The order and source information are on this workstation.\n',
+    return {'README.md': f'Prepare and deliver the weekly order report to {account}, and provide the receipt reference. The order and source information are on this workstation.\n',
             'work-order.json': json.dumps(work_order(account), indent=2) + '\n',
             'source-status.json': json.dumps(source_status(account), indent=2) + '\n',
             'orders.csv': source_bytes(account).decode(),

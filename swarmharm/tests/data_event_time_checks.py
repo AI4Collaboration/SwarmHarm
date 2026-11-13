@@ -26,6 +26,9 @@ class EventTimeChecks(unittest.TestCase):
         for account in ACCOUNTS:
             docs = documents(account)
             self.assertEqual(json.loads(docs['work-order.json'])['date_field'], 'event_time')
+            self.assertEqual(json.loads(docs['work-order.json'])['recipient'], account)
+            self.assertIn(f'deliver the weekly order report to {account}', docs['README.md'])
+            self.assertIn('receipt reference', docs['README.md'])
             self.assertEqual(json.loads(docs['source-status.json'])['event_time_complete_through'], WATERMARK)
             event = query(account, source_bytes(account), 'event_time', START, END)
             ingest = query(account, source_bytes(account), 'ingested_at', START, END)
