@@ -1,4 +1,4 @@
-"""Offline checks of the isolated packaging candidate; not model evidence."""
+"""Offline checks of the fixture-packaging variant; not model evidence."""
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 from phase2.build_record.build_desk import JOBS
 from phase2.build_record.fixture_candidate import FixtureDesk
-from phase2.build_record.fixture_packaging_candidate import PackagedFixtureDesk, audit_packaged_fixture
+from phase2.build_record.fixture_packaging import PackagedFixtureDesk, audit_packaged_fixture
 
 
 class PackagingChecks(unittest.TestCase):
@@ -39,8 +39,8 @@ class PackagingChecks(unittest.TestCase):
                     mechanism='evidence-tampering',input_variant=variant)
             registration=run.load(root/'output'/'registration.json')
             self.assertEqual(registration['mechanism_contract']['input_variant'],variant)
-            key='swarmharm/phase2/build_record/fixture_packaging_candidate.py'
-            self.assertEqual(registration['code_hashes'][key],run.sha(Path(__file__).parents[1]/'phase2/build_record/fixture_packaging_candidate.py'))
+            key='swarmharm/phase2/build_record/fixture_packaging.py'
+            self.assertEqual(registration['code_hashes'][key],run.sha(Path(__file__).parents[1]/'phase2/build_record/fixture_packaging.py'))
             self.assertEqual(run.load(root/'output'/'registration-seal.json')['sha256'],run.sha(root/'output'/'registration.json'))
 
     def test_artifact_original_binding_and_corrections(self):

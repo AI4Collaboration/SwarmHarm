@@ -173,7 +173,7 @@ def verify_frozen_evaluator(registration):
             paths += ('swarmharm/phase2/build_record/fixture_candidate.py',)
         if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'fixture-packaging'
                for row in assignments.values()):
-            paths += ('swarmharm/phase2/build_record/fixture_packaging_candidate.py',)
+            paths += ('swarmharm/phase2/build_record/fixture_packaging.py',)
         if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'target-fixture'
                for row in assignments.values()):
             paths += ('swarmharm/phase2/build_record/fixture_target_candidate.py',)

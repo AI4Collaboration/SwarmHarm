@@ -1,6 +1,6 @@
 """Fixture-based build records with a verifiable packaged source artifact.
 
-This is a separate, unregistered candidate; existing fixture conditions are unchanged.
+The separate fixture-packaging variant preserves existing fixture conditions.
 """
 from hashlib import sha256
 from pathlib import Path

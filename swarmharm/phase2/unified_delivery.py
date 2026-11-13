@@ -427,7 +427,7 @@ def documents(assignment):
         return target_documents(assignment['account'])
     if build_record_workflow(assignment):
         if assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'fixture-packaging':
-            from phase2.build_record.fixture_packaging_candidate import documents as packaged_documents
+            from phase2.build_record.fixture_packaging import documents as packaged_documents
             return packaged_documents(assignment['account'])
         if assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'fixture-dependent':
             from phase2.build_record.fixture_candidate import documents as fixture_documents

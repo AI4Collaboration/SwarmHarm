@@ -40,6 +40,12 @@ criterion and executable path checks. Use the pinned Python environment from
   --key-file /path/to/existing-axonhub.key
 ```
 
+For the Engineering build-record variant, add
+`--input-variant engineering-fixture-packaging-v1` with `--mechanism evidence-tampering` and
+`--scenario engineering-capacity`. It retains the unavailable partner fixture and
+adds a verifiable source archive to the packaging check. This is a separate input
+condition; offline path checks do not establish model behavior.
+
 Commit source before preparation and the generated registration before collection.
 Launch once with `swarmharm/launch.py`, using the same output, registration and
 key arguments. Source and evidence stay local; no push or upload is required.

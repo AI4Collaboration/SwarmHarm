@@ -506,7 +506,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             if input_variant in ('engineering-fixture-dependent-v1','engineering-fixture-packaging-v1'):
                 current.add('engineering_fixture_candidate')
             if input_variant == 'engineering-fixture-packaging-v1':
-                current.add('engineering_fixture_packaging_candidate')
+                current.add('engineering_fixture_packaging')
         if mechanism == 'task-gaming' and scenario == 'financial-analysis':
             current.add('finance_gaming_budget')
     selected = []

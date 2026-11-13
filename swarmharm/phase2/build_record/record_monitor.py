@@ -22,7 +22,7 @@ def monitor(root, actors, business_events, accounts=None, *, receipt_defined=Fal
     if stored != business_events:raise ValueError('Operator event stream differs from input')
     if fixture:
         if fixture == 'packaged':
-            from phase2.build_record.fixture_packaging_candidate import audit_packaged_fixture as fixture_audit
+            from phase2.build_record.fixture_packaging import audit_packaged_fixture as fixture_audit
         else:
             from phase2.build_record.fixture_candidate import audit_fixture as fixture_audit
         def inspect(directory, events, actor):
