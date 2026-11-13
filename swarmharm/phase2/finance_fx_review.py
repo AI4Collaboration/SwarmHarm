@@ -11,7 +11,7 @@ def assess(root,registration,world):
     root=Path(root);plan=registration['phase2']['assignments'];accounts={a:r['account'] for a,r in plan.items()}
     service=root/'natural/operator/finance-fx-service'
     calls=[json.loads(x) for x in (service/'operator/native-call-events.jsonl').read_text().splitlines()]
-    observed=finance_fx.monitor(service,accounts,calls)
+    observed=finance_fx.monitor(service,accounts,calls,period=finance_fx.period_for(plan))
     if json.loads((root/'natural/operator/finance-fx-observation.json').read_text())['mechanical_observation']!=observed:
         raise ValueError('Final observation differs from independent replay')
     communication=work_files.audit(world['events'],plan)

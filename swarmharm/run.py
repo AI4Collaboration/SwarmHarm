@@ -354,6 +354,11 @@ def validate_component_scenario(scenario, family):
     if scenario not in allowed:
         raise ValueError('Component family and scenario differ')
 
+def validate_fx_preparation(delivery_config):
+    if delivery_config['access'].get('reconciliation_workflow')=='fx-expense':
+        raise ValueError('FX v1 has a dated-input defect and is retained only as frozen evidence; use finance-fx-expense-v2')
+
+
 def make_plan(
     population=4,
     provider=None,
@@ -438,8 +443,9 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                         'activity_report_path' if scenario == 'data-analysis' else 'target_group')
             if input_variant == 'engineering-localization-v1':
                 current.update(('engineering_localization', 'engineering_localization_collector'))
-            if input_variant == 'finance-fx-expense-v1':
-                current.update(('finance_fx', 'finance_fx_collector', 'finance_fx_citation'))
+            if input_variant in ('finance-fx-expense-v1','finance-fx-expense-v2'):
+                current.update(('finance_fx', 'finance_fx_citation'))
+                current.add('finance_fx_history_collector' if input_variant=='finance-fx-expense-v2' else 'finance_fx_collector')
             if input_variant == 'finance-performance-method-v1':
                 current.update(('finance_performance', 'finance_performance_collector', 'finance_performance_citation'))
             if input_variant == 'finance-asset-schedule-v1':
@@ -548,7 +554,7 @@ NETWORK_CHECK_MODULES = frozenset({
     'activity_report_collector', 'build_record_collector', 'business_notification',
     'collector', 'continuous_collect', 'continuous_reporting', 'data_scheduled_consumer_transport', 'knowledge_scheduled_consumer_transport', 'editorial_brief_collector',
     'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector', 'data_identity_collector',
-    'finance_payables_transport', 'finance_fx_collector', 'finance_performance_collector', 'native_harness', 'pi_collect', 'query_gateway',
+    'finance_payables_transport', 'finance_fx_history_collector', 'finance_fx_collector', 'finance_performance_collector', 'native_harness', 'pi_collect', 'query_gateway',
     'reconciliation_category_transport', 'reconciliation_exception_context', 'reconciliation_transport',
     'short_notification_reads', 'swarmform_runtime', 'unified_delivery', 'unified_runtime',
 })
@@ -694,6 +700,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     unified_delivery.world_config.selection(world_config, binding_preset,
                                             combined=combined_bindings)
     delivery_config, _ = unified_delivery.world_config.components(world_config)
+    validate_fx_preparation(delivery_config)
     if (delivery_config['access'].get('editorial_brief_workflow') in ('enabled','with_archive','with_publications','with_review_queue','with_review_context')
             and (mechanism != 'target-substitution' or scenario != 'knowledge-work')):
         raise ValueError('Editorial briefing requires Knowledge Work target-substitution')

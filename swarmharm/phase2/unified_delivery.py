@@ -83,7 +83,7 @@ CONFIG_SCHEMA = {
             'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'localization']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor', 'region-dimension', 'identity-metric']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context', 'digest-queue']},
-            'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule', 'performance', 'fx-expense']},
+            'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule', 'performance', 'fx-expense', 'fx-expense-history']},
             'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring']},
             'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations']},
             'quality_workflow': {'enum': ['enabled', 'disabled']},
@@ -200,7 +200,7 @@ def build_target_workflow(assignment):
 
 
 def finance_fx_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') == 'fx-expense'
+    return assignment.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') in ('fx-expense','fx-expense-history')
 
 
 def finance_performance_workflow(assignment):
@@ -344,8 +344,8 @@ def world_for(plan):
 
 def task(assignment):
     if finance_fx_workflow(assignment):
-        from phase2.finance_fx import TASK
-        return TASK
+        from phase2.finance_fx import documents as fx_documents,period_for
+        return fx_documents(assignment['account'],period_for({'subject':assignment}))['README.md'].split('\n',1)[0]
     if data_identity_workflow(assignment):
         from phase2.data_identity import TASK
         return TASK
@@ -453,8 +453,8 @@ def communication_start(plan):
 
 def documents(assignment):
     if finance_fx_workflow(assignment):
-        from phase2.finance_fx import documents as fx_documents
-        return fx_documents(assignment['account'])
+        from phase2.finance_fx import documents as fx_documents,period_for
+        return fx_documents(assignment['account'],period_for({'subject':assignment}))
     if data_identity_workflow(assignment):
         from phase2.data_identity import documents as identity_documents
         return identity_documents(assignment['account'])
@@ -889,10 +889,11 @@ def shared_directories(plan):
 
 def truth_for(plan):
     if finance_fx_workflow(next(iter(plan.values()))):
-        from phase2.finance_fx import source,initial_map,digest as source_digest
+        from phase2.finance_fx import source,initial_map,period_for,digest as source_digest
+        period=period_for(plan)
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
-            'accounts':{actor:{'account':row['account'],'source_sha256':source_digest(source(row['account'])),
-                'initial_rates_sha256':source_digest(initial_map(row['account']))} for actor,row in plan.items()},
+            'accounts':{actor:{'account':row['account'],'source_sha256':source_digest(source(row['account'],period)),
+                'initial_rates_sha256':source_digest(initial_map(row['account'],period))} for actor,row in plan.items()},
             'dated_rates':'initially incomplete; no scheduled arrival'}
     if data_identity_workflow(next(iter(plan.values()))):
         from phase2.data_identity import source,initial_map,digest as source_digest
@@ -1161,7 +1162,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      build_record_workflow=False, build_target_workflow=False, build_target_clarify_selection=False, build_target_product=False, reconciliation_workflow='disabled',
                      activity_report_workflow=False, activity_shared_template=False, data_region_workflow=False, data_identity_workflow=False, knowledge_digest_workflow=False, payables_workflow='disabled', editorial_brief_workflow=False,
                      editorial_intake_archive=False, editorial_publication_index=False, editorial_review_queue=False, **kwargs):
-    if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule', 'performance', 'fx-expense'),
+    if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule', 'performance', 'fx-expense', 'fx-expense-history'),
             bool(activity_report_workflow), bool(data_region_workflow), bool(data_identity_workflow), bool(knowledge_digest_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring'), bool(editorial_brief_workflow))) > 1:
         raise ValueError('Choose one business workflow')
     if knowledge_digest_workflow:
@@ -1188,7 +1189,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
     if build_record_workflow:
         from phase2.build_record.harness_adapter import tool_definitions as build_tools
         return build_tools()
-    if reconciliation_workflow == 'fx-expense':
+    if reconciliation_workflow in ('fx-expense','fx-expense-history'):
         from phase2.finance_fx import definitions
         return definitions()
     if reconciliation_workflow == 'performance':

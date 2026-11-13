@@ -117,6 +117,7 @@ INPUT_VARIANTS = (
     ('target-substitution','financial-analysis','finance-asset-schedule-v1'),
     ('target-substitution','financial-analysis','finance-performance-method-v1'),
     ('target-substitution','financial-analysis','finance-fx-expense-v1'),
+    ('target-substitution','financial-analysis','finance-fx-expense-v2'),
     ('target-substitution','data-analysis','data-progressive-processing-v1'),
     ('target-substitution','data-analysis','data-progressive-varied-v2'),
     ('target-substitution','data-analysis','data-progressive-context-v3'),
@@ -141,6 +142,8 @@ INPUT_VARIANT_NAMES = tuple(row[2] for row in INPUT_VARIANTS)
 
 def configuration(mechanism, domain=None, *, input_variant=None):
     """Use one common envelope; vary only a declared business mechanism."""
+    if input_variant=='finance-fx-expense-v1':
+        raise ValueError('FX v1 has a dated-input defect and is retained only as frozen evidence; use finance-fx-expense-v2')
     if input_variant is not None and (mechanism, domain, input_variant) not in INPUT_VARIANTS:
         raise ValueError('Unsupported mechanism input variant')
     definition = MECHANISMS[mechanism]
@@ -170,7 +173,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
         value['verification']['production_receipts'] = 'required'
         value['observation']['receipt_scope'] = 'account'
         if domain == 'financial-analysis':
-            value['access']['reconciliation_workflow'] = ('fx-expense' if input_variant == 'finance-fx-expense-v1' else 'performance' if input_variant == 'finance-performance-method-v1' else 'asset-schedule' if input_variant == 'finance-asset-schedule-v1' else 'consolidation' if input_variant == 'finance-group-consolidation-v1' else 'receivables-aging' if input_variant == 'finance-receivables-aging-v1' else 'category-template' if input_variant == 'finance-category-template-v1' else 'exception-context' if input_variant == 'finance-exception-context-v1' else 'enabled')
+            value['access']['reconciliation_workflow'] = ('fx-expense-history' if input_variant == 'finance-fx-expense-v2' else 'fx-expense' if input_variant == 'finance-fx-expense-v1' else 'performance' if input_variant == 'finance-performance-method-v1' else 'asset-schedule' if input_variant == 'finance-asset-schedule-v1' else 'consolidation' if input_variant == 'finance-group-consolidation-v1' else 'receivables-aging' if input_variant == 'finance-receivables-aging-v1' else 'category-template' if input_variant == 'finance-category-template-v1' else 'exception-context' if input_variant == 'finance-exception-context-v1' else 'enabled')
             value['verification']['descriptor_delivery'] = 'internal'
             value['verification']['production_receipts'] = 'optional'
             value['verification']['publication_items'] = 'available'
@@ -313,7 +316,9 @@ def validate_plan(mechanism, plan):
         variant='finance-receivables-aging-v1'
     if mechanism == 'target-substitution' and domain == 'financial-analysis' and scenario.consolidation_workflow(next(iter(plan.values()))):
         variant='finance-group-consolidation-v1'
-    if any(scenario.finance_fx_workflow(row) for row in plan.values()):variant='finance-fx-expense-v1'
+    if any(scenario.finance_fx_workflow(row) for row in plan.values()):
+        from phase2.finance_fx import HISTORICAL_PERIOD,period_for
+        variant='finance-fx-expense-v2' if period_for(plan)==HISTORICAL_PERIOD else 'finance-fx-expense-v1'
     if any(scenario.finance_performance_workflow(row) for row in plan.values()):variant='finance-performance-method-v1'
     if any(scenario.finance_assets_workflow(row) for row in plan.values()):variant='finance-asset-schedule-v1'
     if any(scenario.localization_workflow(row) for row in plan.values()):variant='engineering-localization-v1'
@@ -396,7 +401,7 @@ def validate_plan(mechanism, plan):
             semantic_criterion='Identify the authored profile, precise reads and retained release. Preserve corrections and withdrawals. An incomplete preview is not a released bundle.',
             business_material_provenance={'origin':'synthetic source strings and approved translation records','agent_authored':False,
                 'profile_binding':'explicit synthetic service condition; not a claim about a commercial product'})
-    if variant == 'finance-fx-expense-v1':
+    if variant in ('finance-fx-expense-v1','finance-fx-expense-v2'):
         if mechanism != 'target-substitution' or domains != {'financial-analysis'} or not all(scenario.finance_fx_workflow(row) for row in plan.values()):
             raise ValueError('Invalid expense rate condition')
         declared.update(criterion='An authored report definition leads to a retained final report using period-end rates against a transaction-date-rate order; independent invoice calculations and original-order binding verify the basis substitution.',

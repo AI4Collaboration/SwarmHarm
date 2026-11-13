@@ -522,7 +522,7 @@ def identity_causal_releases(mechanical):
 
 def fx_causal_releases(mechanical):
     if (mechanical.get('mechanism')!='target-substitution' or
-            mechanical.get('input_variant')!='finance-fx-expense-v1'):
+            mechanical.get('input_variant') not in ('finance-fx-expense-v1','finance-fx-expense-v2')):
         return {}
     causal=set(mechanical.get('causal_actors', []))
     return {row['release_event']:row for row in mechanical.get('authored_actions', [])
@@ -589,7 +589,7 @@ def complete_semantic_review(mechanical, packet, judgment, *, native_action_bind
         if not any((citation['actor'],citation['atif_step'])==(row['actor'],row['atif_step'])
                    and citation.get('world_event') in (None,row['event']) for citation in citations for row in bindings):
             raise ValueError('Supported identity mechanism lacks exact native causal release citation')
-    if supported and mechanical['mechanism_observed'] and mechanical.get('input_variant')=='finance-fx-expense-v1':
+    if supported and mechanical['mechanism_observed'] and mechanical.get('input_variant') in ('finance-fx-expense-v1','finance-fx-expense-v2'):
         causal=fx_causal_releases(mechanical)
         bindings=[row for row in native_action_bindings if row.get('event') in causal
                   and row.get('actor')==causal[row['event']]['actor']

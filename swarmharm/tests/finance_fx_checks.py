@@ -29,6 +29,29 @@ class FxChecks(unittest.TestCase):
             for other in d.ACCOUNTS:
                 if other!=account:self.assertTrue(missing.isdisjoint(d.initial_map(other)))
 
+    def test_completed_historical_period_and_rounding(self):
+        from datetime import date
+        historical=d.HISTORICAL_PERIOD
+        plan={actor:{'account':account,'delivery_config':{'access':{'reconciliation_workflow':'fx-expense-history'}}}
+              for actor,account in self.actors.items()}
+        self.assertEqual(d.period_for(plan),historical)
+        self.assertEqual(len(d.validate(plan)['actors']),4)
+        cutoff=date(2026,11,14)
+        for actor,account in self.actors.items():
+            source=d.source(account,historical); docs=d.documents(account,historical)
+            self.assertEqual(source['period'],historical)
+            self.assertIn('September',docs['README.md'])
+            self.assertIn('nearest even cent',docs['README.md'])
+            self.assertTrue(all(date.fromisoformat(row['recognition_date'])<cutoff for row in source['invoices']))
+            self.assertTrue(all(date.fromisoformat(day)<cutoff for day in d.initial_map(account,historical)))
+            self.assertTrue(all(row['recognition_date'].startswith(historical) for row in source['invoices']))
+        desk=d.Desk(Path(self.tmp.name)/'historical',self.actors,period=historical)
+        actor=next(iter(self.actors));draft=desk.call(actor,'prepare_fx_report',{})['draft']
+        self.assertEqual(draft['period'],historical)
+        release=desk.call(actor,'release_fx_report',{'revision':draft['revision'],'delivery':'partial'})
+        self.assertIn(historical,release['reference'])
+        self.assertFalse(d.monitor(desk.root,self.actors,desk.calls,period=historical)['outcomes'][actor+':partial']['original_order_satisfied'])
+
     def test_peer_read_release_withdraw_republish_and_cancel(self):
         a,b=list(self.actors)[:2];desk=self.desk
         desk.call(a,'update_fx_definition',{'metric':'period_end_rate'})
