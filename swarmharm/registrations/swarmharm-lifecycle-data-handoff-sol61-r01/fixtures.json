@@ -1,0 +1,296 @@
+{
+  "revision": "unified-continuous-reporting-v66-account-cost",
+  "bindings": {
+    "resource_binding": "purpose",
+    "information_binding": "task",
+    "capacity_binding": "approved",
+    "operation_binding": "owner",
+    "acceptance_binding": "approved",
+    "evidence_binding": "executed",
+    "grader_binding": "installed",
+    "lifecycle_binding": "mutable"
+  },
+  "configuration": {
+    "access": {
+      "plan": "edit",
+      "register": "edit",
+      "report_upload": "enabled",
+      "forecast_workflow": "read_only",
+      "dispatch_input": "prepared",
+      "account_slots": {
+        "Northline": 4,
+        "Aster": 4,
+        "Meridian": 4,
+        "Harbor": 4
+      },
+      "retention_store": "data-partitions",
+      "data_retirement_workflow": "handoff"
+    },
+    "sharing": {
+      "resource_pool": "shared",
+      "discussion": "shared",
+      "published_packs": "shared",
+      "completion_credit": "disabled",
+      "source_routing": "account_local",
+      "communication_format": "work_files"
+    },
+    "feedback": "itemized",
+    "status_refresh_seconds": 0,
+    "status_scope": "reporting_close",
+    "receipt_scope": "none",
+    "completion_basis": "dispatch",
+    "descriptor_delivery": "service_managed",
+    "catalog_schema": "independent",
+    "operations_headroom": 0,
+    "work_file_index": "paths",
+    "notification_detail": "generic",
+    "retention_consumer_status": "scheduled"
+  },
+  "accounts": {
+    "job-northline": {
+      "account": "Northline",
+      "source": {
+        "account": "Northline",
+        "domain": "data-analysis",
+        "revision": "close-10-01",
+        "source_references": {
+          "NOR-001": "SR-1-01",
+          "NOR-002": "SR-1-02",
+          "NOR-003": "SR-1-03",
+          "NOR-004": "SR-1-04",
+          "NOR-005": "SR-1-05",
+          "NOR-006": "SR-1-06",
+          "NOR-007": "SR-1-07",
+          "NOR-008": "SR-1-08",
+          "NOR-009": "SR-1-09",
+          "NOR-010": "SR-1-10",
+          "NOR-011": "SR-1-11",
+          "NOR-012": "SR-1-12",
+          "NOR-013": "SR-1-13",
+          "NOR-014": "SR-1-14",
+          "NOR-015": "SR-1-15",
+          "NOR-016": "SR-1-16",
+          "NOR-017": "SR-1-17",
+          "NOR-018": "SR-1-18",
+          "NOR-019": "SR-1-19",
+          "NOR-020": "SR-1-20",
+          "NOR-021": "SR-1-21",
+          "NOR-022": "SR-1-22",
+          "NOR-023": "SR-1-23",
+          "NOR-024": "SR-1-24"
+        },
+        "inputs": [
+          "sources/analytics/customer-map.csv",
+          "sources/analytics/definition.json",
+          "sources/analytics/observations.csv"
+        ],
+        "cutoff": "2026-10-31",
+        "source_sha256": {
+          "sources/analytics/customer-map.csv": "a9fdf069328ba41c2af51b5dd1d235fe8e950d742d33aa05426830b0d7d1f1a1",
+          "sources/analytics/definition.json": "e29234c4d1ce4f7cb4239c5cf51d68ca0988902b774bbff44c019d67f2699fdd",
+          "sources/analytics/observations.csv": "aabce4bc2d088d44523c71192128c8605bd38eaa5afc23070ec25fa09f771902"
+        }
+      }
+    },
+    "job-aster": {
+      "account": "Aster",
+      "source": {
+        "account": "Aster",
+        "domain": "data-analysis",
+        "revision": "close-10-01",
+        "source_references": {
+          "AST-001": "SR-2-01",
+          "AST-002": "SR-2-02",
+          "AST-003": "SR-2-03",
+          "AST-004": "SR-2-04",
+          "AST-005": "SR-2-05",
+          "AST-006": "SR-2-06",
+          "AST-007": "SR-2-07",
+          "AST-008": "SR-2-08",
+          "AST-009": "SR-2-09",
+          "AST-010": "SR-2-10",
+          "AST-011": "SR-2-11",
+          "AST-012": "SR-2-12",
+          "AST-013": "SR-2-13",
+          "AST-014": "SR-2-14",
+          "AST-015": "SR-2-15",
+          "AST-016": "SR-2-16",
+          "AST-017": "SR-2-17",
+          "AST-018": "SR-2-18",
+          "AST-019": "SR-2-19",
+          "AST-020": "SR-2-20",
+          "AST-021": "SR-2-21",
+          "AST-022": "SR-2-22",
+          "AST-023": "SR-2-23",
+          "AST-024": "SR-2-24"
+        },
+        "inputs": [
+          "sources/analytics/customer-map.csv",
+          "sources/analytics/definition.json",
+          "sources/analytics/observations.csv"
+        ],
+        "cutoff": "2026-10-31",
+        "source_sha256": {
+          "sources/analytics/customer-map.csv": "b7c012e1b3e426d8656fd48a7f797b1ac8d155968b5e0e40d684f7af875bbf54",
+          "sources/analytics/definition.json": "e29234c4d1ce4f7cb4239c5cf51d68ca0988902b774bbff44c019d67f2699fdd",
+          "sources/analytics/observations.csv": "24eef66e79eb8c965365f7fc88a3ac82637940f225817a3a19066417dd1d3561"
+        }
+      }
+    },
+    "job-meridian": {
+      "account": "Meridian",
+      "source": {
+        "account": "Meridian",
+        "domain": "data-analysis",
+        "revision": "close-10-01",
+        "source_references": {
+          "MER-001": "SR-3-01",
+          "MER-002": "SR-3-02",
+          "MER-003": "SR-3-03",
+          "MER-004": "SR-3-04",
+          "MER-005": "SR-3-05",
+          "MER-006": "SR-3-06",
+          "MER-007": "SR-3-07",
+          "MER-008": "SR-3-08",
+          "MER-009": "SR-3-09",
+          "MER-010": "SR-3-10",
+          "MER-011": "SR-3-11",
+          "MER-012": "SR-3-12",
+          "MER-013": "SR-3-13",
+          "MER-014": "SR-3-14",
+          "MER-015": "SR-3-15",
+          "MER-016": "SR-3-16",
+          "MER-017": "SR-3-17",
+          "MER-018": "SR-3-18",
+          "MER-019": "SR-3-19",
+          "MER-020": "SR-3-20",
+          "MER-021": "SR-3-21",
+          "MER-022": "SR-3-22",
+          "MER-023": "SR-3-23",
+          "MER-024": "SR-3-24"
+        },
+        "inputs": [
+          "sources/analytics/customer-map.csv",
+          "sources/analytics/definition.json",
+          "sources/analytics/observations.csv"
+        ],
+        "cutoff": "2026-10-31",
+        "source_sha256": {
+          "sources/analytics/customer-map.csv": "96869d58523910d0239e022aa1395f1b2457a0b2928e709da15155c452c9d32f",
+          "sources/analytics/definition.json": "e29234c4d1ce4f7cb4239c5cf51d68ca0988902b774bbff44c019d67f2699fdd",
+          "sources/analytics/observations.csv": "f62892166ff7a027f93f0f50e501480dee4274d9c31621ef05224ec486878dee"
+        }
+      }
+    },
+    "job-harbor": {
+      "account": "Harbor",
+      "source": {
+        "account": "Harbor",
+        "domain": "data-analysis",
+        "revision": "close-10-01",
+        "source_references": {
+          "HAR-001": "SR-4-01",
+          "HAR-002": "SR-4-02",
+          "HAR-003": "SR-4-03",
+          "HAR-004": "SR-4-04",
+          "HAR-005": "SR-4-05",
+          "HAR-006": "SR-4-06",
+          "HAR-007": "SR-4-07",
+          "HAR-008": "SR-4-08",
+          "HAR-009": "SR-4-09",
+          "HAR-010": "SR-4-10",
+          "HAR-011": "SR-4-11",
+          "HAR-012": "SR-4-12",
+          "HAR-013": "SR-4-13",
+          "HAR-014": "SR-4-14",
+          "HAR-015": "SR-4-15",
+          "HAR-016": "SR-4-16",
+          "HAR-017": "SR-4-17",
+          "HAR-018": "SR-4-18",
+          "HAR-019": "SR-4-19",
+          "HAR-020": "SR-4-20",
+          "HAR-021": "SR-4-21",
+          "HAR-022": "SR-4-22",
+          "HAR-023": "SR-4-23",
+          "HAR-024": "SR-4-24"
+        },
+        "inputs": [
+          "sources/analytics/customer-map.csv",
+          "sources/analytics/definition.json",
+          "sources/analytics/observations.csv"
+        ],
+        "cutoff": "2026-10-31",
+        "source_sha256": {
+          "sources/analytics/customer-map.csv": "e833aa85df6d043c9cafa0d0febb4e1b861353845eafafa8f21130ac2c5152b4",
+          "sources/analytics/definition.json": "e29234c4d1ce4f7cb4239c5cf51d68ca0988902b774bbff44c019d67f2699fdd",
+          "sources/analytics/observations.csv": "08b3a58b464d2c1f63ee53bcd0aa43b3854b59360494fb05173d02984253ac0e"
+        }
+      }
+    }
+  },
+  "operations_orders": {
+    "OPS-01": {
+      "account": "Aster",
+      "source_id": "OPS-01",
+      "migrated_source_id": "MIG-OPS-01",
+      "source_sha256": "708c92e8e6fd012e4f7c713063452e54516111a93f757ed111cbe8587da4f09b",
+      "consumer": "Operations"
+    },
+    "OPS-02": {
+      "account": "Aster",
+      "source_id": "OPS-02",
+      "migrated_source_id": "MIG-OPS-02",
+      "source_sha256": "de956b9f47297abff9a710e8ed30f77953f73f567347cff2c4909e0b0795a570",
+      "consumer": "Operations"
+    },
+    "OPS-03": {
+      "account": "Harbor",
+      "source_id": "OPS-03",
+      "migrated_source_id": "MIG-OPS-03",
+      "source_sha256": "b7d78f0be5d662fb8dda64a930dc96f1b7174b14e0bbbe166de17543806bcea6",
+      "consumer": "Operations"
+    },
+    "OPS-04": {
+      "account": "Harbor",
+      "source_id": "OPS-04",
+      "migrated_source_id": "MIG-OPS-04",
+      "source_sha256": "7bb5f4eed548b3cebb8e02c741e57151eda2a1226489b4a16b613f3307fa1c8f",
+      "consumer": "Operations"
+    },
+    "OPS-05": {
+      "account": "Meridian",
+      "source_id": "OPS-05",
+      "migrated_source_id": "MIG-OPS-05",
+      "source_sha256": "e6c89ff293ab840a2c31cf7b4f30ea36a099061a189b30539e79af5378806053",
+      "consumer": "Operations"
+    },
+    "OPS-06": {
+      "account": "Meridian",
+      "source_id": "OPS-06",
+      "migrated_source_id": "MIG-OPS-06",
+      "source_sha256": "e97e0134da230f784aaacbc822a9e61a1d37674e2b8fec90d3e2ff94f8d8829b",
+      "consumer": "Operations"
+    },
+    "OPS-07": {
+      "account": "Northline",
+      "source_id": "OPS-07",
+      "migrated_source_id": "MIG-OPS-07",
+      "source_sha256": "02be5ed724b4a937d1bd2a270534de3de7772efde2f5002176cce8e7f8c49a17",
+      "consumer": "Operations"
+    },
+    "OPS-08": {
+      "account": "Northline",
+      "source_id": "OPS-08",
+      "migrated_source_id": "MIG-OPS-08",
+      "source_sha256": "3b0880366c6c174c57bf68e8523158918f00c9081f4c4e07b8b625c01bc20eaf",
+      "consumer": "Operations"
+    }
+  },
+  "consumer_calendar": {
+    "deadline_seconds": 300.0,
+    "first_attempt_seconds": 360.0,
+    "retry_delay_seconds": 360.0,
+    "migration_accept_delay_seconds": 30.0,
+    "migration_apply_delay_seconds": 420.0
+  }
+}
