@@ -199,10 +199,13 @@ class ScriptedResponses(BaseHTTPRequestHandler):
                     'confirm_service' if text.startswith('Service fixture') or 'confirm_service' in text else 'bash')
             if getattr(self.server, 'unknown_work_tool', False):
                 name = 'unknown_fixture_tool'
+            name = getattr(self.server, 'forced_tool_name', name)
             args = {'command': 'pwd'} if name == 'bash' else {'path': '/operator/fixture.png'} if name == 'view_image' else {}
             items = [{'type': 'function_call', 'name': name, 'call_id': f'call-{index}',
                       'arguments': json.dumps(args),
                       **({'namespace': 'mcp__work'} if name != 'view_image' else {})}]
+            if getattr(self.server, 'forced_namespace', None):
+                items[0]['namespace'] = self.server.forced_namespace
             if getattr(self.server, 'multiple', False):
                 items = [{**items[0], 'call_id': f'call-{index}-{tag}',
                           'arguments': json.dumps({'tag': tag})} for tag in ('a', 'b')]
@@ -475,8 +478,66 @@ class NativeCodex(unittest.TestCase):
             self.assertIn('unknown_fixture_tool', outputs[0])
             result, trajectory = self.export_trace(root, ready)
             self.assertTrue(result['native_continuity_passed'])
-            self.assertTrue(any(call['function_name'] == 'unknown_fixture_tool'
-                                for step in trajectory['steps'] for call in step.get('tool_calls', [])))
+            calls = [call for step in trajectory['steps'] for call in step.get('tool_calls', [])
+                     if call['function_name'] == 'unknown_fixture_tool']
+            self.assertEqual(len(calls), 1)
+            call_id = calls[0]['tool_call_id']
+            native = []
+            for path in (folder / 'codex/native').glob('*.json'):
+                message = run.load(path)['message']
+                item = (message.get('params') or {}).get('item') or {}
+                if message.get('method') == 'rawResponseItem/completed' and item.get('type') == 'function_call_output' and item.get('call_id') == call_id:
+                    native.append(item['output'])
+            self.assertEqual(native, outputs)
+            observations = [obs for step in trajectory['steps'] for obs in step.get('observation', {}).get('results', [])
+                            if obs['source_call_id'] == call_id]
+            self.assertEqual(len(observations), 1)
+            self.assertEqual(observations[0]['content'], native[0])
+
+    def test_foreign_namespace_with_work_prefix_is_not_dispatched(self):
+        with self.fixture() as server, tempfile.TemporaryDirectory() as temporary:
+            server.forced_namespace = 'other'
+            server.forced_tool_name = 'mcp__work__confirm_service'
+            root = Path(temporary); folder = root / 'natural/actor'; events = C.new_queue()
+            tool = {'type': 'function', 'name': 'confirm_service', 'description': 'Read service status.',
+                    'parameters': {'type': 'object', 'properties': {}}}
+            agent = C.CodexAgent('actor', events, folder=folder / 'codex', model=MODEL,
+                thinking_level='high', tools=[tool], active_tools=['confirm_service'], goal_mode='off')
+            try:
+                C.wait_ready(events, ['actor'])
+                agent.prompt('Service fixture request.')
+                while True:
+                    _, event = events.get(timeout=30)
+                    self.assertNotEqual(event['type'], 'tool_call')
+                    if event['type'] in ('fatal', 'exited'):
+                        self.assertEqual(event['type'], 'fatal')
+                        self.assertIn('Unregistered Codex function call', str(event))
+                        break
+            finally:
+                agent.close()
+            self.assertFalse(list((folder / 'trace').glob('*-tool-*.json')))
+
+    def test_foreign_namespace_with_plain_name_is_not_dispatched(self):
+        with self.fixture() as server, tempfile.TemporaryDirectory() as temporary:
+            server.forced_namespace = 'other'
+            root = Path(temporary); folder = root / 'natural/actor'; events = C.new_queue()
+            tool = {'type': 'function', 'name': 'confirm_service', 'description': 'Read service status.',
+                    'parameters': {'type': 'object', 'properties': {}}}
+            agent = C.CodexAgent('actor', events, folder=folder / 'codex', model=MODEL,
+                thinking_level='high', tools=[tool], active_tools=['confirm_service'], goal_mode='off')
+            try:
+                C.wait_ready(events, ['actor'])
+                agent.prompt('Service fixture request.')
+                while True:
+                    _, event = events.get(timeout=30)
+                    self.assertNotEqual(event['type'], 'tool_call')
+                    if event['type'] in ('fatal', 'exited'):
+                        self.assertEqual(event['type'], 'fatal')
+                        self.assertIn('Unregistered Codex function call', str(event))
+                        break
+            finally:
+                agent.close()
+            self.assertFalse(list((folder / 'trace').glob('*-tool-*.json')))
 
     def test_mixed_native_and_business_results_export_in_native_order(self):
         with self.fixture() as server,tempfile.TemporaryDirectory() as temporary:

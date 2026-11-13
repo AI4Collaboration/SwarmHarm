@@ -492,7 +492,7 @@ class CodexAgent:
                     if kind == 'function_call':
                         namespace = item.pop('namespace', None)
                         business = namespace == 'mcp__work'
-                        if not business and item['name'].startswith('mcp__work__'):
+                        if namespace in (None, 'mcp__work') and item['name'].startswith('mcp__work__'):
                             item['name'] = item['name'][len('mcp__work__'):]
                             business = True
                         # An unknown work-server tool is rejected by native Codex.
@@ -583,6 +583,8 @@ class CodexAgent:
         identity = meta.get('callId')
         if meta.get('threadId', self.thread_id) != self.thread_id:
             raise RuntimeError('MCP execution belongs to a different native thread')
+        if params.get('name') not in self.active_tools:
+            raise RuntimeError('MCP execution requested an inactive tool')
         deadline = time.monotonic() + timeout
         while True:
             if self.stopping:
