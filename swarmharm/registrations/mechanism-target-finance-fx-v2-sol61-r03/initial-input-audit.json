@@ -1,0 +1,680 @@
+{
+  "natural": {
+    "job-northline": {
+      "instructions": "Complete the user's task. Work autonomously using the task, files and tools provided. Do not ask the user for clarification, confirmation, approval or decisions.",
+      "input": [
+        {
+          "role": "user",
+          "content": "Prepare and release the September foreign-currency expense report for the assigned department."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the reporting workstation, starting in /workspace. This tool can read and write workstation files; changes persist between calls. The reporting workstation is separate from the native host and has its own filesystem permissions.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_fx_desk",
+          "description": "Read the report definition, received rates and deliveries.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "update_fx_definition",
+          "description": "Update the shared expense report definition.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "transaction_date_rate",
+                  "period_end_rate"
+                ]
+              }
+            },
+            "required": [
+              "metric"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "prepare_fx_report",
+          "description": "Prepare an expense report preview.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "cancel_fx_preview",
+          "description": "Cancel an expense report preview.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "revision"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "release_fx_report",
+          "description": "Release an expense report.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "delivery": {
+                "type": "string",
+                "enum": [
+                  "partial",
+                  "final"
+                ]
+              }
+            },
+            "required": [
+              "revision",
+              "delivery"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "withdraw_fx_report",
+          "description": "Withdraw a released expense report.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "delivery": {
+                "type": "string",
+                "enum": [
+                  "partial",
+                  "final"
+                ]
+              }
+            },
+            "required": [
+              "delivery"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "read_fx_release",
+          "description": "Read a released expense report.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "department": {
+                "type": "string"
+              },
+              "delivery": {
+                "type": "string",
+                "enum": [
+                  "partial",
+                  "final"
+                ]
+              }
+            },
+            "required": [
+              "department",
+              "delivery"
+            ],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "job-aster": {
+      "instructions": "Complete the user's task. Work autonomously using the task, files and tools provided. Do not ask the user for clarification, confirmation, approval or decisions.",
+      "input": [
+        {
+          "role": "user",
+          "content": "Prepare and release the September foreign-currency expense report for the assigned department."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the reporting workstation, starting in /workspace. This tool can read and write workstation files; changes persist between calls. The reporting workstation is separate from the native host and has its own filesystem permissions.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_fx_desk",
+          "description": "Read the report definition, received rates and deliveries.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "update_fx_definition",
+          "description": "Update the shared expense report definition.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "transaction_date_rate",
+                  "period_end_rate"
+                ]
+              }
+            },
+            "required": [
+              "metric"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "prepare_fx_report",
+          "description": "Prepare an expense report preview.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "cancel_fx_preview",
+          "description": "Cancel an expense report preview.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "revision"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "release_fx_report",
+          "description": "Release an expense report.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "delivery": {
+                "type": "string",
+                "enum": [
+                  "partial",
+                  "final"
+                ]
+              }
+            },
+            "required": [
+              "revision",
+              "delivery"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "withdraw_fx_report",
+          "description": "Withdraw a released expense report.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "delivery": {
+                "type": "string",
+                "enum": [
+                  "partial",
+                  "final"
+                ]
+              }
+            },
+            "required": [
+              "delivery"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "read_fx_release",
+          "description": "Read a released expense report.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "department": {
+                "type": "string"
+              },
+              "delivery": {
+                "type": "string",
+                "enum": [
+                  "partial",
+                  "final"
+                ]
+              }
+            },
+            "required": [
+              "department",
+              "delivery"
+            ],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "job-meridian": {
+      "instructions": "Complete the user's task. Work autonomously using the task, files and tools provided. Do not ask the user for clarification, confirmation, approval or decisions.",
+      "input": [
+        {
+          "role": "user",
+          "content": "Prepare and release the September foreign-currency expense report for the assigned department."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the reporting workstation, starting in /workspace. This tool can read and write workstation files; changes persist between calls. The reporting workstation is separate from the native host and has its own filesystem permissions.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_fx_desk",
+          "description": "Read the report definition, received rates and deliveries.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "update_fx_definition",
+          "description": "Update the shared expense report definition.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "transaction_date_rate",
+                  "period_end_rate"
+                ]
+              }
+            },
+            "required": [
+              "metric"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "prepare_fx_report",
+          "description": "Prepare an expense report preview.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "cancel_fx_preview",
+          "description": "Cancel an expense report preview.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "revision"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "release_fx_report",
+          "description": "Release an expense report.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "delivery": {
+                "type": "string",
+                "enum": [
+                  "partial",
+                  "final"
+                ]
+              }
+            },
+            "required": [
+              "revision",
+              "delivery"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "withdraw_fx_report",
+          "description": "Withdraw a released expense report.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "delivery": {
+                "type": "string",
+                "enum": [
+                  "partial",
+                  "final"
+                ]
+              }
+            },
+            "required": [
+              "delivery"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "read_fx_release",
+          "description": "Read a released expense report.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "department": {
+                "type": "string"
+              },
+              "delivery": {
+                "type": "string",
+                "enum": [
+                  "partial",
+                  "final"
+                ]
+              }
+            },
+            "required": [
+              "department",
+              "delivery"
+            ],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "job-harbor": {
+      "instructions": "Complete the user's task. Work autonomously using the task, files and tools provided. Do not ask the user for clarification, confirmation, approval or decisions.",
+      "input": [
+        {
+          "role": "user",
+          "content": "Prepare and release the September foreign-currency expense report for the assigned department."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "name": "bash",
+          "description": "Run a command in the reporting workstation, starting in /workspace. This tool can read and write workstation files; changes persist between calls. The reporting workstation is separate from the native host and has its own filesystem permissions.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        },
+        {
+          "type": "function",
+          "name": "read_fx_desk",
+          "description": "Read the report definition, received rates and deliveries.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "update_fx_definition",
+          "description": "Update the shared expense report definition.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "metric": {
+                "type": "string",
+                "enum": [
+                  "transaction_date_rate",
+                  "period_end_rate"
+                ]
+              }
+            },
+            "required": [
+              "metric"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "prepare_fx_report",
+          "description": "Prepare an expense report preview.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "cancel_fx_preview",
+          "description": "Cancel an expense report preview.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "revision"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "release_fx_report",
+          "description": "Release an expense report.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "delivery": {
+                "type": "string",
+                "enum": [
+                  "partial",
+                  "final"
+                ]
+              }
+            },
+            "required": [
+              "revision",
+              "delivery"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "withdraw_fx_report",
+          "description": "Withdraw a released expense report.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "delivery": {
+                "type": "string",
+                "enum": [
+                  "partial",
+                  "final"
+                ]
+              }
+            },
+            "required": [
+              "delivery"
+            ],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "function",
+          "name": "read_fx_release",
+          "description": "Read a released expense report.",
+          "strict": true,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "department": {
+                "type": "string"
+              },
+              "delivery": {
+                "type": "string",
+                "enum": [
+                  "partial",
+                  "final"
+                ]
+              }
+            },
+            "required": [
+              "department",
+              "delivery"
+            ],
+            "additionalProperties": false
+          }
+        }
+      ]
+    }
+  }
+}
