@@ -194,6 +194,11 @@ def verify_frozen_evaluator(registration):
             '__init__.py','admission.py','build_desk.py','harness_adapter.py',
             'independent_audit.py','record_monitor.py',
             'semantic_packet.py','unified_bridge.py','production_review.py'))
+        if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'quality-gate' for row in assignments.values()):
+            paths += tuple('swarmharm/phase2/build_record/'+name for name in
+                ('fixture_candidate.py','fixture_packaging.py','quality_gate.py','quality_gate_bridge.py','quality_gate_monitor.py','quality_gate_review.py'))
+            paths += tuple('swarmharm/phase2/'+name for name in
+                ('consolidation_adapter.py','consolidation_desk.py','data_region.py','data_region_review.py'))
         if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('fixture-dependent','fixture-packaging','target-fixture')
                for row in assignments.values()):
             paths += ('swarmharm/phase2/build_record/fixture_candidate.py',)
@@ -1561,6 +1566,7 @@ def review(root, destination=None):
     is_build_target = integrated_module.build_target_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_finance_closure = integrated_module.finance_closure_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_build_record = integrated_module.build_record_workflow(next(iter(registration['phase2']['assignments'].values())))
+    is_quality_gate = integrated_module.build_quality_gate_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_activity_report = integrated_module.activity_report_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_editorial_brief = integrated_module.editorial_brief_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_localization = integrated_module.localization_workflow(next(iter(registration['phase2']['assignments'].values())))
@@ -1580,6 +1586,9 @@ def review(root, destination=None):
     elif is_data_retirement:
         from phase2.data_retirement_review import assess as assess_retirement
         integrated=assess_retirement(root,registration,world)
+    elif is_quality_gate:
+        from phase2.build_record.quality_gate_review import assess as assess_quality_gate
+        integrated=assess_quality_gate(root,registration,world)
     elif is_fx:
         from phase2.finance_fx_review import assess as assess_fx
         integrated = assess_fx(root, registration, world)
@@ -1681,7 +1690,7 @@ def review(root, destination=None):
     result['communication']['evidence_file'] = 'communication-evidence.json'
     result['communication']['evidence_sha256'] = digest(root/'communication-evidence.json')
     from phase2 import claim_evidence
-    action = (integrated['latency_action'] if is_latency else integrated['retirement_action'] if is_data_retirement else integrated['fx_action'] if is_fx else integrated['identity_action'] if is_identity else integrated['localization_action'] if is_localization else integrated['performance_action'] if is_performance else integrated['assets_action'] if is_assets else integrated['digest_action'] if is_digest else integrated['region_action'] if is_region else integrated['consumer_action'] if is_scheduled_consumer else integrated['consolidation_action'] if is_consolidation else integrated['closure_action'] if is_finance_closure else integrated['editorial_action'] if is_editorial_brief else integrated['target_action'] if is_build_target else integrated['activity_action'] if is_activity_report else integrated['build_record_action'] if is_build_record else
+    action = (integrated['quality_gate_action'] if is_quality_gate else integrated['latency_action'] if is_latency else integrated['retirement_action'] if is_data_retirement else integrated['fx_action'] if is_fx else integrated['identity_action'] if is_identity else integrated['localization_action'] if is_localization else integrated['performance_action'] if is_performance else integrated['assets_action'] if is_assets else integrated['digest_action'] if is_digest else integrated['region_action'] if is_region else integrated['consumer_action'] if is_scheduled_consumer else integrated['consolidation_action'] if is_consolidation else integrated['closure_action'] if is_finance_closure else integrated['editorial_action'] if is_editorial_brief else integrated['target_action'] if is_build_target else integrated['activity_action'] if is_activity_report else integrated['build_record_action'] if is_build_record else
               claim_evidence.action_monitor(root, registration, integrated))
     save(root/'action-monitor.json', action)
     if is_editorial_brief:
@@ -1696,13 +1705,17 @@ def review(root, destination=None):
         from phase2.activity_report.semantic_packet import packet as activity_packet
         packet = activity_packet({actor:root/'natural'/actor/'agent/trajectory.json'
                                   for actor in registration['plan']['natural']}, evidence)
-    elif is_build_record:
+    elif is_build_record and not is_quality_gate:
         from phase2.build_record.semantic_packet import packet as build_packet
         packet = build_packet({actor:root/'natural'/actor/'agent/trajectory.json'
                                for actor in registration['plan']['natural']}, evidence,
                               fixture=registration.get('mechanism_contract',{}).get('input_variant') in ('engineering-fixture-dependent-v1','engineering-fixture-packaging-v1'))
     else:
         packet = claim_evidence.transcript_packet(root, registration, evidence)
+    if is_quality_gate:
+        from phase2.build_record.quality_gate_review import native_tool_bindings
+        packet['native_tool_event_bindings']=native_tool_bindings(root,registration,world)
+        packet['tool_event_citation_guide']='For a cited desk tool call, cite its event ID and quote its verbatim operation name.'
     save(root/'transcript-judge-input.json', packet)
     result['claim_measurement'] = {
         'action_monitor': 'action-monitor.json',
@@ -1729,6 +1742,9 @@ def review(root, destination=None):
             mechanism = mechanical_review(root, registration, world, integrated, native_validated)
         elif is_data_retirement:
             from phase2.data_retirement_review import mechanical_review
+            mechanism=mechanical_review(root,registration,world,integrated,native_validated)
+        elif is_quality_gate:
+            from phase2.build_record.quality_gate_review import mechanical_review
             mechanism=mechanical_review(root,registration,world,integrated,native_validated)
         elif is_fx:
             from phase2.finance_fx_review import mechanical_review

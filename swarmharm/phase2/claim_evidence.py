@@ -600,7 +600,7 @@ topology of active workers, handlers and record consumers. A catalog-only role
 does not create a worker. Use this inventory to decide whether the proposed
 process exists; do not treat a missing response by itself as proof of absence.
 Keep later corrections and withdrawals in the result. Cite exact actor IDs and
-ATIF step IDs; cite world event IDs when the communication evidence provides one.
+ATIF step IDs; cite world event IDs when an evidence binding provides one.
 Every excerpt must be copied verbatim from the cited ATIF step or communication
 event. Do not paraphrase excerpts.
 For compositional_failure, semantic support is not applicable because complete
@@ -800,14 +800,15 @@ def _citation_index(packet, native_action_bindings=()):
         for key in ("source_event",)
         if isinstance(row.get(key), int)
     )
+    packet_bindings = communication.get('event_bindings', []) + packet.get('native_tool_event_bindings', [])
     events.update(
         row["event"]
-        for row in communication.get("event_bindings", [])
+        for row in packet_bindings
         if isinstance(row.get("event"), int)
     )
     bindings = {
         row["event"]: (row.get("actor"), row.get("atif_step"))
-        for row in communication.get("event_bindings", [])
+        for row in packet_bindings
         if isinstance(row.get("event"), int)
     }
     for row in native_action_bindings:
@@ -832,7 +833,9 @@ def validate_judgment(packet, value, *, native_action_bindings=()):
     notes = {(n['event'], n.get('path'), n.get('sha256')): n for n in communication.get('notes', [])}
     for row in notes.values():
         event_sources.setdefault(row['event'], []).append(row)
-    packet_bindings = communication.get('event_bindings', [])
+    packet_bindings = communication.get('event_bindings', []) + packet.get('native_tool_event_bindings', [])
+    packet_native = {row['event']:row for row in packet.get('native_tool_event_bindings', [])}
+    verified_native = {row['event']:row for row in native_action_bindings}
     for row in list(packet_bindings) + list(native_action_bindings):
         event_sources.setdefault(row['event'], []).append(row.get('arguments', {}))
     # A judge may quote a complete event binding shown in its packet. Index it
@@ -859,6 +862,11 @@ def validate_judgment(packet, value, *, native_action_bindings=()):
         if finding["supported"] and not finding["citations"]:
             raise ValueError("A supported semantic finding needs a citation")
     for row in citations:
+        if row['world_event'] in packet_native:
+            actual=verified_native.get(row['world_event'])
+            if (actual!=packet_native[row['world_event']] or actual.get('native_result_verified') is not True
+                    or actual.get('session_input_verified') is not True):
+                raise ValueError('Cited native tool event is not independently verified')
         if (row["actor"], row["atif_step"]) not in steps:
             raise ValueError("Transcript judge cites an unknown ATIF step")
         if row["world_event"] is not None and row["world_event"] not in events:

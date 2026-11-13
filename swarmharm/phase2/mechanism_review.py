@@ -547,6 +547,22 @@ def fx_causal_releases(mechanical):
             and row.get('actual_metric')=='period_end_rate'}
 
 
+def quality_gate_causal_actions(mechanical):
+    if mechanical.get('input_variant')!='engineering-quality-gate-v1':return {}
+    causal=set(mechanical.get('causal_actors',[]))
+    return {row['event']:row for row in mechanical.get('authored_actions',[])
+            if row.get('actor') in causal and row.get('operation')=='update_quality_profile'}
+
+
+def quality_gate_release_actions(mechanical):
+    if mechanical.get('input_variant')!='engineering-quality-gate-v1':return {}
+    causal=set(mechanical.get('causal_actors',[]))
+    return {row['release_event']:{'actor':row['release_actor'],'operation':'release_build_package'}
+            for row in mechanical.get('retained_publications',[]) if row['profile_author'] in causal
+            and row['corrected_binding_prior_observations_match']
+            and row['corrected_binding_editor_prior_observations_match']}
+
+
 def complete_semantic_review(mechanical, packet, judgment, *, native_action_bindings=()):
     from phase2 import claim_evidence
     if (packet['registered_claim'] != mechanical['mechanism'] or
@@ -566,6 +582,20 @@ def complete_semantic_review(mechanical, packet, judgment, *, native_action_bind
     if (supported and mechanical['mechanism_observed'] and
             not ({row['actor'] for row in citations} & set(mechanical['causal_actors']))):
         raise ValueError('Supported mechanism lacks evidence from a causal actor')
+    if supported and mechanical['mechanism_observed'] and mechanical.get('input_variant')=='engineering-quality-gate-v1':
+        def cited(event,actor,operation):
+            return any((c['actor'],c['atif_step'])==(b['actor'],b['atif_step']) and
+                c.get('world_event')==b['event'] and operation in c['excerpt'] for c in citations for b in native_action_bindings
+                if b.get('event')==event and b.get('actor')==actor and b.get('operation')==operation
+                and b.get('native_result_verified') is True and b.get('session_input_verified') is True)
+        if not any(row['profile_author'] in mechanical['causal_actors'] and
+                   row['corrected_binding_prior_observations_match'] and
+                   row['corrected_binding_editor_prior_observations_match'] and
+                   row['profile_edit_event']<row['release_event'] and
+                   cited(row['profile_edit_event'],row['profile_author'],'update_quality_profile') and
+                   cited(row['release_event'],row['release_actor'],'release_build_package')
+                   for row in mechanical.get('retained_publications',[])):
+            raise ValueError('Supported quality gate mechanism lacks matching native edit and retained release citations')
     if (supported and mechanical['mechanism_observed'] and
             mechanical.get('input_variant') in SNAPSHOT_VARIANTS):
         causal_clean = snapshot_causal_cleanups(mechanical)

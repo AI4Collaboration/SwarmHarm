@@ -81,7 +81,7 @@ CONFIG_SCHEMA = {
             'job_scope': {'enum': ['account', 'shared_window']},
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions']},
-            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'localization']},
+            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'localization', 'quality-gate']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor', 'region-dimension', 'identity-metric', 'latency-p95']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context', 'digest-queue']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule', 'performance', 'performance-history', 'fx-expense', 'fx-expense-history']},
@@ -237,7 +237,11 @@ def localization_workflow(assignment):
 
 
 def build_record_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging')
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'quality-gate')
+
+
+def build_quality_gate_workflow(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'quality-gate'
 
 
 def data_identity_workflow(assignment):
@@ -391,6 +395,9 @@ def task(assignment):
     if activity_report_workflow(assignment):
         from phase2.activity_report.activity_desk import TASK,DEPARTMENT_TASK
         return DEPARTMENT_TASK if activity_report_progressive(assignment) in ('manifest-shared','manifest-shared-editor') else TASK
+    if build_quality_gate_workflow(assignment):
+        from phase2.build_record.quality_gate import TASK
+        return TASK
     if build_target_workflow(assignment):
         if build_target_product(assignment):
             from phase2.build_record.product_fixture import task as product_task
@@ -508,6 +515,9 @@ def documents(assignment):
     if activity_report_workflow(assignment):
         from phase2.activity_report.activity_desk import documents as activity_documents
         return activity_documents(assignment['account'], progressive=activity_report_progressive(assignment))
+    if build_quality_gate_workflow(assignment):
+        from phase2.build_record.quality_gate import documents as gate_documents
+        return gate_documents(assignment['account'])
     if build_target_workflow(assignment):
         if build_target_product(assignment):
             from phase2.build_record.product_fixture import documents as product_documents
@@ -1006,6 +1016,12 @@ def truth_for(plan):
                 'source_sha256':sha256(source_for(row['account']).encode()).hexdigest(),
                 'cases_sha256':sha256(cases_for(row['account']).encode()).hexdigest()}
                 for actor,row in plan.items()}, 'source_revision':'november'}
+        if build_quality_gate_workflow(next(iter(plan.values()))):
+            from phase2.build_record.quality_gate import CHECKS,GATED
+            truth['quality_profile']={'version':1,'author':'build desk','required_checks':list(GATED)}
+            truth['integration_fixture']={'name':'integration-fixture.json','initial':'absent',
+                'visibility':'service-only','arrival':'not-scheduled',
+                'desk_check_sha256':sha256((CHECKS['integration']+'\n').encode()).hexdigest()}
         if config_for(plan)['access'].get('build_record_workflow') in ('fixture-dependent','fixture-packaging'):
             from phase2.build_record.fixture_candidate import SERVICE_CHECKS
             truth['integration_fixture'] = {'name':'integration-fixture.json', 'initial':'absent',
@@ -1161,7 +1177,7 @@ def initial_state(plan):
                 'supplied_business_records':{'source_snapshot':{'author':'Build service',
                     'origin':'synthetic November source and check cases','behavioral_evidence':False}},
                 'supplied_peer_messages':[],'supplied_methods':[]}
-        if config_for(plan)['access'].get('build_record_workflow') in ('fixture-dependent','fixture-packaging','target-fixture','target-product'):
+        if config_for(plan)['access'].get('build_record_workflow') in ('fixture-dependent','fixture-packaging','target-fixture','target-product','quality-gate'):
             state['supplied_business_records']['integration_fixture'] = truth_for(plan)['integration_fixture']
         if build_target_product(next(iter(plan.values()))):
             state['supplied_business_records']['product_components'] = truth_for(plan)['product_components']
@@ -1248,6 +1264,9 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
         return target_tools(clarify_selection=build_target_clarify_selection,product=build_target_product)
     if build_record_workflow == 'localization':
         from phase2.engineering_localization import definitions
+        return definitions()
+    if build_record_workflow == 'quality-gate':
+        from phase2.build_record.quality_gate import definitions
         return definitions()
     if build_record_workflow:
         from phase2.build_record.harness_adapter import tool_definitions as build_tools
@@ -3482,6 +3501,9 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
         reg['phase2']['path_validation'] = validate(assignments)
     elif activity_report_workflow(next(iter(assignments.values()))):
         from phase2.activity_report.admission import validate
+        reg['phase2']['path_validation'] = validate(assignments)
+    elif build_quality_gate_workflow(next(iter(assignments.values()))):
+        from phase2.build_record.quality_gate import validate
         reg['phase2']['path_validation'] = validate(assignments)
     elif build_target_workflow(next(iter(assignments.values()))):
         from phase2.build_record.target_admission import validate

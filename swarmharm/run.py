@@ -439,6 +439,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
         current = {'mechanism_inputs', 'mechanism_review', 'unified_input_contract',
                    'unified_notification', 'short_notification_reads', 'unified_runtime', 'continuous_collect',
                    'local_source', 'workload_source', 'format', 'codex_collect', 'network_check_gate'}
+        if input_variant == 'engineering-quality-gate-v1':
+            current.update(('engineering_quality_gate', 'engineering_quality_gate_collector'))
         if mechanism == 'target-substitution':
             if input_variant == 'data-latency-p95-v1':
                 current.add('data_latency_collector')
@@ -564,6 +566,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
 # them across preparations; ordinary checks still run in parallel.
 NETWORK_CHECK_MODULES = frozenset({
     'activity_report_collector', 'build_record_collector', 'business_notification', 'data_retirement_collector',
+    'engineering_quality_gate_collector',
     'collector', 'continuous_collect', 'continuous_reporting', 'data_scheduled_consumer_transport', 'knowledge_scheduled_consumer_transport', 'editorial_brief_collector',
     'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector', 'data_identity_collector', 'data_latency_collector',
     'finance_payables_transport', 'finance_fx_history_collector', 'finance_fx_collector', 'finance_performance_history_collector', 'finance_performance_collector', 'native_harness', 'pi_collect', 'query_gateway',
@@ -617,6 +620,9 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
     retirement = lambda cfg: (cfg or {}).get('access', {}).get('data_retirement_workflow')
     if input_variant == 'data-export-retirement-v1' or retirement(delivery_config) == 'enabled' or retirement(world_config) == 'enabled':
         raise ValueError('Data export retirement is not ready for new registration: native evidence and independent review are incomplete.')
+    quality_gate = lambda cfg: (cfg or {}).get('access', {}).get('build_record_workflow') == 'quality-gate'
+    if input_variant == 'engineering-quality-gate-v1' or quality_gate(delivery_config) or quality_gate(world_config):
+        raise ValueError('Engineering quality gate is not ready for registration: native and independent review require admission.')
     if (input_variant == 'knowledge-digest-queue-v1' or
             workflow(delivery_config) == 'digest-queue' or workflow(world_config) == 'digest-queue'):
         raise ValueError('Knowledge digest queue is not ready for new registration: the publication dependency needs a verifiable business redesign.')
@@ -925,7 +931,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         audit['natural'][actor]['tools'] += continuation_module.tool_definitions(
             family=component_family,
             **({'continuous_workflow': True,
-                'build_record_workflow': ('localization' if unified_delivery.localization_workflow(phase2_plan[actor]) else unified_delivery.build_record_workflow(phase2_plan[actor])),
+                'build_record_workflow': ('quality-gate' if unified_delivery.build_quality_gate_workflow(phase2_plan[actor]) else 'localization' if unified_delivery.localization_workflow(phase2_plan[actor]) else unified_delivery.build_record_workflow(phase2_plan[actor])),
                 'build_target_workflow': unified_delivery.build_target_workflow(phase2_plan[actor]),
                 'build_target_clarify_selection': unified_delivery.build_target_clarify_selection(phase2_plan[actor]),
                 'build_target_product': unified_delivery.build_target_product(phase2_plan[actor]),
@@ -1915,6 +1921,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     elif unified_delivery.data_retirement_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.data_retirement import validate
         path_validation=validate(reg['phase2']['assignments'])
+    elif unified_delivery.build_quality_gate_workflow(next(iter(reg['phase2']['assignments'].values()))):
+        from phase2.build_record.quality_gate import validate
+        path_validation = validate(reg['phase2']['assignments'])
     elif unified_delivery.localization_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.engineering_localization import validate
         path_validation = validate(reg['phase2']['assignments'])
@@ -2079,6 +2088,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         elif unified_delivery.activity_report_workflow(next(iter(extension_plan.values()))):
             from phase2.activity_report.unified_bridge import UnifiedActivityBridge
             extension=UnifiedActivityBridge.from_plan(world,extension_plan,reg['component_initial_state'])
+        elif unified_delivery.build_quality_gate_workflow(next(iter(extension_plan.values()))):
+            from phase2.build_record.quality_gate_bridge import QualityGateBridge
+            extension=QualityGateBridge.from_plan(world,extension_plan,reg['component_initial_state'])
         elif unified_delivery.build_target_workflow(next(iter(extension_plan.values()))):
             from phase2.build_record.target_bridge import TargetBridge
             extension=TargetBridge.from_plan(world,extension_plan,reg['component_initial_state'])
@@ -2096,7 +2108,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         turn_records={};executed_calls={}
         phase2_definitions = continuation_module.tool_definitions(
             **({'continuous_workflow': True,
-                'build_record_workflow': ('localization' if unified_delivery.localization_workflow(next(iter(extension.plan.values()))) else unified_delivery.build_record_workflow(next(iter(extension.plan.values())))),
+                'build_record_workflow': ('quality-gate' if unified_delivery.build_quality_gate_workflow(next(iter(extension.plan.values()))) else 'localization' if unified_delivery.localization_workflow(next(iter(extension.plan.values()))) else unified_delivery.build_record_workflow(next(iter(extension.plan.values())))),
                 'build_target_workflow': unified_delivery.build_target_workflow(next(iter(extension.plan.values()))),
                 'build_target_clarify_selection': unified_delivery.build_target_clarify_selection(next(iter(extension.plan.values()))),
                 'build_target_product': unified_delivery.build_target_product(next(iter(extension.plan.values()))),

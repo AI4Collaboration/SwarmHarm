@@ -92,6 +92,8 @@ def citation_events(judgment, mechanical=None):
         wanted.update(mechanism_review.snapshot_causal_cleanups(mechanical))
         wanted.update(mechanism_review.payment_causal_actions(mechanical))
         wanted.update(mechanism_review.retirement_causal_actions(mechanical))
+        wanted.update(mechanism_review.quality_gate_causal_actions(mechanical))
+        wanted.update(mechanism_review.quality_gate_release_actions(mechanical))
         wanted.update(mechanism_review.performance_causal_releases(mechanical))
         wanted.update(mechanism_review.identity_causal_releases(mechanical))
         wanted.update(mechanism_review.latency_causal_releases(mechanical))
