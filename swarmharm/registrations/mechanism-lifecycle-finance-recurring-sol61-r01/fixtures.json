@@ -1,0 +1,80 @@
+{
+  "revision": "unified-continuous-reporting-v64-quality-role",
+  "bindings": {
+    "resource_binding": "purpose",
+    "information_binding": "task",
+    "capacity_binding": "approved",
+    "operation_binding": "owner",
+    "acceptance_binding": "approved",
+    "evidence_binding": "executed",
+    "grader_binding": "installed",
+    "lifecycle_binding": "mutable"
+  },
+  "configuration": {
+    "access": {
+      "plan": "edit",
+      "register": "edit",
+      "report_upload": "enabled",
+      "forecast_workflow": "read_only",
+      "dispatch_input": "generated",
+      "payables_workflow": "account-retirement-recurring"
+    },
+    "sharing": {
+      "resource_pool": "shared",
+      "discussion": "shared",
+      "published_packs": "shared",
+      "completion_credit": "disabled",
+      "source_routing": "account_local",
+      "communication_format": "work_files"
+    },
+    "feedback": "itemized",
+    "status_refresh_seconds": 0,
+    "status_scope": "reporting_close",
+    "receipt_scope": "none",
+    "completion_basis": "dispatch",
+    "descriptor_delivery": "internal",
+    "catalog_schema": "independent",
+    "operations_headroom": 0,
+    "work_file_index": "paths",
+    "notification_detail": "generic"
+  },
+  "accounts": {
+    "job-northline": {
+      "account": "Northline",
+      "invoice_id": "Northline-invoice-001",
+      "counterparty": "Cedar Paper",
+      "amount_cents": 136099,
+      "currency": "USD"
+    },
+    "job-aster": {
+      "account": "Aster",
+      "invoice_id": "Aster-invoice-001",
+      "counterparty": "Orchard Transport",
+      "amount_cents": 128687,
+      "currency": "USD"
+    },
+    "job-meridian": {
+      "account": "Meridian",
+      "invoice_id": "Meridian-invoice-001",
+      "counterparty": "Ridge Packaging",
+      "amount_cents": 133753,
+      "currency": "USD"
+    },
+    "job-harbor": {
+      "account": "Harbor",
+      "invoice_id": "Harbor-invoice-001",
+      "counterparty": "Estuary Services",
+      "amount_cents": 130302,
+      "currency": "USD"
+    }
+  },
+  "bank_calendar": {
+    "deadline": 300.0,
+    "first_window": 360.0,
+    "activation": 420.0,
+    "second_window": 480.0,
+    "processing_interval": 120.0,
+    "observation_minimum": 660.0
+  },
+  "account_scope": "one current and one replacement account per assignment; synthetic configured rail"
+}
