@@ -158,6 +158,9 @@ def verify_frozen_evaluator(registration):
               "swarmharm/phase2/delivery_receipts.py",
               "swarmharm/phase2/communication_evidence.py")
     assignments = registration.get('phase2', {}).get('assignments', {})
+    if assignments and importlib.import_module('phase2.unified_delivery').localization_workflow(next(iter(assignments.values()))):
+        paths += tuple('swarmharm/phase2/'+name for name in ('engineering_localization.py','engineering_localization_bridge.py',
+            'engineering_localization_review.py','data_region.py','data_region_review.py','consolidation_adapter.py'))
     if assignments and importlib.import_module('phase2.unified_delivery').finance_assets_workflow(next(iter(assignments.values()))):
         paths += tuple('swarmharm/phase2/'+name for name in ('finance_assets.py', 'finance_assets_bridge.py', 'finance_assets_review.py', 'data_region.py', 'data_region_review.py', 'consolidation_adapter.py'))
     if assignments and importlib.import_module('phase2.unified_delivery').knowledge_digest_workflow(next(iter(assignments.values()))):
@@ -1547,12 +1550,16 @@ def review(root, destination=None):
     is_build_record = integrated_module.build_record_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_activity_report = integrated_module.activity_report_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_editorial_brief = integrated_module.editorial_brief_workflow(next(iter(registration['phase2']['assignments'].values())))
+    is_localization = integrated_module.localization_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_assets = integrated_module.finance_assets_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_digest = integrated_module.knowledge_digest_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_region = integrated_module.data_region_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_consolidation = integrated_module.consolidation_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_scheduled_consumer = integrated_module.config_for(registration['phase2']['assignments']).get('retention_consumer_status')=='scheduled'
-    if is_assets:
+    if is_localization:
+        from phase2.engineering_localization_review import assess as assess_localization
+        integrated = assess_localization(root, registration, world)
+    elif is_assets:
         from phase2.finance_assets_review import assess as assess_assets
         integrated = assess_assets(root, registration, world)
     elif is_digest:
@@ -1641,7 +1648,7 @@ def review(root, destination=None):
     result['communication']['evidence_file'] = 'communication-evidence.json'
     result['communication']['evidence_sha256'] = digest(root/'communication-evidence.json')
     from phase2 import claim_evidence
-    action = (integrated['assets_action'] if is_assets else integrated['digest_action'] if is_digest else integrated['region_action'] if is_region else integrated['consumer_action'] if is_scheduled_consumer else integrated['consolidation_action'] if is_consolidation else integrated['closure_action'] if is_finance_closure else integrated['editorial_action'] if is_editorial_brief else integrated['target_action'] if is_build_target else integrated['activity_action'] if is_activity_report else integrated['build_record_action'] if is_build_record else
+    action = (integrated['localization_action'] if is_localization else integrated['assets_action'] if is_assets else integrated['digest_action'] if is_digest else integrated['region_action'] if is_region else integrated['consumer_action'] if is_scheduled_consumer else integrated['consolidation_action'] if is_consolidation else integrated['closure_action'] if is_finance_closure else integrated['editorial_action'] if is_editorial_brief else integrated['target_action'] if is_build_target else integrated['activity_action'] if is_activity_report else integrated['build_record_action'] if is_build_record else
               claim_evidence.action_monitor(root, registration, integrated))
     save(root/'action-monitor.json', action)
     if is_editorial_brief:
@@ -1684,7 +1691,10 @@ def review(root, destination=None):
                     and digest(root/row['path']) == row.get('sha256') for row in rows))
     if 'mechanism_contract' in registration:
         from phase2 import mechanism_review
-        if is_assets:
+        if is_localization:
+            from phase2.engineering_localization_review import mechanical_review
+            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
+        elif is_assets:
             from phase2.finance_assets_review import mechanical_review
             mechanism = mechanical_review(root, registration, world, integrated, native_validated)
         elif is_digest:

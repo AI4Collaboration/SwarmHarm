@@ -80,7 +80,7 @@ CONFIG_SCHEMA = {
             'job_scope': {'enum': ['account', 'shared_window']},
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions']},
-            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging']},
+            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'localization']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor', 'region-dimension']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context', 'digest-queue']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule']},
@@ -223,6 +223,10 @@ def build_target_product(assignment):
     return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'target-product'
 
 
+def localization_workflow(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'localization'
+
+
 def build_record_workflow(assignment):
     return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging')
 
@@ -327,6 +331,9 @@ def world_for(plan):
 
 
 def task(assignment):
+    if localization_workflow(assignment):
+        from phase2.engineering_localization import TASK
+        return TASK
     if finance_assets_workflow(assignment):
         from phase2.finance_assets import TASK
         return TASK
@@ -404,7 +411,7 @@ def communication_channel(assignment):
 
 
 def communication_start(plan):
-    if (knowledge_digest_workflow(next(iter(plan.values()))) or editorial_brief_workflow(next(iter(plan.values()))) or activity_report_workflow(next(iter(plan.values()))) or build_record_workflow(next(iter(plan.values())))):
+    if (localization_workflow(next(iter(plan.values()))) or knowledge_digest_workflow(next(iter(plan.values()))) or editorial_brief_workflow(next(iter(plan.values()))) or activity_report_workflow(next(iter(plan.values()))) or build_record_workflow(next(iter(plan.values())))):
         return {'condition': 'unannounced_participants', 'carrier': shared_directories(plan)[0],
                 'peer_roster_supplied': False, 'dedicated_communication_tools': False,
                 'supplied_messages': [], 'supplied_plans': []}
@@ -424,6 +431,9 @@ def communication_start(plan):
 
 
 def documents(assignment):
+    if localization_workflow(assignment):
+        from phase2.engineering_localization import documents as resource_documents
+        return resource_documents(assignment['account'])
     if finance_assets_workflow(assignment):
         from phase2.finance_assets import documents as asset_documents
         return asset_documents(assignment['account'])
@@ -844,6 +854,12 @@ def shared_directories(plan):
 
 
 def truth_for(plan):
+    if localization_workflow(next(iter(plan.values()))):
+        from phase2.engineering_localization import source,initial_approved,digest as resource_digest
+        accounts={actor:row['account'] for actor,row in plan.items()}
+        return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
+            'approved_sha256':resource_digest(initial_approved(accounts.values())),
+            'accounts':{actor:{'account':account,'source_sha256':resource_digest(source(account))} for actor,account in accounts.items()}}
     if finance_assets_workflow(next(iter(plan.values()))):
         from phase2.finance_assets import PERIOD, initial_confirmations, source_csv, digest as asset_digest
         actors={a:row['account'] for a,row in plan.items()}
@@ -949,6 +965,13 @@ def _engineering_consumer_calendar():
 
 
 def initial_state(plan):
+    if localization_workflow(next(iter(plan.values()))):
+        return {'origin':'prepared_business_records','study_track':'continuous_unified',
+            'assignments':deepcopy(plan),'files_sha256':digest(initial_files(plan)),
+            'communication_start':communication_start(plan),'shared_directories':shared_directories(plan),
+            'supplied_business_records':{'resources':{'origin':'synthetic source and approved translations',
+                'visibility':'own resources and shared product profile','behavioral_evidence':False}},
+            'supplied_peer_messages':[],'supplied_methods':[]}
     if finance_assets_workflow(next(iter(plan.values()))):
         return {'origin':'prepared_business_records','study_track':'continuous_unified',
             'assignments':deepcopy(plan),'files_sha256':digest(initial_files(plan)),
@@ -1080,6 +1103,9 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
     if build_target_workflow:
         from phase2.build_record.target_adapter import tool_definitions as target_tools
         return target_tools(clarify_selection=build_target_clarify_selection,product=build_target_product)
+    if build_record_workflow == 'localization':
+        from phase2.engineering_localization import definitions
+        return definitions()
     if build_record_workflow:
         from phase2.build_record.harness_adapter import tool_definitions as build_tools
         return build_tools()
@@ -3026,7 +3052,10 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             reg['phase2']['communication_condition'] = 'ordinary_work_files'
             reg['input_contract']['supplied_message_schema'] = False
         reg['phase2']['independent_outcome'] += '; exact authored-note exposure and read-then-reply reconstruction'
-    if finance_assets_workflow(next(iter(assignments.values()))):
+    if localization_workflow(next(iter(assignments.values()))):
+        from phase2.engineering_localization import validate
+        reg['phase2']['path_validation'] = validate(assignments)
+    elif finance_assets_workflow(next(iter(assignments.values()))):
         from phase2.finance_assets import validate
         reg['phase2']['path_validation'] = validate(assignments)
     elif knowledge_digest_workflow(next(iter(assignments.values()))):

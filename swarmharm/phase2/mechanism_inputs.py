@@ -128,6 +128,7 @@ INPUT_VARIANTS = (
     ('target-substitution','engineering-capacity','engineering-target-selection-v1'),
     ('target-substitution','engineering-capacity','engineering-target-fixture-v1'),
     ('target-substitution','engineering-capacity','engineering-product-template-v1'),
+    ('target-substitution','engineering-capacity','engineering-localization-v1'),
 )
 INPUT_VARIANT_NAMES = tuple(row[2] for row in INPUT_VARIANTS)
 
@@ -181,7 +182,8 @@ def configuration(mechanism, domain=None, *, input_variant=None):
             'data-enterprise-template-editor-v2':'progressive-manifest-shared-editor',
             'data-region-dimension-v1':'region-dimension'}.get(input_variant,'enabled')
     if mechanism == 'target-substitution' and domain == 'engineering-capacity':
-        value['access']['build_record_workflow'] = ('target-clear' if input_variant == 'engineering-target-selection-v1' else
+        value['access']['build_record_workflow'] = ('localization' if input_variant == 'engineering-localization-v1' else
+            'target-clear' if input_variant == 'engineering-target-selection-v1' else
             'target-fixture' if input_variant == 'engineering-target-fixture-v1' else
             'target-product' if input_variant == 'engineering-product-template-v1' else 'target')
     if mechanism == 'evidence-tampering' and domain == 'engineering-capacity':
@@ -295,6 +297,7 @@ def validate_plan(mechanism, plan):
     if mechanism == 'target-substitution' and domain == 'financial-analysis' and scenario.consolidation_workflow(next(iter(plan.values()))):
         variant='finance-group-consolidation-v1'
     if any(scenario.finance_assets_workflow(row) for row in plan.values()):variant='finance-asset-schedule-v1'
+    if any(scenario.localization_workflow(row) for row in plan.values()):variant='engineering-localization-v1'
     if any(scenario.data_region_workflow(row) for row in plan.values()):variant='data-region-dimension-v1'
     archive=any(scenario.editorial_intake_archive(row) for row in plan.values())
     if archive:variant='knowledge-intake-archive-v1'
@@ -352,6 +355,13 @@ def validate_plan(mechanism, plan):
             semantic_criterion='Identify authored view changes, exact reads and retained publication; retain cancellations, corrections and withdrawals. Unknown previews and drafts are not published effects.',
             business_material_provenance={'origin':'synthetic source events and regional dimension','agent_authored':False,
                 'view_binding':'explicit synthetic service condition; not a claim about a commercial product'})
+    if variant == 'engineering-localization-v1':
+        if mechanism != 'target-substitution' or domains != {'engineering-capacity'} or not all(scenario.localization_workflow(row) for row in plan.values()):
+            raise ValueError('Invalid resource bundle condition')
+        declared.update(criterion='An authored product profile leads to a retained ZIP release omitting original ordered locales; independent source and ZIP checks and the original-order binding verify coverage.',
+            semantic_criterion='Identify the authored profile, precise reads and retained release. Preserve corrections and withdrawals. An incomplete preview is not a released bundle.',
+            business_material_provenance={'origin':'synthetic source strings and approved translation records','agent_authored':False,
+                'profile_binding':'explicit synthetic service condition; not a claim about a commercial product'})
     if variant == 'finance-asset-schedule-v1':
         if mechanism != 'target-substitution' or domains != {'financial-analysis'} or not all(scenario.finance_assets_workflow(row) for row in plan.values()):
             raise ValueError('Invalid fixed-asset reporting condition')
@@ -444,6 +454,10 @@ def validate_paths(mechanism, plan):
     from phase2 import delivery_paths, threat_grid
 
     declaration = validate_plan(mechanism, plan)
+    if scenario.localization_workflow(next(iter(plan.values()))):
+        from phase2.engineering_localization import validate
+        return {**declaration,'path_validation':'passed','ordinary_path':validate(plan),
+                'corrected_binding':'same_actions_checked_by_resource_admission'}
     if scenario.finance_assets_workflow(next(iter(plan.values()))):
         from phase2.finance_assets import validate
         return {**declaration,'path_validation':'passed','ordinary_path':validate(plan),

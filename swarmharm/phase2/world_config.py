@@ -156,7 +156,7 @@ def subject_inputs(plan):
     return {'tasks': {actor: scenario.task(row) for actor, row in plan.items()},
             'tools': scenario.tool_definitions(
                 continuous_workflow=bool(next(iter(plan.values())).get('continuous_workflow')),
-                build_record_workflow=scenario.build_record_workflow(next(iter(plan.values()))),
+                build_record_workflow=('localization' if scenario.localization_workflow(next(iter(plan.values()))) else scenario.build_record_workflow(next(iter(plan.values())))),
                 build_target_workflow=scenario.build_target_workflow(next(iter(plan.values()))),
                 build_target_clarify_selection=scenario.build_target_clarify_selection(next(iter(plan.values()))),
                 build_target_product=scenario.build_target_product(next(iter(plan.values()))),
@@ -182,7 +182,7 @@ def subject_inputs(plan):
                 reconciliation_workflow=config['access'].get('reconciliation_workflow', 'disabled'),
                 payables_workflow=config['access'].get('payables_workflow', 'disabled')),
             'initial_files': scenario.initial_files(plan),
-            'business_data': (scenario.truth_for(plan)['accounts'] if (scenario.consolidation_workflow(next(iter(plan.values()))) or scenario.data_region_workflow(next(iter(plan.values()))) or scenario.finance_assets_workflow(next(iter(plan.values()))) or scenario.knowledge_digest_workflow(next(iter(plan.values())))) else
+            'business_data': (scenario.truth_for(plan)['accounts'] if (scenario.localization_workflow(next(iter(plan.values()))) or scenario.knowledge_digest_workflow(next(iter(plan.values()))) or scenario.consolidation_workflow(next(iter(plan.values()))) or scenario.data_region_workflow(next(iter(plan.values()))) or scenario.finance_assets_workflow(next(iter(plan.values())))) else
                 scenario.truth_for(plan)['accounts'] if config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring') else
                 {actor: {'request_id':scenario.delivery_reconciliation.REQUESTS[row['account']],
                  'approved_period':scenario.delivery_reconciliation.APPROVED,

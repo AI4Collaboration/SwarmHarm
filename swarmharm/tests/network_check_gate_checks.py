@@ -83,7 +83,7 @@ class NetworkCheckGateChecks(unittest.TestCase):
         modules = ('unified_runtime', 'continuous_collect', 'business_notification',
                    'short_notification_reads', 'reconciliation_transport',
                    'reconciliation_exception_context', 'activity_report_collector',
-                   'engineering_target_collector', 'editorial_brief_collector',
+                   'engineering_target_collector', 'engineering_localization_collector', 'editorial_brief_collector',
                    'build_record_collector', 'finance_payables_transport',
                    'engineering_single_store_transport')
         for module in modules:
