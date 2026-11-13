@@ -1,4 +1,4 @@
-"""Scheduled synthetic Engineering consumers with protected receipts."""
+"""Scheduled source-backed synthetic consumers with protected receipts."""
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 from pathlib import Path
@@ -29,7 +29,9 @@ class ConsumerStore(retention.ReportingStore):
     def __init__(self, plan, orders, *, retention_checked, delay_seconds, executions,
                  clock=time.monotonic, wall=lambda:datetime.now(timezone.utc), deadline_seconds=None):
         super().__init__(plan,orders,retention_checked=retention_checked)
-        if not self.engineering or delay_seconds<=0:raise ValueError('Expected Engineering and a positive delay')
+        if not (self.engineering or self.data_partitions) or delay_seconds<=0:
+            raise ValueError('Expected supported retention store and a positive delay')
+        self.output_name = 'data-operations.csv' if self.data_partitions else 'engineering-operations.csv'
         if deadline_seconds is not None and not 0<deadline_seconds<delay_seconds:
             raise ValueError('Invalid published delivery calendar')
         self.delay_seconds=delay_seconds;self.deadline_seconds=deadline_seconds
@@ -129,7 +131,7 @@ class ConsumerStore(retention.ReportingStore):
                    'at':self.wall().isoformat(),
                    'completed':completed,'missing_inputs':missing,
                    'input_sha256':{row['report']:row['sha256'] for row in inputs},
-                   'output_sha256':sha256((folder/'engineering-operations.csv').read_bytes()).hexdigest()}
+                   'output_sha256':sha256((folder/self.output_name).read_bytes()).hexdigest()}
             with (folder/'receipt.json').open('x') as stream:json.dump(event,stream,sort_keys=True)
             self.completed.update(completed);self.due=None
             if self.on_consumer_event:self.on_consumer_event(event)
@@ -144,14 +146,16 @@ class ConsumerStore(retention.ReportingStore):
         if not self.attempt:raise ValueError('No actual consumer attempt')
         rows=[]
         for folder in sorted(path for path in self.consumer.iterdir() if path.is_dir()):
-            with (folder/'engineering-operations.csv').open(newline='') as stream:
+            with (folder/self.output_name).open(newline='') as stream:
                 rows.extend(csv.DictReader(stream))
-        rows.sort(key=lambda row:row['report'])
+        rows.sort(key=lambda row:(row['report'], row.get('cohort', '')))
+        reports=sorted(self.completed)
         with (target/'operations-reports.csv').open('w',newline='') as stream:
             writer=csv.writer(stream,lineterminator='\n');writer.writerow(('report',))
-            writer.writerows((row['report'],) for row in rows)
-        with (target/'engineering-operations.csv').open('w',newline='') as stream:
-            writer=csv.DictWriter(stream,fieldnames=('report','topic','build_summary'),lineterminator='\n')
+            writer.writerows((report,) for report in reports)
+        with (target/self.output_name).open('w',newline='') as stream:
+            fields = ('report','cohort','accepted_rows','total_amount','total_units') if self.data_partitions else ('report','topic','build_summary')
+            writer=csv.DictWriter(stream,fieldnames=fields,lineterminator='\n')
             writer.writeheader();writer.writerows(rows)
 
     def export(self,root):
@@ -165,7 +169,9 @@ class ConsumerStore(retention.ReportingStore):
 
 def verify_export(plan,root,*,delay_seconds):
     """Verify source bytes and the shared executor's actual output receipts."""
-    from phase2 import delivery_data
+    from phase2 import delivery_data, delivery_data_partitions
+    data = unified_delivery.config_for(plan)['access'].get('retention_store') == 'data-partitions'
+    output_name = 'data-operations.csv' if data else 'engineering-operations.csv'
     root=Path(root)
     try:
         if root.is_symlink() or any(path.is_symlink() for path in root.rglob('*')):return False
@@ -196,15 +202,25 @@ def verify_export(plan,root,*,delay_seconds):
                         or abs((datetime.fromisoformat(failure['at'])-origin).total_seconds()-failure['elapsed_seconds'])>1):return False
             if len(reports)!=len(set(reports)) or completed.intersection(reports):return False
             completed.update(reports)
-            rows=list(csv.DictReader((folder/'engineering-operations.csv').read_text().splitlines()))
+            rows=list(csv.DictReader((folder/output_name).read_text().splitlines()))
             with sqlite3.connect(f'file:{folder}/operations-execution.sqlite?mode=ro',uri=True) as db:
                 if db.execute('PRAGMA integrity_check').fetchone()[0]!='ok':return False
                 executed={row[0] for row in db.execute("SELECT reference FROM jobs WHERE kind='operations' AND slot IS NOT NULL")}
             if executed!=set(reports):return False
-            if sha256((folder/'engineering-operations.csv').read_bytes()).hexdigest()!=receipt['output_sha256']:return False
+            if sha256((folder/output_name).read_bytes()).hexdigest()!=receipt['output_sha256']:return False
             inputs=list(csv.DictReader((folder/'operations-inputs.csv').read_text().splitlines()))
             if {row['report']:row['sha256'] for row in inputs}!=receipt['input_sha256']:return False
             if {row['report'] for row in rows}!=set(reports) or set(reports)!=set(receipt['input_sha256']):return False
+            if data:
+                for name in reports:
+                    assignment,part=retention.knowledge_assignment(plan,name)
+                    source=(root/'archive'/(name+'.csv')).read_bytes()
+                    if source != delivery_data_partitions.partition(assignment,part,independent=True):return False
+                    if sha256(source).hexdigest()!=receipt['input_sha256'][name]:return False
+                    actual=[{key:value for key,value in row.items() if key!='report'} for row in rows if row['report']==name]
+                    expected=list(csv.DictReader(delivery_data_partitions.expected_consumer(assignment,part).decode().splitlines()))
+                    if actual!=expected:return False
+                continue
             for row in rows:
                 name=row['report'];assignment,part=retention.knowledge_assignment(plan,name)
                 source=(root/'archive'/(name+'.csv')).read_bytes()

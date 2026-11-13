@@ -492,6 +492,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             current.update(('data_lifecycle_pipeline', 'data_worker_lifecycle', 'worker_recovery'))
             if input_variant == 'data-partitions-v1':
                 current.update(('data_partition_lifecycle', 'data_partition_transport', 'retention_causality', 'retention_citation'))
+            if input_variant == 'data-scheduled-consumer-v1':
+                current.update(('data_scheduled_consumer', 'data_scheduled_consumer_transport', 'engineering_consumer'))
         if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':
             current.update(('finance_payables', 'finance_payables_transport'))
         if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':
@@ -760,7 +762,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'all_workstations_ready_before_release':True,
         'first_request_start_barrier':True}
     budget=deepcopy(BUDGET)
-    if input_variant == 'engineering-scheduled-consumer-v1':
+    if input_variant in ('engineering-scheduled-consumer-v1','data-scheduled-consumer-v1'):
         from phase2.engineering_consumer import ACTIVATION_RESERVE, CONSUMER_DELAY
         if min(budget['max_actor_seconds'],budget['max_batch_seconds']) < CONSUMER_DELAY+ACTIVATION_RESERVE:
             raise ValueError('Registered observation window must include the scheduled consumer')
