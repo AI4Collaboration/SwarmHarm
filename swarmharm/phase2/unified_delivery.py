@@ -2058,21 +2058,74 @@ class Continuation(Base):
     def business_state(self, actor):
         return self._progress_view(self._desk(actor))
 
+    def _scheduled_notice_projection_enabled(self):
+        return (self.config.get('retention_consumer_status')=='scheduled' and
+                self.config['access'].get('retention_store')=='knowledge')
+
+    def _scheduled_notice_projection(self, value, account):
+        """Remove only known other-account fields from scheduled-retention notices.
+
+        The service response itself stays unchanged. Unknown shapes and unknown
+        fields are retained so a change without proven ownership is not hidden.
+        """
+        if not self._scheduled_notice_projection_enabled() or not isinstance(value,dict):
+            return value
+        view=deepcopy(value);known={row['account'] for row in self.plan.values()}
+        if account not in known:return view
+        pools=view.get('pools')
+        if isinstance(pools,list) and all(isinstance(row,dict) and row.get('pool') in known|{RESERVE} for row in pools):
+            view['pools']=[row for row in pools if row['pool'] in (account,RESERVE)]
+        def releases(rows):
+            if not isinstance(rows,list) or any(not isinstance(row,dict) or row.get('account') not in known for row in rows):return rows
+            return [row for row in rows if row['account']==account]
+        if 'releases' in view:view['releases']=releases(view['releases'])
+        if 'visible_releases' in view:view['visible_releases']=releases(view['visible_releases'])
+        budget=view.get('processing_budget')
+        if isinstance(budget,dict):
+            for field in ('actual_cost_to_date','actual_cost_by_pool'):
+                values=budget.get(field)
+                if isinstance(values,dict) and set(values)<=known:
+                    budget[field]={key:value for key,value in values.items() if key==account}
+        files=view.get('work_files')
+        if (isinstance(files,dict) and isinstance(files.get('entries'),list) and
+                self.continuous_workflow and self.config['sharing'].get('communication_format')=='work_files' and
+                self.config.get('notification_scope')!='business_only'):
+            owner=next((a for a,row in self.plan.items() if row['account']==account),None)
+            represented={(row['reference'],row['sha256']) for row in self._messages()
+                         if owner is not None and self._can_read_note(owner,row['author'])}
+            # Exact known peer versions already have their own observation key.
+            # Unknown paths and stale versions remain in the calendar.
+            files['entries']=[row for row in files['entries'] if not isinstance(row,dict)
+                or (row.get('path'),row.get('sha256')) not in represented]
+        check=view.get('edition_check')
+        if isinstance(check,dict) and isinstance(check.get('accounts'),dict) and account in check['accounts']:
+            check['accounts']={account:check['accounts'][account]}
+            own=check['accounts'][account]
+            if isinstance(own,dict) and 'visible_releases' in own:own['visible_releases']=releases(own['visible_releases'])
+            # These fields summarize every account; the individual account and
+            # storage information above remains in the projection.
+            check.pop('state',None);check.pop('policy_checks',None)
+            # Capacity and own pack occupancy are already represented by the
+            # full reporting_store component, so do not notify twice for it.
+            check.pop('publication_storage',None)
+        return view
+
     def activity_signal(self, actor):
         file_channel=(self.continuous_workflow and self.config['sharing'].get('communication_format')=='work_files')
         entries = [{'path': (m['reference'] if self.continuous_workflow else '/delivery/discussion/'+m['reference']), 'sha256': m['sha256'],
                     'event': 'shared_file_changed' if file_channel else 'message_added'} for m in self._visible_messages(actor) if m['author'] != actor]
         if self.config.get('notification_scope') == 'business_only':
             entries = []
-        desk = self._progress_view(self._desk(actor))
+        desk = self._scheduled_notice_projection(self._progress_view(self._desk(actor)), self.plan[actor]['account'])
         calendar = digest(desk)
-        return {'revision': digest([entries, calendar]), 'case_revisions': {'delivery': digest(entries)},
+        cursor=(self.world.events[-1].get('id') if self.world.events else 0)
+        return {**({'event_cursor':cursor} if self._scheduled_notice_projection_enabled() else {}), 'revision': digest([entries, calendar]), 'case_revisions': {'delivery': digest(entries)},
                 'case_entries': {'delivery': entries}, 'calendar_revision': calendar,
                 'calendar_components': {key: digest(value) for key, value in desk.items()},
                 'relevant_cross_job_records': len(entries)}
 
     def observed_calendar_revision(self, operation, result):
-        return digest(self._progress_view(result)) if operation == 'delivery_desk' else None
+        return digest(self._scheduled_notice_projection(self._progress_view(result),result.get('account'))) if operation == 'delivery_desk' else None
 
     def observed_calendar_components(self, operation, result):
         if operation == 'check_delivery':
@@ -2098,6 +2151,21 @@ class Continuation(Base):
         else:
             observed = {}
         return {key: digest(self._progress_view(value)) for key, value in observed.items()}
+
+    def observed_scheduled_calendar_components(self, actor, operation, result):
+        if not self._scheduled_notice_projection_enabled():
+            return self.observed_calendar_components(operation,result)
+        account=self.plan[actor]['account']
+        if operation=='check_delivery':
+            view={'edition_check':{k:v for k,v in result.items() if k!='work_files'}}
+            if 'work_files' in result:view['work_files']=result['work_files']
+            if 'visible_releases' in result:view['releases']=result['visible_releases']
+            observed=self._scheduled_notice_projection(self._progress_view(view),account)
+            return {key:digest(value) for key,value in observed.items()}
+        if operation=='read_dispatch_budget' and 'budget' in result:
+            view=self._scheduled_notice_projection({'processing_budget':self._progress_view(result['budget'])},account)
+            return {'processing_budget':digest(view['processing_budget'])}
+        return self.observed_calendar_components(operation,result)
 
     def observed_activity_keys(self, operation, result):
         if operation in ('delivery_desk', 'check_delivery', 'preview_delivery') and 'work_files' in result:

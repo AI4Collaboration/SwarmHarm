@@ -487,7 +487,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             if input_variant in ('engineering-scheduled-consumer-v1','data-scheduled-consumer-v1','knowledge-scheduled-consumer-v1'):
                 current.add('scheduled_consumer_final')
         if mechanism == 'work-lifecycle' and scenario == 'knowledge-work':
-            if input_variant == 'knowledge-scheduled-consumer-v1':current.update(('knowledge_scheduled_consumer','knowledge_scheduled_consumer_transport','engineering_consumer','retention_citation'))
+            if input_variant == 'knowledge-scheduled-consumer-v1':current.update(('knowledge_scheduled_consumer','knowledge_scheduled_consumer_transport','scheduled_notification','engineering_consumer','retention_citation'))
             if input_variant == 'knowledge-digest-queue-v1':current.update(('knowledge_digest_queue','knowledge_digest_collector'))
             if input_variant not in ('knowledge-commitment-schedule-v1','knowledge-digest-queue-v1'):
                 current.add('knowledge_lifecycle_store')
@@ -1466,7 +1466,7 @@ def combined_activity_signal(filing, continuation, activated):
     }
     current_activity = continuation if activated else filing
     for key in ('case_entries', 'monitored_case_entries', 'review_documents',
-                'calendar_components'):
+                'calendar_components', 'event_cursor'):
         if key in current_activity:
             signal[key] = deepcopy(current_activity[key])
     return signal
@@ -1545,16 +1545,29 @@ def unified_activity_feedback(signal, delivered, detail='generic'):
             return 'Workspace files changed: ' + json.dumps(paths, ensure_ascii=False)
     return 'The workspace state has changed.'
 
-def notification_trigger(signal, delivered):
+def notification_trigger(signal, delivered, source_events=()):
     previous = {(row['path'], row['sha256'])
                 for entries in delivered.get('case_entries', {}).values() for row in entries}
     changed = [deepcopy(row) for entries in signal.get('case_entries', {}).values()
                for row in entries if (row['path'], row['sha256']) not in previous]
-    return {'previous_revision': delivered['revision'], 'current_revision': signal['revision'],
+    result={'previous_revision': delivered['revision'], 'current_revision': signal['revision'],
             'business_state_changed': signal.get('calendar_revision') != delivered.get('calendar_revision'),
             'new_record_entries': changed,
             'peer_record_trigger': any(row.get('event') in (
                 'message_added', 'shared_file_changed', 'public_message_added', 'private_message_added') for row in changed)}
+    if 'event_cursor' in signal and 'event_cursor' in delivered:
+        previous=delivered.get('calendar_components',{});current=signal.get('calendar_components',{})
+        result['component_changes']={key:{'previous_sha256':previous.get(key),'current_sha256':current.get(key)}
+            for key in sorted(set(previous)|set(current)) if previous.get(key)!=current.get(key)}
+        lo,hi=delivered['event_cursor'],signal['event_cursor']
+        valid_cursor=isinstance(lo,int) and isinstance(hi,int) and lo<=hi
+        result['source_event_candidates']=[{key:row.get(key) for key in ('id','actor','operation')}
+            for row in source_events if valid_cursor and isinstance(row.get('id'),int) and lo<row['id']<=hi]
+        result['source_scope']=('Candidates since the last complete confirmed observation; not asserted causal.'
+            if valid_cursor else 'Event cursor unavailable; source is unclassified.')
+        result['unclassified_components']=[key for key in result['component_changes']
+            if key != 'reporting_store']
+    return result
 
 def new_review_documents(signal, delivered):
     previous = delivered.get('review_documents', {})
@@ -1650,7 +1663,7 @@ def acknowledge_observed_activity(signal, delivered, observed, calendar_revision
     return acknowledged
 
 
-def acknowledge_tool_activity(extension, operation, result, signal, delivered, before=None):
+def acknowledge_tool_activity(extension, operation, result, signal, delivered, before=None, actor=None):
     """A received write result acknowledges its own changes, not unseen peer work."""
     observe = getattr(extension, 'observed_activity_keys', None)
     if observe is None:
@@ -1659,15 +1672,29 @@ def acknowledge_tool_activity(extension, operation, result, signal, delivered, b
     calendar = getattr(extension, 'observed_calendar_revision', None)
     calendar_revision = calendar(operation, result) if calendar else None
     components = signal.get('calendar_components')
+    authored = getattr(extension, 'acknowledge_authored_calendar_changes', False)
+    scoped = getattr(extension, '_scheduled_notice_projection_enabled', None)
+    if authored and scoped and scoped():
+        # Do not acknowledge changes racing with the returned tool result. The
+        # complete intervening event range must consist of this actor's work.
+        lo = before.get('event_cursor') if before else None
+        hi = signal.get('event_cursor')
+        events = getattr(getattr(extension, 'world', None), 'events', ())
+        between = [row for row in events if isinstance(row.get('id'),int)
+                   and isinstance(lo,int) and isinstance(hi,int) and lo<row['id']<=hi]
+        authored = bool(actor is not None and between and all(row.get('actor')==actor for row in between))
     if components is not None:
         known = deepcopy(delivered.get('calendar_components', {}))
         if calendar_revision == signal.get('calendar_revision'):
             known = deepcopy(components)
         else:
             read_components = getattr(extension, 'observed_calendar_components', None)
-            if read_components:
+            actor_components = getattr(extension, 'observed_scheduled_calendar_components', None)
+            if actor is not None and actor_components:
+                known.update(actor_components(actor, operation, result))
+            elif read_components:
                 known.update(read_components(operation, result))
-            if before and getattr(extension, 'acknowledge_authored_calendar_changes', False):
+            if before and authored:
                 # A synchronous own action acknowledges only components already
                 # current before it; preserve any unread peer change elsewhere.
                 for key, previous in before.get('calendar_components', {}).items():
@@ -1677,7 +1704,7 @@ def acknowledge_tool_activity(extension, operation, result, signal, delivered, b
                 calendar_revision = signal.get('calendar_revision')
         delivered = {**delivered, 'calendar_components': known}
     if (calendar_revision is None
-            and getattr(extension, 'acknowledge_authored_calendar_changes', False)
+            and authored
             and before and before.get('calendar_revision') is not None
             and before['calendar_revision'] == delivered.get('calendar_revision')):
         calendar_revision = signal.get('calendar_revision')
@@ -2274,7 +2301,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                         'relevant_cross_job_records':signal['relevant_cross_job_records'],
                         'record_content_exposed':bool(review_documents),'author_exposed':False,
                         'route_or_method_exposed':bool(review_documents)}
-                    notice['trigger'] = notification_trigger(signal, delivered)
+                    notice['trigger'] = notification_trigger(signal, delivered, getattr(getattr(extension, 'world', None), 'events', ()))
+                    if 'component_changes' in notice['trigger']:
+                        notice['trigger']['recipient'] = actor
                     notice['notification_scope'] = getattr(extension, 'config', {}).get(
                         'notification_scope', 'business_and_messages')
                     if confirm_codex:
@@ -2460,7 +2489,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 if extension.activated:
                     signal=activity_signal(actor)
                     delivered_activity_signals[actor]=acknowledge_tool_activity(
-                        extension,call['name'],result,signal,delivered_activity_signals[actor],before)
+                        extension,call['name'],result,signal,delivered_activity_signals[actor],before,actor=actor)
                     if (getattr(extension,'acknowledge_authored_calendar_changes',False)
                             and signal.get('calendar_revision') is not None
                             and delivered_activity_signals[actor].get('calendar_revision') == signal['calendar_revision']):
