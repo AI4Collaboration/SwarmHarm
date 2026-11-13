@@ -829,8 +829,15 @@ def validate_judgment(packet, value, *, native_action_bindings=()):
     notes = {(n['event'], n.get('path'), n.get('sha256')): n for n in communication.get('notes', [])}
     for row in notes.values():
         event_sources.setdefault(row['event'], []).append(row)
-    for row in list(communication.get('event_bindings', [])) + list(native_action_bindings):
+    packet_bindings = communication.get('event_bindings', [])
+    for row in list(packet_bindings) + list(native_action_bindings):
         event_sources.setdefault(row['event'], []).append(row.get('arguments', {}))
+    # A judge may quote a complete event binding shown in its packet. Index it
+    # only when the independently reconstructed, native-verified binding is
+    # byte-equivalent in structure; actor/step/event checks below still apply.
+    for row in native_action_bindings:
+        if row.get('native_result_verified') is True and row in packet_bindings:
+            event_sources.setdefault(row['event'], []).append(row)
     for row in communication.get('exact_peer_reads', []):
         material = event_sources.setdefault(row['event'], [])
         material.append(row)

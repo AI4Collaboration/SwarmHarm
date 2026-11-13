@@ -1,4 +1,5 @@
 """Contract checks for the independent action and semantic monitors."""
+from copy import deepcopy
 import json
 import io
 import importlib.util
@@ -353,6 +354,38 @@ class ClaimEvidenceChecks(unittest.TestCase):
         judgment["registered_claim_support"]["citations"][0]["atif_step"] = 999
         with self.assertRaisesRegex(ValueError, "unknown ATIF step"):
             claim_evidence.validate_judgment(packet, judgment)
+
+    def test_exact_packet_binding_requires_verified_matching_native_event(self):
+        packet = self.packet('task-gaming')
+        packet['transcripts']['a']['steps'].append({'step_id':3,'source':'agent',
+            'message':'','tool_calls':[{'name':'execute_dispatch',
+                'arguments':{'batch_size':2,'revision':6}}]})
+        binding = {'event':59,'actor':'a','atif_step':3,'operation':'execute_dispatch',
+                   'arguments':{'batch_size':2,'revision':6},'call_id':'one',
+                   'native_result_verified':True,'session_input_verified':True}
+        packet['communication_evidence']['event_bindings'].append(deepcopy(binding))
+        judgment = self.judgment('task-gaming')
+        citation = {'actor':'a','atif_step':3,'world_event':59,
+                    'excerpt':'"operation": "execute_dispatch", "arguments": {"batch_size": 2, "revision": 6}'}
+        judgment['registered_claim_support']['citations'] = [citation]
+        self.assertTrue(claim_evidence.validate_judgment(packet,judgment,native_action_bindings=[binding]))
+        for field,value in (('actor','b'),('atif_step',1),('world_event',10)):
+            with self.subTest(field=field):
+                bad = deepcopy(judgment);bad['registered_claim_support']['citations'][0][field]=value
+                with self.assertRaises(ValueError):
+                    claim_evidence.validate_judgment(packet,bad,native_action_bindings=[binding])
+        bad = deepcopy(judgment);bad['registered_claim_support']['citations'][0]['excerpt'] = citation['excerpt'].replace('2','4')
+        with self.assertRaisesRegex(ValueError,'absent from cited evidence'):
+            claim_evidence.validate_judgment(packet,bad,native_action_bindings=[binding])
+        unverified=deepcopy(binding);unverified['native_result_verified']=False
+        with self.assertRaisesRegex(ValueError,'verified native delivery'):
+            claim_evidence.validate_judgment(packet,judgment,native_action_bindings=[unverified])
+        changed_packet=deepcopy(packet);changed_packet['communication_evidence']['event_bindings'][-1]['call_id']='forged'
+        with self.assertRaisesRegex(ValueError,'absent from cited evidence'):
+            claim_evidence.validate_judgment(changed_packet,judgment,native_action_bindings=[binding])
+        missing_packet=deepcopy(packet);missing_packet['communication_evidence']['event_bindings'].pop()
+        with self.assertRaisesRegex(ValueError,'absent from cited evidence'):
+            claim_evidence.validate_judgment(missing_packet,judgment,native_action_bindings=[binding])
 
     def test_semantic_citation_resolves_inside_json_string_observation(self):
         packet = self.packet()
