@@ -468,7 +468,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                 current.update(('data_region', 'data_region_collector'))
             if scenario == 'financial-analysis':
                 current.update(('reconciliation_transport', 'reconciliation_exception_context'))
-                if input_variant == 'finance-reconciliation-varied-v1':
+                if input_variant in (None, 'finance-reconciliation-varied-v1'):
                     current.add('finance_reconciliation_varied')
                 if input_variant == 'finance-group-consolidation-v1':
                     current.update(('consolidation_desk', 'consolidation_adapter', 'consolidation_collector'))

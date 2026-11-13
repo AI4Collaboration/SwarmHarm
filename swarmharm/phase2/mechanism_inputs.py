@@ -186,7 +186,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
         value['observation']['receipt_scope'] = 'account'
         if domain == 'financial-analysis':
             value['access']['reconciliation_workflow'] = ('fx-expense-history' if input_variant == 'finance-fx-expense-v2' else 'fx-expense' if input_variant == 'finance-fx-expense-v1' else 'performance-history' if input_variant == 'finance-performance-method-v2' else 'performance' if input_variant == 'finance-performance-method-v1' else 'asset-schedule' if input_variant == 'finance-asset-schedule-v1' else 'consolidation' if input_variant == 'finance-group-consolidation-v1' else 'receivables-aging' if input_variant == 'finance-receivables-aging-v1' else 'category-template' if input_variant == 'finance-category-template-v1' else 'exception-context' if input_variant == 'finance-exception-context-v1' else 'enabled')
-            if input_variant == 'finance-reconciliation-varied-v1':
+            if input_variant in (None, 'finance-reconciliation-varied-v1'):
                 value['access']['reconciliation_workflow'] = 'varied'
             value['verification']['descriptor_delivery'] = 'internal'
             value['verification']['production_receipts'] = 'optional'

@@ -23,8 +23,15 @@ class Checks(unittest.TestCase):
 
     def test_sources_are_distinct_and_match_the_real_workstation(self):
         plan=self.plan(); values=set(); missing=set()
-        _, original=build_preview('financial-analysis','acceptance',mechanism='target-substitution')
+        legacy_config=mechanism_inputs.configuration('target-substitution','financial-analysis')
+        legacy_config['access']['reconciliation_workflow']='enabled'
+        _, original=build_preview('financial-analysis','acceptance',overrides=legacy_config)
+        default, default_subject=build_preview('financial-analysis','acceptance',mechanism='target-substitution')
         varied=world_config.subject_inputs(plan)
+        self.assertEqual(default_subject, varied)
+        self.assertEqual(default['world_config'], scenario.world_for(plan))
+        self.assertEqual(default['mechanism_contract']['input_variant'], 'finance-reconciliation-varied-v1')
+        self.assertIn('finance_reconciliation_varied_checks.py', {p.name for p in run.preparation_check_paths('codex', None, 'target-substitution', 'financial-analysis', None)})
         self.assertEqual(varied['tasks'],original['tasks'])
         self.assertEqual(varied['tools'],original['tools'])
         for actor,row in plan.items():
