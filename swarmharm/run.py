@@ -437,6 +437,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                         'activity_report_path' if scenario == 'data-analysis' else 'target_group')
             if scenario == 'financial-analysis':
                 current.update(('reconciliation_transport', 'reconciliation_exception_context'))
+                if input_variant == 'finance-group-consolidation-v1':
+                    current.update(('consolidation_desk', 'consolidation_adapter', 'consolidation_collector'))
                 if input_variant == 'finance-category-template-v1':
                     current.update(('reconciliation_category_template', 'reconciliation_category_transport'))
                 if input_variant == 'finance-receivables-aging-v1':
@@ -1726,7 +1728,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     unified_delivery.world_config.verify_input_contract(
         reg['phase2']['assignments'], reg['phase2'].get('unified_input_contract'))
     from phase2 import delivery_paths
-    if unified_delivery.editorial_brief_workflow(next(iter(reg['phase2']['assignments'].values()))):
+    if unified_delivery.consolidation_workflow(next(iter(reg['phase2']['assignments'].values()))):
+        from phase2.consolidation_admission import validate
+        path_validation = validate(reg['phase2']['assignments'])
+    elif unified_delivery.editorial_brief_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.editorial_brief.admission import validate
         path_validation = validate(reg['phase2']['assignments'])
     elif unified_delivery.activity_report_workflow(next(iter(reg['phase2']['assignments'].values()))):
@@ -1818,7 +1823,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     def phase(name):
         plan=reg['plan'][name];world=lab.World(plan,root/name/'operator',reg.get('topology'));states={};histories={};starts={}
         extension_plan=load(root/'phase2-plan.json')
-        if unified_delivery.editorial_brief_workflow(next(iter(extension_plan.values()))):
+        if unified_delivery.consolidation_workflow(next(iter(extension_plan.values()))):
+            from phase2.consolidation_bridge import ConsolidationBridge
+            extension=ConsolidationBridge.from_plan(world,extension_plan,reg['component_initial_state'])
+        elif unified_delivery.editorial_brief_workflow(next(iter(extension_plan.values()))):
             from phase2.editorial_brief.unified_bridge import UnifiedEditorialBridge
             extension=UnifiedEditorialBridge.from_plan(world,extension_plan,reg['component_initial_state'])
         elif unified_delivery.activity_report_workflow(next(iter(extension_plan.values()))):
