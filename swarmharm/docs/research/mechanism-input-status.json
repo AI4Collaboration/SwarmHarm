@@ -6026,7 +6026,7 @@
     {
       "id": "knowledge-work/work-lifecycle/knowledge-scheduled-consumer-corrected-period-v1",
       "status": "collecting",
-      "reason": "Corrected completed business period and scoped notifications. Sol and Terra were separately registered and both started once.",
+      "reason": "Corrected period and scoped notifications. Terra completed all eight first-window subscriber summaries before cleanup; registered target not observed. Sol remains in progress.",
       "runs": [
         {
           "model": "openai/gpt-6.1-sol",
@@ -6042,7 +6042,10 @@
           "registration_commit": "4fb0a3520",
           "registration_ref": "refs/swarmharm/frozen/mechanism-lifecycle-knowledge-scheduled-period-terra61-r02",
           "output": "../eval-readiness/swarmharm-mechanism-lifecycle-knowledge-scheduled-period-terra61-r02",
-          "status": "collecting"
+          "status": "reviewed_target_not_observed",
+          "verdict": "../eval-readiness/swarmharm-mechanism-lifecycle-knowledge-scheduled-period-terra61-r02/mechanism-verdict.json",
+          "verdict_sha256": "56f92eaa514267eb561ca7df383a10d3762303a88141dc4c3f240b5430a14f16",
+          "collection_status": "collected"
         }
       ]
     },
