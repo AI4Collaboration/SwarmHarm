@@ -442,6 +442,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                 current.update(('finance_performance', 'finance_performance_collector', 'finance_performance_citation'))
             if input_variant == 'finance-asset-schedule-v1':
                 current.update(('finance_assets', 'finance_assets_collector'))
+            if input_variant == 'data-identity-metric-v1':
+                current.update(('data_identity', 'data_identity_collector', 'data_identity_citation'))
             if input_variant == 'data-region-dimension-v1':
                 current.update(('data_region', 'data_region_collector'))
             if scenario == 'financial-analysis':
@@ -541,7 +543,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
 NETWORK_CHECK_MODULES = frozenset({
     'activity_report_collector', 'build_record_collector', 'business_notification',
     'collector', 'continuous_collect', 'continuous_reporting', 'data_scheduled_consumer_transport', 'knowledge_scheduled_consumer_transport', 'editorial_brief_collector',
-    'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector',
+    'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector', 'data_identity_collector',
     'finance_payables_transport', 'finance_performance_collector', 'native_harness', 'pi_collect', 'query_gateway',
     'reconciliation_category_transport', 'reconciliation_exception_context', 'reconciliation_transport',
     'short_notification_reads', 'swarmform_runtime', 'unified_delivery', 'unified_runtime',
@@ -895,6 +897,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'build_target_product': unified_delivery.build_target_product(phase2_plan[actor]),
                 'activity_report_workflow': unified_delivery.activity_report_workflow(phase2_plan[actor]),
                 'data_region_workflow': unified_delivery.data_region_workflow(phase2_plan[actor]),
+                'data_identity_workflow': unified_delivery.data_identity_workflow(phase2_plan[actor]),
                 'knowledge_digest_workflow': unified_delivery.knowledge_digest_workflow(phase2_plan[actor]),
                 'activity_shared_template': unified_delivery.activity_report_progressive(phase2_plan[actor]) in ('manifest-shared','manifest-shared-editor'),
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(phase2_plan[actor]),
@@ -1854,6 +1857,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     elif unified_delivery.knowledge_digest_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.knowledge_digest_queue import validate
         path_validation = validate(reg['phase2']['assignments'])
+    elif unified_delivery.data_identity_workflow(next(iter(reg['phase2']['assignments'].values()))):
+        from phase2.data_identity import validate
+        path_validation = validate(reg['phase2']['assignments'])
     elif unified_delivery.data_region_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.data_region import validate
         path_validation = validate(reg['phase2']['assignments'])
@@ -1973,6 +1979,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         elif unified_delivery.knowledge_digest_workflow(next(iter(extension_plan.values()))):
             from phase2.knowledge_digest_bridge import DigestBridge
             extension=DigestBridge.from_plan(world,extension_plan,reg['component_initial_state'])
+        elif unified_delivery.data_identity_workflow(next(iter(extension_plan.values()))):
+            from phase2.data_identity_bridge import IdentityBridge
+            extension=IdentityBridge.from_plan(world,extension_plan,reg['component_initial_state'])
         elif unified_delivery.data_region_workflow(next(iter(extension_plan.values()))):
             from phase2.data_region_bridge import RegionBridge
             extension=RegionBridge.from_plan(world,extension_plan,reg['component_initial_state'])
@@ -2011,6 +2020,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'build_target_product': unified_delivery.build_target_product(next(iter(extension.plan.values()))),
                 'activity_report_workflow': unified_delivery.activity_report_workflow(next(iter(extension.plan.values()))),
                 'data_region_workflow': unified_delivery.data_region_workflow(next(iter(extension.plan.values()))),
+                'data_identity_workflow': unified_delivery.data_identity_workflow(next(iter(extension.plan.values()))),
                 'knowledge_digest_workflow': unified_delivery.knowledge_digest_workflow(next(iter(extension.plan.values()))),
                 'activity_shared_template': unified_delivery.activity_report_progressive(next(iter(extension.plan.values()))) in ('manifest-shared','manifest-shared-editor'),
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(next(iter(extension.plan.values()))),

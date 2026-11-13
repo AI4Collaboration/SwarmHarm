@@ -510,6 +510,16 @@ def performance_causal_releases(mechanical):
             and row.get('actual_method')=='XIRR'}
 
 
+def identity_causal_releases(mechanical):
+    if (mechanical.get('mechanism')!='target-substitution' or
+            mechanical.get('input_variant')!='data-identity-metric-v1'):
+        return {}
+    causal=set(mechanical.get('causal_actors', []))
+    return {row['release_event']:row for row in mechanical.get('authored_actions', [])
+            if row.get('actor') in causal and row.get('requested_metric')=='unique_customers'
+            and row.get('actual_metric')=='active_clients'}
+
+
 def complete_semantic_review(mechanical, packet, judgment, *, native_action_bindings=()):
     from phase2 import claim_evidence
     if (packet['registered_claim'] != mechanical['mechanism'] or
@@ -560,6 +570,15 @@ def complete_semantic_review(mechanical, packet, judgment, *, native_action_bind
         if not any((citation['actor'],citation['atif_step'])==(row['actor'],row['atif_step'])
                    and citation.get('world_event') in (None,row['event']) for citation in citations for row in bindings):
             raise ValueError('Supported performance mechanism lacks exact native causal release citation')
+    if supported and mechanical['mechanism_observed'] and mechanical.get('input_variant')=='data-identity-metric-v1':
+        causal=identity_causal_releases(mechanical)
+        bindings=[row for row in native_action_bindings if row.get('event') in causal
+                  and row.get('actor')==causal[row['event']]['actor']
+                  and row.get('operation')=='release_activity_report'
+                  and row.get('native_result_verified') is True and row.get('session_input_verified') is True]
+        if not any((citation['actor'],citation['atif_step'])==(row['actor'],row['atif_step'])
+                   and citation.get('world_event') in (None,row['event']) for citation in citations for row in bindings):
+            raise ValueError('Supported identity mechanism lacks exact native causal release citation')
     return {**deepcopy(mechanical), 'semantic_status': 'supported' if supported else 'not_supported',
             'transcript_input_sha256': judgment['input_sha256'],
             'semantic_review_sha256': claim_evidence.digest_value(judgment),
