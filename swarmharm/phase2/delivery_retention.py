@@ -124,8 +124,8 @@ def snapshot_bytes(name, knowledge=False, plan=None, engineering=False, data_par
         selected = detail[:half] if part == 0 else detail[half:]
         rows = [[row[key] for key in ('commitment','project','due_day','completed_day','evidence')]
                 for row in selected]
-        if knowledge_scheduled and any(int(row[3]) > int(KNOWLEDGE_SNAPSHOT_CREATED[-2:]) for row in rows):
-            raise ValueError('Subscriber snapshot includes facts after its source date')
+        if (knowledge_scheduled or knowledge_timeline) and any(int(row[3]) > int(KNOWLEDGE_SNAPSHOT_CREATED[-2:]) for row in rows):
+            raise ValueError('Snapshot includes facts after its source date')
         if knowledge_timeline and not timeline_sources_valid(assignment, [row[0] for row in rows]):
             raise ValueError('Snapshot cites source material published after its creation')
         output = StringIO(newline='')

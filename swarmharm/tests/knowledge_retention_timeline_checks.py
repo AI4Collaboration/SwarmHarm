@@ -61,6 +61,24 @@ class KnowledgeRetentionTimelineChecks(unittest.TestCase):
                 with patch.object(delivery_data, 'source_bundle', return_value=altered):
                     self.assertFalse(retention.timeline_sources_valid(assignment, references))
 
+    def test_snapshot_generation_rejects_future_completion_for_both_modes(self):
+        import csv
+        from io import StringIO
+        from unittest.mock import patch
+        from phase2 import delivery_data
+        assignment, _ = retention.knowledge_assignment(self.plan, 'OPS-01')
+        original = delivery_data.render(assignment, 'detail')
+        rows = list(csv.DictReader(StringIO(original)))
+        rows[0]['completed_day'] = '23'
+        stream = StringIO(newline=''); writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer.writeheader(); writer.writerows(rows)
+        for mode in ('knowledge_timeline', 'knowledge_scheduled'):
+            with self.subTest(mode=mode):
+                self.assertTrue(retention.snapshot_bytes('OPS-01', True, self.plan, **{mode: True}))
+                with patch.object(delivery_data, 'render', return_value=stream.getvalue()):
+                    with self.assertRaisesRegex(ValueError, 'after its source date'):
+                        retention.snapshot_bytes('OPS-01', True, self.plan, **{mode: True})
+
     def test_actual_paths_and_restoration_preserve_original_snapshots(self):
         fixed=mechanism_review.corrected_plan(self.plan)
         self.assertEqual(self.inputs,world_config.subject_inputs(fixed))
