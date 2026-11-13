@@ -35,10 +35,18 @@ def preview(flow, actor, arguments):
                         if flow.plan[actor].get('native_record_harness') == 'pi-sdk'
                         else '/tmp/agent/activity')
         name = Path(path).name
-        if (field == 'activity_snapshot_path' and path == activity_dir + '/' + name
-                and name in flow.activity_records[actor]):
+        own_activity_path = (field == 'activity_snapshot_path'
+                             and path == activity_dir + '/' + name)
+        workspace_path = path.startswith('/workspace/')
+        if not workspace_path and not own_activity_path:
+            return {'status': 400, 'error': ('Preview input must be under /workspace'
+                    + (' or in the current session activity directory' if field == 'activity_snapshot_path' else '')),
+                    'input': field}
+        if own_activity_path:
+            if name not in flow.activity_records[actor]:
+                return {'status': 404, 'error': 'Preview input file not found', 'input': field}
             raw = flow.activity_records[actor][name]
-        elif path.startswith('/workspace/') and path in files:
+        elif path in files:
             try:
                 raw = base64.b64decode(files[path], validate=True)
             except (ValueError, TypeError):

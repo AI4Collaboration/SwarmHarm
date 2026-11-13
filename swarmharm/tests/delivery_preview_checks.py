@@ -128,13 +128,36 @@ class DeliveryPreviewChecks(unittest.TestCase):
             self.assertEqual(actual['saved_inputs']['activity_snapshot_path']['path'],
                              folder + '/' + name)
             f.activity_records['b'] = {'other-only.jsonl': b'{}\n'}
-            for path in (folder + '/other-only.jsonl', '/tmp/other/' + name,
-                         folder, folder + '/../' + name):
-                self.assertEqual(self.preview(f, activity=path)['status'], 404)
+            self.assertEqual(self.preview(f, activity=folder + '/other-only.jsonl')['status'], 404)
+            for path in ('/tmp/other/' + name, folder, folder + '/../' + name):
+                self.assertEqual(self.preview(f, activity=path)['status'], 400)
             self.assertEqual(f.snapshot(), before[0])
             self.assertEqual(f.activity_records['a'], before[1]['a'])
             self.assertEqual(self.call(f, 'a', 'release_delivery',
                 revision=f.plans['a']['revision'])['status'], 409)
+
+    def test_shared_file_preview_reports_unsupported_path_not_missing_file(self):
+        f = self.flow('grader', {'feedback': 'evidence'})
+        path = '/registry/reporting/cache/proposed-policy.json'
+        data = b'{}\n'
+        from hashlib import sha256
+        f.config['work_file_index'] = 'paths'
+        f.config['sharing']['communication_format'] = 'work_files'
+        f.world.shared = {path: {'path': path, 'author': 'a',
+            'data': base64.b64encode(data).decode(), 'sha256': sha256(data).hexdigest()}}
+        before = deepcopy(f.snapshot()), deepcopy(f.world.private)
+        denied = self.preview(f, policy=path)
+        self.assertEqual(denied['status'], 400)
+        self.assertIn('/workspace', denied['error'])
+        self.assertEqual(denied['input'], 'policy_path')
+        self.assertIn({'path': path, 'sha256': sha256(data).hexdigest()}, denied['work_files']['entries'])
+        self.assertEqual((f.snapshot(), f.world.private), before)
+        missing = self.preview(f, policy='/workspace/absent.json')
+        self.assertEqual((missing['status'], missing['error']), (404, 'Preview input file not found'))
+        self.save_input(f, 'a', '/workspace/proposed-policy.json', data)
+        accepted = self.preview(f, policy='/workspace/proposed-policy.json')
+        self.assertEqual(accepted['status'], 200)
+        self.assertEqual(accepted['saved_inputs']['policy_path']['sha256'], sha256(data).hexdigest())
 
     def test_saved_policy_obeys_binding_without_replacing_active_policy(self):
         for preset in ('control', 'grader'):
@@ -194,8 +217,9 @@ class DeliveryPreviewChecks(unittest.TestCase):
     def test_owner_revision_and_feedback_are_preserved(self):
         f = self.flow('grader', {'feedback': 'status_only'})
         self.save_input(f, 'b', '/workspace/other.json', b'{}\n')
-        for path in ('/workspace/other.json', '../../other.json', '/tmp/agent/activity/session.jsonl'):
-            self.assertEqual(self.preview(f, policy=path)['status'], 404)
+        self.assertEqual(self.preview(f, policy='/workspace/other.json')['status'], 404)
+        for path in ('../../other.json', '/tmp/agent/activity/session.jsonl'):
+            self.assertEqual(self.preview(f, policy=path)['status'], 400)
         self.assertEqual(self.preview(f, revision=99)['status'], 409)
         result = self.preview(f)
         self.assertEqual(result['check'], self.call(f, 'a', 'check_delivery'))
