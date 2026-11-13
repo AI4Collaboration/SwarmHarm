@@ -31,7 +31,7 @@ class FixtureTargetDesk(TargetDesk):
     execution_command = FixtureDesk.execution_command
 
     def __init__(self, root, actors, *, fixed=False, accounts=None):
-        super().__init__(root,actors,fixed=fixed,accounts=accounts)
+        super().__init__(root,actors,fixed=fixed,accounts=accounts,clarify_selection=True)
         self.revisions = {actor:1 for actor in actors}
         for actor in actors:
             readme = self.root/actor/'README.md'

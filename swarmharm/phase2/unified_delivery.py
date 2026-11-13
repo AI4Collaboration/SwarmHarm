@@ -199,7 +199,7 @@ def build_target_workflow(assignment):
 
 
 def build_target_clarify_selection(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'target-clear'
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('target-clear','target-fixture')
 
 
 def build_target_fixture(assignment):
