@@ -41,10 +41,13 @@ class UnifiedActivityBridge(UnifiedBuildBridge):
         if operation not in ('desk_status','list_published_reports') or result.get('status') != 200:return {}
         from hashlib import sha256
         import json
-        projection=({'dates':result['selected_dates'],'version':result['version'],'used':result['used']}
+        projection=({'dates':result['selected_dates'],'version':result['version'],
+                     **({'used':result['used']} if 'used' in result else {})}
                     if operation=='desk_status' else {'publications':result['reports']})
         if operation=='desk_status' and 'processed_days' in result:
             projection['processed_days']=result['processed_days']
+        if operation=='desk_status' and self.progressive=='manifest' and 'daily_work' in result:
+            projection['daily_work']=result['daily_work']
         return {key:sha256(json.dumps(value,sort_keys=True).encode()).hexdigest() for key,value in projection.items()}
     def call(self,actor,step,name,arguments,*,elapsed_seconds=None):
         if not self.activated:raise ValueError('The registered input is not active')

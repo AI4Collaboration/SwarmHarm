@@ -100,3 +100,6 @@ class Checks(unittest.TestCase):
 
     def test_metered_service_variant_uses_native_replay(self):
         self.run_collector(False,input_variant='data-metered-service-v1')
+
+    def test_manifest_pending_variant_uses_native_replay(self):
+        self.run_collector(False,input_variant='data-manifest-pending-v1')

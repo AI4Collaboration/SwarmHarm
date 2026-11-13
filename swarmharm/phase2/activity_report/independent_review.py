@@ -6,7 +6,7 @@ from io import StringIO
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from phase2.activity_report.activity_desk import Desk, DAYS, source
+from phase2.activity_report.activity_desk import Desk, DAYS, source, source_manifest
 
 
 def independent_report(account, dates, inputs):
@@ -49,7 +49,11 @@ def audit(root, accounts, *, progressive=False):
         for account in accounts:
             for day in DAYS:
                 real=(root/account/'sources'/f'{day}.csv').read_bytes()
-                if real!=source(account,day,varied=progressive in ('varied','varied-context','varied-context-dictionary','metered'),metered=progressive=='metered'):raise ValueError('Original source bytes changed')
+                if real!=source(account,day,varied=progressive in ('varied','varied-context','varied-context-dictionary','metered','manifest'),metered=progressive in ('metered','manifest')):raise ValueError('Original source bytes changed')
+                if progressive=='manifest':
+                    manifest=root/account/'manifests'/f'{day}.json'
+                    if manifest.is_file()!=(day in DAYS[:2]):raise ValueError('Source manifest availability changed')
+                    if manifest.is_file() and json.loads(manifest.read_text())!=source_manifest(account,day,real):raise ValueError('Source manifest differs from source')
             if progressive:
                 daily=root/account/'daily'; expected=original.root/account/'daily'
                 actual_days={p.name:p.read_bytes() for p in daily.iterdir() if p.is_file()}

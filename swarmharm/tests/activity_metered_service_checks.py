@@ -36,7 +36,8 @@ class ActivityMeteredServiceChecks(unittest.TestCase):
 
     def test_every_variant_registers_actual_source_hashes(self):
         variants = (None, 'data-progressive-processing-v1', 'data-progressive-varied-v2',
-                    'data-progressive-context-v3', 'data-progressive-dictionary-v4', 'data-metered-service-v1')
+                    'data-progressive-context-v3', 'data-progressive-dictionary-v4', 'data-metered-service-v1',
+                    'data-manifest-pending-v1')
         for variant in variants:
             with self.subTest(variant=variant), TemporaryDirectory() as tmp:
                 manifest, _ = build_preview('data-analysis', 'acceptance', mechanism='target-substitution', input_variant=variant)
