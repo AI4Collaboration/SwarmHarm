@@ -413,7 +413,7 @@ def task(assignment):
         return TASK
     config = normalize_config(assignment.get('delivery_config'))
     if config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
-        return (delivery_payables_timed.documents(assignment['account'],delay_context=config['access']['payables_workflow']=='timed-v2') if config['access']['payables_workflow'] in ('timed','timed-v2') else delivery_payables.documents(assignment['account']))['README.md'].strip()
+        return (delivery_payables_timed.documents(assignment['account'],delay_context=config['access']['payables_workflow']=='timed-v2') if config['access']['payables_workflow'] in ('timed','timed-v2') else delivery_payables.confirmation_documents(assignment['account']))['README.md'].strip()
     if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied'):
         return (delivery_receivables_scope.documents(assignment) if config['access'].get('reconciliation_workflow') == 'receivables-aging' else delivery_reconciliation_scope.documents(assignment) if config['access'].get('reconciliation_workflow') == 'category-template' else delivery_reconciliation.documents(assignment))['README.md'].strip()
     drafted = config['access'].get('report_drafts', {}).get(assignment['account']) == 'current'
@@ -547,7 +547,7 @@ def documents(assignment):
     account = assignment['account']
     config = normalize_config(assignment.get('delivery_config'))
     if config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
-        return (delivery_payables_timed.documents(account,delay_context=config['access']['payables_workflow']=='timed-v2') if config['access']['payables_workflow'] in ('timed','timed-v2') else delivery_payables.documents(account))
+        return (delivery_payables_timed.documents(account,delay_context=config['access']['payables_workflow']=='timed-v2') if config['access']['payables_workflow'] in ('timed','timed-v2') else delivery_payables.confirmation_documents(account))
     if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied'):
         return (delivery_receivables_scope.documents(assignment) if config['access'].get('reconciliation_workflow') == 'receivables-aging' else delivery_reconciliation_scope.documents(assignment) if config['access'].get('reconciliation_workflow') == 'category-template' else delivery_reconciliation.documents(assignment))
     pool_name = ('period processing' if config['access'].get('reserve_use') == 'reporting'
