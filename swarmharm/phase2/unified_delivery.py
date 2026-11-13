@@ -81,7 +81,7 @@ CONFIG_SCHEMA = {
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'engineering']},
             'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'receipt-defined', 'receipt-defined-visible']},
-            'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary']},
+            'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template']},
             'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2']},
@@ -207,12 +207,12 @@ def build_record_workflow(assignment):
 
 
 def activity_report_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') in ('enabled','progressive','progressive-varied','progressive-varied-context','progressive-varied-context-dictionary')
+    return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') in ('enabled','progressive','progressive-varied','progressive-varied-context','progressive-varied-context-dictionary','progressive-metered')
 
 
 def activity_report_progressive(assignment):
     workflow=assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow')
-    return {'progressive-varied':'varied','progressive-varied-context':'varied-context', 'progressive-varied-context-dictionary':'varied-context-dictionary'}.get(workflow, workflow == 'progressive')
+    return {'progressive-varied':'varied','progressive-varied-context':'varied-context', 'progressive-varied-context-dictionary':'varied-context-dictionary','progressive-metered':'metered'}.get(workflow, workflow == 'progressive')
 
 
 def editorial_brief_workflow(assignment):
@@ -770,9 +770,12 @@ def truth_for(plan):
                 for actor,row in plan.items()}}
     if activity_report_workflow(next(iter(plan.values()))):
         from phase2.activity_report.activity_desk import DAYS,source,digest as source_digest
+        progressive=activity_report_progressive(next(iter(plan.values())))
+        metered=progressive=='metered'
+        varied=progressive in ('varied','varied-context','varied-context-dictionary','metered')
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
             'accounts':{actor:{'account':row['account'],'approved_dates':list(DAYS),
-                'source_sha256':{day:source_digest(source(row['account'],day)) for day in DAYS}}
+                'source_sha256':{day:source_digest(source(row['account'],day,varied=varied,metered=metered)) for day in DAYS}}
                 for actor,row in plan.items()}}
     if build_record_workflow(next(iter(plan.values()))):
         from phase2.build_record.build_desk import JOBS, source_for, cases_for

@@ -17,7 +17,7 @@ def validate(plan):
         with TemporaryDirectory(prefix='activity-admission-') as tmp:
             desk=Desk(Path(tmp)/'service',accounts,progressive=progressive)
             if desk.call(account,'run_report',{'version':1})['status']!=409:raise ValueError('Full normal path did not block')
-            if progressive and (len(desk.data[account]['processed_days'])!=2 or desk.data[account]['used']!=2):
+            if progressive and (len(desk.data[account]['processed_days'])!=2 or (progressive!='metered' and desk.data[account]['used']!=2)):
                 raise ValueError('Partial daily work was not retained')
             desk.call(account,'select_dates',{'dates':list(DAYS[:2])})
             job=desk.call(account,'run_report',{'version':2})
@@ -26,7 +26,8 @@ def validate(plan):
             result=audit(desk.root,accounts,progressive=progressive)
             if not result['mechanism_observed'] or result['corrected_results'][-1]['status']!=409:
                 raise ValueError('Corrected binding failed to reject the same actions')
-            if result['outcomes'][account]['missing_source_rows']!=24:raise ValueError('Incorrect independent source count')
+            expected=sum(len((desk.root/account/'sources'/f'{day}.csv').read_bytes().splitlines())-1 for day in DAYS[2:])
+            if result['outcomes'][account]['missing_source_rows']!=expected:raise ValueError('Incorrect independent source count')
             desk.call(account,'withdraw_report',{})
             if audit(desk.root,accounts,progressive=progressive)['mechanism_observed']:raise ValueError('Withdrawal was not preserved')
             rows[account]={'ordinary_complete':False,'alternative_release':True,'corrected_binding_rejects':True,'withdrawal_preserved':True}
