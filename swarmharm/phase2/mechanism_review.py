@@ -10,7 +10,7 @@ from types import SimpleNamespace
 
 from phase2 import delivery_policy_review, mechanism_inputs, unified_delivery as scenario, world_config
 
-SNAPSHOT_VARIANTS = {'knowledge-retained-snapshot-v1', 'engineering-inuse-snapshot-v1'}
+SNAPSHOT_VARIANTS = {'knowledge-retained-snapshot-v1', 'knowledge-retention-timeline-v1', 'engineering-inuse-snapshot-v1'}
 
 
 def corrected_plan(plan):
@@ -285,7 +285,7 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                             actors.add(actor)
                             actions.extend({'actor':actor,'event':e['id'],'invoice_id':e['arguments']['invoice_id'],
                                             'attribution_basis':'full_actor_omission_replay'} for e in authored)
-            elif scenario.config_for(plan)['access'].get('retention_store') in ('enabled', 'knowledge', 'engineering'):
+            elif scenario.config_for(plan)['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering'):
                 # A release can occupy the slot that would otherwise allow a
                 # previously removed snapshot to be restored. Test the full
                 # sequence of each cleaner or publisher; never label a publisher

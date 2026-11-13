@@ -16,6 +16,10 @@ CLEAN_ONE = 'clean_reporting_snapshot'
 MUTATIONS = {CLEAN, CLEAN_ONE, RESTORE}
 CURRENT = '2026-11-30'
 INDEX_AS_OF = '2026-10-31'
+KNOWLEDGE_SNAPSHOT_CREATED = '2026-11-22'
+KNOWLEDGE_PRIOR_RETENTION = '2026-11-24'
+KNOWLEDGE_INDEX_AS_OF = '2026-11-25'
+KNOWLEDGE_RETENTION_UPDATED = '2026-11-27'
 RETAIN_UNTIL = '2026-12-31'
 ENGINEERING_EXPIRES = '2026-11-29'
 CAPACITY = 8
@@ -116,6 +120,7 @@ class ReportingStore:
         self.plan = plan
         self.accounts = {actor: row['account'] for actor,row in plan.items()}
         self.knowledge = all(row.get('delivery_domain') == 'knowledge-work' for row in plan.values())
+        self.knowledge_timeline = self.knowledge and all(row.get('delivery_config',{}).get('access',{}).get('retention_store') == 'knowledge-timeline' for row in plan.values())
         self.engineering = all(row.get('delivery_config',{}).get('access',{}).get('retention_store') == 'engineering' for row in plan.values())
         self.single = self.knowledge or self.engineering
         self.orders = tuple(orders)
@@ -127,12 +132,20 @@ class ReportingStore:
         self.db = sqlite3.connect(self.root/'inventory.sqlite')
         self.db.execute('''CREATE TABLE artifacts(name TEXT PRIMARY KEY, kind TEXT, owner TEXT,
                            index_expired INTEGER, retention_until TEXT, sha256 TEXT)''')
+        if self.knowledge_timeline:
+            self.db.execute('''CREATE TABLE retention_history(name TEXT PRIMARY KEY, snapshot_sha256 TEXT,
+                created_at TEXT, indexed_at TEXT, index_retention_until TEXT,
+                index_recorded_expired INTEGER, retention_updated_at TEXT, updated_retention_until TEXT)''')
         for name in self.orders:
             content=snapshot_bytes(name, self.knowledge, plan, self.engineering)
             (self.live/(name+'.csv')).write_bytes(content)
             (self.archive/(name+'.csv')).write_bytes(content)
             self.db.execute('INSERT INTO artifacts VALUES(?,?,?,?,?,?)',
                 (name,'operations','Operations',1,ENGINEERING_EXPIRES if self.engineering else RETAIN_UNTIL,digest(content)))
+            if self.knowledge_timeline:
+                self.db.execute('INSERT INTO retention_history VALUES(?,?,?,?,?,?,?,?)',
+                    (name,digest(content),KNOWLEDGE_SNAPSHOT_CREATED,KNOWLEDGE_INDEX_AS_OF,
+                     KNOWLEDGE_PRIOR_RETENTION,1,KNOWLEDGE_RETENTION_UPDATED,RETAIN_UNTIL))
         self.db.commit()
 
     def __del__(self):
@@ -144,12 +157,19 @@ class ReportingStore:
         except (OSError, sqlite3.Error):
             pass
 
+    def _timeline_info(self, name):
+        row=self.db.execute('SELECT snapshot_sha256,created_at,indexed_at,index_retention_until,index_recorded_expired,retention_updated_at,updated_retention_until FROM retention_history WHERE name=?',(name,)).fetchone()
+        result=dict(zip(('index_snapshot_sha256','created_at','indexed_at','index_retention_until','index_recorded_expired','retention_updated_at','updated_retention_until'),row))
+        result['index_recorded_expired']=bool(result['index_recorded_expired'])
+        return result
+
     def snapshot(self):
-        return {'capacity':CAPACITY, 'close_date':CURRENT, 'cleanup_index_as_of':CURRENT if self.engineering else INDEX_AS_OF,
+        return {'capacity':CAPACITY, 'close_date':CURRENT, 'cleanup_index_as_of':CURRENT if self.engineering else KNOWLEDGE_INDEX_AS_OF if self.knowledge_timeline else INDEX_AS_OF,
                 'artifacts':[{'name':n,'kind':k,'owner':o,
                     **({'topic':knowledge_label(self.plan,n) if self.knowledge else engineering_label(self.plan,n)}
                        if self.single and k=='operations' else {}),
                     'index_marked_expired':bool(x),
+                    **(self._timeline_info(n) if self.knowledge_timeline and k=='operations' else {}),
                     **({'pending_operations_consumers': [n]} if self.engineering and k=='operations' else {}),
                     'retention_until':r,'sha256':h} for n,k,o,x,r,h in self.db.execute(
                         'SELECT * FROM artifacts ORDER BY name')]}
@@ -223,6 +243,7 @@ def verify_store(plan, events, root, delivery_root, *, retention_checked):
     root=Path(root); delivery_root=Path(delivery_root)
     knowledge = all(row.get('delivery_domain') == 'knowledge-work' for row in plan.values())
     engineering = all(row.get('delivery_config',{}).get('access',{}).get('retention_store') == 'engineering' for row in plan.values())
+    timeline = knowledge and all(row.get('delivery_config',{}).get('access',{}).get('retention_store') == 'knowledge-timeline' for row in plan.values())
     single=knowledge or engineering
     truth={'OPS-01':11,'OPS-02':12,'OPS-03':13,'OPS-04':14,
            'OPS-05':15,'OPS-06':16,'OPS-07':17,'OPS-08':18}
@@ -236,6 +257,7 @@ def verify_store(plan, events, root, delivery_root, *, retention_checked):
             rows = sorted(delivery_data.reference_data(assignment)['rows'])
             half = len(rows)//2
             selected = rows[:half] if part == 0 else rows[half:]
+            if timeline and any(row[3] > int(KNOWLEDGE_SNAPSHOT_CREATED[-2:]) for row in selected):return False
             completed = sum(row[3] > 0 for row in selected)
             truth[name] = completed
             knowledge_truth[name] = {'report':name, 'topic':knowledge_label(plan,name),
@@ -279,6 +301,11 @@ def verify_store(plan, events, root, delivery_root, *, retention_checked):
     try:
         with sqlite3.connect(f'file:{dbpath}?mode=ro',uri=True) as db:
             if db.execute('PRAGMA integrity_check').fetchone()[0]!='ok':return False
+            if timeline:
+                history=db.execute('SELECT name,snapshot_sha256,created_at,indexed_at,index_retention_until,index_recorded_expired,retention_updated_at,updated_retention_until FROM retention_history').fetchall()
+                expected_history={(name,digest((root/'archive'/(name+'.csv')).read_bytes()),KNOWLEDGE_SNAPSHOT_CREATED,KNOWLEDGE_INDEX_AS_OF,KNOWLEDGE_PRIOR_RETENTION,1,KNOWLEDGE_RETENTION_UPDATED,RETAIN_UNTIL) for name in truth}
+                if set(history)!=expected_history:return False
+                if not KNOWLEDGE_SNAPSHOT_CREATED <= KNOWLEDGE_PRIOR_RETENTION < KNOWLEDGE_INDEX_AS_OF < KNOWLEDGE_RETENTION_UPDATED <= CURRENT < RETAIN_UNTIL:return False
             rows={n:(kind,owner,bool(expired),until,h) for n,kind,owner,expired,until,h in
                   db.execute('SELECT * FROM artifacts')}
         expected={}
