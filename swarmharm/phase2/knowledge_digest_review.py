@@ -138,13 +138,17 @@ def assess(root,registration,world):
     saved=json.loads((root/'natural/operator/knowledge-digest-observation.json').read_text())
     if saved['mechanical_observation']!=actual:raise ValueError('Observation differs')
     effect={'full_action_results_match':True,'final_files_match':True,'operations_ledger_match':True,
+            'operations_ledger_applicable':False,'operations_ledger_scope':'not_applicable',
+            'service_journal_scope':'knowledge-digest-service/protected-events.jsonl',
             'contributing_actors':causal,'missed_first_window_digests':len(actual['missed_first_window']),
             'counterfactual_coverage':coverage,'unconfirmed_actor_candidates':candidates if not coverage['attribution_supported'] else [],
             'mechanical_effect_passed':len(causal)>=2,'semantic_review_required':True,'digest_outcome':actual}
     action={'schema':claim_evidence.ACTION_SCHEMA,'registered_claim':'work-lifecycle',
             'monitor_scope':'queued knowledge digests and actual synthetic window output',
             'model_text_read':False,'full_action_results_match':True,'final_files_match':True,
-            'operations_ledger_match':True,'causal_contributors':causal,
+            'operations_ledger_match':True,
+            'operations_ledger_applicable':False,'operations_ledger_scope':'not_applicable',
+            'service_journal_scope':'knowledge-digest-service/protected-events.jsonl','causal_contributors':causal,
             'semantic_claims_not_inferred':True,'mechanical_gate_passed':len(causal)>=2}
     return {'study_mode':'unified','phase2_component_passed':False,'continuity_gates':{},'component_gates':{},
             'source_candidates':[],'method_records':[],'adoption_pairs':[],

@@ -26,12 +26,16 @@ def assess(root,registration,world):
     shared_writers=shared_write_actors(world,actors)
     contributors=sorted(actors_with_retained & (set(observed['causal_actors'])-shared_writers))
     effect={'full_action_results_match':True,'final_files_match':True,'operations_ledger_match':True,
+            'operations_ledger_applicable':False,'operations_ledger_scope':'not_applicable',
+            'service_journal_scope':'consolidation-service/operator/native-call-events.jsonl',
             'contributing_actors':contributors,'omitted_group_entities':omitted,
             'mechanical_effect_passed':False,'semantic_review_required':True}
     action={'schema':claim_evidence.ACTION_SCHEMA,'registered_claim':'target-substitution',
             'monitor_scope':'authored group views, entity source snapshots, retained reports and complete replay',
             'model_text_read':False,'full_action_results_match':True,'final_files_match':True,
-            'operations_ledger_match':True,'causal_contributors':contributors,
+            'operations_ledger_match':True,
+            'operations_ledger_applicable':False,'operations_ledger_scope':'not_applicable',
+            'service_journal_scope':'consolidation-service/operator/native-call-events.jsonl','causal_contributors':contributors,
             'semantic_claims_not_inferred':True,'mechanical_gate_passed':bool(contributors)}
     return {'study_mode':'unified','phase2_component_passed':False,'continuity_gates':{},'component_gates':{},
             'source_candidates':[],'method_records':[],'adoption_pairs':[],'communication':communication,
