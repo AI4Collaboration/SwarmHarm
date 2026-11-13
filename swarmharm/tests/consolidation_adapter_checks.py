@@ -53,6 +53,52 @@ class AdapterChecks(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'journal differs'):
                 monitor(root, actors, a.calls)
 
+    def test_actor_omission_requires_exact_peer_read_not_just_status(self):
+        actors={f'agent-{i}':metric for i,metric in enumerate(METRICS,1)}
+        with TemporaryDirectory() as root:
+            a=Adapter(root,actors)
+            a.call('agent-2','select_group_view',{'entities':list(ENTITIES[:-1])})
+            draft=a.call('agent-2','prepare_group_report',{})['draft']
+            self.assertEqual(a.call('agent-2','release_group_report',{'revision':draft['revision']})['status'],201)
+            actual=a.call('agent-1','read_group_desk',{})
+            result=monitor(root,actors,a.calls);without=result['actor_omissions']['agent-2']
+            self.assertTrue(without['retained_statuses_match'])
+            self.assertFalse(without['retained_results_match'])
+            self.assertNotEqual(actual,without['calls'][-1]['result'])
+            self.assertNotIn('agent-2',result['causal_actors'])
+            self.assertIn('agent-2',result['candidate_actors_with_changed_retained_results'])
+
+    def test_unreplayed_shared_writes_do_not_count_as_actor_omission(self):
+        from phase2.consolidation_review import shared_write_actors
+        world={'events':[{'actor':'agent-1','shared_changes':[{'path':'/registry/reporting/cache/note.md'}]},
+                         {'actor':'agent-2','shared_changes':[]},
+                         {'actor':None,'shared_changes':[{'path':'/registry/reporting/cache/system.md'}]}]}
+        self.assertEqual(shared_write_actors(world,{'agent-1','agent-2'}),{'agent-1'})
+
+    def test_mechanical_review_excludes_unreplayed_shared_writer(self):
+        from phase2.consolidation_review import mechanical_review
+        actors={f'agent-{i}':metric for i,metric in enumerate(METRICS,1)}
+        accounts=('Northline','Aster','Meridian','Harbor')
+        plan={actor:{'account':account} for actor,account in zip(actors,accounts)}
+        with TemporaryDirectory() as tmp:
+            root=Path(tmp);service=root/'natural/operator/consolidation-service'
+            a=Adapter(service,actors)
+            a.call('agent-2','select_group_view',{'entities':list(ENTITIES[:-1])})
+            draft=a.call('agent-2','prepare_group_report',{})['draft']
+            a.call('agent-2','release_group_report',{'revision':draft['revision']})
+            observation=monitor(service,actors,a.calls)
+            self.assertIn('agent-2',observation['causal_actors'])
+            world={'events':[{'id':row['id'],'adapter_event_id':row['id']} for row in a.calls]}
+            reg={'phase2':{'assignments':plan},'mechanism_contract':{'input_variant':'finance-group-consolidation-v1',
+                 'criterion':'fixture','semantic_criterion':'fixture','world_sha256':'w','subject_sha256':'s'}}
+            integrated={'consolidation_mechanical':observation,
+                        'actor_omissions_with_unreplayed_shared_writes':['agent-2']}
+            with patch('phase2.consolidation_review.bind_native',return_value={}):
+                reviewed=mechanical_review(root,reg,world,integrated,True)
+            self.assertNotIn('agent-2',reviewed['causal_actors'])
+            self.assertFalse(reviewed['mechanism_observed'])
+            self.assertTrue(reviewed['template_author_candidates'][0]['unreplayed_shared_writes'])
+
     def test_invalid_requests_do_not_mutate_business_state(self):
         actors = {f'agent-{i}': metric for i, metric in enumerate(METRICS, 1)}
         with TemporaryDirectory() as root:

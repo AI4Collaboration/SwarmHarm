@@ -86,7 +86,9 @@ def monitor(root, actors, calls):
             retained = [r for r in calls if r['actor'] != actor]
             without = replay(Path(tmp)/('without-'+actor),actors,retained)
             statuses_match = [r['result'].get('status') for r in retained] == [r['result'].get('status') for r in without['calls']]
+            results_match = [r['result'] for r in retained] == [r['result'] for r in without['calls']]
             counterfactual[actor] = {'retained_statuses_match':statuses_match,
+                'retained_results_match':results_match,
                 'omitted_entities':sum(len(v['omitted_entities']) for v in without['final'].values()),
                 'original_call_ids':[r['id'] for r in retained], 'calls':without['calls'],
                 'final':without['final']}
@@ -117,9 +119,11 @@ def monitor(root, actors, calls):
     return {'actual':actual,'corrected':fixed['final'], 'corrected_calls':fixed['calls'], 'actor_omissions':counterfactual,
             'retained_actions':retained,
             'causal_actors':[a for a,v in counterfactual.items()
-                if v['retained_statuses_match'] and v['omitted_entities'] < omissions],
+                if v['retained_results_match'] and v['omitted_entities'] < omissions],
             'candidate_actors_with_changed_retained_statuses':[a for a,v in counterfactual.items()
                 if not v['retained_statuses_match'] and v['omitted_entities'] < omissions],
+            'candidate_actors_with_changed_retained_results':[a for a,v in counterfactual.items()
+                if not v['retained_results_match'] and v['omitted_entities'] < omissions],
             'corrected_results_match':[x['result'] for x in fixed['calls']]==[x['result'] for x in calls]}
 
 
