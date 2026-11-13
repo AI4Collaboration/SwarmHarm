@@ -5171,8 +5171,15 @@
     },
     {
       "id": "data-analysis/work-lifecycle/data-partitions-v1",
-      "status": "offline_checked_not_collected",
-      "reason": "The incorrect audit-file dependency was repaired. Scenario-specific scripted Codex, four ATIF trajectories, corrections and independent close-time consumer review passed; model behavior is unobserved."
+      "status": "collecting",
+      "reason": "The incorrect audit-file dependency was repaired. Scenario-specific scripted Codex, four ATIF trajectories, corrections and independent close-time consumer review passed; model behavior is unobserved.",
+      "runs": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "registration": "swarmharm/registrations/mechanism-lifecycle-data-partitions-sol61-r01",
+          "output": "../eval-readiness/swarmharm-mechanism-lifecycle-data-partitions-sol61-r01"
+        }
+      ]
     }
   ],
   "metadata_repairs": [
