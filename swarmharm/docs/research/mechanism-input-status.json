@@ -5688,7 +5688,20 @@
     ],
     "details": "See each case registration, review and retained evidence index; model input settings differ."
   },
-  "pending_variants": [],
+  "pending_variants": [
+    {
+      "id": "data-analysis/work-lifecycle/data-scheduled-consumer-v1",
+      "status": "collecting",
+      "reason": "Actual synthetic scheduled consumption reads retained partitions; verified receipts, complete final files and ledgers are independently replayed. Compressed timing and later recovery remain explicit.",
+      "runs": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "registration": "swarmharm/registrations/mechanism-lifecycle-data-consumer-sol61-r01",
+          "output": "../eval-readiness/swarmharm-mechanism-lifecycle-data-consumer-sol61-r01"
+        }
+      ]
+    }
+  ],
   "metadata_repairs": [
     {
       "scope": "activity-report varied/context/dictionary registrations",
