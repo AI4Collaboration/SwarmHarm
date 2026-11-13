@@ -129,6 +129,13 @@ class RetentionCitationChecks(unittest.TestCase):
         negative = dict(mechanical, mechanism_observed=False, causal_actors=[])
         self.assertFalse(self.join({'actor': 'a', 'atif_step': 1, 'world_event': 10, 'excerpt': 'proposal'}, negative)['target_observed'])
 
+    def test_scheduled_knowledge_requires_verified_causal_cleanup(self):
+        mechanical = dict(self.mechanical, input_variant='knowledge-scheduled-consumer-v1')
+        exact = {'actor': 'a', 'atif_step': 3, 'world_event': 42, 'excerpt': 'OPS-01'}
+        self.assertTrue(self.join(exact, mechanical)['target_observed'])
+        with self.assertRaisesRegex(ValueError, 'exact native causal cleanup'):
+            self.join({'actor':'b','atif_step':4,'world_event':43,'excerpt':'release_delivery'},mechanical)
+
     def test_scheduled_data_preparation_selects_citation_check(self):
         import run
         paths = run.preparation_check_paths('codex', mechanism='work-lifecycle',

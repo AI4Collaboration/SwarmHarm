@@ -75,6 +75,9 @@ class ScheduledConsumerFinalChecks(unittest.TestCase):
     def test_protected_engineering_attempts(self):
         self.check_protected_attempts('engineering-capacity','engineering-scheduled-consumer-v1')
 
+    def test_protected_knowledge_attempts(self):
+        self.check_protected_attempts('knowledge-work','knowledge-scheduled-consumer-v1')
+
     def check_ledger_binding(self,domain,variant):
         # Exercise a real customer execution in the Operations pool using a
         # separate unit-test configuration with enough processing headroom.
@@ -125,10 +128,14 @@ class ScheduledConsumerFinalChecks(unittest.TestCase):
     def test_engineering_ledger_binding(self):
         self.check_ledger_binding('engineering-capacity','engineering-scheduled-consumer-v1')
 
+    def test_knowledge_ledger_binding(self):
+        self.check_ledger_binding('knowledge-work','knowledge-scheduled-consumer-v1')
+
     def test_selected_for_both_scheduled_inputs(self):
         import run
         for domain,variant in (('engineering-capacity','engineering-scheduled-consumer-v1'),
-                               ('data-analysis','data-scheduled-consumer-v1')):
+                               ('data-analysis','data-scheduled-consumer-v1'),
+                               ('knowledge-work','knowledge-scheduled-consumer-v1')):
             selected=run.preparation_check_paths('codex',mechanism='work-lifecycle',scenario=domain,input_variant=variant)
             self.assertIn('scheduled_consumer_final_checks.py',{path.name for path in selected})
 
@@ -137,5 +144,8 @@ class ScheduledConsumerFinalChecks(unittest.TestCase):
 
     def test_engineering(self):
         self.check_domain('engineering-capacity','engineering-scheduled-consumer-v1','engineering-operations.csv')
+
+    def test_knowledge(self):
+        self.check_domain('knowledge-work','knowledge-scheduled-consumer-v1','knowledge-operations.csv')
 
 if __name__=='__main__':unittest.main()

@@ -10,6 +10,8 @@ from phase2 import engineering_consumer, unified_delivery as scenario
 from tests.data_partition_transport_checks import Fixture
 
 class DataScheduledTransportChecks(unittest.TestCase):
+    domain='data-analysis'
+    variant='data-scheduled-consumer-v1'
     def test_scripted_native_to_independent_review(self):
         server=ThreadingHTTPServer(('127.0.0.1',0),Fixture)
         server.accounts=scenario.ACCOUNTS;server.calls={}
@@ -25,7 +27,7 @@ class DataScheduledTransportChecks(unittest.TestCase):
             with TemporaryDirectory() as tmp, patch.object(codex_gateway,'write_config',local_config), patch.multiple(engineering_consumer,CONSUMER_DELAY=12.0,DELIVERY_DEADLINE=9.0):
                 root=Path(tmp);out=root/'out';regpath=root/'reg';key=root/'key';key.write_text('offline-fixture')
                 with patch.dict(run.MODELS,{'sol':'openai/gpt-6.1-sol'},clear=True),patch.object(run,'verify_routes',return_value={}),patch.object(codex_gateway,'gateway_catalog',return_value={}),patch.object(run,'registration_path',side_effect=lambda p:Path(p)):
-                    run.prepare(out,regpath,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario='data-analysis',mechanism='work-lifecycle',input_variant='data-scheduled-consumer-v1')
+                    run.prepare(out,regpath,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario=self.domain,mechanism='work-lifecycle',input_variant=self.variant)
                 reg=run.load(out/'registration.json');plan=reg['phase2']['assignments']
                 worker=next(row for row in plan.values() if row['account']=='Northline')
                 for account in server.accounts:server.calls[account]=[('read_reporting_store',{})]

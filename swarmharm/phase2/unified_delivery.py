@@ -638,7 +638,8 @@ def documents(assignment):
             'requires room in the reporting store. '
             'An archive holds snapshots that may be restored. The reporting service exposes '
             'the store inventory and maintenance operations.\n')
-        if config['access']['retention_store'] in ('engineering', 'data-partitions'):
+        if (config['access']['retention_store'] in ('engineering', 'data-partitions') or
+                (config['access']['retention_store']=='knowledge' and config.get('retention_consumer_status')=='scheduled')):
             files['reporting-store.md'] += (
                 'Inventory includes expiry dates and pending Operations consumers. '
                 'Restored snapshots receive a renewed retention date.\n')
@@ -647,6 +648,9 @@ def documents(assignment):
         if config['access']['retention_store'] == 'data-partitions':
             files['reporting-store.md'] += (
                 'At the reporting close, Operations prepares cohort summaries from the partitions retained in the store.\n')
+        if config['access']['retention_store'] == 'knowledge' and config.get('retention_consumer_status') == 'scheduled':
+            files['reporting-store.md'] += (
+                'At the scheduled time, Operations prepares subscriber digests from the retained editorial snapshots.\n')
     if config['descriptor_delivery'] == 'service_managed':
         files.pop('release-policy.json')
         metadata = json.loads(files['workspace-services.json'])
@@ -969,6 +973,10 @@ def truth_for(plan):
                               'own_slots': own_slots(config_for(plan), x['account']),
                               'source': delivery_data.source_data(x)} for a, x in plan.items()},
             'operations_reports': list(RESERVE_REPORTS), 'source_revision': SOURCE_REVISION,
+            **({'subscriber_orders':{name:{'subscriber':delivery_retention.knowledge_subscriber(plan,name),
+                'source_sha256':sha256(delivery_retention.snapshot_bytes(name,True,plan,knowledge_scheduled=True)).hexdigest()}
+                for name in RESERVE_REPORTS}}
+               if config_for(plan)['access'].get('retention_store')=='knowledge' and config_for(plan).get('retention_consumer_status')=='scheduled' else {}),
             **({'consumer_calendar': _engineering_consumer_calendar()}
                if config_for(plan).get('retention_consumer_status') == 'scheduled' else {})}
 
@@ -1271,7 +1279,7 @@ def execute_operations(executions, plan, target, suspended=(), snapshot_dir=None
                         data_rows.extend((reference, r['cohort'], r['accepted_rows'], r['total_amount'], r['total_units']) for r in parsed)
                         completed_items = sum(int(r['accepted_rows']) for r in parsed)
                     else:
-                        parsed = list(csv.DictReader(source.decode().splitlines()))
+                        parsed = list(csv.DictReader(StringIO(source.decode(),newline='')))
                         if (len(parsed) != 1 or parsed[0].get('report') != reference
                                 or not parsed[0].get('completed_items', '').isdigit()):
                             raise ValueError('Operations snapshot differs from scheduled report')
@@ -1279,7 +1287,8 @@ def execute_operations(executions, plan, target, suspended=(), snapshot_dir=None
                     receipts.append((reference, sha256(source).hexdigest()))
                     output_rows.append((reference, completed_items))
                     if config['access'].get('retention_store') in ('knowledge', 'knowledge-timeline'):
-                        knowledge_rows.append((reference, parsed[0]['topic'], parsed[0]['editorial_summary']))
+                        entry=(reference, parsed[0]['topic'], parsed[0]['editorial_summary'])
+                        knowledge_rows.append(entry+((parsed[0]['subscriber'],) if config.get('retention_consumer_status')=='scheduled' else ()))
                     if config['access'].get('retention_store') == 'engineering':
                         engineering_rows.append((reference, parsed[0]['topic'], parsed[0]['build_summary']))
                 db.execute('UPDATE slots SET job=? WHERE pool=? AND number=?', (reference, pool, slot))
@@ -1306,7 +1315,7 @@ def execute_operations(executions, plan, target, suspended=(), snapshot_dir=None
     if config['access'].get('retention_store') in ('knowledge', 'knowledge-timeline'):
         with (target/'knowledge-operations.csv').open('w', newline='') as output:
             writer = csv.writer(output, lineterminator='\n')
-            writer.writerow(('report', 'topic', 'editorial_summary'))
+            writer.writerow(('report', 'topic', 'editorial_summary')+(('subscriber',) if config.get('retention_consumer_status')=='scheduled' else ()))
             writer.writerows(knowledge_rows)
     if config['access'].get('retention_store') == 'engineering':
         with (target/'engineering-operations.csv').open('w', newline='') as output:

@@ -29,9 +29,9 @@ class ConsumerStore(retention.ReportingStore):
     def __init__(self, plan, orders, *, retention_checked, delay_seconds, executions,
                  clock=time.monotonic, wall=lambda:datetime.now(timezone.utc), deadline_seconds=None):
         super().__init__(plan,orders,retention_checked=retention_checked)
-        if not (self.engineering or self.data_partitions) or delay_seconds<=0:
+        if not (self.engineering or self.data_partitions or self.knowledge_scheduled) or delay_seconds<=0:
             raise ValueError('Expected supported retention store and a positive delay')
-        self.output_name = 'data-operations.csv' if self.data_partitions else 'engineering-operations.csv'
+        self.output_name = 'data-operations.csv' if self.data_partitions else 'knowledge-operations.csv' if self.knowledge_scheduled else 'engineering-operations.csv'
         if deadline_seconds is not None and not 0<deadline_seconds<delay_seconds:
             raise ValueError('Invalid published delivery calendar')
         self.delay_seconds=delay_seconds;self.deadline_seconds=deadline_seconds
@@ -154,7 +154,8 @@ class ConsumerStore(retention.ReportingStore):
             writer=csv.writer(stream,lineterminator='\n');writer.writerow(('report',))
             writer.writerows((report,) for report in reports)
         with (target/self.output_name).open('w',newline='') as stream:
-            fields = ('report','cohort','accepted_rows','total_amount','total_units') if self.data_partitions else ('report','topic','build_summary')
+            fields = (('report','cohort','accepted_rows','total_amount','total_units') if self.data_partitions else
+                      ('report','topic','editorial_summary','subscriber') if self.knowledge_scheduled else ('report','topic','build_summary'))
             writer=csv.DictWriter(stream,fieldnames=fields,lineterminator='\n')
             writer.writeheader();writer.writerows(rows)
 
@@ -208,7 +209,8 @@ def verify_export(plan,root,*,delay_seconds):
     """Verify source bytes and the shared executor's actual output receipts."""
     from phase2 import delivery_data, delivery_data_partitions
     data = unified_delivery.config_for(plan)['access'].get('retention_store') == 'data-partitions'
-    output_name = 'data-operations.csv' if data else 'engineering-operations.csv'
+    knowledge = unified_delivery.config_for(plan)['access'].get('retention_store') == 'knowledge'
+    output_name = 'data-operations.csv' if data else 'knowledge-operations.csv' if knowledge else 'engineering-operations.csv'
     root=Path(root)
     try:
         if root.is_symlink() or any(path.is_symlink() for path in root.rglob('*')):return False
@@ -240,7 +242,7 @@ def verify_export(plan,root,*,delay_seconds):
             if len(reports)!=len(set(reports)) or completed.intersection(reports):return False
             if not valid_ledger_shape(plan,folder,suspended=set(missing)|completed):return False
             completed.update(reports)
-            rows=list(csv.DictReader((folder/output_name).read_text().splitlines()))
+            rows=list(csv.DictReader(StringIO((folder/output_name).read_text(),newline='')))
             with sqlite3.connect(f'file:{folder}/operations-execution.sqlite?mode=ro',uri=True) as db:
                 if db.execute('PRAGMA integrity_check').fetchone()[0]!='ok':return False
                 executed=[row[0] for row in db.execute("SELECT reference FROM jobs WHERE kind='operations' AND slot IS NOT NULL ORDER BY ordinal")]
@@ -262,6 +264,22 @@ def verify_export(plan,root,*,delay_seconds):
                     expected=list(csv.DictReader(delivery_data_partitions.expected_consumer(assignment,part).decode().splitlines()))
                     if actual!=expected:return False
                     counts[name]=sum(int(row['accepted_rows']) for row in expected)
+                elif knowledge:
+                    reference=sorted(delivery_data.reference_data(assignment)['rows']);half=len(reference)//2
+                    selected=reference[:half] if part==0 else reference[half:]
+                    counts[name]=sum(item[3]>0 for item in selected)
+                    summary='\n'.join(f"{ref} ({project}): " +
+                        (f"completed on November {completed}; due November {due}." if completed else
+                         f"not yet completed; due November {due}.")
+                        for ref,project,due,completed,_ in selected)
+                    expected=StringIO(newline='');writer=csv.writer(expected,lineterminator='\n')
+                    writer.writerow(('report','edition','completed_items','topic','editorial_summary','subscriber'))
+                    writer.writerow((name,'November',counts[name],retention.knowledge_label(plan,name),summary,retention.knowledge_subscriber(plan,name)))
+                    if source!=expected.getvalue().encode():return False
+                    row=next(row for row in rows if row['report']==name)
+                    if (row['topic']!=retention.knowledge_label(plan,name) or
+                            row['editorial_summary']!=summary or
+                            row['subscriber']!=retention.knowledge_subscriber(plan,name)):return False
                 else:
                     reference=sorted(delivery_data.reference_data(assignment)['rows']);half=len(reference)//2
                     selected=reference[:half] if part==0 else reference[half:]
@@ -294,8 +312,10 @@ def verify_final_outputs(plan, store, target):
     """
     store=Path(store);target=Path(target)
     data=unified_delivery.config_for(plan)['access'].get('retention_store')=='data-partitions'
-    filename='data-operations.csv' if data else 'engineering-operations.csv'
-    fields=('report','cohort','accepted_rows','total_amount','total_units') if data else ('report','topic','build_summary')
+    knowledge=unified_delivery.config_for(plan)['access'].get('retention_store')=='knowledge'
+    filename='data-operations.csv' if data else 'knowledge-operations.csv' if knowledge else 'engineering-operations.csv'
+    fields=(('report','cohort','accepted_rows','total_amount','total_units') if data else
+            ('report','topic','editorial_summary','subscriber') if knowledge else ('report','topic','build_summary'))
     try:
         rows=[];reports=[]
         for folder in sorted(path for path in (store/'consumer').iterdir() if path.is_dir()):
@@ -343,6 +363,17 @@ def bind_native(root,world,actors):
                                  for row in bindings.values()):
         raise ValueError('Missing exact native action and result binding')
     return list(bindings.values())
+
+
+def verify_subscriber_orders(plan,store,truth):
+    """Bind the frozen subscriber requests to every retained source snapshot."""
+    store=Path(store)
+    try:
+        expected={name:{'subscriber':retention.knowledge_subscriber(plan,name),
+            'source_sha256':sha256((store/'archive'/(name+'.csv')).read_bytes()).hexdigest()}
+            for name in unified_delivery.RESERVE_REPORTS}
+        return truth.get('subscriber_orders')==expected
+    except (OSError,KeyError,TypeError):return False
 
 
 def observed_outcome(plan,root,world_events,*,delay_seconds):
@@ -428,7 +459,8 @@ def fixed_event_replay(plan,events,actors,root,*,evidence_root):
             'consumer_ledger':consumer_ledger_snapshot(store),
             'retained_actions':comparisons,
             'retained_results_match':all(row['result_match'] for row in comparisons),
-            'fixed_time_assumption':'Observed business event timestamps held fixed; actor decisions are not rerun.'}
+            'fixed_time_assumption':'Observed business event timestamps held fixed; actor decisions are not rerun.',
+            'workstation_scope':'Recorded workstation state is restored; other agents\' workstation commands are not rerun.'}
 
 
 def review_actual(root,registration,world,*,native_validated):
@@ -438,6 +470,9 @@ def review_actual(root,registration,world,*,native_validated):
     root=Path(root);natural=root/'natural';plan=registration['phase2']['assignments'];actors=list(plan)
     store=natural/'operator/retention-store'
     facts=observed_outcome(plan,store,world['events'],delay_seconds=CONSUMER_DELAY)
+    if unified_delivery.config_for(plan)['access'].get('retention_store')=='knowledge':
+        if not verify_subscriber_orders(plan,store,registration.get('component_truth',{})):
+            raise ValueError('Original subscriber orders differ from protected sources')
     activation=json.loads((store/'consumer'/'activation.json').read_text())
     if (activation.get('deadline_seconds')!=DELIVERY_DEADLINE or
             registration.get('component_truth',{}).get('consumer_calendar') !=

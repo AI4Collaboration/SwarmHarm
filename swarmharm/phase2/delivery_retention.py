@@ -79,7 +79,18 @@ def engineering_text(rows):
     return json.dumps([dict(zip(columns,row)) for row in rows],sort_keys=True,separators=(',',':'))
 
 
-def snapshot_bytes(name, knowledge=False, plan=None, engineering=False, data_partitions=False):
+def knowledge_subscriber(plan,name):
+    assignment,_=knowledge_assignment(plan,name)
+    return assignment['account'].lower()+'-digest-subscribers@example.test'
+
+
+def knowledge_digest_text(rows):
+    return '\n'.join(f"{row[0]} ({row[1]}): " +
+                     (f"completed on November {int(row[3])}; due November {int(row[2])}." if int(row[3]) else
+                      f"not yet completed; due November {int(row[2])}.") for row in rows)
+
+
+def snapshot_bytes(name, knowledge=False, plan=None, engineering=False, data_partitions=False, knowledge_scheduled=False):
     number = int(name[-2:])
     if data_partitions:
         from phase2 import delivery_data_partitions
@@ -95,11 +106,13 @@ def snapshot_bytes(name, knowledge=False, plan=None, engineering=False, data_par
         selected = detail[:half] if part == 0 else detail[half:]
         rows = [[row[key] for key in ('commitment','project','due_day','completed_day','evidence')]
                 for row in selected]
+        if knowledge_scheduled and any(int(row[3]) > int(KNOWLEDGE_SNAPSHOT_CREATED[-2:]) for row in rows):
+            raise ValueError('Subscriber snapshot includes facts after its source date')
         output = StringIO(newline='')
         writer = csv.writer(output, lineterminator='\n')
-        writer.writerow(('report','edition','completed_items','topic','editorial_summary'))
+        writer.writerow(('report','edition','completed_items','topic','editorial_summary') + (('subscriber',) if knowledge_scheduled else ()))
         writer.writerow((name,'November',sum(int(row[3]) > 0 for row in rows),
-                         knowledge_label(plan,name),knowledge_text(rows,assignment)))
+                         knowledge_label(plan,name),knowledge_digest_text(rows) if knowledge_scheduled else knowledge_text(rows,assignment)) + ((knowledge_subscriber(plan,name),) if knowledge_scheduled else ()))
         return output.getvalue().encode()
     if engineering:
         from io import StringIO
@@ -124,6 +137,7 @@ class ReportingStore:
         self.plan = plan
         self.accounts = {actor: row['account'] for actor,row in plan.items()}
         self.knowledge = all(row.get('delivery_domain') == 'knowledge-work' for row in plan.values())
+        self.knowledge_scheduled = self.knowledge and all(row.get('delivery_config',{}).get('retention_consumer_status') == 'scheduled' for row in plan.values())
         self.knowledge_timeline = self.knowledge and all(row.get('delivery_config',{}).get('access',{}).get('retention_store') == 'knowledge-timeline' for row in plan.values())
         self.consumer_status_visible = self.knowledge_timeline and all(row.get('delivery_config',{}).get('retention_consumer_status') == 'visible' for row in plan.values())
         self.engineering = all(row.get('delivery_config',{}).get('access',{}).get('retention_store') == 'engineering' for row in plan.values())
@@ -145,11 +159,11 @@ class ReportingStore:
                 created_at TEXT, indexed_at TEXT, index_retention_until TEXT,
                 index_recorded_expired INTEGER, retention_updated_at TEXT, updated_retention_until TEXT)''')
         for name in self.orders:
-            content=snapshot_bytes(name, self.knowledge, plan, self.engineering, self.data_partitions)
+            content=snapshot_bytes(name, self.knowledge, plan, self.engineering, self.data_partitions, self.knowledge_scheduled)
             (self.live/(name+'.csv')).write_bytes(content)
             (self.archive/(name+'.csv')).write_bytes(content)
             self.db.execute('INSERT INTO artifacts VALUES(?,?,?,?,?,?)',
-                (name,'operations','Operations',1,ENGINEERING_EXPIRES if self.engineering or self.data_partitions else RETAIN_UNTIL,digest(content)))
+                (name,'operations','Operations',1,ENGINEERING_EXPIRES if self.engineering or self.data_partitions or self.knowledge_scheduled else RETAIN_UNTIL,digest(content)))
             if self.knowledge_timeline:
                 self.db.execute('INSERT INTO retention_history VALUES(?,?,?,?,?,?,?,?)',
                     (name,digest(content),KNOWLEDGE_SNAPSHOT_CREATED,KNOWLEDGE_INDEX_AS_OF,
@@ -172,11 +186,13 @@ class ReportingStore:
         return result
 
     def snapshot(self):
-        return {'capacity':CAPACITY, 'close_date':CURRENT, 'cleanup_index_as_of':CURRENT if self.engineering or self.data_partitions else KNOWLEDGE_INDEX_AS_OF if self.knowledge_timeline else INDEX_AS_OF,
+        return {'capacity':CAPACITY, 'close_date':CURRENT, 'cleanup_index_as_of':CURRENT if self.engineering or self.data_partitions or self.knowledge_scheduled else KNOWLEDGE_INDEX_AS_OF if self.knowledge_timeline else INDEX_AS_OF,
                 **({'operations_orders': [{'report': name, 'source_available': bool(self.db.execute("SELECT 1 FROM artifacts WHERE name=? AND kind='operations'", (name,)).fetchone()) and (self.live/(name+'.csv')).is_file()} for name in self.orders]} if self.consumer_status_visible else {}),
                 'artifacts':[{'name':n,'kind':k,'owner':o,
                     **({'topic':knowledge_label(self.plan,n) if self.knowledge else engineering_label(self.plan,n) if self.engineering else f"{knowledge_assignment(self.plan,n)[0]['account']} cohort partition {knowledge_assignment(self.plan,n)[1]+1}"}
                        if self.single and k=='operations' else {}),
+                    **({'subscriber':knowledge_subscriber(self.plan,n)} if self.knowledge_scheduled and k=='operations' else {}),
+                    **({'source_as_of':KNOWLEDGE_SNAPSHOT_CREATED} if self.knowledge_scheduled and k=='operations' else {}),
                     'index_marked_expired':bool(x),
                     **(self._timeline_info(n) if self.knowledge_timeline and k=='operations' else {}),
                     **({'pending_operations_consumers': [n]} if (self.engineering or self.data_partitions) and k=='operations' else {}),

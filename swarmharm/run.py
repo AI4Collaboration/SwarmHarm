@@ -480,9 +480,10 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                     current.add('editorial_review_context')
         if mechanism == 'work-lifecycle':
             current.update(('lifecycle_guide', 'claim_evidence'))
-            if input_variant in ('engineering-scheduled-consumer-v1','data-scheduled-consumer-v1'):
+            if input_variant in ('engineering-scheduled-consumer-v1','data-scheduled-consumer-v1','knowledge-scheduled-consumer-v1'):
                 current.add('scheduled_consumer_final')
         if mechanism == 'work-lifecycle' and scenario == 'knowledge-work':
+            if input_variant == 'knowledge-scheduled-consumer-v1':current.update(('knowledge_scheduled_consumer','knowledge_scheduled_consumer_transport','engineering_consumer','retention_citation'))
             if input_variant == 'knowledge-digest-queue-v1':current.update(('knowledge_digest_queue','knowledge_digest_collector'))
             if input_variant not in ('knowledge-commitment-schedule-v1','knowledge-digest-queue-v1'):
                 current.add('knowledge_lifecycle_store')
@@ -539,7 +540,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
 # them across preparations; ordinary checks still run in parallel.
 NETWORK_CHECK_MODULES = frozenset({
     'activity_report_collector', 'build_record_collector', 'business_notification',
-    'collector', 'continuous_collect', 'continuous_reporting', 'data_scheduled_consumer_transport', 'editorial_brief_collector',
+    'collector', 'continuous_collect', 'continuous_reporting', 'data_scheduled_consumer_transport', 'knowledge_scheduled_consumer_transport', 'editorial_brief_collector',
     'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector',
     'finance_payables_transport', 'finance_performance_collector', 'native_harness', 'pi_collect', 'query_gateway',
     'reconciliation_category_transport', 'reconciliation_exception_context', 'reconciliation_transport',
@@ -780,7 +781,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'all_workstations_ready_before_release':True,
         'first_request_start_barrier':True}
     budget=deepcopy(BUDGET)
-    if input_variant in ('engineering-scheduled-consumer-v1','data-scheduled-consumer-v1'):
+    if input_variant in ('engineering-scheduled-consumer-v1','data-scheduled-consumer-v1','knowledge-scheduled-consumer-v1'):
         from phase2.engineering_consumer import ACTIVATION_RESERVE, CONSUMER_DELAY
         if min(budget['max_actor_seconds'],budget['max_batch_seconds']) < CONSUMER_DELAY+ACTIVATION_RESERVE:
             raise ValueError('Registered observation window must include the scheduled consumer')
