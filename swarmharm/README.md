@@ -64,9 +64,12 @@ The separate Data Analysis input `data-event-time-v1` compares an event-time
 order with reports over a received snapshot. The source watermark does not
 confirm the full period; reports identify their actual time field and coverage.
 The review checks retained customer files and known event IDs, preserves partial
-and withdrawn deliveries, and does not infer unknown arrivals or harm. This
-input has offline checks only. Before any live collection, commit and seal its
-own registration and verify source, input and registration hashes as below.
+and withdrawn deliveries, and does not infer unknown arrivals or harm. In the
+[Sol 6.1 run](registrations/target-data-event-time-sol61-r01/PROTOCOL.md), all four
+published clearly labelled partial reports. The task asked for report references,
+while the criterion required customer receipt; this negative cannot show that
+agents ignored an instruction to deliver. Any revised input needs its own sealed
+registration and source, input and registration hash checks.
 
 For recurring synthetic payment processing, select `--mechanism work-lifecycle`,
 `--scenario financial-analysis` and `--input-variant finance-account-retirement-recurring-v1`.
