@@ -477,7 +477,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
         if mechanism == 'work-lifecycle':
             current.update(('lifecycle_guide', 'claim_evidence'))
         if mechanism == 'work-lifecycle' and scenario == 'knowledge-work':
-            if input_variant != 'knowledge-commitment-schedule-v1':
+            if input_variant == 'knowledge-digest-queue-v1':current.update(('knowledge_digest_queue','knowledge_digest_collector'))
+            if input_variant not in ('knowledge-commitment-schedule-v1','knowledge-digest-queue-v1'):
                 current.add('knowledge_lifecycle_store')
             if input_variant in ('knowledge-retention-timeline-v1', 'knowledge-retention-timeline-notices-v1', 'knowledge-retention-consumers-v1'):
                 current.add('knowledge_retention_timeline')
@@ -495,7 +496,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             current.update(('finance_timed_payables', 'finance_timed_v2'))
             if input_variant in ('finance-account-retirement-v1','finance-account-retirement-recurring-v1'):current.update(('finance_closure','finance_closure_collector','finance_citation'))
             if input_variant == 'finance-account-retirement-recurring-v1':current.add('finance_recurring')
-        if mechanism == 'work-lifecycle' and scenario in ('engineering-capacity', 'knowledge-work'):
+        if mechanism == 'work-lifecycle' and scenario in ('engineering-capacity', 'knowledge-work') and input_variant != 'knowledge-digest-queue-v1':
             current.update(('retention_causality', 'retention_citation'))
         if mechanism == 'work-lifecycle' and scenario == 'engineering-capacity':
             current.update(('engineering_single_store', 'engineering_single_store_transport'))
@@ -761,6 +762,10 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         from phase2.engineering_consumer import ACTIVATION_RESERVE, CONSUMER_DELAY
         if min(budget['max_actor_seconds'],budget['max_batch_seconds']) < CONSUMER_DELAY+ACTIVATION_RESERVE:
             raise ValueError('Registered observation window must include the scheduled consumer')
+    if input_variant == 'knowledge-digest-queue-v1':
+        from phase2 import knowledge_digest_queue
+        if min(budget['max_actor_seconds'],budget['max_batch_seconds']) <= knowledge_digest_queue.OBSERVATION_MIN+knowledge_digest_queue.ACTIVATION_RESERVE:
+            raise ValueError('Registered observation window must include the digest windows')
     if input_variant in ('finance-timed-settlement-v1','finance-timed-settlement-v2'):
         from phase2 import delivery_payables_timed
         if min(budget['max_actor_seconds'],budget['max_batch_seconds']) <= delivery_payables_timed.SETTLEMENT_SECONDS:
@@ -867,6 +872,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'build_target_product': unified_delivery.build_target_product(phase2_plan[actor]),
                 'activity_report_workflow': unified_delivery.activity_report_workflow(phase2_plan[actor]),
                 'data_region_workflow': unified_delivery.data_region_workflow(phase2_plan[actor]),
+                'knowledge_digest_workflow': unified_delivery.knowledge_digest_workflow(phase2_plan[actor]),
                 'activity_shared_template': unified_delivery.activity_report_progressive(phase2_plan[actor]) in ('manifest-shared','manifest-shared-editor'),
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(phase2_plan[actor]),
                 'editorial_intake_archive': unified_delivery.editorial_intake_archive(phase2_plan[actor]),
@@ -1816,6 +1822,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     if unified_delivery.finance_assets_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.finance_assets import validate
         path_validation = validate(reg['phase2']['assignments'])
+    elif unified_delivery.knowledge_digest_workflow(next(iter(reg['phase2']['assignments'].values()))):
+        from phase2.knowledge_digest_queue import validate
+        path_validation = validate(reg['phase2']['assignments'])
     elif unified_delivery.data_region_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.data_region import validate
         path_validation = validate(reg['phase2']['assignments'])
@@ -1926,6 +1935,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         if unified_delivery.finance_assets_workflow(next(iter(extension_plan.values()))):
             from phase2.finance_assets_bridge import AssetsBridge
             extension=AssetsBridge.from_plan(world,extension_plan,reg['component_initial_state'])
+        elif unified_delivery.knowledge_digest_workflow(next(iter(extension_plan.values()))):
+            from phase2.knowledge_digest_bridge import DigestBridge
+            extension=DigestBridge.from_plan(world,extension_plan,reg['component_initial_state'])
         elif unified_delivery.data_region_workflow(next(iter(extension_plan.values()))):
             from phase2.data_region_bridge import RegionBridge
             extension=RegionBridge.from_plan(world,extension_plan,reg['component_initial_state'])
@@ -1964,6 +1976,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'build_target_product': unified_delivery.build_target_product(next(iter(extension.plan.values()))),
                 'activity_report_workflow': unified_delivery.activity_report_workflow(next(iter(extension.plan.values()))),
                 'data_region_workflow': unified_delivery.data_region_workflow(next(iter(extension.plan.values()))),
+                'knowledge_digest_workflow': unified_delivery.knowledge_digest_workflow(next(iter(extension.plan.values()))),
                 'activity_shared_template': unified_delivery.activity_report_progressive(next(iter(extension.plan.values()))) in ('manifest-shared','manifest-shared-editor'),
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(next(iter(extension.plan.values()))),
                 'editorial_intake_archive': unified_delivery.editorial_intake_archive(next(iter(extension.plan.values()))),
@@ -2062,6 +2075,16 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 consumer_budget={'batch_remaining_seconds':batch_remaining,'actor_budget_seconds':budget['max_actor_seconds'],
                                  'reserve_seconds':ACTIVATION_RESERVE,'observation_limit_seconds':limit}
             recurring_budget=None
+            digest_budget=None
+            if unified_delivery.knowledge_digest_workflow(next(iter(extension.plan.values()))):
+                from phase2.knowledge_digest_queue import OBSERVATION_MIN, ACTIVATION_RESERVE
+                batch_remaining=max(0.0,deadline-time.monotonic())
+                limit=min(budget['max_actor_seconds'],batch_remaining)-ACTIVATION_RESERVE
+                if limit<OBSERVATION_MIN:raise ValueError('Remaining budget does not cover digest observation')
+                extension.configure_observation_limit(limit)
+                digest_budget={'batch_remaining_seconds':batch_remaining,'actor_budget_seconds':budget['max_actor_seconds'],
+                               'reserve_seconds':ACTIVATION_RESERVE,'observation_limit_seconds':limit}
+                extension.start_digest_cycle(activation_time)
             if getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') == 'account-retirement-recurring':
                 from phase2.finance_recurring import ACTIVATION_RESERVE, remaining_observation_limit
                 batch_remaining=max(0.0,deadline-time.monotonic())
@@ -2074,6 +2097,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             save(root/name/'activation.json',{
                 **({'recurring_observation_budget':recurring_budget} if recurring_budget else {}),
                 **({'consumer_observation_budget':consumer_budget} if consumer_budget else {}),
+                **({'digest_observation_budget':digest_budget} if digest_budget else {}),
                 'policy':'simultaneous_start_barrier',
                 'activated_at':activation_time,
                 'actors':sorted(active),
@@ -2665,7 +2689,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     for candidate in active.copy():
                         if states[candidate]['status']=='waiting_for_platform_change':
                             submit(candidate)
-                if continuation_update_pending() and extension.advance_business_time(time.monotonic()-(extension._clock_start if getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') in ('timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring') else continuation_began)):
+                if continuation_update_pending() and extension.advance_business_time(time.monotonic()-(extension._clock_start if (unified_delivery.knowledge_digest_workflow(next(iter(extension.plan.values()))) or getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') in ('timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring')) else continuation_began)):
                     export();wake_waiting()
                 if phase2_pending is not None and not running and not source_handoff_ready(reg,world):
                     if publication_pending() or followup_pending():

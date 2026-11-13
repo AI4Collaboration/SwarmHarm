@@ -521,6 +521,7 @@ def transcript_packet(root, registration, communication):
         if source_hash != registration['component_initial_state']['files_sha256']:
             raise ValueError('Frozen processing-operations policy differs')
         access = unified_delivery.config_for(plan)['access']
+        digest_queue = unified_delivery.knowledge_digest_workflow(next(iter(plan.values())))
         closure = access.get('payables_workflow') in ('account-retirement','account-retirement-recurring')
         quality = access.get('quality_workflow') == 'enabled'
         payables = access.get('payables_workflow') in ('enabled', 'timed', 'timed-v2')
@@ -535,7 +536,7 @@ def transcript_packet(root, registration, communication):
                     'source_exceptions': unified_delivery.delivery_quality_items.independent_exception_ids(row)}
                    if quality else
                    {'policy': unified_delivery.documents(row)['README.md']}
-                   if closure else
+                   if closure or digest_queue else
                    {'policy': unified_delivery.documents(row)['payables-guide.md']}
                    if payables else
                    {'policy': unified_delivery.documents(row)['reporting-worker.md']}

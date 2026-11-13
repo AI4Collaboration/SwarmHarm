@@ -82,7 +82,7 @@ CONFIG_SCHEMA = {
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions']},
             'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor', 'region-dimension']},
-            'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context']},
+            'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context', 'digest-queue']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule']},
             'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring']},
             'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations']},
@@ -240,6 +240,10 @@ def activity_report_progressive(assignment):
     return {'progressive-varied':'varied','progressive-varied-context':'varied-context', 'progressive-varied-context-dictionary':'varied-context-dictionary','progressive-metered':'metered','progressive-manifest':'manifest','progressive-manifest-shared':'manifest-shared','progressive-manifest-shared-editor':'manifest-shared-editor'}.get(workflow, workflow == 'progressive')
 
 
+def knowledge_digest_workflow(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('editorial_brief_workflow') == 'digest-queue'
+
+
 def editorial_brief_workflow(assignment):
     return assignment.get('delivery_config', {}).get('access', {}).get('editorial_brief_workflow') in ('enabled','with_archive','with_publications','with_review_queue','with_review_context')
 
@@ -326,6 +330,9 @@ def task(assignment):
     if finance_assets_workflow(assignment):
         from phase2.finance_assets import TASK
         return TASK
+    if knowledge_digest_workflow(assignment):
+        from phase2.knowledge_digest_queue import task as digest_task
+        return digest_task(assignment['account'])
     if data_region_workflow(assignment):
         from phase2.data_region import TASK
         return TASK
@@ -397,7 +404,7 @@ def communication_channel(assignment):
 
 
 def communication_start(plan):
-    if (editorial_brief_workflow(next(iter(plan.values()))) or activity_report_workflow(next(iter(plan.values()))) or build_record_workflow(next(iter(plan.values())))):
+    if (knowledge_digest_workflow(next(iter(plan.values()))) or editorial_brief_workflow(next(iter(plan.values()))) or activity_report_workflow(next(iter(plan.values()))) or build_record_workflow(next(iter(plan.values())))):
         return {'condition': 'unannounced_participants', 'carrier': shared_directories(plan)[0],
                 'peer_roster_supplied': False, 'dedicated_communication_tools': False,
                 'supplied_messages': [], 'supplied_plans': []}
@@ -420,6 +427,9 @@ def documents(assignment):
     if finance_assets_workflow(assignment):
         from phase2.finance_assets import documents as asset_documents
         return asset_documents(assignment['account'])
+    if knowledge_digest_workflow(assignment):
+        from phase2.knowledge_digest_queue import documents as digest_documents
+        return digest_documents(assignment['account'])
     if data_region_workflow(assignment):
         from phase2.data_region import documents as region_documents
         return region_documents(assignment['account'])
@@ -841,6 +851,11 @@ def truth_for(plan):
             'confirmations_sha256':asset_digest(initial_confirmations(actors)),
             'accounts':{actor:{'account':row['account'],'period':PERIOD,
                 'source_sha256':sha256(source_csv(row['account']).encode()).hexdigest()} for actor,row in plan.items()}}
+    if knowledge_digest_workflow(next(iter(plan.values()))):
+        from phase2.knowledge_digest_queue import source,new_guide,calendar,digest as digest_source
+        return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
+                'calendar':calendar(),'accounts':{actor:{'account':row['account'],'source_sha256':digest_source(source(row['account'])),
+                    'launch_sha256':digest_source(new_guide(row['account']))} for actor,row in plan.items()}}
     if data_region_workflow(next(iter(plan.values()))):
         from phase2.data_region import PERIOD, INITIAL_DIMENSION, source_csv, digest as region_digest
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
@@ -941,6 +956,12 @@ def initial_state(plan):
             'supplied_business_records':{'asset_sources':{'origin':'synthetic asset and commissioning records',
                 'visibility':'own asset records and shared reporting view','behavioral_evidence':False}},
             'supplied_peer_messages':[],'supplied_methods':[]}
+    if knowledge_digest_workflow(next(iter(plan.values()))):
+        return {'origin':'prepared_business_records','study_track':'continuous_unified',
+                'assignments':deepcopy(plan),'files_sha256':digest(initial_files(plan)),
+                'communication_start':communication_start(plan),'shared_directories':shared_directories(plan),
+                'supplied_business_records':{'digest_orders':{'origin':'synthetic subscription orders and compressed calendar','behavioral_evidence':False}},
+                'supplied_peer_messages':[],'supplied_methods':[]}
     if data_region_workflow(next(iter(plan.values()))):
         return {'origin':'prepared_business_records','study_track':'continuous_unified',
             'assignments':deepcopy(plan),'files_sha256':digest(initial_files(plan)),
@@ -1039,11 +1060,14 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      retention_store='disabled',
                      report_upload='enabled', publication_items='available',
                      build_record_workflow=False, build_target_workflow=False, build_target_clarify_selection=False, build_target_product=False, reconciliation_workflow='disabled',
-                     activity_report_workflow=False, activity_shared_template=False, data_region_workflow=False, payables_workflow='disabled', editorial_brief_workflow=False,
+                     activity_report_workflow=False, activity_shared_template=False, data_region_workflow=False, knowledge_digest_workflow=False, payables_workflow='disabled', editorial_brief_workflow=False,
                      editorial_intake_archive=False, editorial_publication_index=False, editorial_review_queue=False, **kwargs):
     if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule'),
-            bool(activity_report_workflow), bool(data_region_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring'), bool(editorial_brief_workflow))) > 1:
+            bool(activity_report_workflow), bool(data_region_workflow), bool(knowledge_digest_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring'), bool(editorial_brief_workflow))) > 1:
         raise ValueError('Choose one business workflow')
+    if knowledge_digest_workflow:
+        from phase2.knowledge_digest_queue import definitions
+        return definitions()
     if data_region_workflow:
         from phase2.data_region import definitions
         return definitions()
@@ -3004,6 +3028,9 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
         reg['phase2']['independent_outcome'] += '; exact authored-note exposure and read-then-reply reconstruction'
     if finance_assets_workflow(next(iter(assignments.values()))):
         from phase2.finance_assets import validate
+        reg['phase2']['path_validation'] = validate(assignments)
+    elif knowledge_digest_workflow(next(iter(assignments.values()))):
+        from phase2.knowledge_digest_queue import validate
         reg['phase2']['path_validation'] = validate(assignments)
     elif data_region_workflow(next(iter(assignments.values()))):
         from phase2.data_region import validate
