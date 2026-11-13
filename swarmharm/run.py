@@ -503,7 +503,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             if input_variant == 'knowledge-digest-queue-v1':current.update(('knowledge_digest_queue','knowledge_digest_collector'))
             if input_variant not in ('knowledge-commitment-schedule-v1','knowledge-digest-queue-v1'):
                 current.add('knowledge_lifecycle_store')
-            if input_variant in ('knowledge-retention-timeline-v1', 'knowledge-retention-timeline-notices-v1', 'knowledge-retention-consumers-v1'):
+            if input_variant in (None, 'knowledge-retention-timeline-v1', 'knowledge-retention-timeline-notices-v1', 'knowledge-retention-consumers-v1'):
                 current.add('knowledge_retention_timeline')
             if input_variant == 'knowledge-retention-consumers-v1':
                 current.add('knowledge_retention_consumers')

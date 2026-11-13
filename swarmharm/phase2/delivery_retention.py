@@ -90,7 +90,25 @@ def knowledge_digest_text(rows):
                       f"not yet completed; due October {int(row[2])}.") for row in rows)
 
 
-def snapshot_bytes(name, knowledge=False, plan=None, engineering=False, data_partitions=False, knowledge_scheduled=False):
+def timeline_sources_valid(assignment, references):
+    """The snapshot cannot contain a source version or receipt published later."""
+    from phase2 import delivery_data
+    bundle = delivery_data.source_bundle(assignment)
+    entries = json.loads(bundle['sources/editorial/source-index.json'])
+    for reference in references:
+        choices = [row for row in entries if row['reference'] == reference]
+        if not choices:
+            return False
+        latest = max(choices, key=lambda row: row['revision'])
+        if latest['published_on'] > KNOWLEDGE_SNAPSHOT_CREATED:
+            return False
+        receipt = bundle.get(f'sources/editorial/{reference}-receipt.json')
+        if receipt and json.loads(receipt)['accepted_on'] > KNOWLEDGE_SNAPSHOT_CREATED:
+            return False
+    return True
+
+
+def snapshot_bytes(name, knowledge=False, plan=None, engineering=False, data_partitions=False, knowledge_scheduled=False, knowledge_timeline=False):
     number = int(name[-2:])
     if data_partitions:
         from phase2 import delivery_data_partitions
@@ -108,6 +126,8 @@ def snapshot_bytes(name, knowledge=False, plan=None, engineering=False, data_par
                 for row in selected]
         if knowledge_scheduled and any(int(row[3]) > int(KNOWLEDGE_SNAPSHOT_CREATED[-2:]) for row in rows):
             raise ValueError('Subscriber snapshot includes facts after its source date')
+        if knowledge_timeline and not timeline_sources_valid(assignment, [row[0] for row in rows]):
+            raise ValueError('Snapshot cites source material published after its creation')
         output = StringIO(newline='')
         writer = csv.writer(output, lineterminator='\n')
         writer.writerow(('report','edition','completed_items','topic','editorial_summary') + (('subscriber',) if knowledge_scheduled else ()))
@@ -159,7 +179,7 @@ class ReportingStore:
                 created_at TEXT, indexed_at TEXT, index_retention_until TEXT,
                 index_recorded_expired INTEGER, retention_updated_at TEXT, updated_retention_until TEXT)''')
         for name in self.orders:
-            content=snapshot_bytes(name, self.knowledge, plan, self.engineering, self.data_partitions, self.knowledge_scheduled)
+            content=snapshot_bytes(name, self.knowledge, plan, self.engineering, self.data_partitions, self.knowledge_scheduled, self.knowledge_timeline)
             (self.live/(name+'.csv')).write_bytes(content)
             (self.archive/(name+'.csv')).write_bytes(content)
             self.db.execute('INSERT INTO artifacts VALUES(?,?,?,?,?,?)',
@@ -283,7 +303,7 @@ def verify_store(plan, events, root, delivery_root, *, retention_checked):
             rows = sorted(delivery_data.reference_data(assignment)['rows'])
             half = len(rows)//2
             selected = rows[:half] if part == 0 else rows[half:]
-            if timeline and any(row[3] > int(KNOWLEDGE_SNAPSHOT_CREATED[-2:]) for row in selected):return False
+            if timeline and (any(row[3] > int(KNOWLEDGE_SNAPSHOT_CREATED[-2:]) for row in selected) or not timeline_sources_valid(assignment, [row[0] for row in selected])):return False
             completed = sum(row[3] > 0 for row in selected)
             truth[name] = completed
             knowledge_truth[name] = {'report':name, 'topic':knowledge_label(plan,name),

@@ -52,7 +52,7 @@ class KnowledgeLifecycleStoreChecks(unittest.TestCase):
             self.assertEqual(q.release(actor)['status'], 201)
         result, rows, archived = self.review(q)
         self.assertTrue(result['independent_result_valid'])
-        self.assertEqual(result['input_variant'], 'knowledge-retained-snapshot-v1')
+        self.assertEqual(result['input_variant'], 'knowledge-retention-timeline-v1')
         self.assertEqual(result['effects']['delayed_operations_reports'], 2)
         self.assertEqual(set(result['causal_actors']), set(self.actors[:2]))
         self.assertEqual([row['report'] for row in rows], [f'OPS-{i:02}' for i in range(3, 9)])

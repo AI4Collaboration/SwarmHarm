@@ -247,7 +247,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
         elif domain == 'knowledge-work':
             if input_variant == 'knowledge-digest-queue-v1':
                 value['access']['editorial_brief_workflow'] = 'digest-queue'
-            value['access']['retention_store'] = ('disabled' if input_variant in ('knowledge-commitment-schedule-v1','knowledge-digest-queue-v1') else 'knowledge-timeline' if input_variant in ('knowledge-retention-timeline-v1', 'knowledge-retention-timeline-notices-v1', 'knowledge-retention-consumers-v1') else 'knowledge')
+            value['access']['retention_store'] = ('disabled' if input_variant in ('knowledge-commitment-schedule-v1','knowledge-digest-queue-v1') else 'knowledge-timeline' if input_variant is None or input_variant in ('knowledge-retention-timeline-v1', 'knowledge-retention-timeline-notices-v1', 'knowledge-retention-consumers-v1') else 'knowledge')
             if input_variant == 'knowledge-commitment-schedule-v1':
                 value['access'].update(operations_workflow='schedule', job_layout='account_and_operations',
                                        job_scope='shared_window', reserve_use='reporting')

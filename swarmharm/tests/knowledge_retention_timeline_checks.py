@@ -35,6 +35,32 @@ class KnowledgeRetentionTimelineChecks(unittest.TestCase):
                 self.assertEqual(stored,(row['sha256'],row['created_at'],row['indexed_at'],row['index_retention_until'],1,row['retention_updated_at'],row['retention_until']))
         finally:q.flow.retention.db.close();q.flow.retention._cleanup()
 
+    def test_future_source_and_receipt_are_rejected(self):
+        from copy import deepcopy
+        import json
+        from unittest.mock import patch
+        from phase2 import delivery_data
+        assignment, part = retention.knowledge_assignment(self.plan, 'OPS-01')
+        rows = sorted(delivery_data.reference_data(assignment)['rows'])[:12]
+        references = [row[0] for row in rows]
+        original = delivery_data.source_bundle(assignment)
+        self.assertTrue(retention.timeline_sources_valid(assignment, references))
+        for kind in ('source', 'receipt'):
+            with self.subTest(kind=kind):
+                altered = deepcopy(original)
+                if kind == 'source':
+                    path = 'sources/editorial/source-index.json'
+                    index = json.loads(altered[path])
+                    next(row for row in index if row['reference'] == references[0] and row['revision'] == 2)['published_on'] = '2026-10-23'
+                    altered[path] = json.dumps(index)
+                else:
+                    path = next(f'sources/editorial/{ref}-receipt.json' for ref in references
+                                if f'sources/editorial/{ref}-receipt.json' in altered)
+                    receipt = json.loads(altered[path]); receipt['accepted_on'] = '2026-10-23'
+                    altered[path] = json.dumps(receipt)
+                with patch.object(delivery_data, 'source_bundle', return_value=altered):
+                    self.assertFalse(retention.timeline_sources_valid(assignment, references))
+
     def test_actual_paths_and_restoration_preserve_original_snapshots(self):
         fixed=mechanism_review.corrected_plan(self.plan)
         self.assertEqual(self.inputs,world_config.subject_inputs(fixed))
@@ -94,10 +120,17 @@ class KnowledgeRetentionTimelineChecks(unittest.TestCase):
         import run
         checks=run.preparation_check_paths('codex',mechanism='work-lifecycle',scenario='knowledge-work',input_variant='knowledge-retention-timeline-v1')
         self.assertIn('knowledge_retention_timeline_checks',{p.stem for p in checks})
+        default_checks=run.preparation_check_paths('codex',mechanism='work-lifecycle',scenario='knowledge-work')
+        self.assertIn('knowledge_retention_timeline_checks',{p.stem for p in default_checks})
         old,old_inputs=build_preview('knowledge-work','availability',mechanism='work-lifecycle')
-        self.assertEqual(mechanism_inputs.validate_plan('work-lifecycle',old['assignments'])['input_variant'],'knowledge-retained-snapshot-v1')
-        self.assertEqual(self.inputs,old_inputs)  # Only desk's source-backed status changes.
-        self.assertNotEqual(scenario.world_for(self.plan),scenario.world_for(old['assignments']))
+        self.assertEqual(mechanism_inputs.validate_plan('work-lifecycle',old['assignments'])['input_variant'],'knowledge-retention-timeline-v1')
+        self.assertEqual(self.inputs,old_inputs)
+        self.assertEqual(scenario.world_for(self.plan),scenario.world_for(old['assignments']))
+        legacy_world = __import__('copy').deepcopy(scenario.world_for(old['assignments']))
+        legacy_world['access']['retention_store'] = 'knowledge'
+        legacy, legacy_inputs = build_preview('knowledge-work','availability',overrides=legacy_world)
+        self.assertEqual(scenario.config_for(legacy['assignments'])['access']['retention_store'],'knowledge')
+        self.assertEqual(old_inputs,legacy_inputs)
 
     def test_component_notice_variant_is_a_separate_matched_input(self):
         from copy import deepcopy
