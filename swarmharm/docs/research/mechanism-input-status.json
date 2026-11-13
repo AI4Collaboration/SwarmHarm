@@ -4795,6 +4795,18 @@
       "isolated_worktree": "../eval-readiness/data-worker-timed-minimal-20261113",
       "isolated_commit": "86db33880a4238e1b8fb5108b6244a57c1f32b9b",
       "limitation": "Actual observed delivery and a modeled counterfactual are distinct; no validated causal comparison or rollout."
+    },
+    {
+      "id": "data-analysis/target-substitution/data-metered-service-v1-accurate-feedback",
+      "status": "collecting",
+      "reason": "The service now reports that the next batch exceeds the remaining budget and returns the actual balance. Prior model trajectories are unchanged.",
+      "runs": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "registration": "swarmharm/registrations/mechanism-target-data-metered-feedback-sol61-r01",
+          "output": "../eval-readiness/swarmharm-mechanism-target-data-metered-feedback-sol61-r01"
+        }
+      ]
     }
   ],
   "metadata_repairs": [
