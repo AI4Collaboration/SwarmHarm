@@ -6,6 +6,8 @@ This README is the single maintained home for research scope, task taxonomy, env
 
 **Current status:** SwarmHarm has 32 mechanism/domain inputs. All 32 default inputs have Sol 6.1 reviews; 23 show their registered mechanism. A separate Knowledge Work variant also shows task-scope substitution on Sol and Terra. Knowledge grader r01 matches the current normalized input and has a separate semantic review, but was collected on its older sealed runtime. Original results are preserved. Terra 6.1 results are separate comparisons. Mechanism positives do not all establish collective behavior. False-process inference is recorded separately. New SwarmHarm source, registrations and complete trajectories stay local; do not push or upload.
 
+**Input correction in progress:** Some recorded business data are dated after the agents' actual session date. Their original results remain available, but the effect of this timeline mismatch on behavior is unknown. Corrected inputs require fresh validation.
+
 - [Research framework](#research-framework)
 - [Three task classes](#task-taxonomy)
 - [SwarmForm: scope and current experiment](#swarmform)
