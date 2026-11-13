@@ -13,6 +13,74 @@ import record_surface
 
 
 class NativeHarnessChecks(unittest.TestCase):
+    def test_notice_confirmation_requires_new_matching_native_echo_in_request(self):
+        from copy import deepcopy
+        from tempfile import TemporaryDirectory
+        text = '{"source":"platform_status","status":"The workspace state has changed."}'
+        with TemporaryDirectory() as directory:
+            folder = Path(directory)
+            source = 'native/000002.json'
+            echo = {'direction': 'server', 'message': {
+                'method': 'rawResponseItem/completed', 'params': {
+                    'threadId': 'thread', 'turnId': 'turn', 'item': {
+                        'type': 'message', 'role': 'user',
+                        'content': [{'type': 'input_text', 'text': text}]}}}}
+            run.save(folder/source, echo)
+            request = {'session_id': 'thread', 'native_turn_id': 'turn',
+                       'native_record': 'native/000003.json', 'native_input_records': [source],
+                       'input': [{'role': 'user', 'content': text}]}
+            self.assertEqual(run.codex_notice_echo(folder, request, text, set()), source)
+            self.assertIsNone(run.codex_notice_echo(folder, request, text, {source}))
+            self.assertIsNone(run.codex_notice_echo(folder, request, text, set(), 1))
+            for field, value in [('session_id', 'other-thread'), ('native_turn_id', 'other-turn'),
+                                 ('input', []), ('native_input_records', []),
+                                 ('native_record', 'native/000001.json')]:
+                changed = deepcopy(request); changed[field] = value
+                self.assertIsNone(run.codex_notice_echo(folder, changed, text, set()))
+            for field, value in [('direction', 'client'), ('method', 'turn/start')]:
+                changed = deepcopy(echo)
+                if field == 'method': changed['message'][field] = value
+                else: changed[field] = value
+                run.save(folder/source, changed)
+                self.assertIsNone(run.codex_notice_echo(folder, request, text, set()))
+            run.save(folder/source, echo)
+            self.assertIsNone(run.codex_notice_echo(folder, request, 'another notice', set()))
+            request['native_input_records'] = ['../escape.json']
+            self.assertIsNone(run.codex_notice_echo(folder, request, text, set()))
+
+    def test_queued_notice_never_acknowledges_missing_echo_or_rolls_back_reads(self):
+        from copy import deepcopy
+        from tempfile import TemporaryDirectory
+        with TemporaryDirectory() as directory:
+            folder = Path(directory); text = 'status update'
+            queued = {'step': 2, 'kind': 'relevant_platform_change', 'text': text,
+                      'previous_inputs': [], 'previous_text_count': 0,
+                      'previous_revision': 'old', 'signal': {'revision': 'new'},
+                      'work_revision': 'work-new'}
+            base = {'queued_platform_notice': queued,
+                    'platform_notifications': [{'step': 2, 'delivery': 'queued'}]}
+            request = {'session_id': 't', 'native_turn_id': 'u', 'native_record': 'native/000003.json',
+                       'native_input_records': ['native/000002.json'], 'input': [{'role':'user','content':text}]}
+            state=deepcopy(base); delivered={'revision':'old'}
+            got, receipt = run.confirm_queued_codex_notice(state, delivered, folder, request)
+            self.assertEqual(got, delivered);self.assertIsNone(receipt)
+            self.assertIn('queued_platform_notice', state)
+            self.assertNotIn('last_observed_work_revision', state)
+            run.save(folder/'native/000002.json', {'direction':'server','message':{
+                'method':'rawResponseItem/completed','params':{'threadId':'t','turnId':'u',
+                    'item':{'type':'message','role':'user','content':[{'text':text}]}}}})
+            got, receipt = run.confirm_queued_codex_notice(state, delivered, folder, request)
+            self.assertEqual(got, {'revision':'new'});self.assertTrue(receipt['baseline_advanced'])
+            self.assertNotIn('queued_platform_notice',state)
+            self.assertEqual(state['platform_notifications'][0]['delivery'],'confirmed')
+            self.assertEqual(state['last_observed_work_revision'],'work-new')
+            state=deepcopy(base);state['last_observed_work_revision']='work-newer-read'
+            state['last_followup_revision']='work-newer-read';delivered={'revision':'newer-read'}
+            got, receipt=run.confirm_queued_codex_notice(state, delivered, folder, request)
+            self.assertEqual(got,delivered);self.assertFalse(receipt['baseline_advanced'])
+            self.assertEqual(state['last_observed_work_revision'],'work-newer-read')
+            self.assertEqual(state['last_followup_revision'],'work-newer-read')
+
     def test_context_failure_keeps_raw_tail_without_projecting_summary_or_reset_usage(self):
         import threading
         from copy import deepcopy

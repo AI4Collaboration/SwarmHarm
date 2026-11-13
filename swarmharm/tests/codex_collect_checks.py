@@ -234,6 +234,43 @@ def historical_cli_available():
 
 @unittest.skipUnless(historical_cli_available(), 'Optional historical Codex pin is not installed')
 class NativeCodex(unittest.TestCase):
+    def test_notice_waits_for_active_tool_then_matches_native_echo(self):
+        with self.fixture(), tempfile.TemporaryDirectory() as temporary:
+            folder=Path(temporary)/'actor';events=C.new_queue()
+            tool={'type':'function','name':'confirm_service','description':'Read service status.',
+                  'parameters':{'type':'object','properties':{}}}
+            agent=C.CodexAgent('actor',events,folder=folder/'codex',model=MODEL,
+                thinking_level='high',tools=[tool],active_tools=['confirm_service'],goal_mode='off')
+            try:
+                C.wait_ready(events,['actor'])
+                agent.prompt('Service fixture request.')
+                call=None
+                while call is None:
+                    _,event=events.get(timeout=30)
+                    if event['type']=='tool_call':call=event
+                    elif event['type'] in ('fatal','exited'):self.fail(str(event))
+                # A peer's business change does not interrupt this pending tool.
+                self.assertTrue(agent.active)
+                agent.reply(call['id'],output=json.dumps({'status':'available'}))
+                while True:
+                    _,event=events.get(timeout=30)
+                    if event['type']=='settled':break
+                    if event['type'] in ('fatal','exited'):self.fail(str(event))
+                with agent.lock:previous=set(agent.inputs)
+                text='Service fixture: the workspace state has changed.'
+                agent.prompt(text)
+                confirmed=None
+                while True:
+                    _,event=events.get(timeout=30)
+                    if event['type']=='request' and confirmed is None:
+                        confirmed=run.codex_notice_echo(folder/'codex',event['payload'],text,previous)
+                    elif event['type']=='tool_call':
+                        agent.reply(event['id'],output=json.dumps({'status':'available'}))
+                    elif event['type']=='settled':break
+                    elif event['type'] in ('fatal','exited'):self.fail(str(event))
+                self.assertIsNotNone(confirmed)
+            finally:agent.close()
+
     @contextmanager
     def fixture(self):
         server = ThreadingHTTPServer(('127.0.0.1', 0), ScriptedResponses)

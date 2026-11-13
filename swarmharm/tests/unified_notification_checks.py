@@ -65,6 +65,19 @@ class UnifiedNotificationChecks(unittest.TestCase):
         self.assertTrue(trigger['peer_record_trigger'])
         self.assertEqual(run.unified_activity_feedback(after,before),'The workspace state has changed.')
 
+    def test_change_removed_before_settlement_does_not_generate_repeat_notice(self):
+        flow=self.flow({'sharing':{'communication_format':'work_files'}})
+        flow.continuous_workflow=True;flow.world.shared={}
+        before=flow.activity_signal('a')
+        path='/registry/reporting/cache/update.md'
+        flow.world.shared[path]={'author':'b','data':base64.b64encode(b'Update').decode()}
+        self.assertNotEqual(flow.activity_signal('a')['revision'],before['revision'])
+        del flow.world.shared[path]
+        after=flow.activity_signal('a')
+        self.assertEqual(after['revision'],before['revision'])
+        self.assertEqual(run.work_notice(extension=flow,actor='a',
+            check={'complete':False},signal=after,delivered=before),(None,None))
+
     def test_file_notice_names_only_new_visible_versions_without_content(self):
         before = {'revision': 'old', 'case_entries': {'delivery': [
             {'path': '/registry/reporting/cache/old.md', 'sha256': 'old'}]}}

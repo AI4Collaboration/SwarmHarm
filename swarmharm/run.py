@@ -12,6 +12,7 @@ import importlib.util
 import io
 import http.client
 import json
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -1522,6 +1523,67 @@ def platform_notice_message(message, kind, review_documents=()):
         body['filed_sheet_reviews'] = review_documents
     return {'role': 'developer', 'content': json.dumps(body, ensure_ascii=False)}
 
+
+def codex_notice_echo(folder, request, text, previous_inputs, previous_text_count=0):
+    """Identify this queued notice in both the native echo and next request."""
+    if sum(item.get('role') == 'user' and item.get('content') == text
+           for item in request.get('input', [])) <= previous_text_count:
+        return None
+    for source in request.get('native_input_records', []):
+        if source in previous_inputs:
+            continue
+        path = Path(source)
+        if (len(path.parts) != 2 or path.parts[0] != 'native'
+                or not re.fullmatch(r'\d{6}\.json', path.name)
+                or source >= request.get('native_record', '')):
+            continue
+        try:
+            record = load(Path(folder)/path)
+            message = record['message']
+            params = message['params']
+            item = params['item']
+            native_text = '\n'.join(part.get('text', '') for part in item.get('content', []))
+            if (record['direction'] == 'server' and message['method'] == 'rawResponseItem/completed'
+                    and params['threadId'] == request['session_id']
+                    and params['turnId'] == request['native_turn_id']
+                    and item.get('type') == 'message' and item.get('role') == 'user'
+                    and native_text == text):
+                return source
+        except (KeyError, TypeError, ValueError, OSError):
+            continue
+    return None
+
+
+def confirm_queued_codex_notice(state, delivered, folder, request):
+    """Confirm an echoed input without rolling back a newer tool observation."""
+    queued = state.get('queued_platform_notice')
+    if queued is None:
+        return delivered, None
+    echo = codex_notice_echo(folder, request, queued['text'],
+                             set(queued['previous_inputs']), queued['previous_text_count'])
+    if echo is None:
+        return delivered, None
+    advanced = delivered['revision'] == queued['previous_revision']
+    if advanced:
+        delivered = queued['signal']
+    if queued['kind'] == 'workflow_complete':
+        state['completion_notice_delivered'] = True
+    if advanced:
+        revision = queued['work_revision']
+        state['last_followup_revision'] = revision
+        state['last_observed_work_revision'] = revision
+        observed = state.setdefault('observed_work_revisions', [])
+        if revision not in observed:
+            observed.append(revision)
+    for notice in state['platform_notifications']:
+        if notice['step'] == queued['step'] and notice.get('delivery') == 'queued':
+            notice['delivery'] = 'confirmed'
+            break
+    state.pop('queued_platform_notice')
+    return delivered, {'notice_step': queued['step'], 'native_echo': echo,
+                       'activity_revision': queued['signal']['revision'],
+                       'baseline_advanced': advanced}
+
 def acknowledge_observed_activity(signal, delivered, observed, calendar_revision=None):
     """Advance notification receipts after exact content is returned by a tool."""
     if not observed and calendar_revision is None:
@@ -2078,11 +2140,13 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 if idle and not texts:
                     # A settled context starts a run only from new input.
                     return False
-                if notice_kind=='workflow_complete':
+                confirm_codex = is_codex and harness['goal_mode'] == 'off' and notice_kind in {
+                    'workflow_complete', 'relevant_platform_change'}
+                if notice_kind=='workflow_complete' and not confirm_codex:
                     state['completion_notice_delivered']=True
-                if notice_kind in {'workflow_complete','relevant_platform_change'}:
+                if notice_kind in {'workflow_complete','relevant_platform_change'} and not confirm_codex:
                     delivered_activity_signals[actor]=signal
-                if notice_kind is not None:
+                if notice_kind is not None and not confirm_codex:
                     state['last_followup_revision']=work_revision(extension,check,signal)
                 if message is not None:
                     platform_message=platform_notice_message(message,notice_kind,review_documents)
@@ -2100,6 +2164,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     notice['trigger'] = notification_trigger(signal, delivered)
                     notice['notification_scope'] = getattr(extension, 'config', {}).get(
                         'notification_scope', 'business_and_messages')
+                    if confirm_codex:
+                        notice['delivery'] = 'queued'
                     if (notice_kind == 'relevant_platform_change'
                             and getattr(extension, 'continuous_workflow', False)
                             and getattr(extension, 'config', {}).get('notification_detail') == 'changed_paths'):
@@ -2114,9 +2180,24 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                         'notice':notice,'input_message':input_message,
                         'peer_or_communication_hint':False,
                     })
+                    if confirm_codex:
+                        # A queued native input is not yet a delivered observation.
+                        # The session only accepts a new input after turn settlement.
+                        with agents[actor].lock:
+                            prior_inputs = list(agents[actor].inputs)
+                        state['queued_platform_notice'] = {
+                            'step': step, 'kind': notice_kind,
+                            'text': '\n\n'.join(texts), 'signal': deepcopy(signal),
+                            'previous_inputs': prior_inputs,
+                            'previous_text_count': sum(item.get('role') == 'user'
+                                and item.get('content') == '\n\n'.join(texts)
+                                for item in histories[actor]),
+                            'work_revision':work_revision(extension,check,signal),
+                            'previous_revision': delivered['revision']}
                 # The next response already sees the current request and tool
                 # results. Its unchanged final is not new information to feed back.
-                record_observed_work_revision(state,extension,check,signal)
+                if not confirm_codex:
+                    record_observed_work_revision(state,extension,check,signal)
                 state['status']='running';state.pop('waiting_since',None)
                 cohort_completion.requested(actor)
                 tools=pending_tools.pop(actor,None)
@@ -2174,6 +2255,13 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 record['attempts'][message['attempt']]={'status':None}
                 save(attempts/f"{message['attempt']:04d}.request.json",message['payload'])
                 shutil.copy2(attempts/f"{message['attempt']:04d}.request.json",folder/f'{label}.request.json')
+                queued=state.get('queued_platform_notice')
+                if queued is not None:
+                    delivered_activity_signals[actor], receipt=confirm_queued_codex_notice(
+                        state,delivered_activity_signals[actor],folder.parent/'codex',message['payload'])
+                    if receipt is not None:
+                        save(folder/f"{queued['step']:04d}-platform-update-confirmed.json",
+                             {'at':utc(), 'request_step':turn, **receipt})
                 histories[actor]=deepcopy(message['payload'].get('input',[]))
                 with state_lock:progress['model_requests_started']+=1
                 mark_inflight(str((folder/label).relative_to(root)),{'started_at':utc(),
@@ -2389,6 +2477,19 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                         return
                 if message['turn'] in (0,state.get('last_settled_turn')):
                     return
+                if state.get('queued_platform_notice') is not None:
+                    # Do not silently acknowledge or resend an unverified input.
+                    # Wait for this native turn to settle before parking the actor.
+                    queued=state['queued_platform_notice']
+                    save(root/name/actor/'trace'/f"{queued['step']:04d}-platform-update-unconfirmed.json", {
+                        'at':utc(), 'notice_step':queued['step'],
+                        'reason':'No matching native echo in the next request',
+                        'activity_revision':queued['signal']['revision']})
+                    running.discard(actor)
+                    state['status']='unconfirmed_platform_notice'
+                    state['last_settled_turn']=message['turn']
+                    export(actor)
+                    return
                 state['last_settled_turn']=message['turn'];running.discard(actor)
                 step=state['steps'];label=f'{step:04d}';folder=root/name/actor/'trace'
                 attempt_text=message['text'];check=current_completion(actor)
@@ -2589,7 +2690,11 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                         states[actor]['termination_reason'] = termination_reason
                         states[actor]['unreachable_wake'] = {
                             'resume_at_ms': due, 'batch_cutoff_ms': cutoff_ms}
-            complete_together=cohort_completion.ready(
+            unconfirmed_notice=any(state.get('queued_platform_notice') is not None
+                                   for state in states.values())
+            if unconfirmed_notice and termination_reason == 'quiescence':
+                termination_reason='notification_unconfirmed'
+            complete_together=not unconfirmed_notice and cohort_completion.ready(
                 extension.activated and extension.all_complete(),len(running),
                 {actor:activity_signal(actor)['revision'] for actor in active})
             if complete_together:
