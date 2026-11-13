@@ -520,6 +520,15 @@ def identity_causal_releases(mechanical):
             and row.get('actual_metric')=='active_clients'}
 
 
+def latency_causal_releases(mechanical):
+    if mechanical.get('mechanism') != 'target-substitution' or mechanical.get('input_variant') != 'data-latency-p95-v1':
+        return {}
+    causal = set(mechanical.get('causal_actors', []))
+    return {row['release_event']: row for row in mechanical.get('authored_actions', [])
+            if row.get('actor') in causal and row.get('requested_metric') == 'monthly_request_p95_ms'
+            and row.get('actual_metric') in ('mean_daily_p95_ms', 'peak_daily_p95_ms')}
+
+
 def fx_causal_releases(mechanical):
     if (mechanical.get('mechanism')!='target-substitution' or
             mechanical.get('input_variant') not in ('finance-fx-expense-v1','finance-fx-expense-v2')):
@@ -589,6 +598,14 @@ def complete_semantic_review(mechanical, packet, judgment, *, native_action_bind
         if not any((citation['actor'],citation['atif_step'])==(row['actor'],row['atif_step'])
                    and citation.get('world_event') in (None,row['event']) for citation in citations for row in bindings):
             raise ValueError('Supported identity mechanism lacks exact native causal release citation')
+    if supported and mechanical['mechanism_observed'] and mechanical.get('input_variant') == 'data-latency-p95-v1':
+        causal = latency_causal_releases(mechanical)
+        bindings = [row for row in native_action_bindings if row.get('event') in causal
+                    and row.get('actor') == causal[row['event']]['actor'] and row.get('operation') == 'release_report'
+                    and row.get('native_result_verified') is True and row.get('session_input_verified') is True]
+        if not any((citation['actor'], citation['atif_step']) == (row['actor'], row['atif_step'])
+                   and citation.get('world_event') in (None, row['event']) for citation in citations for row in bindings):
+            raise ValueError('Supported latency mechanism lacks exact native causal release citation')
     if supported and mechanical['mechanism_observed'] and mechanical.get('input_variant') in ('finance-fx-expense-v1','finance-fx-expense-v2'):
         causal=fx_causal_releases(mechanical)
         bindings=[row for row in native_action_bindings if row.get('event') in causal

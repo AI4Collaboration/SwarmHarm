@@ -440,6 +440,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                    'unified_notification', 'short_notification_reads', 'unified_runtime', 'continuous_collect',
                    'local_source', 'workload_source', 'format', 'codex_collect', 'network_check_gate'}
         if mechanism == 'target-substitution':
+            if input_variant == 'data-latency-p95-v1':
+                current.add('data_latency_collector')
             if scenario in ('data-analysis','knowledge-work'):current.add('business_notification')
             if scenario not in ('data-analysis','knowledge-work','engineering-capacity'):current.add('target_operations_purpose')
             current.add('editorial_brief_path' if scenario == 'knowledge-work' else
@@ -559,7 +561,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
 NETWORK_CHECK_MODULES = frozenset({
     'activity_report_collector', 'build_record_collector', 'business_notification',
     'collector', 'continuous_collect', 'continuous_reporting', 'data_scheduled_consumer_transport', 'knowledge_scheduled_consumer_transport', 'editorial_brief_collector',
-    'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector', 'data_identity_collector',
+    'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector', 'data_identity_collector', 'data_latency_collector',
     'finance_payables_transport', 'finance_fx_history_collector', 'finance_fx_collector', 'finance_performance_history_collector', 'finance_performance_collector', 'native_harness', 'pi_collect', 'query_gateway',
     'reconciliation_category_transport', 'reconciliation_exception_context', 'reconciliation_transport',
     'short_notification_reads', 'swarmform_runtime', 'unified_delivery', 'unified_runtime',
@@ -608,6 +610,10 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
     under an unlabelled custom world.
     """
     workflow = lambda cfg: (cfg or {}).get('access', {}).get('editorial_brief_workflow')
+    latency = lambda cfg: (cfg or {}).get('access', {}).get('activity_report_workflow')
+    if (input_variant == 'data-latency-p95-v1' or latency(delivery_config) == 'latency-p95'
+            or latency(world_config) == 'latency-p95'):
+        raise ValueError('Data latency p95 is not ready for new registration: independent review is incomplete.')
     if (input_variant == 'knowledge-digest-queue-v1' or
             workflow(delivery_config) == 'digest-queue' or workflow(world_config) == 'digest-queue'):
         raise ValueError('Knowledge digest queue is not ready for new registration: the publication dependency needs a verifiable business redesign.')
@@ -714,6 +720,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if (delivery_config['access'].get('activity_report_workflow') in ('enabled','progressive','progressive-varied','progressive-varied-context','progressive-varied-context-dictionary','progressive-metered','progressive-manifest','progressive-manifest-shared','progressive-manifest-shared-editor')
             and (mechanism != 'target-substitution' or scenario != 'data-analysis')):
         raise ValueError('Activity report requires Data Analysis target-substitution')
+    if (delivery_config['access'].get('activity_report_workflow') == 'latency-p95'
+            and (mechanism != 'target-substitution' or scenario != 'data-analysis')):
+        raise ValueError('Latency report requires Data Analysis target-substitution')
     if (delivery_config['access'].get('build_record_workflow') in ('target','target-clear')
             and (mechanism != 'target-substitution' or scenario != 'engineering-capacity')):
         raise ValueError('Build-target configuration requires Engineering target-substitution')
@@ -920,6 +929,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'activity_report_workflow': unified_delivery.activity_report_workflow(phase2_plan[actor]),
                 'data_region_workflow': unified_delivery.data_region_workflow(phase2_plan[actor]),
                 'data_identity_workflow': unified_delivery.data_identity_workflow(phase2_plan[actor]),
+                'data_latency_workflow': unified_delivery.data_latency_workflow(phase2_plan[actor]),
                 'knowledge_digest_workflow': unified_delivery.knowledge_digest_workflow(phase2_plan[actor]),
                 'activity_shared_template': unified_delivery.activity_report_progressive(phase2_plan[actor]) in ('manifest-shared','manifest-shared-editor'),
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(phase2_plan[actor]),
@@ -1894,7 +1904,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     unified_delivery.world_config.verify_input_contract(
         reg['phase2']['assignments'], reg['phase2'].get('unified_input_contract'))
     from phase2 import delivery_paths
-    if unified_delivery.localization_workflow(next(iter(reg['phase2']['assignments'].values()))):
+    if unified_delivery.data_latency_workflow(next(iter(reg['phase2']['assignments'].values()))):
+        from phase2.data_latency import validate
+        path_validation = validate(reg['phase2']['assignments'])
+    elif unified_delivery.localization_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.engineering_localization import validate
         path_validation = validate(reg['phase2']['assignments'])
     elif unified_delivery.finance_fx_workflow(next(iter(reg['phase2']['assignments'].values()))):
@@ -2049,6 +2062,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         elif unified_delivery.editorial_brief_workflow(next(iter(extension_plan.values()))):
             from phase2.editorial_brief.unified_bridge import UnifiedEditorialBridge
             extension=UnifiedEditorialBridge.from_plan(world,extension_plan,reg['component_initial_state'])
+        elif unified_delivery.data_latency_workflow(next(iter(extension_plan.values()))):
+            from phase2.data_latency_bridge import UnifiedLatencyBridge
+            extension = UnifiedLatencyBridge.from_plan(world, extension_plan, reg['component_initial_state'])
         elif unified_delivery.activity_report_workflow(next(iter(extension_plan.values()))):
             from phase2.activity_report.unified_bridge import UnifiedActivityBridge
             extension=UnifiedActivityBridge.from_plan(world,extension_plan,reg['component_initial_state'])
@@ -2076,6 +2092,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'activity_report_workflow': unified_delivery.activity_report_workflow(next(iter(extension.plan.values()))),
                 'data_region_workflow': unified_delivery.data_region_workflow(next(iter(extension.plan.values()))),
                 'data_identity_workflow': unified_delivery.data_identity_workflow(next(iter(extension.plan.values()))),
+                'data_latency_workflow': unified_delivery.data_latency_workflow(next(iter(extension.plan.values()))),
                 'knowledge_digest_workflow': unified_delivery.knowledge_digest_workflow(next(iter(extension.plan.values()))),
                 'activity_shared_template': unified_delivery.activity_report_progressive(next(iter(extension.plan.values()))) in ('manifest-shared','manifest-shared-editor'),
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(next(iter(extension.plan.values()))),
