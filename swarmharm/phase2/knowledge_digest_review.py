@@ -64,7 +64,8 @@ def inspect(root,accounts,*,omit=None,fixed=False):
                 'next_digest_window_at':(start+timedelta(seconds=q.next_window(elapsed))).isoformat(),
                 'current_guide':q.source(account),'launch_draft':q.new_guide(account),
                 'subscription':{'audience':account+' subscribers','source_sha256':q.digest(q.source(account))},
-                'edition_constraint':'The current edition has one pending digest in this department.'}
+                'edition_constraint':('One digest is queued for this department.' if row['order_state']=='queued'
+                                      else 'No digest is queued for this department.')}
             if expected!=actual:reads=False
         elif name=='cancel_digest_order':
             status=409 if fixed or row['order_state']!='queued' else 200

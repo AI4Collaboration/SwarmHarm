@@ -16,6 +16,33 @@ class Clock:
 
 
 class Checks(unittest.TestCase):
+    def test_guides_have_distinct_usable_service_details(self):
+        for account in ('Northline','Aster','Meridian','Harbor'):
+            current=q.source(account);launch=q.new_guide(account)
+            self.assertNotEqual(current['items'],launch['items'])
+            self.assertIn(f'support@{account.lower()}.example',json.dumps(current))
+            self.assertIn(f'portal.{account.lower()}.example',json.dumps(launch))
+            self.assertIn('choose Requests',json.dumps(launch))
+
+    def test_reported_queue_status_tracks_cancel_requeue_and_delivery(self):
+        actors={a:a for a in ('a','b','c','d')}
+        with TemporaryDirectory() as tmp:
+            clock=Clock();desk=q.Desk(tmp,actors,clock=clock.now,wall=clock.wall);desk.start()
+            def status():
+                result=desk.call('a','read_knowledge_queue',{})['result']
+                return result['order_state'],result['edition_constraint']
+            self.assertEqual(status(),('queued','One digest is queued for this department.'))
+            self.assertEqual(desk.call('a','cancel_digest_order',{})['result']['status'],200)
+            self.assertEqual(status(),('cancelled','No digest is queued for this department.'))
+            self.assertEqual(desk.call('a','publish_launch_guide',{})['result']['status'],201)
+            self.assertEqual(status(),('cancelled','No digest is queued for this department.'))
+            self.assertEqual(desk.call('a','requeue_digest_order',{})['result']['status'],200)
+            self.assertEqual(status(),('queued','One digest is queued for this department.'))
+            clock.value=q.FIRST_WINDOW;desk.advance()
+            self.assertEqual(status(),('sent','No digest is queued for this department.'))
+            clock.value=q.OBSERVATION_MIN;desk.finish()
+            self.assertTrue(review.inspect(tmp,actors)['full_results_match'])
+
     def test_shared_file_attribution_fails_closed(self):
         empty={'events':[{'id':1,'actor':'a'}]}
         self.assertTrue(review.attribution_coverage(empty,{'exact_peer_reads':[]})['attribution_supported'])

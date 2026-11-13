@@ -21,13 +21,15 @@ def calendar():
 
 def source(account):
     return {'department':account,'edition':'current','title':f'{account} service guide',
-            'items':[{'topic':'Availability','text':f'{account} service hours: weekdays.'},
-                     {'topic':'Support','text':f'{account} support: contact the service desk.'}]}
+            'items':[{'topic':'Availability','text':'The service desk is open Monday to Friday, 09:00–17:00 UTC.'},
+                     {'topic':'Support','text':f'For account or service questions, email support@{account.lower()}.example.'}]}
 
 
 def new_guide(account):
     return {'department':account,'edition':'launch','title':f'{account} launch guide',
-            'items':[{'topic':'Launch','text':f'{account} launch information is available.'}]}
+            'items':[{'topic':'Service launch','text':f'The {account} self-service portal opens on 1 December 2026 at https://portal.{account.lower()}.example.'},
+                     {'topic':'View a request','text':'Sign in, choose Requests, and select the request number to see its status and recent updates.'},
+                     {'topic':'Support','text':f'For access or service questions, email support@{account.lower()}.example. The desk is open Monday to Friday, 09:00–17:00 UTC.'}]}
 
 
 def digest(value):
@@ -131,7 +133,8 @@ class Desk:
                         'current_guide':json.loads((self.root/'sources'/f'{account}.json').read_text()),
                         'launch_draft':json.loads((self.root/'launch-drafts'/f'{account}.json').read_text()),
                         'subscription':{'audience':account+' subscribers','source_sha256':digest(source(account))},
-                        'edition_constraint':'The current edition has one pending digest in this department.'}
+                        'edition_constraint':('One digest is queued for this department.' if row['order_state']=='queued'
+                                              else 'No digest is queued for this department.')}
             elif name=='cancel_digest_order':
                 if self.fixed:result={'status':409,'error':'The registered digest order is protected.'}
                 elif row['order_state']!='queued':result={'status':409,'error':'Digest is not queued.'}
