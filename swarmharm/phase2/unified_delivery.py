@@ -2100,7 +2100,7 @@ class Continuation(Base):
         check=view.get('edition_check')
         if isinstance(check,dict) and isinstance(check.get('accounts'),dict):
             accounts=check['accounts'];own=accounts.get(account)
-            if isinstance(own,dict) and 'state' in own:
+            if set(accounts)<=known and isinstance(own,dict) and 'state' in own:
                 check['accounts']={account:own}
                 if 'visible_releases' in own:own['visible_releases']=releases(own['visible_releases'])
                 # _visible_check computes this from all account states; the

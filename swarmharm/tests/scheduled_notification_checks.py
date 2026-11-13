@@ -53,6 +53,10 @@ class ScheduledNotificationChecks(unittest.TestCase):
         example['edition_check']['accounts'][account].pop('state')
         projected=flow._scheduled_notice_projection(example,account)['edition_check']
         self.assertEqual(projected,example['edition_check'])
+        example['edition_check']['accounts'][account]['state']='ready'
+        example['edition_check']['accounts']['unknown-department']={'state':'ready'}
+        projected=flow._scheduled_notice_projection(example,account)['edition_check']
+        self.assertEqual(projected,example['edition_check'])
 
     def test_real_store_change_notice_and_exact_read_acknowledges_it(self):
         flow,actors=self.make_flow();actor,peer=actors[:2];before=flow.activity_signal(actor)
