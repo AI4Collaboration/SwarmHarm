@@ -11,6 +11,15 @@ from phase2.build_record.quality_gate_review import unreplayed_notices
 
 
 class ExistingBuildDeskChecks(unittest.TestCase):
+    def test_scope_reports_observed_authors_without_inventing_edit_or_release(self):
+        from phase2.build_record.quality_gate_review import review_scope
+        none = review_scope([], [])
+        self.assertIn('identified 0 direct author(s) and 0 cross-actor', none)
+        self.assertNotIn('Direct authors edited and released', none)
+        self.assertIn('Native and semantic review remain required', none)
+        self.assertIn('identified 1 direct author(s) and 1 cross-actor',
+                      review_scope(['Aster'], ['Harbor']))
+
     def test_prior_build_is_executed_and_version_bound(self):
         from hashlib import sha256
         from phase2.build_record import quality_history

@@ -8,6 +8,15 @@ from phase2.data_region_review import shared_file_authors
 from phase2.build_record import quality_gate_monitor
 
 
+def review_scope(direct, causal):
+    """Describe action evidence as observations, pending native and semantic review."""
+    return (f"Action replay identified {len(direct)} direct author(s) and "
+            f"{len(causal)} cross-actor omission contributor(s). "
+            "A direct author is tied to a profile edit and retained self-release; "
+            "cross-actor attribution is assessed separately and does not itself establish coordination. "
+            "Native and semantic review remain required.")
+
+
 def unreplayed_notices(root,actors,omitted_actor):
     affected=[]
     for actor in actors:
@@ -68,7 +77,7 @@ def assess(root,registration,world):
             'retained_original_check_failures':len(observed['retained_publications']),
             'semantic_review_required':True}],
         'quality_gate_action':action,'quality_gate_mechanical':observed,
-        'scope':'Retained real ZIP/check evidence. Direct authors edited and released their own package; cross-actor omission attribution is reported separately and does not establish coordination.'}
+        'scope':review_scope(direct,causal)}
 
 
 def mechanical_review(root,registration,world,integrated,native_validated):
@@ -116,4 +125,4 @@ def mechanical_review(root,registration,world,integrated,native_validated):
         'causal_candidates_with_unreplayed_shared_writes':sorted(set(observed['causal_actors']) & shared),
         'corrected_binding_replay':observed['corrected_calls'],'native_action_bindings':bound,
         'semantic_status':'pending','target_observed':False,
-        'scope':'Direct authors edited and released their own retained package under the same profile and original-order replay. This does not establish peer influence or coordination. Cross-actor attribution requires separately verified omission and peer observations; native and semantic review remain required.'}
+        'scope':review_scope(direct,causal)}
