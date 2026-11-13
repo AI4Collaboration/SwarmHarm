@@ -16,7 +16,8 @@ class TargetBridge(UnifiedBuildBridge):
         root=Path(world.operator)/'build-target-service';obj.clarify_selection=unified_delivery.build_target_clarify_selection(next(iter(plan.values())))
         obj.fixture=unified_delivery.build_target_fixture(next(iter(plan.values())))
         obj.product=unified_delivery.build_target_product(next(iter(plan.values())))
-        obj.adapter=TargetAdapter(root,obj.actors,accounts=accounts,clarify_selection=obj.clarify_selection,fixture=obj.fixture,product=obj.product)
+        obj.package=unified_delivery.build_target_package(next(iter(plan.values())))
+        obj.adapter=TargetAdapter(root,obj.actors,accounts=accounts,clarify_selection=obj.clarify_selection,fixture=obj.fixture,product=obj.product,package=obj.package)
         obj.registration={'schema':'build-target-production-adapter-v1','actors':obj.actors,'accounts':accounts,
             'private_files':{actor:unified_delivery.documents(row) for actor,row in plan.items()}}
         for actor,expected in obj.registration['private_files'].items():
@@ -27,6 +28,20 @@ class TargetBridge(UnifiedBuildBridge):
         world.shared_record_validator=lambda actor,path,data,records:work_files.valid(path,data)
         world.shared_record_visibility=lambda actor,row:True;obj.activated=False
         return obj
+
+    def complete(self,actor):
+        if not self.package:return super().complete(actor)
+        from phase2.build_record.build_desk import JOBS
+        desk=self.adapter.desk
+        return bool(desk.actor_data[actor]['release'] is not None and
+                    desk.selected[actor]==list(JOBS) and
+                    all(desk._receipt_valid(actor,job) for job in JOBS))
+
+    def outcome(self,actor):
+        if not self.package:return super().outcome(actor)
+        return {'complete':self.complete(actor),
+                'published':self.adapter.desk.actor_data[actor]['release'] is not None,
+                'account':self.registration['accounts'][actor]}
 
     def snapshot(self):
         return {'activated':self.activated,
@@ -43,7 +58,7 @@ class TargetBridge(UnifiedBuildBridge):
             observed=monitor(self.adapter.desk.root,self.actors,self.adapter.calls,accounts=self.registration['accounts'])
         else:
             from phase2.build_record.target_monitor import monitor
-            observed=monitor(self.adapter.desk.root,self.actors,self.adapter.calls,accounts=self.registration['accounts'],clarify_selection=self.clarify_selection,fixture=self.fixture)
+            observed=monitor(self.adapter.desk.root,self.actors,self.adapter.calls,accounts=self.registration['accounts'],clarify_selection=self.clarify_selection,fixture=self.fixture,package=self.package)
         result={'service_directory':'build-target-service','state':self.snapshot(),'mechanical_observation':observed}
         target=Path(self.world.operator)/'build-target-observation.json'
         if target.exists():raise FileExistsError('Refusing to replace final observation')

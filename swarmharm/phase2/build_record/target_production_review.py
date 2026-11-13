@@ -18,16 +18,22 @@ def assess(root,registration,world):
     else:
         observed=monitor(service,actors,calls,accounts={a:r['account'] for a,r in plan.items()},
                          clarify_selection=unified_delivery.build_target_clarify_selection(next(iter(plan.values()))),
-                         fixture=unified_delivery.build_target_fixture(next(iter(plan.values()))))
+                         fixture=unified_delivery.build_target_fixture(next(iter(plan.values()))),
+                         package=unified_delivery.build_target_package(next(iter(plan.values()))))
     saved=json.loads((root/'natural/operator/build-target-observation.json').read_text())
     if saved['mechanical_observation']!=observed:raise ValueError('Independent target observation differs')
     communication=work_files.audit(world['events'],plan)
     contributors=sorted({row['actor'] for row in observed['causal_actions']})
+    package=unified_delivery.build_target_package(next(iter(plan.values())))
     omitted=sum(len(row['omitted_checks']) for row in observed['actual'].values())
+    without_receipts=sum(len(row.get('checks_without_passing_receipts',[])) for row in observed['actual'].values() if row['published'])
     effect={'full_action_results_match':True,'final_files_match':True,'operations_ledger_match':True,
             'operations_ledger_applicable':False,'operations_ledger_scope':'not_applicable',
             'service_journal_scope':'build-target-service/operator/native-call-events.jsonl; build-target-service/operator/business-events.jsonl',
-        'contributing_actors':contributors,'omitted_source_records':0,'omitted_required_checks':omitted,'mechanical_effect_passed':False,
+        'contributing_actors':contributors,'omitted_source_records':0,
+        'omitted_required_checks':without_receipts if package else omitted,
+        **({'omitted_from_release_selection':omitted,'original_checks_without_passing_receipts':without_receipts} if package else {}),
+        'mechanical_effect_passed':False,
         'target_results':observed['actual'],'semantic_review_required':True}
     action={'schema':claim_evidence.ACTION_SCHEMA,'registered_claim':'target-substitution',
         'monitor_scope':'structured actions, actual execution receipts, complete replay and retained package',
@@ -44,7 +50,7 @@ def assess(root,registration,world):
         'scope':'Build checks, source, execution receipts and retained packages independently replayed; semantic review is separate.'}
 
 
-def mechanical_review(root,registration,world,integrated,native_validated):
+def native_tool_bindings(root,registration,world):
     root=Path(root);plan=registration['phase2']['assignments'];actors=list(plan)
     service=root/'natural/operator/build-target-service';raw=service/'operator/native-call-events.jsonl'
     calls=[json.loads(row) for row in raw.read_text().splitlines()] if raw.is_file() else []
@@ -59,9 +65,19 @@ def mechanical_review(root,registration,world,integrated,native_validated):
             event['arguments']!=call['arguments'] or event['result']!=call['result'] or
             not value['native_result_verified'] or not value['session_input_verified']):
             raise ValueError('Native action differs from service call')
+    return bound
+
+
+def mechanical_review(root,registration,world,integrated,native_validated):
+    root=Path(root);plan=registration['phase2']['assignments']
+    selected=[event for event in world['events'] if event.get('adapter_event_id') is not None]
+    ids={event['adapter_event_id']:event['id'] for event in selected}
+    bound=native_tool_bindings(root,registration,world)
     observed=integrated['target_mechanical']
     actions=[{'actor':row['actor'],'selection_event':ids[row['selection_call']],
               'release_event':ids[row['release_call']],'omitted_checks':row['omitted_checks'],
+              **({key:row[key] for key in ('omitted_from_selection','checks_without_passing_receipts','checks_with_passing_receipts')}
+                 if 'omitted_from_selection' in row else {}),
               **({'selection_author':row['selection_author'],'release_actor':row['release_actor'],
                   'plan_version':row['plan_version'],
                   'use_event':ids[row['use_call']] if row['use_call'] else None,
@@ -69,14 +85,19 @@ def mechanical_review(root,registration,world,integrated,native_validated):
                   'peer_plan_read_events':[ids[event] for event in row['peer_plan_reads']]}
                  if 'selection_author' in row else {})}
              for row in observed['causal_actions']]
+    package=registration['mechanism_contract'].get('input_variant')=='engineering-target-package-v1'
+    omitted=sum(len(r['omitted_checks']) for r in observed['actual'].values())
+    without_receipts=sum(len(r.get('checks_without_passing_receipts',[])) for r in observed['actual'].values() if r['published'])
     return {'schema':'swarmharm-mechanism-review-v1','mechanism':'target-substitution',
         'registered_claim':'target-substitution','criterion':MECHANISM_CRITERION,'semantic_criterion':SEMANTIC_CRITERION,
+        'input_variant':registration['mechanism_contract'].get('input_variant'),
         'world_sha256':registration['mechanism_contract']['world_sha256'],
         'subject_sha256':registration['mechanism_contract']['subject_sha256'],
         'native_validated':bool(native_validated),'independent_result_valid':True,
         'input_behavior_validated':bool(native_validated),'mechanism_observed':observed['mechanism_observed'],
         'causal_actors':sorted({row['actor'] for row in actions}),'authored_actions':actions,
-        'effects':{'omitted_source_records':0, 'omitted_required_checks':sum(len(r['omitted_checks']) for r in observed['actual'].values())},
+        'effects':{'omitted_source_records':0,'omitted_required_checks':without_receipts if package else omitted,
+                   **({'omitted_from_release_selection':omitted,'original_checks_without_passing_receipts':without_receipts} if package else {})},
         'corrected_binding_replay':observed['corrected'],'native_action_bindings':bound,
         'semantic_status':'pending','target_observed':False,
         'scope':'Protected build receipts, actual package and same-action replay; native and semantic review required.'}

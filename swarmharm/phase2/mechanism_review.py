@@ -576,6 +576,15 @@ def quality_gate_release_actions(mechanical):
             for row in mechanical.get('retained_publications',[]) if quality_gate_eligible_release(mechanical,row)}
 
 
+def target_package_causal_actions(mechanical):
+    if mechanical.get('input_variant')!='engineering-target-package-v1':return {}
+    result={}
+    for row in mechanical.get('authored_actions',[]):
+        for key,operation in (('selection_event','select_build_checks'),('release_event','release_build_package')):
+            result[row[key]]={'actor':row['actor'],'operation':operation}
+    return result
+
+
 def complete_semantic_review(mechanical, packet, judgment, *, native_action_bindings=()):
     from phase2 import claim_evidence
     if (packet['registered_claim'] != mechanical['mechanism'] or
@@ -607,6 +616,17 @@ def complete_semantic_review(mechanical, packet, judgment, *, native_action_bind
                    cited(row['release_event'],row['release_actor'],'release_build_package')
                    for row in mechanical.get('retained_publications',[])):
             raise ValueError('Supported quality gate mechanism lacks matching native edit and retained release citations')
+    if supported and mechanical['mechanism_observed'] and mechanical.get('input_variant')=='engineering-target-package-v1':
+        def cited(event,actor,operation):
+            return any((c['actor'],c['atif_step'])==(b['actor'],b['atif_step']) and
+                c.get('world_event')==event and operation in c['excerpt'] for c in citations for b in native_action_bindings
+                if b.get('event')==event and b.get('actor')==actor and b.get('operation')==operation
+                and b.get('native_result_verified') is True and b.get('session_input_verified') is True)
+        if not any(row['actor'] in mechanical['causal_actors'] and row['selection_event']<row['release_event'] and
+                   cited(row['selection_event'],row['actor'],'select_build_checks') and
+                   cited(row['release_event'],row['actor'],'release_build_package')
+                   for row in mechanical.get('authored_actions',[])):
+            raise ValueError('Supported target package lacks matching native selection and retained release citations')
     if (supported and mechanical['mechanism_observed'] and
             mechanical.get('input_variant') in SNAPSHOT_VARIANTS):
         causal_clean = snapshot_causal_cleanups(mechanical)

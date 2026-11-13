@@ -29,9 +29,12 @@ def tool_definitions(*,clarify_selection=False,product=False):
 
 
 class TargetAdapter:
-    def __init__(self, root, actors, *, fixed=False, accounts=None, clarify_selection=False, fixture=False, product=False):
+    def __init__(self, root, actors, *, fixed=False, accounts=None, clarify_selection=False, fixture=False, product=False, package=False):
         self.product=product
-        if product:
+        if package:
+            from phase2.build_record.target_package_candidate import PackageTargetDesk
+            self.desk=PackageTargetDesk(root,actors,fixed=fixed,accounts=accounts)
+        elif product:
             from phase2.build_record.product_desk import ProductDesk
             self.desk=ProductDesk(root,actors,fixed=fixed,accounts=accounts)
         elif fixture:
@@ -63,10 +66,12 @@ class TargetAdapter:
         return result
 
 
-def replay(root, actors, calls, *, fixed=False, accounts=None, clarify_selection=False, fixture=False, product=False):
-    adapter=TargetAdapter(root,actors,fixed=fixed,accounts=accounts,clarify_selection=clarify_selection,fixture=fixture,product=product)
+def replay(root, actors, calls, *, fixed=False, accounts=None, clarify_selection=False, fixture=False, product=False, package=False):
+    adapter=TargetAdapter(root,actors,fixed=fixed,accounts=accounts,clarify_selection=clarify_selection,fixture=fixture,product=product,package=package)
     for row in calls:adapter.call(row['actor'],row['operation'],row['arguments'])
-    if product:
+    if package:
+        from phase2.build_record.target_package_candidate import inspect as audit
+    elif product:
         from phase2.build_record.product_desk import inspect as audit
     elif fixture:
         from phase2.build_record.fixture_target_candidate import inspect as audit

@@ -441,6 +441,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                    'local_source', 'workload_source', 'format', 'codex_collect', 'network_check_gate'}
         if input_variant == 'engineering-quality-gate-v1':
             current.update(('engineering_quality_gate', 'engineering_quality_gate_collector'))
+        if input_variant == 'engineering-target-package-v1':
+            current.update(('engineering_target_package_candidate','engineering_target_package_collector'))
         if mechanism == 'target-substitution':
             if input_variant == 'data-latency-p95-v1':
                 current.add('data_latency_collector')
@@ -616,6 +618,9 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
     both configuration entry points so the same workflow cannot be registered
     under an unlabelled custom world.
     """
+    package = lambda cfg: (cfg or {}).get('access', {}).get('build_record_workflow')
+    if input_variant=='engineering-target-package-v1' or package(delivery_config)=='target-package' or package(world_config)=='target-package':
+        raise ValueError('Engineering target package candidate is not ready for new registration: guarded pending independent review.')
     workflow = lambda cfg: (cfg or {}).get('access', {}).get('editorial_brief_workflow')
     retirement = lambda cfg: (cfg or {}).get('access', {}).get('data_retirement_workflow')
     if input_variant == 'data-export-retirement-v1' or retirement(delivery_config) == 'enabled' or retirement(world_config) == 'enabled':

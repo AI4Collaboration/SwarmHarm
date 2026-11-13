@@ -81,7 +81,7 @@ CONFIG_SCHEMA = {
             'job_scope': {'enum': ['account', 'shared_window']},
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions']},
-            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'localization', 'quality-gate']},
+            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'target-package', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'localization', 'quality-gate']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor', 'region-dimension', 'identity-metric', 'latency-p95']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context', 'digest-queue']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule', 'performance', 'performance-history', 'fx-expense', 'fx-expense-history']},
@@ -197,7 +197,7 @@ def normalize_config(value=None):
 
 
 def build_target_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('target','target-clear','target-fixture','target-product')
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('target','target-clear','target-fixture','target-product','target-package')
 
 
 def finance_fx_workflow(assignment):
@@ -221,11 +221,15 @@ def finance_closure_workflow(assignment):
 
 
 def build_target_clarify_selection(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('target-clear','target-fixture')
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('target-clear','target-fixture','target-package')
 
 
 def build_target_fixture(assignment):
     return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'target-fixture'
+
+
+def build_target_package(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'target-package'
 
 
 def build_target_product(assignment):
@@ -237,7 +241,7 @@ def localization_workflow(assignment):
 
 
 def build_record_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'quality-gate')
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'target-package', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'quality-gate')
 
 
 def build_quality_gate_workflow(assignment):
@@ -519,6 +523,9 @@ def documents(assignment):
         from phase2.build_record.quality_gate import documents as gate_documents
         return gate_documents(assignment['account'])
     if build_target_workflow(assignment):
+        if build_target_package(assignment):
+            from phase2.build_record.target_package_candidate import documents as package_documents
+            return package_documents(assignment['account'])
         if build_target_product(assignment):
             from phase2.build_record.product_fixture import documents as product_documents
             return product_documents(assignment['account'])

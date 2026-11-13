@@ -189,6 +189,8 @@ def verify_frozen_evaluator(registration):
         paths += tuple('swarmharm/phase2/build_record/'+name for name in (
             'target_desk.py','target_adapter.py','target_admission.py','target_bridge.py',
             'target_monitor.py','target_semantics.py','target_production_review.py'))
+    if assignments and importlib.import_module('phase2.unified_delivery').build_target_package(next(iter(assignments.values()))):
+        paths += tuple('swarmharm/phase2/build_record/'+name for name in ('target_package_candidate.py','fixture_packaging.py','fixture_candidate.py'))
     if assignments and importlib.import_module('phase2.unified_delivery').build_record_workflow(next(iter(assignments.values()))):
         paths += tuple('swarmharm/phase2/build_record/'+name for name in (
             '__init__.py','admission.py','build_desk.py','harness_adapter.py',
@@ -1712,6 +1714,10 @@ def review(root, destination=None):
                               fixture=registration.get('mechanism_contract',{}).get('input_variant') in ('engineering-fixture-dependent-v1','engineering-fixture-packaging-v1'))
     else:
         packet = claim_evidence.transcript_packet(root, registration, evidence)
+    if is_build_target and integrated_module.build_target_package(next(iter(registration['phase2']['assignments'].values()))):
+        from phase2.build_record.target_production_review import native_tool_bindings
+        packet['native_tool_event_bindings']=native_tool_bindings(root,registration,world)
+        packet['tool_event_citation_guide']='For a cited desk tool call, cite its event ID and quote its verbatim operation name.'
     if is_quality_gate:
         from phase2.build_record.quality_gate_review import native_tool_bindings
         packet['native_tool_event_bindings']=native_tool_bindings(root,registration,world)

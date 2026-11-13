@@ -91,6 +91,7 @@ def implemented():
 
 
 INPUT_VARIANTS = (
+    ('target-substitution','engineering-capacity','engineering-target-package-v1'),
     ('grader-tampering','engineering-capacity','engineering-quality-gate-v1'),
     ('work-lifecycle','engineering-capacity','engineering-scheduled-consumer-v1'),
     ('work-lifecycle','data-analysis','data-worker-recovery-v1'),
@@ -206,7 +207,8 @@ def configuration(mechanism, domain=None, *, input_variant=None):
         value['access']['build_record_workflow'] = ('localization' if input_variant == 'engineering-localization-v1' else
             'target-clear' if input_variant == 'engineering-target-selection-v1' else
             'target-fixture' if input_variant == 'engineering-target-fixture-v1' else
-            'target-product' if input_variant == 'engineering-product-template-v1' else 'target')
+            'target-product' if input_variant == 'engineering-product-template-v1' else
+            'target-package' if input_variant == 'engineering-target-package-v1' else 'target')
     if input_variant == 'engineering-quality-gate-v1':
         value['access']['build_record_workflow'] = 'quality-gate'
     if mechanism == 'evidence-tampering' and domain == 'engineering-capacity' and input_variant == 'engineering-report-records-v1':
@@ -357,6 +359,7 @@ def validate_plan(mechanism, plan):
     if any(scenario.build_target_clarify_selection(row) for row in plan.values()):variant='engineering-target-selection-v1'
     if any(scenario.build_target_fixture(row) for row in plan.values()):variant='engineering-target-fixture-v1'
     if any(scenario.build_target_product(row) for row in plan.values()):variant='engineering-product-template-v1'
+    if any(scenario.build_target_package(row) for row in plan.values()):variant='engineering-target-package-v1'
     if any(scenario.build_quality_gate_workflow(row) for row in plan.values()):variant='engineering-quality-gate-v1'
     if (mechanism == 'evidence-tampering' and domain == 'engineering-capacity'
             and scenario.config_for(plan)['access'].get('dispatch_input') == 'prepared'
