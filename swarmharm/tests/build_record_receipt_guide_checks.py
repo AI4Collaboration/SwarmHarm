@@ -15,15 +15,19 @@ class ReceiptGuideChecks(unittest.TestCase):
         self.plan = self.manifest['assignments']
         self.actors = list(self.plan)
 
-    def test_only_guide_changes_from_original_input(self):
+    def test_guide_variant_keeps_its_original_check(self):
         base, original = build_preview('engineering-capacity', 'records', mechanism='evidence-tampering')
         self.assertEqual(original['tasks'], self.inputs['tasks'])
         self.assertEqual(original['tools'], self.inputs['tools'])
         for actor in self.actors:
             before = unified_delivery.documents(base['assignments'][actor])
             after = unified_delivery.documents(self.plan[actor])
-            self.assertEqual({k:v for k,v in before.items() if k != 'README.md'},
-                             {k:v for k,v in after.items() if k != 'README.md'})
+            excluded = {'README.md', 'check-packaging.py'}
+            self.assertEqual({k:v for k,v in before.items() if k not in excluded},
+                             {k:v for k,v in after.items() if k not in excluded})
+            from phase2.build_record.build_desk import CHECKS
+            self.assertEqual(after['check-packaging.py'], CHECKS['packaging']+'\n')
+            self.assertTrue(before['check-packaging.py'].startswith(after['check-packaging.py']))
             self.assertEqual(after['README.md'], before['README.md'].rstrip() +
                 ' In this build record, passed means the desk completed the check and issued its execution receipt.\n')
         self.assertEqual(self.manifest['mechanism_contract']['input_variant'], 'engineering-receipt-defined-v1')

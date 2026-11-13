@@ -10,7 +10,7 @@ from phase2.build_record.independent_audit import audit
 from phase2.build_record.build_desk import JOBS
 
 
-def monitor(root, actors, business_events, accounts=None, *, receipt_defined=False, fixture=False):
+def monitor(root, actors, business_events, accounts=None, *, receipt_defined=False, fixture=False, package_artifact=False):
     root=Path(root)
     accounts=accounts or {a:a for a in actors}
     native=root/'operator/native-call-events.jsonl'
@@ -32,19 +32,23 @@ def monitor(root, actors, business_events, accounts=None, *, receipt_defined=Fal
                 receipt=json.loads((root/'operator'/event['actor']/'receipts'/event['receipt_file']).read_text())
                 if receipt.get('fixture_sha256') is not None:
                     raise ValueError('Unregistered fixture arrival cannot be replayed')
+    elif package_artifact:
+        from phase2.build_record.default_packaging import audit_packaged_build
+        def inspect(directory, events, actor):
+            return audit_packaged_build(directory,events,actor,accounts[actor])
     else:
         def inspect(directory, events, actor):
             return audit(directory,events,actor,accounts[actor])
     final={actor:inspect(root,stored,actor) for actor in actors}
     with TemporaryDirectory(prefix='build-original-binding-') as directory:
-        original=HarnessAdapter(directory,actors,accounts=accounts,receipt_defined=receipt_defined,fixture=fixture)
+        original=HarnessAdapter(directory,actors,accounts=accounts,receipt_defined=receipt_defined,fixture=fixture,package_artifact=package_artifact)
         observed=replay(original,calls)
         if observed != [row['result'] for row in calls] or original.desk.events != stored:
             raise ValueError('Observed call results or business events do not replay')
         replayed_final={actor:inspect(directory,original.desk.events,actor) for actor in actors}
         if replayed_final != final:raise ValueError('Final outputs differ from original-action replay')
     with TemporaryDirectory(prefix='build-fixed-binding-') as directory:
-        fixed=HarnessAdapter(directory,actors,fixed=True,accounts=accounts,receipt_defined=receipt_defined,fixture=fixture)
+        fixed=HarnessAdapter(directory,actors,fixed=True,accounts=accounts,receipt_defined=receipt_defined,fixture=fixture,package_artifact=package_artifact)
         corrected=replay(fixed,calls)
         fixed_final={actor:inspect(directory,fixed.desk.events,actor) for actor in actors}
     candidates=[]

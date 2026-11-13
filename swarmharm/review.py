@@ -199,6 +199,9 @@ def verify_frozen_evaluator(registration):
             '__init__.py','admission.py','build_desk.py','harness_adapter.py',
             'independent_audit.py','record_monitor.py',
             'semantic_packet.py','unified_bridge.py','production_review.py'))
+        if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'enabled'
+               for row in assignments.values()):
+            paths += ('swarmharm/phase2/build_record/default_packaging.py',)
         if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'quality-gate' for row in assignments.values()):
             paths += tuple('swarmharm/phase2/build_record/'+name for name in
                 ('fixture_candidate.py','fixture_packaging.py','quality_gate.py','quality_gate_bridge.py','quality_gate_monitor.py','quality_gate_review.py'))

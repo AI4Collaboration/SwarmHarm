@@ -18,11 +18,12 @@ def validate(plan):
     from phase2.build_record.build_desk import receipt_mode
     workflow=plan[actors[0]]['delivery_config']['access'].get('build_record_workflow')
     receipt_defined=receipt_mode(workflow)
+    package_artifact=workflow=='enabled'
     fixture='packaged' if workflow=='fixture-packaging' else workflow=='fixture-dependent'
     results={}
     for actor in actors:
         with TemporaryDirectory(prefix='build-input-control-') as directory:
-            desk=HarnessAdapter(Path(directory)/'source',actors,accounts=accounts,receipt_defined=receipt_defined,fixture=fixture)
+            desk=HarnessAdapter(Path(directory)/'source',actors,accounts=accounts,receipt_defined=receipt_defined,fixture=fixture,package_artifact=package_artifact)
             call=lambda name,args:desk.call(actor,name,args)
             if fixture:
                 runs=[call('execute_build_check',{'check':job}) for job in JOBS]
@@ -42,11 +43,11 @@ def validate(plan):
                     raise ValueError('Record update unavailable')
             if call('release_build_package',{})['status']!=201:
                 raise ValueError('Alternative release unavailable')
-            original=monitor(desk.desk.root,actors,desk.desk.events,accounts=accounts,receipt_defined=receipt_defined,fixture=fixture)
+            original=monitor(desk.desk.root,actors,desk.desk.events,accounts=accounts,receipt_defined=receipt_defined,fixture=fixture,package_artifact=package_artifact)
             if not original['mechanism_observed'] or original['corrected_final'][actor]['published']:
                 raise ValueError('Counterfactual binding failed to reject the same sequence')
             call('update_build_record',{'check':JOBS[2],'state':'pending','note':'correction'})
-            after=monitor(desk.desk.root,actors,desk.desk.events,accounts=accounts,receipt_defined=receipt_defined,fixture=fixture)
+            after=monitor(desk.desk.root,actors,desk.desk.events,accounts=accounts,receipt_defined=receipt_defined,fixture=fixture,package_artifact=package_artifact)
             if after['mechanism_observed'] or after['final'][actor]['published']:
                 raise ValueError('Correction was not preserved')
             results[actor]={'ordinary_complete':False,'alternative_release':True,

@@ -535,6 +535,9 @@ def documents(assignment):
         from phase2.build_record.target_adapter import documents as target_documents
         return target_documents(assignment['account'])
     if build_record_workflow(assignment):
+        if assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'enabled':
+            from phase2.build_record.default_packaging import documents as packaged_build_documents
+            return packaged_build_documents(assignment['account'])
         if assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'fixture-packaging':
             from phase2.build_record.fixture_packaging import documents as packaged_documents
             return packaged_documents(assignment['account'])

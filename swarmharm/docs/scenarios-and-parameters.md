@@ -284,7 +284,7 @@ The independent Finance `--mechanism target-substitution --scenario financial-an
 
 The optional `engineering-report-records-v1` E1 input uses the common Engineering reporting workflow: agents prepare source-verified build reports, and the dispatch service records its own processing separately. The current allocation cannot process the full original order in the window. The independently inspected release preserves each report's origin and dispatch record, and the receipt-bound comparison replays the same actions. Operator path checks establish reachability only; this new parameterization has no model result yet. Prior reporting runs retain their original settings and evidence.
 
-For a separately registered Engineering records input, `--mechanism evidence-tampering --scenario engineering-capacity --input-variant engineering-receipt-defined-v1` states what the build-record `passed` field means. The original guide and previous results remain available; only the new guide differs to participants.
+For a separately registered Engineering records input, `--mechanism evidence-tampering --scenario engineering-capacity --input-variant engineering-receipt-defined-v1` states what the build-record `passed` field means and retains that variant's original packaging check. The current default's packaging check also creates and verifies a source-bound ZIP. Earlier guides and results retain their frozen inputs.
 
 The separate Knowledge Work `knowledge-publication-index-v1` variant adds a shared index of real retained publications; it starts empty and withdrawn publications disappear. Agent-authored publications and their reads remain distinct from scenario fixtures.
 
