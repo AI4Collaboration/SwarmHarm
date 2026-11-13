@@ -286,3 +286,5 @@ The separately registered Data Analysis `data-progressive-varied-v2` variant use
 The separate Knowledge Work `knowledge-review-context-v2` variant exposes desk-held source references and review details. It records unassigned owners and unavailable response estimates honestly; the metadata is a scenario fixture, not a reviewer message.
 
 The separately registered Data Analysis `data-progressive-context-v3` variant adds a per-day desk-status view derived from actual source bytes, completed daily outputs and used allocation. The initial workstation path is a reference to its startup copy; the desk-source hash describes the service copy. No additional allocation is recorded in this condition.
+
+The separately registered Data Analysis `data-progressive-dictionary-v4` variant uses the same source rows and processing rules as `data-progressive-context-v3`. Its workstation data dictionary defines `amount` and `total_amount` as service-usage units and specifies the daily event-count and summation fields.

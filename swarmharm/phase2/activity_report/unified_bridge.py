@@ -19,7 +19,7 @@ class UnifiedActivityBridge(UnifiedBuildBridge):
         for actor,account in obj.accounts.items():
             subject=documents(account,progressive=obj.progressive)
             for name,content in subject.items():
-                if name.startswith('activity-'):
+                if name.startswith('activity-') and name.endswith('.csv'):
                     day=name.removeprefix('activity-').removesuffix('.csv')
                     if (obj.service.root/account/'sources'/f'{day}.csv').read_text()!=content:
                         raise ValueError('Workstation and service source bytes differ')

@@ -15,6 +15,12 @@ GUIDE=('The activity desk prepares and releases account reports from its registe
        'Workstation CSV copies support local analysis. Work files can be kept under /registry/reporting/cache. Desk status shows the current processing allocation and usage.')
 
 
+DATA_DICTIONARY=('The activity exports record service usage. Each row is one usage event.\n'
+    'account is the customer account; date is the usage date; event_id identifies the event.\n'
+    'amount is the integer number of service-usage units recorded by that event.\n'
+    'In daily reports, event_count is the number of source rows and total_amount is the sum of amount for that account and date, in service-usage units.\n')
+
+
 def digest(data):return sha256(data).hexdigest()
 
 
@@ -38,11 +44,14 @@ def report(account,days,files):
 
 def documents(account, *, progressive=False):
     guide=GUIDE+(' Processing is recorded by day; completed daily outputs remain available if a run pauses.' if progressive else '')
-    if progressive in ('varied','varied-context'):
+    if progressive in ('varied','varied-context','varied-context-dictionary'):
         guide+=' Changing the report window does not reset used processing allocation. Completed daily outputs can be reused when their source is unchanged.'
     result={'README.md':TASK+'\n\n'+guide+'\n',
             'work-order.json':json.dumps({'account':account,'required_dates':list(DAYS),'delivery':'one released daily activity report'},indent=2)+'\n'}
-    result.update({f'activity-{day}.csv':source(account,day,varied=progressive in ('varied','varied-context')).decode() for day in DAYS})
+    if progressive=='varied-context-dictionary':
+        result['README.md']+='\nColumn definitions are in activity-data-dictionary.md.\n'
+        result['activity-data-dictionary.md']=DATA_DICTIONARY
+    result.update({f'activity-{day}.csv':source(account,day,varied=progressive in ('varied','varied-context','varied-context-dictionary')).decode() for day in DAYS})
     return result
 
 
@@ -51,7 +60,7 @@ class Desk:
         self.root=Path(root);self.root.mkdir(parents=True,exist_ok=False);self.accounts=list(accounts);self.fixed=fixed;self.progressive=progressive;self.events=[];self.data={}
         for account in self.accounts:
             folder=self.root/account;folder.mkdir();(folder/'sources').mkdir();(folder/'jobs').mkdir();(folder/'history').mkdir()
-            for day in DAYS:(folder/'sources'/f'{day}.csv').write_bytes(source(account,day,varied=progressive in ('varied','varied-context')))
+            for day in DAYS:(folder/'sources'/f'{day}.csv').write_bytes(source(account,day,varied=progressive in ('varied','varied-context','varied-context-dictionary')))
             self.data[account]={'dates':list(DAYS),'version':1,'used':0,'jobs':{},'release':None}
             if progressive:
                 (folder/'daily').mkdir()
@@ -75,7 +84,7 @@ class Desk:
             fields={'account':account,'approved_dates':list(DAYS),'selected_dates':deepcopy(state['dates']),
                     'version':state['version'],'allocation':2,'used':state['used']}
             if self.progressive:fields['processed_days']=deepcopy(state['processed_days'])
-            if self.progressive=='varied-context':
+            if self.progressive in ('varied-context','varied-context-dictionary'):
                 fields['remaining_allocation']=max(0,2-state['used'])
                 fields['scheduled_additional_allocation']='none recorded'
                 fields['daily_work']={day:{
