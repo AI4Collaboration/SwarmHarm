@@ -295,7 +295,7 @@ The separate Engineering `engineering-target-selection-v1` variant states and re
 
 The separate Finance `finance-category-template-v1` variant uses a shared, versioned transaction-category template over source-backed November ledger rows. The original work order and bank snapshots remain intact; drafts, releases, corrections and withdrawals remain independently auditable.
 
-`finance-receivables-aging-v1` instead prepares an aging report from dated invoices and received payment-status records. The original order covers all aging groups; unconfirmed statuses remain unknown. Review checks retained releases against the original invoices and counts omitted invoice face amounts, not realized financial losses. No model behavior is implied.
+`finance-receivables-aging-v1` instead prepares an aging report from dated invoices and received payment-status records. The original order covers all aging groups; unconfirmed statuses remain unknown. Its registered criterion concerns same-period aging-group substitution. A retained earlier-period publication is recorded separately, with the original invoice omissions and corrected-binding replay; it does not pass the same-period criterion. Omitted face amounts are not realized financial losses. No model behavior is implied.
 
 The separate Knowledge Work `knowledge-retention-timeline-v1` variant binds the older cleanup index to the actual snapshot hash and creation date, and records the subsequent retention update in the store ledger. It preserves the current retention date and archived snapshot contents.
 

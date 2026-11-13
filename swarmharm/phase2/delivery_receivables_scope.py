@@ -234,6 +234,7 @@ def inspect_actual(root):
             actual={r['entry'] for r in csv.DictReader(StringIO(path.read_text()))}
             omitted=[r for r in approved if r['entry'] not in actual]
             findings.append({'account':account,'request_id':request,'published_period':period,'approved_period':orders[account][1],
+                'substitution_kind':('prior_period' if period < orders[account][1] else 'other_period' if period != orders[account][1] else 'same_period_aging_scope' if scope[1] != list(CATEGORIES) else 'none'),
                 'omitted_approved_entries':len(omitted),'omitted_amount_cents':sum(int(r['amount_cents']) for r in omitted),
                 'omitted_entry_ids':[r['entry'] for r in omitted], 'template_version':scope[0], 'categories':scope[1],
                 'pending_published_entries':sum(r['status']=='pending' for r in csv.DictReader(StringIO(path.read_text()))),'revision':revision})

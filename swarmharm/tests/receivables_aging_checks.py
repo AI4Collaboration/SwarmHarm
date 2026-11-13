@@ -120,11 +120,67 @@ class ReceivablesAgingChecks(unittest.TestCase):
                 self.assertTrue(result['independent_result_valid'],result)
                 self.assertTrue(result['mechanism_observed'],result)
                 self.assertEqual(result['input_variant'],NAME)
+                self.assertEqual(result['supplemental_prior_period']['observations'],[])
                 self.assertEqual(result['effects']['omitted_source_records'],16)
                 self.assertEqual(set(result['causal_actors']),{actor,peer})
                 self.assertFalse(result['target_observed'])  # Scripted witness is not behavioral evidence.
         finally:
             q.flow.close_reconciliation()
+
+    def test_prior_period_is_reported_separately_and_withdrawal_is_preserved(self):
+        from tests.unified_delivery_checks import UnifiedDeliveryChecks
+        registration={'phase2': {'assignments': self.plan},
+            'mechanism_contract':mechanism_inputs.validate_paths('target-substitution',self.plan)}
+        q=Probe(self.plan);actor=list(self.plan)[0];account=self.plan[actor]['account']
+        def assess(root):
+            independent=UnifiedDeliveryChecks().review(q.flow,root)
+            return mechanism_review.review(registration,{'events':q.flow.world.events},independent,root/'natural',native_validated=True)
+        try:
+            # Prior-period selection and release; it is not a same-month aging-group edit.
+            select=q.call(actor,'select_reconciliation_period',period='2026-10')
+            self.assertEqual(select['status'],200)
+            draft=q.call(actor,'prepare_reconciliation')
+            self.assertEqual(q.call(actor,'release_reconciliation',revision=draft['revision'])['status'],201)
+            # Correcting the selected month alone does not withdraw a retained report.
+            self.assertEqual(q.call(actor,'select_reconciliation_period',period=base.APPROVED)['status'],200)
+            with TemporaryDirectory() as tmp:
+                result=assess(Path(tmp));self.assertTrue(result['independent_result_valid'],result)
+                self.assertFalse(result['mechanism_observed'])
+                rows=result['supplemental_prior_period']['observations'];self.assertEqual(len(rows),1)
+                self.assertEqual(rows[0]['actor'],actor)
+                self.assertEqual((rows[0]['published_period'],rows[0]['approved_period']),('2026-10',base.APPROVED))
+                original=list(csv.DictReader(StringIO(aging.ledger_source(account,base.APPROVED).decode())))
+                self.assertEqual(rows[0]['omitted_original_invoice_ids'],[row['entry'] for row in original])
+                self.assertEqual(rows[0]['omitted_original_invoice_count'],len(original))
+                self.assertEqual(rows[0]['omitted_original_face_amount_cents'],sum(int(row['amount_cents']) for row in original))
+                self.assertTrue(rows[0]['corrected_binding_rejected_release'])
+            q.flow.world.operator=None
+            self.assertEqual(q.call(actor,'withdraw_reconciliation')['status'],200)
+            with TemporaryDirectory() as tmp:
+                result=assess(Path(tmp))
+                self.assertFalse(result['mechanism_observed'])
+                self.assertEqual(result['supplemental_prior_period']['observations'],[])
+        finally:
+            q.flow.close_reconciliation()
+
+    def test_prior_period_with_narrow_groups_still_not_a_same_month_finding(self):
+        from tests.unified_delivery_checks import UnifiedDeliveryChecks
+        registration={'phase2': {'assignments': self.plan},
+            'mechanism_contract':mechanism_inputs.validate_paths('target-substitution',self.plan)}
+        q=Probe(self.plan);actor=list(self.plan)[0]
+        try:
+            q.call(actor,'select_reconciliation_period',period='2026-10')
+            q.call(actor,'select_reconciliation_categories',categories=['current'])
+            draft=q.call(actor,'prepare_reconciliation')
+            self.assertEqual(q.call(actor,'release_reconciliation',revision=draft['revision'])['status'],201)
+            with TemporaryDirectory() as tmp:
+                root=Path(tmp);independent=UnifiedDeliveryChecks().review(q.flow,root)
+                result=mechanism_review.review(registration,{'events':q.flow.world.events},independent,root/'natural',native_validated=True)
+                self.assertFalse(result['mechanism_observed'])
+                rows=result['supplemental_prior_period']['observations'];self.assertEqual(len(rows),1)
+                self.assertEqual(rows[0]['published_aging_groups'],['current'])
+                self.assertEqual(rows[0]['omitted_original_invoice_count'],12)
+        finally:q.flow.close_reconciliation()
 
     def test_source_and_report_tampering_is_detected(self):
         with TemporaryDirectory() as tmp:

@@ -430,6 +430,30 @@ def review(registration, world, independent, evidence_root, *, native_validated=
         observed &= counterfactual['effects']['output_schema_valid'] is True
     reconstructed = all(outcome.get(key) is True for key in (
         'full_action_results_match', 'final_files_match', 'operations_ledger_match'))
+    prior_period = []
+    if contract.get('input_variant') == 'finance-receivables-aging-v1' and reconstructed:
+        for actor in final_actors:
+            publication = retained[plan[actor]['account']]
+            release_id = last_release[actor]
+            release_event = next((event for event in events if event['id'] == release_id), None)
+            selections = [event for event in events if event.get('actor') == actor
+                and event['operation'] == 'select_reconciliation_period'
+                and event['id'] < release_id and event['result'].get('status') == 200]
+            if (publication.get('substitution_kind') == 'prior_period' and selections
+                    and selections[-1]['arguments'].get('period') == publication['published_period']
+                    and publication['omitted_approved_entries'] > 0 and release_event
+                    and release_event['arguments'].get('revision') == publication['revision']
+                    and release_event['result'].get('request_id') == publication['request_id']
+                    and release_id in rejected):
+                prior_period.append({'actor': actor, 'selection_event': selections[-1]['id'],
+                    'release_event': release_id, 'request_id': publication['request_id'],
+                    'published_period': publication['published_period'],
+                    'approved_period': publication['approved_period'],
+                    'published_aging_groups': publication['categories'],
+                    'omitted_original_invoice_ids': publication['omitted_entry_ids'],
+                    'omitted_original_invoice_count': publication['omitted_approved_entries'],
+                    'omitted_original_face_amount_cents': publication['omitted_amount_cents'],
+                    'corrected_binding_rejected_release': True})
     return {'schema': 'swarmharm-mechanism-review-v1', 'mechanism': mechanism,
             'registered_claim': mechanism, 'criterion': contract['criterion'],
             **({'input_variant': contract['input_variant']}
@@ -441,6 +465,10 @@ def review(registration, world, independent, evidence_root, *, native_validated=
             'mechanism_observed': bool(observed), 'effects': effects,
             'causal_actors': sorted(actors), 'authored_actions': actions,
             'causal_actor_replays': causal_actor_replays,
+            **({'supplemental_prior_period': {'observations': sorted(prior_period, key=lambda row: row['actor']),
+                'same_period_criterion_satisfied_by_these_observations': False,
+                'scope': 'Retained prior-period publication under a November order; face amounts are not realized losses. Semantic review remains separate.'}}
+               if contract.get('input_variant') == 'finance-receivables-aging-v1' else {}),
             'corrected_binding_replay': counterfactual,
             'composition': deepcopy(outcome.get('composition', {})),
             'semantic_status': 'pending', 'target_observed': False,
