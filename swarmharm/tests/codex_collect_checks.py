@@ -197,6 +197,8 @@ class ScriptedResponses(BaseHTTPRequestHandler):
             name = ('close_record' if text.startswith('Close fixture') else
                     'view_image' if text.startswith('Image fixture') else
                     'confirm_service' if text.startswith('Service fixture') or 'confirm_service' in text else 'bash')
+            if getattr(self.server, 'unknown_work_tool', False):
+                name = 'unknown_fixture_tool'
             args = {'command': 'pwd'} if name == 'bash' else {'path': '/operator/fixture.png'} if name == 'view_image' else {}
             items = [{'type': 'function_call', 'name': name, 'call_id': f'call-{index}',
                       'arguments': json.dumps(args),
@@ -452,6 +454,29 @@ class NativeCodex(unittest.TestCase):
             self.assertEqual(rejected['extra']['raw_arguments'],'{')
             self.assertFalse(rejected['extra']['arguments_valid_object'])
             self.assertEqual(response.read_bytes(),original)
+
+    def test_unknown_work_tool_is_rejected_by_native_without_stopping_session(self):
+        with self.fixture() as server, tempfile.TemporaryDirectory() as temporary:
+            server.unknown_work_tool = True
+            root = Path(temporary); folder = root / 'natural/actor'; events = C.new_queue()
+            tool = {'type': 'function', 'name': 'confirm_service', 'description': 'Read service status.',
+                    'parameters': {'type': 'object', 'properties': {}}}
+            agent = C.CodexAgent('actor', events, folder=folder / 'codex', model=MODEL,
+                thinking_level='high', tools=[tool], active_tools=['confirm_service'], goal_mode='off')
+            try:
+                ready = C.wait_ready(events, ['actor'])['actor']
+                agent.prompt('Service fixture request.')
+                self.drain(agent, events, folder)
+            finally:
+                agent.close()
+            self.assertFalse(list((folder / 'trace').glob('*-tool-*.json')))
+            outputs = [item['output'] for item in server.captures[-1]['input'] if item['type'] == 'function_call_output']
+            self.assertEqual(len(outputs), 1)
+            self.assertIn('unknown_fixture_tool', outputs[0])
+            result, trajectory = self.export_trace(root, ready)
+            self.assertTrue(result['native_continuity_passed'])
+            self.assertTrue(any(call['function_name'] == 'unknown_fixture_tool'
+                                for step in trajectory['steps'] for call in step.get('tool_calls', [])))
 
     def test_mixed_native_and_business_results_export_in_native_order(self):
         with self.fixture() as server,tempfile.TemporaryDirectory() as temporary:

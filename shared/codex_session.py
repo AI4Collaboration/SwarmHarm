@@ -495,8 +495,10 @@ class CodexAgent:
                         if not business and item['name'].startswith('mcp__work__'):
                             item['name'] = item['name'][len('mcp__work__'):]
                             business = True
-                        if (business and item['name'] not in self.active_tools) or (
-                                not business and (namespace or item['name'] not in self.native_tools)):
+                        # An unknown work-server tool is rejected by native Codex.
+                        # Preserve that rejection and allow the turn to continue;
+                        # it is not a controller-executed business action.
+                        if not business and (namespace or item['name'] not in self.native_tools):
                             raise RuntimeError('Unregistered Codex function call')
                         if item['call_id'] in self.calls:
                             raise RuntimeError('Duplicate Codex call ID')
