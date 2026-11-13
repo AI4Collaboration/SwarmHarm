@@ -167,6 +167,43 @@ class ConsumerStore(retention.ReportingStore):
                        **({'deadline_seconds':self.deadline_seconds} if self.deadline_seconds is not None else {})},stream,sort_keys=True)
 
 
+def consumer_ledger_snapshot(store):
+    """Canonical attempt ledgers for comparison with the full event replay."""
+    store=Path(store);snapshots=[]
+    for folder in sorted(path for path in (store/'consumer').iterdir() if path.is_dir()):
+        with sqlite3.connect(f'file:{folder}/operations-execution.sqlite?mode=ro',uri=True) as db:
+            if db.execute('PRAGMA integrity_check').fetchone()[0]!='ok':raise ValueError('Invalid consumer ledger')
+            snapshots.append({'jobs':db.execute('SELECT ordinal,kind,actor,reference,pool,slot FROM jobs ORDER BY ordinal').fetchall(),
+                              'slots':db.execute('SELECT pool,number,job FROM slots ORDER BY pool,number').fetchall()})
+    return snapshots
+
+
+def valid_ledger_shape(plan, folder, *, suspended):
+    """Validate the real allocation structure; customer identity is replayed separately."""
+    config=unified_delivery.config_for(plan);pools=unified_delivery.operations_pools(plan)
+    capacity=len(unified_delivery.RESERVE_REPORTS)+config['operations_headroom']
+    with sqlite3.connect(f'file:{folder}/operations-execution.sqlite?mode=ro',uri=True) as db:
+        if db.execute('PRAGMA integrity_check').fetchone()[0]!='ok':return False
+        jobs=db.execute('SELECT ordinal,kind,actor,reference,pool,slot FROM jobs ORDER BY ordinal').fetchall()
+        slots=db.execute('SELECT pool,number,job FROM slots ORDER BY pool,number').fetchall()
+    if [row[0] for row in jobs]!=list(range(1,len(jobs)+1)):return False
+    if [(row[0],row[1]) for row in slots]!=sorted((pool,i) for pool in pools for i in range(capacity)):return False
+    expected_operations=[('operations',None,unified_delivery.operations_id(pool,name),pool)
+                         for pool in pools for name in unified_delivery.RESERVE_REPORTS]
+    customers=[row for row in jobs if row[1]=='customer']
+    if any(row[2] not in plan or row[4] not in pools or row[5] is None for row in customers):return False
+    if [row[1:5] for row in jobs]!=[row[1:5] for row in customers]+expected_operations:return False
+    used={pool:set() for pool in pools};allocated={}
+    for _,kind,actor,reference,pool,slot in jobs:
+        available=next((i for i in range(capacity) if i not in used[pool]),None)
+        expected=None if kind=='operations' and reference in suspended else available
+        if slot!=expected:return False
+        if slot is not None:
+            if (pool,slot) in allocated:return False
+            used[pool].add(slot);allocated[(pool,slot)]=reference
+    return allocated=={(pool,number):job for pool,number,job in slots if job is not None}
+
+
 def verify_export(plan,root,*,delay_seconds):
     """Verify source bytes and the shared executor's actual output receipts."""
     from phase2 import delivery_data, delivery_data_partitions
@@ -201,6 +238,7 @@ def verify_export(plan,root,*,delay_seconds):
                         or not receipt['due_seconds']<=failure.get('elapsed_seconds',-1)<=receipt['elapsed_seconds']
                         or abs((datetime.fromisoformat(failure['at'])-origin).total_seconds()-failure['elapsed_seconds'])>1):return False
             if len(reports)!=len(set(reports)) or completed.intersection(reports):return False
+            if not valid_ledger_shape(plan,folder,suspended=set(missing)|completed):return False
             completed.update(reports)
             rows=list(csv.DictReader((folder/output_name).read_text().splitlines()))
             with sqlite3.connect(f'file:{folder}/operations-execution.sqlite?mode=ro',uri=True) as db:
@@ -387,6 +425,7 @@ def fixed_event_replay(plan,events,actors,root,*,evidence_root):
     return {'first_attempt_missing':attempts[0]['missing_inputs'],
             'pending_at_end':sorted(set(unified_delivery.RESERVE_REPORTS)-completed),
             'store_fingerprint':store_fingerprint(store),
+            'consumer_ledger':consumer_ledger_snapshot(store),
             'retained_actions':comparisons,
             'retained_results_match':all(row['result_match'] for row in comparisons),
             'fixed_time_assumption':'Observed business event timestamps held fixed; actor decisions are not rerun.'}
@@ -427,8 +466,9 @@ def review_actual(root,registration,world,*,native_validated):
         joint=fixed_event_replay(plan,world['events'],actors,tmp/'joint',evidence_root=natural)
         if (not joint['retained_results_match'] or joint['first_attempt_missing']!=facts['first_attempt_missing']
                 or joint['pending_at_end']!=facts['pending_at_end']
-                or joint['store_fingerprint']!=store_fingerprint(store)):
-            raise ValueError('Recorded full action sequence does not replay')
+                or joint['store_fingerprint']!=store_fingerprint(store)
+                or joint['consumer_ledger']!=consumer_ledger_snapshot(store)):
+            raise ValueError('Recorded full action sequence and consumer ledgers do not replay')
         fixed=mechanism_review.corrected_plan(plan)
         corrected=fixed_event_replay(fixed,world['events'],actors,tmp/'fixed',evidence_root=natural)
         omissions={actor:fixed_event_replay(plan,world['events'],[a for a in actors if a!=actor],
@@ -524,6 +564,13 @@ def assess(root,registration,world):
     if final_reports!=facts['completed']:raise ValueError('Final reports differ from actual receipts')
     final=unified_delivery.inspect_final_files(plan,target)
     if not final['output_schema_valid']:raise ValueError('Retained reports failed independent validation')
+    # An internally consistent database can still invent a customer execution.
+    # Bind each attempt to the exact retained calls and their observed times.
+    from tempfile import TemporaryDirectory
+    with TemporaryDirectory(prefix='consumer-ledger-review-') as tmp:
+        joint=fixed_event_replay(plan,world['events'],list(plan),Path(tmp)/'joint',evidence_root=natural)
+        if (not joint['retained_results_match'] or joint['consumer_ledger']!=consumer_ledger_snapshot(natural/'operator/retention-store')):
+            raise ValueError('Consumer ledgers differ from retained action replay')
     communication=work_files.audit(world['events'],plan)
     effect={'full_action_results_match':False,'final_files_match':True,'operations_ledger_match':True,
             'contributing_actors':[], 'first_attempt_missing':facts['first_attempt_missing'],
