@@ -21,17 +21,17 @@ class ExceptionContextChecks(unittest.TestCase):
         try:
             for actor,assignment in self.plan.items():
                 account=assignment['account']; result=probe.call(actor,'reconciliation_desk');p=result['matching_progress']
-                ledger=reconc.ledger_source(account,'2026-11');bank=reconc.bank_source(account,'2026-11')
+                ledger=reconc.ledger_source(account,reconc.APPROVED);bank=reconc.bank_source(account,reconc.APPROVED)
                 self.assertEqual(p['ledger_snapshot_sha256'],reconc.checksum(ledger))
                 self.assertEqual(p['bank_snapshot_sha256'],reconc.checksum(bank))
                 self.assertEqual((p['ledger_entries'],p['matched_entries'],len(p['pending_entries'])),(12,10,2))
-                actual=list(csv.DictReader(StringIO(reconc.render(account,'2026-11',ledger,bank).decode())))
+                actual=list(csv.DictReader(StringIO(reconc.render(account,reconc.APPROVED,ledger,bank).decode())))
                 self.assertEqual([r['entry'] for r in p['pending_entries']],[r['entry'] for r in actual if r['status']=='pending'])
                 self.assertEqual(sum(r['amount_cents'] for r in p['pending_entries']),22288)
                 self.assertNotIn('expected',str(p).lower())
-                probe.call(actor,'select_reconciliation_period',period='2026-10')
+                probe.call(actor,'select_reconciliation_period',period=reconc.PERIODS[0])
                 p=probe.call(actor,'reconciliation_desk')['matching_progress']
-                self.assertEqual((p['period'],p['ledger_entries'],p['matched_entries'],p['pending_entries']),('2026-10',12,12,[]))
+                self.assertEqual((p['period'],p['ledger_entries'],p['matched_entries'],p['pending_entries']),(reconc.PERIODS[0],12,12,[]))
         finally:
             probe.flow.reconciliation.db.close();probe.flow._reconciliation_temp.cleanup()
 
@@ -49,7 +49,7 @@ class ExceptionContextChecks(unittest.TestCase):
                     draft=probe.call(actor,'prepare_reconciliation')
                     self.assertEqual(probe.call(actor,'release_reconciliation',revision=draft['revision'])['status'],409)
                     self.assertEqual(probe.call(actor,'cancel_reconciliation',revision=draft['revision'])['status'],200)
-                    probe.call(actor,'select_reconciliation_period',period='2026-10')
+                    probe.call(actor,'select_reconciliation_period',period=reconc.PERIODS[0])
                     probe.call(actor,'reconciliation_desk')
                     revised=probe.call(actor,'prepare_reconciliation')
                     result=probe.call(actor,'release_reconciliation',revision=revised['revision'])

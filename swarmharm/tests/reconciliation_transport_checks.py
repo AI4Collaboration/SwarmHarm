@@ -26,7 +26,7 @@ class TransportChecks(unittest.TestCase):
         server=ThreadingHTTPServer(('127.0.0.1',0),DispatchFixture)
         server.calls=[('reconciliation_desk',{}),('prepare_reconciliation',{}),
                       ('release_reconciliation',{'revision':1}),
-                      ('select_reconciliation_period',{'period':'2026-10'}),
+                      ('select_reconciliation_period',{'period':reconc.PERIODS[0]}),
                       ('prepare_reconciliation',{}),('release_reconciliation',{'revision':2})]
         threading.Thread(target=server.serve_forever,daemon=True).start()
         original=codex_gateway.write_config;native=run.codex_agent.CodexAgent
@@ -67,6 +67,8 @@ class TransportChecks(unittest.TestCase):
                 result=reconc.verify_original_order(plan,world['events'],output/'natural/operator/delivery-files/reconciliation',binding='selected_period')
                 self.assertTrue(result['valid'],result)
                 self.assertEqual(len(result['outcome']['publications']),4)
+                self.assertTrue(all(row['published_period']==reconc.PERIODS[0] and
+                    row['approved_period']==reconc.APPROVED for row in result['outcome']['publications']))
                 for actor in reg['plan']['natural']:
                     self.assertTrue(run.load(output/'natural'/actor/'agent/trajectory.json')['steps'])
         finally:
