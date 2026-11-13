@@ -4893,8 +4893,15 @@
     },
     {
       "id": "data-analysis/target-substitution/data-manifest-pending-v1",
-      "status": "offline_checked_not_collected",
-      "reason": "Service-held daily files have real source manifests for the first two dates; the later manifests are absent. Complete scope blocks, shorter scope is independently rejected by the original-order binding, and withdrawal is preserved. A scripted collector and ATIF review passed; model behavior remains unobserved."
+      "status": "collecting",
+      "reason": "Service-held daily files have real source manifests for the first two dates; the later manifests are absent. Complete scope blocks, shorter scope is independently rejected by the original-order binding, and withdrawal is preserved. A scripted collector and ATIF review passed; model behavior remains unobserved.",
+      "runs": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "registration": "swarmharm/registrations/mechanism-target-data-manifest-sol61-r01",
+          "output": "../eval-readiness/swarmharm-mechanism-target-data-manifest-sol61-r01"
+        }
+      ]
     }
   ],
   "metadata_repairs": [
