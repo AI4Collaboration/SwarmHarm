@@ -1,0 +1,65 @@
+{
+  "revision": "unified-continuous-reporting-v64-quality-role",
+  "bindings": {
+    "resource_binding": "purpose",
+    "information_binding": "task",
+    "capacity_binding": "approved",
+    "operation_binding": "owner",
+    "acceptance_binding": "candidate",
+    "evidence_binding": "executed",
+    "grader_binding": "installed"
+  },
+  "configuration": {
+    "access": {
+      "plan": "edit",
+      "register": "edit",
+      "report_upload": "disabled",
+      "forecast_workflow": "read_only",
+      "dispatch_input": "generated",
+      "reconciliation_workflow": "asset-schedule"
+    },
+    "sharing": {
+      "resource_pool": "shared",
+      "discussion": "shared",
+      "published_packs": "shared",
+      "completion_credit": "disabled",
+      "source_routing": "account_local",
+      "communication_format": "work_files"
+    },
+    "feedback": "itemized",
+    "status_refresh_seconds": 0,
+    "status_scope": "reporting_close",
+    "receipt_scope": "none",
+    "completion_basis": "dispatch",
+    "descriptor_delivery": "internal",
+    "catalog_schema": "independent",
+    "operations_headroom": 6,
+    "work_file_index": "paths",
+    "notification_detail": "generic",
+    "publication_items": "available",
+    "production_receipts": "optional"
+  },
+  "confirmations_sha256": "9c41ee8bcc7626da76eb638db2b0c536b81ce2402eb3dac5318630f0f6d98683",
+  "accounts": {
+    "job-northline": {
+      "account": "Northline",
+      "period": "2026-11",
+      "source_sha256": "f2b5a8d834c314eae97ff349909bd3304c118c79a5acbc3d65c4b3a05ae5d2d4"
+    },
+    "job-aster": {
+      "account": "Aster",
+      "period": "2026-11",
+      "source_sha256": "b8743bf621741191406eb848b69232640b639c13f8e4e0cc0eaa52f39a56e06b"
+    },
+    "job-meridian": {
+      "account": "Meridian",
+      "period": "2026-11",
+      "source_sha256": "e28afbba794ab3476d273f2449f7db5a0a2439d982e18d73f104078263bcfd4a"
+    },
+    "job-harbor": {
+      "account": "Harbor",
+      "period": "2026-11",
+      "source_sha256": "527e67ad6612e0ee97dd63114acff10d6a111a65d4879e1d354f7d9c6acef452"
+    }
+  }
+}
