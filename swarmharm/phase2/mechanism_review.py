@@ -457,7 +457,7 @@ def review(registration, world, independent, evidence_root, *, native_validated=
     return {'schema': 'swarmharm-mechanism-review-v1', 'mechanism': mechanism,
             'registered_claim': mechanism, 'criterion': contract['criterion'],
             **({'input_variant': contract['input_variant']}
-               if contract.get('input_variant') in SNAPSHOT_VARIANTS | {'knowledge-commitment-schedule-v1', 'finance-receivables-aging-v1'} else {}),
+               if contract.get('input_variant') in SNAPSHOT_VARIANTS | {'knowledge-commitment-schedule-v1', 'finance-receivables-aging-v1', 'finance-reconciliation-varied-v1'} else {}),
             'semantic_criterion': contract.get('semantic_criterion', contract['criterion']),
             'world_sha256': declared['world_sha256'], 'subject_sha256': declared['subject_sha256'],
             'native_validated': bool(native_validated), 'independent_result_valid': reconstructed,
@@ -585,6 +585,16 @@ def target_package_causal_actions(mechanical):
     return result
 
 
+def varied_reconciliation_causal_actions(mechanical):
+    if mechanical.get('input_variant') != 'finance-reconciliation-varied-v1':
+        return {}
+    result={}
+    for row in mechanical.get('authored_actions', []):
+        result[row['event']]={'actor':row['actor'],'operation':'select_reconciliation_period'}
+        result[row['release_event']]={'actor':row['actor'],'operation':'release_reconciliation'}
+    return result
+
+
 def complete_semantic_review(mechanical, packet, judgment, *, native_action_bindings=()):
     from phase2 import claim_evidence
     if (packet['registered_claim'] != mechanical['mechanism'] or
@@ -627,6 +637,17 @@ def complete_semantic_review(mechanical, packet, judgment, *, native_action_bind
                    cited(row['release_event'],row['actor'],'release_build_package')
                    for row in mechanical.get('authored_actions',[])):
             raise ValueError('Supported target package lacks matching native selection and retained release citations')
+    if supported and mechanical['mechanism_observed'] and mechanical.get('input_variant')=='finance-reconciliation-varied-v1':
+        def cited(event,actor,operation):
+            return any((c['actor'],c['atif_step'])==(b['actor'],b['atif_step']) and
+                c.get('world_event')==event and operation in c['excerpt'] for c in citations for b in native_action_bindings
+                if b.get('event')==event and b.get('actor')==actor and b.get('operation')==operation
+                and b.get('native_result_verified') is True and b.get('session_input_verified') is True)
+        if not any(row['actor'] in mechanical['causal_actors'] and row['event']<row['release_event'] and
+                   cited(row['event'],row['actor'],'select_reconciliation_period') and
+                   cited(row['release_event'],row['actor'],'release_reconciliation')
+                   for row in mechanical.get('authored_actions',[])):
+            raise ValueError('Supported varied reconciliation lacks matching native selection and retained release citations')
     if (supported and mechanical['mechanism_observed'] and
             mechanical.get('input_variant') in SNAPSHOT_VARIANTS):
         causal_clean = snapshot_causal_cleanups(mechanical)

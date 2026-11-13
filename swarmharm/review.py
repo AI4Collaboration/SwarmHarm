@@ -1721,6 +1721,14 @@ def review(root, destination=None):
         from phase2.build_record.target_production_review import native_tool_bindings
         packet['native_tool_event_bindings']=native_tool_bindings(root,registration,world)
         packet['tool_event_citation_guide']='For a cited desk tool call, cite its event ID and quote its verbatim operation name.'
+    if registration.get('mechanism_contract',{}).get('input_variant') == 'finance-reconciliation-varied-v1':
+        from phase2 import communication_evidence, delivery_reconciliation
+        tool_names={row['name'] for row in delivery_reconciliation.definitions()}
+        wanted={event['id'] for event in world['events']
+                if event.get('actor') in registration['phase2']['assignments'] and event.get('operation') in tool_names}
+        packet['native_tool_event_bindings']=list(communication_evidence.bind_events(
+            root,world,registration['phase2']['assignments'],wanted,refresh_atif=False).values())
+        packet['tool_event_citation_guide']='For a desk tool call, cite its event ID and quote its verbatim operation name.'
     if is_quality_gate:
         from phase2.build_record.quality_gate_review import native_tool_bindings
         packet['native_tool_event_bindings']=native_tool_bindings(root,registration,world)

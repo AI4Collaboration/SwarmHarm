@@ -10,7 +10,7 @@ from unittest.mock import patch
 import run
 import review
 from phase2 import delivery_reconciliation as rec, finance_reconciliation_varied as data
-from phase2 import mechanism_inputs, mechanism_review, unified_delivery as scenario, world_config
+from phase2 import claim_evidence, mechanism_inputs, mechanism_review, unified_delivery as scenario, world_config
 from scripts.inspect_unified_input import build_preview
 from tests.reconciliation_candidate_checks import make_flow
 from tests import unified_delivery_checks as fixtures
@@ -95,6 +95,15 @@ class Checks(unittest.TestCase):
                 self.assertEqual(review['effects']['omitted_source_records'],12)
                 self.assertIn(actor,review['causal_actors'])
                 self.assertEqual(review['corrected_binding_replay']['effects']['omitted_source_records'],0)
+            flow.world.operator=None
+            self.assertEqual(call('withdraw_reconciliation')['status'],200)
+            with TemporaryDirectory() as tmp:
+                root=Path(tmp)
+                independent=fixtures.UnifiedDeliveryChecks().review(flow,root)
+                withdrawn=mechanism_review.review({'phase2':{'assignments':plan},'mechanism_contract':contract},
+                    {'events':flow.world.events},independent,root/'natural',native_validated=True)
+                self.assertFalse(withdrawn['mechanism_observed'])
+                self.assertEqual(withdrawn['authored_actions'],[])
         finally:flow.close_reconciliation()
 
     def test_new_source_is_frozen_with_evaluator(self):
@@ -109,9 +118,53 @@ class Checks(unittest.TestCase):
     def test_scripted_native_atif_and_independent_review(self):
         from tests.reconciliation_transport_checks import TransportChecks
         prepare=run.prepare
+        review_original=review.review
+        checked=[]
         def with_variant(*args,**kwargs):
             kwargs['input_variant']='finance-reconciliation-varied-v1'
             return prepare(*args,**kwargs)
+        def check_review(output,*args,**kwargs):
+            result=review_original(output,*args,**kwargs)
+            packet=run.load(Path(output)/'transcript-judge-input.json')
+            mechanical=run.load(Path(output)/'mechanism-review.json')
+            bindings=packet['native_tool_event_bindings']
+            self.assertNotIn('mechanism_observed',packet)
+            self.assertNotIn('authored_actions',packet)
+            self.assertTrue(mechanical['mechanism_observed'])
+            actions=mechanical['authored_actions'];self.assertGreaterEqual(len(actions),2)
+            by_id={b['event']:b for b in bindings}
+            def cite(event):
+                row=by_id[event]
+                return {'actor':row['actor'],'atif_step':row['atif_step'],'world_event':event,'excerpt':row['operation']}
+            def verdict(citations):
+                value={'review_complete':True,'registered_claim_support':{'status':'supported','summary':'Scripted','citations':citations},
+                       'findings':{name:{'supported':False,'summary':'','actors':[],'citations':[]} for name in claim_evidence.SEMANTIC_FINDINGS},
+                       'limitations':[]}
+                judgment=claim_evidence.transcript_judgment(packet,value,model='offline',native_action_bindings=bindings)
+                return mechanism_review.complete_semantic_review(mechanical,packet,judgment,native_action_bindings=bindings)
+            first=actions[0];other=next(row for row in actions if row['actor']!=first['actor'])
+            self.assertTrue(verdict([cite(first['event']),cite(first['release_event'])])['target_observed'])
+            desk=next(b for b in bindings if b['actor']==first['actor'] and b['operation']=='reconciliation_desk')
+            events=run.load(Path(output)/'natural/world.json')['events']
+            rejected=next(e for e in events if e['actor']==first['actor'] and
+                          e['operation']=='release_reconciliation' and e['result']['status']==409)
+            for wrong in ([cite(desk['event']),cite(first['release_event'])],
+                          [cite(first['event']),cite(rejected['id'])],
+                          [cite(first['event']),cite(other['release_event'])]):
+                with self.assertRaisesRegex(ValueError,'matching native selection'):verdict(wrong)
+            selected=next(b for b in bindings if b['event']==first['event'])
+            altered=[dict(b) for b in bindings]
+            next(b for b in altered if b['event']==selected['event'])['session_input_verified']=False
+            with self.assertRaises(ValueError):
+                claim_evidence.transcript_judgment(packet,{'review_complete':True,
+                    'registered_claim_support':{'status':'supported','summary':'Scripted',
+                        'citations':[cite(first['event']),cite(first['release_event'])]},
+                    'findings':{name:{'supported':False,'summary':'','actors':[],'citations':[]} for name in claim_evidence.SEMANTIC_FINDINGS},
+                    'limitations':[]},model='offline',native_action_bindings=altered)
+            checked.append(True)
+            return result
         # Only this local scripted test opens the guarded registration path.
-        with patch.object(run,'prepare',side_effect=with_variant), patch.object(run,'require_ready_input'):
+        with patch.object(run,'prepare',side_effect=with_variant), patch.object(run,'require_ready_input'), \
+             patch.object(review,'review',side_effect=check_review):
             TransportChecks('test_codex_transport_and_atif').test_codex_transport_and_atif()
+        self.assertEqual(checked,[True])
