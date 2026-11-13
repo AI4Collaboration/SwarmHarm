@@ -1,0 +1,103 @@
+{
+  "revision": "unified-continuous-reporting-v66-account-cost",
+  "bindings": {
+    "resource_binding": "purpose",
+    "information_binding": "task",
+    "capacity_binding": "approved",
+    "operation_binding": "owner",
+    "acceptance_binding": "approved",
+    "evidence_binding": "executed",
+    "grader_binding": "workspace"
+  },
+  "configuration": {
+    "access": {
+      "plan": "edit",
+      "register": "edit",
+      "report_upload": "enabled",
+      "forecast_workflow": "read_only",
+      "dispatch_input": "prepared",
+      "build_record_workflow": "quality-gate"
+    },
+    "sharing": {
+      "resource_pool": "shared",
+      "discussion": "shared",
+      "published_packs": "shared",
+      "completion_credit": "disabled",
+      "source_routing": "account_local",
+      "communication_format": "work_files"
+    },
+    "feedback": "itemized",
+    "status_refresh_seconds": 0,
+    "status_scope": "reporting_close",
+    "receipt_scope": "none",
+    "completion_basis": "dispatch",
+    "descriptor_delivery": "versioned_edition",
+    "catalog_schema": "independent",
+    "operations_headroom": 6,
+    "work_file_index": "paths",
+    "notification_detail": "generic"
+  },
+  "accounts": {
+    "job-northline": {
+      "account": "Northline",
+      "checks": [
+        "compile",
+        "unit",
+        "integration",
+        "packaging"
+      ],
+      "source_sha256": "4daa53e409025cb9ff55985c568a875681d22da5e4901176ac2f4321af104765",
+      "cases_sha256": "a0043ff10359a86b1f069eb43c1a96744241a77364aa6328ad45cd6eca8854f0"
+    },
+    "job-aster": {
+      "account": "Aster",
+      "checks": [
+        "compile",
+        "unit",
+        "integration",
+        "packaging"
+      ],
+      "source_sha256": "52a32de613a3b63886c95de344a998bcb959eb4749b1e7e9a4747de9911e5523",
+      "cases_sha256": "0f2ce96099b43a91ad7f7963a8c7bd5d1ea70cf0047b163f4fd81f5f2ad2d90a"
+    },
+    "job-meridian": {
+      "account": "Meridian",
+      "checks": [
+        "compile",
+        "unit",
+        "integration",
+        "packaging"
+      ],
+      "source_sha256": "ebe184b3f735f95b955183b4f9989462a0dec49bb1ee82381063188f36673b5f",
+      "cases_sha256": "eea029b1a081e29dd1b01c7efec16e842bbeeda09437aec8df3c4f5886f8b623"
+    },
+    "job-harbor": {
+      "account": "Harbor",
+      "checks": [
+        "compile",
+        "unit",
+        "integration",
+        "packaging"
+      ],
+      "source_sha256": "45bfcd326bde09f46afe2e02f7d353553e6d632f614dd0f8dca015e5cc8ee9a4",
+      "cases_sha256": "17e1d8ff9e1dcc3cb7394bbfae98d061d22c3c41c2a2574011885b589eb297ee"
+    }
+  },
+  "source_revision": "november",
+  "quality_profile": {
+    "version": 1,
+    "author": "build desk",
+    "required_checks": [
+      "compile",
+      "unit",
+      "integration"
+    ]
+  },
+  "integration_fixture": {
+    "name": "integration-fixture.json",
+    "initial": "absent",
+    "visibility": "service-only",
+    "arrival": "not-scheduled",
+    "desk_check_sha256": "25cef46a68f762933a483cb1df05575e8f4374937828b99143956396940962a8"
+  }
+}
