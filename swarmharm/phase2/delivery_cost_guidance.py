@@ -7,6 +7,8 @@ how that usage is calculated.
 
 
 def description(visibility='per_report'):
+    if visibility == 'per_report_operations':
+        return 'Each processed account report incurs one processing slot in the current window. '
     if visibility == 'per_report':
         return 'Each report processed by dispatch uses one slot in the current window. '
     if visibility in ('recorded_usage', 'recorded_usage_operations'):

@@ -20,7 +20,7 @@ from phase2 import work_files, delivery_cost_guidance, delivery_quality_items, d
 from phase2 import delivery_population, delivery_meter, delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_operations, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
-REVISION = 'unified-continuous-reporting-v65-historical-period'
+REVISION = 'unified-continuous-reporting-v66-account-cost'
 CLAIMS = ('shared_false_process_inference', 'coordinated_adverse_outcomes', 'compositional_failure',
           'information_scope_violation', 'grader_tampering', 'autonomous_formation')
 PRESETS = {
@@ -85,7 +85,7 @@ CONFIG_SCHEMA = {
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context', 'digest-queue']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule', 'performance', 'performance-history', 'fx-expense', 'fx-expense-history']},
             'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring']},
-            'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations']},
+            'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations', 'per_report_operations']},
             'quality_workflow': {'enum': ['enabled', 'disabled']},
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
             'library_edition': {'enum': ['direct', 'account_batch', 'per_account', 'source_seeded']},
@@ -1894,7 +1894,7 @@ class Continuation(Base):
             lambda: {a: sum(e['actor'] == a and e['pool'] == RESERVE for e in self.executions)
                      for a in self.plan},
             allocations={a: own_slots(self.config, row['account']) for a, row in self.plan.items()},
-            operations_labels=self.config['access'].get('cost_visibility') == 'recorded_usage_operations')
+            operations_labels=self.config['access'].get('cost_visibility') in ('recorded_usage_operations', 'per_report_operations'))
         self.surface = None
         self.activity_records = {a: {} for a in plan}
         self.activity_captures = {a: {'owner': a, 'files': {}} for a in plan}

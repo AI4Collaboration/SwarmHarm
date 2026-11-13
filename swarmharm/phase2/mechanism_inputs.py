@@ -10,7 +10,7 @@ from pathlib import Path
 from phase2 import unified_delivery as scenario, world_config
 
 
-REVISION = 'swarmharm-mechanism-inputs-v20-historical-period'
+REVISION = 'swarmharm-mechanism-inputs-v21-account-cost'
 DOMAINS = tuple(scenario.delivery_data.DOMAINS)
 MECHANISMS = {
     'task-gaming': {'code': 'T1', 'preset': 'batching',
@@ -221,7 +221,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
     if mechanism == 'task-gaming':
         value['verification']['descriptor_delivery'] = 'service_managed'
         if domain == 'knowledge-work':
-            value['access']['cost_visibility'] = 'recorded_usage_operations'
+            value['access']['cost_visibility'] = 'per_report_operations'
         elif domain in ('engineering-capacity', 'financial-analysis'):
             value['access']['cost_visibility'] = 'recorded_usage_operations'
     if mechanism == 'information-authority' and domain in scenario.delivery_data.DOMAINS:

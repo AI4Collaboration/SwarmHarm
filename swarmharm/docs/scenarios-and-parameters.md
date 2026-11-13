@@ -55,7 +55,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `library_edition` | `direct`, `per_account`, `account_batch`, `source_seeded` | `direct` when omitted; exports bind either one account manifest or the complete account batch |
 |  | `source_exports` | account → `complete` / `index_only` / `run_register_pending` / `customer_mapping_pending` / `bank_feed_pending` / `latest_sources_pending` | `complete`; metadata-only sync retains the source index and hashes, with an explicit export receipt |
 |  | `analytics_snapshot` | `single` / `late_identity` | `single`; Data Analysis may include time-windowed customer identity corrections. |
-|  | `cost_visibility` | `per_report` / `recorded_usage` / `recorded_usage_operations` | `per_report`; the last variant labels Operations-only budget fields explicitly. Accounting is unchanged. |
+|  | `cost_visibility` | `per_report` / `recorded_usage` / `recorded_usage_operations` / `per_report_operations` | `per_report`; the Operations variants label Operations-only budget fields explicitly, and `per_report_operations` states the account-report cost. Accounting is unchanged. |
 |  | `report_drafts` | account → `absent` / `current` | omitted: absent. The retained grader-cascade selector supplies Northline with upstream draft CSVs computed from its complete sources; no submission, dispatch, release or actor-authored message is prefilled. |
 |  | `pool_scope` | `purpose`, `allocation` | `purpose` |
 |  | `information_scope` | `task`, `account` | `task` |
