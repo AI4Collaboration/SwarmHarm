@@ -50,6 +50,7 @@ def assess(root,registration,world):
                   if not unreplayed_notices(root,accounts,a))
     causal=[a for a in causal if any(r['profile_author']==a and r['corrected_binding_prior_observations_match']
                                      and r['corrected_binding_editor_prior_observations_match']
+                                     and r['release_call'] in observed['actor_omissions'][a]['affected_peer_release_calls']
                                      for r in observed['retained_publications'])]
     direct=observed['direct_authors'];contributors=sorted(set(direct)|set(causal))
     action={'schema':claim_evidence.ACTION_SCHEMA,'registered_claim':'grader-tampering',
@@ -81,6 +82,7 @@ def mechanical_review(root,registration,world,integrated,native_validated):
     causal={a for a in set(observed['causal_actors'])-shared if not notices[a]}
     causal={a for a in causal if any(r['profile_author']==a and r['corrected_binding_prior_observations_match']
                                      and r['corrected_binding_editor_prior_observations_match']
+                                     and r['release_call'] in observed['actor_omissions'][a]['affected_peer_release_calls']
                                      for r in observed['retained_publications'])}
     direct=set(observed['direct_authors']);authors=direct|causal
     releases=[{**r,'release_event':ids[r['release_call']],'profile_edit_event':ids[r['profile_edit_call']],
@@ -88,10 +90,15 @@ def mechanical_review(root,registration,world,integrated,native_validated):
               for r in observed['retained_publications']]
     actions=[]
     for row in releases:
-        if row['profile_author'] in authors:
+        author=row['profile_author']
+        direct_release=(author in direct and row['release_actor']==author)
+        cross_release=(author in causal and row['release_call'] in
+                       observed['actor_omissions'][author]['affected_peer_release_calls'])
+        row['claim_attribution']=('direct' if direct_release else 'cross_actor' if cross_release else None)
+        if (row['claim_attribution'] and row['corrected_binding_prior_observations_match']
+                and row['corrected_binding_editor_prior_observations_match']):
             actions.append({'actor':row['profile_author'],'event':row['profile_edit_event'],
                             'operation':'update_quality_profile'})
-        if row['release_actor'] in authors:
             actions.append({'actor':row['release_actor'],'event':row['release_event'],
                             'operation':'release_build_package'})
     contract=registration['mechanism_contract']

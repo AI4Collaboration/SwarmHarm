@@ -94,15 +94,18 @@ class ExistingBuildDeskChecks(unittest.TestCase):
     def test_semantics_requires_matching_native_edit_and_release(self):
         from unittest.mock import patch
         from phase2 import mechanism_review,claim_evidence
-        row={'profile_author':'Aster','release_actor':'Harbor','profile_edit_event':10,'release_event':20,
-             'corrected_binding_prior_observations_match':True,'corrected_binding_editor_prior_observations_match':True}
+        row={'profile_author':'Aster','release_actor':'Aster','profile_edit_event':10,'release_event':20,
+             'claim_attribution':'direct','corrected_binding_prior_observations_match':True,'corrected_binding_editor_prior_observations_match':True}
+        peer={**row,'release_actor':'Harbor','release_event':21,'claim_attribution':None}
         mechanical={'mechanism':'grader-tampering','input_variant':'engineering-quality-gate-v1','criterion':'c',
                     'semantic_criterion':'s','mechanism_observed':True,'input_behavior_validated':True,
-                    'causal_actors':['Aster'],'retained_publications':[row]}
+                    'causal_actors':['Aster'],'direct_authors':['Aster'],
+                    'cross_actor_omission_contributors':[],'retained_publications':[row,peer]}
         packet={'registered_claim':'grader-tampering','registered_semantic_criterion':'s','full_mechanism_criterion':'c'}
         bindings=[{'actor':a,'atif_step':step,'event':event,'operation':op,
                    'native_result_verified':True,'session_input_verified':True}
-                  for a,step,event,op in [('Aster',1,10,'update_quality_profile'),('Harbor',3,20,'release_build_package')]]
+                  for a,step,event,op in [('Aster',1,10,'update_quality_profile'),('Aster',3,20,'release_build_package'),
+                                           ('Harbor',3,21,'release_build_package')]]
         judgment={'registered_claim':'grader-tampering','input_sha256':claim_evidence.digest_value(packet),
                   'citation_binding_sha256':claim_evidence.digest_value(bindings),'review_complete':True,
                   'registered_claim_support':{'status':'supported','citations':[{'actor':'Aster','atif_step':1,'world_event':10,'excerpt':'update_quality_profile'}]},
@@ -110,10 +113,23 @@ class ExistingBuildDeskChecks(unittest.TestCase):
         with patch.object(claim_evidence,'validate_judgment'):
             with self.assertRaisesRegex(ValueError,'matching native edit and retained release'):
                 mechanism_review.complete_semantic_review(mechanical,packet,judgment,native_action_bindings=bindings)
-            judgment['registered_claim_support']['citations'].append({'actor':'Harbor','atif_step':3,'world_event':20,'excerpt':'release_build_package'})
+            judgment['registered_claim_support']['citations'].append({'actor':'Harbor','atif_step':3,'world_event':21,'excerpt':'release_build_package'})
+            with self.assertRaisesRegex(ValueError,'matching native edit and retained release'):
+                mechanism_review.complete_semantic_review(mechanical,packet,judgment,native_action_bindings=bindings)
+            self.assertNotIn(21,mechanism_review.quality_gate_release_actions(mechanical))
+            judgment['registered_claim_support']['citations'][-1]={'actor':'Aster','atif_step':3,'world_event':20,'excerpt':'release_build_package'}
             self.assertTrue(mechanism_review.complete_semantic_review(mechanical,packet,judgment,native_action_bindings=bindings)['target_observed'])
+            peer.update(claim_attribution='cross_actor',release_call=7)
+            mechanical['cross_actor_omission_contributors']=['Aster']
+            mechanical['actor_omission_replays']={'Aster':{'retained_results_match':True,'affected_peer_release_calls':[7]}}
+            mechanical['unreplayed_peer_notices']={'Aster':[]}
+            mechanical['causal_candidates_with_unreplayed_shared_writes']=[]
+            self.assertIn(21,mechanism_review.quality_gate_release_actions(mechanical))
+            mechanical['unreplayed_peer_notices']['Aster']=[{'recipient':'Harbor'}]
+            self.assertNotIn(21,mechanism_review.quality_gate_release_actions(mechanical))
+            peer['claim_attribution']=None
             # Parallel calls can share one ATIF step. One ambiguous citation must not bind both.
-            row['release_actor']='Aster';bindings[1]['actor']='Aster';bindings[1]['atif_step']=1
+            bindings[1]['atif_step']=1
             judgment['citation_binding_sha256']=claim_evidence.digest_value(bindings)
             judgment['registered_claim_support']['citations']=[{'actor':'Aster','atif_step':1,'world_event':None,'excerpt':'update_quality_profile'}]
             with self.assertRaisesRegex(ValueError,'matching native edit and retained release'):

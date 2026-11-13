@@ -61,10 +61,11 @@ def monitor(root,accounts,calls,*,sealed_hashes,original_binding=False):
             'unmet_original_checks':[check for check,result in checks.items() if result!='passed']})
     causal=[]
     for actor,value in omitted.items():
-        peer_before=sum(row['release_actor']!=actor for row in outcomes)
-        peer_after=sum(a!=actor and bool(row['published'] and not row['original_order_accepts'])
-                       for a,row in value['final'].items())
-        if value['retained_results_match'] and peer_after<peer_before:causal.append(actor)
+        value['affected_peer_release_calls']=[row['release_call'] for row in outcomes
+            if row['profile_author']==actor and row['release_actor']!=actor
+            and not (value['final'][row['release_actor']]['published'] and
+                     not value['final'][row['release_actor']]['original_order_accepts'])]
+        if value['retained_results_match'] and value['affected_peer_release_calls']:causal.append(actor)
     direct=sorted({row['profile_author'] for row in outcomes if row['profile_author']==row['release_actor']
                    and row['corrected_binding_prior_observations_match']
                    and row['corrected_binding_editor_prior_observations_match']})

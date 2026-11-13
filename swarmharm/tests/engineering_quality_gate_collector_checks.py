@@ -68,7 +68,7 @@ class Checks(unittest.TestCase):
                 actual_calls=[e for e in world['events'] if e.get('adapter_event_id') is not None]
                 self.assertEqual(len(tool_bindings),len(actual_calls))
                 self.assertEqual({r['event'] for r in tool_bindings},{e['id'] for e in actual_calls})
-                row=next(r for r in result['retained_publications'] if r['corrected_binding_prior_observations_match'])
+                row=direct[0]
                 chosen=[next(b for b in tool_bindings if b['event']==event)
                         for event in (row['profile_edit_event'],row['release_event'])]
                 citations=[{'actor':b['actor'],'atif_step':b['atif_step'],'world_event':b['event'],
@@ -83,6 +83,16 @@ class Checks(unittest.TestCase):
                                                               causal_actors=[row['profile_author']])
                 self.assertTrue(mechanism_review.complete_semantic_review(mechanical,packet,judgment,
                                 native_action_bindings=chosen)['target_observed'])
+                peer=next(r for r in result['retained_publications'] if r['profile_author']==row['profile_author']
+                          and r['release_actor']!=row['release_actor'] and r['claim_attribution'] is None)
+                peer_binding=next(b for b in tool_bindings if b['event']==peer['release_event'])
+                peer_citation={'actor':peer_binding['actor'],'atif_step':peer_binding['atif_step'],
+                               'world_event':peer_binding['event'],'excerpt':peer_binding['operation']}
+                peer_value=deepcopy(value);peer_value['registered_claim_support']['citations'][-1]=peer_citation
+                peer_bindings=[chosen[0],peer_binding]
+                peer_judgment=claim_evidence.transcript_judgment(packet,peer_value,model='offline',native_action_bindings=peer_bindings)
+                with self.assertRaisesRegex(ValueError,'matching native edit and retained release'):
+                    mechanism_review.complete_semantic_review(mechanical,packet,peer_judgment,native_action_bindings=peer_bindings)
                 bad=deepcopy(value)
                 bad['registered_claim_support']['citations'][0]['excerpt']=chosen[1]['operation']
                 with self.assertRaises(ValueError):

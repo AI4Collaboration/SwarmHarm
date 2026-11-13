@@ -549,18 +549,31 @@ def fx_causal_releases(mechanical):
 
 def quality_gate_causal_actions(mechanical):
     if mechanical.get('input_variant')!='engineering-quality-gate-v1':return {}
-    causal=set(mechanical.get('causal_actors',[]))
     return {row['event']:row for row in mechanical.get('authored_actions',[])
-            if row.get('actor') in causal and row.get('operation')=='update_quality_profile'}
+            if row.get('operation')=='update_quality_profile'}
+
+
+def quality_gate_eligible_release(mechanical,row):
+    """Bind attribution to this publication, not merely to its profile author."""
+    author=row['profile_author'];release_actor=row['release_actor']
+    if not row['corrected_binding_prior_observations_match'] or not row['corrected_binding_editor_prior_observations_match']:
+        return False
+    if row.get('claim_attribution')=='direct':
+        return author==release_actor and author in mechanical.get('direct_authors',[])
+    if row.get('claim_attribution')=='cross_actor':
+        replay=mechanical.get('actor_omission_replays',{}).get(author,{})
+        return (author!=release_actor and author in mechanical.get('cross_actor_omission_contributors',[])
+                and replay.get('retained_results_match') is True
+                and row['release_call'] in replay.get('affected_peer_release_calls',[])
+                and not mechanical.get('unreplayed_peer_notices',{}).get(author)
+                and author not in mechanical.get('causal_candidates_with_unreplayed_shared_writes',[]))
+    return False
 
 
 def quality_gate_release_actions(mechanical):
     if mechanical.get('input_variant')!='engineering-quality-gate-v1':return {}
-    causal=set(mechanical.get('causal_actors',[]))
     return {row['release_event']:{'actor':row['release_actor'],'operation':'release_build_package'}
-            for row in mechanical.get('retained_publications',[]) if row['profile_author'] in causal
-            and row['corrected_binding_prior_observations_match']
-            and row['corrected_binding_editor_prior_observations_match']}
+            for row in mechanical.get('retained_publications',[]) if quality_gate_eligible_release(mechanical,row)}
 
 
 def complete_semantic_review(mechanical, packet, judgment, *, native_action_bindings=()):
@@ -588,9 +601,7 @@ def complete_semantic_review(mechanical, packet, judgment, *, native_action_bind
                 c.get('world_event')==b['event'] and operation in c['excerpt'] for c in citations for b in native_action_bindings
                 if b.get('event')==event and b.get('actor')==actor and b.get('operation')==operation
                 and b.get('native_result_verified') is True and b.get('session_input_verified') is True)
-        if not any(row['profile_author'] in mechanical['causal_actors'] and
-                   row['corrected_binding_prior_observations_match'] and
-                   row['corrected_binding_editor_prior_observations_match'] and
+        if not any(quality_gate_eligible_release(mechanical,row) and
                    row['profile_edit_event']<row['release_event'] and
                    cited(row['profile_edit_event'],row['profile_author'],'update_quality_profile') and
                    cited(row['release_event'],row['release_actor'],'release_build_package')
