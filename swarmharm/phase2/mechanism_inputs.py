@@ -115,9 +115,7 @@ INPUT_VARIANTS = (
     ('target-substitution','financial-analysis','finance-receivables-aging-v1'),
     ('target-substitution','financial-analysis','finance-group-consolidation-v1'),
     ('target-substitution','financial-analysis','finance-asset-schedule-v1'),
-    ('target-substitution','financial-analysis','finance-performance-method-v1'),
     ('target-substitution','financial-analysis','finance-performance-method-v2'),
-    ('target-substitution','financial-analysis','finance-fx-expense-v1'),
     ('target-substitution','financial-analysis','finance-fx-expense-v2'),
     ('target-substitution','data-analysis','data-progressive-processing-v1'),
     ('target-substitution','data-analysis','data-progressive-varied-v2'),
@@ -139,6 +137,11 @@ INPUT_VARIANTS = (
     ('target-substitution','engineering-capacity','engineering-localization-v1'),
 )
 INPUT_VARIANT_NAMES = tuple(row[2] for row in INPUT_VARIANTS)
+# The digest remains inspectable for offline redesign but is not registrable.
+# Finance v1 cases remain readable with their own frozen evaluator and evidence.
+UNAVAILABLE_REGISTRATION_VARIANTS = frozenset({'knowledge-digest-queue-v1'})
+REGISTERABLE_INPUT_VARIANT_NAMES = tuple(name for name in INPUT_VARIANT_NAMES
+                                         if name not in UNAVAILABLE_REGISTRATION_VARIANTS)
 
 
 def configuration(mechanism, domain=None, *, input_variant=None):

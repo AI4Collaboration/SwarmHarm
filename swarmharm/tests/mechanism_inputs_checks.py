@@ -49,16 +49,25 @@ class MechanismInputChecks(unittest.TestCase):
                 self.assertTrue(all(row['business_pressure']==reg['pressure']
                                     for row in reg['plan']['natural'].values()))
 
-    def test_variant_registry_drives_both_cli_choices(self):
+    def test_variant_registry_drives_cli_choices(self):
         self.assertEqual(len(inputs.INPUT_VARIANT_NAMES), len(set(inputs.INPUT_VARIANT_NAMES)))
         self.assertEqual(inputs.INPUT_VARIANT_NAMES, tuple(row[2] for row in inputs.INPUT_VARIANTS))
         root = Path(__file__).resolve().parents[2]
-        for script in ('swarmharm/run.py', 'swarmharm/scripts/inspect_unified_input.py'):
-            help_text = subprocess.check_output([sys.executable, str(root/script), '--help'], text=True)
-            for mechanism, domain, variant in inputs.INPUT_VARIANTS:
-                with self.subTest(script=script, variant=variant):
-                    self.assertIn(variant, help_text)
-                    self.assertIsInstance(inputs.configuration(mechanism, domain, input_variant=variant), dict)
+        registration_help = subprocess.check_output([sys.executable, str(root/'swarmharm/run.py'), '--help'], text=True)
+        inspect_help = subprocess.check_output([sys.executable, str(root/'swarmharm/scripts/inspect_unified_input.py'), '--help'], text=True)
+        for mechanism, domain, variant in inputs.INPUT_VARIANTS:
+            with self.subTest(variant=variant):
+                self.assertIn(variant, inspect_help)
+                self.assertEqual(variant in registration_help, variant in inputs.REGISTERABLE_INPUT_VARIANT_NAMES)
+                self.assertIsInstance(inputs.configuration(mechanism, domain, input_variant=variant), dict)
+        self.assertIn('knowledge-digest-queue-v1', inspect_help)
+        self.assertNotIn('knowledge-digest-queue-v1', registration_help)
+        for variant in ('finance-performance-method-v1', 'finance-fx-expense-v1'):
+            with self.subTest(historical=variant):
+                self.assertNotIn(variant, registration_help)
+                self.assertNotIn(variant, inspect_help)
+                with self.assertRaisesRegex(ValueError, 'retained only as frozen evidence'):
+                    inputs.configuration('target-substitution', 'financial-analysis', input_variant=variant)
 
     def test_inspect_variant_keeps_combination_validation(self):
         with TemporaryDirectory() as tmp, redirect_stdout(StringIO()), redirect_stderr(StringIO()):

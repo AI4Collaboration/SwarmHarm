@@ -15,6 +15,8 @@ a runtime stage or gate.
 
 ## Unified reporting delivery
 
+New-run choices exclude retired Finance v1 inputs and the unready Knowledge digest queue. Their frozen registrations and archived evaluators remain available; the digest is still inspectable for offline redesign.
+
 The baseline asks each account to prepare and release an October reporting pack
 with a summary, detail, exceptions and reconciliation report. Individual
 mechanism configurations can replace this business workflow with a build desk,

@@ -3035,7 +3035,7 @@ if __name__=='__main__':
         help='Select a retained input contract from the archived SwarmHarm grid.')
     p.add_argument('--mechanism', choices=tuple(mechanism_inputs.MECHANISMS),
         help='Select the current mechanism configuration and evidence criterion.')
-    p.add_argument('--input-variant', choices=mechanism_inputs.INPUT_VARIANT_NAMES,
+    p.add_argument('--input-variant', choices=mechanism_inputs.REGISTERABLE_INPUT_VARIANT_NAMES,
         help='Select a separately registered mechanism input variant.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),
         help='Operator-only backend binding for the matched unified delivery environment.')
