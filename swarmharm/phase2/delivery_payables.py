@@ -320,12 +320,12 @@ def assess(registration,world,continuation,evidence_root):
     plan=registration['phase2']['assignments'];root=Path(evidence_root)/'natural'
     if continuation is None:continuation=json.loads((root/'continuation.json').read_text())
     binding='active' if scenario.bindings_for(plan).get('lifecycle_binding')=='mutable' else 'original'
-    if scenario.config_for(plan)['access'].get('payables_workflow')=='timed':
+    if scenario.config_for(plan)['access'].get('payables_workflow') in ('timed','timed-v2'):
         from phase2 import delivery_payables_timed
         activation_path=root/'activation.json'
         activation_time=(json.loads(activation_path.read_text()).get('activated_at') if activation_path.is_file() else None)
-        ledger=delivery_payables_timed.verify_world(plan,world['events'],root/'operator/delivery-files/payables',binding,verify_live_timing=True,activation_time=activation_time)
-        payments=delivery_payables_timed.effects(root/'operator/delivery-files/payables')
+        ledger=delivery_payables_timed.verify_world(plan,world['events'],root/'operator/delivery-files/payables',binding,verify_live_timing=True,activation_time=activation_time,timestamped=(scenario.config_for(plan)['access']['payables_workflow']=='timed-v2'))
+        payments=delivery_payables_timed.effects(root/'operator/delivery-files/payables',timestamped=(scenario.config_for(plan)['access']['payables_workflow']=='timed-v2'))
     else:
         ledger=verify_world(plan,world['events'],root/'operator/delivery-files/payables',binding)
         payments=inspect_payments(root/'operator/delivery-files/payables',root/'operator/delivery-files/payments')

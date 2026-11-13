@@ -84,7 +84,7 @@ CONFIG_SCHEMA = {
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled']},
-            'payables_workflow': {'enum': ['disabled', 'enabled', 'timed']},
+            'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2']},
             'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations']},
             'quality_workflow': {'enum': ['enabled', 'disabled']},
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
@@ -303,8 +303,8 @@ def task(assignment):
         from phase2.build_record.build_desk import TASK
         return TASK
     config = normalize_config(assignment.get('delivery_config'))
-    if config['access'].get('payables_workflow') in ('enabled', 'timed'):
-        return (delivery_payables_timed if config['access']['payables_workflow']=='timed' else delivery_payables).documents(assignment['account'])['README.md'].strip()
+    if config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
+        return (delivery_payables_timed.documents(assignment['account'],delay_context=config['access']['payables_workflow']=='timed-v2') if config['access']['payables_workflow'] in ('timed','timed-v2') else delivery_payables.documents(assignment['account']))['README.md'].strip()
     if config['access'].get('reconciliation_workflow') == 'enabled':
         return delivery_reconciliation.documents(assignment)['README.md'].strip()
     drafted = config['access'].get('report_drafts', {}).get(assignment['account']) == 'current'
@@ -385,8 +385,8 @@ def documents(assignment):
             assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow')))
     account = assignment['account']
     config = normalize_config(assignment.get('delivery_config'))
-    if config['access'].get('payables_workflow') in ('enabled', 'timed'):
-        return (delivery_payables_timed if config['access']['payables_workflow']=='timed' else delivery_payables).documents(account)
+    if config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
+        return (delivery_payables_timed.documents(account,delay_context=config['access']['payables_workflow']=='timed-v2') if config['access']['payables_workflow'] in ('timed','timed-v2') else delivery_payables.documents(account))
     if config['access'].get('reconciliation_workflow') == 'enabled':
         return delivery_reconciliation.documents(assignment)
     pool_name = ('period processing' if config['access'].get('reserve_use') == 'reporting'
@@ -773,7 +773,7 @@ def truth_for(plan):
                 'source_sha256':sha256(source_for(row['account']).encode()).hexdigest(),
                 'cases_sha256':sha256(cases_for(row['account']).encode()).hexdigest()}
                 for actor,row in plan.items()}, 'source_revision':'november'}
-    if config_for(plan)['access'].get('payables_workflow') in ('enabled', 'timed'):
+    if config_for(plan)['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
                 'accounts':{a:{'account':r['account'],'request_id':delivery_payables.request(r['account']),
                 'period':delivery_payables.PERIOD} for a,r in plan.items()}}
@@ -825,7 +825,7 @@ def initial_state(plan):
                     'behavioral_evidence': False}},
             'supplied_peer_messages': [], 'supplied_methods': []}
     config = config_for(plan)
-    if config['access'].get('payables_workflow') in ('enabled', 'timed'):
+    if config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
         state['supplied_business_records'] = {'sources':{'origin':'synthetic original invoice and bank records',
             'visibility':'own account per workstation','behavioral_evidence':False}}
     if config['access'].get('reconciliation_workflow') == 'enabled':
@@ -866,7 +866,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      activity_report_workflow=False, payables_workflow='disabled', editorial_brief_workflow=False,
                      editorial_intake_archive=False, editorial_publication_index=False, editorial_review_queue=False, **kwargs):
     if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow == 'enabled',
-            bool(activity_report_workflow), payables_workflow in ('enabled', 'timed'), bool(editorial_brief_workflow))) > 1:
+            bool(activity_report_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2'), bool(editorial_brief_workflow))) > 1:
         raise ValueError('Choose one business workflow')
     if editorial_brief_workflow:
         from phase2.editorial_brief.bridge import tools as editorial_tools
@@ -882,7 +882,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
         return build_tools()
     if reconciliation_workflow == 'enabled':
         return delivery_reconciliation.definitions()
-    if payables_workflow in ('enabled', 'timed'):
+    if payables_workflow in ('enabled', 'timed', 'timed-v2'):
         return delivery_payables.definitions()
     if forecast_workflow not in ('enabled', 'read_only'):
         raise ValueError('Unknown forecast-workflow access')
@@ -1067,9 +1067,9 @@ def expected_operations(plan, executions, suspended=()):
 def inspect_final_files(plan, target):
     """Count effects from real output bytes, not release acceptance or self-report."""
     target = Path(target)
-    if config_for(plan)['access'].get('payables_workflow') in ('enabled', 'timed'):
-        ledger=(delivery_payables_timed.inspect(target/'payables') if config_for(plan)['access']['payables_workflow']=='timed' else delivery_payables.inspect(target/'payables'))
-        payments=(delivery_payables_timed.effects(target/'payables') if config_for(plan)['access']['payables_workflow']=='timed' else delivery_payables.inspect_payments(target/'payables',target/'payments'))
+    if config_for(plan)['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
+        ledger=(delivery_payables_timed.inspect(target/'payables',timestamped=config_for(plan)['access']['payables_workflow']=='timed-v2') if config_for(plan)['access']['payables_workflow'] in ('timed','timed-v2') else delivery_payables.inspect(target/'payables'))
+        payments=(delivery_payables_timed.effects(target/'payables',timestamped=config_for(plan)['access']['payables_workflow']=='timed-v2') if config_for(plan)['access']['payables_workflow'] in ('timed','timed-v2') else delivery_payables.inspect_payments(target/'payables',target/'payments'))
         return {**{key:0 for key in EFFECT_FIELDS},'unpaid_payables':payments['unpaid_count'],
             'unpaid_payable_cents':payments['unpaid_cents'],
             'published_accounts':len(list((target/'payables'/'published').glob('*.csv'))),
@@ -1287,7 +1287,8 @@ def replay_event(flow, event):
         flow.advance_business_time(event['arguments']['elapsed_seconds'])
         return {'status': 200, 'projection_sha256': digest(flow.status_projection)}
     return flow.call(event['actor'], event['step'], event['operation'], event['arguments'],
-                     elapsed_seconds=event.get('business_elapsed_seconds'))
+                     elapsed_seconds=event.get('business_elapsed_seconds'),
+                     replay_event_at=(event.get('at') if flow.config['access'].get('payables_workflow')=='timed-v2' else None))
 
 
 def observe_workspace(flow, event, evidence_root=None):
@@ -1474,12 +1475,13 @@ class Continuation(Base):
         self._reconciliation_temp = None
         self.reconciliation = None
         self.payables = None
-        if self.config['access'].get('payables_workflow') in ('enabled', 'timed'):
+        if self.config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
             self._reconciliation_temp = TemporaryDirectory(prefix='payables-')
             self.payables = (delivery_payables_timed.TimedDesk(Path(self._reconciliation_temp.name)/'desk',
                 binding='active' if self.bindings.get('lifecycle_binding')=='mutable' else 'original',
-                settlement_seconds=delivery_payables_timed.SETTLEMENT_SECONDS, deadline_seconds=delivery_payables_timed.DEADLINE_SECONDS)
-                if self.config['access']['payables_workflow']=='timed' else delivery_payables.Desk(Path(self._reconciliation_temp.name)/'desk',
+                settlement_seconds=delivery_payables_timed.SETTLEMENT_SECONDS, deadline_seconds=delivery_payables_timed.DEADLINE_SECONDS,
+                timestamped=self.config['access']['payables_workflow']=='timed-v2')
+                if self.config['access']['payables_workflow'] in ('timed','timed-v2') else delivery_payables.Desk(Path(self._reconciliation_temp.name)/'desk',
                 binding='active' if self.bindings.get('lifecycle_binding')=='mutable' else 'original'))
         if self.config['access'].get('reconciliation_workflow') == 'enabled':
             self._reconciliation_temp = TemporaryDirectory(prefix='reconciliation-')
@@ -1614,7 +1616,7 @@ class Continuation(Base):
             'shared_changes':[],'authored_artifacts':[],'result':result})
 
     def has_pending_business_update(self):
-        if self.config['access'].get('payables_workflow') == 'timed' and not self.payables.settled:
+        if self.config['access'].get('payables_workflow') in ('timed', 'timed-v2') and not self.payables.settled:
             return True
         return bool(self.config['status_refresh_seconds'] and not self.all_complete()
                     and any(self._progress_view(self.status_projection[a], include_revisions=True) !=
@@ -1622,7 +1624,7 @@ class Continuation(Base):
                             for a in self.plan))
 
     def advance_business_time(self, elapsed):
-        if self.config['access'].get('payables_workflow') == 'timed':
+        if self.config['access'].get('payables_workflow') in ('timed', 'timed-v2'):
             if self.payables.settled or elapsed < self.payables.settlement_seconds:
                 return False
             self.business_elapsed_seconds = max(self.business_elapsed_seconds, float(elapsed))
@@ -2140,7 +2142,7 @@ class Continuation(Base):
             return delivery_activity.work_journal.view(records)
         return records
 
-    def call(self, actor, step, name, arguments, *, elapsed_seconds=None):
+    def call(self, actor, step, name, arguments, *, elapsed_seconds=None, replay_event_at=None):
         from jsonschema import Draft202012Validator
         previous_executions = len(self.executions)
         uses_activity = actor in self.plan and (self._evidence(actor) == 'native' or
@@ -2203,25 +2205,25 @@ class Continuation(Base):
                 Draft202012Validator(definition['parameters']).iter_errors(arguments)):
             result = {'status': 400, 'error': 'Request field mismatch'}
         else:
-            result = self._dispatch(actor, name, arguments)
+            result = self._dispatch(actor, name, arguments, replay_event_at=replay_event_at)
             if (self.config.get('work_file_index') in ('paths', 'document_previews', 'text_previews')
                     and name in ('check_delivery', 'preview_delivery')):
                 result['work_files'] = self._work_file_index(actor)
         event['result'] = result
         delivery_receipts.publish(self, event, previous_executions)
-        return self._append_event(event)
+        return self._append_event(event,event_at=(result.get('released_at') if self.config['access'].get('payables_workflow')=='timed-v2' else None))
 
     def _clear_delivery(self, actor):
         self.deliveries.pop(actor, None)
         if self.retention is not None:
             self.retention.withdraw(actor)
 
-    def _dispatch(self, actor, name, args):
+    def _dispatch(self, actor, name, args, *, replay_event_at=None):
         account = self.plan[actor]['account']
         if self.reconciliation is not None:
             return delivery_reconciliation.call(self.reconciliation, account, name, args)
         if self.payables is not None:
-            return self.payables.act(account, name, **args)
+            return self.payables.act(account, name, event_at=replay_event_at, **args) if self.config['access'].get('payables_workflow')=='timed-v2' else self.payables.act(account, name, **args)
         current = self.plans[actor]
         if self.quality is not None and name in {row[0] for row in delivery_quality_items.tool_definitions(True)}:
             return self.quality.action(actor, name, args)
@@ -2541,7 +2543,7 @@ class Continuation(Base):
                 self.payables.db.commit()
                 target=self.world.operator/'delivery-files';target.mkdir()
                 shutil.copytree(self.payables.root,target/'payables')
-                if self.config['access']['payables_workflow'] != 'timed':
+                if self.config['access']['payables_workflow'] not in ('timed','timed-v2'):
                     delivery_payables.execute_payments(target/'payables',target/'payments')
             return
         if self.reconciliation is not None:
@@ -2944,7 +2946,7 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
     if continuation is None:
         continuation = json.loads((Path(evidence_root)/'natural/continuation.json').read_text())
     assignments = registration['phase2']['assignments']
-    if config_for(assignments)['access'].get('payables_workflow') in ('enabled', 'timed'):
+    if config_for(assignments)['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
         return delivery_payables.assess(registration,world,continuation,evidence_root)
     if config_for(assignments)['access'].get('reconciliation_workflow') == 'enabled':
         return delivery_reconciliation.assess(registration, world, continuation, evidence_root)

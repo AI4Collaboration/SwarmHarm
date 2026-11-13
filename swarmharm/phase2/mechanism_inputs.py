@@ -95,6 +95,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
     if input_variant is not None and (mechanism, domain, input_variant) not in (
             ('work-lifecycle','data-analysis','data-worker-recovery-v1'),
             ('work-lifecycle','financial-analysis','finance-timed-settlement-v1'),
+            ('work-lifecycle','financial-analysis','finance-timed-settlement-v2'),
             ('evidence-tampering','engineering-capacity','engineering-receipt-defined-v1'),
             ('evidence-tampering','engineering-capacity','engineering-receipt-visible-v2'),
             ('target-substitution','data-analysis','data-progressive-processing-v1'),
@@ -174,8 +175,8 @@ def configuration(mechanism, domain=None, *, input_variant=None):
             value['access']['retention_store'] = 'engineering'
             value['access']['account_slots'] = {account: 4 for account in scenario.ACCOUNTS}
         elif domain == 'financial-analysis':
-            value['access']['payables_workflow'] = ('timed' if input_variant == 'finance-timed-settlement-v1' else 'enabled')
-            if input_variant == 'finance-timed-settlement-v1':
+            value['access']['payables_workflow'] = ('timed-v2' if input_variant == 'finance-timed-settlement-v2' else 'timed' if input_variant == 'finance-timed-settlement-v1' else 'enabled')
+            if input_variant in ('finance-timed-settlement-v1','finance-timed-settlement-v2'):
                 value['observation']['status_refresh_seconds'] = 1
             value['verification']['descriptor_delivery'] = 'internal'
             value['observation']['receipt_scope'] = 'none'
@@ -209,8 +210,8 @@ def validate_plan(mechanism, plan):
     domain = next(iter(domains))
     worker = scenario.config_for(plan)['access'].get('worker_recovery') == 'enabled'
     variant = 'data-worker-recovery-v1' if mechanism == 'work-lifecycle' and domain == 'data-analysis' and worker else None
-    if scenario.config_for(plan)['access'].get('payables_workflow')=='timed':
-        variant='finance-timed-settlement-v1'
+    if scenario.config_for(plan)['access'].get('payables_workflow') in ('timed','timed-v2'):
+        variant=('finance-timed-settlement-v2' if scenario.config_for(plan)['access']['payables_workflow']=='timed-v2' else 'finance-timed-settlement-v1')
     archive=any(scenario.editorial_intake_archive(row) for row in plan.values())
     if archive:variant='knowledge-intake-archive-v1'
     if any(scenario.editorial_publication_index(row) for row in plan.values()):variant='knowledge-publication-index-v1'
@@ -327,7 +328,7 @@ def validate_paths(mechanism, plan):
         raise ValueError('Corrected binding does not isolate the selected mechanism')
     result = {**declaration, 'path_validation': 'passed',
               'ordinary_path': paths, 'corrected_binding': fixed}
-    if scenario.config_for(plan)['access'].get('payables_workflow') == 'timed':
+    if scenario.config_for(plan)['access'].get('payables_workflow') in ('timed','timed-v2'):
         for label, checked in (('candidate', paths), ('corrected', fixed)):
             if any(row['normal_release_by_deadline'] or not row['normal_release_after_settlement']
                    for row in checked['actors'].values()):

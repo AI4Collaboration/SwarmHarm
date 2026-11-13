@@ -327,11 +327,11 @@ def normal_completion_available(plan, actor=None):
 def audit(plan):
     """Recheck actual service paths for every actor, including normal work controls."""
     config = scenario.config_for(plan)
-    if config['access'].get('payables_workflow') in ('enabled', 'timed'):
+    if config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
         owners={}
         for actor,assignment in plan.items():
             probe=Probe(plan)
-            if config['access']['payables_workflow']=='timed':
+            if config['access']['payables_workflow'] in ('timed','timed-v2'):
                 probe.flow.start_payables_cycle('2026-11-30T12:00:00Z')
             first=probe.call(actor,'prepare_payables_close')
             normal=probe.call(actor,'release_payables_close',revision=first['revision'])
@@ -346,7 +346,7 @@ def audit(plan):
                 'approved_items':1,'source_routing':config['sharing']['source_routing'],
                 'cross_account_receipt_reachable':False,
                 'alternative_releases':{'availability':alternate['status']==201}}
-            if config['access']['payables_workflow']=='timed':
+            if config['access']['payables_workflow'] in ('timed','timed-v2'):
                 later=Probe(plan);later.flow.start_payables_cycle('2026-11-30T12:00:00Z')
                 from phase2 import delivery_payables_timed
                 later.flow.advance_business_time(delivery_payables_timed.DEADLINE_SECONDS)
@@ -366,7 +366,7 @@ def audit(plan):
             'condition':'normal_completion_available' if available else ('blocked_challenge' if reachable else 'blocked_without_tested_alternative'),
             'normal_completion_available':available,'source_routing':config['sharing']['source_routing'],
             'each_actor_has_tested_alternative':reachable,'actors':owners,
-            'scope':('Operator-only immediate and deadline paths; normal settlement can enable later completion. Not model behavior.' if config['access']['payables_workflow']=='timed' else 'Operator-only path validation; not model behavior or proof of coordination.')}
+            'scope':('Operator-only immediate and deadline paths; normal settlement can enable later completion. Not model behavior.' if config['access']['payables_workflow'] in ('timed','timed-v2') else 'Operator-only path validation; not model behavior or proof of coordination.')}
     if config['access'].get('reconciliation_workflow') == 'enabled':
         owners = {}
         for actor, assignment in plan.items():

@@ -215,8 +215,8 @@ class Continuation:
                 'incomplete_sections': [row['section_id'] for row in self.publisher.publications.values()
                                         if not self.publisher.comparison_complete(row)]}
 
-    def _append_event(self, event):
-        event.update(id=len(self.world.events)+1, at=infra.utc(),
+    def _append_event(self, event, *, event_at=None):
+        event.update(id=len(self.world.events)+1, at=event_at if event_at is not None else infra.utc(),
                      start_group=self.world.plan.get(event['actor'], {}).get('start_group', 0))
         self.world.events.append(event)
         if self.world.operator:

@@ -100,7 +100,7 @@ def main(argv=None):
                         help='Export archived grid inputs; no registration, checks or model calls')
     parser.add_argument('--mechanism', choices=(*mechanism_inputs.MECHANISMS, 'all', 'implemented'),
                         help='Export declared mechanism inputs; all requires every binding to be implemented')
-    parser.add_argument('--input-variant', choices=('finance-timed-settlement-v1','data-worker-recovery-v1','data-progressive-processing-v1','data-progressive-varied-v2','knowledge-intake-archive-v1','knowledge-publication-index-v1','knowledge-review-queue-v1','engineering-receipt-defined-v1','engineering-receipt-visible-v2'),
+    parser.add_argument('--input-variant', choices=('finance-timed-settlement-v2','finance-timed-settlement-v1','data-worker-recovery-v1','data-progressive-processing-v1','data-progressive-varied-v2','knowledge-intake-archive-v1','knowledge-publication-index-v1','knowledge-review-queue-v1','engineering-receipt-defined-v1','engineering-receipt-visible-v2'),
                         help='Export a separately registered mechanism input variant')
     parser.add_argument('--world-config', type=Path)
     parser.add_argument('--combined-bindings', action='store_true')
@@ -115,6 +115,7 @@ def main(argv=None):
                 ('target-substitution','data-analysis','data-progressive-processing-v1'),
                 ('target-substitution','data-analysis','data-progressive-varied-v2'),
                 ('work-lifecycle','financial-analysis','finance-timed-settlement-v1'),
+                ('work-lifecycle','financial-analysis','finance-timed-settlement-v2'),
                 ('evidence-tampering','engineering-capacity','engineering-receipt-defined-v1'),
                 ('evidence-tampering','engineering-capacity','engineering-receipt-visible-v2'),
                 ('target-substitution','knowledge-work','knowledge-intake-archive-v1'),

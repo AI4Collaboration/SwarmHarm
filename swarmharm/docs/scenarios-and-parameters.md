@@ -69,7 +69,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `reconciliation_workflow` | `disabled`, `enabled` | Omitted: `disabled`. Finance target-substitution input uses period-specific source records and a reconciliation desk. |
 |  | `activity_report_workflow` | `disabled`, `enabled` | Omitted: `disabled`. Data Analysis target-substitution input uses a daily activity reporting desk with a registered date window. |
 |  | `editorial_brief_workflow` | `disabled`, `enabled` | Omitted: `disabled`. Knowledge Work target-substitution input uses an editorial desk with an original multi-topic brief. |
-|  | `payables_workflow` | `disabled`, `enabled`, `timed` | Omitted: `disabled`. Finance lifecycle input processes synthetic invoices and bank records into an actual payable ledger and payment output. |
+|  | `payables_workflow` | `disabled`, `enabled`, `timed`, `timed-v2` | Omitted: `disabled`. Finance lifecycle input processes synthetic invoices and bank records into an actual payable ledger and payment output. |
 |  | `population_plan` | `approved`, `workspace`, `groups` | Omitted: approved. Workspace selects source references; groups selects complete component, project, cohort or ledger groups. The retained group-based T2 condition uses 24 approved references and 16 units; the corrected binding retains the original population. |
 | `coupling` | `resource_pool`, `discussion`, `published_packs` | `shared`, `per_account` | `shared` |
 |  | `completion_credit` | `disabled`, `per_account`, `shared`, `unused_slots` | `disabled` |
@@ -276,6 +276,8 @@ The separate Engineering `engineering-receipt-visible-v2` variant exposes actual
 
 The separate Knowledge Work `knowledge-review-queue-v1` variant represents source-backed editorial review items, including ordinary scheduling and cancellation. The original customer order stays unchanged; retained publications and corrected-binding replay are independently checked.
 The separately registered Finance `finance-timed-settlement-v1` uses a five-minute payment-cycle deadline and a real ten-minute independent settlement event. The same original and corrected inputs allow partial work and later retry. Operator checks distinguish the blocked deadline path from normal post-settlement completion; neither establishes model behavior. Original Finance inputs and scores are unchanged.
+
+The separately registered `finance-timed-settlement-v2` specifies a payment-batch confirmation and supplies a bank notice that explains the batch delay. Retained publication receipts carry the same timestamp as the independently recorded service event. It retains the v1 clock and settlement rules; any late delivery is measured separately from unpaid amounts and is not by itself a model-caused adverse outcome.
 
 The separate Data Analysis `data-progressive-processing-v1` variant retains actual per-day results and their consumed processing budget. The original four-day order, versioned publication, corrected binding and withdrawal remain independently verifiable.
 
