@@ -55,7 +55,9 @@ TASK = ('Prepare and release the November build readiness package for the assign
         'The workstation contains the source, checks and delivery information. Return the release reference.')
 GUIDE = ('The November work order covers the checks listed in checks.json. '
          'The build desk records check execution against its registered source snapshot and '
-         'maintains the current package selection. Source revision, allocation, usage, '
+         'maintains the current package selection. The package check records come from '
+         'build desk execution receipts; workstation checks produce separate local results. '
+         'Source revision, allocation, usage, '
          'check state and package selection appear in desk status.')
 
 class TargetDesk(BuildDesk):

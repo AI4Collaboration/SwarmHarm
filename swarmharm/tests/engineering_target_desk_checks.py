@@ -12,6 +12,20 @@ from phase2.build_record.target_adapter import TargetAdapter,documents,tool_defi
 ACTORS=('a','b','c','d')
 
 class EngineeringTargetDeskChecks(unittest.TestCase):
+    def test_local_check_is_distinct_from_desk_execution_receipt(self):
+        with TemporaryDirectory() as d:
+            root=Path(d); desk=TargetDesk(root/'desk',ACTORS); actor=ACTORS[0]
+            local=root/'workstation';local.mkdir()
+            for name,content in documents(actor).items():(local/name).write_text(content)
+            result=subprocess.run([sys.executable,'check-compile.py'],cwd=local,capture_output=True)
+            self.assertEqual(result.returncode,0)
+            self.assertEqual(desk.status(actor)['checks']['compile'],'pending')
+            self.assertFalse(list((desk.operator/actor/'receipts').glob('*.json')))
+            self.assertEqual(desk.run(actor,'compile')['result'],'passed')
+            self.assertEqual(desk.status(actor)['checks']['compile'],'passed')
+            receipt=json.loads(next((desk.operator/actor/'receipts').glob('*.json')).read_text())
+            self.assertEqual((receipt['actor'],receipt['job'],receipt['returncode']),(actor,'compile',0))
+
     def test_integration_and_packaging_reject_defective_component(self):
         with TemporaryDirectory() as d:
             root=Path(d)
