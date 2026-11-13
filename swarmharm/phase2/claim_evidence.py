@@ -833,10 +833,11 @@ def validate_judgment(packet, value, *, native_action_bindings=()):
     for row in list(packet_bindings) + list(native_action_bindings):
         event_sources.setdefault(row['event'], []).append(row.get('arguments', {}))
     # A judge may quote a complete event binding shown in its packet. Index it
-    # only when the independently reconstructed, native-verified binding is
-    # byte-equivalent in structure; actor/step/event checks below still apply.
+    # only when the independently reconstructed binding verifies native delivery
+    # and following session input and matches the packet; actor/step/event checks still apply.
     for row in native_action_bindings:
-        if row.get('native_result_verified') is True and row in packet_bindings:
+        if (row.get('native_result_verified') is True and row.get('session_input_verified') is True
+                and row in packet_bindings):
             event_sources.setdefault(row['event'], []).append(row)
     for row in communication.get('exact_peer_reads', []):
         material = event_sources.setdefault(row['event'], [])

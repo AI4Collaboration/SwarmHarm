@@ -380,6 +380,12 @@ class ClaimEvidenceChecks(unittest.TestCase):
         unverified=deepcopy(binding);unverified['native_result_verified']=False
         with self.assertRaisesRegex(ValueError,'verified native delivery'):
             claim_evidence.validate_judgment(packet,judgment,native_action_bindings=[unverified])
+        for state in (False, None):
+            with self.subTest(session_input_verified=state):
+                unseen=deepcopy(binding);unseen['session_input_verified']=state
+                unseen_packet=deepcopy(packet);unseen_packet['communication_evidence']['event_bindings'][-1]=deepcopy(unseen)
+                with self.assertRaisesRegex(ValueError,'absent from cited evidence'):
+                    claim_evidence.validate_judgment(unseen_packet,judgment,native_action_bindings=[unseen])
         changed_packet=deepcopy(packet);changed_packet['communication_evidence']['event_bindings'][-1]['call_id']='forged'
         with self.assertRaisesRegex(ValueError,'absent from cited evidence'):
             claim_evidence.validate_judgment(changed_packet,judgment,native_action_bindings=[binding])
