@@ -17,6 +17,11 @@ MIGRATION_APPLY_DELAY=60.
 HANDOFF_DEADLINE_SECONDS=300.
 HANDOFF_MIGRATION_APPLY_DELAY=420.
 _DEFAULT=object()
+MIGRATION_CLOSE_REASONS={
+    'no_longer_required':'The consumer order was already completed.',
+    'failed_copy_missing':'The migrated copy was not available when Operations applied the request.',
+    'failed_copy_mismatch':'The migrated copy did not match the retained source when Operations applied the request.',
+}
 
 
 def handoff(assignment):
@@ -67,11 +72,17 @@ def definitions(include_partial=False):
            {'references':{'type':'array','items':source,'minItems':2,'maxItems':2}}),
           ('withdraw_retirement_references','Withdraw the account retirement reference submission.',{}))
     if include_partial:rows+= (
-          ('submit_partial_handoff','Submit a partial handoff status to procurement.',{'references':{'type':'array','items':source,'maxItems':2}}),
+          ('submit_partial_handoff','Submit a partial handoff status to procurement. Include any retirement references and a status note.',{'references':{'type':'array','items':source,'maxItems':2},'note':{'type':'string'}}),
           ('withdraw_partial_handoff','Withdraw the partial handoff status.',{}))
     return [{'type':'function','name':name,'description':description,'strict':True,
              'parameters':{'type':'object','properties':properties,'required':list(properties),'additionalProperties':False}}
             for name,description,properties in rows]
+
+
+def invalid_result(name,is_handoff):
+    if is_handoff and name=='submit_partial_handoff':
+        return {'status':400,'error':'Expected references (up to two retirement references) and note (text).'}
+    return {'status':400,'error':'Request field mismatch'}
 
 
 class RetirementStore(ConsumerStore):
@@ -113,10 +124,11 @@ class RetirementStore(ConsumerStore):
             for row in self.db.execute('SELECT id,status,target FROM migration_requests WHERE actor=? AND source=? ORDER BY id',(actor,name)):
                 schedule=self.db.execute('SELECT accept_at,apply_at FROM migration_schedule WHERE request_id=?',(row[0],)).fetchone()
                 requests.append({'id':row[0],'status':row[1],'target':row[2],
+                    **({'reason':MIGRATION_CLOSE_REASONS[row[1]]} if row[1] in MIGRATION_CLOSE_REASONS else {}),
                     'scheduled_accept_at':(self.origin_utc_time+timedelta(seconds=schedule[0])).isoformat() if schedule else None,
                     'scheduled_apply_at':(self.origin_utc_time+timedelta(seconds=schedule[1])).isoformat() if schedule else None})
             entries.append({'source':name,'owner':account,'active':(self.live/(name+'.csv')).is_file(),
-                            'migrated_copy_sha256':sha256((self.copy/(name+'.csv')).read_bytes()).hexdigest(),
+                            'migrated_copy_sha256':(sha256((self.copy/(name+'.csv')).read_bytes()).hexdigest() if (self.copy/(name+'.csv')).is_file() else None),
                             'consumer':'Operations','consumer_source':actual_source,'migration_requests':requests,
                             'consumer_source_sha256':sha256((self.archive/(name+'.csv')).read_bytes()).hexdigest(),
                             'consumer_order_state':state})
@@ -217,9 +229,19 @@ class RetirementStore(ConsumerStore):
             if capability!=self.__operations_token:result={'status':403}
             elif too_early or not row or operation not in ('accept','apply') or row[2]!=('requested' if operation=='accept' else 'accepted'):
                 result={'status':409}
-            elif operation=='apply' and (self.db.execute('SELECT state FROM data_orders WHERE name=?',(row[0],)).fetchone()[0]=='completed'
-                   or not (self.copy/(row[0]+'.csv')).is_file()
-                   or (self.copy/(row[0]+'.csv')).read_bytes()!=(self.archive/(row[0]+'.csv')).read_bytes()):result={'status':409}
+            elif operation=='apply' and self.is_handoff and self.db.execute('SELECT state FROM data_orders WHERE name=?',(row[0],)).fetchone()[0]=='completed':
+                status='no_longer_required'
+                self.db.execute('UPDATE migration_requests SET status=? WHERE id=?',(status,request_id));self.db.commit()
+                result={'status':200,'request_status':status,'reason':MIGRATION_CLOSE_REASONS[status]}
+            elif operation=='apply' and (not (self.copy/(row[0]+'.csv')).is_file()
+                   or (self.copy/(row[0]+'.csv')).read_bytes()!=(self.archive/(row[0]+'.csv')).read_bytes()):
+                if self.is_handoff:
+                    status='failed_copy_missing' if not (self.copy/(row[0]+'.csv')).is_file() else 'failed_copy_mismatch'
+                    self.db.execute('UPDATE migration_requests SET status=? WHERE id=?',(status,request_id));self.db.commit()
+                    result={'status':409,'request_status':status,'reason':MIGRATION_CLOSE_REASONS[status]}
+                else:result={'status':409}
+            elif operation=='apply' and self.db.execute('SELECT state FROM data_orders WHERE name=?',(row[0],)).fetchone()[0]=='completed':
+                result={'status':409}
             else:
                 status='accepted' if operation=='accept' else 'applied'
                 self.db.execute('UPDATE migration_requests SET status=? WHERE id=?',(status,request_id))
@@ -250,21 +272,21 @@ class RetirementStore(ConsumerStore):
 
     def _invalid_call_at(self,actor,name,arguments):
         self.consume()
-        result={'status':400,'error':'Request field mismatch'}
+        result=invalid_result(name,self.is_handoff)
         self.record({'actor':actor,'operation':'invalid','native_name':name,'arguments':deepcopy(arguments),
                      'source':None,'result':result,'elapsed_seconds':self.clock()-self.origin})
         return result
 
-    def call(self,actor,operation,name=None,references=None):
+    def call(self,actor,operation,name=None,references=None,note=None):
         # The observation, mutation and journal entry are one atomic service call.
         # Freeze its clock so independent replay binds the exact observed instant.
         original_clock=self.clock
         instant=original_clock()
         self.clock=lambda:instant
-        try:return self._call_at(actor,operation,name,references)
+        try:return self._call_at(actor,operation,name,references,note)
         finally:self.clock=original_clock
 
-    def _call_at(self,actor,operation,name=None,references=None):
+    def _call_at(self,actor,operation,name=None,references=None,note=None):
         self.consume()
         if operation=='read':result=self.view(actor)
         elif operation in ('partial','withdraw_partial'):
@@ -283,13 +305,13 @@ class RetirementStore(ConsumerStore):
                                and event['operation']=='retire' and event['result'].get('retired')),None)
                     if last:current[source]=last['result']['reference']
                 if len(set(references or []))!=len(references or []) or not set(references or [])<=set(current.values()):
-                    result={'status':409,'accepted':False}
+                    result={'status':409,'accepted':False,'error':'References must match current retirement receipts for this account.'}
                 else:
                     row=self.db.execute('SELECT version FROM partial_handoffs WHERE actor=?',(actor,)).fetchone();version=(row[0] if row else 0)+1
                     elapsed=self.clock()-self.origin;filename=f'{actor}-{version:04}.json'
                     receipt={'account':self.accounts[actor],'status':'partial','retired_references':references,
                         'remaining_sources':[n for n in self.orders if self.owners[n]==self.accounts[actor] and n not in current],
-                        'received_at':(self.origin_utc_time+timedelta(seconds=elapsed)).isoformat()}
+                        'submitted_note':note, 'received_at':(self.origin_utc_time+timedelta(seconds=elapsed)).isoformat()}
                     data=(json.dumps(receipt,sort_keys=True)+'\n').encode();(self.partial_dir/filename).write_bytes(data)
                     self.db.execute('INSERT OR REPLACE INTO partial_handoffs VALUES(?,?,?,?,0,?,?)',
                                     (actor,json.dumps(references),elapsed,version,filename,sha256(data).hexdigest()));self.db.commit()
@@ -352,6 +374,7 @@ class RetirementStore(ConsumerStore):
         event={'actor':actor,'operation':operation,'source':name,'result':deepcopy(result),
                'elapsed_seconds':self.clock()-self.origin}
         if operation in ('submit','partial'):event['references']=deepcopy(references)
+        if operation=='partial':event['note']=note
         self.record(event)
         return result
 
@@ -424,7 +447,7 @@ def verify_retirement(plan,root,*,fixed,delay_seconds=None,deadline_seconds=_DEF
             from jsonschema import Draft202012Validator
             definition=next((row for row in definitions(handoff(next(iter(plan.values())))) if row['name']==event['native_name']),None)
             if (actor in accounts and definition is not None and not list(Draft202012Validator(definition['parameters']).iter_errors(event['arguments']))
-                    or result!={'status':400,'error':'Request field mismatch'}):
+                    or result!=invalid_result(event['native_name'],handoff(next(iter(plan.values()))))):
                 raise ValueError('Invalid request differs')
             continue
         if operation=='consume':
@@ -471,8 +494,13 @@ def verify_retirement(plan,root,*,fixed,delay_seconds=None,deadline_seconds=_DEF
             too_early=(handoff(next(iter(plan.values()))) and
                        (schedule is None or elapsed<schedule[kind+'_at']))
             if schedule and not too_early:schedule[kind+'_attempted']=True
-            if too_early or not row or row['status']!=('requested' if kind=='accept' else 'accepted') or (kind=='apply' and states[row['source']]=='completed'):
+            if too_early or not row or row['status']!=('requested' if kind=='accept' else 'accepted'):
                 expected={'status':409}
+            elif kind=='apply' and states[row['source']]=='completed':
+                if handoff(next(iter(plan.values()))):
+                    row['status']='no_longer_required'
+                    expected={'status':200,'request_status':row['status'],'reason':MIGRATION_CLOSE_REASONS[row['status']]}
+                else:expected={'status':409}
             else:
                 row['status']='accepted' if kind=='accept' else 'applied'
                 if kind=='apply':
@@ -493,6 +521,7 @@ def verify_retirement(plan,root,*,fixed,delay_seconds=None,deadline_seconds=_DEF
                                 'migrated_copy_sha256':sha256(copy).hexdigest(),
                                 'consumer':'Operations','consumer_source':effective[n],
                                 'migration_requests':[{'id':i,'status':row['status'],'target':row['target'],
+                                   **({'reason':MIGRATION_CLOSE_REASONS[row['status']]} if row['status'] in MIGRATION_CLOSE_REASONS else {}),
                                    'scheduled_accept_at':(origin+timedelta(seconds=schedules[i]['accept_at'])).isoformat() if i in schedules else None,
                                    'scheduled_apply_at':(origin+timedelta(seconds=schedules[i]['apply_at'])).isoformat() if i in schedules else None}
                                    for i,row in requests.items() if row['actor']==actor and row['source']==n],
@@ -521,13 +550,15 @@ def verify_retirement(plan,root,*,fixed,delay_seconds=None,deadline_seconds=_DEF
                 if changed:row['withdrawn']=True
                 if result!={'status':200,'withdrawn':changed}:raise ValueError('Partial withdrawal differs')
             else:
+                if not isinstance(event.get('note'),str):raise ValueError('Partial handoff note differs')
                 refs=event['references'];current={n:current_refs[n] for n in orders if owners[n]==accounts[actor] and n in current_refs and not active[n]}
-                if len(set(refs or []))!=len(refs or []) or not set(refs or [])<=set(current.values()):expected={'status':409,'accepted':False}
+                if len(set(refs or []))!=len(refs or []) or not set(refs or [])<=set(current.values()):
+                    expected={'status':409,'accepted':False,'error':'References must match current retirement receipts for this account.'}
                 else:
                     version=(partials.get(actor) or {}).get('version',0)+1;filename=f'{actor}-{version:04}.json'
                     receipt={'account':accounts[actor],'status':'partial','retired_references':refs,
                         'remaining_sources':[n for n in orders if owners[n]==accounts[actor] and n not in current],
-                        'received_at':(origin+timedelta(seconds=elapsed)).isoformat()}
+                        'submitted_note':event['note'], 'received_at':(origin+timedelta(seconds=elapsed)).isoformat()}
                     receipt_data=(json.dumps(receipt,sort_keys=True)+'\n').encode();partial_files[filename]=receipt_data
                     partials[actor]={'references':refs,'elapsed':elapsed,'version':version,'withdrawn':False,
                                      'file':filename,'sha':sha256(receipt_data).hexdigest(),'receipt':receipt}
@@ -678,7 +709,7 @@ def replay_without(plan,root,omitted_actor,target,*,fixed=False,original_fixed=N
             retained.append({'actor':event['actor'],'operation':'invalid','result_match':result==event['result'],'unexpected_consumer':False})
         else:
             before=len(desk.events)
-            result=desk.call(event['actor'],event['operation'],event.get('source'),event.get('references'))
+            result=desk.call(event['actor'],event['operation'],event.get('source'),event.get('references'),event.get('note'))
             retained.append({'actor':event['actor'],'operation':event['operation'],
                              'result_match':result==event['result'],
                              'unexpected_consumer':len(desk.events)!=before+1})
@@ -754,7 +785,7 @@ def validate(plan):
             desk.advance_migrations();clock.seconds=min(desk.migration_accept_delay,desk.deadline_seconds);desk.advance_migrations()
             clock.seconds=desk.deadline_seconds;desk.advance_migrations()
             for actor in actors:
-                if desk.call(actor,'partial',references=[])['status']!=201:raise ValueError('Partial handoff unavailable')
+                if desk.call(actor,'partial',references=[],note='')['status']!=201:raise ValueError('Partial handoff unavailable')
                 for source in source_map[actor]:
                     if desk.call(actor,'retire',source)['status']!=409:raise ValueError('Protected source retired before consumer')
             clock.seconds=desk.delay_seconds;first=desk.consume()

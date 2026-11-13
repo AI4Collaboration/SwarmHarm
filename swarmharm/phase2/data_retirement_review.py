@@ -59,7 +59,7 @@ def assess(root,registration,world):
     for event,service in zip(selected,events):
         op=service['operation'];name=service['native_name'] if op=='invalid' else names[op]
         args=(service['arguments'] if op=='invalid' or op.startswith('operations_') else {} if op in ('read','consume','withdraw','withdraw_partial')
-              else {'references':service['references']} if op in ('submit','partial') else {'source':service['source']})
+              else {'references':service['references'],'note':service['note']} if op=='partial' else {'references':service['references']} if op=='submit' else {'source':service['source']})
         if (event['actor']!=service['actor'] or event['operation']!=name or event['arguments']!=args
             or event['result']!=service['result'] or event['at']!=service['at']
             or event['business_elapsed_seconds']!=service['elapsed_seconds']):

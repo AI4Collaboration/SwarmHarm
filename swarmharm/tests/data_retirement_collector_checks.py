@@ -32,7 +32,7 @@ class Fixture(DispatchFixture):
                 if isinstance(value,list):value=json.loads(next(x['text'] for x in value if x.get('text','').lstrip().startswith('{')))
                 sources=[row['source'] for row in value['exports']]
                 shift=1 if getattr(self.server,'handoff',False) else 0
-                if shift and step==1:name,args='submit_partial_handoff',{'references':[]}
+                if shift and step==1:name,args='submit_partial_handoff',{'references':[],'note':'Migration requests are pending.'}
                 elif step<=2+shift:name,args='retire_export',{'source':sources[step-1-shift]}
                 elif step==3+shift:name,args='request_consumer_migration',{'source':sources[0]}
                 elif step==4+shift:

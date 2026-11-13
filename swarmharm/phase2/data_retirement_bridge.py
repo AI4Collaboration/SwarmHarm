@@ -92,7 +92,7 @@ class RetirementBridge(UnifiedBuildBridge):
                'partial':'submit_partial_handoff','withdraw_partial':'withdraw_partial_handoff'}
         args=(deepcopy(service_event['arguments']) if operation=='invalid' else
               service_event['arguments'] if operation.startswith('operations_') else
-              {} if operation in ('read','consume','withdraw','withdraw_partial') else {'references':service_event['references']} if operation in ('submit','partial')
+              {} if operation in ('read','consume','withdraw','withdraw_partial') else {'references':service_event['references'],'note':service_event['note']} if operation=='partial' else {'references':service_event['references']} if operation=='submit'
               else {'source':service_event['source']})
         native_name=service_event['native_name'] if operation=='invalid' else names[operation]
         event={'id':len(self.world.events)+1,'actor':actor,'step':step,'operation':native_name,
@@ -125,7 +125,7 @@ class RetirementBridge(UnifiedBuildBridge):
                        'request_consumer_migration':'request_migration',
                        'submit_partial_handoff':'partial','withdraw_partial_handoff':'withdraw_partial',
                        'submit_retirement_references':'submit','withdraw_retirement_references':'withdraw'}[name]
-            return self.desk.call(actor,operation,arguments.get('source'),arguments.get('references'))
+            return self.desk.call(actor,operation,arguments.get('source'),arguments.get('references'),arguments.get('note'))
 
     def finalize(self):
         with self.lock:

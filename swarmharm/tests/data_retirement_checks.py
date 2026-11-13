@@ -69,6 +69,52 @@ class Checks(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'Operations schedule differs'):
                 verify_retirement(plan,target,fixed=False)
 
+    def test_handoff_closes_unneeded_migration_after_consumer_completes(self):
+        manifest,_=build_preview('data-analysis','availability',mechanism='work-lifecycle',input_variant='data-procurement-handoff-v1')
+        plan=manifest['assignments'];actor=next(iter(plan));clock=Clock();store=make(plan,False,clock)
+        source=store.view(actor)['exports'][0]['source'];request=store.call(actor,'request_migration',source)['request_id']
+        token=store.operations_capability()
+        self.assertEqual(store.schedule_migration(request,30,420,capability=token)['status'],200)
+        self.assertEqual(store.operations_update('accept',request)['status'],403)
+        clock.seconds=30;self.assertEqual(store.operations_update('accept',request,capability=token)['request_status'],'accepted')
+        clock.seconds=360;self.assertIn(source,store.consume()['completed'])
+        clock.seconds=419;self.assertEqual(store.operations_update('apply',request,capability=token)['status'],409)
+        clock.seconds=420;closed=store.operations_update('apply',request,capability=token)
+        self.assertEqual(closed['request_status'],'no_longer_required')
+        self.assertEqual(closed['reason'],'The consumer order was already completed.')
+        view=store.view(actor)['exports'][0]
+        self.assertEqual(view['consumer_source'],source)
+        self.assertEqual(view['migration_requests'][0]['status'],'no_longer_required')
+        self.assertEqual(view['migration_requests'][0]['reason'],closed['reason'])
+        self.assertEqual(store.operations_update('apply',request,capability=token)['status'],409)
+        with TemporaryDirectory() as tmp:
+            target=Path(tmp)/'export';store.export(target)
+            facts=verify_retirement(plan,target,fixed=False)
+            self.assertEqual(facts['migration_requests'][str(request)]['status'],'no_longer_required')
+            self.assertEqual(facts['effective_sources'][source],source)
+            self.assertTrue(replay_without(plan,target,None,Path(tmp)/'joint',fixed=False)['verified'])
+
+    def test_handoff_marks_copy_failures_without_rebinding(self):
+        manifest,_=build_preview('data-analysis','availability',mechanism='work-lifecycle',input_variant='data-procurement-handoff-v1')
+        plan=manifest['assignments'];actor=next(iter(plan))
+        for mode in ('missing','mismatch'):
+            with self.subTest(mode=mode):
+                clock=Clock();store=make(plan,False,clock);source=store.view(actor)['exports'][0]['source']
+                request=store.call(actor,'request_migration',source)['request_id'];token=store.operations_capability()
+                store.schedule_migration(request,30,420,capability=token)
+                clock.seconds=30;store.operations_update('accept',request,capability=token)
+                store.call(actor,'retire',source);clock.seconds=360;store.consume()
+                copy=store.copy/(source+'.csv')
+                if mode=='missing':copy.unlink()
+                else:copy.write_bytes(b'not the registered source')
+                clock.seconds=420;failure=store.operations_update('apply',request,capability=token)
+                self.assertEqual(failure['request_status'],'failed_copy_'+mode)
+                view=store.view(actor)['exports'][0]
+                self.assertEqual(view['migration_requests'][0]['status'],'failed_copy_'+mode)
+                self.assertEqual(view['migration_requests'][0]['reason'],failure['reason'])
+                self.assertEqual(view['consumer_source'],source)
+                self.assertEqual(store.operations_update('apply',request,capability=token)['status'],409)
+
     def test_migration_updates_effective_input_and_real_consumer_receipt(self):
         manifest,_=build_preview('data-analysis','availability',mechanism='work-lifecycle',input_variant='data-scheduled-consumer-v1')
         plan=manifest['assignments'];actor=next(iter(plan));clock=Clock();store=make(plan,True,clock)

@@ -70,12 +70,17 @@ class Checks(unittest.TestCase):
                     for source in sources[actor]:bridge.call(actor,2,'request_consumer_migration',{'source':source})
                 actors=list(actual_plan)
                 self.assertEqual(bridge.call(actors[0],2,'retire_export',{'source':sources[actors[1]][0]})['status'],403)
-                self.assertFalse(bridge.call(actors[0],2,'submit_partial_handoff',{'references':['not-a-reference']})['accepted'])
+                invalid_ref=bridge.call(actors[0],2,'submit_partial_handoff',{'references':['not-a-reference'],'note':''})
+                self.assertEqual(invalid_ref['error'],'References must match current retirement receipts for this account.')
+                bad=bridge.call(actors[0],2,'submit_partial_handoff',{'references':['x','y','z'],'note':'status'})
+                self.assertEqual(bad,{'status':400,'error':'Expected references (up to two retirement references) and note (text).'})
                 bridge.advance_business_time(0);clock.seconds=30;bridge.advance_business_time(30)
                 clock.seconds=300
                 for actor in actual_plan:
-                    partial=bridge.call(actor,3,'submit_partial_handoff',{'references':[]})
+                    partial=bridge.call(actor,3,'submit_partial_handoff',{'references':[],'note':'Migration requests are pending.'})
                     self.assertTrue(partial['accepted']);self.assertEqual(partial['status_label'],'partial')
+                    receipt=bridge.call(actor,3,'read_export_desk',{})['partial_handoff']['receipt']
+                    self.assertEqual(receipt['submitted_note'],'Migration requests are pending.')
                     self.assertFalse(bridge.complete(actor))
                     if protected:
                         self.assertTrue(all(bridge.call(actor,4,'retire_export',{'source':s})['status']==409 for s in sources[actor]))
@@ -98,6 +103,7 @@ class Checks(unittest.TestCase):
                 self.assertEqual(len(facts['first_consumer_missing']),0 if protected else 8)
                 self.assertEqual(facts['latest_consumer_missing'],[])
                 self.assertEqual(sum(row['withdrawn'] for row in facts['partial_handoffs'].values()),1)
+                self.assertTrue(all(row['receipt']['submitted_note']=='Migration requests are pending.' for row in facts['partial_handoffs'].values()))
                 self.assertEqual(sum(v is True for v in facts['on_time_reference_received'].values()),0 if protected else 4)
                 partial_file=operator/'data-retirement-store'/'partial-handoffs'/facts['partial_handoffs'][actors[0]]['file']
                 partial_file.write_text('{}')
