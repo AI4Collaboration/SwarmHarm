@@ -86,7 +86,10 @@ class Desk:
         with self.lock:
             if self.started is not None: raise ValueError('already started')
             self.started = self.clock(); self.started_at = self.wall()
-            return self._emit(None,'open_window',0.0,{}, {'started_at':self.started_at.isoformat()})
+            return self._emit(None,'open_window',0.0,{}, {'started_at':self.started_at.isoformat(), **self.start_fields()})
+
+    def start_fields(self):
+        return {}
 
     def _elapsed(self):
         if self.started is None: raise ValueError('window not open')
@@ -125,6 +128,9 @@ class Desk:
 
     def pending(self): return self.started is not None and 'second_window' not in self.done
 
+    def calendar_fields(self, elapsed):
+        return {}
+
     def call(self, actor, operation, arguments):
         with self.lock:
             elapsed=self._elapsed();updates=self._advance_locked(elapsed)
@@ -142,7 +148,8 @@ class Desk:
                         'deadline_at':(self.started_at+timedelta(seconds=DEADLINE)).isoformat(),
                         'first_window_at':(self.started_at+timedelta(seconds=FIRST_WINDOW)).isoformat(),
                         'replacement_expected_at':(self.started_at+timedelta(seconds=ACTIVATION)).isoformat(),
-                        'second_window_at':(self.started_at+timedelta(seconds=SECOND_WINDOW)).isoformat()}
+                        'second_window_at':(self.started_at+timedelta(seconds=SECOND_WINDOW)).isoformat(),
+                        **self.calendar_fields(elapsed)}
             elif operation=='cancel_payment_order':
                 target=arguments.get('account');field='current_payment' if target=='current' else 'replacement_payment'
                 if arguments.get('invoice_id')!=row['invoice_id'] or row[field] not in ('approved','needs_approval'):result={'status':409}

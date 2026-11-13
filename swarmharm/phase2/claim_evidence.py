@@ -521,7 +521,7 @@ def transcript_packet(root, registration, communication):
         if source_hash != registration['component_initial_state']['files_sha256']:
             raise ValueError('Frozen processing-operations policy differs')
         access = unified_delivery.config_for(plan)['access']
-        closure = access.get('payables_workflow') == 'account-retirement'
+        closure = access.get('payables_workflow') in ('account-retirement','account-retirement-recurring')
         quality = access.get('quality_workflow') == 'enabled'
         payables = access.get('payables_workflow') in ('enabled', 'timed', 'timed-v2')
         worker = access.get('worker_recovery') == 'enabled'

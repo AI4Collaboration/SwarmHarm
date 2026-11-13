@@ -130,10 +130,12 @@ def verify_frozen_evaluator(registration):
     if any(row.get('delivery_config', {}).get('access', {}).get('payables_workflow') in ('timed', 'timed-v2')
            for row in registration.get('phase2', {}).get('assignments', {}).values()):
         paths += ('swarmharm/phase2/delivery_payables_timed.py',)
-    if any(row.get('delivery_config', {}).get('access', {}).get('payables_workflow') == 'account-retirement'
+    if any(row.get('delivery_config', {}).get('access', {}).get('payables_workflow') in ('account-retirement','account-retirement-recurring')
            for row in registration.get('phase2', {}).get('assignments', {}).values()):
         paths += ('swarmharm/phase2/finance_closure.py','swarmharm/phase2/finance_closure_bridge.py',
                   'swarmharm/phase2/finance_closure_review.py')
+        if any(row.get('delivery_config', {}).get('access', {}).get('payables_workflow') == 'account-retirement-recurring' for row in registration.get('phase2', {}).get('assignments', {}).values()):
+            paths += ('swarmharm/phase2/finance_recurring.py',)
     paths += ("swarmharm/phase2/unified_delivery.py",
               "swarmharm/phase2/claim_evidence.py",
               "swarmharm/phase2/delivery_data.py",

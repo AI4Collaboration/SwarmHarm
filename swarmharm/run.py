@@ -488,7 +488,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             current.update(('finance_payables', 'finance_payables_transport'))
         if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':
             current.update(('finance_timed_payables', 'finance_timed_v2'))
-            if input_variant == 'finance-account-retirement-v1':current.update(('finance_closure','finance_closure_collector','finance_citation'))
+            if input_variant in ('finance-account-retirement-v1','finance-account-retirement-recurring-v1'):current.update(('finance_closure','finance_closure_collector','finance_citation'))
+            if input_variant == 'finance-account-retirement-recurring-v1':current.add('finance_recurring')
         if mechanism == 'work-lifecycle' and scenario in ('engineering-capacity', 'knowledge-work'):
             current.update(('retention_causality', 'retention_citation'))
         if mechanism == 'work-lifecycle' and scenario == 'engineering-capacity':
@@ -755,9 +756,13 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         from phase2 import delivery_payables_timed
         if min(budget['max_actor_seconds'],budget['max_batch_seconds']) <= delivery_payables_timed.SETTLEMENT_SECONDS:
             raise ValueError('Registered observation window must include the actual settlement time')
-    if input_variant == 'finance-account-retirement-v1':
+    if input_variant in ('finance-account-retirement-v1','finance-account-retirement-recurring-v1'):
         from phase2 import finance_closure
-        if min(budget['max_actor_seconds'],budget['max_batch_seconds']) <= finance_closure.SECOND_WINDOW:
+        if input_variant=='finance-account-retirement-recurring-v1':
+            from phase2.finance_recurring import OBSERVATION_MIN, ACTIVATION_RESERVE
+            required_window=OBSERVATION_MIN+ACTIVATION_RESERVE
+        else:required_window=finance_closure.SECOND_WINDOW
+        if min(budget['max_actor_seconds'],budget['max_batch_seconds']) <= required_window:
             raise ValueError('Registered observation window must include both payment windows')
     if harness_kind in ('claude-code','codex'):
         if harness_kind=='codex':budget['max_output_tokens_per_response']=None
@@ -1741,7 +1746,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         from phase2.consolidation_admission import validate
         path_validation = validate(reg['phase2']['assignments'])
     elif unified_delivery.finance_closure_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.finance_closure import validate
+        if unified_delivery.config_for(reg['phase2']['assignments'])['access']['payables_workflow']=='account-retirement-recurring':
+            from phase2.finance_recurring import validate
+        else:
+            from phase2.finance_closure import validate
         path_validation = validate(reg['phase2']['assignments'])
     elif unified_delivery.editorial_brief_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.editorial_brief.admission import validate
@@ -1958,9 +1966,18 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     extension.surface.bind(actor,value['session_file'], writer_guard=agents[actor].record_guard)
                 states[actor][f'{harness_folder}_session']=value
             activation_time=utc()
-            if getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') in ('timed', 'timed-v2', 'account-retirement'):
+            recurring_budget=None
+            if getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') == 'account-retirement-recurring':
+                from phase2.finance_recurring import ACTIVATION_RESERVE, remaining_observation_limit
+                batch_remaining=max(0.0,deadline-time.monotonic())
+                limit=remaining_observation_limit(budget['max_actor_seconds'],batch_remaining)
+                extension.configure_observation_limit(limit)
+                recurring_budget={'batch_remaining_seconds':batch_remaining,'actor_budget_seconds':budget['max_actor_seconds'],
+                                  'reserve_seconds':ACTIVATION_RESERVE,'observation_limit_seconds':limit}
+            if getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') in ('timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring'):
                 extension.start_payables_cycle(activation_time)
             save(root/name/'activation.json',{
+                **({'recurring_observation_budget':recurring_budget} if recurring_budget else {}),
                 'policy':'simultaneous_start_barrier',
                 'activated_at':activation_time,
                 'actors':sorted(active),
@@ -2513,7 +2530,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     for candidate in active.copy():
                         if states[candidate]['status']=='waiting_for_platform_change':
                             submit(candidate)
-                if continuation_update_pending() and extension.advance_business_time(time.monotonic()-(extension._clock_start if getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') in ('timed', 'timed-v2', 'account-retirement') else continuation_began)):
+                if continuation_update_pending() and extension.advance_business_time(time.monotonic()-(extension._clock_start if getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') in ('timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring') else continuation_began)):
                     export();wake_waiting()
                 if phase2_pending is not None and not running and not source_handoff_ready(reg,world):
                     if publication_pending() or followup_pending():

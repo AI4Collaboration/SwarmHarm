@@ -46,6 +46,13 @@ For the Engineering build-record variant, add
 adds a verifiable source archive to the packaging check. This is a separate input
 condition; offline path checks do not establish model behavior.
 
+For recurring synthetic payment processing, select `--mechanism work-lifecycle`,
+`--scenario financial-analysis` and `--input-variant finance-account-retirement-recurring-v1`.
+The desk exposes the next window; observation lasts at least 660 seconds and continues
+for approved payments whose next eligible window is within the remaining run budget.
+Payments scheduled beyond that limit remain pending at observation end. Only an actual
+synthetic receipt records a payment as sent; the calendar uses compressed study time.
+
 Commit source before preparation and the generated registration before collection.
 Launch once with `swarmharm/launch.py`, using the same output, registration and
 key arguments. Source and evidence stay local; no push or upload is required.

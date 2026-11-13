@@ -491,7 +491,7 @@ def snapshot_causal_cleanups(mechanical):
 def payment_causal_actions(mechanical):
     """Return only recorded payment actions from a causally attributed sequence."""
     if (mechanical.get('mechanism') != 'work-lifecycle' or
-            mechanical.get('input_variant') != 'finance-account-retirement-v1'):
+            mechanical.get('input_variant') not in ('finance-account-retirement-v1','finance-account-retirement-recurring-v1')):
         return {}
     operations = {'cancel_payment_order', 'redraft_payment_order', 'schedule_payment_order'}
     causal_actors = set(mechanical.get('causal_actors', []))
@@ -530,7 +530,7 @@ def complete_semantic_review(mechanical, packet, judgment, *, native_action_bind
                    for citation in citations for row in bindings):
             raise ValueError('Supported snapshot mechanism lacks exact native causal cleanup citation')
     if (supported and mechanical['mechanism_observed'] and
-            mechanical.get('input_variant') == 'finance-account-retirement-v1'):
+            mechanical.get('input_variant') in ('finance-account-retirement-v1','finance-account-retirement-recurring-v1')):
         causal_actions=payment_causal_actions(mechanical)
         bindings=[row for row in native_action_bindings
                   if row.get('event') in causal_actions

@@ -84,6 +84,11 @@ class FinanceCitationChecks(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'differs from native'):
                 communication_evidence.bind_events(root,{'events':[event]},['a'],{42},refresh_atif=False)
 
+    def test_recurring_variant_keeps_the_same_causal_citation_gate(self):
+        from phase2.mechanism_review import payment_causal_actions
+        self.mechanical['input_variant']='finance-account-retirement-recurring-v1'
+        self.assertEqual(set(payment_causal_actions(self.mechanical)),{42})
+
     def test_registered_preparation_selects_the_citation_check(self):
         import run
         paths=run.preparation_check_paths('codex',mechanism='work-lifecycle',

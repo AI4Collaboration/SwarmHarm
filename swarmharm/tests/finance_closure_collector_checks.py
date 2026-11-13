@@ -11,7 +11,7 @@ import unittest
 from unittest.mock import patch
 
 import codex_gateway,export_atif,review,run
-from phase2 import finance_closure
+from phase2 import finance_closure, finance_recurring
 from tests.unified_runtime_checks import DispatchFixture
 
 
@@ -52,7 +52,7 @@ class Fixture(DispatchFixture):
 
 
 class Checks(unittest.TestCase):
-    def test_native_payment_receipts_and_fixed_event_replay(self):
+    def run_collector(self, recurring=False):
         server=ThreadingHTTPServer(('127.0.0.1',0),Fixture)
         threading.Thread(target=server.serve_forever,daemon=True).start()
         original=codex_gateway.write_config;native=run.codex_agent.CodexAgent
@@ -65,13 +65,14 @@ class Checks(unittest.TestCase):
             return native(*args,**kwargs)
         try:
             with TemporaryDirectory() as tmp,patch.object(codex_gateway,'write_config',local_config), \
-                 patch.multiple(finance_closure,DEADLINE=2.0,FIRST_WINDOW=5.0,ACTIVATION=6.0,SECOND_WINDOW=10.0):
+                 patch.multiple(finance_closure,DEADLINE=2.0,FIRST_WINDOW=5.0,ACTIVATION=6.0,SECOND_WINDOW=10.0), \
+                 patch.multiple(finance_recurring,INTERVAL=5.0,OBSERVATION_MIN=16.0):
                 root=Path(tmp);output=root/'output';registration=root/'registration';key=root/'key';key.write_text('offline-fixture')
                 with patch.dict(run.MODELS,{'sol':'openai/gpt-6.1-sol'},clear=True), \
                      patch.object(run,'verify_routes',return_value={}),patch.object(codex_gateway,'gateway_catalog',return_value={}), \
                      patch.object(run,'registration_path',side_effect=lambda p:Path(p)):
                     run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',
-                                scenario='financial-analysis',mechanism='work-lifecycle',input_variant='finance-account-retirement-v1')
+                                scenario='financial-analysis',mechanism='work-lifecycle',input_variant=('finance-account-retirement-recurring-v1' if recurring else 'finance-account-retirement-v1'))
                 reg=run.load(output/'registration.json');reg['api_base']=f'http://127.0.0.1:{server.server_port}/v1'
                 reg['budget'].update(max_batch_seconds=90,max_actor_seconds=90)
                 run.save(output/'registration.json',reg);run.save(output/'registration-seal.json',{'sha256':run.sha(output/'registration.json')})
@@ -91,6 +92,9 @@ class Checks(unittest.TestCase):
                 self.assertEqual(observed['effects']['missed_first_window_payments'],4)
                 outcome=run.load(output/'natural/operator/finance-closure-observation.json')['mechanical_observation']
                 self.assertEqual(len(outcome['second_sent']),4)
+                if recurring:
+                    self.assertEqual(len(outcome['later_sent']),1)
+                    self.assertGreaterEqual(outcome['observation_end_seconds'],16)
                 self.assertFalse(observed['target_observed'])
                 from phase2 import claim_evidence
                 value={'review_complete':True,'registered_claim_support':{'status':'not_supported','summary':'Offline fixture','citations':[]},
@@ -102,6 +106,12 @@ class Checks(unittest.TestCase):
                                 '--output',str(output),'--response-file',str(fixture)],check=True,capture_output=True,text=True)
                 self.assertFalse(run.load(output/'mechanism-verdict.json')['target_observed'])
         finally:server.shutdown();server.server_close()
+
+    def test_native_payment_receipts_and_fixed_event_replay(self):
+        self.run_collector()
+
+    def test_recurring_native_payment_receipts_and_fixed_event_replay(self):
+        self.run_collector(recurring=True)
 
 
 if __name__=='__main__':unittest.main()

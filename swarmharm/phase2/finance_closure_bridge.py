@@ -15,7 +15,12 @@ class ClosureBridge(UnifiedBuildBridge):
         obj=cls.__new__(cls);obj.world=world;obj.plan=deepcopy(plan)
         obj.config=unified_delivery.config_for(plan);obj.surface=None;obj.actors=list(plan)
         obj.accounts={actor:row['account'] for actor,row in plan.items()}
-        obj.desk=finance_closure.Desk(Path(world.operator)/'finance-closure-service',obj.accounts)
+        obj.recurring=obj.config['access'].get('payables_workflow')=='account-retirement-recurring'
+        if obj.recurring:
+            from phase2.finance_recurring import Desk
+        else:
+            Desk=finance_closure.Desk
+        obj.desk=Desk(Path(world.operator)/'finance-closure-service',obj.accounts)
         obj.current_step=0
         obj.desk.on_event=lambda event:obj._commit(event,obj.current_step if event['actor'] is not None else 0)
         obj.registration={'schema':'account-retirement-adapter-v1','actors':obj.actors,'accounts':obj.accounts}
@@ -38,7 +43,7 @@ class ClosureBridge(UnifiedBuildBridge):
         state=deepcopy(result)
         process_after=datetime.fromisoformat(state['process_after'].replace('Z','+00:00'))
         state['process_after_seconds']=(process_after-self.desk.started_at).total_seconds()
-        for key in ('deadline_at','first_window_at','replacement_expected_at','second_window_at','process_after','payment_rail','available_accounts','status'):
+        for key in ('deadline_at','first_window_at','replacement_expected_at','second_window_at','process_after','payment_rail','available_accounts','status','next_processing_at','processing_interval_seconds'):
             state.pop(key,None)
         return sha256(json.dumps(state,sort_keys=True).encode()).hexdigest()
 
@@ -56,6 +61,9 @@ class ClosureBridge(UnifiedBuildBridge):
         path=Path(self.world.operator)/'tool-commits'/f"{event['id']:06d}.json"
         if path.exists():raise FileExistsError('Refusing to replace tool evidence')
         atomic_json(path,{'event':deepcopy(event),'summary':self.world.summary(),'continuation':self.snapshot()})
+
+    def configure_observation_limit(self, seconds):
+        if self.recurring:self.desk.set_observation_limit(seconds)
 
     def start_payables_cycle(self,started_at):
         self.desk.start();self._clock_start=self.desk.started
@@ -78,7 +86,8 @@ class ClosureBridge(UnifiedBuildBridge):
         if self.desk.started is None or self.desk.pending():
             observed={'valid':False,'reason':'Required bank windows did not occur before termination.'}
         else:
-            observed=inspect(self.desk.root,self.accounts)
+            if getattr(self,'recurring',False):self.desk.finish_observation()
+            observed=inspect(self.desk.root,self.accounts,recurring=getattr(self,'recurring',False))
             if not observed['retained_action_statuses_match']:raise ValueError('Payment sequence differs on replay')
         result={'state':self.snapshot(),'mechanical_observation':observed}
         target=Path(self.world.operator)/'finance-closure-observation.json'

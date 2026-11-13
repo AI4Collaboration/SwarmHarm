@@ -84,7 +84,7 @@ CONFIG_SCHEMA = {
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation']},
-            'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2', 'account-retirement']},
+            'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring']},
             'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations']},
             'quality_workflow': {'enum': ['enabled', 'disabled']},
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
@@ -204,7 +204,7 @@ def consolidation_workflow(assignment):
 
 
 def finance_closure_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('payables_workflow') == 'account-retirement'
+    return assignment.get('delivery_config', {}).get('access', {}).get('payables_workflow') in ('account-retirement','account-retirement-recurring')
 
 
 def build_target_clarify_selection(assignment):
@@ -863,10 +863,14 @@ def truth_for(plan):
         return truth
     if finance_closure_workflow(next(iter(plan.values()))):
         from phase2 import finance_closure
+        recurring=config_for(plan)['access'].get('payables_workflow')=='account-retirement-recurring'
+        if recurring:
+            from phase2 import finance_recurring
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
                 'accounts':{a:finance_closure.invoice_for(r['account']) for a,r in plan.items()},
                 'bank_calendar':{'deadline':finance_closure.DEADLINE,'first_window':finance_closure.FIRST_WINDOW,
-                                 'activation':finance_closure.ACTIVATION,'second_window':finance_closure.SECOND_WINDOW},
+                                 'activation':finance_closure.ACTIVATION,'second_window':finance_closure.SECOND_WINDOW,
+                                 **({'processing_interval':finance_recurring.INTERVAL,'observation_minimum':finance_recurring.OBSERVATION_MIN} if recurring else {})},
                 'account_scope':'one current and one replacement account per assignment; synthetic configured rail'}
     if config_for(plan)['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
@@ -980,7 +984,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      activity_report_workflow=False, activity_shared_template=False, payables_workflow='disabled', editorial_brief_workflow=False,
                      editorial_intake_archive=False, editorial_publication_index=False, editorial_review_queue=False, **kwargs):
     if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation'),
-            bool(activity_report_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2', 'account-retirement'), bool(editorial_brief_workflow))) > 1:
+            bool(activity_report_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring'), bool(editorial_brief_workflow))) > 1:
         raise ValueError('Choose one business workflow')
     if editorial_brief_workflow:
         from phase2.editorial_brief.bridge import tools as editorial_tools
@@ -999,7 +1003,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
         return definitions()
     if reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging'):
         return (delivery_receivables_scope.definitions() if reconciliation_workflow == 'receivables-aging' else delivery_reconciliation_scope.definitions() if reconciliation_workflow == 'category-template' else delivery_reconciliation.definitions())
-    if payables_workflow == 'account-retirement':
+    if payables_workflow in ('account-retirement','account-retirement-recurring'):
         from phase2.finance_closure import definitions
         return definitions()
     if payables_workflow in ('enabled', 'timed', 'timed-v2'):
@@ -2916,7 +2920,10 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
         from phase2.consolidation_admission import validate
         reg['phase2']['path_validation'] = validate(assignments)
     elif finance_closure_workflow(next(iter(assignments.values()))):
-        from phase2.finance_closure import validate
+        if config_for(assignments)['access']['payables_workflow']=='account-retirement-recurring':
+            from phase2.finance_recurring import validate
+        else:
+            from phase2.finance_closure import validate
         reg['phase2']['path_validation'] = validate(assignments)
     elif editorial_brief_workflow(next(iter(assignments.values()))):
         from phase2.editorial_brief.admission import validate
