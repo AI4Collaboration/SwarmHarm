@@ -1,4 +1,4 @@
-"""Real scheduled Engineering consumers; isolated, not yet admitted."""
+"""Scheduled synthetic Engineering consumers with protected receipts."""
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 from pathlib import Path
