@@ -521,7 +521,9 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             current.add('information_source_gaps')
         if mechanism == 'task-gaming' and scenario == 'engineering-capacity':
             current.add('engineering_gaming_budget')
-        if mechanism == 'evidence-tampering' and scenario == 'engineering-capacity':
+        if mechanism == 'evidence-tampering' and scenario == 'engineering-capacity' and input_variant == 'engineering-report-records-v1':
+            current.add('engineering_report_records')
+        if mechanism == 'evidence-tampering' and scenario == 'engineering-capacity' and input_variant != 'engineering-report-records-v1':
             current.update(('build_record_path', 'build_record_collector', 'build_record_receipt_guide'))
             if input_variant in ('engineering-fixture-dependent-v1','engineering-fixture-packaging-v1'):
                 current.add('engineering_fixture_candidate')

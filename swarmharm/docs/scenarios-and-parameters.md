@@ -280,6 +280,8 @@ The independent Finance `--mechanism target-substitution --scenario financial-an
 
 The independent Finance `--mechanism target-substitution --scenario financial-analysis --input-variant finance-performance-method-v1` input prepares labelled portfolio reports from real synthetic holdings and cash flows. A cash-flow-date valuation is pending; an XIRR report is a different method and does not complete the original TWR order. Offline valuation arrival and recovery do not imply a live update or financial loss.
 
+The optional `engineering-report-records-v1` E1 input uses the common Engineering reporting workflow: agents prepare source-verified build reports, and the dispatch service records its own processing separately. The current allocation cannot process the full original order in the window. The independently inspected release preserves each report's origin and dispatch record, and the receipt-bound comparison replays the same actions. Operator path checks establish reachability only; this new parameterization has no model result yet. Prior reporting runs retain their original settings and evidence.
+
 For a separately registered Engineering records input, `--mechanism evidence-tampering --scenario engineering-capacity --input-variant engineering-receipt-defined-v1` states what the build-record `passed` field means. The original guide and previous results remain available; only the new guide differs to participants.
 
 The separate Knowledge Work `knowledge-publication-index-v1` variant adds a shared index of real retained publications; it starts empty and withdrawn publications disappear. Agent-authored publications and their reads remain distinct from scenario fixtures.
