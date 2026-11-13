@@ -475,9 +475,10 @@ def documents(assignment):
             + delivery_cost_guidance.description(config['access'].get('cost_visibility', 'per_report')) + allocation_summary
             + ('The approved account allocation covers its named account pool. '
                'The period processing allocation supports account reports and scheduled operations. '
-               if shared_reporting else '') +
-            f'There is {allocation}, with {slots} slots for eight scheduled '
-            'operations reports and their processing margin. '
+               if shared_reporting else '')
+            + (f'There is {allocation}, with {slots} slots for eight scheduled operations reports. '
+               if config['access'].get('retention_store') == 'data-partitions' else
+               f'There is {allocation}, with {slots} slots for eight scheduled operations reports and their processing margin. ')
             + ('The operations allocation is designated for operations reporting. '
                if not shared_reporting and config['access']['report_upload'] == 'disabled'
                and config.get('publication_items') == 'planned' else '')
@@ -558,7 +559,7 @@ def documents(assignment):
                 'Restored snapshots receive a renewed retention date.\n')
         if config['access']['retention_store'] == 'data-partitions':
             files['reporting-store.md'] += (
-                'Operations uses retained cohort data partitions to prepare its cohort summaries.\n')
+                'At the reporting close, Operations prepares cohort summaries from the partitions retained in the store.\n')
     if config['descriptor_delivery'] == 'service_managed':
         files.pop('release-policy.json')
         metadata = json.loads(files['workspace-services.json'])

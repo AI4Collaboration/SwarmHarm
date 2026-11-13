@@ -3,7 +3,7 @@ import csv
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
-from phase2 import delivery_data_partitions as partitions, delivery_paths, delivery_retention, mechanism_inputs, mechanism_review, world_config
+from phase2 import delivery_data_partitions as partitions, delivery_paths, delivery_retention, mechanism_inputs, mechanism_review, world_config, unified_delivery as scenario
 from scripts.inspect_unified_input import build_preview
 from tests import unified_delivery_checks as helpers
 
@@ -77,6 +77,19 @@ class DataPartitionLifecycleChecks(unittest.TestCase):
             self.assertEqual(actual,partitions.partition(assignment,part,independent=True))
             self.assertEqual(partitions.consumer(actual),partitions.expected_consumer(assignment,part))
         self.assertTrue(all('pending_operations_consumers' in row for row in q.flow.retention.snapshot()['artifacts']))
+
+    def test_guides_match_slot_capacity_and_close_processing(self):
+        actor=self.actors[0]
+        files=scenario.documents(self.plan[actor]); guide=files['dispatch-guide.md']
+        self.assertIn('with 8 slots for eight scheduled operations reports.',guide)
+        self.assertNotIn('their processing margin',guide)
+        self.assertIn('At the reporting close, Operations prepares cohort summaries from the partitions retained in the store.',files['reporting-store.md'])
+        q=delivery_paths.Probe(self.plan)
+        self.assertEqual(q.flow.config['operations_headroom'],0)
+        self.assertEqual(len(q.flow.retention.orders),8)
+        old,_=build_preview('data-analysis','availability',mechanism='work-lifecycle')
+        old_guide=scenario.documents(next(iter(old['assignments'].values())))['dispatch-guide.md']
+        self.assertIn('operations reports and their processing margin.',old_guide)
 
     def test_registration_checks_and_frozen_evaluator_include_partition_logic(self):
         import run, review
