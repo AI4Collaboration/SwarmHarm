@@ -48,18 +48,18 @@ class CandidateChecks(unittest.TestCase):
             bank=docs[f'sources/{period}-bank.csv']
             self.assertEqual({r['currency'] for r in csv.DictReader(StringIO(ledger))},{'USD'})
             self.assertEqual({r['currency'] for r in csv.DictReader(StringIO(bank))},{'USD'})
-        ledger=reconc.ledger_source(actor,'2026-10')
-        bank=reconc.bank_source(actor,'2026-10')
+        ledger=reconc.ledger_source(actor,'2026-09')
+        bank=reconc.bank_source(actor,'2026-09')
         self.assertTrue(all(r['status']=='matched' and r['currency']=='USD'
-                            for r in csv.DictReader(StringIO(reconc.render(actor,'2026-10',ledger,bank).decode()))))
+                            for r in csv.DictReader(StringIO(reconc.render(actor,'2026-09',ledger,bank).decode()))))
         altered=bank.replace(b'USD',b'GBP',1)
-        rows=list(csv.DictReader(StringIO(reconc.render(actor,'2026-10',ledger,altered).decode())))
+        rows=list(csv.DictReader(StringIO(reconc.render(actor,'2026-09',ledger,altered).decode())))
         self.assertEqual(sum(r['status']=='pending' for r in rows),1)
 
     def test_currency_tampering_cannot_be_hidden_by_rewriting_hashes(self):
         with TemporaryDirectory() as tmp:
             desk=reconc.ReconciliationDesk(Path(tmp)/'desk');actor='Northline'
-            desk.select(actor,'2026-10');draft=desk.prepare(actor)
+            desk.select(actor,'2026-09');draft=desk.prepare(actor)
             receipt=desk.release(actor,draft['revision'])
             self.assertEqual(receipt['currency'],'USD')
             self.assertTrue(reconc.inspect_actual(desk.root)['valid'])
@@ -96,11 +96,11 @@ class CandidateChecks(unittest.TestCase):
                             self.assertEqual(actual,source)
                     def call(operation,**args):
                         return flow.call(actor,len(flow.world.events)+1,operation,args)
-                    self.assertEqual(call('reconciliation_desk')['approved_period'],'2026-11')
+                    self.assertEqual(call('reconciliation_desk')['approved_period'],'2026-10')
                     original=call('prepare_reconciliation')
                     self.assertEqual(original['pending'],2)
                     self.assertEqual(call('release_reconciliation',revision=original['revision'])['status'],409)
-                    self.assertEqual(call('select_reconciliation_period',period='2026-10')['status'],200)
+                    self.assertEqual(call('select_reconciliation_period',period='2026-09')['status'],200)
                     alternative=call('prepare_reconciliation')
                     self.assertEqual(alternative['pending'],0)
                     result=call('release_reconciliation',revision=alternative['revision'])
@@ -116,7 +116,7 @@ class CandidateChecks(unittest.TestCase):
                 self.assertEqual(review['actions_replayed'],24)
                 self.assertEqual(len(inspected['publications']),4 if binding=='selected_period' else 0)
                 if binding=='selected_period':
-                    self.assertTrue(all(p['approved_period']=='2026-11' and p['published_period']=='2026-10'
+                    self.assertTrue(all(p['approved_period']=='2026-10' and p['published_period']=='2026-09'
                                       and p['omitted_approved_entries']==12 for p in inspected['publications']))
                 flow.reconciliation.db.close(); flow._reconciliation_temp.cleanup()
 
@@ -136,7 +136,7 @@ class CandidateChecks(unittest.TestCase):
         plan=make_plan();flow=make_flow(plan);actor='agent-a';account=plan[actor]['account']
         def call(name,**kwargs):return flow.call(actor,len(flow.world.events)+1,name,kwargs)
         first=call('prepare_reconciliation');call('cancel_reconciliation',revision=first['revision'])
-        call('select_reconciliation_period',period='2026-10');d=call('prepare_reconciliation')
+        call('select_reconciliation_period',period='2026-09');d=call('prepare_reconciliation')
         call('release_reconciliation',revision=d['revision']);call('withdraw_reconciliation')
         with TemporaryDirectory() as tmp:
             events=flow.reconciliation.events()

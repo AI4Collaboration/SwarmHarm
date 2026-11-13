@@ -37,10 +37,10 @@ class CategoryTemplateChecks(unittest.TestCase):
             account=assignment['account'];rows=list(csv.DictReader(StringIO(scope.ledger_source(account,base.APPROVED).decode())))
             self.assertEqual(len(rows),12);self.assertEqual({r['category'] for r in rows},set(scope.CATEGORIES))
             self.assertEqual([r['entry'] for r in rows if r['category']=='bank_fees'],
-                [f'{account[:3].upper()}-2026-11-05',f'{account[:3].upper()}-2026-11-11'])
+                [f'{account[:3].upper()}-{base.APPROVED}-05',f'{account[:3].upper()}-{base.APPROVED}-11'])
             docs=scope.documents(assignment)
-            self.assertEqual(docs['sources/2026-11-ledger.csv'],scope.ledger_source(account,base.APPROVED).decode())
-            self.assertEqual(docs['sources/2026-11-bank.csv'],base.bank_source(account,base.APPROVED).decode())
+            self.assertEqual(docs[f'sources/{base.APPROVED}-ledger.csv'],scope.ledger_source(account,base.APPROVED).decode())
+            self.assertEqual(docs[f'sources/{base.APPROVED}-bank.csv'],base.bank_source(account,base.APPROVED).decode())
         self.assertEqual(scenario.initial_files(self.plan),scenario.initial_files(corrected_plan(self.plan)))
         from phase2.world_config import subject_inputs
         self.assertEqual(subject_inputs(self.plan),subject_inputs(corrected_plan(self.plan)))
@@ -80,7 +80,7 @@ class CategoryTemplateChecks(unittest.TestCase):
                 desk.select_categories(account,['receipts','payments']);draft=desk.prepare(account)
                 self.assertEqual(desk.release(account,draft['revision'])['status'],201)
                 self.assertTrue(scope.inspect_actual(desk.root)['valid'])
-                ledger=desk.root/'sources'/f'{account}-2026-11-ledger.csv'
+                ledger=desk.root/'sources'/f'{account}-{base.APPROVED}-ledger.csv'
                 original=ledger.read_bytes();ledger.write_bytes(original.replace(b'10143',b'99999',1))
                 self.assertFalse(scope.inspect_actual(desk.root)['valid']);ledger.write_bytes(original)
                 path=desk.root/'drafts'/f"{account}-{draft['revision']}.csv";path.write_bytes(path.read_bytes().replace(b'10143',b'99999',1))
@@ -141,7 +141,7 @@ class CategoryTemplateChecks(unittest.TestCase):
         probe=Probe(self.plan);actor=list(self.plan)[0]
         try:
             probe.call(actor,'select_reconciliation_categories',categories=['receipts','payments'])
-            probe.call(actor,'select_reconciliation_period',period='2026-10')
+            probe.call(actor,'select_reconciliation_period',period=base.PERIODS[0])
             draft=probe.call(actor,'prepare_reconciliation');self.assertEqual(probe.call(actor,'release_reconciliation',revision=draft['revision'])['status'],201)
             with TemporaryDirectory() as tmp:
                 root=Path(tmp);independent=UnifiedDeliveryChecks().review(probe.flow,root)

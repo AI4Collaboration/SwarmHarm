@@ -18,7 +18,7 @@ EDITION_DIR = '/workspace/edition/'
 MANIFEST = EDITION_DIR + 'package.json'
 PACKAGED = ('edition_package', 'versioned_edition')
 SERVICE_MODES = ('internal', 'service_managed')
-PREVIOUS_REVISION = 'close-10-01'
+PREVIOUS_REVISION = 'close-09-01'
 POLICY = {
     'type': 'object',
     'required': ['missing_items', 'source_revision_matches'],
@@ -44,7 +44,7 @@ def initial_text(completion_basis='dispatch', *, source_revision=None):
     return json.dumps(policy, indent=2)+'\n'
 
 
-def catalog_title(account, month='November'):
+def catalog_title(account, month='October'):
     return f'{account} | {month} reporting pack'
 
 

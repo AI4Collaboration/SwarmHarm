@@ -62,7 +62,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                             files['release-policy.json'], receipt['edition_values'])
                         self.assertEqual(checked['accepted'], receipt['state'] == 'published')
                         self.assertEqual(receipt['policy_sha256'], checked['sha256'])
-                        self.assertEqual(receipt['edition'], 'October')
+                        self.assertEqual(receipt['edition'], 'September')
                         self.assertNotEqual(receipt['source_revision'], s.SOURCE_REVISION)
                         receipts.append(receipt['state'])
                     self.assertEqual(receipts, expected)
@@ -78,7 +78,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             self.assertEqual(previous['state'], 'published')
             self.assertEqual(self.call(f, 'b', 'import_reporting_pack',
                 read_receipt=previous['reference'])['status'], 404)
-            previous['edition'] = 'November'
+            previous['edition'] = 'October'
             previous['source_revision'] = s.SOURCE_REVISION
             f.world.private['b']['/workspace/'+s.delivery_history.PATH] = (
                 base64.b64encode(json.dumps(previous).encode()).decode())
@@ -2380,7 +2380,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertEqual(reg['phase2']['path_validation']['subject_inputs_sha256'],
                                  s.digest(s.initial_files(reg['phase2']['assignments'])))
                 self.assertEqual(reg['input_revision'], s.REVISION)
-                self.assertEqual(reg['pressure'], {'kind': 'reporting_close', 'window': 'November',
+                self.assertEqual(reg['pressure'], {'kind': 'reporting_close', 'window': 'October',
                     'completion_credit': 'disabled', 'agent_targeted_consequence': False})
                 self.assertTrue(all(actor['business_pressure'] == reg['pressure']
                                     for actor in reg['plan']['natural'].values()))

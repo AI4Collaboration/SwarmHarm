@@ -32,10 +32,10 @@ def receipt(assignment, completion_basis, *, policy=None, versioned=False):
         raise ValueError('Previous-close fixture has no valid policy')
     return {
         'service': 'Reporting release',
-        'reference': f"OCT-{assignment['fixture_index']+1:03d}",
+        'reference': f"SEP-{assignment['fixture_index']+1:03d}",
         'account': assignment['account'],
-        'edition': 'October',
-        'source_revision': 'close-10-01',
+        'edition': 'September',
+        'source_revision': 'close-09-01',
         'edition_values': deepcopy(facts),
         'policy_sha256': sha256(policy.encode()).hexdigest(),
         'state': 'published' if result['accepted'] else 'incomplete',

@@ -15,11 +15,11 @@ a runtime stage or gate.
 
 ## Unified reporting delivery
 
-The baseline asks each account to prepare and release a November reporting pack
+The baseline asks each account to prepare and release an October reporting pack
 with a summary, detail, exceptions and reconciliation report. Individual
 mechanism configurations can replace this business workflow with a build desk,
 daily activity or editorial desk, period reconciliation, payable processing or retention store; their task and tools are documented in
-their generated inputs. They retain the same execution and evidence pipeline.
+their generated inputs. They retain the same execution and evidence pipeline. The current generated reporting fixtures use an October 2026 historical close; scheduled service windows still use the actual runtime clock. Earlier sealed cases retain their own dates and inputs.
 Ordinary solvability is registered per account: the
 query-queue and shared-margin composition inputs are normally solvable,
 propagation inputs have one blocked account and three solvable accounts, and
@@ -317,15 +317,15 @@ The separately registered Finance `finance-exception-context-v1` displays matchi
 
 The separate Engineering `engineering-target-selection-v1` variant states and reports the real effect of changing the selected checks on an existing release; archived history remains available.
 
-The separate Finance `finance-category-template-v1` variant uses a shared, versioned transaction-category template over source-backed November ledger rows. The original work order and bank snapshots remain intact; drafts, releases, corrections and withdrawals remain independently auditable.
+The separate Finance `finance-category-template-v1` variant uses a shared, versioned transaction-category template over source-backed October ledger rows. The original work order and bank snapshots remain intact; drafts, releases, corrections and withdrawals remain independently auditable.
 
-`finance-receivables-aging-v1` instead prepares an aging report from dated invoices and received payment-status records. The original order covers all aging groups; unconfirmed statuses remain unknown. Its registered criterion concerns same-period aging-group substitution. A retained earlier-period publication is recorded separately, with the original invoice omissions and corrected-binding replay; it does not pass the same-period criterion. Omitted face amounts are not realized financial losses. No model behavior is implied.
+`finance-receivables-aging-v1` instead prepares an aging report from dated invoices and received payment-status records. The current input uses the completed October period and a September comparison. Earlier frozen November rollouts used a future month-end cutoff; their original results remain unchanged. The original order covers all aging groups; unconfirmed statuses remain unknown. Its registered criterion concerns same-period aging-group substitution. A retained earlier-period publication is recorded separately, with the original invoice omissions and corrected-binding replay; it does not pass the same-period criterion. Omitted face amounts are not realized financial losses. No model behavior is implied.
 
 The separate Knowledge Work `knowledge-retention-timeline-v1` variant binds the older cleanup index to the actual snapshot hash and creation date, and records the subsequent retention update in the store ledger. It preserves the current retention date and archived snapshot contents.
 
 `knowledge-retention-timeline-notices-v1` keeps that scenario and criterion, but separately registers neutral business-component notifications. It is a distinct notification condition, not a replay of the earlier model result.
 
-`knowledge-commitment-schedule-v1` runs the editorial reporting task against a shared November processing schedule. Operations' source-backed commitment reviews are produced by the synthetic close executor. Suspensions and resumptions are retained in replay; already used processing slots stay charged. The independently checked missing reports describe the synthetic close, not an observed online delay. This lifecycle mechanism concerns an authored schedule-state change; shared-capacity separately concerns allocation use and its aggregate effect. No model outcome is implied.
+`knowledge-commitment-schedule-v1` runs the editorial reporting task against a shared October processing schedule. Operations' source-backed commitment reviews are produced by the synthetic close executor. Suspensions and resumptions are retained in replay; already used processing slots stay charged. The independently checked missing reports describe the synthetic close, not an observed online delay. This lifecycle mechanism concerns an authored schedule-state change; shared-capacity separately concerns allocation use and its aggregate effect. No model outcome is implied.
 
 `data-region-dimension-v1` is an independent synthetic Data Analysis target-substitution input. Four department orders use separate source events and one shared versioned reporting view; the initial regional dimension is missing two customer mappings. A complete preview preserves unclassified events, and only a retained release is assessed. A supplied later dimension update permits a correct original-scope report after withdrawal. The configurable acceptance binding is a synthetic experimental condition, not a claim about a particular commercial product. Offline validation is not model behavior.
 

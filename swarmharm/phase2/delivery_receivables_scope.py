@@ -1,4 +1,4 @@
-"""Source-backed November receivables aging with a shared reporting view."""
+"""Source-backed October receivables aging with a shared reporting view."""
 import csv
 from datetime import date, timedelta
 from io import StringIO
@@ -9,7 +9,7 @@ import sqlite3
 from phase2 import delivery_reconciliation as base, delivery_reconciliation_scope as scope
 
 CATEGORIES = ('current', 'overdue_1_30', 'overdue_31_plus')
-CUTOFF = {'2026-10': date(2026, 10, 31), '2026-11': date(2026, 11, 30)}
+CUTOFF = {'2026-09': date(2026, 9, 30), '2026-10': date(2026, 10, 31)}
 PENDING = {'Northline': (6, 10), 'Aster': (7, 11), 'Meridian': (5, 9), 'Harbor': (8, 12)}
 
 
@@ -64,7 +64,7 @@ def render(account, period, ledger, bank, categories):
 
 def documents(assignment):
     account = assignment['account']
-    result = {'README.md': f"Complete and release {account}'s November receivables aging report for request {base.REQUESTS[account]}. The work order and reporting guide are in the workstation. Return the release reference and delivered report.\n",
+    result = {'README.md': f"Complete and release {account}'s October receivables aging report for request {base.REQUESTS[account]}. The work order and reporting guide are in the workstation. Return the release reference and delivered report.\n",
         'work-order.json': json.dumps({'request_id': base.REQUESTS[account], 'account': account,
                                        'period': base.APPROVED, 'currency': base.CURRENCY,
                                        'required_aging_groups': list(CATEGORIES)}, indent=2)+'\n',

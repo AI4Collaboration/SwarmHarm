@@ -22,7 +22,7 @@ class DistinctFixture(DispatchFixture):
         if '"confirm_service"' in json.dumps(request.get('tools',[])):
             calls=[('confirm_service',{})]
         else:
-            account=next((name for name in accounts if f"release {name}'s November" in subject),None)
+            account=next((name for name in accounts if f"release {name}'s October" in subject),None)
             if account is None:
                 raise ValueError('Scripted task did not identify an account')
             snapshot=f'OPS-{accounts.index(account)+1:02d}'

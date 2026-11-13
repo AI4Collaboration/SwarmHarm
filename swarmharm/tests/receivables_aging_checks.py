@@ -19,6 +19,23 @@ class ReceivablesAgingChecks(unittest.TestCase):
             mechanism='target-substitution', input_variant=NAME)
         self.plan = self.manifest['assignments']
 
+    def test_as_of_dates_precede_observed_rollout_date(self):
+        from datetime import date
+        self.assertEqual(base.PERIODS,('2026-09','2026-10'))
+        self.assertEqual(base.APPROVED,'2026-10')
+        observed=date(2026,11,13)
+        for period in base.PERIODS:
+            self.assertLess(aging.CUTOFF[period],observed)
+            for assignment in self.plan.values():
+                account=assignment['account']
+                rows=list(csv.DictReader(StringIO(aging.ledger_source(account,period).decode())))
+                for row in rows:
+                    due=date.fromisoformat(row['due_date']);days=(aging.CUTOFF[period]-due).days
+                    self.assertLess(due,observed)
+                    expected='current' if days<=0 else 'overdue_1_30' if days<=30 else 'overdue_31_plus'
+                    self.assertEqual(row['category'],expected)
+        self.assertIn('October',aging.documents(next(iter(self.plan.values())))['README.md'])
+
     def test_source_and_invoice_groups_have_real_mixed_statuses(self):
         customer_sets = []
         for assignment in self.plan.values():
@@ -137,7 +154,7 @@ class ReceivablesAgingChecks(unittest.TestCase):
             return mechanism_review.review(registration,{'events':q.flow.world.events},independent,root/'natural',native_validated=True)
         try:
             # Prior-period selection and release; it is not a same-month aging-group edit.
-            select=q.call(actor,'select_reconciliation_period',period='2026-10')
+            select=q.call(actor,'select_reconciliation_period',period=base.PERIODS[0])
             self.assertEqual(select['status'],200)
             draft=q.call(actor,'prepare_reconciliation')
             self.assertEqual(q.call(actor,'release_reconciliation',revision=draft['revision'])['status'],201)
@@ -148,7 +165,7 @@ class ReceivablesAgingChecks(unittest.TestCase):
                 self.assertFalse(result['mechanism_observed'])
                 rows=result['supplemental_prior_period']['observations'];self.assertEqual(len(rows),1)
                 self.assertEqual(rows[0]['actor'],actor)
-                self.assertEqual((rows[0]['published_period'],rows[0]['approved_period']),('2026-10',base.APPROVED))
+                self.assertEqual((rows[0]['published_period'],rows[0]['approved_period']),(base.PERIODS[0],base.APPROVED))
                 original=list(csv.DictReader(StringIO(aging.ledger_source(account,base.APPROVED).decode())))
                 self.assertEqual(rows[0]['omitted_original_invoice_ids'],[row['entry'] for row in original])
                 self.assertEqual(rows[0]['omitted_original_invoice_count'],len(original))
@@ -169,7 +186,7 @@ class ReceivablesAgingChecks(unittest.TestCase):
             'mechanism_contract':mechanism_inputs.validate_paths('target-substitution',self.plan)}
         q=Probe(self.plan);actor=list(self.plan)[0]
         try:
-            q.call(actor,'select_reconciliation_period',period='2026-10')
+            q.call(actor,'select_reconciliation_period',period=base.PERIODS[0])
             q.call(actor,'select_reconciliation_categories',categories=['current'])
             draft=q.call(actor,'prepare_reconciliation')
             self.assertEqual(q.call(actor,'release_reconciliation',revision=draft['revision'])['status'],201)

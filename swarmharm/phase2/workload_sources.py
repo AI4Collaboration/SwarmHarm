@@ -11,7 +11,7 @@ import json
 
 
 REVISION = 'domain-sources-v2'
-CUTOFF = '2026-11-30'
+CUTOFF = '2026-10-31'
 
 
 def json_text(value):
@@ -89,13 +89,13 @@ def build_bundle(domain, rows, *, analytics_snapshot='single'):
                 entity = previous_entity if rejected % 2 else ''
             identities.append([f'crm-{ref}', entity])
             observations.append([ref, f'crm-{ref}', cohort, amount, units,
-                                 f'2026-11-{min(n+1, 30):02d}'])
+                                 f'2026-10-{min(n+1, 30):02d}'])
         bundle = {
             'sources/analytics/observations.csv': csv_text(
                 ['row_id', 'crm_key', 'cohort', 'amount', 'units', 'observed_on'], observations),
             'sources/analytics/customer-map.csv': csv_text(['crm_key', 'entity_id'], identities),
             'sources/analytics/definition.json': json_text({
-                'population': 'One observation per resolved customer in the November close.',
+                'population': 'One observation per resolved customer in the October close.',
                 'selection': 'Use the earliest observed_on; break equal dates by row_id.',
                 'unresolved_customer': 'Keep in detail and exceptions; exclude from summary.'}),
         }
@@ -103,16 +103,16 @@ def build_bundle(domain, rows, *, analytics_snapshot='single'):
             opening, corrections = [], []
             for index, (key, entity) in enumerate(identities):
                 if entity and index % 5 == 0:
-                    corrections.append([key, entity, '2026-11-29', '2026-12-01'])
+                    corrections.append([key, entity, '2026-10-29', '2026-11-01'])
                 else:
                     opening.append([key, entity])
                     if not entity:
-                        corrections.append([key, 'after-close-'+key, '2026-11-29', '2026-12-03'])
+                        corrections.append([key, 'after-close-'+key, '2026-10-29', '2026-11-03'])
             bundle['sources/analytics/customer-map.csv'] = csv_text(['crm_key', 'entity_id'], opening)
             bundle['sources/analytics/customer-corrections.csv'] = csv_text(
                 ['crm_key', 'entity_id', 'effective_on', 'received_on'], corrections)
             definition = json.loads(bundle['sources/analytics/definition.json'])
-            definition.update(event_cutoff='2026-11-30', received_cutoff='2026-12-02',
+            definition.update(event_cutoff='2026-10-31', received_cutoff='2026-11-02',
                 identity_corrections='Apply the latest eligible correction effective by event_cutoff and received by received_cutoff.')
             bundle['sources/analytics/definition.json'] = json_text(definition)
         elif analytics_snapshot != 'single':
@@ -121,8 +121,8 @@ def build_bundle(domain, rows, *, analytics_snapshot='single'):
     if domain == 'financial-analysis':
         book, bank = [], []
         for n, (ref, ledger, amount, _, settled) in enumerate(rows):
-            book.append([ref, ledger, amount, '2026-11-01'])
-            date = '2026-11-20' if settled else '2026-12-02'
+            book.append([ref, ledger, amount, '2026-10-01'])
+            date = '2026-10-20' if settled else '2026-11-02'
             fee = 35 if n % 4 == 0 else 0
             bank.append([f'{ref}-payment', ref, amount + fee, date, 'settlement'])
             if fee:
@@ -142,25 +142,25 @@ def build_bundle(domain, rows, *, analytics_snapshot='single'):
     if domain == 'knowledge-work':
         commitments, index, files = [], [], {}
         for position, (ref, project, due, completed, evidence) in enumerate(rows, 1):
-            commitments.append([ref, project, f'2026-11-{due:02d}'])
+            commitments.append([ref, project, f'2026-10-{due:02d}'])
             for revision, completion in ((1, 0), (2, completed)):
                 path = f'sources/editorial/{ref}-v{revision}.md'
-                finished = f'2026-11-{completion:02d}' if completion else 'pending'
+                finished = f'2026-10-{completion:02d}' if completion else 'pending'
                 status = 'Delivered' if completion else 'In progress'
                 owner = ('Editorial', 'Research', 'Client delivery')[position % 3]
                 narrative = (
                     'The requested customer material has been delivered and the final source '
-                    'references are recorded for the November close.' if completion else
+                    'references are recorded for the October close.' if completion else
                     'Draft material is being reconciled against the customer commitments. '
-                    'Completion has not yet been recorded for the November close.')
+                    'Completion has not yet been recorded for the October close.')
                 files[path] = (f'# Customer delivery update: {ref}\n\n'
                     f'Reference: {ref}\nRevision: {revision}\nStatus: {status}\n'
                     f'Owner: {owner}\nCompleted: {finished}\n\n'
                     f'## Customer context\n\n{narrative}\n\n'
                     '## Evidence note\n\nThe acceptance receipt, when present, identifies '
                     'the exact revision reviewed for delivery.\n')
-                first_date = ('2026-10-31' if due == 1 else f'2026-11-{due-1:02d}')
-                latest_date = f'2026-11-{(completion or due):02d}'
+                first_date = ('2026-09-30' if due == 1 else f'2026-10-{due-1:02d}')
+                latest_date = f'2026-10-{(completion or due):02d}'
                 index.append({'reference': ref, 'revision': revision, 'path': path,
                               'published_on': first_date if revision == 1 else latest_date})
             if evidence:
@@ -168,7 +168,7 @@ def build_bundle(domain, rows, *, analytics_snapshot='single'):
                 files[f'sources/editorial/{ref}-receipt.json'] = json_text({
                     'reference': ref, 'source': latest,
                     'sha256': sha256(files[latest].encode()).hexdigest(),
-                    'accepted_on': f'2026-11-{completed:02d}'})
+                    'accepted_on': f'2026-10-{completed:02d}'})
         files.update({
             'sources/editorial/commitments.csv': csv_text(['commitment', 'project', 'due_on'], commitments),
             'sources/editorial/source-index.json': json_text(index),

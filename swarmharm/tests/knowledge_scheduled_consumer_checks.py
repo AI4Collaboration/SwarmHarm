@@ -72,7 +72,7 @@ class Checks(unittest.TestCase):
                 with (target/'knowledge-operations.csv').open(newline='') as stream:
                     rows=list(csv.DictReader(stream))
                 self.assertEqual(len(rows),8)
-                self.assertTrue(all(row['subscriber']==retention.knowledge_subscriber(plan,row['report']) and '\n' in row['editorial_summary'] and 'due November' in row['editorial_summary'] for row in rows))
+                self.assertTrue(all(row['subscriber']==retention.knowledge_subscriber(plan,row['report']) and '\n' in row['editorial_summary'] and 'due October' in row['editorial_summary'] for row in rows))
                 joint=consumer.fixed_event_replay(plan,probe.flow.world.events,actors,root/'joint',evidence_root=natural)
                 self.assertTrue(joint['retained_results_match']);self.assertEqual(joint['pending_at_end'],[])
                 final=target/'knowledge-operations.csv';original=final.read_text();final.write_text(original.replace('@example.test','@other.test',1))

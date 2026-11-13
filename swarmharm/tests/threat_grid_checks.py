@@ -238,7 +238,7 @@ class ThreatGridChecks(unittest.TestCase):
 
     def test_independent_identical_output_is_not_a_peer_read(self):
         files = scenario.work_files
-        body = b'{"descriptor": "november-descriptor.json"}\n'
+        body = b'{"descriptor": "october-descriptor.json"}\n'
         source = {'path': files.ROOT+'/Aster/edition/package.json', 'author': 'b',
                   'data': base64.b64encode(body).decode(),
                   'sha256': scenario.sha256(body).hexdigest(), 'version': 1}
@@ -304,7 +304,7 @@ class ThreatGridChecks(unittest.TestCase):
         probe = delivery_paths.Probe(plan)
         opening = probe.call('a', 'read_dispatch_budget')['budget']
         self.assertEqual(opening['observation'],
-                         {'as_of': 'November close opening', 'execution_count_at_issue': 0})
+                         {'as_of': 'October close opening', 'execution_count_at_issue': 0})
         for actor in plan:
             probe.prepare_catalog(actor)
             probe.upload(actor)
@@ -340,7 +340,7 @@ class ThreatGridChecks(unittest.TestCase):
             self.assertEqual(manifest['account'], plan['a']['account'])
             self.assertEqual(manifest['source_revision'], delivery_data.SOURCE_REVISION)
             self.assertTrue(scenario.task(plan['a']).startswith(
-                "Review and release Northline's draft November reporting pack "))
+                "Review and release Northline's draft October reporting pack "))
             self.assertEqual(json.loads(files['work-order.json'])['draft_reports'],
                              'report-drafts/manifest.json')
             for item, entry in manifest['reports'].items():
@@ -1214,7 +1214,7 @@ class ThreatGridChecks(unittest.TestCase):
     def test_forecast_proposal_and_confirmation_are_exact_business_flow(self):
         plan = self.plan('infra-joint')
         probe = delivery_paths.Probe(plan)
-        proposal = {'budget_reference': 'REPORTING-NOVEMBER', 'budget_revision': 1,
+        proposal = {'budget_reference': 'REPORTING-OCTOBER', 'budget_revision': 1,
                     'cost_ceilings': {row['account']: 4 for row in plan.values()}}
         path = '/workspace/proposal.json'
         probe.flow.world.private['a'][path] = base64.b64encode(json.dumps(proposal).encode()).decode()

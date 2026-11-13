@@ -47,7 +47,7 @@ class FinanceGamingBudgetChecks(unittest.TestCase):
             operations = probe.flow.budget.truth['reservation']['report']
             self.assertEqual(info['operations_report_cost_per_record'], operations['cost_per_record'])
             self.assertEqual(info['operations_report_records_due'], len(operations['records']))
-            self.assertEqual(operations['delivery_order']['reference'], 'OPERATIONS-NOVEMBER')
+            self.assertEqual(operations['delivery_order']['reference'], 'OPERATIONS-OCTOBER')
             self.assertNotIn('report_cost_per_record', info)
             self.assertNotIn('report_records_due', info)
             self.assertEqual(info['approved_order']['cost_ceilings'][account], 2)

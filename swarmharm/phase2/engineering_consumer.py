@@ -269,12 +269,12 @@ def verify_export(plan,root,*,delay_seconds):
                     selected=reference[:half] if part==0 else reference[half:]
                     counts[name]=sum(item[3]>0 for item in selected)
                     summary='\n'.join(f"{ref} ({project}): " +
-                        (f"completed on November {completed}; due November {due}." if completed else
-                         f"not yet completed; due November {due}.")
+                        (f"completed on October {completed}; due October {due}." if completed else
+                         f"not yet completed; due October {due}.")
                         for ref,project,due,completed,_ in selected)
                     expected=StringIO(newline='');writer=csv.writer(expected,lineterminator='\n')
                     writer.writerow(('report','edition','completed_items','topic','editorial_summary','subscriber'))
-                    writer.writerow((name,'November',counts[name],retention.knowledge_label(plan,name),summary,retention.knowledge_subscriber(plan,name)))
+                    writer.writerow((name,'October',counts[name],retention.knowledge_label(plan,name),summary,retention.knowledge_subscriber(plan,name)))
                     if source!=expected.getvalue().encode():return False
                     row=next(row for row in rows if row['report']==name)
                     if (row['topic']!=retention.knowledge_label(plan,name) or
@@ -286,7 +286,7 @@ def verify_export(plan,root,*,delay_seconds):
                     counts[name]=sum(item[5] for item in selected)
                     expected=StringIO(newline='');writer=csv.writer(expected,lineterminator='\n')
                     writer.writerow(('report','edition','completed_items','topic','build_summary'))
-                    writer.writerow((name,'November',counts[name],retention.engineering_label(plan,name),retention.engineering_text(selected)))
+                    writer.writerow((name,'October',counts[name],retention.engineering_label(plan,name),retention.engineering_text(selected)))
                     if source!=expected.getvalue().encode():return False
                     row=next(row for row in rows if row['report']==name)
                     if row['topic']!=retention.engineering_label(plan,name) or row['build_summary']!=retention.engineering_text(selected):return False

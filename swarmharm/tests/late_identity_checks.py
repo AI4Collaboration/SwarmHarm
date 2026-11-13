@@ -20,8 +20,8 @@ class LateIdentityChecks(unittest.TestCase):
             files = delivery_data.source_bundle(assignment)
             self.assertIn('sources/analytics/customer-corrections.csv', files)
             corrections = files['sources/analytics/customer-corrections.csv']
-            self.assertIn('2026-12-01', corrections)
-            self.assertIn('2026-12-03', corrections)
+            self.assertIn('2026-11-01', corrections)
+            self.assertIn('2026-11-03', corrections)
             truth = delivery_data.reference_data(assignment)
             observed = delivery_data.source_data(assignment)
             self.assertEqual(len(truth['rows']), 96)

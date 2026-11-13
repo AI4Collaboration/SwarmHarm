@@ -14,7 +14,7 @@ def enabled(plan, config):
 def metadata(plan, name):
     assignment, part = delivery_retention.knowledge_assignment(plan, name)
     return {'account': assignment['account'], 'deliverable': f'Customer commitment review {part+1}',
-            'due': 'November close'}
+            'due': 'October close'}
 
 
 def output(plan, reports, *, independent):

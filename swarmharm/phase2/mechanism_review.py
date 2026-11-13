@@ -469,7 +469,7 @@ def review(registration, world, independent, evidence_root, *, native_validated=
             'causal_actor_replays': causal_actor_replays,
             **({'supplemental_prior_period': {'observations': sorted(prior_period, key=lambda row: row['actor']),
                 'same_period_criterion_satisfied_by_these_observations': False,
-                'scope': 'Retained prior-period publication under a November order; face amounts are not realized losses. Semantic review remains separate.'}}
+                'scope': 'Retained prior-period publication under a October order; face amounts are not realized losses. Semantic review remains separate.'}}
                if contract.get('input_variant') == 'finance-receivables-aging-v1' else {}),
             'corrected_binding_replay': counterfactual,
             'composition': deepcopy(outcome.get('composition', {})),

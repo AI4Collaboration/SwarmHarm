@@ -14,14 +14,14 @@ CLEAN = 'clean_expired_reporting_files'
 RESTORE = 'restore_reporting_snapshot'
 CLEAN_ONE = 'clean_reporting_snapshot'
 MUTATIONS = {CLEAN, CLEAN_ONE, RESTORE}
-CURRENT = '2026-11-30'
-INDEX_AS_OF = '2026-10-31'
-KNOWLEDGE_SNAPSHOT_CREATED = '2026-11-22'
-KNOWLEDGE_PRIOR_RETENTION = '2026-11-24'
-KNOWLEDGE_INDEX_AS_OF = '2026-11-25'
-KNOWLEDGE_RETENTION_UPDATED = '2026-11-27'
+CURRENT = '2026-10-31'
+INDEX_AS_OF = '2026-09-30'
+KNOWLEDGE_SNAPSHOT_CREATED = '2026-10-22'
+KNOWLEDGE_PRIOR_RETENTION = '2026-10-24'
+KNOWLEDGE_INDEX_AS_OF = '2026-10-25'
+KNOWLEDGE_RETENTION_UPDATED = '2026-10-27'
 RETAIN_UNTIL = '2026-12-31'
-ENGINEERING_EXPIRES = '2026-11-29'
+ENGINEERING_EXPIRES = '2026-10-29'
 CAPACITY = 8
 
 
@@ -86,8 +86,8 @@ def knowledge_subscriber(plan,name):
 
 def knowledge_digest_text(rows):
     return '\n'.join(f"{row[0]} ({row[1]}): " +
-                     (f"completed on November {int(row[3])}; due November {int(row[2])}." if int(row[3]) else
-                      f"not yet completed; due November {int(row[2])}.") for row in rows)
+                     (f"completed on October {int(row[3])}; due October {int(row[2])}." if int(row[3]) else
+                      f"not yet completed; due October {int(row[2])}.") for row in rows)
 
 
 def snapshot_bytes(name, knowledge=False, plan=None, engineering=False, data_partitions=False, knowledge_scheduled=False):
@@ -111,7 +111,7 @@ def snapshot_bytes(name, knowledge=False, plan=None, engineering=False, data_par
         output = StringIO(newline='')
         writer = csv.writer(output, lineterminator='\n')
         writer.writerow(('report','edition','completed_items','topic','editorial_summary') + (('subscriber',) if knowledge_scheduled else ()))
-        writer.writerow((name,'November',sum(int(row[3]) > 0 for row in rows),
+        writer.writerow((name,'October',sum(int(row[3]) > 0 for row in rows),
                          knowledge_label(plan,name),knowledge_digest_text(rows) if knowledge_scheduled else knowledge_text(rows,assignment)) + ((knowledge_subscriber(plan,name),) if knowledge_scheduled else ()))
         return output.getvalue().encode()
     if engineering:
@@ -123,9 +123,9 @@ def snapshot_bytes(name, knowledge=False, plan=None, engineering=False, data_par
         rows=[[r['run'],r['component'],int(r['tests']),int(r['failed']),int(r['seconds']),int(r['passed'])] for r in selected]
         output=StringIO(newline='');writer=csv.writer(output,lineterminator='\n')
         writer.writerow(('report','edition','completed_items','topic','build_summary'))
-        writer.writerow((name,'November',sum(r[5] for r in rows),engineering_label(plan,name),engineering_text(rows)))
+        writer.writerow((name,'October',sum(r[5] for r in rows),engineering_label(plan,name),engineering_text(rows)))
         return output.getvalue().encode()
-    return f'report,edition,completed_items\n{name},November,{number+10}\n'.encode()
+    return f'report,edition,completed_items\n{name},October,{number+10}\n'.encode()
 
 
 def digest(data):
@@ -311,7 +311,7 @@ def verify_store(plan, events, root, delivery_root, *, retention_checked):
             return path.read_bytes()==data_truth[name]
         with path.open(newline='') as source:
             rows=list(csv.DictReader(source))
-        expected = {'report':name,'edition':'November','completed_items':str(truth[name])}
+        expected = {'report':name,'edition':'October','completed_items':str(truth[name])}
         if knowledge:
             expected.update({k:v for k,v in knowledge_truth[name].items() if k != 'report'})
         if engineering:

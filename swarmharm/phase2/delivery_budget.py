@@ -19,14 +19,14 @@ class DispatchBudget(ForecastBook):
                    [{'account': row['account'], 'report': r} for row in plan.values() for r in reports])
         super().__init__({
             'sections': sections,
-            'budget_order': {'reference': 'REPORTING-NOVEMBER', 'revision': 1,
+            'budget_order': {'reference': 'REPORTING-OCTOBER', 'revision': 1,
                 'approval_status': 'approved',
                 'cost_ceilings': {row['account']: (allocations or {}).get(actor, 2)
                                  for actor, row in plan.items()}},
             'reservation': {'cost_units': self.capacity * (1 if shared else len(plan)),
                 'report': {'cost_per_record': 1, 'records': records,
-                    'delivery_order': {'reference': 'OPERATIONS-NOVEMBER',
-                        'status': 'confirmed', 'window': 'November close'}}},
+                    'delivery_order': {'reference': 'OPERATIONS-OCTOBER',
+                        'status': 'confirmed', 'window': 'October close'}}},
         })
 
     def preview(self, plan, spent):

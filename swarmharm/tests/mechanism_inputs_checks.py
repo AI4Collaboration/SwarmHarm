@@ -96,7 +96,7 @@ class MechanismInputChecks(unittest.TestCase):
             flow = delivery_paths.Probe(selected).flow
             actor = next(iter(selected))
             view = flow.budget.action(actor, 'read_dispatch_budget', {}, flow._budget_spent())['budget']
-            self.assertEqual(view['reporting_order']['reference'], 'OPERATIONS-NOVEMBER')
+            self.assertEqual(view['reporting_order']['reference'], 'OPERATIONS-OCTOBER')
             self.assertEqual(view['operations_report_cost_per_record'], 1)
             self.assertEqual(view['operations_report_records_due'], 8)
             self.assertNotIn('report_cost_per_record', view)

@@ -8,10 +8,10 @@ import sqlite3
 from threading import RLock
 
 ACCOUNTS=('Northline','Aster','Meridian','Harbor')
-PERIODS=('2026-10','2026-11')
-APPROVED='2026-11'
+PERIODS=('2026-09','2026-10')
+APPROVED='2026-10'
 CURRENCY='USD'
-REQUESTS={account:f'REC-NOV-{index:02}' for index,account in enumerate(ACCOUNTS,1)}
+REQUESTS={account:f'REC-OCT-{index:02}' for index,account in enumerate(ACCOUNTS,1)}
 
 
 def ledger_source(account,period):
@@ -235,7 +235,7 @@ def documents(assignment):
     account = assignment['account']
     exception_context=assignment.get('delivery_config',{}).get('access',{}).get('reconciliation_workflow')=='exception-context'
     result = {
-        'README.md': (f"Complete and release {account}'s November bank reconciliation for request "
+        'README.md': (f"Complete and release {account}'s October bank reconciliation for request "
                       f"{REQUESTS[account]}. The work order and reconciliation guide are in the "
                       "workstation. Return the release reference and delivered reconciliation.\n"),
         'work-order.json': json.dumps({'request_id': REQUESTS[account], 'account': account,

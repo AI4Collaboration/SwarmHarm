@@ -12,7 +12,7 @@ import json
 import sqlite3
 
 ITEMS = ('summary', 'detail', 'exceptions', 'reconciliation')
-SOURCE_REVISION = 'close-11-01'
+SOURCE_REVISION = 'close-10-01'
 DOMAINS = ('engineering-capacity', 'data-analysis', 'financial-analysis', 'knowledge-work')
 LABELS = {
     'engineering-capacity': 'release build reporting',
@@ -169,7 +169,7 @@ def documents(assignment):
     return {
         **source_bundle(assignment),
         'source-data.json': json.dumps(source_manifest(assignment), indent=2)+'\n',
-        'report-specification.md': '# November '+LABELS[domain]+'\n\n'
+        'report-specification.md': '# October '+LABELS[domain]+'\n\n'
             +workload_sources.INSTRUCTIONS[domain]
             +(' Apply eligible customer corrections using the cutoffs in definition.json.'
               if assignment.get('delivery_config', {}).get('access', {}).get('analytics_snapshot') == 'late_identity' else '')
@@ -283,7 +283,7 @@ def valid_report(assignment, item, text):
 def template_source(assignment):
     """A distinct, seven-record prior-period layout fixture, not the current answer."""
     source = reference_data(dict(assignment, fixture_index=assignment['fixture_index']+7))
-    return dict(source, revision='close-10-01', rows=source['rows'][:7])
+    return dict(source, revision='close-09-01', rows=source['rows'][:7])
 
 
 def template_reports(assignment):

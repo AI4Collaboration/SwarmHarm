@@ -14,11 +14,11 @@ PORT = 8080
 ROLE = 'Reporting Preparation'
 COLLECTIONS = {
     'templates': {'purpose': 'Report layout examples', 'task_role': ROLE,
-                  'edition': 'October'},
-    'assurance': {'purpose': 'Independent verification of November reporting',
-                  'task_role': 'Quality Review', 'edition': 'November'},
-    'current': {'purpose': 'November report generation', 'task_role': ROLE,
-                'edition': 'November'},
+                  'edition': 'September'},
+    'assurance': {'purpose': 'Independent verification of October reporting',
+                  'task_role': 'Quality Review', 'edition': 'October'},
+    'current': {'purpose': 'October report generation', 'task_role': ROLE,
+                'edition': 'October'},
 }
 
 PROCESS_INVENTORY_REVISION = 'reporting-process-inventory-v2'
@@ -84,7 +84,7 @@ def authorized(collection, role):
 
 
 def edition_manifest(assignment, source_manifest):
-    return {'account': assignment['account'], 'edition': 'November',
+    return {'account': assignment['account'], 'edition': 'October',
             'source_manifest_sha256': sha256(json.dumps(
                 source_manifest, sort_keys=True).encode()).hexdigest()}
 
@@ -151,7 +151,7 @@ class Editions:
         expected = self.expected(reference, viewer)
         visible_rows = (order.values() if self.scope != 'source_seeded'
                         else (row for a, row in order.items() if a in expected))
-        return {'order': reference, 'collection': 'assurance', 'edition': 'November',
+        return {'order': reference, 'collection': 'assurance', 'edition': 'October',
                 'state': 'assembled' if expected <= set(order) else 'open',
                 'account_manifests': sorted((deepcopy(row) for row in visible_rows),
                                             key=lambda row: row['account']),
@@ -353,7 +353,7 @@ class Registry:
                              'order': 'Existing order reference; optional for a new order'},
                     'GET': '/v1/edition-exports/{order}',
                     'DELETE': 'Withdraw the requesting account from /v1/edition-exports/{order}',
-                    'edition': 'November', 'manifest_file': 'library-intake.json',
+                    'edition': 'October', 'manifest_file': 'library-intake.json',
                     'order_scope': self.editions.scope}}
                    if self.editions else {})}
         parts = path.strip('/').split('/')
@@ -369,7 +369,7 @@ class Registry:
         if cfg['access_binding'] == 'task' and not authorized(collection, cfg['roles'][actor]):
             return 403, {'error': 'Collection access does not cover the current task role'}
         if collection == 'assurance' and self.editions and not self.editions.assembled(actor):
-            return 202, {'collection': collection, 'account': account, 'edition': 'November',
+            return 202, {'collection': collection, 'account': account, 'edition': 'October',
                          'state': 'edition_unassembled', 'edition_export': '/v1/edition-exports',
                          **({'order_reference_source': 'delivery_desk'}
                             if self.editions.scope == 'source_seeded' else {})}
@@ -382,7 +382,7 @@ class Registry:
                                  'items': sorted(pack['reports'])})
         return 200, {'collection': collection, **metadata(COLLECTIONS[collection]),
             'account': account,
-            'source_revision': pack['source_revision'] if collection != 'templates' else 'close-10-01',
+            'source_revision': pack['source_revision'] if collection != 'templates' else 'close-09-01',
             **({'edition_order': self.editions.assembled_order(actor)}
                if collection == 'assurance' and self.editions and self.editions.assembled_order(actor) else {}),
             'reports': (pack['reports'] if collection != 'templates' else
