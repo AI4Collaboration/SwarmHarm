@@ -159,7 +159,7 @@ def verify_frozen_evaluator(registration):
               "swarmharm/phase2/communication_evidence.py")
     assignments = registration.get('phase2', {}).get('assignments', {})
     if assignments and importlib.import_module('phase2.unified_delivery').finance_assets_workflow(next(iter(assignments.values()))):
-        paths += tuple('swarmharm/phase2/'+name for name in ('finance_assets.py', 'finance_assets_bridge.py', 'finance_assets_review.py', 'data_region.py', 'consolidation_adapter.py'))
+        paths += tuple('swarmharm/phase2/'+name for name in ('finance_assets.py', 'finance_assets_bridge.py', 'finance_assets_review.py', 'data_region.py', 'data_region_review.py', 'consolidation_adapter.py'))
     if assignments and importlib.import_module('phase2.unified_delivery').data_region_workflow(next(iter(assignments.values()))):
         paths += tuple('swarmharm/phase2/'+name for name in ('data_region.py', 'data_region_bridge.py', 'data_region_review.py', 'consolidation_adapter.py'))
     if assignments and importlib.import_module('phase2.unified_delivery').config_for(assignments).get('retention_consumer_status')=='scheduled':

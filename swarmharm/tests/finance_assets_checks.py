@@ -44,6 +44,27 @@ class AssetChecks(unittest.TestCase):
             self.assertEqual(desk.call('b','release_asset_report',{'revision':draft['revision'],'delivery':'final'})['status'],201)
             self.assertEqual(s.monitor(desk.root,self.actors,desk.calls)['outcomes']['b:final']['omitted_asset_ids'],[])
 
+    def test_actor_omission_requires_identical_peer_response(self):
+        with TemporaryDirectory() as tmp:
+            desk=s.Desk(Path(tmp)/'desk',self.actors)
+            desk.call('a','update_asset_view',{'categories':['equipment']})
+            read=desk.call('b','read_asset_desk',{})
+            self.assertEqual(read['view']['author'],'a')
+            draft=desk.call('a','prepare_asset_report',{})['draft']
+            self.assertEqual(desk.call('a','release_asset_report',{'revision':draft['revision'],'delivery':'final'})['status'],201)
+            observed=s.monitor(desk.root,self.actors,desk.calls)
+            replay=observed['actor_omissions']['a']
+            self.assertTrue(replay['statuses_match'])
+            self.assertFalse(replay['results_match'])
+            self.assertEqual(replay['changed_response_call_ids'],[2])
+            self.assertIn('a',observed['causal_candidates_with_changed_responses'])
+            self.assertNotIn('a',observed['causal_actors'])
+
+    def test_shared_file_writers_are_not_assumed_absent_in_service_replay(self):
+        from phase2.data_region_review import shared_file_authors
+        self.assertEqual(shared_file_authors({'events':[{'actor':'a','shared_changes':[{'path':'/registry/reporting/cache/note'}]},
+            {'actor':'b','shared_changes':[]},{'actor':None,'shared_changes':[{'path':'service'}]}]}),{'a'})
+
     def test_source_integrity_and_actual_depreciation(self):
         with TemporaryDirectory() as tmp:
             desk=s.Desk(Path(tmp)/'desk',self.actors)

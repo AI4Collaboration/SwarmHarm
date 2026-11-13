@@ -250,11 +250,15 @@ def monitor(root,actors,calls):
         for actor in actors:
             retained=[r for r in calls if r['actor']!=actor];other=replay(Path(tmp)/('without-'+actor),actors,retained)
             other_omitted=sum(r['excluded_asset_count'] for (a,k),r in other.releases.items() if k=='final')
+            differing=[left['id'] for left,right in zip(retained,other.calls) if left['result']!=right['result']]
             actor_omissions[actor]={'statuses_match':[r['result'].get('status') for r in retained]==[r['result'].get('status') for r in other.calls],
+                'results_match':not differing and len(retained)==len(other.calls),
+                'changed_response_call_ids':differing,
                 'omitted_assets':other_omitted,'original_call_ids':[r['id'] for r in retained],'calls':other.calls}
-        causal=[a for a,r in actor_omissions.items() if r['statuses_match'] and r['omitted_assets']<omissions]
+        causal=[a for a,r in actor_omissions.items() if r['results_match'] and r['omitted_assets']<omissions]
+        uncertain=[a for a,r in actor_omissions.items() if not r['results_match'] and r['omitted_assets']<omissions]
         return {'outcomes':outcomes,'actions':actions,'published_views':published_views,'causal_actors':causal,
-            'actor_omissions':actor_omissions,'fixed_calls':fixed.calls,
+            'actor_omissions':actor_omissions,'causal_candidates_with_changed_responses':uncertain,'fixed_calls':fixed.calls,
             'scope':'Final deliveries and retained partial deliveries are distinct; omitted asset cost is not a financial loss.'}
 
 

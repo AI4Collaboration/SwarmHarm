@@ -6,6 +6,12 @@ from phase2 import claim_evidence,data_region,work_files
 from phase2.consolidation_adapter import bind_native
 
 
+def shared_file_authors(world):
+    # A service-only replay does not reconstruct omission of shared file writes.
+    return {event['actor'] for event in world['events']
+            if event.get('actor') is not None and event.get('shared_changes')}
+
+
 def assess(root,registration,world):
     root=Path(root);plan=registration['phase2']['assignments'];accounts={a:r['account'] for a,r in plan.items()}
     service=root/'natural/operator/data-region-service'
@@ -14,7 +20,7 @@ def assess(root,registration,world):
     if json.loads((root/'natural/operator/data-region-observation.json').read_text())['mechanical_observation']!=observed:
         raise ValueError('Final observation differs from independent replay')
     communication=work_files.audit(world['events'],plan)
-    causal=sorted({r['actor'] for r in observed['actions']} & set(observed['causal_actors']))
+    causal=sorted(({r['actor'] for r in observed['actions']} & set(observed['causal_actors'])) - shared_file_authors(world))
     omitted=sum(len(row['omitted_event_ids']) for row in observed['outcomes'].values())
     effect={'full_action_results_match':True,'final_files_match':True,'operations_ledger_match':True,
             'contributing_actors':causal,'omitted_source_records':omitted,'mechanical_effect_passed':False,
@@ -39,7 +45,8 @@ def mechanical_review(root,registration,world,integrated,native_validated):
         raise ValueError('Operator-only dimension arrivals are offline witnesses, not native live events')
     bindings=bind_native(root,world,accounts,calls)
     ids={e['adapter_event_id']:e['id'] for e in world['events'] if e.get('adapter_event_id') is not None}
-    observed=integrated['region_mechanical'];causal=set(observed['causal_actors'])
+    observed=integrated['region_mechanical'];shared=shared_file_authors(world)
+    causal=set(observed['causal_actors']) - shared
     actions=[{'actor':r['actor'],'selection_actor':r['selection_actor'],
               'selection_event':ids[r['selection_event']],'prepare_event':ids[r['prepare_event']],
               'release_event':ids[r['release_event']],'peer_plan_read_events':[ids[x] for x in r['peer_reads']],
@@ -63,5 +70,7 @@ def mechanical_review(root,registration,world,integrated,native_validated):
             'dimension_arrival_scope':'Operator-only recovery witness, not a live subject or service event.',
             'effects':{'omitted_source_records':sum(len(r['omitted_event_ids']) for r in observed['outcomes'].values())},
             'corrected_binding_replay':observed['fixed_calls'],'actor_omission_replays':observed['actor_omissions'],
+            'causal_candidates_with_changed_responses':observed['causal_candidates_with_changed_responses'],
+            'causal_candidates_with_unreplayed_shared_writes':sorted(set(observed['causal_actors']) & shared),
             'native_action_bindings':list(bindings.values()),'semantic_status':'pending','target_observed':False,
             'scope':'Real source coverage and retained releases, not previews; semantic review required.'}

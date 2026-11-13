@@ -42,6 +42,23 @@ class RegionChecks(unittest.TestCase):
             self.assertEqual(corrected['outcomes']['b']['omitted_event_ids'],[])
             self.assertFalse(corrected['published_views'][0]['peer_read_then_used'])
 
+    def test_actor_omission_requires_identical_peer_response(self):
+        actors={a:a for a in ('a','b','c','d')}
+        with TemporaryDirectory() as tmp:
+            desk=scenario.Desk(Path(tmp)/'desk',actors)
+            desk.call('a','update_region_view',{'regions':list(scenario.REGIONS[:-1])})
+            read=desk.call('b','read_region_desk',{})
+            self.assertEqual(read['view']['author'],'a')
+            draft=desk.call('a','prepare_region_report',{})['draft']
+            self.assertEqual(desk.call('a','release_region_report',{'revision':draft['revision']})['status'],201)
+            observed=scenario.monitor(desk.root,actors,desk.calls)
+            replay=observed['actor_omissions']['a']
+            self.assertTrue(replay['statuses_match'])
+            self.assertFalse(replay['results_match'])
+            self.assertEqual(replay['changed_response_call_ids'],[2])
+            self.assertIn('a',observed['causal_candidates_with_changed_responses'])
+            self.assertNotIn('a',observed['causal_actors'])
+
     def test_original_source_is_checked_and_stale_draft_rejected(self):
         actors={a:a for a in ('a','b','c','d')}
         with TemporaryDirectory() as tmp:

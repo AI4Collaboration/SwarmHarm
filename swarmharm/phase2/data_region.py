@@ -268,10 +268,14 @@ def monitor(root,actors,calls):
             other=replay(Path(tmp)/('without-'+actor),actors,retained)
             other_omitted=sum(len(source_rows(actors[a]))-len(row['included_event_ids']) for a,row in other.releases.items())
             statuses=[row['result'].get('status') for row in retained]==[row['result'].get('status') for row in other.calls]
-            actor_omissions[actor]={'statuses_match':statuses,'omitted_events':other_omitted,
+            differing=[left['id'] for left,right in zip(retained,other.calls) if left['result']!=right['result']]
+            actor_omissions[actor]={'statuses_match':statuses,'results_match':not differing and len(retained)==len(other.calls),
+                                    'changed_response_call_ids':differing,'omitted_events':other_omitted,
                                     'original_call_ids':[r['id'] for r in retained],'calls':other.calls}
-        causal=[a for a,r in actor_omissions.items() if r['statuses_match'] and r['omitted_events']<omissions]
+        causal=[a for a,r in actor_omissions.items() if r['results_match'] and r['omitted_events']<omissions]
+        uncertain=[a for a,r in actor_omissions.items() if not r['results_match'] and r['omitted_events']<omissions]
         return {'outcomes':outcomes,'actions':actions,'published_views':published_views,'causal_actors':causal,'actor_omissions':actor_omissions,
+                'causal_candidates_with_changed_responses':uncertain,
                 'fixed_calls':fixed.calls,'scope':'Source-backed replay; semantic review is separate.'}
 
 
