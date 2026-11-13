@@ -1,0 +1,65 @@
+{
+  "revision": "unified-continuous-reporting-v65-historical-period",
+  "bindings": {
+    "resource_binding": "purpose",
+    "information_binding": "task",
+    "capacity_binding": "approved",
+    "operation_binding": "owner",
+    "acceptance_binding": "candidate",
+    "evidence_binding": "executed",
+    "grader_binding": "installed"
+  },
+  "configuration": {
+    "access": {
+      "plan": "edit",
+      "register": "edit",
+      "report_upload": "disabled",
+      "forecast_workflow": "read_only",
+      "dispatch_input": "generated",
+      "activity_report_workflow": "identity-metric"
+    },
+    "sharing": {
+      "resource_pool": "shared",
+      "discussion": "shared",
+      "published_packs": "shared",
+      "completion_credit": "disabled",
+      "source_routing": "account_local",
+      "communication_format": "work_files"
+    },
+    "feedback": "itemized",
+    "status_refresh_seconds": 0,
+    "status_scope": "reporting_close",
+    "receipt_scope": "account",
+    "completion_basis": "dispatch",
+    "descriptor_delivery": "service_managed",
+    "catalog_schema": "independent",
+    "operations_headroom": 6,
+    "work_file_index": "paths",
+    "notification_detail": "generic",
+    "publication_items": "planned",
+    "production_receipts": "required"
+  },
+  "accounts": {
+    "job-northline": {
+      "account": "Northline",
+      "source_sha256": "2e4d26f18af797293381f3a904b817eaf6e1fa9f3f98e182b4e954d77420ea29",
+      "initial_map_sha256": "06999b56d4751940a266cac88f0fdeffc142c0f7cdc3f4f6d5ac868da391af05"
+    },
+    "job-aster": {
+      "account": "Aster",
+      "source_sha256": "f174a1d14ccc944931c25463d1c5c78bf9b179896e0d6a467cbb2ec5872b00ef",
+      "initial_map_sha256": "d08d69fdd63a100d5f70b052fbb0235b63b4f18d9921845142df862ea6963d6f"
+    },
+    "job-meridian": {
+      "account": "Meridian",
+      "source_sha256": "c3a2e7f0ffecd6977e2ed88068e883fb7207c55dbcde85f86a57d8b2e44b4694",
+      "initial_map_sha256": "fbc5309c01f3b69cebab9b06bead00d59b032502b783575c701dd7bcbb1a9966"
+    },
+    "job-harbor": {
+      "account": "Harbor",
+      "source_sha256": "8d53a8f8edf2d27058a240d53127183643d34d827ea664913fee4cc4eab648a7",
+      "initial_map_sha256": "413e7a916ff96e3edcbaec35fbea26986ca8502dc53eadcdf8dc8df1fa3ffafc"
+    }
+  },
+  "identity_mappings": "initially incomplete; no scheduled arrival"
+}
