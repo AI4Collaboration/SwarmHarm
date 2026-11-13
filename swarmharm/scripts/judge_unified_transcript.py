@@ -3,6 +3,11 @@
 import argparse
 from datetime import datetime, timezone
 import json
+from hashlib import sha256
+from io import BytesIO
+import re
+import uuid
+import urllib.error
 from pathlib import Path
 import sys
 import urllib.request
@@ -25,35 +30,167 @@ def write_new(path, value):
     path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n")
 
 
-def read_stream(response, capture):
-    """Retain the observer response stream; only a complete response is scoreable."""
-    data = []
-    terminal = None
-    for line in response:
-        capture.write(line)
-        capture.flush()
-        if line.strip():
-            if line.startswith(b'data:'):
-                data.append(line[5:].strip())
-            continue
-        if not data:
-            continue
-        raw = b'\n'.join(data)
-        data = []
-        if raw == b'[DONE]':
-            break
-        event = json.loads(raw)
-        kind = event.get('type')
-        if kind == 'response.completed':
-            terminal = event['response']
-        elif kind in ('response.failed', 'response.incomplete', 'error'):
-            raise RuntimeError('Semantic judge stream ended with ' + kind)
-    if terminal is None or terminal.get('status') != 'completed':
-        raise RuntimeError('Semantic judge stream has no completed response')
+MAX_ERROR_BYTES = 32768
+MAX_STREAM_BYTES = 64 * 1024 * 1024
+KNOWN_ERROR_CODES = frozenset({
+    'authentication_error', 'bad_gateway', 'content_filter', 'content_policy_violation',
+    'context_length_exceeded', 'insufficient_quota', 'internal_server_error',
+    'invalid_request_error', 'model_not_found', 'permission_denied', 'provider_error',
+    'rate_limit_exceeded', 'rate_limit_error', 'server_error', 'timeout',
+    'upstream_unavailable', 'upstream_timeout', 'service_unavailable',
+})
+
+
+# Fixed classifier only; original provider text never leaves memory. A lack of
+# a match is unknown, not evidence that the provider did not refuse.
+POLICY_REFUSAL_CODES=frozenset({'content_filter','content_policy_violation'})
+POLICY_WORD=r'(?:content|safety|usage)[ -]?(?:policy|policies|guidelines)|moderation'
+# Match only direct, complete statements about the current request. Unknown
+# or longer free-form explanations remain unknown rather than guessed.
+CURRENT_SUBJECT=r'(?:(?:this|your|current|the)\s+)?(?:request|prompt|response|output|completion|generation|message)'
+POLICY_CAUSE=r'(?:(?:our|the|a)\s+)?(?:'+POLICY_WORD+r')(?:\s+(?:violation|violations|enforcement))?'
+CURRENT_REFUSAL=re.compile(r'(?i)^\s*'+CURRENT_SUBJECT+r'\s+(?:'
+    r'(?:violates|violated)\s+'+POLICY_CAUSE+r'|'
+    r'(?:(?:was|is|has been|had been)\s+)?(?:blocked|rejected|refused|filtered)\s+'
+    r'(?:by|due to|because of|for violating)\s+'+POLICY_CAUSE+r')\s*[.!?]?\s*$')
+NEGATION=re.compile(r'(?i)\b(?:not|never|without|no|isn\'t|wasn\'t|aren\'t|didn\'t)\b')
+HYPOTHETICAL=re.compile(r'(?i)\b(?:if|may|might|could|whether|example|hypothetical)\b')
+HISTORICAL=re.compile(r'(?i)\b(?:previous|prior|earlier|past|historical|another|other)\b')
+
+
+def completed_response_refusal(value):
+    """Only the standard assistant message/content refusal shape counts."""
+    if not isinstance(value,dict) or value.get('status')!='completed':return False
+    output=value.get('output')
+    if not isinstance(output,list):return False
+    for message in output:
+        if not isinstance(message,dict) or message.get('type')!='message' or message.get('role')!='assistant':continue
+        content=message.get('content')
+        if not isinstance(content,list):continue
+        if any(isinstance(part,dict) and part.get('type')=='refusal' and isinstance(part.get('refusal'),str)
+               for part in content):return True
+    return False
+
+
+def provider_error_facts(value,secret=''):
+    """Inspect only the current error and the documented incomplete reason."""
+    codes=set(); refused=False
+    if isinstance(value,dict):
+        if value.get('type')=='response.incomplete':
+            response=value.get('response')
+            details=response.get('incomplete_details') if isinstance(response,dict) else None
+            reason=details.get('reason') if isinstance(details,dict) else None
+            if reason=='content_filter' and reason!=secret:
+                codes.add(reason);refused=True
+            current=response.get('error') if isinstance(response,dict) else None
+        elif value.get('type')=='response.failed':
+            response=value.get('response')
+            current=response.get('error') if isinstance(response,dict) else None
+            if current is None:current=value.get('error')
+        else:
+            current=value.get('error',value)
+    else:current=value
+    messages=[]
+    if isinstance(current,dict):
+        for key in ('code','type','status'):
+            item=current.get(key)
+            if isinstance(item,str) and item!=secret and item in KNOWN_ERROR_CODES:
+                codes.add(item)
+                if key in ('code','type') and item in POLICY_REFUSAL_CODES:refused=True
+        for key in ('message','detail','reason'):
+            item=current.get(key)
+            if isinstance(item,str) and item!=secret:messages.append(item)
+    elif isinstance(current,str) and current!=secret:
+        if current in KNOWN_ERROR_CODES:
+            codes.add(current)
+            if current in POLICY_REFUSAL_CODES:refused=True
+        else:messages.append(current)
+    # Messages are matched sentence by sentence, so reports of previous requests
+    # and nested metadata cannot be attributed to the current request.
+    for message in messages:
+        for sentence in re.split(r'(?<=[.!?;])\s+|[\r\n]+',message):
+            if (CURRENT_REFUSAL.search(sentence) and not HISTORICAL.search(sentence)
+                    and not NEGATION.search(sentence) and not HYPOTHETICAL.search(sentence)):
+                refused=True
+    return codes, 'provider_stated_refusal' if refused else 'unknown'
+
+
+STREAM_STATES = frozenset({'too_large','invalid_event','failed','incomplete','error',
+                           'no_completion','nonstream_incomplete','interrupted','refusal'})
+
+
+class StreamFailure(RuntimeError):
+    """No provider-controlled text is included in this exception."""
+    def __init__(self, state, data, policy_status='unknown'):
+        super().__init__('Semantic judge stream did not complete')
+        self.state=state if state in STREAM_STATES else 'error'
+        self.policy_status=policy_status if policy_status=='provider_stated_refusal' else 'unknown'
+        self.byte_count=len(data)
+        self.digest=sha256(data).hexdigest()
+
+
+def read_stream(response, capture, secret=''):
+    """Write raw SSE only after completion; failed streams remain in memory."""
+    data=[]; terminal=None; received=bytearray()
+    try:
+        for line in response:
+            received.extend(line)
+            if len(received)>MAX_STREAM_BYTES:
+                raise StreamFailure('too_large',received[:MAX_STREAM_BYTES])
+            if line.strip():
+                if line.startswith(b'data:'):data.append(line[5:].strip())
+                continue
+            if not data:continue
+            raw=b'\n'.join(data);data=[]
+            if raw==b'[DONE]':break
+            try:event=json.loads(raw)
+            except (UnicodeDecodeError,json.JSONDecodeError):raise StreamFailure('invalid_event',received) from None
+            if not isinstance(event,dict):raise StreamFailure('invalid_event',received)
+            kind=event.get('type')
+            if kind=='response.completed':terminal=event.get('response')
+            elif kind in ('response.failed','response.incomplete','error'):
+                raise StreamFailure({'response.failed':'failed','response.incomplete':'incomplete','error':'error'}[kind],received,provider_error_facts(event,secret)[1])
+    except StreamFailure:
+        raise
+    except Exception:
+        raise StreamFailure('interrupted',received) from None
+    if not isinstance(terminal,dict) or terminal.get('status')!='completed':
+        raise StreamFailure('no_completion',received,provider_error_facts(terminal,secret)[1])
+    capture.write(received);capture.flush()
     return terminal
 
 
-def post(request_value, key, stream_path):
+def http_status(exc):
+    value=exc.code
+    return value if type(value) is int and 100<=value<=599 else 0
+
+
+def provider_http_diagnostic(exc, secret=''):
+    """Store bounded hashes and enumerated categories; never store request IDs."""
+    raw=exc.read(MAX_ERROR_BYTES+1)
+    if not isinstance(raw,bytes):raise TypeError('HTTP body is not bytes')
+    truncated=len(raw)>MAX_ERROR_BYTES;body=raw[:MAX_ERROR_BYTES]
+    try:
+        parsed=json.loads(body.decode('utf-8'));format_name='json'
+    except (UnicodeDecodeError,json.JSONDecodeError):
+        parsed=body.decode('utf-8',errors='replace');format_name='other'
+    categories,policy_status=provider_error_facts(parsed,secret)
+    if secret:categories.discard(secret)
+    request_id_sha256=None
+    value=exc.headers.get('X-Request-Id') if exc.headers is not None else None
+    if isinstance(value,str):
+        try:
+            candidate=uuid.UUID(value)
+            if (str(candidate)==value and candidate.version==4 and candidate.variant==uuid.RFC_4122
+                    and (not secret or (value not in secret and secret not in value))):request_id_sha256=sha256(value.encode()).hexdigest()
+        except ValueError:pass
+    return {'status':http_status(exc),'body_format':format_name,'body_prefix_sha256':sha256(body).hexdigest(),
+            'body_prefix_bytes':len(body),'body_truncated':truncated,
+            'error_categories':sorted(categories),'policy_status':policy_status,
+            'request_id_present':value is not None,'request_id_sha256':request_id_sha256}
+
+
+def post(request_value, key, stream_capture):
     request = urllib.request.Request(
         AXONHUB_RESPONSES,
         data=json.dumps(request_value).encode(),
@@ -66,9 +203,11 @@ def post(request_value, key, stream_path):
     )
     with guardrails.open_url(request, timeout=300) as response:
         if 'text/event-stream' in response.headers.get('Content-Type', ''):
-            with stream_path.open('xb') as capture:
-                return read_stream(response, capture)
-        return json.load(response)
+            return read_stream(response, stream_capture, key)
+        value=json.load(response)
+        if not isinstance(value,dict) or value.get('status')!='completed':
+            raise StreamFailure('nonstream_incomplete',json.dumps(value,ensure_ascii=False).encode(),provider_error_facts(value,key)[1])
+        return value
 
 
 def next_attempt(root):
@@ -135,43 +274,61 @@ def main(argv=None):
     attempt_request = attempts / f"{attempt}-request.json"
     attempt_response = attempts / f"{attempt}-response.json"
     write_new(attempt_request, request_value)
+    secret = '';stream_capture=BytesIO()
     try:
         if args.response_file:
             response = json.loads(args.response_file.read_text())
         else:
             key_file = guardrails.credential_file(args.key_file, REPO)
-            response = post(request_value, key_file.read_text().strip(),
-                            attempts / f"{attempt}-stream.sse")
-        write_new(attempt_response, response)
-    except Exception as exc:
-        write_new(
-            attempts / f"{attempt}-error.json",
-            {
-                "at": datetime.now(timezone.utc).isoformat(),
-                "error_type": type(exc).__name__,
-                "error": str(exc),
-            },
-        )
-        raise
+            secret = key_file.read_text().strip()
+            response = post(request_value, secret, stream_capture)
+        if completed_response_refusal(response):
+            data=stream_capture.getvalue() or json.dumps(response,ensure_ascii=False).encode()
+            raise StreamFailure('refusal',data,'provider_stated_refusal')
+    except urllib.error.HTTPError as exc:
+        try:
+            diagnostic=provider_http_diagnostic(exc,secret)
+        except Exception:
+            diagnostic={'status':http_status(exc),'capture_state':'unavailable'}
+        write_new(attempts / f"{attempt}-error.json",{
+            'at':datetime.now(timezone.utc).isoformat(),'error_type':'HTTPError',
+            'error':f'HTTP Error {http_status(exc)}', 'provider_response':diagnostic})
+        raise RuntimeError(f'HTTP Error {http_status(exc)}; provider metadata saved.') from None
+    except StreamFailure as exc:
+        write_new(attempts / f"{attempt}-error.json",{
+            'at':datetime.now(timezone.utc).isoformat(),'error_type':'StreamFailure',
+            'stream_state':exc.state,'policy_status':exc.policy_status,
+            'stream_prefix_sha256':exc.digest,'stream_prefix_bytes':exc.byte_count})
+        raise RuntimeError('Semantic judge stream did not complete; diagnostic saved.') from None
+    except Exception:
+        write_new(attempts / f"{attempt}-error.json",{
+            'at':datetime.now(timezone.utc).isoformat(),'error_type':'OtherError',
+            'error':'diagnostic_unavailable'})
+        raise RuntimeError('Semantic judge failed; diagnostic saved.') from None
+    response_bytes=(json.dumps(response,indent=2,ensure_ascii=False)+'\n').encode('utf-8')
+    stage='model_identity'
     try:
         if response.get("model") != args.model:
             raise ValueError("Transcript judge returned a different model identity")
+        stage='response_parse'
         judgment = json.loads(claim_evidence.response_text(response))
         from phase2 import communication_evidence
         mechanism_path = review_root / 'mechanism-review.json'
         mechanical = json.loads(mechanism_path.read_text()) if mechanism_path.is_file() else None
+        stage='citation_binding'
         wanted = citation_events(judgment, mechanical)
         bindings = list(communication_evidence.bind_events(
             root, json.loads((root/'natural/world.json').read_text()), packet['actors'],
             wanted, refresh_atif=False).values())
-        write_new(attempts / f"{attempt}-citation-bindings.json", bindings)
+        stage='semantic_judgment'
         result = claim_evidence.transcript_judgment(
             packet,
             judgment,
             model=args.model,
-            response_sha256=claim_evidence.digest_file(attempt_response),
+            response_sha256=sha256(response_bytes).hexdigest(),
             native_action_bindings=bindings,
         )
+        stage='mechanism_gate'
         grid_path = review_root / "threat-grid-review.json"
         mechanism_path = review_root / 'mechanism-review.json'
         if mechanism_path.is_file():
@@ -190,16 +347,19 @@ def main(argv=None):
             verdict = claim_evidence.claim_verdict(action, result)
             verdict_name = "claim-verdict.json"
             summary = {"claim": verdict["registered_claim"], "passed": verdict["passed"]}
-    except Exception as exc:
-        write_new(
-            attempts / f"{attempt}-validation-error.json",
-            {
-                "at": datetime.now(timezone.utc).isoformat(),
-                "error_type": type(exc).__name__,
-                "error": str(exc),
-            },
-        )
-        raise
+    except Exception:
+        stream_bytes=stream_capture.getvalue()
+        write_new(attempts / f"{attempt}-validation-error.json",{
+            'at':datetime.now(timezone.utc).isoformat(),'error_type':'ValidationError',
+            'validation_stage':stage,'response_sha256':sha256(response_bytes).hexdigest(),
+            'stream_sha256':sha256(stream_bytes).hexdigest(),'stream_bytes':len(stream_bytes)})
+        raise RuntimeError('Semantic judge validation failed; diagnostic saved.') from None
+    write_new(attempt_response,response)
+    stream_bytes=stream_capture.getvalue()
+    if stream_bytes:
+        stream_path=attempts / f"{attempt}-stream.sse"
+        with stream_path.open('xb') as capture:capture.write(stream_bytes)
+    write_new(attempts / f"{attempt}-citation-bindings.json",bindings)
     write_new(review_root / "transcript-judge-request.json", request_value)
     write_new(review_root / "transcript-judge-response.json", response)
     write_new(review_root / "transcript-judge.json", result)

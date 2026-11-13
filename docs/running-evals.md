@@ -260,10 +260,15 @@ python swarmharm/scripts/judge_unified_transcript.py \
   --key-file /absolute/path/to/host-only-axonhub-key
 ```
 
-The script calls the fixed judge through AxonHub, preserves every request,
-response or failed attempt, validates verbatim citations against actor/ATIF/event
-bindings, and writes `transcript-judge.json` plus the deterministic
-`claim-verdict.json`. It never replaces existing final judge outputs.
+The script calls the fixed judge through AxonHub, preserves requests and validated
+responses, checks citations against actor/ATIF/event bindings, and writes the
+verdict. It never replaces existing final outputs. Failed responses and incomplete
+streams are not saved verbatim: diagnostics retain bounded hashes, HTTP status,
+restricted categories, request-ID presence and a digest of a validated ID. A fixed
+classifier records an explicitly stated provider refusal; `unknown` does
+not mean the provider did not refuse. Exact failed-response text is irrecoverable
+from these diagnostics; use authorized gateway logs if more detail is needed.
+Existing frozen evaluations retain their original scripts and evidence.
 
 For an independent re-review of an account-retirement finance case after the
 ATIF-only citation binding fix, use a clean committed checkout and a new external

@@ -192,7 +192,7 @@ class ClaimEvidenceChecks(unittest.TestCase):
             capture = io.BytesIO()
             with self.assertRaises(RuntimeError):
                 module.read_stream(io.BytesIO(prefix+suffix), capture)
-            self.assertEqual(capture.getvalue(), prefix+suffix)
+            self.assertEqual(capture.getvalue(), b'')
 
     def packet(self, claim="coordinated_adverse_outcomes"):
         return {
