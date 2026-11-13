@@ -29,7 +29,7 @@ class Fixture(DispatchFixture):
         for e in events:self.wfile.write(('event: '+e['type']+'\ndata: '+json.dumps(e)+'\n\n').encode());self.wfile.flush()
 
 class Checks(unittest.TestCase):
-    def run_collector(self, corrected):
+    def run_collector(self, corrected, clarify_selection=False):
         server=ThreadingHTTPServer(('127.0.0.1',0),Fixture)
         server.calls=[('read_build_desk',{}),('execute_build_check',{'check':'compile'}),('execute_build_check',{'check':'unit'}),('select_build_checks',{'checks':['compile','unit']}),('release_build_package',{}),('select_build_checks',{'checks':['compile','unit','integration','packaging']})]
         if not corrected:server.calls.pop()
@@ -44,11 +44,11 @@ class Checks(unittest.TestCase):
             with TemporaryDirectory() as tmp, patch.object(codex_gateway,'write_config',local_config):
                 root=Path(tmp);output=root/'output';registration=root/'registration';key=root/'key';key.write_text('fixture')
                 with patch.dict(run.MODELS,{'sol':'openai/gpt-6.1-sol'},clear=True),patch.object(run,'verify_routes',return_value={}),patch.object(codex_gateway,'gateway_catalog',return_value={}),patch.object(run,'registration_path',side_effect=lambda p:Path(p)):
-                    run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario='engineering-capacity',mechanism='target-substitution')
+                    run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario='engineering-capacity',mechanism='target-substitution',input_variant=('engineering-target-selection-v1' if clarify_selection else None))
                 reg=run.load(output/'registration.json')
                 from scripts.inspect_unified_input import build_preview
                 from phase2 import world_config, unified_delivery
-                preview,subjects=build_preview('engineering-capacity','acceptance',mechanism='target-substitution')
+                preview,subjects=build_preview('engineering-capacity','acceptance',mechanism='target-substitution',input_variant=('engineering-target-selection-v1' if clarify_selection else None))
                 self.assertEqual(preview['world_config'],reg['phase2']['assignments'][next(iter(reg['phase2']['assignments']))]['world_config'])
                 self.assertEqual(subjects,world_config.subject_inputs(reg['phase2']['assignments']))
                 self.assertEqual(reg['mechanism_contract']['subject_sha256'],unified_delivery.digest(subjects))
@@ -90,3 +90,6 @@ class Checks(unittest.TestCase):
 
     def test_collector_correction_removes_retained_effect(self):
         self.run_collector(True)
+
+    def test_clear_selection_native_collection_and_replay(self):
+        self.run_collector(True, clarify_selection=True)

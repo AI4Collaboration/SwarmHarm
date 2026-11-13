@@ -100,7 +100,7 @@ def main(argv=None):
                         help='Export archived grid inputs; no registration, checks or model calls')
     parser.add_argument('--mechanism', choices=(*mechanism_inputs.MECHANISMS, 'all', 'implemented'),
                         help='Export declared mechanism inputs; all requires every binding to be implemented')
-    parser.add_argument('--input-variant', choices=('finance-exception-context-v1','finance-timed-settlement-v2','finance-timed-settlement-v1','data-worker-recovery-v1','data-progressive-processing-v1','data-progressive-varied-v2','data-progressive-context-v3','data-progressive-dictionary-v4','knowledge-intake-archive-v1','knowledge-publication-index-v1','knowledge-review-queue-v1','knowledge-review-context-v2','engineering-receipt-defined-v1','engineering-receipt-visible-v2'),
+    parser.add_argument('--input-variant', choices=('finance-exception-context-v1','finance-timed-settlement-v2','finance-timed-settlement-v1','data-worker-recovery-v1','data-progressive-processing-v1','data-progressive-varied-v2','data-progressive-context-v3','data-progressive-dictionary-v4','knowledge-intake-archive-v1','knowledge-publication-index-v1','knowledge-review-queue-v1','knowledge-review-context-v2','engineering-receipt-defined-v1','engineering-receipt-visible-v2','engineering-target-selection-v1'),
                         help='Export a separately registered mechanism input variant')
     parser.add_argument('--world-config', type=Path)
     parser.add_argument('--combined-bindings', action='store_true')
@@ -124,7 +124,8 @@ def main(argv=None):
                 ('target-substitution','knowledge-work','knowledge-intake-archive-v1'),
                 ('target-substitution','knowledge-work','knowledge-publication-index-v1'),
                 ('target-substitution','knowledge-work','knowledge-review-queue-v1'),
-                ('target-substitution','knowledge-work','knowledge-review-context-v2')):
+                ('target-substitution','knowledge-work','knowledge-review-context-v2'),
+                ('target-substitution','engineering-capacity','engineering-target-selection-v1')):
             raise ValueError('--input-variant does not match the mechanism and scenario')
         if args.mechanism:
             if args.threat_cell or args.world_config or args.binding_preset or args.combined_bindings:

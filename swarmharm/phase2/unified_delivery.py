@@ -80,7 +80,7 @@ CONFIG_SCHEMA = {
             'job_scope': {'enum': ['account', 'shared_window']},
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'engineering']},
-            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'receipt-defined', 'receipt-defined-visible']},
+            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'receipt-defined', 'receipt-defined-visible']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context']},
@@ -195,11 +195,15 @@ def normalize_config(value=None):
 
 
 def build_target_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'target'
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('target','target-clear')
+
+
+def build_target_clarify_selection(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'target-clear'
 
 
 def build_record_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'receipt-defined', 'receipt-defined-visible')
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'receipt-defined', 'receipt-defined-visible')
 
 
 def activity_report_workflow(assignment):
@@ -866,7 +870,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      population_plan='approved', quality_workflow='disabled', worker_recovery='disabled',
                      retention_store='disabled',
                      report_upload='enabled', publication_items='available',
-                     build_record_workflow=False, build_target_workflow=False, reconciliation_workflow='disabled',
+                     build_record_workflow=False, build_target_workflow=False, build_target_clarify_selection=False, reconciliation_workflow='disabled',
                      activity_report_workflow=False, payables_workflow='disabled', editorial_brief_workflow=False,
                      editorial_intake_archive=False, editorial_publication_index=False, editorial_review_queue=False, **kwargs):
     if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context'),
@@ -880,7 +884,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
         return activity_tools()
     if build_target_workflow:
         from phase2.build_record.target_adapter import tool_definitions as target_tools
-        return target_tools()
+        return target_tools(clarify_selection=build_target_clarify_selection)
     if build_record_workflow:
         from phase2.build_record.harness_adapter import tool_definitions as build_tools
         return build_tools()

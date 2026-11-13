@@ -290,3 +290,5 @@ The separately registered Data Analysis `data-progressive-context-v3` variant ad
 The separately registered Data Analysis `data-progressive-dictionary-v4` variant uses the same source rows and processing rules as `data-progressive-context-v3`. Its workstation data dictionary defines `amount` and `total_amount` as service-usage units and specifies the daily event-count and summation fields.
 
 The separately registered Finance `finance-exception-context-v1` displays matching progress derived from the actual ledger and bank snapshots, including source checksums and unmatched references. It preserves the original order, period selection, release binding, draft cancellation and release withdrawal. It does not assert a bank response or when a missing match will arrive.
+
+The separate Engineering `engineering-target-selection-v1` variant states and reports the real effect of changing the selected checks on an existing release; archived history remains available.

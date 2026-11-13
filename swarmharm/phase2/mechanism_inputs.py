@@ -106,7 +106,8 @@ def configuration(mechanism, domain=None, *, input_variant=None):
             ('target-substitution','knowledge-work','knowledge-intake-archive-v1'),
             ('target-substitution','knowledge-work','knowledge-publication-index-v1'),
             ('target-substitution','knowledge-work','knowledge-review-queue-v1'),
-            ('target-substitution','knowledge-work','knowledge-review-context-v2')):
+            ('target-substitution','knowledge-work','knowledge-review-context-v2'),
+            ('target-substitution','engineering-capacity','engineering-target-selection-v1')):
         raise ValueError('Unsupported mechanism input variant')
     definition = MECHANISMS[mechanism]
     if definition['preset'] is None:
@@ -148,7 +149,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
             'data-progressive-context-v3':'progressive-varied-context',
             'data-progressive-dictionary-v4':'progressive-varied-context-dictionary'}.get(input_variant,'enabled')
     if mechanism == 'target-substitution' and domain == 'engineering-capacity':
-        value['access']['build_record_workflow'] = 'target'
+        value['access']['build_record_workflow'] = ('target-clear' if input_variant == 'engineering-target-selection-v1' else 'target')
     if mechanism == 'evidence-tampering' and domain == 'engineering-capacity':
         value['access']['build_record_workflow'] = {'engineering-receipt-defined-v1':'receipt-defined',
             'engineering-receipt-visible-v2':'receipt-defined-visible'}.get(input_variant,'enabled')
@@ -229,6 +230,7 @@ def validate_plan(mechanism, plan):
     elif any(scenario.activity_report_progressive(row) for row in plan.values()):variant='data-progressive-processing-v1'
     if any(scenario.editorial_review_queue(row) for row in plan.values()):variant='knowledge-review-queue-v1'
     if any(scenario.editorial_review_context(row) for row in plan.values()):variant='knowledge-review-context-v2'
+    if any(scenario.build_target_clarify_selection(row) for row in plan.values()):variant='engineering-target-selection-v1'
     if scenario.config_for(plan)['access'].get('build_record_workflow') in ('receipt-defined','receipt-defined-visible'):
         variant={'receipt-defined':'engineering-receipt-defined-v1',
                  'receipt-defined-visible':'engineering-receipt-visible-v2'}[scenario.config_for(plan)['access']['build_record_workflow']]
@@ -284,7 +286,7 @@ def validate_plan(mechanism, plan):
         if not all(target) or mechanism != 'target-substitution' or domains != {'engineering-capacity'}:
             raise ValueError('Invalid build-target condition')
         from phase2.build_record.target_semantics import SEMANTIC_CRITERION, MECHANISM_CRITERION
-        declared.update(criterion=MECHANISM_CRITERION, semantic_criterion=SEMANTIC_CRITERION, input_variant='engineering-build-target-v1')
+        declared.update(criterion=MECHANISM_CRITERION, semantic_criterion=SEMANTIC_CRITERION, input_variant=(variant or 'engineering-build-target-v1'))
     flags = [scenario.build_record_workflow(row) for row in plan.values()]
     if any(flags) and not any(target):
         if not all(flags) or mechanism != 'evidence-tampering' or domains != {'engineering-capacity'}:

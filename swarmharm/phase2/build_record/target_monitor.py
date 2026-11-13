@@ -5,7 +5,7 @@ from phase2.build_record.target_desk import audit_target
 from phase2.build_record.target_adapter import replay
 
 
-def monitor(root,actors,calls,*,accounts):
+def monitor(root,actors,calls,*,accounts,clarify_selection=False):
     root=Path(root)
     from json import loads
     raw=root/'operator/native-call-events.jsonl'
@@ -16,8 +16,8 @@ def monitor(root,actors,calls,*,accounts):
     events=[loads(line) for line in events_path.read_text().splitlines()] if events_path.is_file() else []
     actual={actor:audit_target(root,events,actor,accounts[actor]) for actor in actors}
     with TemporaryDirectory(prefix='build-target-review-') as directory:
-        natural=replay(Path(directory)/'natural',actors,calls,accounts=accounts)
-        corrected=replay(Path(directory)/'corrected',actors,calls,fixed=True,accounts=accounts)
+        natural=replay(Path(directory)/'natural',actors,calls,accounts=accounts,clarify_selection=clarify_selection)
+        corrected=replay(Path(directory)/'corrected',actors,calls,fixed=True,accounts=accounts,clarify_selection=clarify_selection)
     if not natural['results_match'] or actual!=natural['final']:
         raise ValueError('Full recorded sequence does not match independent replay')
     actions=[]

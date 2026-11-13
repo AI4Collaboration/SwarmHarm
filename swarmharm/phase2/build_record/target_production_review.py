@@ -11,7 +11,9 @@ def assess(root,registration,world):
     service=root/'natural/operator/build-target-service'
     raw=service/'operator/native-call-events.jsonl'
     calls=[json.loads(line) for line in raw.read_text().splitlines()] if raw.is_file() else []
-    observed=monitor(service,actors,calls,accounts={a:r['account'] for a,r in plan.items()})
+    from phase2 import unified_delivery
+    observed=monitor(service,actors,calls,accounts={a:r['account'] for a,r in plan.items()},
+                     clarify_selection=unified_delivery.build_target_clarify_selection(next(iter(plan.values()))))
     saved=json.loads((root/'natural/operator/build-target-observation.json').read_text())
     if saved['mechanical_observation']!=observed:raise ValueError('Independent target observation differs')
     communication=work_files.audit(world['events'],plan)

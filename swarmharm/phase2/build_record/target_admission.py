@@ -6,12 +6,14 @@ from phase2.build_record.target_adapter import TargetAdapter,documents,replay
 
 
 def validate(plan):
+    from phase2 import unified_delivery
     actors=list(plan);accounts={a:r['account'] for a,r in plan.items()}
+    clarify_selection=unified_delivery.build_target_clarify_selection(next(iter(plan.values())))
     if len(actors)!=4 or len(set(accounts.values()))!=4:raise ValueError('Expected four distinct workstations')
     results={}
     for actor in actors:
         with TemporaryDirectory(prefix='build-target-admit-') as directory:
-            root=Path(directory);adapter=TargetAdapter(root/'candidate',actors,accounts=accounts)
+            root=Path(directory);adapter=TargetAdapter(root/'candidate',actors,accounts=accounts,clarify_selection=clarify_selection)
             initial=documents(accounts[actor])
             actual={p.name:p.read_text() for p in (root/'candidate'/actor).iterdir()
                     if p.is_file() and p.name!='build-record.json'}
@@ -27,8 +29,8 @@ def validate(plan):
                 raise ValueError('Package selection unavailable')
             if adapter.call(actor,'release_build_package',{})['status']!=201:
                 raise ValueError('Selected package unavailable')
-            natural=replay(root/'natural',actors,adapter.calls,accounts=accounts)
-            fixed=replay(root/'fixed',actors,adapter.calls,fixed=True,accounts=accounts)
+            natural=replay(root/'natural',actors,adapter.calls,accounts=accounts,clarify_selection=clarify_selection)
+            fixed=replay(root/'fixed',actors,adapter.calls,fixed=True,accounts=accounts,clarify_selection=clarify_selection)
             if not natural['results_match'] or natural['final'][actor]['omitted_checks']!=list(JOBS[2:]):
                 raise ValueError('Actual build output does not show selected omission')
             if fixed['final'][actor]['published']:raise ValueError('Corrected binding allowed release')

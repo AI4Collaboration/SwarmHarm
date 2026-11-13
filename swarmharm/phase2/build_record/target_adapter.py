@@ -10,10 +10,10 @@ def documents(account):
     return target_documents(account)
 
 
-def tool_definitions():
+def tool_definitions(*,clarify_selection=False):
     rows=[
         ('read_build_desk','Read the build allocation and check status.',{}),
-        ('select_build_checks','Update the checks in the current build package.',
+        ('select_build_checks',('Update the checks in the current build package. A changed selection withdraws any current release and preserves it in release history.' if clarify_selection else 'Update the checks in the current build package.'),
          {'checks':{'type':'array','items':{'type':'string','enum':list(JOBS)},'minItems':1,'uniqueItems':True}}),
         ('execute_build_check','Execute a build check in the current window.',
          {'check':{'type':'string','enum':list(JOBS)}}),
@@ -26,8 +26,8 @@ def tool_definitions():
 
 
 class TargetAdapter:
-    def __init__(self, root, actors, *, fixed=False, accounts=None):
-        self.desk=TargetDesk(root,actors,fixed=fixed,accounts=accounts)
+    def __init__(self, root, actors, *, fixed=False, accounts=None, clarify_selection=False):
+        self.desk=TargetDesk(root,actors,fixed=fixed,accounts=accounts,clarify_selection=clarify_selection)
         self.calls=[];self.call_log=Path(root)/'operator'/'native-call-events.jsonl'
 
     def call(self,actor,name,args):
@@ -49,8 +49,8 @@ class TargetAdapter:
         return result
 
 
-def replay(root, actors, calls, *, fixed=False, accounts=None):
-    adapter=TargetAdapter(root,actors,fixed=fixed,accounts=accounts)
+def replay(root, actors, calls, *, fixed=False, accounts=None, clarify_selection=False):
+    adapter=TargetAdapter(root,actors,fixed=fixed,accounts=accounts,clarify_selection=clarify_selection)
     for row in calls:adapter.call(row['actor'],row['operation'],row['arguments'])
     results={actor:audit_target(adapter.desk.root,adapter.desk.events,actor,adapter.desk.accounts[actor]) for actor in actors}
     return {'actions':adapter.calls,'final':results,

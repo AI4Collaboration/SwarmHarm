@@ -439,6 +439,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                 current.update(('reconciliation_transport', 'reconciliation_exception_context'))
             if scenario == 'engineering-capacity':
                 current.add('engineering_target_collector')
+                if input_variant == 'engineering-target-selection-v1':
+                    current.add('engineering_target_selection')
             if scenario == 'data-analysis':
                 current.add('activity_report_collector')
                 if input_variant in ('data-progressive-context-v3','data-progressive-dictionary-v4'):
@@ -607,7 +609,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if (delivery_config['access'].get('activity_report_workflow') in ('enabled','progressive','progressive-varied','progressive-varied-context','progressive-varied-context-dictionary')
             and (mechanism != 'target-substitution' or scenario != 'data-analysis')):
         raise ValueError('Activity report requires Data Analysis target-substitution')
-    if (delivery_config['access'].get('build_record_workflow') == 'target'
+    if (delivery_config['access'].get('build_record_workflow') in ('target','target-clear')
             and (mechanism != 'target-substitution' or scenario != 'engineering-capacity')):
         raise ValueError('Build-target configuration requires Engineering target-substitution')
     if (delivery_config['access'].get('build_record_workflow') in ('enabled', 'receipt-defined', 'receipt-defined-visible')
@@ -788,6 +790,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             **({'continuous_workflow': True,
                 'build_record_workflow': unified_delivery.build_record_workflow(phase2_plan[actor]),
                 'build_target_workflow': unified_delivery.build_target_workflow(phase2_plan[actor]),
+                'build_target_clarify_selection': unified_delivery.build_target_clarify_selection(phase2_plan[actor]),
                 'activity_report_workflow': unified_delivery.activity_report_workflow(phase2_plan[actor]),
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(phase2_plan[actor]),
                 'editorial_intake_archive': unified_delivery.editorial_intake_archive(phase2_plan[actor]),
@@ -1779,6 +1782,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             **({'continuous_workflow': True,
                 'build_record_workflow': unified_delivery.build_record_workflow(next(iter(extension.plan.values()))),
                 'build_target_workflow': unified_delivery.build_target_workflow(next(iter(extension.plan.values()))),
+                'build_target_clarify_selection': unified_delivery.build_target_clarify_selection(next(iter(extension.plan.values()))),
                 'activity_report_workflow': unified_delivery.activity_report_workflow(next(iter(extension.plan.values()))),
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(next(iter(extension.plan.values()))),
                 'editorial_intake_archive': unified_delivery.editorial_intake_archive(next(iter(extension.plan.values()))),
@@ -2663,7 +2667,7 @@ if __name__=='__main__':
         help='Select a retained input contract from the archived SwarmHarm grid.')
     p.add_argument('--mechanism', choices=tuple(mechanism_inputs.MECHANISMS),
         help='Select the current mechanism configuration and evidence criterion.')
-    p.add_argument('--input-variant', choices=('finance-exception-context-v1','finance-timed-settlement-v2','finance-timed-settlement-v1','data-worker-recovery-v1','data-progressive-processing-v1','data-progressive-varied-v2','data-progressive-context-v3','data-progressive-dictionary-v4','knowledge-intake-archive-v1','knowledge-publication-index-v1','knowledge-review-queue-v1','knowledge-review-context-v2','engineering-receipt-defined-v1','engineering-receipt-visible-v2'),
+    p.add_argument('--input-variant', choices=('finance-exception-context-v1','finance-timed-settlement-v2','finance-timed-settlement-v1','data-worker-recovery-v1','data-progressive-processing-v1','data-progressive-varied-v2','data-progressive-context-v3','data-progressive-dictionary-v4','knowledge-intake-archive-v1','knowledge-publication-index-v1','knowledge-review-queue-v1','knowledge-review-context-v2','engineering-receipt-defined-v1','engineering-receipt-visible-v2','engineering-target-selection-v1'),
         help='Select a separately registered mechanism input variant.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),
         help='Operator-only backend binding for the matched unified delivery environment.')

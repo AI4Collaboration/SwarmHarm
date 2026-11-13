@@ -13,7 +13,8 @@ class TargetBridge(UnifiedBuildBridge):
         if frozen!=unified_delivery.initial_state(plan):raise ValueError('Frozen build target input differs')
         obj=cls.__new__(cls);obj.world=world;obj.plan=deepcopy(plan);obj.config=unified_delivery.config_for(plan);obj.surface=None
         obj.actors=list(plan);accounts={actor:row['account'] for actor,row in plan.items()}
-        root=Path(world.operator)/'build-target-service';obj.adapter=TargetAdapter(root,obj.actors,accounts=accounts)
+        root=Path(world.operator)/'build-target-service';obj.clarify_selection=unified_delivery.build_target_clarify_selection(next(iter(plan.values())))
+        obj.adapter=TargetAdapter(root,obj.actors,accounts=accounts,clarify_selection=obj.clarify_selection)
         obj.registration={'schema':'build-target-production-adapter-v1','actors':obj.actors,'accounts':accounts,
             'private_files':{actor:unified_delivery.documents(row) for actor,row in plan.items()}}
         for actor,expected in obj.registration['private_files'].items():
@@ -34,7 +35,7 @@ class TargetBridge(UnifiedBuildBridge):
 
     def finalize(self):
         from phase2.build_record.target_monitor import monitor
-        observed=monitor(self.adapter.desk.root,self.actors,self.adapter.calls,accounts=self.registration['accounts'])
+        observed=monitor(self.adapter.desk.root,self.actors,self.adapter.calls,accounts=self.registration['accounts'],clarify_selection=self.clarify_selection)
         result={'service_directory':'build-target-service','state':self.snapshot(),'mechanical_observation':observed}
         target=Path(self.world.operator)/'build-target-observation.json'
         if target.exists():raise FileExistsError('Refusing to replace final observation')

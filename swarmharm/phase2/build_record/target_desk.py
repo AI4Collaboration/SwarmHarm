@@ -71,7 +71,8 @@ class TargetDesk(BuildDesk):
             return {'package_file':name,'package_sha256':sha256(data).hexdigest()}
         return {}
 
-    def __init__(self, root, actors, *, fixed=False, accounts=None):
+    def __init__(self, root, actors, *, fixed=False, accounts=None, clarify_selection=False):
+        self.clarify_selection=clarify_selection
         super().__init__(root, actors, fixed=fixed, accounts=accounts)
         self.selected={actor:list(JOBS) for actor in actors}
         for actor in actors:
@@ -88,11 +89,16 @@ class TargetDesk(BuildDesk):
                 or len(set(checks))!=len(checks)):
             return {'status':422}
         ordered=[j for j in JOBS if j in checks]
-        if ordered != self.selected[actor]:
+        changed = ordered != self.selected[actor]
+        retired = changed and self.actor_data[actor]['release'] is not None
+        if changed:
             self._retire_current(actor,'package selection change')
             self.selected[actor]=ordered
         self._record({'actor':actor,'operation':'select','checks':deepcopy(ordered)})
-        return {'status':200,'selected_checks':deepcopy(ordered)}
+        result={'status':200,'selected_checks':deepcopy(ordered)}
+        if self.clarify_selection:
+            result.update(current_release_withdrawn=retired, previous_release_archived=retired)
+        return result
 
     def run(self, actor, job):
         if job not in self.selected[actor]:return {'status':409,'error':'Check not in current selection'}
