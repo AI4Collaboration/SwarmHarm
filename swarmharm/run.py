@@ -445,6 +445,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                 current.add('engineering_target_collector')
                 if input_variant == 'engineering-target-selection-v1':
                     current.add('engineering_target_selection')
+                if input_variant == 'engineering-target-fixture-v1':
+                    current.add('engineering_fixture_target_candidate')
             if scenario == 'data-analysis':
                 current.add('activity_report_collector')
                 if input_variant in ('data-progressive-context-v3','data-progressive-dictionary-v4'):

@@ -80,7 +80,7 @@ CONFIG_SCHEMA = {
             'job_scope': {'enum': ['account', 'shared_window']},
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'knowledge-timeline', 'engineering']},
-            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent']},
+            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging']},
@@ -195,15 +195,19 @@ def normalize_config(value=None):
 
 
 def build_target_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('target','target-clear')
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('target','target-clear','target-fixture')
 
 
 def build_target_clarify_selection(assignment):
     return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'target-clear'
 
 
+def build_target_fixture(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'target-fixture'
+
+
 def build_record_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent')
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'target-fixture', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent')
 
 
 def activity_report_workflow(assignment):
@@ -385,6 +389,9 @@ def documents(assignment):
         from phase2.activity_report.activity_desk import documents as activity_documents
         return activity_documents(assignment['account'], progressive=activity_report_progressive(assignment))
     if build_target_workflow(assignment):
+        if build_target_fixture(assignment):
+            from phase2.build_record.fixture_target_candidate import documents as fixture_target_documents
+            return fixture_target_documents(assignment['account'])
         from phase2.build_record.target_adapter import documents as target_documents
         return target_documents(assignment['account'])
     if build_record_workflow(assignment):
@@ -784,6 +791,8 @@ def truth_for(plan):
                 for actor,row in plan.items()}}
     if build_record_workflow(next(iter(plan.values()))):
         from phase2.build_record.build_desk import JOBS, source_for, cases_for
+        if build_target_fixture(next(iter(plan.values()))):
+            from phase2.build_record.target_desk import target_source as source_for
         truth = {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
             'accounts':{actor:{'account':row['account'],'checks':list(JOBS),
                 'source_sha256':sha256(source_for(row['account']).encode()).hexdigest(),
@@ -794,6 +803,11 @@ def truth_for(plan):
             truth['integration_fixture'] = {'name':'integration-fixture.json', 'initial':'absent',
                 'visibility':'service-only', 'arrival':'not-scheduled',
                 'desk_check_sha256':sha256((SERVICE_CHECKS['integration']+'\n').encode()).hexdigest()}
+        if build_target_fixture(next(iter(plan.values()))):
+            from phase2.build_record.fixture_target_candidate import FIXTURE_CHECKS
+            truth['integration_fixture'] = {'name':'integration-fixture.json','initial':'absent',
+                'visibility':'service-only','arrival':'not-scheduled',
+                'desk_check_sha256':sha256((FIXTURE_CHECKS['integration']+'\n').encode()).hexdigest()}
         return truth
     if config_for(plan)['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
@@ -834,7 +848,7 @@ def initial_state(plan):
                 'supplied_business_records':{'source_snapshot':{'author':'Build service',
                     'origin':'synthetic November source and check cases','behavioral_evidence':False}},
                 'supplied_peer_messages':[],'supplied_methods':[]}
-        if config_for(plan)['access'].get('build_record_workflow') == 'fixture-dependent':
+        if config_for(plan)['access'].get('build_record_workflow') in ('fixture-dependent','target-fixture'):
             state['supplied_business_records']['integration_fixture'] = truth_for(plan)['integration_fixture']
         return state
     state = {'origin': 'prepared_business_records', 'study_track': (

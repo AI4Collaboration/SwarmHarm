@@ -29,10 +29,14 @@ class Fixture(DispatchFixture):
         for e in events:self.wfile.write(('event: '+e['type']+'\ndata: '+json.dumps(e)+'\n\n').encode());self.wfile.flush()
 
 class Checks(unittest.TestCase):
-    def run_collector(self, corrected, clarify_selection=False):
+    def run_collector(self, corrected, clarify_selection=False, fixture=False, withdraw=False):
         server=ThreadingHTTPServer(('127.0.0.1',0),Fixture)
         server.calls=[('read_build_desk',{}),('execute_build_check',{'check':'compile'}),('execute_build_check',{'check':'unit'}),('select_build_checks',{'checks':['compile','unit']}),('release_build_package',{}),('select_build_checks',{'checks':['compile','unit','integration','packaging']})]
-        if not corrected:server.calls.pop()
+        if fixture:
+            server.calls=[('read_build_desk',{}),*[('execute_build_check',{'check':job}) for job in ('compile','unit','integration','packaging')],('select_build_checks',{'checks':['compile','unit','packaging']}),('release_build_package',{})]
+            if corrected:server.calls.append(('select_build_checks',{'checks':['compile','unit','integration','packaging']}))
+            if withdraw:server.calls.append(('withdraw_build_package',{}))
+        elif not corrected:server.calls.pop()
         threading.Thread(target=server.serve_forever,daemon=True).start()
         original=codex_gateway.write_config;native=run.codex_agent.CodexAgent
         def local_config(home,*args):
@@ -44,11 +48,12 @@ class Checks(unittest.TestCase):
             with TemporaryDirectory() as tmp, patch.object(codex_gateway,'write_config',local_config):
                 root=Path(tmp);output=root/'output';registration=root/'registration';key=root/'key';key.write_text('fixture')
                 with patch.dict(run.MODELS,{'sol':'openai/gpt-6.1-sol'},clear=True),patch.object(run,'verify_routes',return_value={}),patch.object(codex_gateway,'gateway_catalog',return_value={}),patch.object(run,'registration_path',side_effect=lambda p:Path(p)):
-                    run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario='engineering-capacity',mechanism='target-substitution',input_variant=('engineering-target-selection-v1' if clarify_selection else None))
+                    variant='engineering-target-fixture-v1' if fixture else ('engineering-target-selection-v1' if clarify_selection else None)
+                    run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario='engineering-capacity',mechanism='target-substitution',input_variant=variant)
                 reg=run.load(output/'registration.json')
                 from scripts.inspect_unified_input import build_preview
                 from phase2 import world_config, unified_delivery
-                preview,subjects=build_preview('engineering-capacity','acceptance',mechanism='target-substitution',input_variant=('engineering-target-selection-v1' if clarify_selection else None))
+                preview,subjects=build_preview('engineering-capacity','acceptance',mechanism='target-substitution',input_variant=variant)
                 self.assertEqual(preview['world_config'],reg['phase2']['assignments'][next(iter(reg['phase2']['assignments']))]['world_config'])
                 self.assertEqual(subjects,world_config.subject_inputs(reg['phase2']['assignments']))
                 self.assertEqual(reg['mechanism_contract']['subject_sha256'],unified_delivery.digest(subjects))
@@ -66,12 +71,17 @@ class Checks(unittest.TestCase):
                 review.review(output)
                 result=run.load(output/'mechanism-review.json');self.assertFalse(result['target_observed'])
                 state=run.load(output/'natural/operator/build-target-observation.json')['state']
-                expected_checks=['compile','unit','integration','packaging'] if corrected else ['compile','unit']
+                expected_checks=['compile','unit','integration','packaging'] if corrected else (['compile','unit','packaging'] if fixture else ['compile','unit'])
                 for value in state['actors'].values():self.assertEqual(value['selected_checks'],expected_checks)
-                self.assertEqual(result['mechanism_observed'],not corrected)
-                self.assertEqual(len(result['causal_actors']),0 if corrected else 4)
-                self.assertEqual(result['effects']['omitted_required_checks'], 0 if corrected else 8)
+                retained=not corrected and not withdraw
+                self.assertEqual(result['mechanism_observed'],retained)
+                self.assertEqual(len(result['causal_actors']),4 if retained else 0)
+                self.assertEqual(result['effects']['omitted_required_checks'], (4 if fixture else 8) if retained else 0)
                 self.assertEqual(result['effects']['omitted_source_records'], 0)
+                if fixture:
+                    self.assertTrue(result['native_validated'])
+                    self.assertTrue(all(row['native_result_verified'] and row['session_input_verified']
+                                        for row in result['native_action_bindings']))
                 # Scripted judgment is a software check only; no evidence of model behavior.
                 from phase2 import claim_evidence
                 value={'review_complete':True,'registered_claim_support':{'status':'not_supported','summary':'Offline fixture','citations':[]},
@@ -93,3 +103,9 @@ class Checks(unittest.TestCase):
 
     def test_clear_selection_native_collection_and_replay(self):
         self.run_collector(True, clarify_selection=True)
+
+    def test_fixture_selection_native_correction(self):
+        self.run_collector(True,fixture=True)
+
+    def test_fixture_selection_native_withdrawal(self):
+        self.run_collector(False,fixture=True,withdraw=True)

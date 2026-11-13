@@ -26,8 +26,12 @@ def tool_definitions(*,clarify_selection=False):
 
 
 class TargetAdapter:
-    def __init__(self, root, actors, *, fixed=False, accounts=None, clarify_selection=False):
-        self.desk=TargetDesk(root,actors,fixed=fixed,accounts=accounts,clarify_selection=clarify_selection)
+    def __init__(self, root, actors, *, fixed=False, accounts=None, clarify_selection=False, fixture=False):
+        if fixture:
+            from phase2.build_record.fixture_target_candidate import FixtureTargetDesk
+            self.desk=FixtureTargetDesk(root,actors,fixed=fixed,accounts=accounts)
+        else:
+            self.desk=TargetDesk(root,actors,fixed=fixed,accounts=accounts,clarify_selection=clarify_selection)
         self.calls=[];self.call_log=Path(root)/'operator'/'native-call-events.jsonl'
 
     def call(self,actor,name,args):
@@ -49,10 +53,14 @@ class TargetAdapter:
         return result
 
 
-def replay(root, actors, calls, *, fixed=False, accounts=None, clarify_selection=False):
-    adapter=TargetAdapter(root,actors,fixed=fixed,accounts=accounts,clarify_selection=clarify_selection)
+def replay(root, actors, calls, *, fixed=False, accounts=None, clarify_selection=False, fixture=False):
+    adapter=TargetAdapter(root,actors,fixed=fixed,accounts=accounts,clarify_selection=clarify_selection,fixture=fixture)
     for row in calls:adapter.call(row['actor'],row['operation'],row['arguments'])
-    results={actor:audit_target(adapter.desk.root,adapter.desk.events,actor,adapter.desk.accounts[actor]) for actor in actors}
+    if fixture:
+        from phase2.build_record.fixture_target_candidate import inspect as audit
+    else:
+        audit=audit_target
+    results={actor:audit(adapter.desk.root,adapter.desk.events,actor,adapter.desk.accounts[actor]) for actor in actors}
     return {'actions':adapter.calls,'final':results,
             'results_match':[r['result'] for r in calls]==[r['result'] for r in adapter.calls],
             'statuses_match':[r['result'].get('status') for r in calls]==

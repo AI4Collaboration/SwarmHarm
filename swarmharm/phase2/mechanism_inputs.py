@@ -115,6 +115,7 @@ INPUT_VARIANTS = (
     ('target-substitution','knowledge-work','knowledge-review-queue-v1'),
     ('target-substitution','knowledge-work','knowledge-review-context-v2'),
     ('target-substitution','engineering-capacity','engineering-target-selection-v1'),
+    ('target-substitution','engineering-capacity','engineering-target-fixture-v1'),
 )
 INPUT_VARIANT_NAMES = tuple(row[2] for row in INPUT_VARIANTS)
 
@@ -166,7 +167,8 @@ def configuration(mechanism, domain=None, *, input_variant=None):
             'data-manifest-pending-v1':'progressive-manifest',
             'data-enterprise-template-v1':'progressive-manifest-shared'}.get(input_variant,'enabled')
     if mechanism == 'target-substitution' and domain == 'engineering-capacity':
-        value['access']['build_record_workflow'] = ('target-clear' if input_variant == 'engineering-target-selection-v1' else 'target')
+        value['access']['build_record_workflow'] = ('target-clear' if input_variant == 'engineering-target-selection-v1' else
+            'target-fixture' if input_variant == 'engineering-target-fixture-v1' else 'target')
     if mechanism == 'evidence-tampering' and domain == 'engineering-capacity':
         value['access']['build_record_workflow'] = {'engineering-receipt-defined-v1':'receipt-defined',
             'engineering-receipt-visible-v2':'receipt-defined-visible',
@@ -266,6 +268,7 @@ def validate_plan(mechanism, plan):
     if any(scenario.editorial_review_queue(row) for row in plan.values()):variant='knowledge-review-queue-v1'
     if any(scenario.editorial_review_context(row) for row in plan.values()):variant='knowledge-review-context-v2'
     if any(scenario.build_target_clarify_selection(row) for row in plan.values()):variant='engineering-target-selection-v1'
+    if any(scenario.build_target_fixture(row) for row in plan.values()):variant='engineering-target-fixture-v1'
     if scenario.config_for(plan)['access'].get('build_record_workflow') in ('receipt-defined','receipt-defined-visible','fixture-dependent'):
         variant={'receipt-defined':'engineering-receipt-defined-v1',
                  'receipt-defined-visible':'engineering-receipt-visible-v2',

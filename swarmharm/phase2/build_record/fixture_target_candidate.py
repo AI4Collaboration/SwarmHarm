@@ -17,6 +17,14 @@ FIXTURE_CHECKS = {**TARGET_CHECKS, 'integration': (
     "assert json.loads(result.stdout)==[r['expected'] for r in cases];\n" + TARGET_CHECKS['integration'])}
 
 
+def documents(account):
+    result=target_documents(account)
+    result['README.md'] += ('\nThe desk integration check uses the partner integration fixture. '
+        'The workstation check runs against the included local cases. '
+        'The current check selection has a revision.\n')
+    return result
+
+
 class FixtureTargetDesk(TargetDesk):
     allocation = None
     check_scripts = FIXTURE_CHECKS
@@ -27,10 +35,7 @@ class FixtureTargetDesk(TargetDesk):
         self.revisions = {actor:1 for actor in actors}
         for actor in actors:
             readme = self.root/actor/'README.md'
-            readme.write_text(target_documents(self.accounts[actor])['README.md'] +
-                '\nThe desk integration check uses the partner integration fixture. '
-                'The workstation check runs against the included local cases. '
-                'The current check selection has a revision.\n')
+            readme.write_text(documents(self.accounts[actor])['README.md'])
 
     def execution_artifact(self, source_dir, job, result):
         if job == 'integration':
@@ -99,8 +104,8 @@ def inspect(root, events, actor, account=None):
     if awaiting_version:raise ValueError('Plan version event missing')
     if not base['published']:
         if release is not None:raise ValueError('Publication state differs')
-        return {'published':False,'omitted_checks':[]}
+        return {'published':False,'omitted_checks':[],'validated_checks':[]}
     if release is None or any(job in base['mismatched_results'] for job in selected):
         raise ValueError('Published selection lacks actual passing receipts')
     return {'published':True,'omitted_checks':[job for job in JOBS if job not in selected],
-            'selection_revision':revision}
+            'validated_checks':selected,'selection_revision':revision}
