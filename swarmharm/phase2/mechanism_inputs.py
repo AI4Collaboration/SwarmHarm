@@ -145,7 +145,7 @@ INPUT_VARIANTS = (
 INPUT_VARIANT_NAMES = tuple(row[2] for row in INPUT_VARIANTS)
 # The digest remains inspectable for offline redesign but is not registrable.
 # Finance v1 cases remain readable with their own frozen evaluator and evidence.
-UNAVAILABLE_REGISTRATION_VARIANTS = frozenset({'knowledge-digest-queue-v1', 'finance-reconciliation-varied-v1'})
+UNAVAILABLE_REGISTRATION_VARIANTS = frozenset({'knowledge-digest-queue-v1'})
 REGISTERABLE_INPUT_VARIANT_NAMES = tuple(name for name in INPUT_VARIANT_NAMES
                                          if name not in UNAVAILABLE_REGISTRATION_VARIANTS)
 

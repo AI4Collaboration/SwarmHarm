@@ -44,8 +44,9 @@ class Checks(unittest.TestCase):
             self.assertNotEqual(*period_values);values.add(period_values[1])
         self.assertEqual(len(values),4);self.assertEqual(len(missing),4)
         self.assertEqual(world_config.subject_inputs(plan),world_config.subject_inputs(mechanism_review.corrected_plan(plan)))
-        with self.assertRaisesRegex(ValueError,'not ready'):run.require_ready_input(input_variant='finance-reconciliation-varied-v1')
-        with self.assertRaisesRegex(ValueError,'not ready'):run.require_ready_input(world_config=world_config.subject_inputs(plan) and scenario.world_for(plan))
+        self.assertIn('finance-reconciliation-varied-v1', mechanism_inputs.REGISTERABLE_INPUT_VARIANT_NAMES)
+        run.require_ready_input(input_variant='finance-reconciliation-varied-v1')
+        run.require_ready_input(world_config=scenario.world_for(plan))
 
     def test_original_blocked_alternative_and_corrected_binding_with_independent_replay(self):
         plan=self.plan(); checked=mechanism_inputs.validate_paths('target-substitution',plan)
@@ -163,8 +164,7 @@ class Checks(unittest.TestCase):
                     'limitations':[]},model='offline',native_action_bindings=altered)
             checked.append(True)
             return result
-        # Only this local scripted test opens the guarded registration path.
-        with patch.object(run,'prepare',side_effect=with_variant), patch.object(run,'require_ready_input'), \
+        with patch.object(run,'prepare',side_effect=with_variant), \
              patch.object(review,'review',side_effect=check_review):
             TransportChecks('test_codex_transport_and_atif').test_codex_transport_and_atif()
         self.assertEqual(checked,[True])

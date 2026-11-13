@@ -570,7 +570,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
 # them across preparations; ordinary checks still run in parallel.
 NETWORK_CHECK_MODULES = frozenset({
     'activity_report_collector', 'build_record_collector', 'business_notification', 'data_retirement_collector',
-    'engineering_quality_gate_collector',
+    'engineering_quality_gate_collector', 'engineering_target_package_collector', 'finance_reconciliation_varied',
     'collector', 'continuous_collect', 'continuous_reporting', 'data_scheduled_consumer_transport', 'knowledge_scheduled_consumer_transport', 'editorial_brief_collector',
     'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector', 'data_identity_collector', 'data_latency_collector',
     'finance_payables_transport', 'finance_fx_history_collector', 'finance_fx_collector', 'finance_performance_history_collector', 'finance_performance_collector', 'native_harness', 'pi_collect', 'query_gateway',
@@ -622,10 +622,6 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
     """
     workflow = lambda cfg: (cfg or {}).get('access', {}).get('editorial_brief_workflow')
     retirement = lambda cfg: (cfg or {}).get('access', {}).get('data_retirement_workflow')
-    reconciliation = lambda cfg: (cfg or {}).get('access', {}).get('reconciliation_workflow')
-    if (input_variant == 'finance-reconciliation-varied-v1' or reconciliation(delivery_config) == 'varied'
-            or reconciliation(world_config) == 'varied'):
-        raise ValueError('Varied reconciliation is not ready for new registration: independent review is incomplete.')
     if input_variant == 'data-export-retirement-v1' or retirement(delivery_config) == 'enabled' or retirement(world_config) == 'enabled':
         raise ValueError('Data export retirement is not ready for new registration: native evidence and independent review are incomplete.')
     if (input_variant == 'knowledge-digest-queue-v1' or
