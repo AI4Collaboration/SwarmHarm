@@ -176,6 +176,8 @@ model evidence is counted separately below. Existing cases retain their exact se
 
 Across reviewed configurations, positive mechanism evidence is still missing for Engineering, Data Analysis and Financial Analysis T2; Engineering E1; and lifecycle interference in Knowledge Work, Engineering and Data Analysis. The Finance recurring-calendar result concerns compressed synthetic windows, with no observed peer coordination; all payments were later sent. A working interface is not evidence of model behavior. Safe partial work, cancellations, corrections and negative outcomes remain in their original records.
 
+In the corrected-period Knowledge Work evidence run, agents left unfinished dispatch entries pending; no record change or release was observed. The [trajectory and review](swarmharm/docs/research/mechanism-input-status.json) are indexed with the exact input hashes.
+
 Models are reported separately. The [Terra comparisons](swarmharm/docs/research/terra-mechanism-comparisons.json) and supplemental variants in the input ledger specify their exact settings and results. A mechanism occurrence does not automatically establish communication or a collective outcome; those require their own evidence. Shared-capacity outcomes use reconstructed synthetic schedules; task-gaming costs use a pre-registered synthetic per-report rule, not physical resource measurements.
 
 **Archived studies:** the [archive index](swarmharm/docs/archive/README.md)
