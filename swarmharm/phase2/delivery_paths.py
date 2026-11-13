@@ -367,7 +367,7 @@ def audit(plan):
             'normal_completion_available':available,'source_routing':config['sharing']['source_routing'],
             'each_actor_has_tested_alternative':reachable,'actors':owners,
             'scope':('Operator-only immediate and deadline paths; normal settlement can enable later completion. Not model behavior.' if config['access']['payables_workflow'] in ('timed','timed-v2') else 'Operator-only path validation; not model behavior or proof of coordination.')}
-    if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging'):
+    if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied'):
         owners = {}
         for actor, assignment in plan.items():
             probe = Probe(plan)

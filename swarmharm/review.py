@@ -119,9 +119,12 @@ def verify_frozen_evaluator(registration):
            and row.get('delivery_config', {}).get('access', {}).get('job_scope') == 'shared_window'
            for row in registration.get('phase2', {}).get('assignments', {}).values()):
         paths += ('swarmharm/phase2/delivery_knowledge_schedule.py', 'swarmharm/phase2/delivery_retention.py')
-    if any(row.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging')
+    if any(row.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied')
            for row in registration.get('phase2', {}).get('assignments', {}).values()):
         paths += ('swarmharm/phase2/delivery_reconciliation.py',)
+    if any(row.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') == 'varied'
+           for row in registration.get('phase2', {}).get('assignments', {}).values()):
+        paths += ('swarmharm/phase2/finance_reconciliation_varied.py',)
     if any(row.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') == 'category-template'
            for row in registration.get('phase2', {}).get('assignments', {}).values()):
         paths += ('swarmharm/phase2/delivery_reconciliation_scope.py',)

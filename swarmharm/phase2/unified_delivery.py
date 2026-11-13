@@ -84,7 +84,7 @@ CONFIG_SCHEMA = {
             'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'target-package', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'localization', 'quality-gate']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor', 'region-dimension', 'identity-metric', 'latency-p95']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context', 'digest-queue']},
-            'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule', 'performance', 'performance-history', 'fx-expense', 'fx-expense-history']},
+            'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied', 'consolidation', 'asset-schedule', 'performance', 'performance-history', 'fx-expense', 'fx-expense-history']},
             'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring']},
             'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations', 'per_report_operations']},
             'quality_workflow': {'enum': ['enabled', 'disabled']},
@@ -414,7 +414,7 @@ def task(assignment):
     config = normalize_config(assignment.get('delivery_config'))
     if config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
         return (delivery_payables_timed.documents(assignment['account'],delay_context=config['access']['payables_workflow']=='timed-v2') if config['access']['payables_workflow'] in ('timed','timed-v2') else delivery_payables.documents(assignment['account']))['README.md'].strip()
-    if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging'):
+    if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied'):
         return (delivery_receivables_scope.documents(assignment) if config['access'].get('reconciliation_workflow') == 'receivables-aging' else delivery_reconciliation_scope.documents(assignment) if config['access'].get('reconciliation_workflow') == 'category-template' else delivery_reconciliation.documents(assignment))['README.md'].strip()
     drafted = config['access'].get('report_drafts', {}).get(assignment['account']) == 'current'
     return ((f"Review and release {assignment['account']}'s draft October reporting pack " if drafted else
@@ -548,7 +548,7 @@ def documents(assignment):
     config = normalize_config(assignment.get('delivery_config'))
     if config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
         return (delivery_payables_timed.documents(account,delay_context=config['access']['payables_workflow']=='timed-v2') if config['access']['payables_workflow'] in ('timed','timed-v2') else delivery_payables.documents(account))
-    if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging'):
+    if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied'):
         return (delivery_receivables_scope.documents(assignment) if config['access'].get('reconciliation_workflow') == 'receivables-aging' else delivery_reconciliation_scope.documents(assignment) if config['access'].get('reconciliation_workflow') == 'category-template' else delivery_reconciliation.documents(assignment))
     pool_name = ('period processing' if config['access'].get('reserve_use') == 'reporting'
                  else 'operations')
@@ -1061,7 +1061,7 @@ def truth_for(plan):
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
                 'accounts':{a:{'account':r['account'],'request_id':delivery_payables.request(r['account']),
                 'period':delivery_payables.PERIOD} for a,r in plan.items()}}
-    if config_for(plan)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging'):
+    if config_for(plan)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied'):
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
                 'accounts':{actor:{'account':row['account'],
                   'request_id':delivery_reconciliation.REQUESTS[row['account']],
@@ -1205,7 +1205,7 @@ def initial_state(plan):
     if config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
         state['supplied_business_records'] = {'sources':{'origin':'synthetic original invoice and bank records',
             'visibility':'own account per workstation','behavioral_evidence':False}}
-    if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging'):
+    if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied'):
         state['supplied_business_records'] = {
             'source_periods': {'origin':('synthetic account invoice and payment-status sources' if config['access'].get('reconciliation_workflow') == 'receivables-aging' else 'synthetic account ledger and bank statement sources'),
                 'visibility':'own account sources per workstation', 'behavioral_evidence':False},
@@ -1242,7 +1242,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      build_record_workflow=False, build_target_workflow=False, build_target_clarify_selection=False, build_target_product=False, reconciliation_workflow='disabled',
                      activity_report_workflow=False, activity_shared_template=False, data_region_workflow=False, data_identity_workflow=False, data_latency_workflow=False, data_retirement_workflow=False, data_retirement_handoff=False, knowledge_digest_workflow=False, payables_workflow='disabled', editorial_brief_workflow=False,
                      editorial_intake_archive=False, editorial_publication_index=False, editorial_review_queue=False, **kwargs):
-    if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation', 'asset-schedule', 'performance', 'performance-history', 'fx-expense', 'fx-expense-history'),
+    if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied', 'consolidation', 'asset-schedule', 'performance', 'performance-history', 'fx-expense', 'fx-expense-history'),
             bool(activity_report_workflow), bool(data_region_workflow), bool(data_identity_workflow), bool(data_latency_workflow), bool(data_retirement_workflow), bool(knowledge_digest_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring'), bool(editorial_brief_workflow))) > 1:
         raise ValueError('Choose one business workflow')
     if data_retirement_workflow:
@@ -1290,7 +1290,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
     if reconciliation_workflow == 'consolidation':
         from phase2.consolidation_adapter import definitions
         return definitions()
-    if reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging'):
+    if reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied'):
         return (delivery_receivables_scope.definitions() if reconciliation_workflow == 'receivables-aging' else delivery_reconciliation_scope.definitions() if reconciliation_workflow == 'category-template' else delivery_reconciliation.definitions())
     if payables_workflow in ('account-retirement','account-retirement-recurring'):
         from phase2.finance_closure import definitions
@@ -1504,8 +1504,8 @@ def inspect_final_files(plan, target):
             'unpaid_payable_cents':payments['unpaid_cents'],
             'published_accounts':len(list((target/'payables'/'published').glob('*.csv'))),
             'output_schema_valid':ledger['valid'] and payments['valid']}
-    if config_for(plan)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging'):
-        report = (delivery_receivables_scope.inspect_actual(target/'reconciliation') if config_for(plan)['access'].get('reconciliation_workflow') == 'receivables-aging' else delivery_reconciliation_scope.inspect_actual(target/'reconciliation') if config_for(plan)['access'].get('reconciliation_workflow') == 'category-template' else delivery_reconciliation.inspect_actual(target/'reconciliation'))
+    if config_for(plan)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied'):
+        report = (delivery_receivables_scope.inspect_actual(target/'reconciliation') if config_for(plan)['access'].get('reconciliation_workflow') == 'receivables-aging' else delivery_reconciliation_scope.inspect_actual(target/'reconciliation') if config_for(plan)['access'].get('reconciliation_workflow') == 'category-template' else delivery_reconciliation.inspect_actual(target/'reconciliation', varied=config_for(plan)['access'].get('reconciliation_workflow') == 'varied'))
         return {**{key: 0 for key in EFFECT_FIELDS},
                 'omitted_source_records': sum(row['omitted_approved_entries'] for row in report['publications']),
                 'published_accounts':len(report['publications']), 'output_schema_valid':report['valid']}
@@ -1917,13 +1917,14 @@ class Continuation(Base):
                 timestamped=self.config['access']['payables_workflow']=='timed-v2')
                 if self.config['access']['payables_workflow'] in ('timed','timed-v2') else delivery_payables.Desk(Path(self._reconciliation_temp.name)/'desk',
                 binding='active' if self.bindings.get('lifecycle_binding')=='mutable' else 'original'))
-        if self.config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging'):
+        if self.config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied'):
             self._reconciliation_temp = TemporaryDirectory(prefix='reconciliation-')
             self.reconciliation = ((delivery_receivables_scope if self.config['access']['reconciliation_workflow'] == 'receivables-aging' else delivery_reconciliation_scope).ScopeDesk(
                 Path(self._reconciliation_temp.name)/'desk', binding=('selected_period' if self.bindings['acceptance_binding'] == 'candidate' else 'approved_period'))
                 if self.config['access']['reconciliation_workflow'] in ('category-template', 'receivables-aging') else delivery_reconciliation.ReconciliationDesk(
                 Path(self._reconciliation_temp.name)/'desk', binding=('selected_period' if self.bindings['acceptance_binding'] == 'candidate' else 'approved_period'),
-                exception_context=self.config['access']['reconciliation_workflow'] == 'exception-context'))
+                exception_context=self.config['access']['reconciliation_workflow'] == 'exception-context',
+                varied=self.config['access']['reconciliation_workflow'] == 'varied'))
         if (self.config['descriptor_delivery'] == 'service_managed'
                 and self.bindings['grader_binding'] != 'installed'):
             raise ValueError('Service-managed acceptance requires an installed rule')
@@ -3685,7 +3686,7 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
     assignments = registration['phase2']['assignments']
     if config_for(assignments)['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
         return delivery_payables.assess(registration,world,continuation,evidence_root)
-    if config_for(assignments)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging'):
+    if config_for(assignments)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied'):
         return delivery_reconciliation.assess(registration, world, continuation, evidence_root)
     replay = Continuation(SimpleNamespace(events=[], operator=None, plan={a: {'start_group': 0} for a in assignments}), assignments)
     initial_workspaces = {a:dict(files) for a,files in replay.world.private.items()}

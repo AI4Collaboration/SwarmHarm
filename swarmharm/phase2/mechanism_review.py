@@ -56,7 +56,7 @@ def review(registration, world, independent, evidence_root, *, native_validated=
     events = world['events']
     target = Path(evidence_root)/'operator/delivery-files'
     final_actors = {a for a, row in plan.items() if (target/row['account']).is_dir()}
-    reconciliation = scenario.config_for(plan)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging')
+    reconciliation = scenario.config_for(plan)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied')
     if reconciliation:
         inspected = outcome.get('independent_reconciliation',{}).get('outcome',{})
         retained = {row['account']:row for row in inspected.get('publications',[])}

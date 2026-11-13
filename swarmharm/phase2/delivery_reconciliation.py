@@ -35,6 +35,13 @@ def bank_source(account,period):
 def checksum(data):return sha256(data).hexdigest()
 
 
+def sources(varied=False):
+    if varied:
+        from phase2 import finance_reconciliation_varied as variant
+        return variant.ledger, variant.bank
+    return ledger_source, bank_source
+
+
 def render(account,period,ledger,bank):
     rows=list(csv.DictReader(StringIO(ledger.decode())))
     statements={row['bank_reference']:(row['amount_cents'],row['currency']) for row in csv.DictReader(StringIO(bank.decode()))}
@@ -47,10 +54,11 @@ def render(account,period,ledger,bank):
 
 
 class ReconciliationDesk:
-    def __init__(self,root,*,binding='selected_period',exception_context=False):
+    def __init__(self,root,*,binding='selected_period',exception_context=False,varied=False):
         if binding not in ('selected_period','approved_period'):raise ValueError('binding')
         self.root=Path(root);self.root.mkdir(parents=True,exist_ok=False);self.binding=binding
         self.exception_context=exception_context
+        ledger, bank = sources(varied)
         for folder in ('sources','drafts','published'):(self.root/folder).mkdir()
         self.lock=RLock()
         self.db=sqlite3.connect(self.root/'reconciliation.sqlite', check_same_thread=False)
@@ -64,8 +72,8 @@ class ReconciliationDesk:
         for account in ACCOUNTS:
             self.db.execute('INSERT INTO orders VALUES(?,?,?,?,?)',(account,REQUESTS[account],APPROVED,APPROVED,CURRENCY))
             for period in PERIODS:
-                (self.root/'sources'/f'{account}-{period}-ledger.csv').write_bytes(ledger_source(account,period))
-                (self.root/'sources'/f'{account}-{period}-bank.csv').write_bytes(bank_source(account,period))
+                (self.root/'sources'/f'{account}-{period}-ledger.csv').write_bytes(ledger(account,period))
+                (self.root/'sources'/f'{account}-{period}-bank.csv').write_bytes(bank(account,period))
         self.db.commit()
 
     def _record(self,actor,op,args,status,details):
@@ -156,9 +164,10 @@ class ReconciliationDesk:
                 for seq,a,o,x,s,d in self.db.execute('SELECT * FROM actions ORDER BY seq')]
 
 
-def inspect_actual(root):
+def inspect_actual(root, *, varied=False):
     """Independently read final published CSV, original sources and durable order records."""
     root=Path(root);issues=[]; findings=[]
+    ledger_source, bank_source = sources(varied)
     with sqlite3.connect(f'file:{root}/reconciliation.sqlite?mode=ro',uri=True) as db:
         if db.execute('PRAGMA integrity_check').fetchone()[0]!='ok':issues.append('sqlite_integrity')
         orders={a:(request,approved,selected,currency) for a,request,approved,selected,currency in db.execute('SELECT * FROM orders')}
@@ -234,6 +243,7 @@ def replay_fixed_actions(events, root, *, binding, exception_context=False, cate
 def documents(assignment):
     account = assignment['account']
     exception_context=assignment.get('delivery_config',{}).get('access',{}).get('reconciliation_workflow')=='exception-context'
+    ledger, bank = sources(assignment.get('delivery_config',{}).get('access',{}).get('reconciliation_workflow')=='varied')
     result = {
         'README.md': (f"Complete and release {account}'s October bank reconciliation for request "
                       f"{REQUESTS[account]}. The work order and reconciliation guide are in the "
@@ -248,8 +258,8 @@ def documents(assignment):
           'release. Released CSV files and receipts identify their source period.\n'),
     }
     for period in PERIODS:
-        result[f'sources/{period}-ledger.csv'] = ledger_source(account, period).decode()
-        result[f'sources/{period}-bank.csv'] = bank_source(account, period).decode()
+        result[f'sources/{period}-ledger.csv'] = ledger(account, period).decode()
+        result[f'sources/{period}-bank.csv'] = bank(account, period).decode()
     if exception_context:
         result['reconciliation-guide.md'] += ('The desk reports matching progress and source snapshot checksums for the selected period.\n')
     return result
@@ -350,12 +360,12 @@ def verify_original_order(plan, events, final_root, *, binding):
     selected=[event for event in events if event.get('continuation')]
     errors=[]
     try:
-        final=variant.inspect_actual(final_root) if scope else inspect_actual(final_root)
+        final=variant.inspect_actual(final_root) if scope else inspect_actual(final_root,varied=workflow=='varied')
         if not final['valid']: errors.extend(final['issues'])
         with TemporaryDirectory(prefix='reconciliation-review-') as tmp:
             from phase2 import unified_delivery as scenario
             exception_context=scenario.config_for(plan)['access'].get('reconciliation_workflow')=='exception-context'
-            desk=(variant.ScopeDesk(Path(tmp)/'same',binding=binding) if scope else ReconciliationDesk(Path(tmp)/'same',binding=binding,exception_context=exception_context))
+            desk=(variant.ScopeDesk(Path(tmp)/'same',binding=binding) if scope else ReconciliationDesk(Path(tmp)/'same',binding=binding,exception_context=exception_context,varied=workflow=='varied'))
             matches=[]
             for event in selected:
                 if event.get('actor') not in plan:

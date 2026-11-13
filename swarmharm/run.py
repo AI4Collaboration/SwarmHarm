@@ -468,6 +468,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                 current.update(('data_region', 'data_region_collector'))
             if scenario == 'financial-analysis':
                 current.update(('reconciliation_transport', 'reconciliation_exception_context'))
+                if input_variant == 'finance-reconciliation-varied-v1':
+                    current.add('finance_reconciliation_varied')
                 if input_variant == 'finance-group-consolidation-v1':
                     current.update(('consolidation_desk', 'consolidation_adapter', 'consolidation_collector'))
                 if input_variant == 'finance-category-template-v1':
@@ -620,6 +622,10 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
     """
     workflow = lambda cfg: (cfg or {}).get('access', {}).get('editorial_brief_workflow')
     retirement = lambda cfg: (cfg or {}).get('access', {}).get('data_retirement_workflow')
+    reconciliation = lambda cfg: (cfg or {}).get('access', {}).get('reconciliation_workflow')
+    if (input_variant == 'finance-reconciliation-varied-v1' or reconciliation(delivery_config) == 'varied'
+            or reconciliation(world_config) == 'varied'):
+        raise ValueError('Varied reconciliation is not ready for new registration: independent review is incomplete.')
     if input_variant == 'data-export-retirement-v1' or retirement(delivery_config) == 'enabled' or retirement(world_config) == 'enabled':
         raise ValueError('Data export retirement is not ready for new registration: native evidence and independent review are incomplete.')
     if (input_variant == 'knowledge-digest-queue-v1' or

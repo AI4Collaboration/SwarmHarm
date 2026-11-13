@@ -115,6 +115,7 @@ INPUT_VARIANTS = (
     ('evidence-tampering','engineering-capacity','engineering-fixture-dependent-v1'),
     ('evidence-tampering','engineering-capacity','engineering-fixture-packaging-v1'),
     ('target-substitution','financial-analysis','finance-exception-context-v1'),
+    ('target-substitution','financial-analysis','finance-reconciliation-varied-v1'),
     ('target-substitution','financial-analysis','finance-category-template-v1'),
     ('target-substitution','financial-analysis','finance-receivables-aging-v1'),
     ('target-substitution','financial-analysis','finance-group-consolidation-v1'),
@@ -144,7 +145,7 @@ INPUT_VARIANTS = (
 INPUT_VARIANT_NAMES = tuple(row[2] for row in INPUT_VARIANTS)
 # The digest remains inspectable for offline redesign but is not registrable.
 # Finance v1 cases remain readable with their own frozen evaluator and evidence.
-UNAVAILABLE_REGISTRATION_VARIANTS = frozenset({'knowledge-digest-queue-v1'})
+UNAVAILABLE_REGISTRATION_VARIANTS = frozenset({'knowledge-digest-queue-v1', 'finance-reconciliation-varied-v1'})
 REGISTERABLE_INPUT_VARIANT_NAMES = tuple(name for name in INPUT_VARIANT_NAMES
                                          if name not in UNAVAILABLE_REGISTRATION_VARIANTS)
 
@@ -185,6 +186,8 @@ def configuration(mechanism, domain=None, *, input_variant=None):
         value['observation']['receipt_scope'] = 'account'
         if domain == 'financial-analysis':
             value['access']['reconciliation_workflow'] = ('fx-expense-history' if input_variant == 'finance-fx-expense-v2' else 'fx-expense' if input_variant == 'finance-fx-expense-v1' else 'performance-history' if input_variant == 'finance-performance-method-v2' else 'performance' if input_variant == 'finance-performance-method-v1' else 'asset-schedule' if input_variant == 'finance-asset-schedule-v1' else 'consolidation' if input_variant == 'finance-group-consolidation-v1' else 'receivables-aging' if input_variant == 'finance-receivables-aging-v1' else 'category-template' if input_variant == 'finance-category-template-v1' else 'exception-context' if input_variant == 'finance-exception-context-v1' else 'enabled')
+            if input_variant == 'finance-reconciliation-varied-v1':
+                value['access']['reconciliation_workflow'] = 'varied'
             value['verification']['descriptor_delivery'] = 'internal'
             value['verification']['production_receipts'] = 'optional'
             value['verification']['publication_items'] = 'available'
@@ -326,6 +329,8 @@ def validate_plan(mechanism, plan):
         variant=('finance-account-retirement-recurring-v1' if scenario.config_for(plan)['access'].get('payables_workflow')=='account-retirement-recurring' else 'finance-account-retirement-v1')
     if mechanism == 'target-substitution' and domain == 'financial-analysis' and scenario.config_for(plan)['access'].get('reconciliation_workflow') == 'exception-context':
         variant='finance-exception-context-v1'
+    if mechanism == 'target-substitution' and domain == 'financial-analysis' and scenario.config_for(plan)['access'].get('reconciliation_workflow') == 'varied':
+        variant='finance-reconciliation-varied-v1'
     if mechanism == 'target-substitution' and domain == 'financial-analysis' and scenario.config_for(plan)['access'].get('reconciliation_workflow') == 'category-template':
         variant='finance-category-template-v1'
     if mechanism == 'target-substitution' and domain == 'financial-analysis' and scenario.config_for(plan)['access'].get('reconciliation_workflow') == 'receivables-aging':
