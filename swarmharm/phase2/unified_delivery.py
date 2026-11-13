@@ -822,7 +822,6 @@ def shared_directories(plan):
 
 def truth_for(plan):
     if data_region_workflow(next(iter(plan.values()))):
-        from hashlib import sha256
         from phase2.data_region import PERIOD, INITIAL_DIMENSION, source_csv, digest as region_digest
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
             'dimension_sha256':region_digest(INITIAL_DIMENSION),
