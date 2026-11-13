@@ -81,7 +81,7 @@ CONFIG_SCHEMA = {
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'engineering']},
             'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'receipt-defined', 'receipt-defined-visible']},
-            'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied']},
+            'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled']},
             'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2']},
@@ -203,12 +203,12 @@ def build_record_workflow(assignment):
 
 
 def activity_report_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') in ('enabled','progressive','progressive-varied')
+    return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') in ('enabled','progressive','progressive-varied','progressive-varied-context')
 
 
 def activity_report_progressive(assignment):
     workflow=assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow')
-    return 'varied' if workflow == 'progressive-varied' else workflow == 'progressive'
+    return {'progressive-varied':'varied','progressive-varied-context':'varied-context'}.get(workflow, workflow == 'progressive')
 
 
 def editorial_brief_workflow(assignment):

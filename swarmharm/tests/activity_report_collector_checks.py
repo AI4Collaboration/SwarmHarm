@@ -91,3 +91,6 @@ class Checks(unittest.TestCase):
 
     def test_varied_variant_uses_native_replay(self):
         self.run_collector(False,input_variant='data-progressive-varied-v2')
+
+    def test_context_variant_uses_native_replay(self):
+        self.run_collector(False,input_variant='data-progressive-context-v3')

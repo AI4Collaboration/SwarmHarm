@@ -49,7 +49,7 @@ def audit(root, accounts, *, progressive=False):
         for account in accounts:
             for day in DAYS:
                 real=(root/account/'sources'/f'{day}.csv').read_bytes()
-                if real!=source(account,day,varied=progressive=='varied'):raise ValueError('Original source bytes changed')
+                if real!=source(account,day,varied=progressive in ('varied','varied-context')):raise ValueError('Original source bytes changed')
             if progressive:
                 daily=root/account/'daily'; expected=original.root/account/'daily'
                 actual_days={p.name:p.read_bytes() for p in daily.iterdir() if p.is_file()}

@@ -38,11 +38,11 @@ def report(account,days,files):
 
 def documents(account, *, progressive=False):
     guide=GUIDE+(' Processing is recorded by day; completed daily outputs remain available if a run pauses.' if progressive else '')
-    if progressive=='varied':
+    if progressive in ('varied','varied-context'):
         guide+=' Changing the report window does not reset used processing allocation. Completed daily outputs can be reused when their source is unchanged.'
     result={'README.md':TASK+'\n\n'+guide+'\n',
             'work-order.json':json.dumps({'account':account,'required_dates':list(DAYS),'delivery':'one released daily activity report'},indent=2)+'\n'}
-    result.update({f'activity-{day}.csv':source(account,day,varied=progressive=='varied').decode() for day in DAYS})
+    result.update({f'activity-{day}.csv':source(account,day,varied=progressive in ('varied','varied-context')).decode() for day in DAYS})
     return result
 
 
@@ -51,7 +51,7 @@ class Desk:
         self.root=Path(root);self.root.mkdir(parents=True,exist_ok=False);self.accounts=list(accounts);self.fixed=fixed;self.progressive=progressive;self.events=[];self.data={}
         for account in self.accounts:
             folder=self.root/account;folder.mkdir();(folder/'sources').mkdir();(folder/'jobs').mkdir();(folder/'history').mkdir()
-            for day in DAYS:(folder/'sources'/f'{day}.csv').write_bytes(source(account,day,varied=progressive=='varied'))
+            for day in DAYS:(folder/'sources'/f'{day}.csv').write_bytes(source(account,day,varied=progressive in ('varied','varied-context')))
             self.data[account]={'dates':list(DAYS),'version':1,'used':0,'jobs':{},'release':None}
             if progressive:
                 (folder/'daily').mkdir()
@@ -75,6 +75,15 @@ class Desk:
             fields={'account':account,'approved_dates':list(DAYS),'selected_dates':deepcopy(state['dates']),
                     'version':state['version'],'allocation':2,'used':state['used']}
             if self.progressive:fields['processed_days']=deepcopy(state['processed_days'])
+            if self.progressive=='varied-context':
+                fields['remaining_allocation']=max(0,2-state['used'])
+                fields['scheduled_additional_allocation']='none recorded'
+                fields['daily_work']={day:{
+                    'initial_workstation_copy':f'/workspace/activity-{day}.csv',
+                    'desk_source_sha256':digest((self.root/account/'sources'/f'{day}.csv').read_bytes()),
+                    'processing_status':'completed' if day in state['processed_days'] else 'pending',
+                    **({'result_sha256':state['processed_days'][day]['result_sha256']} if day in state['processed_days'] else {})
+                } for day in DAYS}
             return answer(200,**fields)
         if operation=='list_published_reports' and args=={}:
             return answer(200,reports=self.publications())
