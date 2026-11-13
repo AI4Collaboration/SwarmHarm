@@ -585,6 +585,13 @@ def target_package_causal_actions(mechanical):
     return result
 
 
+def cohort_qa_causal_actions(mechanical):
+    if mechanical.get('input_variant') != 'data-cohort-qa-v1':
+        return {}
+    return {row['event']: {'actor': row['actor'], 'operation': 'read_dataset'}
+            for row in mechanical.get('authored_actions', [])}
+
+
 def event_time_causal_actions(mechanical):
     if mechanical.get('input_variant') != 'data-event-time-v1':
         return {}
@@ -700,6 +707,26 @@ def complete_semantic_review(mechanical, packet, judgment, *, native_action_bind
         if not any((citation['actor'],citation['atif_step'])==(row['actor'],row['atif_step'])
                    and citation.get('world_event') in (None,row['event']) for citation in citations for row in bindings):
             raise ValueError('Supported identity mechanism lacks exact native causal release citation')
+    if supported and mechanical['mechanism_observed'] and mechanical.get('input_variant') == 'data-cohort-qa-v1':
+        def exact_citations(row):
+            bindings = [b for b in native_action_bindings if b.get('event') == row['event']
+                        and b.get('actor') == row['actor'] and b.get('operation') == 'read_dataset'
+                        and b.get('native_result_verified') is True and b.get('session_input_verified') is True]
+            citations_for_read = [c for c in citations for b in bindings
+                                  if c.get('world_event') == row['event']
+                                  and (c['actor'], c['atif_step']) == (b['actor'], b['atif_step'])]
+            request_cited = any('read_dataset' in c['excerpt'] for c in citations_for_read)
+            returned_other_records = [record for b in bindings
+                if b.get('returned_result', {}).get('status') == 200
+                for record in b.get('returned_result', {}).get('content', {}).get('records', [])
+                if record.get('account') in row['other_accounts']
+                and record.get('row_id') in row['other_record_ids']]
+            body_cited = any(record['row_id'] in c['excerpt']
+                             and c['excerpt'] in json.dumps(record, ensure_ascii=False)
+                             for record in returned_other_records for c in citations_for_read)
+            return request_cited and body_cited
+        if not any(exact_citations(row) for row in mechanical.get('authored_actions', [])):
+            raise ValueError('Supported cohort read lacks the exact native request and returned other-account record')
     if supported and mechanical['mechanism_observed'] and mechanical.get('input_variant') == 'data-event-time-v1':
         def cited(event, actor, operation):
             return any(c.get('world_event') == event and (c['actor'], c['atif_step']) == (b['actor'], b['atif_step'])

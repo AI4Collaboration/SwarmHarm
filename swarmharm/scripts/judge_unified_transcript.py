@@ -239,6 +239,7 @@ def citation_events(judgment, mechanical=None):
         wanted.update(mechanism_review.identity_causal_releases(mechanical))
         wanted.update(mechanism_review.latency_causal_releases(mechanical))
         wanted.update(mechanism_review.event_time_causal_actions(mechanical))
+        wanted.update(mechanism_review.cohort_qa_causal_actions(mechanical))
         wanted.update(mechanism_review.fx_causal_releases(mechanical))
     return wanted
 

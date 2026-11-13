@@ -443,6 +443,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             current.update(('engineering_quality_gate', 'engineering_quality_gate_collector'))
         if input_variant == 'engineering-target-package-v1':
             current.update(('engineering_target_package_candidate','engineering_target_package_collector'))
+        if input_variant == 'data-cohort-qa-v1':
+            current.update(('data_cohort_qa_candidate', 'data_cohort_qa_step', 'data_cohort_qa_collector'))
         if mechanism == 'target-substitution':
             if input_variant == 'data-event-time-v1':
                 current.update(('data_event_time', 'data_event_time_collector'))
@@ -576,7 +578,7 @@ NETWORK_CHECK_MODULES = frozenset({
     'activity_report_collector', 'build_record_collector', 'business_notification', 'data_retirement_collector',
     'engineering_quality_gate_collector', 'engineering_target_package_collector', 'finance_reconciliation_varied',
     'collector', 'continuous_collect', 'continuous_reporting', 'data_scheduled_consumer_transport', 'knowledge_scheduled_consumer_transport', 'editorial_brief_collector',
-    'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector', 'data_identity_collector', 'data_latency_collector', 'data_event_time_collector',
+    'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector', 'data_identity_collector', 'data_latency_collector', 'data_event_time_collector', 'data_cohort_qa_collector',
     'finance_payables_transport', 'finance_fx_history_collector', 'finance_fx_collector', 'finance_performance_history_collector', 'finance_performance_collector', 'native_harness', 'pi_collect', 'query_gateway',
     'reconciliation_category_transport', 'reconciliation_exception_context', 'reconciliation_transport',
     'short_notification_reads', 'swarmform_runtime', 'unified_delivery', 'unified_runtime',
@@ -626,6 +628,9 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
     """
     workflow = lambda cfg: (cfg or {}).get('access', {}).get('editorial_brief_workflow')
     retirement = lambda cfg: (cfg or {}).get('access', {}).get('data_retirement_workflow')
+    activity = lambda cfg: (cfg or {}).get('access', {}).get('activity_report_workflow')
+    if (activity(delivery_config) == 'cohort-qa' or activity(world_config) == 'cohort-qa') and input_variant != 'data-cohort-qa-v1':
+        raise ValueError('Group cohort review requires its declared mechanism input variant.')
     if input_variant == 'data-export-retirement-v1' or retirement(delivery_config) == 'enabled' or retirement(world_config) == 'enabled':
         raise ValueError('Data export retirement is not ready for new registration: native evidence and independent review are incomplete.')
     if (input_variant == 'knowledge-digest-queue-v1' or
@@ -945,6 +950,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'data_identity_workflow': unified_delivery.data_identity_workflow(phase2_plan[actor]),
                 'data_latency_workflow': unified_delivery.data_latency_workflow(phase2_plan[actor]),
                 'data_event_time_workflow': unified_delivery.data_event_time_workflow(phase2_plan[actor]),
+                'data_cohort_qa_workflow': unified_delivery.data_cohort_qa_workflow(phase2_plan[actor]),
                 'data_retirement_workflow': unified_delivery.data_retirement_workflow(phase2_plan[actor]),
                 'data_retirement_handoff': unified_delivery.config_for(phase2_plan)['access'].get('data_retirement_workflow')=='handoff',
                 'knowledge_digest_workflow': unified_delivery.knowledge_digest_workflow(phase2_plan[actor]),
@@ -1921,7 +1927,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     unified_delivery.world_config.verify_input_contract(
         reg['phase2']['assignments'], reg['phase2'].get('unified_input_contract'))
     from phase2 import delivery_paths
-    if unified_delivery.data_event_time_workflow(next(iter(reg['phase2']['assignments'].values()))):
+    if unified_delivery.data_cohort_qa_workflow(next(iter(reg['phase2']['assignments'].values()))):
+        from phase2.data_cohort_qa_candidate import validate
+        path_validation = validate(reg['phase2']['assignments'])
+    elif unified_delivery.data_event_time_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.data_event_time import validate
         path_validation = validate(reg['phase2']['assignments'])
     elif unified_delivery.data_latency_workflow(next(iter(reg['phase2']['assignments'].values()))):
@@ -2091,6 +2100,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         elif unified_delivery.editorial_brief_workflow(next(iter(extension_plan.values()))):
             from phase2.editorial_brief.unified_bridge import UnifiedEditorialBridge
             extension=UnifiedEditorialBridge.from_plan(world,extension_plan,reg['component_initial_state'])
+        elif unified_delivery.data_cohort_qa_workflow(next(iter(extension_plan.values()))):
+            from phase2.data_cohort_qa_bridge import UnifiedCohortBridge
+            extension = UnifiedCohortBridge.from_plan(world, extension_plan, reg['component_initial_state'])
         elif unified_delivery.data_event_time_workflow(next(iter(extension_plan.values()))):
             from phase2.data_event_time_bridge import UnifiedEventTimeBridge
             extension = UnifiedEventTimeBridge.from_plan(world, extension_plan, reg['component_initial_state'])
@@ -2129,6 +2141,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'data_identity_workflow': unified_delivery.data_identity_workflow(next(iter(extension.plan.values()))),
                 'data_latency_workflow': unified_delivery.data_latency_workflow(next(iter(extension.plan.values()))),
                 'data_event_time_workflow': unified_delivery.data_event_time_workflow(next(iter(extension.plan.values()))),
+                'data_cohort_qa_workflow': unified_delivery.data_cohort_qa_workflow(next(iter(extension.plan.values()))),
                 'data_retirement_workflow': unified_delivery.data_retirement_workflow(next(iter(extension.plan.values()))),
                 'data_retirement_handoff': unified_delivery.config_for(extension.plan)['access'].get('data_retirement_workflow')=='handoff',
                 'knowledge_digest_workflow': unified_delivery.knowledge_digest_workflow(next(iter(extension.plan.values()))),

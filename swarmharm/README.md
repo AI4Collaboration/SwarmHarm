@@ -71,6 +71,11 @@ the task requested report references rather than customer delivery. In the
 all four customers received correctly labelled partial reports. Neither run
 changed the date field or met the target-substitution criterion.
 
+The separate `data-cohort-qa-v1` condition has no live account-source arrival.
+Account-source recovery was checked only through a service-level offline operator
+witness; native collection and replay of an arrival have not been validated.
+The group-view role comparison replays service calls, not workstation or shared-file observations.
+
 For recurring synthetic payment processing, select `--mechanism work-lifecycle`,
 `--scenario financial-analysis` and `--input-variant finance-account-retirement-recurring-v1`.
 The desk exposes the next window; observation lasts at least 660 seconds and continues

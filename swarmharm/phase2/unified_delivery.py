@@ -82,7 +82,7 @@ CONFIG_SCHEMA = {
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions']},
             'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'target-package', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'localization', 'quality-gate']},
-            'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor', 'region-dimension', 'identity-metric', 'latency-p95', 'event-time']},
+            'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor', 'region-dimension', 'identity-metric', 'latency-p95', 'event-time', 'cohort-qa']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context', 'digest-queue']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied', 'consolidation', 'asset-schedule', 'performance', 'performance-history', 'fx-expense', 'fx-expense-history']},
             'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring']},
@@ -252,6 +252,10 @@ def data_identity_workflow(assignment):
     return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') == 'identity-metric'
 
 
+def data_cohort_qa_workflow(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') == 'cohort-qa'
+
+
 def data_event_time_workflow(assignment):
     return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') == 'event-time'
 
@@ -364,6 +368,9 @@ def world_for(plan):
 
 
 def task(assignment):
+    if data_cohort_qa_workflow(assignment):
+        from phase2.data_cohort_qa_candidate import documents
+        return documents(assignment['account'])['README.md'].split('\n', 1)[0]
     if data_event_time_workflow(assignment):
         from phase2.data_event_time import documents
         return documents(assignment['account'])['README.md'].split('\n', 1)[0]
@@ -465,7 +472,7 @@ def communication_channel(assignment):
 
 
 def communication_start(plan):
-    if (data_event_time_workflow(next(iter(plan.values()))) or data_latency_workflow(next(iter(plan.values()))) or localization_workflow(next(iter(plan.values()))) or knowledge_digest_workflow(next(iter(plan.values()))) or editorial_brief_workflow(next(iter(plan.values()))) or activity_report_workflow(next(iter(plan.values()))) or build_record_workflow(next(iter(plan.values())))):
+    if (data_cohort_qa_workflow(next(iter(plan.values()))) or data_event_time_workflow(next(iter(plan.values()))) or data_latency_workflow(next(iter(plan.values()))) or localization_workflow(next(iter(plan.values()))) or knowledge_digest_workflow(next(iter(plan.values()))) or editorial_brief_workflow(next(iter(plan.values()))) or activity_report_workflow(next(iter(plan.values()))) or build_record_workflow(next(iter(plan.values())))):
         return {'condition': 'unannounced_participants', 'carrier': shared_directories(plan)[0],
                 'peer_roster_supplied': False, 'dedicated_communication_tools': False,
                 'supplied_messages': [], 'supplied_plans': []}
@@ -485,6 +492,9 @@ def communication_start(plan):
 
 
 def documents(assignment):
+    if data_cohort_qa_workflow(assignment):
+        from phase2.data_cohort_qa_candidate import documents as cohort_documents
+        return cohort_documents(assignment['account'])
     if data_event_time_workflow(assignment):
         from phase2.data_event_time import documents as event_documents
         return event_documents(assignment['account'])
@@ -942,6 +952,14 @@ def shared_directories(plan):
 
 
 def truth_for(plan):
+    if data_cohort_qa_workflow(next(iter(plan.values()))):
+        from phase2.data_cohort_qa_candidate import sources, original_order, materialize_qa, authority_policy, encode, digest as data_digest
+        return {'revision': REVISION, 'bindings': bindings_for(plan), 'configuration': config_for(plan),
+                'accounts': {actor: {'account': row['account'], 'order': original_order(row['account']),
+                                     'source_sha256': {key: data_digest(value.encode()) for key, value in sources(row['account']).items()}}
+                             for actor, row in plan.items()}, 'qa_snapshot_sha256': data_digest(encode(materialize_qa())),
+                'authority_policy': authority_policy(),
+                'scope': 'synthetic account-authenticated group dataset; no automatic source arrival'}
     if data_event_time_workflow(next(iter(plan.values()))):
         from phase2.data_event_time import source_bytes, source_status, work_order, digest
         return {'revision': REVISION, 'bindings': bindings_for(plan), 'configuration': config_for(plan),
@@ -1114,6 +1132,14 @@ def _engineering_consumer_calendar():
 
 
 def initial_state(plan):
+    if data_cohort_qa_workflow(next(iter(plan.values()))):
+        return {'origin': 'prepared_business_records', 'study_track': 'continuous_unified',
+                'assignments': deepcopy(plan), 'files_sha256': digest(initial_files(plan)),
+                'communication_start': communication_start(plan), 'shared_directories': shared_directories(plan),
+                'enforce_role': False, 'live_account_source_arrivals': False,
+                'supplied_business_records': {'qa_snapshot': {'origin': 'synthetic source-backed group view',
+                    'scheduled_arrival': False, 'behavioral_evidence': False}},
+                'supplied_peer_messages': [], 'supplied_methods': []}
     if data_event_time_workflow(next(iter(plan.values()))):
         return {'origin': 'prepared_business_records', 'study_track': 'continuous_unified',
                 'assignments': deepcopy(plan), 'files_sha256': digest(initial_files(plan)),
@@ -1275,10 +1301,10 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      retention_store='disabled',
                      report_upload='enabled', publication_items='available',
                      build_record_workflow=False, build_target_workflow=False, build_target_clarify_selection=False, build_target_product=False, reconciliation_workflow='disabled',
-                     activity_report_workflow=False, activity_shared_template=False, data_region_workflow=False, data_identity_workflow=False, data_latency_workflow=False, data_event_time_workflow=False, data_retirement_workflow=False, data_retirement_handoff=False, knowledge_digest_workflow=False, payables_workflow='disabled', editorial_brief_workflow=False,
+                     activity_report_workflow=False, activity_shared_template=False, data_region_workflow=False, data_identity_workflow=False, data_latency_workflow=False, data_event_time_workflow=False, data_cohort_qa_workflow=False, data_retirement_workflow=False, data_retirement_handoff=False, knowledge_digest_workflow=False, payables_workflow='disabled', editorial_brief_workflow=False,
                      editorial_intake_archive=False, editorial_publication_index=False, editorial_review_queue=False, **kwargs):
     if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied', 'consolidation', 'asset-schedule', 'performance', 'performance-history', 'fx-expense', 'fx-expense-history'),
-            bool(activity_report_workflow), bool(data_region_workflow), bool(data_identity_workflow), bool(data_latency_workflow), bool(data_event_time_workflow), bool(data_retirement_workflow), bool(knowledge_digest_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring'), bool(editorial_brief_workflow))) > 1:
+            bool(activity_report_workflow), bool(data_region_workflow), bool(data_identity_workflow), bool(data_latency_workflow), bool(data_event_time_workflow), bool(data_cohort_qa_workflow), bool(data_retirement_workflow), bool(knowledge_digest_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring'), bool(editorial_brief_workflow))) > 1:
         raise ValueError('Choose one business workflow')
     if data_retirement_workflow:
         from phase2.data_retirement import definitions
@@ -1286,6 +1312,9 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
     if knowledge_digest_workflow:
         from phase2.knowledge_digest_queue import definitions
         return definitions()
+    if data_cohort_qa_workflow:
+        from phase2.data_cohort_qa_bridge import tools
+        return tools()
     if data_event_time_workflow:
         from phase2.data_event_time_bridge import tools
         return tools()
@@ -3512,7 +3541,10 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             reg['phase2']['communication_condition'] = 'ordinary_work_files'
             reg['input_contract']['supplied_message_schema'] = False
         reg['phase2']['independent_outcome'] += '; exact authored-note exposure and read-then-reply reconstruction'
-    if data_event_time_workflow(next(iter(assignments.values()))):
+    if data_cohort_qa_workflow(next(iter(assignments.values()))):
+        from phase2.data_cohort_qa_candidate import validate
+        reg['phase2']['path_validation'] = validate(assignments)
+    elif data_event_time_workflow(next(iter(assignments.values()))):
         from phase2.data_event_time import validate
         reg['phase2']['path_validation'] = validate(assignments)
     elif data_latency_workflow(next(iter(assignments.values()))):
