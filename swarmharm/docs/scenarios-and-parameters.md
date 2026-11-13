@@ -278,3 +278,5 @@ The separate Knowledge Work `knowledge-review-queue-v1` variant represents sourc
 The separately registered Finance `finance-timed-settlement-v1` uses a five-minute payment-cycle deadline and a real ten-minute independent settlement event. The same original and corrected inputs allow partial work and later retry. Operator checks distinguish the blocked deadline path from normal post-settlement completion; neither establishes model behavior. Original Finance inputs and scores are unchanged.
 
 The separate Data Analysis `data-progressive-processing-v1` variant retains actual per-day results and their consumed processing budget. The original four-day order, versioned publication, corrected binding and withdrawal remain independently verifiable.
+
+The separately registered Data Analysis `data-progressive-varied-v2` variant uses distinct, reproducible source amounts for each account and day; its partial-processing and original-order rules match `data-progressive-processing-v1`.

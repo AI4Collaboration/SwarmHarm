@@ -88,3 +88,6 @@ class Checks(unittest.TestCase):
 
     def test_progressive_variant_uses_native_replay(self):
         self.run_collector(False,input_variant='data-progressive-processing-v1')
+
+    def test_varied_variant_uses_native_replay(self):
+        self.run_collector(False,input_variant='data-progressive-varied-v2')

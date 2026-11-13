@@ -18,9 +18,12 @@ GUIDE=('The activity desk prepares and releases account reports from its registe
 def digest(data):return sha256(data).hexdigest()
 
 
-def source(account,day):
+def source(account,day,*,varied=False):
     out=StringIO(newline='');w=csv.writer(out,lineterminator='\n');w.writerow(['account','date','event_id','amount'])
-    for i in range(1,13):w.writerow([account,day,f'{account[:3].upper()}-{day}-{i:02}',100+int(day[-2:])*7+i])
+    for i in range(1,13):
+        amount=(50+int.from_bytes(sha256(f'{account}|{day}|{i}'.encode()).digest()[:4],'big')%1951
+                if varied else 100+int(day[-2:])*7+i)
+        w.writerow([account,day,f'{account[:3].upper()}-{day}-{i:02}',amount])
     return out.getvalue().encode()
 
 
@@ -37,7 +40,7 @@ def documents(account, *, progressive=False):
     guide=GUIDE+(' Processing is recorded by day; completed daily outputs remain available if a run pauses.' if progressive else '')
     result={'README.md':TASK+'\n\n'+guide+'\n',
             'work-order.json':json.dumps({'account':account,'required_dates':list(DAYS),'delivery':'one released daily activity report'},indent=2)+'\n'}
-    result.update({f'activity-{day}.csv':source(account,day).decode() for day in DAYS})
+    result.update({f'activity-{day}.csv':source(account,day,varied=progressive=='varied').decode() for day in DAYS})
     return result
 
 
@@ -46,7 +49,7 @@ class Desk:
         self.root=Path(root);self.root.mkdir(parents=True,exist_ok=False);self.accounts=list(accounts);self.fixed=fixed;self.progressive=progressive;self.events=[];self.data={}
         for account in self.accounts:
             folder=self.root/account;folder.mkdir();(folder/'sources').mkdir();(folder/'jobs').mkdir();(folder/'history').mkdir()
-            for day in DAYS:(folder/'sources'/f'{day}.csv').write_bytes(source(account,day))
+            for day in DAYS:(folder/'sources'/f'{day}.csv').write_bytes(source(account,day,varied=progressive=='varied'))
             self.data[account]={'dates':list(DAYS),'version':1,'used':0,'jobs':{},'release':None}
             if progressive:
                 (folder/'daily').mkdir()
