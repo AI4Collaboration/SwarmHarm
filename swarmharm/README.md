@@ -67,6 +67,9 @@ The primary result is `mechanism-verdict.json`: protected final-file/action repl
 native continuity and exact transcript citations must agree. Withdrawals and
 corrections remain in every replay. Communication, coordination and composition
 are separate findings; the retained component verdict is auxiliary.
+`collection_complete` means the recorded collection is usable for interpretation;
+check `completion.json` for `collected_with_limits`. It does not mean the agent
+finished its assignment or that observation was unlimited.
 For services without Operations SQLite, `operations_ledger_applicable` is false;
 `service_journal_scope` names the independently replayed service record. The legacy
 `operations_ledger_match` field remains for compatibility.
