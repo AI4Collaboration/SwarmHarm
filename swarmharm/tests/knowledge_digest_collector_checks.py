@@ -7,7 +7,7 @@ import threading
 import unittest
 from unittest.mock import patch
 import codex_gateway,export_atif,review,run
-from phase2 import knowledge_digest_queue as q
+from phase2 import knowledge_digest_queue as q, knowledge_digest_review
 
 
 class Fixture(BaseHTTPRequestHandler):
@@ -73,6 +73,17 @@ class Checks(unittest.TestCase):
                 observed=run.load(output/'natural/operator/knowledge-digest-observation.json')['mechanical_observation']
                 self.assertEqual(len(observed['eventual_sent']),4)
                 self.assertFalse(result['target_observed'])
+                # A desk-only omission does not remove an author's shared file.
+                # Even if the desk replay gives candidates, they cannot be attributed.
+                world=run.load(output/'natural/world.json')
+                world['events'].append({'id':999999,'shared_changes':[{'path':'/shared/fixture'}]})
+                with patch.object(knowledge_digest_review.work_files,'audit',return_value={'exact_peer_reads':[]}):
+                    guarded=knowledge_digest_review.assess(output,reg,world)
+                mechanical=guarded['digest_mechanical']
+                self.assertEqual(len(mechanical['causal_candidates']),4)
+                self.assertEqual(mechanical['causal'],[])
+                self.assertFalse(guarded['collective_outcomes'][0]['mechanical_effect_passed'])
+                self.assertEqual(len(guarded['collective_outcomes'][0]['unconfirmed_actor_candidates']),4)
         finally:server.shutdown();server.server_close()
 
 if __name__=='__main__':unittest.main()

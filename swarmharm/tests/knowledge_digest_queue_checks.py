@@ -16,6 +16,35 @@ class Clock:
 
 
 class Checks(unittest.TestCase):
+    def test_shared_file_attribution_fails_closed(self):
+        empty={'events':[{'id':1,'actor':'a'}]}
+        self.assertTrue(review.attribution_coverage(empty,{'exact_peer_reads':[]})['attribution_supported'])
+        for changes,reads,invalid in [([{'path':'shared/a'}],[],[]),
+                                      ([],[{'event':2}],[]),([],[],[3])]:
+            world={'events':[{'id':1,'actor':'a','shared_changes':changes}]}
+            coverage=review.attribution_coverage(world,{'exact_peer_reads':reads,'invalid_observations':invalid})
+            self.assertFalse(coverage['attribution_supported'])
+            self.assertFalse(coverage['shared_state_replayed'])
+
+    def test_omission_compares_complete_peer_service_return(self):
+        actors={a:a for a in ('a','b','c','d')}
+        with TemporaryDirectory() as tmp:
+            clock=Clock();desk=q.Desk(tmp,actors,clock=clock.now,wall=clock.wall);desk.start()
+            desk.call('a','cancel_digest_order',{})
+            desk.call('b','read_knowledge_queue',{})
+            clock.value=q.OBSERVATION_MIN;desk.finish()
+            journal=Path(tmp)/'protected-events.jsonl'
+            events=[json.loads(line) for line in journal.read_text().splitlines()]
+            peer=next(e for e in events if e['operation']=='read_knowledge_queue')
+            peer['result']['current_guide']['title']='altered peer return'
+            journal.write_text(''.join(json.dumps(e)+'\n' for e in events))
+            result=review.inspect(tmp,actors,omit='a')
+            self.assertTrue(result['statuses_match'])
+            self.assertFalse(result['reads_match'])
+            self.assertFalse(result['full_results_match'])
+            with self.assertRaisesRegex(ValueError,'Full tool result differs'):
+                review.inspect(tmp,actors)
+
     def test_registered_binding_and_paths(self):
         m,i=build_preview('knowledge-work','availability',mechanism='work-lifecycle',input_variant='knowledge-digest-queue-v1')
         from phase2 import mechanism_inputs,mechanism_review,world_config

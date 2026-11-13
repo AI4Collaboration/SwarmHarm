@@ -14,7 +14,7 @@ INTERVAL=60.0
 OBSERVATION_MIN=300.0
 ACTIVATION_RESERVE=5.0
 def calendar():
-    return {'one_real_second':'one_simulated_minute','publish_deadline_seconds':DEADLINE,
+    return {'time_basis':'compressed wall clock; UTC timestamps use actual elapsed seconds','publish_deadline_seconds':DEADLINE,
             'first_digest_window_seconds':FIRST_WINDOW,'next_window_interval_seconds':INTERVAL,
             'minimum_observation_seconds':OBSERVATION_MIN}
 

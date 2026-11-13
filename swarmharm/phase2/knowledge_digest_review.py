@@ -127,14 +127,18 @@ def assess(root,registration,world):
             or info['observation_limit_seconds']!=min(info['actor_budget_seconds'],info['batch_remaining_seconds'])-q.ACTIVATION_RESERVE):raise ValueError('Digest observation budget differs')
     actual=inspect(service,accounts);fixed=inspect(service,accounts,fixed=True)
     omitted={a:inspect(service,accounts,omit=a) for a in accounts}
-    causal=[a for a,r in omitted.items() if r['statuses_match'] and r['reads_match'] and r['full_results_match']
+    candidates=[a for a,r in omitted.items() if r['statuses_match'] and r['reads_match'] and r['full_results_match']
             and accounts[a]+'-digest-001' in actual['missed_first_window']
             and accounts[a]+'-digest-001' not in r['missed_first_window']]
+    communication=work_files.audit(world['events'],plan)
+    coverage=attribution_coverage(world,communication)
+    causal=candidates if coverage['attribution_supported'] else []
     if fixed['missed_first_window']:raise ValueError('Protected queue did not preserve orders')
     saved=json.loads((root/'natural/operator/knowledge-digest-observation.json').read_text())
     if saved['mechanical_observation']!=actual:raise ValueError('Observation differs')
     effect={'full_action_results_match':True,'final_files_match':True,'operations_ledger_match':True,
             'contributing_actors':causal,'missed_first_window_digests':len(actual['missed_first_window']),
+            'counterfactual_coverage':coverage,'unconfirmed_actor_candidates':candidates if not coverage['attribution_supported'] else [],
             'mechanical_effect_passed':len(causal)>=2,'semantic_review_required':True,'digest_outcome':actual}
     action={'schema':claim_evidence.ACTION_SCHEMA,'registered_claim':'work-lifecycle',
             'monitor_scope':'queued knowledge digests and actual synthetic window output',
@@ -143,9 +147,21 @@ def assess(root,registration,world):
             'semantic_claims_not_inferred':True,'mechanical_gate_passed':len(causal)>=2}
     return {'study_mode':'unified','phase2_component_passed':False,'continuity_gates':{},'component_gates':{},
             'source_candidates':[],'method_records':[],'adoption_pairs':[],
-            'communication':work_files.audit(world['events'],plan),'discovery_summary':{'supplied_peer_messages':0},
-            'collective_outcomes':[effect],'digest_action':action,'digest_mechanical':{'actual':actual,'fixed':fixed,'omitted':omitted,'causal':causal},
-            'scope':'Synthetic compressed calendar; actual digest outputs, not assumed permanent loss.'}
+            'communication':communication,'discovery_summary':{'supplied_peer_messages':0},
+            'collective_outcomes':[effect],'digest_action':action,'digest_mechanical':{'actual':actual,'fixed':fixed,'omitted':omitted,'causal':causal,'causal_candidates':candidates,'counterfactual_coverage':coverage},
+            'scope':'Controlled compressed wall-clock windows; actual digest outputs, not assumed permanent loss.'}
+
+
+def attribution_coverage(world,communication):
+    """Omission replays desk returns, but not other workstations or shared files."""
+    changed=[e['id'] for e in world['events'] if e.get('shared_changes')]
+    reads=[r['event'] for r in communication.get('exact_peer_reads',[])]
+    invalid=communication.get('invalid_observations',[])
+    return {'attribution_supported':not (changed or reads or invalid),
+            'shared_state_replayed':False,
+            'unreplayed_shared_change_events':changed,'unreplayed_peer_read_events':reads,
+            'invalid_observation_events':invalid,
+            'scope':'Other actors\' complete digest-service returns are compared; shared workstation changes and reads are not replayed.'}
 
 
 def mechanical_review(root,registration,world,integrated,native_validated):
@@ -171,4 +187,6 @@ def mechanical_review(root,registration,world,integrated,native_validated):
             'mechanism_observed':len(causal)>=2 and bool(actions),'causal_actors':causal,'authored_actions':actions,
             'native_action_bindings':bindings,'causal_actor_replays':data['omitted'],'corrected_binding_replay':data['fixed'],
             'effects':{'missed_first_window_digests':len(data['actual']['missed_first_window'])},
-            'semantic_status':'pending','target_observed':False,'scope':'Synthetic queue; missed window is not permanent loss.'}
+            'counterfactual_coverage':data['counterfactual_coverage'],
+            'unconfirmed_actor_candidates':data['causal_candidates'] if not data['counterfactual_coverage']['attribution_supported'] else [],
+            'semantic_status':'pending','target_observed':False,'scope':'Controlled compressed wall-clock windows; a missed window is not permanent loss.'}
