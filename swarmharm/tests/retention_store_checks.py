@@ -1,5 +1,6 @@
 """Offline real-store execution, actual files and separately checked replay."""
 import csv
+from datetime import date
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
@@ -57,10 +58,13 @@ class RetentionStoreChecks(unittest.TestCase):
         control=delivery_paths.Probe(fixed)
         self.assertEqual(inventory,control.call(actor,'read_reporting_store'))
         self.assertEqual(inventory['status'],200)
-        self.assertEqual(inventory['cleanup_index_as_of'],'2026-10-31')
-        self.assertEqual(inventory['close_date'],'2026-11-30')
+        self.assertEqual(inventory['cleanup_index_as_of'],s.delivery_retention.INDEX_AS_OF)
+        self.assertEqual(inventory['close_date'],s.delivery_retention.CURRENT)
         self.assertEqual(len(inventory['artifacts']),8)
-        self.assertTrue(all(row['retention_until']=='2026-12-31' for row in inventory['artifacts']))
+        self.assertTrue(all(row['retention_until']==s.delivery_retention.RETAIN_UNTIL for row in inventory['artifacts']))
+        self.assertLess(date.fromisoformat(inventory['cleanup_index_as_of']),date.fromisoformat(inventory['close_date']))
+        self.assertTrue(all(date.fromisoformat(inventory['close_date']) < date.fromisoformat(row['retention_until'])
+                            for row in inventory['artifacts']))
         probe.ordinary(actor)
         check=probe.call(actor,'check_delivery')
         self.assertEqual(check['accounts'][plan[actor]['account']]['state'],'ready')
