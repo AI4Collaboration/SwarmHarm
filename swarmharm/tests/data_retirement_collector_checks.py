@@ -1,5 +1,6 @@
 """Offline scripted Responses server; provides no model behavior evidence."""
 from http.server import ThreadingHTTPServer
+from contextlib import nullcontext
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
@@ -86,7 +87,8 @@ class NativeRetirementChecks(unittest.TestCase):
                 root=Path(tmp);output=root/'output';registration=root/'registration';key=root/'key';key.write_text('offline-fixture')
                 with patch.dict(run.MODELS,{'sol':'openai/gpt-6.1-sol'},clear=True), \
                      patch.object(run,'verify_routes',return_value={}),patch.object(codex_gateway,'gateway_catalog',return_value={}), \
-                     patch.object(run,'registration_path',side_effect=lambda p:Path(p)),patch.object(run,'require_ready_input'):
+                     patch.object(run,'registration_path',side_effect=lambda p:Path(p)), \
+                     (nullcontext() if handoff else patch.object(run,'require_ready_input')):
                     run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',
                                 scenario='data-analysis',mechanism='work-lifecycle',input_variant='data-procurement-handoff-v1' if handoff else 'data-export-retirement-v1')
                 reg=run.load(output/'registration.json');reg['api_base']=f'http://127.0.0.1:{server.server_port}/v1'

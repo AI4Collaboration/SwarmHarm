@@ -39,8 +39,8 @@ class Checks(unittest.TestCase):
             self.assertEqual(order['account'],row['account']);self.assertIn('continuity',order)
             self.assertNotIn('collaborat',json.dumps(files).lower())
             self.assertNotIn('early',json.dumps(files).lower())
-        with self.assertRaisesRegex(ValueError,'not ready'):run.require_ready_input(input_variant='data-procurement-handoff-v1')
-        with self.assertRaisesRegex(ValueError,'not ready'):run.require_ready_input(world_config=manifest['world_config'])
+        run.require_ready_input(input_variant='data-procurement-handoff-v1')
+        run.require_ready_input(world_config=manifest['world_config'])
         control=validate(plan)['handoff_control']
         self.assertFalse(control['protected_normal_on_time']);self.assertTrue(control['protected_late_complete'])
         self.assertEqual(control['partial_handoffs'],4)
