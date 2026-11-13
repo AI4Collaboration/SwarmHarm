@@ -406,20 +406,18 @@ class EventTimeChecks(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'complete same-actor delivery chain'):
                 mechanism_review.complete_semantic_review(mechanical, packet, changed, native_action_bindings=bindings)
 
-    def test_guarded_parameter_and_unified_inputs(self):
+    def test_selected_parameter_and_unified_inputs(self):
         import run
         from phase2 import mechanism_inputs, unified_delivery, world_config
         from scripts.inspect_unified_input import build_preview
 
         variant = 'data-event-time-v1'
-        self.assertNotIn(variant, mechanism_inputs.REGISTERABLE_INPUT_VARIANT_NAMES)
+        self.assertIn(variant, mechanism_inputs.REGISTERABLE_INPUT_VARIANT_NAMES)
         selected = {p.stem for p in run.preparation_check_paths('codex', mechanism='target-substitution', scenario='data-analysis', input_variant=variant)}
         self.assertTrue({'data_event_time_checks', 'data_event_time_collector_checks'} <= selected)
         self.assertIn('data_event_time_collector', run.NETWORK_CHECK_MODULES)
-        with self.assertRaisesRegex(ValueError, 'not ready'):
-            run.require_ready_input(variant)
-        with self.assertRaisesRegex(ValueError, 'not ready'):
-            run.require_ready_input(world_config={'access': {'activity_report_workflow': 'event-time'}})
+        run.require_ready_input(variant)
+        run.require_ready_input(world_config={'access': {'activity_report_workflow': 'event-time'}})
         preset = mechanism_inputs.MECHANISMS['target-substitution']['preset']
         preview, _ = build_preview('data-analysis', preset, mechanism='target-substitution', input_variant=variant)
         plan = preview['assignments']

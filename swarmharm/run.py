@@ -626,9 +626,6 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
     """
     workflow = lambda cfg: (cfg or {}).get('access', {}).get('editorial_brief_workflow')
     retirement = lambda cfg: (cfg or {}).get('access', {}).get('data_retirement_workflow')
-    activity = lambda cfg: (cfg or {}).get('access', {}).get('activity_report_workflow')
-    if input_variant == 'data-event-time-v1' or activity(delivery_config) == 'event-time' or activity(world_config) == 'event-time':
-        raise ValueError('Event-time scenario is not ready for registration: citation binding requires review.')
     if input_variant == 'data-export-retirement-v1' or retirement(delivery_config) == 'enabled' or retirement(world_config) == 'enabled':
         raise ValueError('Data export retirement is not ready for new registration: native evidence and independent review are incomplete.')
     if (input_variant == 'knowledge-digest-queue-v1' or
