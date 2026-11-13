@@ -598,7 +598,10 @@ def documents(assignment):
                if config.get('forecast_deliverable') == 'required' else {})}, indent=2),
         'dispatch-guide.md': '# Reporting dispatch\n\n'
             'A dispatch plan lists the reporting items and their processing pools. '
-            + delivery_cost_guidance.description(config['access'].get('cost_visibility', 'per_report')) + allocation_summary
+            + delivery_cost_guidance.description(config['access'].get('cost_visibility', 'per_report'))
+            + ('The admission meter and processing budget are recorded separately. '
+               if config['access'].get('dispatch_batching') == 'enabled' else '')
+            + allocation_summary
             + ('The approved account allocation covers its named account pool. '
                'The period processing allocation supports account reports and scheduled operations. '
                if shared_reporting else '')
@@ -2390,6 +2393,14 @@ class Continuation(Base):
                    and (pool != RESERVE or self.config['sharing']['resource_pool'] == 'shared'
                         or e['actor'] == actor))
 
+    def _report_cost_view(self):
+        return self.config['access'].get('dispatch_batching') == 'enabled'
+
+    def _actual_pool_cost(self, pool, actor=None):
+        return sum(1 for e in self.executions if e['pool'] == pool
+                   and (pool != RESERVE or self.config['sharing']['resource_pool'] == 'shared'
+                        or e['actor'] == actor))
+
     def _reporting_margin(self):
         return self.config['operations_headroom'] + len(self.processing.suspended())
 
@@ -2414,8 +2425,23 @@ class Continuation(Base):
                       'used': (sum(e['actor'] == actor and e['pool'] == RESERVE for e in self.executions)
                                if account_view else self._used(RESERVE, actor)),
                       'scheduled_reports': list(RESERVE_REPORTS)})
+        if self._report_cost_view():
+            for pool in pools:
+                name = pool['pool']
+                if name == RESERVE and account_view:
+                    pool['admission_metered_units'] = sum(e.get('admitted_units', 1) for e in self.executions
+                                                          if e['pool'] == name and e['actor'] == actor)
+                    pool['used'] = sum(e['pool'] == name and e['actor'] == actor for e in self.executions)
+                else:
+                    pool['admission_metered_units'] = self._used(name, actor)
+                    pool['used'] = self._actual_pool_cost(name, actor)
         if self.processing.mode == 'schedule':
-            pools[-1]['available_reporting_margin'] = max(0, self._reporting_margin() - self._used(RESERVE, actor))
+            if self._report_cost_view():
+                pools[-1]['available_reporting_margin'] = max(0, self._reporting_margin() - pools[-1]['used'])
+                pools[-1]['admission_available_reporting_margin'] = max(
+                    0, self._reporting_margin() - pools[-1]['admission_metered_units'])
+            else:
+                pools[-1]['available_reporting_margin'] = max(0, self._reporting_margin() - self._used(RESERVE, actor))
             pools[-1]['suspended_reports'] = sorted(self.processing.suspended())
         if account_view:
             for pool in pools:
@@ -2463,7 +2489,12 @@ class Continuation(Base):
         return self._current_budget_view(actor)
 
     def _current_budget_view(self, actor):
-        view = self.budget.description(self._budget_spent())
+        admission = self._budget_spent()
+        spent = self._reported_budget_spent()
+        view = self.budget.description(spent)
+        if self._report_cost_view():
+            view['admission_metered_units'] = {row['account']: admission[owner]
+                                                for owner, row in self.plan.items()}
         if self.config['access'].get('charge_basis') == 'allocation_owner':
             view['approved_order']['charge_basis'] = 'allocation_owner'
         if (self.config['access'].get('reserve_use') == 'reporting'
@@ -2471,7 +2502,8 @@ class Continuation(Base):
             if self.config['access'].get('reserve_use') == 'reporting':
                 view['approved_order']['allocation_scope'] = 'named_account_pools'
             view['actual_cost_by_pool'] = {
-                row['account']: {row['account']: self._used(row['account']),
+                row['account']: {row['account']: (self._actual_pool_cost(row['account'])
+                                                    if self._report_cost_view() else self._used(row['account'])),
                                  RESERVE: sum(e['actor'] == owner and e['pool'] == RESERVE
                                               for e in self.executions)}
                 for owner, row in self.plan.items()}
@@ -2494,11 +2526,18 @@ class Continuation(Base):
                 'processing_limit': limit, 'processing_used': used,
                 'remaining_in_limit': max(0, limit-used),
                 'plan_matches_budget_edition': self.plans[actor].get('budget_basis') == basis}
+            if self._report_cost_view():
+                actual = spent[actor]
+                approved = self.budget.budget['cost_ceilings'][self.plan[actor]['account']]
+                view['dispatch_admission'].update(
+                    actual_cost_units=actual, remaining_approved_cost_units=max(0, approved-actual))
         if self.config.get('activity_scope') == 'account':
             account = self.plan[actor]['account']
             view['approved_order']['cost_ceilings'] = {
                 account: view['approved_order']['cost_ceilings'][account]}
             view['actual_cost_to_date'] = {account: view['actual_cost_to_date'][account]}
+            if 'admission_metered_units' in view:
+                view['admission_metered_units'] = {account: view['admission_metered_units'][account]}
             if 'actual_cost_by_pool' in view:
                 view['actual_cost_by_pool'] = {account: view['actual_cost_by_pool'][account]}
             view['usage_scope'] = 'account'
@@ -2509,6 +2548,13 @@ class Continuation(Base):
             return {actor: self._used(row['account']) for actor, row in self.plan.items()}
         return {actor: sum(e.get('admitted_units', 1) for e in self.executions if e['actor'] == actor)
                 for actor in self.plan}
+
+    def _reported_budget_spent(self):
+        if not self._report_cost_view():
+            return self._budget_spent()
+        if self.config['access'].get('charge_basis') == 'allocation_owner':
+            return {owner: self._actual_pool_cost(row['account']) for owner, row in self.plan.items()}
+        return {owner: sum(e['actor'] == owner for e in self.executions) for owner in self.plan}
 
     def _settlement(self, actor=None):
         scope = self.config['sharing']['completion_credit']
@@ -2862,7 +2908,7 @@ class Continuation(Base):
                     args = {'plan': json.loads(text), 'source_sha256': sha256(text.encode()).hexdigest()}
                 except (KeyError, TypeError, ValueError):
                     return {'status': 409, 'error': 'Forecast JSON file unavailable or invalid'}
-            return self.budget.action(actor, name, args, self._budget_spent())
+            return self.budget.action(actor, name, args, self._reported_budget_spent())
         if name == 'read_catalog_schemas':
             return {'status': 200, 'selected_reference': self.selected_catalog_schema,
                     'schemas': deepcopy(self.catalog_schemas)}
@@ -3147,7 +3193,7 @@ class Continuation(Base):
         if self.final_records:
             result['final_records'] = self.final_records
         if self.budget.versions:
-            result['processing_budget'] = self.budget.description(self._budget_spent())
+            result['processing_budget'] = self.budget.description(self._reported_budget_spent())
         if self.config['status_refresh_seconds']:
             result.update(status_projection=self.status_projection,
                           business_elapsed_seconds=self.business_elapsed_seconds,
@@ -3636,7 +3682,7 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
                 statuses.append(event.get('activity_inputs') == replay.world.events[-1].get('activity_inputs'))
     if replay.budget.versions or 'processing_budget' in continuation.get('state', {}):
         statuses.append(continuation.get('state', {}).get('processing_budget') ==
-                        replay.budget.description(replay._budget_spent()))
+                        replay.budget.description(replay._reported_budget_spent()))
     if delivery_population.enabled(replay.config):
         statuses.append(continuation.get('state', {}).get('reporting_populations') == replay.population_runs)
     target = Path(evidence_root)/'natural/operator/delivery-files'

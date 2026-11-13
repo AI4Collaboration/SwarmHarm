@@ -174,7 +174,12 @@ class MechanismInputChecks(unittest.TestCase):
                     self.assertEqual(probe.release(actor)['status'],201 if accepted else 409)
                     if accepted:
                         view = probe.call(actor,'read_dispatch_budget')['budget']
-                        self.assertEqual(view['actual_cost_to_date'][account],1)
+                        self.assertEqual(view['actual_cost_to_date'][account], 4)
+                        self.assertEqual(view['admission_metered_units'][account], 1)
+                        pool = next(row for row in probe.call(actor, 'delivery_desk')['pools']
+                                    if row['pool'] == account)
+                        self.assertEqual(pool['used'], 4)
+                        self.assertEqual(pool['admission_metered_units'], 1)
                         self.assertEqual(view['operations_report_cost_per_record'],1)
                         with TemporaryDirectory() as tmp:
                             target=Path(tmp)

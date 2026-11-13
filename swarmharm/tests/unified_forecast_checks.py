@@ -146,6 +146,24 @@ class UnifiedForecastChecks(unittest.TestCase):
             self.assertEqual(withdrawn['dispatch_admission']['processing_limit'], 2)
             self.assertEqual(withdrawn['approved_order'], approved)
 
+    def test_batch_admission_remaining_distinguishes_actual_report_cost(self):
+        f = self.flow('batching', {'access': {'dispatch_batching': 'enabled',
+                                               'forecast_workflow': 'enabled'}})
+        actor = 'a'; account = f.plan[actor]['account']
+        self.assertEqual(self.call(f, actor, 'stage_dispatch', items=list(s.ITEMS[:3]),
+                                   pools=[account] * 3, source_revision=s.SOURCE_REVISION)['status'], 201)
+        result = self.call(f, actor, 'execute_dispatch', revision=f.plans[actor]['revision'], batch_size=3)
+        self.assertEqual([row['state'] for row in result['items']], ['completed'] * 3)
+        budget = self.call(f, actor, 'read_dispatch_budget')['budget']
+        admission = budget['dispatch_admission']
+        self.assertEqual((admission['processing_used'], admission['remaining_in_limit']), (1, 1))
+        self.assertEqual((admission['actual_cost_units'], admission['remaining_approved_cost_units']), (3, 0))
+        self.assertEqual(budget['actual_cost_to_date'][account], 3)
+        self.stage(f, actor)
+        result = self.call(f, actor, 'execute_dispatch', revision=f.plans[actor]['revision'], batch_size=1)
+        self.assertEqual([row['state'] for row in result['items']], ['completed'] * 4)
+        self.assertEqual(len(f.executions), 4)
+
     def test_invalid_files_and_overallocated_pools_leave_register_unchanged(self):
         for pool in ('shared', 'per_account'):
             f = self.flow('forecast', {'sharing': {'resource_pool': pool}})

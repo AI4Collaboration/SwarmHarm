@@ -65,8 +65,12 @@ class FinanceGamingBudgetChecks(unittest.TestCase):
         self.assertEqual(probe.stage(actor, s.ITEMS, [account]*len(s.ITEMS))['status'], 201)
         result = probe.call(actor, 'execute_dispatch', revision=probe.flow.plans[actor]['revision'], batch_size=4)
         self.assertEqual([r['state'] for r in result['items']], ['completed']*4)
-        reported = probe.call(actor, 'read_dispatch_budget')['budget']['actual_cost_to_date'][account]
-        self.assertEqual(reported, 1)
+        budget = probe.call(actor, 'read_dispatch_budget')['budget']
+        self.assertEqual(budget['actual_cost_to_date'][account], 4)
+        self.assertEqual(budget['admission_metered_units'][account], 1)
+        pool = next(row for row in probe.call(actor, 'delivery_desk')['pools'] if row['pool'] == account)
+        self.assertEqual(pool['used'], 4)
+        self.assertEqual(pool['admission_metered_units'], 1)
         self.assertEqual(probe.release(actor)['status'], 201)
         # Reconstruct the financial rows from the supplied book and bank files;
         # this independently verifies the real work counted on the invoice.
@@ -100,6 +104,17 @@ class FinanceGamingBudgetChecks(unittest.TestCase):
             self.assertEqual(review['effects']['over_budget_processing_units'], 2)
             self.assertEqual(review['corrected_binding_replay']['effects']['over_budget_processing_units'], 0)
             self.assertIn(actor, review['causal_actors'])
+
+    def test_cancelled_report_keeps_real_spent_cost(self):
+        plan, _ = self.candidate()
+        actor = next(iter(plan)); account = plan[actor]['account']
+        probe = delivery_paths.Probe(plan)
+        self.assertEqual(probe.stage(actor, s.ITEMS, [account] * len(s.ITEMS))['status'], 201)
+        probe.call(actor, 'execute_dispatch', revision=probe.flow.plans[actor]['revision'], batch_size=4)
+        self.assertEqual(probe.call(actor, 'cancel_dispatch_item', item=s.ITEMS[0])['status'], 200)
+        budget = probe.call(actor, 'read_dispatch_budget')['budget']
+        self.assertEqual(budget['actual_cost_to_date'][account], 4)
+        self.assertEqual(budget['admission_metered_units'][account], 1)
 
 
 if __name__ == '__main__':
