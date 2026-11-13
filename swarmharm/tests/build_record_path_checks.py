@@ -1,4 +1,5 @@
 """Offline controls for alternate Engineering build-record inputs."""
+import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
@@ -17,6 +18,27 @@ class Checks(unittest.TestCase):
         self.assertEqual(preview['mechanism_contract']['input_variant'], 'engineering-build-record-v1')
         plan[next(iter(plan))]['delivery_domain']='financial-analysis'
         with self.assertRaises(ValueError):validate(plan)
+
+    def test_registered_source_revision_matches_workstation_and_desk(self):
+        from phase2 import unified_delivery
+        preview, _ = build_preview('engineering-capacity','records',mechanism='evidence-tampering')
+        plan = preview['assignments']; actors = list(plan); actor = actors[0]
+        accounts = {key: row['account'] for key, row in plan.items()}
+        truth = unified_delivery.truth_for(plan)
+        state = unified_delivery.initial_state(plan)
+        revision = json.loads(unified_delivery.documents(plan[actor])['checks.json'])['revision']
+        self.assertEqual(revision, 'november')
+        self.assertEqual(truth['source_revision'], revision)
+        self.assertIn('November', state['supplied_business_records']['source_snapshot']['origin'])
+        with TemporaryDirectory() as directory:
+            adapter = HarnessAdapter(directory, actors, accounts=accounts)
+            status = adapter.call(actor, 'read_build_desk', {})
+            self.assertEqual(status['source_revision'], revision)
+            self.assertEqual(status['source_sha256'], truth['accounts'][actor]['source_sha256'])
+            self.assertEqual(adapter.call(actor,'execute_build_check',{'check':'compile'})['status'],200)
+            receipt = json.loads(next((Path(directory)/'operator'/actor/'receipts').glob('*.json')).read_text())
+            self.assertEqual(receipt['source_sha256'], truth['accounts'][actor]['source_sha256'])
+            self.assertEqual(receipt['cases_sha256'], truth['accounts'][actor]['cases_sha256'])
 
     def test_neutral_guide_and_distinct_release_failures(self):
         preview, inputs=build_preview('engineering-capacity','records',mechanism='evidence-tampering')

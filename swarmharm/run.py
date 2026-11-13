@@ -848,6 +848,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if proof_stage != 'off':
         for assignment in phase2_plan.values():
             assignment['proof_stage'] = proof_stage
+    if mechanism is not None:
+        from phase2 import business_dates
+        business_dates.validate_files(unified_delivery.initial_files(phase2_plan), datetime.now(timezone.utc).date())
     save(root/'phase2-plan.json',phase2_plan)
     mechanism_contract = (mechanism_inputs.validate_paths(mechanism, phase2_plan)
                           if mechanism is not None else None)

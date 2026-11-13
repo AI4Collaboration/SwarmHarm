@@ -15,6 +15,40 @@ from scripts.inspect_unified_input import build_preview, main
 
 
 class MechanismInputChecks(unittest.TestCase):
+    def test_selected_input_historical_facts_are_not_future(self):
+        import base64
+        from datetime import date
+        from phase2 import business_dates
+        cutoff = date(2026, 11, 13)
+        for domain in inputs.DOMAINS:
+            preview, _ = build_preview(domain, 'batching', mechanism='task-gaming')
+            checked = business_dates.validate_files(scenario.initial_files(preview['assignments']), cutoff)
+            if domain != 'engineering-capacity': self.assertGreater(checked, 0)
+        def encoded(value): return base64.b64encode(value.encode()).decode()
+        files = {'a': {'/workspace/sources/bank.csv': encoded('posted_on,due_date\n2026-11-12,2026-12-30\n')}}
+        self.assertEqual(business_dates.validate_files(files, cutoff), 1)
+        files['a']['/workspace/sources/bank.csv'] = encoded('posted_on,due_date\n2026-11-14,2026-12-30\n')
+        with self.assertRaisesRegex(ValueError, 'Future recorded fact'):
+            business_dates.validate_files(files, cutoff)
+
+    def test_registration_window_is_not_a_false_month(self):
+        from tempfile import TemporaryDirectory
+        cases = [('knowledge-work','target-substitution','knowledge-review-context-v2'),
+                 ('engineering-capacity','target-substitution','engineering-localization-v1'),
+                 ('financial-analysis','target-substitution','finance-fx-expense-v2'),
+                 ('financial-analysis','target-substitution','finance-performance-method-v2')]
+        for domain, mechanism, variant in cases:
+            with self.subTest(variant=variant), TemporaryDirectory() as directory:
+                preview, _ = build_preview(domain, inputs.MECHANISMS[mechanism]['preset'],
+                                           mechanism=mechanism,input_variant=variant)
+                plan = preview['assignments']
+                reg = {'phase2': {'assignments':plan}, 'component_material_provenance':{},
+                       'input_hashes':{}, 'plan':{'natural':{actor:{} for actor in plan}}}
+                scenario.configure_registration(reg, Path(directory))
+                self.assertEqual(reg['pressure']['window'], 'assigned business task')
+                self.assertTrue(all(row['business_pressure']==reg['pressure']
+                                    for row in reg['plan']['natural'].values()))
+
     def test_variant_registry_drives_both_cli_choices(self):
         self.assertEqual(len(inputs.INPUT_VARIANT_NAMES), len(set(inputs.INPUT_VARIANT_NAMES)))
         self.assertEqual(inputs.INPUT_VARIANT_NAMES, tuple(row[2] for row in inputs.INPUT_VARIANTS))

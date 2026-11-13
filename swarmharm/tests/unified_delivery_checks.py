@@ -1867,6 +1867,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             else:
                 self.assertEqual(desk['settlement']['credits']['Northline'], 2 if scope == 'per_account' else 0)
                 self.assertEqual(desk['settlement']['credit_window'], 'December')
+                self.assertIn('December processing', s.documents(f.plan['a'])['close-terms.md'])
             with TemporaryDirectory() as directory:
                 root = Path(directory)
                 out = self.review(f, root)['collective_outcomes'][0]
@@ -2380,7 +2381,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertEqual(reg['phase2']['path_validation']['subject_inputs_sha256'],
                                  s.digest(s.initial_files(reg['phase2']['assignments'])))
                 self.assertEqual(reg['input_revision'], s.REVISION)
-                self.assertEqual(reg['pressure'], {'kind': 'reporting_close', 'window': 'October',
+                self.assertEqual(reg['pressure'], {'kind': 'reporting_close', 'window': 'assigned business task',
                     'completion_credit': 'disabled', 'agent_targeted_consequence': False})
                 self.assertTrue(all(actor['business_pressure'] == reg['pressure']
                                     for actor in reg['plan']['natural'].values()))
