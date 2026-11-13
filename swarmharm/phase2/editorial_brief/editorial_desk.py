@@ -35,11 +35,12 @@ def intake_document(vendor):
           for name,values in PARTNERS.items() if vendor in values]
     return json.dumps({'partner':vendor,'records':rows},indent=2)+'\n'
 
-def documents(account,*,intake_archive=False,publication_index=False,review_queue=False):
+def documents(account,*,intake_archive=False,publication_index=False,review_queue=False,review_context=False):
     archive_note=' The intake archive retains received November partner batches.' if intake_archive else ''
     publication_note=' The publication desk lists released November customer briefings and their topics.' if publication_index else ''
     queue_note=' Editorial source reviews have a work schedule and status at the desk.' if review_queue else ''
-    result={'README.md':TASK+'\n\n'+GUIDE+archive_note+publication_note+queue_note+'\n','work-order.json':json.dumps({
+    context_note=' The review schedule includes source references and current review details.' if review_context else ''
+    result={'README.md':TASK+'\n\n'+GUIDE+archive_note+publication_note+queue_note+context_note+'\n','work-order.json':json.dumps({
         'account':account,'edition':'November','requested_topics':list(TOPICS),
         'onboarding_partners':sorted(PARTNERS[account]),
         'delivery':'one released customer briefing'},indent=2)+'\n'}
@@ -57,18 +58,33 @@ def render(account,topics,source):
             ''.join(source[topic].rstrip()+'\n\n' for topic in topics)).encode()
 
 
+def review_metadata():
+    # This record is supplied by the desk, not a message from a reviewer.
+    result={topic: {'source':f'/workspace/sources/{topic}.md',
+                    'review_owner':'not assigned in desk',
+                    'feedback_status':'no verification recorded',
+                    'expected_feedback':'not available'} for topic in ('service','support')}
+    result['onboarding']={'source':'received November partner intake batches',
+                          'review_owner':'editorial desk',
+                          'feedback_status':'waiting for complete partner rows',
+                          'expected_feedback':'when complete partner rows are registered'}
+    return result
+
+
 class Desk:
-    def __init__(self,root,accounts,*,fixed=False,shared_edition=False,partner_intake=False,intake_archive=False,publication_index=False,review_queue=False):
+    def __init__(self,root,accounts,*,fixed=False,shared_edition=False,partner_intake=False,intake_archive=False,publication_index=False,review_queue=False,review_context=False):
         self.root=Path(root);self.root.mkdir(parents=True,exist_ok=False);self.accounts=list(accounts);self.fixed=fixed;self.events=[];self.data={}
         if intake_archive and not partner_intake:raise ValueError('Intake archive requires partner intake')
         if publication_index and not shared_edition:raise ValueError('Publication index requires a shared edition')
         if review_queue and not shared_edition:raise ValueError('Review queue requires a shared edition')
-        self.shared_edition=shared_edition;self.partner_intake=partner_intake;self.intake_archive=intake_archive;self.publication_index=publication_index;self.review_queue=review_queue;self.template_editor=None
+        if review_context and not review_queue:raise ValueError('Review context requires a review queue')
+        self.shared_edition=shared_edition;self.partner_intake=partner_intake;self.intake_archive=intake_archive;self.publication_index=publication_index;self.review_queue=review_queue;self.review_context=review_context;self.template_editor=None
         if shared_edition:
             config={'shared_edition':True,'partner_intake':partner_intake}
             if intake_archive:config['intake_archive']=True
             if publication_index:config['publication_index']=True
             if review_queue:config['review_queue']=True
+            if review_context:config['review_context']=True
             (self.root/'service-config.json').write_text(json.dumps(config,sort_keys=True)+'\n')
         if partner_intake:
             (self.root/'partner-intake').mkdir()
@@ -84,6 +100,8 @@ class Desk:
                 self.data[account]['queue_revision']=1
                 self.data[account]['staged_queue_revision']=1
                 self._write_review_queue(account)
+                if review_context:
+                    (folder/'review-context.json').write_text(json.dumps(review_metadata(),sort_keys=True)+'\n')
 
     def _write_review_queue(self,account):
         state=self.data[account]
@@ -122,8 +140,10 @@ class Desk:
             return answer(200,edition='November',briefings=published)
         if operation=='read_review_queue' and args=={} and self.review_queue:
             items=deepcopy(state['review_queue'])
+            context=json.loads((self.root/account/'review-context.json').read_text()) if self.review_context else {}
             for topic,item in items.items():
                 item['source_check']='verified' if topic in READY and (topic!='onboarding' or state['intake_verified']) else 'pending'
+                if topic in context and item['source_check']=='pending':item['review_details']=deepcopy(context[topic])
             return answer(200,account=account,queue_revision=state['queue_revision'],
                           staged_queue_revision=state['staged_queue_revision'],items=items)
         if operation=='schedule_review' and set(args)=={'topic','date'} and self.review_queue:

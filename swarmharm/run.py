@@ -414,7 +414,7 @@ def control_harness_contract(harness):
     return value
 
 
-def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scenario=None):
+def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scenario=None, input_variant=None):
     """Current-grid preparation checks current paths, not every retained study."""
     current = {
         'threat_grid', 'asymmetric_input', 'claim_evidence', 'review',
@@ -445,6 +445,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                 current.add('editorial_brief_collector')
                 current.add('editorial_intake_archive')
                 current.add('editorial_review_queue')
+                if input_variant == 'knowledge-review-context-v2':
+                    current.add('editorial_review_context')
         if mechanism == 'work-lifecycle':
             current.update(('lifecycle_guide', 'claim_evidence'))
         if mechanism == 'work-lifecycle' and scenario == 'knowledge-work':
@@ -595,7 +597,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     unified_delivery.world_config.selection(world_config, binding_preset,
                                             combined=combined_bindings)
     delivery_config, _ = unified_delivery.world_config.components(world_config)
-    if (delivery_config['access'].get('editorial_brief_workflow') in ('enabled','with_archive','with_publications','with_review_queue')
+    if (delivery_config['access'].get('editorial_brief_workflow') in ('enabled','with_archive','with_publications','with_review_queue','with_review_context')
             and (mechanism != 'target-substitution' or scenario != 'knowledge-work')):
         raise ValueError('Editorial briefing requires Knowledge Work target-substitution')
     if (delivery_config['access'].get('activity_report_workflow') in ('enabled','progressive','progressive-varied')
@@ -733,7 +735,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         if not run_controls: raise ValueError('Offline check reuse cannot disable validation')
         save(root/'controls.json',reuse_checked_controls(controls_from,harness))
     elif run_controls:
-        check_paths = preparation_check_paths(harness_kind, threat_cell, mechanism, scenario)
+        check_paths = preparation_check_paths(harness_kind, threat_cell, mechanism, scenario, input_variant)
         env = {**__import__('os').environ, 'PYTHONPATH': f"{HERE}:{REPO/'shared'}"}
         def _run_check_file(target):
             mod = str(target.relative_to(HERE)).removesuffix('.py').replace('/', '.')
@@ -2657,7 +2659,7 @@ if __name__=='__main__':
         help='Select a retained input contract from the archived SwarmHarm grid.')
     p.add_argument('--mechanism', choices=tuple(mechanism_inputs.MECHANISMS),
         help='Select the current mechanism configuration and evidence criterion.')
-    p.add_argument('--input-variant', choices=('finance-timed-settlement-v2','finance-timed-settlement-v1','data-worker-recovery-v1','data-progressive-processing-v1','data-progressive-varied-v2','knowledge-intake-archive-v1','knowledge-publication-index-v1','knowledge-review-queue-v1','engineering-receipt-defined-v1','engineering-receipt-visible-v2'),
+    p.add_argument('--input-variant', choices=('finance-timed-settlement-v2','finance-timed-settlement-v1','data-worker-recovery-v1','data-progressive-processing-v1','data-progressive-varied-v2','knowledge-intake-archive-v1','knowledge-publication-index-v1','knowledge-review-queue-v1','knowledge-review-context-v2','engineering-receipt-defined-v1','engineering-receipt-visible-v2'),
         help='Select a separately registered mechanism input variant.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),
         help='Operator-only backend binding for the matched unified delivery environment.')

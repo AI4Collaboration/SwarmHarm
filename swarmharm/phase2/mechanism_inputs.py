@@ -102,7 +102,8 @@ def configuration(mechanism, domain=None, *, input_variant=None):
             ('target-substitution','data-analysis','data-progressive-varied-v2'),
             ('target-substitution','knowledge-work','knowledge-intake-archive-v1'),
             ('target-substitution','knowledge-work','knowledge-publication-index-v1'),
-            ('target-substitution','knowledge-work','knowledge-review-queue-v1')):
+            ('target-substitution','knowledge-work','knowledge-review-queue-v1'),
+            ('target-substitution','knowledge-work','knowledge-review-context-v2')):
         raise ValueError('Unsupported mechanism input variant')
     definition = MECHANISMS[mechanism]
     if definition['preset'] is None:
@@ -137,7 +138,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
             value['verification']['publication_items'] = 'available'
             value['observation']['receipt_scope'] = 'none'
     if mechanism == 'target-substitution' and domain == 'knowledge-work':
-        value['access']['editorial_brief_workflow'] = ('with_review_queue' if input_variant=='knowledge-review-queue-v1' else 'with_publications' if input_variant=='knowledge-publication-index-v1' else 'with_archive' if input_variant=='knowledge-intake-archive-v1' else 'enabled')
+        value['access']['editorial_brief_workflow'] = ('with_review_context' if input_variant=='knowledge-review-context-v2' else 'with_review_queue' if input_variant=='knowledge-review-queue-v1' else 'with_publications' if input_variant=='knowledge-publication-index-v1' else 'with_archive' if input_variant=='knowledge-intake-archive-v1' else 'enabled')
     if mechanism == 'target-substitution' and domain == 'data-analysis':
         value['access']['activity_report_workflow'] = {'data-progressive-processing-v1':'progressive',
             'data-progressive-varied-v2':'progressive-varied'}.get(input_variant,'enabled')
@@ -218,6 +219,7 @@ def validate_plan(mechanism, plan):
     if any(scenario.activity_report_progressive(row)=='varied' for row in plan.values()):variant='data-progressive-varied-v2'
     elif any(scenario.activity_report_progressive(row) for row in plan.values()):variant='data-progressive-processing-v1'
     if any(scenario.editorial_review_queue(row) for row in plan.values()):variant='knowledge-review-queue-v1'
+    if any(scenario.editorial_review_context(row) for row in plan.values()):variant='knowledge-review-context-v2'
     if scenario.config_for(plan)['access'].get('build_record_workflow') in ('receipt-defined','receipt-defined-visible'):
         variant={'receipt-defined':'engineering-receipt-defined-v1',
                  'receipt-defined-visible':'engineering-receipt-visible-v2'}[scenario.config_for(plan)['access']['build_record_workflow']]
@@ -247,6 +249,12 @@ def validate_plan(mechanism, plan):
                 'access':'read-only service',
                 'batch_sha256':{vendor:sha256(intake_document(vendor).encode()).hexdigest()
                                 for vendor in sorted(BATCH.values())}}
+        if variant == 'knowledge-review-context-v2':
+            from phase2.editorial_brief.editorial_desk import review_metadata
+            declared['review_context_provenance']={
+                'origin':'scenario-supplied desk review details',
+                'author':'scenario fixture', 'agent_authored':False,
+                'details':review_metadata()}
     activity = [scenario.activity_report_workflow(row) for row in plan.values()]
     if any(activity):
         if not all(activity) or mechanism != 'target-substitution' or domains != {'data-analysis'}:

@@ -16,10 +16,11 @@ class UnifiedEditorialBridge(UnifiedBuildBridge):
         archive=unified_delivery.editorial_intake_archive(next(iter(plan.values())))
         index=unified_delivery.editorial_publication_index(next(iter(plan.values())))
         queue=unified_delivery.editorial_review_queue(next(iter(plan.values())))
-        obj.service=Desk(Path(world.operator)/'editorial-brief',list(obj.accounts.values()),shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index,review_queue=queue)
+        context=unified_delivery.editorial_review_context(next(iter(plan.values())))
+        obj.service=Desk(Path(world.operator)/'editorial-brief',list(obj.accounts.values()),shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index,review_queue=queue,review_context=context)
         obj.registration={'schema':'editorial-brief-adapter-v1','accounts':obj.accounts}
         for actor,account in obj.accounts.items():
-            subject=documents(account,intake_archive=archive,publication_index=index,review_queue=queue)
+            subject=documents(account,intake_archive=archive,publication_index=index,review_queue=queue,review_context=context)
             for name,content in subject.items():
                 if name.startswith('sources/'):
                     if (obj.service.root/account/name).read_text()!=content:

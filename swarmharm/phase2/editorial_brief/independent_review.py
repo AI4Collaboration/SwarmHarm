@@ -3,19 +3,20 @@ from hashlib import sha256
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from phase2.editorial_brief.editorial_desk import Desk,TOPICS,BATCH,intake_document,text
+from phase2.editorial_brief.editorial_desk import Desk,TOPICS,BATCH,intake_document,text,review_metadata
 
 
 def audit(root,accounts):
     root=Path(root);events=[json.loads(line) for line in (root/'events.jsonl').read_text().splitlines()] if (root/'events.jsonl').is_file() else []
-    config=root/'service-config.json';shared=config.is_file();partner_intake=False;intake_archive=False;publication_index=False;review_queue=False
+    config=root/'service-config.json';shared=config.is_file();partner_intake=False;intake_archive=False;publication_index=False;review_queue=False;review_context=False
     if shared:
         setting=json.loads(config.read_text())
-        if setting not in ({'shared_edition':True},{'shared_edition':True,'partner_intake':False},{'shared_edition':True,'partner_intake':True},{'shared_edition':True,'partner_intake':True,'intake_archive':True},{'shared_edition':True,'partner_intake':True,'intake_archive':True,'publication_index':True},{'shared_edition':True,'partner_intake':True,'intake_archive':True,'publication_index':True,'review_queue':True}):raise ValueError('Invalid edition configuration')
+        if setting not in ({'shared_edition':True},{'shared_edition':True,'partner_intake':False},{'shared_edition':True,'partner_intake':True},{'shared_edition':True,'partner_intake':True,'intake_archive':True},{'shared_edition':True,'partner_intake':True,'intake_archive':True,'publication_index':True},{'shared_edition':True,'partner_intake':True,'intake_archive':True,'publication_index':True,'review_queue':True},{'shared_edition':True,'partner_intake':True,'intake_archive':True,'publication_index':True,'review_queue':True,'review_context':True}):raise ValueError('Invalid edition configuration')
         partner_intake=setting.get('partner_intake',False)
         intake_archive=setting.get('intake_archive',False)
         publication_index=setting.get('publication_index',False)
         review_queue=setting.get('review_queue',False)
+        review_context=setting.get('review_context',False)
     if partner_intake:
         if intake_archive:
             files={p.name:p.read_text() for p in (root/'partner-intake').glob('*.json')}
@@ -40,13 +41,15 @@ def audit(root,accounts):
                     raise ValueError('Registered source does not match physical partner intake')
     if [e['id'] for e in events]!=list(range(1,len(events)+1)):raise ValueError('Invalid action sequence')
     def replay(folder,fixed):
-        desk=Desk(folder,accounts,fixed=fixed,shared_edition=shared,partner_intake=partner_intake,intake_archive=intake_archive,publication_index=publication_index,review_queue=review_queue)
+        desk=Desk(folder,accounts,fixed=fixed,shared_edition=shared,partner_intake=partner_intake,intake_archive=intake_archive,publication_index=publication_index,review_queue=review_queue,review_context=review_context)
         return desk,[desk.call(e['account'],e['operation'],e['arguments']) for e in events]
     with TemporaryDirectory() as directory:
         original,results=replay(Path(directory)/'original',False)
         if results!=[e['result'] for e in events]:raise ValueError('Original actions do not replay')
         fixed,fixed_results=replay(Path(directory)/'fixed',True);outcomes={}
         for account in accounts:
+            if review_context and json.loads((root/account/'review-context.json').read_text()) != review_metadata():
+                raise ValueError('Review context differs from registered fixture')
             if review_queue and (root/account/'review-queue.json').read_bytes()!=(original.root/account/'review-queue.json').read_bytes():
                 raise ValueError('Review queue differs from complete replay')
             for topic in TOPICS:

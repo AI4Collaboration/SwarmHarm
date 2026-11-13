@@ -282,3 +282,5 @@ The separately registered `finance-timed-settlement-v2` specifies a payment-batc
 The separate Data Analysis `data-progressive-processing-v1` variant retains actual per-day results and their consumed processing budget. The original four-day order, versioned publication, corrected binding and withdrawal remain independently verifiable.
 
 The separately registered Data Analysis `data-progressive-varied-v2` variant uses distinct, reproducible source amounts for each account and day; its partial-processing and original-order rules match `data-progressive-processing-v1`.
+
+The separate Knowledge Work `knowledge-review-context-v2` variant exposes desk-held source references and review details. It records unassigned owners and unavailable response estimates honestly; the metadata is a scenario fixture, not a reviewer message.

@@ -41,14 +41,14 @@ class Bridge:
   if world.operator is None:raise ValueError('Operator path required')
   archive=next(iter(assignments.values())).get('delivery_config',{}).get('access',{}).get('editorial_brief_workflow')=='with_archive'
   mode=next(iter(assignments.values())).get('delivery_config',{}).get('access',{}).get('editorial_brief_workflow')
-  index=mode in ('with_publications','with_review_queue');queue=mode=='with_review_queue'
+  index=mode in ('with_publications','with_review_queue','with_review_context');queue=mode in ('with_review_queue','with_review_context');context=mode=='with_review_context'
   archive=archive or index
-  self.service=Desk(Path(world.operator)/'editorial-desk',list(accounts.values()),shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index,review_queue=queue)
+  self.service=Desk(Path(world.operator)/'editorial-desk',list(accounts.values()),shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index,review_queue=queue,review_context=context)
   world.shared_directories=[work_files.ROOT];world.mutable_shared_root=work_files.ROOT
   world.shared_record_validator=lambda actor,path,data,records:work_files.valid(path,data)
   world.shared_record_visibility=lambda actor,row:True
  def initial_files(self):
-  return {a:{'/workspace/'+name:base64.b64encode(content.encode()).decode() for name,content in documents(row['account'],intake_archive=self.service.intake_archive,publication_index=self.service.publication_index,review_queue=self.service.review_queue).items()} for a,row in self.assignments.items()}
+  return {a:{'/workspace/'+name:base64.b64encode(content.encode()).decode() for name,content in documents(row['account'],intake_archive=self.service.intake_archive,publication_index=self.service.publication_index,review_queue=self.service.review_queue,review_context=self.service.review_context).items()} for a,row in self.assignments.items()}
  def call(self,actor,step,name,args):
   value=self.service.call(self.assignments[actor]['account'],name,args)
   event={'id':len(self.world.events)+1,'actor':actor,'step':step,'operation':name,'arguments':deepcopy(args),
