@@ -81,7 +81,7 @@ CONFIG_SCHEMA = {
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'knowledge-timeline', 'engineering']},
             'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'receipt-defined', 'receipt-defined-visible']},
-            'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest']},
+            'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template']},
             'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2']},
@@ -207,12 +207,12 @@ def build_record_workflow(assignment):
 
 
 def activity_report_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') in ('enabled','progressive','progressive-varied','progressive-varied-context','progressive-varied-context-dictionary','progressive-metered','progressive-manifest')
+    return assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow') in ('enabled','progressive','progressive-varied','progressive-varied-context','progressive-varied-context-dictionary','progressive-metered','progressive-manifest','progressive-manifest-shared')
 
 
 def activity_report_progressive(assignment):
     workflow=assignment.get('delivery_config', {}).get('access', {}).get('activity_report_workflow')
-    return {'progressive-varied':'varied','progressive-varied-context':'varied-context', 'progressive-varied-context-dictionary':'varied-context-dictionary','progressive-metered':'metered','progressive-manifest':'manifest'}.get(workflow, workflow == 'progressive')
+    return {'progressive-varied':'varied','progressive-varied-context':'varied-context', 'progressive-varied-context-dictionary':'varied-context-dictionary','progressive-metered':'metered','progressive-manifest':'manifest','progressive-manifest-shared':'manifest-shared'}.get(workflow, workflow == 'progressive')
 
 
 def editorial_brief_workflow(assignment):
@@ -302,8 +302,8 @@ def task(assignment):
         from phase2.editorial_brief.editorial_desk import TASK
         return TASK
     if activity_report_workflow(assignment):
-        from phase2.activity_report.activity_desk import TASK
-        return TASK
+        from phase2.activity_report.activity_desk import TASK,DEPARTMENT_TASK
+        return DEPARTMENT_TASK if activity_report_progressive(assignment)=='manifest-shared' else TASK
     if build_target_workflow(assignment):
         from phase2.build_record.target_desk import TASK
         return TASK
@@ -770,13 +770,14 @@ def truth_for(plan):
                 'source_sha256':{topic:checksum(text(row['account'],topic).encode()) for topic in TOPICS}}
                 for actor,row in plan.items()}}
     if activity_report_workflow(next(iter(plan.values()))):
-        from phase2.activity_report.activity_desk import DAYS,source,digest as source_digest
+        from phase2.activity_report.activity_desk import DAYS,ORGANIZATION,source,digest as source_digest
         progressive=activity_report_progressive(next(iter(plan.values())))
-        metered=progressive in ('metered','manifest')
-        varied=progressive in ('varied','varied-context','varied-context-dictionary','metered','manifest')
+        metered=progressive in ('metered','manifest','manifest-shared')
+        varied=progressive in ('varied','varied-context','varied-context-dictionary','metered','manifest','manifest-shared')
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
             'accounts':{actor:{'account':row['account'],'approved_dates':list(DAYS),
-                'source_sha256':{day:source_digest(source(row['account'],day,varied=varied,metered=metered)) for day in DAYS}}
+                **({'organization':ORGANIZATION,'account_type':'department'} if progressive=='manifest-shared' else {}),
+                'source_sha256':{day:source_digest(source(row['account'],day,varied=varied,metered=metered,department=progressive=='manifest-shared')) for day in DAYS}}
                 for actor,row in plan.items()}}
     if build_record_workflow(next(iter(plan.values()))):
         from phase2.build_record.build_desk import JOBS, source_for, cases_for
@@ -875,7 +876,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      retention_store='disabled',
                      report_upload='enabled', publication_items='available',
                      build_record_workflow=False, build_target_workflow=False, build_target_clarify_selection=False, reconciliation_workflow='disabled',
-                     activity_report_workflow=False, payables_workflow='disabled', editorial_brief_workflow=False,
+                     activity_report_workflow=False, activity_shared_template=False, payables_workflow='disabled', editorial_brief_workflow=False,
                      editorial_intake_archive=False, editorial_publication_index=False, editorial_review_queue=False, **kwargs):
     if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context', 'category-template'),
             bool(activity_report_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2'), bool(editorial_brief_workflow))) > 1:
@@ -885,7 +886,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
         return editorial_tools(intake_archive=editorial_intake_archive,publication_index=editorial_publication_index,review_queue=editorial_review_queue)
     if activity_report_workflow:
         from phase2.activity_report.bridge import tools as activity_tools
-        return activity_tools()
+        return activity_tools(shared_template=activity_shared_template)
     if build_target_workflow:
         from phase2.build_record.target_adapter import tool_definitions as target_tools
         return target_tools(clarify_selection=build_target_clarify_selection)

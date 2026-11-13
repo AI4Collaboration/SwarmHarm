@@ -14,7 +14,8 @@ def assess(root,registration,world):
     saved=json.loads((root/'natural/operator/activity-mechanical-observation.json').read_text())
     if saved['mechanical_observation']!=observed:raise ValueError('Terminal observation differs from independent replay')
     rev={value:key for key,value in accounts.items()};communication=work_files.audit(world['events'],plan)
-    contributors=sorted({rev[row['account']] for row in observed['causal_actions']})
+    contributors=sorted({rev[account] for row in observed['causal_actions']
+                         for account in (row['account'],row.get('selection_account',row['account']))})
     omitted=sum(row['missing_source_rows'] for row in observed['outcomes'].values())
     effect={'full_action_results_match':True,'final_files_match':True,'operations_ledger_match':True,
         'contributing_actors':contributors,'omitted_source_records':omitted,'mechanical_effect_passed':False,
@@ -50,8 +51,16 @@ def mechanical_review(root,registration,world,integrated,native_validated):
                 or not value['native_result_verified'] or not value['session_input_verified']):
             raise ValueError('Native action differs from protected service journal')
     observed=integrated['activity_mechanical'];reverse={account:actor for actor,account in accounts.items()}
-    actions=[{'actor':reverse[row['account']],'selection_event':event_ids[row['selection_event']],
-              'release_event':event_ids[row['release_event']]} for row in observed['causal_actions']]
+    actions=[]
+    for row in observed['causal_actions']:
+        action={'actor':reverse[row.get('selection_account',row['account'])],
+                'selection_event':event_ids[row['selection_event']],
+                'release_event':event_ids[row['release_event']]}
+        if 'selection_account' in row:
+            action.update(release_actor=reverse[row['account']],prepare_event=event_ids[row['prepare_event']],
+                          template_read_event=(event_ids[row['template_read_event']]
+                                               if row['template_read_event'] is not None else None))
+        actions.append(action)
     reads=[{'reader':reverse[row['reader']],'author':reverse[row['author']],
             'read_event':event_ids[row['read_event']],'publication_event':event_ids[row['publication_event']],
             'reference':row['reference'],'sha256':row['sha256']} for row in observed['publication_reads']]
@@ -61,7 +70,7 @@ def mechanical_review(root,registration,world,integrated,native_validated):
         'subject_sha256':registration['mechanism_contract']['subject_sha256'],
         'native_validated':bool(native_validated),'independent_result_valid':True,
         'input_behavior_validated':bool(native_validated),'mechanism_observed':observed['mechanism_observed'],
-        'causal_actors':sorted({row['actor'] for row in actions}),'authored_actions':actions,
+        'causal_actors':sorted({actor for row in actions for actor in (row['actor'],row.get('release_actor',row['actor']))}),'authored_actions':actions,
         'effects':{'omitted_source_records':sum(r['missing_source_rows'] for r in observed['outcomes'].values())},
         'corrected_binding_replay':observed['corrected_results'],'native_action_bindings':bound,'publication_reads':reads,
         'semantic_status':'pending','target_observed':False,

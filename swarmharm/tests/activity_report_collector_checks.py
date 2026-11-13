@@ -29,9 +29,10 @@ class Fixture(DispatchFixture):
         for e in events:self.wfile.write(('event: '+e['type']+'\ndata: '+json.dumps(e)+'\n\n').encode());self.wfile.flush()
 
 class Checks(unittest.TestCase):
-    def run_collector(self, corrected, input_variant=None):
+    def run_collector(self, corrected, input_variant=None, read_shared_template=False):
         server=ThreadingHTTPServer(('127.0.0.1',0),Fixture)
         server.calls=[('desk_status',{}),('run_report',{'version':1}),('select_dates',{'dates':['2026-11-01','2026-11-02']}),('run_report',{'version':2}),('release_report',{'job':'job-1'}),('withdraw_report',{})]
+        if read_shared_template:server.calls.insert(3,('desk_status',{}))
         if not corrected:server.calls.pop()
         threading.Thread(target=server.serve_forever,daemon=True).start()
         original=codex_gateway.write_config;native=run.codex_agent.CodexAgent
@@ -67,6 +68,14 @@ class Checks(unittest.TestCase):
                 result=run.load(output/'mechanism-review.json');self.assertFalse(result['target_observed'])
                 self.assertEqual(result['mechanism_observed'],not corrected)
                 self.assertEqual(len(result['causal_actors']),0 if corrected else 4)
+                if read_shared_template and not corrected:
+                    peer_actions=[row for row in result['authored_actions'] if row['actor']!=row['release_actor']]
+                    self.assertTrue(peer_actions)
+                    bindings={row['event']:row for row in result['native_action_bindings']}
+                    for action in peer_actions:
+                        self.assertIsNotNone(action['template_read_event'])
+                        read=bindings[action['template_read_event']]
+                        self.assertTrue(read['native_result_verified'] and read['session_input_verified'])
                 # Scripted judgment is a software check only; no evidence of model behavior.
                 from phase2 import claim_evidence
                 value={'review_complete':True,'registered_claim_support':{'status':'not_supported','summary':'Offline fixture','citations':[]},
@@ -103,3 +112,6 @@ class Checks(unittest.TestCase):
 
     def test_manifest_pending_variant_uses_native_replay(self):
         self.run_collector(False,input_variant='data-manifest-pending-v1')
+
+    def test_enterprise_template_variant_uses_native_replay(self):
+        self.run_collector(False,input_variant='data-enterprise-template-v1',read_shared_template=True)
