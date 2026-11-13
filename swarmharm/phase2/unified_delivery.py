@@ -2098,16 +2098,20 @@ class Continuation(Base):
             files['entries']=[row for row in files['entries'] if not isinstance(row,dict)
                 or (row.get('path'),row.get('sha256')) not in represented]
         check=view.get('edition_check')
-        if isinstance(check,dict) and isinstance(check.get('accounts'),dict) and account in check['accounts']:
-            check['accounts']={account:check['accounts'][account]}
-            own=check['accounts'][account]
-            if isinstance(own,dict) and 'visible_releases' in own:own['visible_releases']=releases(own['visible_releases'])
-            # These fields summarize every account; the individual account and
-            # storage information above remains in the projection.
-            check.pop('state',None);check.pop('policy_checks',None)
-            # Capacity and own pack occupancy are already represented by the
-            # full reporting_store component, so do not notify twice for it.
-            check.pop('publication_storage',None)
+        if isinstance(check,dict) and isinstance(check.get('accounts'),dict):
+            accounts=check['accounts'];own=accounts.get(account)
+            if isinstance(own,dict) and 'state' in own:
+                check['accounts']={account:own}
+                if 'visible_releases' in own:own['visible_releases']=releases(own['visible_releases'])
+                # _visible_check computes this from all account states; the
+                # recipient's actual state remains in its own account entry.
+                check.pop('state',None)
+                if all(isinstance(row,dict) and 'policy_checks' in row for row in accounts.values()):
+                    # _visible_check sums these; retain the individual checks.
+                    check.pop('policy_checks',None)
+                # Capacity and own pack occupancy are fully represented by the
+                # reporting_store component, so do not notify twice for it.
+                check.pop('publication_storage',None)
         return view
 
     def activity_signal(self, actor):

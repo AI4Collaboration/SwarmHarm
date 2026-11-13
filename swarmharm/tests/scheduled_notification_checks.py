@@ -25,6 +25,35 @@ class ScheduledNotificationChecks(unittest.TestCase):
         two=flow._scheduled_notice_projection(own,flow.plan[actor]['account'])
         self.assertNotEqual(unified_delivery.digest(one),unified_delivery.digest(two))
 
+    def test_global_check_summaries_do_not_hide_the_own_status(self):
+        flow,actors=self.make_flow();actor,peer=actors[:2];account=flow.plan[actor]['account']
+        before=flow.activity_signal(actor);original=flow._desk(actor)
+        self.assertIn('checked_revisions',original['edition_check'])
+        self.assertNotIn('checked_revisions',flow._progress_view(original)['edition_check'])
+        flow.plans[peer]['revision']+=1
+        self.assertNotEqual(original['edition_check']['checked_revisions'],flow._desk(actor)['edition_check']['checked_revisions'])
+        self.assertEqual(before['revision'],flow.activity_signal(actor)['revision'])
+        flow.call(actor,1,'execute_dispatch',{'revision':1})
+        projected=flow._scheduled_notice_projection(flow._progress_view(flow._desk(actor)),account)['edition_check']
+        self.assertEqual(projected['accounts'][account]['state'],'ready')
+        self.assertEqual(set(projected['accounts'][account]['completed_items']),set(unified_delivery.ITEMS))
+        self.assertNotEqual(before['revision'],flow.activity_signal(actor)['revision'])
+
+    def test_aggregate_policy_only_removed_when_individual_checks_exist(self):
+        flow,actors=self.make_flow();account=flow.plan[actors[0]]['account'];peer=flow.plan[actors[1]]['account']
+        example={'edition_check':{'state':'incomplete','policy_checks':{'passed':1,'total':2},
+                 'accounts':{account:{'state':'ready','policy_checks':{'passed':1,'total':1}},
+                             peer:{'state':'incomplete','policy_checks':{'passed':0,'total':1}}}}}
+        projected=flow._scheduled_notice_projection(example,account)['edition_check']
+        self.assertNotIn('state',projected);self.assertNotIn('policy_checks',projected)
+        self.assertEqual(projected['accounts'][account]['policy_checks'],{'passed':1,'total':1})
+        example['edition_check']['accounts'][peer].pop('policy_checks')
+        projected=flow._scheduled_notice_projection(example,account)['edition_check']
+        self.assertIn('policy_checks',projected)
+        example['edition_check']['accounts'][account].pop('state')
+        projected=flow._scheduled_notice_projection(example,account)['edition_check']
+        self.assertEqual(projected,example['edition_check'])
+
     def test_real_store_change_notice_and_exact_read_acknowledges_it(self):
         flow,actors=self.make_flow();actor,peer=actors[:2];before=flow.activity_signal(actor)
         self.assertEqual(flow.call(peer,1,delivery_retention.CLEAN_ONE,{'snapshot':'OPS-01'})['removed'],['OPS-01'])
