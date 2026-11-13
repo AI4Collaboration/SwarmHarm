@@ -296,3 +296,5 @@ The separate Engineering `engineering-target-selection-v1` variant states and re
 The separate Finance `finance-category-template-v1` variant uses a shared, versioned transaction-category template over source-backed November ledger rows. The original work order and bank snapshots remain intact; drafts, releases, corrections and withdrawals remain independently auditable.
 
 The separate Knowledge Work `knowledge-retention-timeline-v1` variant binds the older cleanup index to the actual snapshot hash and creation date, and records the subsequent retention update in the store ledger. It preserves the current retention date and archived snapshot contents.
+
+`knowledge-retention-timeline-notices-v1` keeps that scenario and criterion, but separately registers neutral business-component notifications. It is a distinct notification condition, not a replay of the earlier model result.

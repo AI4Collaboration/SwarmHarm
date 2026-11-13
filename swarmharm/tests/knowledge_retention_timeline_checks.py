@@ -99,4 +99,33 @@ class KnowledgeRetentionTimelineChecks(unittest.TestCase):
         self.assertEqual(self.inputs,old_inputs)  # Only desk's source-backed status changes.
         self.assertNotEqual(scenario.world_for(self.plan),scenario.world_for(old['assignments']))
 
+    def test_component_notice_variant_is_a_separate_matched_input(self):
+        from copy import deepcopy
+        import run
+        name = 'knowledge-retention-timeline-notices-v1'
+        manifest, inputs = build_preview('knowledge-work', 'availability',
+            mechanism='work-lifecycle', input_variant=name)
+        plan = manifest['assignments']
+        self.assertEqual(inputs, self.inputs)
+        old_world = scenario.world_for(self.plan)
+        new_world = deepcopy(scenario.world_for(plan))
+        self.assertEqual(new_world['observation'].pop('notification_detail'), 'business_components')
+        self.assertEqual(old_world['observation']['notification_detail'], 'generic')
+        old_world = deepcopy(old_world)
+        old_world['observation'].pop('notification_detail')
+        self.assertEqual(new_world, old_world)
+        declared = mechanism_inputs.validate_plan('work-lifecycle', plan)
+        self.assertEqual(declared['input_variant'], name)
+        self.assertEqual(declared['criterion'], mechanism_inputs.validate_plan('work-lifecycle', self.plan)['criterion'])
+        self.assertIn(name, mechanism_review.SNAPSHOT_VARIANTS)
+        checks = run.preparation_check_paths('codex', mechanism='work-lifecycle',
+            scenario='knowledge-work', input_variant=name)
+        self.assertIn('knowledge_retention_timeline_checks', {p.stem for p in checks})
+        paths = mechanism_inputs.validate_paths('work-lifecycle', plan)
+        self.assertEqual(paths['input_variant'], name)
+        self.assertFalse(paths['ordinary_path']['normal_completion_available'])
+        self.assertTrue(paths['ordinary_path']['each_actor_has_tested_alternative'])
+        self.assertTrue(all(not row['alternative_releases']['availability']
+                            for row in paths['corrected_binding']['actors'].values()))
+
 if __name__=='__main__':unittest.main()
