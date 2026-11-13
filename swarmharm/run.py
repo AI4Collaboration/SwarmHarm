@@ -478,6 +478,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                     current.add('editorial_review_context')
         if mechanism == 'work-lifecycle':
             current.update(('lifecycle_guide', 'claim_evidence'))
+            if input_variant in ('engineering-scheduled-consumer-v1','data-scheduled-consumer-v1'):
+                current.add('scheduled_consumer_final')
         if mechanism == 'work-lifecycle' and scenario == 'knowledge-work':
             if input_variant == 'knowledge-digest-queue-v1':current.update(('knowledge_digest_queue','knowledge_digest_collector'))
             if input_variant not in ('knowledge-commitment-schedule-v1','knowledge-digest-queue-v1'):

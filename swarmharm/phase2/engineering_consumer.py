@@ -205,36 +205,79 @@ def verify_export(plan,root,*,delay_seconds):
             rows=list(csv.DictReader((folder/output_name).read_text().splitlines()))
             with sqlite3.connect(f'file:{folder}/operations-execution.sqlite?mode=ro',uri=True) as db:
                 if db.execute('PRAGMA integrity_check').fetchone()[0]!='ok':return False
-                executed={row[0] for row in db.execute("SELECT reference FROM jobs WHERE kind='operations' AND slot IS NOT NULL")}
-            if executed!=set(reports):return False
+                executed=[row[0] for row in db.execute("SELECT reference FROM jobs WHERE kind='operations' AND slot IS NOT NULL ORDER BY ordinal")]
+            if executed!=reports:return False
             if sha256((folder/output_name).read_bytes()).hexdigest()!=receipt['output_sha256']:return False
             inputs=list(csv.DictReader((folder/'operations-inputs.csv').read_text().splitlines()))
-            if {row['report']:row['sha256'] for row in inputs}!=receipt['input_sha256']:return False
+            if ([row['report'] for row in inputs]!=reports or
+                    {row['report']:row['sha256'] for row in inputs}!=receipt['input_sha256']):return False
             if {row['report'] for row in rows}!=set(reports) or set(reports)!=set(receipt['input_sha256']):return False
-            if data:
-                for name in reports:
-                    assignment,part=retention.knowledge_assignment(plan,name)
-                    source=(root/'archive'/(name+'.csv')).read_bytes()
+            if not data and len(rows)!=len(reports):return False
+            counts={}
+            for name in reports:
+                assignment,part=retention.knowledge_assignment(plan,name)
+                source=(root/'archive'/(name+'.csv')).read_bytes()
+                if sha256(source).hexdigest()!=receipt['input_sha256'][name]:return False
+                if data:
                     if source != delivery_data_partitions.partition(assignment,part,independent=True):return False
-                    if sha256(source).hexdigest()!=receipt['input_sha256'][name]:return False
                     actual=[{key:value for key,value in row.items() if key!='report'} for row in rows if row['report']==name]
                     expected=list(csv.DictReader(delivery_data_partitions.expected_consumer(assignment,part).decode().splitlines()))
                     if actual!=expected:return False
-                continue
-            for row in rows:
-                name=row['report'];assignment,part=retention.knowledge_assignment(plan,name)
-                source=(root/'archive'/(name+'.csv')).read_bytes()
-                if sha256(source).hexdigest()!=receipt['input_sha256'][name]:return False
-                reference=sorted(delivery_data.reference_data(assignment)['rows']);half=len(reference)//2
-                selected=reference[:half] if part==0 else reference[half:]
-                expected=StringIO(newline='');writer=csv.writer(expected,lineterminator='\n')
-                writer.writerow(('report','edition','completed_items','topic','build_summary'))
-                writer.writerow((name,'November',sum(item[5] for item in selected),
-                                 retention.engineering_label(plan,name),retention.engineering_text(selected)))
-                if source!=expected.getvalue().encode():return False
-                if row['topic']!=retention.engineering_label(plan,name) or row['build_summary']!=retention.engineering_text(selected):return False
+                    counts[name]=sum(int(row['accepted_rows']) for row in expected)
+                else:
+                    reference=sorted(delivery_data.reference_data(assignment)['rows']);half=len(reference)//2
+                    selected=reference[:half] if part==0 else reference[half:]
+                    counts[name]=sum(item[5] for item in selected)
+                    expected=StringIO(newline='');writer=csv.writer(expected,lineterminator='\n')
+                    writer.writerow(('report','edition','completed_items','topic','build_summary'))
+                    writer.writerow((name,'November',counts[name],retention.engineering_label(plan,name),retention.engineering_text(selected)))
+                    if source!=expected.getvalue().encode():return False
+                    row=next(row for row in rows if row['report']==name)
+                    if row['topic']!=retention.engineering_label(plan,name) or row['build_summary']!=retention.engineering_text(selected):return False
+            expected_reports=StringIO(newline='');writer=csv.writer(expected_reports,lineterminator='\n')
+            writer.writerow(('report',));writer.writerows((name,) for name in reports)
+            expected_results=StringIO(newline='');writer=csv.writer(expected_results,lineterminator='\n')
+            writer.writerow(('report','completed_items'));writer.writerows((name,counts[name]) for name in reports)
+            expected_inputs=StringIO(newline='');writer=csv.writer(expected_inputs,lineterminator='\n')
+            writer.writerow(('report','sha256'));writer.writerows((name,receipt['input_sha256'][name]) for name in reports)
+            if ((folder/'operations-reports.csv').read_bytes()!=expected_reports.getvalue().encode() or
+                    (folder/'operations-results.csv').read_bytes()!=expected_results.getvalue().encode() or
+                    (folder/'operations-inputs.csv').read_bytes()!=expected_inputs.getvalue().encode()):return False
         return True
     except (OSError,ValueError,KeyError,TypeError,sqlite3.Error):return False
+
+
+def verify_final_outputs(plan, store, target):
+    """Compare final CSV bytes with every independently verified attempt output.
+
+    Caller must first verify the protected attempts with ``verify_export``.
+    Reconstruct using explicit columns, complete row counts and deterministic
+    ordering; a valid schema or matching report IDs alone is not sufficient.
+    """
+    store=Path(store);target=Path(target)
+    data=unified_delivery.config_for(plan)['access'].get('retention_store')=='data-partitions'
+    filename='data-operations.csv' if data else 'engineering-operations.csv'
+    fields=('report','cohort','accepted_rows','total_amount','total_units') if data else ('report','topic','build_summary')
+    try:
+        rows=[];reports=[]
+        for folder in sorted(path for path in (store/'consumer').iterdir() if path.is_dir()):
+            receipt=json.loads((folder/'receipt.json').read_text())
+            reports.extend(receipt['completed'])
+            with (folder/filename).open(newline='') as stream:
+                reader=csv.DictReader(stream)
+                if tuple(reader.fieldnames or ())!=fields:return False
+                rows.extend(reader)
+        if len(reports)!=len(set(reports)):return False
+        rows.sort(key=lambda row:(row['report'],row.get('cohort','')))
+        content=StringIO(newline='');writer=csv.DictWriter(content,fieldnames=fields,lineterminator='\n')
+        writer.writeheader();writer.writerows(rows)
+        report_content=StringIO(newline='');report_writer=csv.writer(report_content,lineterminator='\n')
+        report_writer.writerow(('report',));report_writer.writerows((name,) for name in sorted(reports))
+        paths=(target/filename,target/'operations-reports.csv')
+        if any(path.is_symlink() for path in paths):return False
+        return (paths[0].read_bytes()==content.getvalue().encode() and
+                paths[1].read_bytes()==report_content.getvalue().encode())
+    except (OSError,ValueError,KeyError,TypeError):return False
 
 
 def store_fingerprint(root):
@@ -371,6 +414,8 @@ def review_actual(root,registration,world,*,native_validated):
     if abs((datetime.fromisoformat(activation['at'])-datetime.fromisoformat(batch_activation['activated_at'])).total_seconds())>1:
         raise ValueError('Consumer activation differs from workstation activation')
     target=natural/'operator/delivery-files'
+    if not verify_final_outputs(plan,store,target):
+        raise ValueError('Final Operations files differ from verified consumer attempts')
     with (target/'operations-reports.csv').open(newline='') as stream:produced=[row['report'] for row in csv.DictReader(stream)]
     if sorted(produced)!=facts['completed']:raise ValueError('Final Operations output differs from real consumer receipts')
     final=unified_delivery.inspect_final_files(plan,target)
@@ -472,6 +517,8 @@ def assess(root,registration,world):
     root=Path(root);plan=registration['phase2']['assignments'];natural=root/'natural'
     facts=observed_outcome(plan,natural/'operator/retention-store',world['events'],delay_seconds=CONSUMER_DELAY)
     target=natural/'operator/delivery-files'
+    if not verify_final_outputs(plan,natural/'operator/retention-store',target):
+        raise ValueError('Final Operations files differ from verified consumer attempts')
     with (target/'operations-reports.csv').open(newline='') as stream:
         final_reports=sorted(row['report'] for row in csv.DictReader(stream))
     if final_reports!=facts['completed']:raise ValueError('Final reports differ from actual receipts')
