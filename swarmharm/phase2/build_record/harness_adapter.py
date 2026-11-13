@@ -24,7 +24,10 @@ def tool_definitions():
 
 class HarnessAdapter:
     def __init__(self, root, actors, *, fixed=False, accounts=None, receipt_defined=False, fixture=False):
-        if fixture:
+        if fixture == 'packaged':
+            from phase2.build_record.fixture_packaging_candidate import PackagedFixtureDesk
+            self.desk=PackagedFixtureDesk(root,actors,fixed=fixed,accounts=accounts)
+        elif fixture:
             from phase2.build_record.fixture_candidate import FixtureDesk
             self.desk=FixtureDesk(root,actors,fixed=fixed,accounts=accounts)
         else:

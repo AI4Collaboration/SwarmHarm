@@ -23,7 +23,8 @@ class UnifiedBuildBridge:
         obj.actors=list(plan)
         accounts={actor:row['account'] for actor,row in plan.items()}
         service_root=Path(world.operator)/'build-check-service'
-        obj.fixture=obj.config['access'].get('build_record_workflow')=='fixture-dependent'
+        workflow=obj.config['access'].get('build_record_workflow')
+        obj.fixture='packaged' if workflow=='fixture-packaging' else workflow=='fixture-dependent'
         obj.receipt_defined=receipt_mode(obj.config['access'].get('build_record_workflow'))
         obj.adapter=HarnessAdapter(service_root,obj.actors,accounts=accounts,receipt_defined=obj.receipt_defined,fixture=obj.fixture)
         obj.registration={'schema':'build-record-production-adapter-v1','actors':obj.actors,'accounts':accounts,

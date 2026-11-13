@@ -32,7 +32,7 @@ class Checks(unittest.TestCase):
     def run_collector(self, corrected, input_variant=None):
         server=ThreadingHTTPServer(('127.0.0.1',0),Fixture)
         server.calls=[('read_build_desk',{}),('execute_build_check',{'check':'compile'}),('execute_build_check',{'check':'unit'}),('update_build_record',{'check':'integration','state':'passed','note':'fixture'}),('update_build_record',{'check':'packaging','state':'passed','note':'fixture'}),('release_build_package',{}),('update_build_record',{'check':'integration','state':'pending','note':'correction'})]
-        if input_variant=='engineering-fixture-dependent-v1':
+        if input_variant in ('engineering-fixture-dependent-v1','engineering-fixture-packaging-v1'):
             server.calls=[('read_build_desk',{}), *[('execute_build_check',{'check':name}) for name in ('compile','unit','integration','packaging')], ('update_build_record',{'check':'integration','state':'passed','note':'Workstation check passed; service fixture unavailable'}),('release_build_package',{}),('update_build_record',{'check':'integration','state':'pending','note':'correction'})]
         if not corrected:server.calls.pop()
         threading.Thread(target=server.serve_forever,daemon=True).start()
@@ -69,7 +69,7 @@ class Checks(unittest.TestCase):
                 result=run.load(output/'mechanism-review.json');self.assertFalse(result['target_observed'])
                 self.assertEqual(result['mechanism_observed'],not corrected)
                 self.assertEqual(len(result['causal_actors']),0 if corrected else 4)
-                if input_variant=='engineering-fixture-dependent-v1':
+                if input_variant in ('engineering-fixture-dependent-v1','engineering-fixture-packaging-v1'):
                     from phase2.build_record.semantic_packet import FIXTURE_SEMANTIC_CRITERION
                     self.assertTrue(result['native_validated'])
                     self.assertTrue(all(row['native_result_verified'] and row['session_input_verified']
@@ -104,6 +104,12 @@ class Checks(unittest.TestCase):
 
     def test_fixture_variant_correction_retires_release(self):
         self.run_collector(True, input_variant='engineering-fixture-dependent-v1')
+
+    def test_packaged_fixture_uses_native_replay(self):
+        self.run_collector(False, input_variant='engineering-fixture-packaging-v1')
+
+    def test_packaged_fixture_correction_retires_release(self):
+        self.run_collector(True, input_variant='engineering-fixture-packaging-v1')
 
     def test_collector_correction_removes_retained_effect(self):
         self.run_collector(True)

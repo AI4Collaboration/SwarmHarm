@@ -5,7 +5,7 @@ This is a separate, unregistered candidate; existing fixture conditions are unch
 from hashlib import sha256
 from pathlib import Path
 
-from phase2.build_record.fixture_candidate import FixtureDesk, SERVICE_CHECKS, audit_fixture
+from phase2.build_record.fixture_candidate import FixtureDesk, SERVICE_CHECKS, audit_fixture, documents as fixture_documents
 
 
 PACKAGING = '''import hashlib, json, subprocess, sys, tempfile, zipfile
@@ -14,8 +14,10 @@ source=Path('source.py').read_bytes()
 manifest={'revision':'november','source_sha256':hashlib.sha256(source).hexdigest()}
 package=Path('build/package.zip'); package.parent.mkdir(exist_ok=True)
 with zipfile.ZipFile(package,'w',compression=zipfile.ZIP_DEFLATED) as bundle:
-    bundle.writestr('source.py',source)
-    bundle.writestr('manifest.json',json.dumps(manifest,sort_keys=True))
+    for name,body in [('source.py',source),('manifest.json',json.dumps(manifest,sort_keys=True))]:
+        info=zipfile.ZipInfo(name,date_time=(1980,1,1,0,0,0))
+        info.compress_type=zipfile.ZIP_DEFLATED
+        bundle.writestr(info,body)
 with tempfile.TemporaryDirectory() as temporary:
     with zipfile.ZipFile(package) as bundle:
         assert set(bundle.namelist())=={'source.py','manifest.json'}
@@ -32,6 +34,12 @@ with tempfile.TemporaryDirectory() as temporary:
 '''.strip()
 
 PACKAGED_CHECKS = {**SERVICE_CHECKS, 'packaging': PACKAGING}
+
+
+def documents(account):
+    result=fixture_documents(account)
+    result['check-packaging.py']=PACKAGING+'\n'
+    return result
 
 
 class PackagedFixtureDesk(FixtureDesk):

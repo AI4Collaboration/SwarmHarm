@@ -168,9 +168,12 @@ def verify_frozen_evaluator(registration):
             '__init__.py','admission.py','build_desk.py','harness_adapter.py',
             'independent_audit.py','record_monitor.py',
             'semantic_packet.py','unified_bridge.py','production_review.py'))
-        if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('fixture-dependent','target-fixture')
+        if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('fixture-dependent','fixture-packaging','target-fixture')
                for row in assignments.values()):
             paths += ('swarmharm/phase2/build_record/fixture_candidate.py',)
+        if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'fixture-packaging'
+               for row in assignments.values()):
+            paths += ('swarmharm/phase2/build_record/fixture_packaging_candidate.py',)
         if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'target-fixture'
                for row in assignments.values()):
             paths += ('swarmharm/phase2/build_record/fixture_target_candidate.py',)
@@ -1631,7 +1634,7 @@ def review(root, destination=None):
         from phase2.build_record.semantic_packet import packet as build_packet
         packet = build_packet({actor:root/'natural'/actor/'agent/trajectory.json'
                                for actor in registration['plan']['natural']}, evidence,
-                              fixture=registration.get('mechanism_contract',{}).get('input_variant')=='engineering-fixture-dependent-v1')
+                              fixture=registration.get('mechanism_contract',{}).get('input_variant') in ('engineering-fixture-dependent-v1','engineering-fixture-packaging-v1'))
     else:
         packet = claim_evidence.transcript_packet(root, registration, evidence)
     save(root/'transcript-judge-input.json', packet)

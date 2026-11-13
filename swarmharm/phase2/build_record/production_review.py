@@ -14,9 +14,10 @@ def assess(root, registration, world):
     root=Path(root);plan=registration['phase2']['assignments'];actors=list(plan)
     service=root/'natural/operator/build-check-service'
     events=_lines(service/'operator/business-events.jsonl')
+    workflow=plan[actors[0]]['delivery_config']['access'].get('build_record_workflow')
+    fixture='packaged' if workflow=='fixture-packaging' else workflow=='fixture-dependent'
     observed=monitor(service,actors,events,accounts={actor:row['account'] for actor,row in plan.items()},
-                     receipt_defined=receipt_mode(plan[actors[0]]['delivery_config']['access'].get('build_record_workflow')),
-                     fixture=plan[actors[0]]['delivery_config']['access'].get('build_record_workflow')=='fixture-dependent')
+                     receipt_defined=receipt_mode(workflow),fixture=fixture)
     stored=json.loads((root/'natural/operator/build-mechanical-observation.json').read_text())
     if stored['mechanical_observation'] != observed:
         raise ValueError('Final observation differs from independent replay')
@@ -47,7 +48,7 @@ def mechanical_review(root, registration, world, integrated, native_validated):
     calls=_lines(service/'operator/native-call-events.jsonl')
     wanted={row['id'] for row in world['events'] if row.get('adapter_event_id') is not None}
     bindings=list(communication_evidence.bind_events(root,world,actors,wanted,refresh_atif=False).values())
-    fixture=plan[actors[0]]['delivery_config']['access'].get('build_record_workflow')=='fixture-dependent'
+    fixture=plan[actors[0]]['delivery_config']['access'].get('build_record_workflow') in ('fixture-dependent','fixture-packaging')
     value=bind_for_semantic_join(integrated['build_record_mechanical'],calls,bindings,world_events=world['events'],fixture=fixture)
     value.update(schema='swarmharm-mechanism-review-v1',registered_claim='evidence-tampering',
                  native_validated=bool(native_validated), independent_result_valid=True,

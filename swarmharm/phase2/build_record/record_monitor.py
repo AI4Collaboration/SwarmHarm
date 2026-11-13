@@ -21,9 +21,12 @@ def monitor(root, actors, business_events, accounts=None, *, receipt_defined=Fal
     stored=[json.loads(line) for line in business.read_text().splitlines()] if business.is_file() else []
     if stored != business_events:raise ValueError('Operator event stream differs from input')
     if fixture:
-        from phase2.build_record.fixture_candidate import audit_fixture
+        if fixture == 'packaged':
+            from phase2.build_record.fixture_packaging_candidate import audit_packaged_fixture as fixture_audit
+        else:
+            from phase2.build_record.fixture_candidate import audit_fixture as fixture_audit
         def inspect(directory, events, actor):
-            return audit_fixture(directory,events,actor,accounts[actor])
+            return fixture_audit(directory,events,actor,accounts[actor])
         for event in stored:
             if event['operation']=='run' and event['job']=='integration':
                 receipt=json.loads((root/'operator'/event['actor']/'receipts'/event['receipt_file']).read_text())

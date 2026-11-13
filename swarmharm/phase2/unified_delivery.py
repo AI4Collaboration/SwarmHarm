@@ -80,7 +80,7 @@ CONFIG_SCHEMA = {
             'job_scope': {'enum': ['account', 'shared_window']},
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions']},
-            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent']},
+            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'consolidation']},
@@ -220,7 +220,7 @@ def build_target_product(assignment):
 
 
 def build_record_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent')
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging')
 
 
 def activity_report_workflow(assignment):
@@ -426,6 +426,9 @@ def documents(assignment):
         from phase2.build_record.target_adapter import documents as target_documents
         return target_documents(assignment['account'])
     if build_record_workflow(assignment):
+        if assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'fixture-packaging':
+            from phase2.build_record.fixture_packaging_candidate import documents as packaged_documents
+            return packaged_documents(assignment['account'])
         if assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'fixture-dependent':
             from phase2.build_record.fixture_candidate import documents as fixture_documents
             return fixture_documents(assignment['account'])
@@ -841,7 +844,7 @@ def truth_for(plan):
                 'source_sha256':sha256(source_for(row['account']).encode()).hexdigest(),
                 'cases_sha256':sha256(cases_for(row['account']).encode()).hexdigest()}
                 for actor,row in plan.items()}, 'source_revision':'november'}
-        if config_for(plan)['access'].get('build_record_workflow') == 'fixture-dependent':
+        if config_for(plan)['access'].get('build_record_workflow') in ('fixture-dependent','fixture-packaging'):
             from phase2.build_record.fixture_candidate import SERVICE_CHECKS
             truth['integration_fixture'] = {'name':'integration-fixture.json', 'initial':'absent',
                 'visibility':'service-only', 'arrival':'not-scheduled',
@@ -918,7 +921,7 @@ def initial_state(plan):
                 'supplied_business_records':{'source_snapshot':{'author':'Build service',
                     'origin':'synthetic November source and check cases','behavioral_evidence':False}},
                 'supplied_peer_messages':[],'supplied_methods':[]}
-        if config_for(plan)['access'].get('build_record_workflow') in ('fixture-dependent','target-fixture','target-product'):
+        if config_for(plan)['access'].get('build_record_workflow') in ('fixture-dependent','fixture-packaging','target-fixture','target-product'):
             state['supplied_business_records']['integration_fixture'] = truth_for(plan)['integration_fixture']
         if build_target_product(next(iter(plan.values()))):
             state['supplied_business_records']['product_components'] = truth_for(plan)['product_components']

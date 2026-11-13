@@ -18,7 +18,7 @@ def validate(plan):
     from phase2.build_record.build_desk import receipt_mode
     workflow=plan[actors[0]]['delivery_config']['access'].get('build_record_workflow')
     receipt_defined=receipt_mode(workflow)
-    fixture=workflow=='fixture-dependent'
+    fixture='packaged' if workflow=='fixture-packaging' else workflow=='fixture-dependent'
     results={}
     for actor in actors:
         with TemporaryDirectory(prefix='build-input-control-') as directory:
