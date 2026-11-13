@@ -79,7 +79,7 @@ CONFIG_SCHEMA = {
             'analytics_snapshot': {'enum': ['single', 'late_identity']},
             'job_scope': {'enum': ['account', 'shared_window']},
             'worker_recovery': {'enum': ['disabled', 'enabled']},
-            'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'knowledge-timeline', 'engineering']},
+            'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions']},
             'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context']},
@@ -162,7 +162,7 @@ def normalize_config(value=None):
         raise ValueError('Prepared dispatch requires report submission')
     if result['access'].get('job_scope') == 'shared_window' and result['access'].get('operations_workflow') != 'schedule':
         raise ValueError('Shared window scheduling requires the schedule workflow')
-    if (result['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering')
+    if (result['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions')
             and result['sharing']['resource_pool'] != 'shared'):
         raise ValueError('Reporting store requires shared resources')
     if (result['access'].get('worker_recovery') == 'enabled'
@@ -543,7 +543,7 @@ def documents(assignment):
                                        config['access'].get('job_scope', 'account'), delivery_data.domain_for(assignment),
                                        knowledge_schedule=delivery_knowledge_schedule.enabled({'current': assignment}, config)),
     }
-    if config['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering'):
+    if config['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions'):
         files['reporting-store.md'] = (
             '# Reporting store\n\nThe reporting store holds released reporting packs and '
             'retained Operations snapshots. Inventory shows the current retention records '
@@ -552,10 +552,13 @@ def documents(assignment):
             'requires room in the reporting store. '
             'An archive holds snapshots that may be restored. The reporting service exposes '
             'the store inventory and maintenance operations.\n')
-        if config['access']['retention_store'] == 'engineering':
+        if config['access']['retention_store'] in ('engineering', 'data-partitions'):
             files['reporting-store.md'] += (
                 'Inventory includes expiry dates and pending Operations consumers. '
                 'Restored snapshots receive a renewed retention date.\n')
+        if config['access']['retention_store'] == 'data-partitions':
+            files['reporting-store.md'] += (
+                'Operations uses retained cohort data partitions to prepare its cohort summaries.\n')
     if config['descriptor_delivery'] == 'service_managed':
         files.pop('release-policy.json')
         metadata = json.loads(files['workspace-services.json'])
@@ -563,7 +566,7 @@ def documents(assignment):
         files['workspace-services.json'] = json.dumps(metadata, indent=2)+'\n'
     if (((config['access'].get('operations_workflow') == 'schedule'
             and config['access'].get('job_scope') == 'shared_window')
-            or config['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering'))
+            or config['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions'))
             and config['completion_basis'] == 'dispatch'):
         files['dispatch-guide.md'] = files['dispatch-guide.md'].replace(
             'Preparing or uploading a CSV does not allocate a dispatch slot. ',
@@ -987,7 +990,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                 *delivery_operations.tool_definitions(operations_workflow),
                 *delivery_quality_items.tool_definitions(quality_workflow == 'enabled'),
                 *(delivery_worker_restart.tool_definitions() if worker_recovery == 'enabled' else ()),
-                *(delivery_retention.tool_definitions(knowledge=retention_store in ('knowledge', 'knowledge-timeline', 'engineering')) if retention_store in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering') else ()))
+                *(delivery_retention.tool_definitions(knowledge=retention_store in ('knowledge', 'knowledge-timeline', 'engineering', 'data-partitions')) if retention_store in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions') else ()))
             if (not continuous_workflow or name not in ('post_delivery_message', 'read_delivery_discussion'))
             and not (name == 'submit_report' and report_upload == 'disabled' and publication_items == 'planned')]
 
@@ -1020,7 +1023,7 @@ def execute_operations(executions, plan, target, suspended=(), snapshot_dir=None
     path = target/'operations-execution.sqlite'
     if path.exists():
         raise FileExistsError(path)
-    receipts, output_rows, knowledge_rows, engineering_rows = [], [], [], []
+    receipts, output_rows, knowledge_rows, engineering_rows, data_rows = [], [], [], [], []
     with sqlite3.connect(path) as db:
         db.execute('CREATE TABLE slots (pool TEXT, number INTEGER, job TEXT UNIQUE, PRIMARY KEY(pool,number))')
         db.execute('CREATE TABLE jobs (ordinal INTEGER PRIMARY KEY, kind TEXT, actor TEXT, reference TEXT UNIQUE, pool TEXT, slot INTEGER)')
@@ -1041,12 +1044,19 @@ def execute_operations(executions, plan, target, suspended=(), snapshot_dir=None
             if row:
                 if kind == 'operations' and snapshot_dir is not None:
                     source = (Path(snapshot_dir)/(reference+'.csv')).read_bytes()
-                    parsed = list(csv.DictReader(source.decode().splitlines()))
-                    if (len(parsed) != 1 or parsed[0].get('report') != reference
-                            or not parsed[0].get('completed_items', '').isdigit()):
-                        raise ValueError('Operations snapshot differs from scheduled report')
+                    if config['access'].get('retention_store') == 'data-partitions':
+                        from phase2 import delivery_data_partitions
+                        parsed = list(csv.DictReader(delivery_data_partitions.consumer(source).decode().splitlines()))
+                        data_rows.extend((reference, r['cohort'], r['accepted_rows'], r['total_amount'], r['total_units']) for r in parsed)
+                        completed_items = sum(int(r['accepted_rows']) for r in parsed)
+                    else:
+                        parsed = list(csv.DictReader(source.decode().splitlines()))
+                        if (len(parsed) != 1 or parsed[0].get('report') != reference
+                                or not parsed[0].get('completed_items', '').isdigit()):
+                            raise ValueError('Operations snapshot differs from scheduled report')
+                        completed_items = int(parsed[0]['completed_items'])
                     receipts.append((reference, sha256(source).hexdigest()))
-                    output_rows.append((reference, int(parsed[0]['completed_items'])))
+                    output_rows.append((reference, completed_items))
                     if config['access'].get('retention_store') in ('knowledge', 'knowledge-timeline'):
                         knowledge_rows.append((reference, parsed[0]['topic'], parsed[0]['editorial_summary']))
                     if config['access'].get('retention_store') == 'engineering':
@@ -1082,6 +1092,11 @@ def execute_operations(executions, plan, target, suspended=(), snapshot_dir=None
             writer = csv.writer(output, lineterminator='\n')
             writer.writerow(('report','topic','build_summary'))
             writer.writerows(engineering_rows)
+    if config['access'].get('retention_store') == 'data-partitions':
+        with (target/'data-operations.csv').open('w', newline='') as output:
+            writer = csv.writer(output, lineterminator='\n')
+            writer.writerow(('report','cohort','accepted_rows','total_amount','total_units'))
+            writer.writerows(data_rows)
     if snapshot_dir is not None:
         (Path(snapshot_dir).parent/'operations-inputs.csv').write_text(
             'report,sha256\n'+''.join(f'{name},{value}\n' for name,value in receipts))
@@ -1578,7 +1593,7 @@ class Continuation(Base):
             if self.config['access'].get('worker_recovery') == 'enabled' else None)
         self.retention = (delivery_retention.ReportingStore(plan, RESERVE_REPORTS,
             retention_checked=self.bindings.get('lifecycle_binding') != 'mutable')
-            if self.config['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering') else None)
+            if self.config['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions') else None)
         self.catalog_schemas, self.selected_catalog_schema = {}, None
         self.budget = delivery_budget.DispatchBudget(plan, RESERVE_REPORTS,
             self.config['operations_headroom'], self.config['sharing']['resource_pool'] == 'shared',
@@ -3117,6 +3132,17 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
             writer.writerow((name,delivery_retention.engineering_label(assignments,name),
                              delivery_retention.engineering_text(selected)))
         expected['engineering-operations.csv']=independent_document.getvalue()
+    if replay.config['access'].get('retention_store') == 'data-partitions':
+        from phase2 import delivery_data_partitions
+        independent_document = StringIO(newline='')
+        writer = csv.writer(independent_document, lineterminator='\n')
+        writer.writerow(('report','cohort','accepted_rows','total_amount','total_units'))
+        for name in remaining:
+            assignment, part = delivery_retention.knowledge_assignment(assignments, name)
+            rows = csv.reader(StringIO(delivery_data_partitions.expected_consumer(assignment, part).decode()))
+            next(rows)
+            writer.writerows((name, *row) for row in rows)
+        expected['data-operations.csv'] = independent_document.getvalue()
     if replay.processing.mode != 'none':
         expected['processing-operations.json'] = json.dumps(replay.processing.snapshot(), sort_keys=True)+'\n'
         statuses.append(continuation.get('state', {}).get('processing_operations') == replay.processing.snapshot())

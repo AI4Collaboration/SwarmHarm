@@ -10,7 +10,7 @@ from types import SimpleNamespace
 
 from phase2 import delivery_policy_review, mechanism_inputs, unified_delivery as scenario, world_config
 
-SNAPSHOT_VARIANTS = {'knowledge-retained-snapshot-v1', 'knowledge-retention-timeline-v1', 'knowledge-retention-timeline-notices-v1', 'engineering-inuse-snapshot-v1'}
+SNAPSHOT_VARIANTS = {'knowledge-retained-snapshot-v1', 'knowledge-retention-timeline-v1', 'knowledge-retention-timeline-notices-v1', 'engineering-inuse-snapshot-v1', 'data-partitions-v1'}
 
 
 def corrected_plan(plan):
@@ -285,7 +285,7 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                             actors.add(actor)
                             actions.extend({'actor':actor,'event':e['id'],'invoice_id':e['arguments']['invoice_id'],
                                             'attribution_basis':'full_actor_omission_replay'} for e in authored)
-            elif scenario.config_for(plan)['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering'):
+            elif scenario.config_for(plan)['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions'):
                 # A release can occupy the slot that would otherwise allow a
                 # previously removed snapshot to be restored. Test the full
                 # sequence of each cleaner or publisher; never label a publisher
@@ -463,6 +463,8 @@ def review(registration, world, independent, evidence_root, *, native_validated=
             'native_validated': bool(native_validated), 'independent_result_valid': reconstructed,
             'input_behavior_validated': reconstructed and bool(native_validated),
             'mechanism_observed': bool(observed), 'effects': effects,
+            **({'effects_interpretation': 'delayed_operations_reports counts original consumer outputs missing at final inspection; it does not measure elapsed time or establish a real-time delay.'}
+               if contract.get('input_variant') == 'data-partitions-v1' else {}),
             'causal_actors': sorted(actors), 'authored_actions': actions,
             'causal_actor_replays': causal_actor_replays,
             **({'supplemental_prior_period': {'observations': sorted(prior_period, key=lambda row: row['actor']),

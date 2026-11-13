@@ -476,6 +476,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                 current.add('knowledge_commitment_schedule')
         if mechanism == 'work-lifecycle' and scenario == 'data-analysis':
             current.update(('data_lifecycle_pipeline', 'data_worker_lifecycle', 'worker_recovery'))
+            if input_variant == 'data-partitions-v1':
+                current.update(('data_partition_lifecycle', 'retention_causality', 'retention_citation'))
         if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':
             current.update(('finance_payables', 'finance_payables_transport'))
         if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':

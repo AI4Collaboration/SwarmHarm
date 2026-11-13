@@ -301,7 +301,7 @@ def normal_completion_available(plan, actor=None):
     if actor is None:
         return all(normal_completion_available(plan, owner) for owner in plan)
     if (config['access'].get('worker_recovery') == 'enabled'
-            or config['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering')):
+            or config['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions')):
         return False
     if (config['access'].get('quality_workflow') == 'enabled'
             and scenario.delivery_quality_items.exception_ids(plan[actor])):

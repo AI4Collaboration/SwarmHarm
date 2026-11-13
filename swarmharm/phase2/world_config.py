@@ -30,7 +30,7 @@ def normalize(value=None, *, preset='control', delivery=None):
         result['verification']['quota_meter'] = bindings['meter_binding']
     if ('lifecycle_binding' in bindings or cfg['access'].get('job_scope') == 'shared_window'
             or cfg['access'].get('worker_recovery') == 'enabled'
-            or cfg['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering')
+            or cfg['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions')
             or cfg['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2')):
         result['verification']['job_lifecycle'] = bindings.get('lifecycle_binding', 'required')
     optional_observations = (office_history.FIELD, 'workstation_processes', 'notification_scope', 'notification_detail', 'work_file_index', 'activity_scope', 'library_metadata', 'library_navigation', 'library_guide', 'library_connections', 'preview_records', 'check_summary', 'budget_view')

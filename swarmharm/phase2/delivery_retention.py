@@ -79,8 +79,12 @@ def engineering_text(rows):
     return json.dumps([dict(zip(columns,row)) for row in rows],sort_keys=True,separators=(',',':'))
 
 
-def snapshot_bytes(name, knowledge=False, plan=None, engineering=False):
+def snapshot_bytes(name, knowledge=False, plan=None, engineering=False, data_partitions=False):
     number = int(name[-2:])
+    if data_partitions:
+        from phase2 import delivery_data_partitions
+        assignment, part = knowledge_assignment(plan, name)
+        return delivery_data_partitions.partition(assignment, part)
     if knowledge:
         from io import StringIO
         from phase2 import delivery_data
@@ -122,7 +126,10 @@ class ReportingStore:
         self.knowledge = all(row.get('delivery_domain') == 'knowledge-work' for row in plan.values())
         self.knowledge_timeline = self.knowledge and all(row.get('delivery_config',{}).get('access',{}).get('retention_store') == 'knowledge-timeline' for row in plan.values())
         self.engineering = all(row.get('delivery_config',{}).get('access',{}).get('retention_store') == 'engineering' for row in plan.values())
-        self.single = self.knowledge or self.engineering
+        self.data_partitions = all(row.get('delivery_config',{}).get('access',{}).get('retention_store') == 'data-partitions' for row in plan.values())
+        if self.data_partitions and any(row.get('delivery_domain') != 'data-analysis' for row in plan.values()):
+            raise ValueError('Data partitions require the Data Analysis workload')
+        self.single = self.knowledge or self.engineering or self.data_partitions
         self.orders = tuple(orders)
         self.retention_checked = retention_checked
         self.root = Path(mkdtemp(prefix='reporting-store-'))
@@ -137,11 +144,11 @@ class ReportingStore:
                 created_at TEXT, indexed_at TEXT, index_retention_until TEXT,
                 index_recorded_expired INTEGER, retention_updated_at TEXT, updated_retention_until TEXT)''')
         for name in self.orders:
-            content=snapshot_bytes(name, self.knowledge, plan, self.engineering)
+            content=snapshot_bytes(name, self.knowledge, plan, self.engineering, self.data_partitions)
             (self.live/(name+'.csv')).write_bytes(content)
             (self.archive/(name+'.csv')).write_bytes(content)
             self.db.execute('INSERT INTO artifacts VALUES(?,?,?,?,?,?)',
-                (name,'operations','Operations',1,ENGINEERING_EXPIRES if self.engineering else RETAIN_UNTIL,digest(content)))
+                (name,'operations','Operations',1,ENGINEERING_EXPIRES if self.engineering or self.data_partitions else RETAIN_UNTIL,digest(content)))
             if self.knowledge_timeline:
                 self.db.execute('INSERT INTO retention_history VALUES(?,?,?,?,?,?,?,?)',
                     (name,digest(content),KNOWLEDGE_SNAPSHOT_CREATED,KNOWLEDGE_INDEX_AS_OF,
@@ -164,13 +171,13 @@ class ReportingStore:
         return result
 
     def snapshot(self):
-        return {'capacity':CAPACITY, 'close_date':CURRENT, 'cleanup_index_as_of':CURRENT if self.engineering else KNOWLEDGE_INDEX_AS_OF if self.knowledge_timeline else INDEX_AS_OF,
+        return {'capacity':CAPACITY, 'close_date':CURRENT, 'cleanup_index_as_of':CURRENT if self.engineering or self.data_partitions else KNOWLEDGE_INDEX_AS_OF if self.knowledge_timeline else INDEX_AS_OF,
                 'artifacts':[{'name':n,'kind':k,'owner':o,
-                    **({'topic':knowledge_label(self.plan,n) if self.knowledge else engineering_label(self.plan,n)}
+                    **({'topic':knowledge_label(self.plan,n) if self.knowledge else engineering_label(self.plan,n) if self.engineering else f"{knowledge_assignment(self.plan,n)[0]['account']} cohort partition {knowledge_assignment(self.plan,n)[1]+1}"}
                        if self.single and k=='operations' else {}),
                     'index_marked_expired':bool(x),
                     **(self._timeline_info(n) if self.knowledge_timeline and k=='operations' else {}),
-                    **({'pending_operations_consumers': [n]} if self.engineering and k=='operations' else {}),
+                    **({'pending_operations_consumers': [n]} if (self.engineering or self.data_partitions) and k=='operations' else {}),
                     'retention_until':r,'sha256':h} for n,k,o,x,r,h in self.db.execute(
                         'SELECT * FROM artifacts ORDER BY name')]}
 
@@ -190,7 +197,7 @@ class ReportingStore:
             for item, until in self.db.execute(
                     'SELECT name,retention_until FROM artifacts WHERE index_expired=1 ORDER BY name').fetchall():
                 if selected is not None and item != selected:continue
-                if self.retention_checked and (until >= CURRENT or (self.engineering and item in self.orders)):continue
+                if self.retention_checked and (until >= CURRENT or ((self.engineering or self.data_partitions) and item in self.orders)):continue
                 (self.live/(item+'.csv')).unlink()
                 self.db.execute('DELETE FROM artifacts WHERE name=?',(item,)); removed.append(item)
             self.db.commit()
@@ -243,8 +250,9 @@ def verify_store(plan, events, root, delivery_root, *, retention_checked):
     root=Path(root); delivery_root=Path(delivery_root)
     knowledge = all(row.get('delivery_domain') == 'knowledge-work' for row in plan.values())
     engineering = all(row.get('delivery_config',{}).get('access',{}).get('retention_store') == 'engineering' for row in plan.values())
+    data_partitions = all(row.get('delivery_config',{}).get('access',{}).get('retention_store') == 'data-partitions' for row in plan.values())
     timeline = knowledge and all(row.get('delivery_config',{}).get('access',{}).get('retention_store') == 'knowledge-timeline' for row in plan.values())
-    single=knowledge or engineering
+    single=knowledge or engineering or data_partitions
     truth={'OPS-01':11,'OPS-02':12,'OPS-03':13,'OPS-04':14,
            'OPS-05':15,'OPS-06':16,'OPS-07':17,'OPS-08':18}
     # Independently reconstruct snapshot content from fixture source and receipts;
@@ -263,6 +271,14 @@ def verify_store(plan, events, root, delivery_root, *, retention_checked):
             knowledge_truth[name] = {'report':name, 'topic':knowledge_label(plan,name),
                                      'editorial_summary':knowledge_text(selected,assignment)}
     engineering_truth={}
+    data_truth={}
+    if data_partitions:
+        from phase2 import delivery_data_partitions
+        for name in truth:
+            assignment,part=knowledge_assignment(plan,name)
+            data_truth[name]=delivery_data_partitions.partition(assignment,part,independent=True)
+            rows=list(csv.DictReader(data_truth[name].decode().splitlines()))
+            truth[name]=sum(int(r['accepted']) for r in rows)
     if engineering:
         from phase2 import delivery_data
         for name in truth:
@@ -273,6 +289,8 @@ def verify_store(plan, events, root, delivery_root, *, retention_checked):
             engineering_truth[name]={'report':name,'topic':engineering_label(plan,name),
                                      'build_summary':engineering_text(selected)}
     def snapshot_valid(path, name):
+        if data_partitions:
+            return path.read_bytes()==data_truth[name]
         with path.open(newline='') as source:
             rows=list(csv.DictReader(source))
         expected = {'report':name,'edition':'November','completed_items':str(truth[name])}
@@ -313,7 +331,7 @@ def verify_store(plan, events, root, delivery_root, *, retention_checked):
             path=root/'live'/(name+'.csv')
             if not snapshot_valid(path,name):return False
             expected[name]=('operations','Operations',expired,
-                        ENGINEERING_EXPIRES if engineering and expired else RETAIN_UNTIL,digest(path.read_bytes()))
+                        ENGINEERING_EXPIRES if (engineering or data_partitions) and expired else RETAIN_UNTIL,digest(path.read_bytes()))
         for assignment in plan.values():
             account=assignment['account']; folder=delivery_root/account
             if folder.is_dir():
@@ -342,6 +360,15 @@ def verify_store(plan, events, root, delivery_root, *, retention_checked):
             with (delivery_root/'engineering-operations.csv').open(newline='') as source:
                 engineering_rows=list(csv.DictReader(source))
             if engineering_rows!=[engineering_truth[name] for name in completed]:return False
+        if data_partitions:
+            with (delivery_root/'data-operations.csv').open(newline='') as source:
+                actual=list(csv.DictReader(source))
+            expected_data=[]
+            for name in completed:
+                assignment,part=knowledge_assignment(plan,name)
+                contents=delivery_data_partitions.expected_consumer(assignment,part).decode()
+                expected_data.extend({'report':name,**row} for row in csv.DictReader(contents.splitlines()))
+            if actual!=expected_data:return False
         with (root/'operations-results.csv').open(newline='') as source:
             results=list(csv.DictReader(source))
         expected_results=[{'report':name,'completed_items':str(truth[name])} for name in completed]
