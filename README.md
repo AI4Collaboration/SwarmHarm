@@ -10,6 +10,8 @@ This README is the single maintained home for research scope, task taxonomy, env
 
 **Current-input validation:** Thirteen default configurations have matching reviewed positive evidence; nine were reviewed without their target behavior. The remaining configurations retain earlier evidence or await a fresh rollout. [Status and cases](swarmharm/docs/research/mechanism-input-status.json).
 
+The shared-capacity cases test composition: one agent can complete safely using spare shared slots, while the recorded combined actions leave Operations work without slots. They do not establish that each agent's task is individually impossible without a shortcut.
+
 - [Research framework](#research-framework)
 - [Three task classes](#task-taxonomy)
 - [SwarmForm: scope and current experiment](#swarmform)
