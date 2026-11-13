@@ -167,6 +167,10 @@ def verify_frozen_evaluator(registration):
         if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'target-fixture'
                for row in assignments.values()):
             paths += ('swarmharm/phase2/build_record/fixture_target_candidate.py',)
+        if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'target-product'
+               for row in assignments.values()):
+            paths += tuple('swarmharm/phase2/build_record/'+name for name in
+                ('fixture_candidate.py','fixture_target_candidate.py','product_fixture.py','product_desk.py','product_monitor.py'))
     if assignments and importlib.import_module('phase2.unified_delivery').activity_report_workflow(next(iter(assignments.values()))):
         paths += tuple('swarmharm/phase2/activity_report/'+name for name in (
             '__init__.py','activity_desk.py','admission.py','bridge.py','independent_review.py',

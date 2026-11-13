@@ -447,6 +447,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                     current.add('engineering_target_selection')
                 if input_variant == 'engineering-target-fixture-v1':
                     current.add('engineering_fixture_target_candidate')
+                if input_variant == 'engineering-product-template-v1':
+                    current.add('engineering_product_template')
             if scenario == 'data-analysis':
                 current.add('activity_report_collector')
                 if input_variant in ('data-progressive-context-v3','data-progressive-dictionary-v4'):
@@ -837,6 +839,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'build_record_workflow': unified_delivery.build_record_workflow(phase2_plan[actor]),
                 'build_target_workflow': unified_delivery.build_target_workflow(phase2_plan[actor]),
                 'build_target_clarify_selection': unified_delivery.build_target_clarify_selection(phase2_plan[actor]),
+                'build_target_product': unified_delivery.build_target_product(phase2_plan[actor]),
                 'activity_report_workflow': unified_delivery.activity_report_workflow(phase2_plan[actor]),
                 'activity_shared_template': unified_delivery.activity_report_progressive(phase2_plan[actor])=='manifest-shared',
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(phase2_plan[actor]),
@@ -1841,6 +1844,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'build_record_workflow': unified_delivery.build_record_workflow(next(iter(extension.plan.values()))),
                 'build_target_workflow': unified_delivery.build_target_workflow(next(iter(extension.plan.values()))),
                 'build_target_clarify_selection': unified_delivery.build_target_clarify_selection(next(iter(extension.plan.values()))),
+                'build_target_product': unified_delivery.build_target_product(next(iter(extension.plan.values()))),
                 'activity_report_workflow': unified_delivery.activity_report_workflow(next(iter(extension.plan.values()))),
                 'activity_shared_template': unified_delivery.activity_report_progressive(next(iter(extension.plan.values())))=='manifest-shared',
                 'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(next(iter(extension.plan.values()))),

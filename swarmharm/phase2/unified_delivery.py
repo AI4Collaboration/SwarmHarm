@@ -80,7 +80,7 @@ CONFIG_SCHEMA = {
             'job_scope': {'enum': ['account', 'shared_window']},
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions']},
-            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent']},
+            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging']},
@@ -195,7 +195,7 @@ def normalize_config(value=None):
 
 
 def build_target_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('target','target-clear','target-fixture')
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('target','target-clear','target-fixture','target-product')
 
 
 def build_target_clarify_selection(assignment):
@@ -206,8 +206,12 @@ def build_target_fixture(assignment):
     return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'target-fixture'
 
 
+def build_target_product(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'target-product'
+
+
 def build_record_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'target-fixture', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent')
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent')
 
 
 def activity_report_workflow(assignment):
@@ -309,6 +313,9 @@ def task(assignment):
         from phase2.activity_report.activity_desk import TASK,DEPARTMENT_TASK
         return DEPARTMENT_TASK if activity_report_progressive(assignment)=='manifest-shared' else TASK
     if build_target_workflow(assignment):
+        if build_target_product(assignment):
+            from phase2.build_record.product_fixture import task as product_task
+            return product_task(assignment['account'])
         from phase2.build_record.target_desk import TASK
         return TASK
     if build_record_workflow(assignment):
@@ -389,6 +396,9 @@ def documents(assignment):
         from phase2.activity_report.activity_desk import documents as activity_documents
         return activity_documents(assignment['account'], progressive=activity_report_progressive(assignment))
     if build_target_workflow(assignment):
+        if build_target_product(assignment):
+            from phase2.build_record.product_fixture import documents as product_documents
+            return product_documents(assignment['account'])
         if build_target_fixture(assignment):
             from phase2.build_record.fixture_target_candidate import documents as fixture_target_documents
             return fixture_target_documents(assignment['account'])
@@ -795,7 +805,9 @@ def truth_for(plan):
                 for actor,row in plan.items()}}
     if build_record_workflow(next(iter(plan.values()))):
         from phase2.build_record.build_desk import JOBS, source_for, cases_for
-        if build_target_fixture(next(iter(plan.values()))):
+        if build_target_product(next(iter(plan.values()))):
+            from phase2.build_record.product_fixture import source as source_for, cases as cases_for
+        elif build_target_fixture(next(iter(plan.values()))):
             from phase2.build_record.target_desk import target_source as source_for
         truth = {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
             'accounts':{actor:{'account':row['account'],'checks':list(JOBS),
@@ -812,6 +824,12 @@ def truth_for(plan):
             truth['integration_fixture'] = {'name':'integration-fixture.json','initial':'absent',
                 'visibility':'service-only','arrival':'not-scheduled',
                 'desk_check_sha256':sha256((FIXTURE_CHECKS['integration']+'\n').encode()).hexdigest()}
+        if build_target_product(next(iter(plan.values()))):
+            from phase2.build_record.product_fixture import COMPONENTS, SERVICE_CHECKS
+            truth['integration_fixture'] = {'name':'integration-fixture.json','initial':'absent',
+                'visibility':'service-only','arrival':'not-scheduled',
+                'desk_check_sha256':sha256((SERVICE_CHECKS['integration']+'\n').encode()).hexdigest()}
+            truth['product_components'] = {actor:COMPONENTS[row['account']] for actor,row in plan.items()}
         return truth
     if config_for(plan)['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
@@ -852,8 +870,10 @@ def initial_state(plan):
                 'supplied_business_records':{'source_snapshot':{'author':'Build service',
                     'origin':'synthetic November source and check cases','behavioral_evidence':False}},
                 'supplied_peer_messages':[],'supplied_methods':[]}
-        if config_for(plan)['access'].get('build_record_workflow') in ('fixture-dependent','target-fixture'):
+        if config_for(plan)['access'].get('build_record_workflow') in ('fixture-dependent','target-fixture','target-product'):
             state['supplied_business_records']['integration_fixture'] = truth_for(plan)['integration_fixture']
+        if build_target_product(next(iter(plan.values()))):
+            state['supplied_business_records']['product_components'] = truth_for(plan)['product_components']
         return state
     state = {'origin': 'prepared_business_records', 'study_track': (
             'continuous_unified' if next(iter(plan.values())).get('continuous_workflow') else 'standalone_phase2'),
@@ -905,7 +925,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      population_plan='approved', quality_workflow='disabled', worker_recovery='disabled',
                      retention_store='disabled',
                      report_upload='enabled', publication_items='available',
-                     build_record_workflow=False, build_target_workflow=False, build_target_clarify_selection=False, reconciliation_workflow='disabled',
+                     build_record_workflow=False, build_target_workflow=False, build_target_clarify_selection=False, build_target_product=False, reconciliation_workflow='disabled',
                      activity_report_workflow=False, activity_shared_template=False, payables_workflow='disabled', editorial_brief_workflow=False,
                      editorial_intake_archive=False, editorial_publication_index=False, editorial_review_queue=False, **kwargs):
     if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context', 'category-template', 'receivables-aging'),
@@ -919,7 +939,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
         return activity_tools(shared_template=activity_shared_template)
     if build_target_workflow:
         from phase2.build_record.target_adapter import tool_definitions as target_tools
-        return target_tools(clarify_selection=build_target_clarify_selection)
+        return target_tools(clarify_selection=build_target_clarify_selection,product=build_target_product)
     if build_record_workflow:
         from phase2.build_record.harness_adapter import tool_definitions as build_tools
         return build_tools()

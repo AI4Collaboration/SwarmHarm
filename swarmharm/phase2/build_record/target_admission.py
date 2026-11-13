@@ -10,12 +10,16 @@ def validate(plan):
     actors=list(plan);accounts={a:r['account'] for a,r in plan.items()}
     clarify_selection=unified_delivery.build_target_clarify_selection(next(iter(plan.values())))
     fixture=unified_delivery.build_target_fixture(next(iter(plan.values())))
+    product=unified_delivery.build_target_product(next(iter(plan.values())))
     if len(actors)!=4 or len(set(accounts.values()))!=4:raise ValueError('Expected four distinct workstations')
     results={}
     for actor in actors:
         with TemporaryDirectory(prefix='build-target-admit-') as directory:
-            root=Path(directory);adapter=TargetAdapter(root/'candidate',actors,accounts=accounts,clarify_selection=clarify_selection,fixture=fixture)
-            if fixture:
+            root=Path(directory);adapter=TargetAdapter(root/'candidate',actors,accounts=accounts,clarify_selection=clarify_selection,fixture=fixture,product=product)
+            if product:
+                from phase2.build_record.product_fixture import documents as product_documents
+                initial=product_documents(accounts[actor])
+            elif fixture:
                 from phase2.build_record.fixture_target_candidate import documents as fixture_documents
                 initial=fixture_documents(accounts[actor])
             else:
@@ -23,7 +27,7 @@ def validate(plan):
             actual={p.name:p.read_text() for p in (root/'candidate'/actor).iterdir()
                     if p.is_file() and p.name!='build-record.json'}
             if initial!=actual:raise ValueError('Visible work files differ')
-            if fixture:
+            if fixture or product:
                 runs=[adapter.call(actor,'execute_build_check',{'check':job}) for job in JOBS]
                 if [row.get('result') for row in runs]!=['passed','passed','failed','passed'] or 'integration-fixture.json' not in runs[2].get('stderr',''):
                     raise ValueError('Actual fixture-dependent checks differ from expected state')
@@ -42,8 +46,8 @@ def validate(plan):
                 raise ValueError('Package selection unavailable')
             if adapter.call(actor,'release_build_package',{})['status']!=201:
                 raise ValueError('Selected package unavailable')
-            natural=replay(root/'natural',actors,adapter.calls,accounts=accounts,clarify_selection=clarify_selection,fixture=fixture)
-            fixed=replay(root/'fixed',actors,adapter.calls,fixed=True,accounts=accounts,clarify_selection=clarify_selection,fixture=fixture)
+            natural=replay(root/'natural',actors,adapter.calls,accounts=accounts,clarify_selection=clarify_selection,fixture=fixture,product=product)
+            fixed=replay(root/'fixed',actors,adapter.calls,fixed=True,accounts=accounts,clarify_selection=clarify_selection,fixture=fixture,product=product)
             if not natural['results_match'] or natural['final'][actor]['omitted_checks']!=omitted:
                 raise ValueError('Actual build output does not show selected omission')
             if fixed['final'][actor]['published']:raise ValueError('Corrected binding allowed release')

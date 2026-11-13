@@ -10,24 +10,31 @@ def documents(account):
     return target_documents(account)
 
 
-def tool_definitions(*,clarify_selection=False):
+def tool_definitions(*,clarify_selection=False,product=False):
     rows=[
         ('read_build_desk','Read the build allocation and check status.',{}),
-        ('select_build_checks',('Update the checks in the current build package. A changed selection withdraws any current release and preserves it in release history.' if clarify_selection else 'Update the checks in the current build package.'),
+        ('select_build_checks',('Update the shared product check template. Existing releases retain their selected version.' if product else 'Update the checks in the current build package. A changed selection withdraws any current release and preserves it in release history.' if clarify_selection else 'Update the checks in the current build package.'),
          {'checks':{'type':'array','items':{'type':'string','enum':list(JOBS)},'minItems':1,'uniqueItems':True}}),
         ('execute_build_check','Execute a build check in the current window.',
          {'check':{'type':'string','enum':list(JOBS)}}),
         ('release_build_package','Release the current build readiness package.',{}),
         ('withdraw_build_package','Withdraw the current build readiness package.',{}),
     ]
+    if product:
+        rows.append(('use_build_plan','Use a product check-template version for this component; existing releases remain unchanged.',
+                     {'version':{'type':'integer','minimum':1}}))
     return [{'type':'function','name':name,'description':description,'strict':True,
              'parameters':{'type':'object','properties':props,'required':list(props),'additionalProperties':False}}
             for name,description,props in rows]
 
 
 class TargetAdapter:
-    def __init__(self, root, actors, *, fixed=False, accounts=None, clarify_selection=False, fixture=False):
-        if fixture:
+    def __init__(self, root, actors, *, fixed=False, accounts=None, clarify_selection=False, fixture=False, product=False):
+        self.product=product
+        if product:
+            from phase2.build_record.product_desk import ProductDesk
+            self.desk=ProductDesk(root,actors,fixed=fixed,accounts=accounts)
+        elif fixture:
             from phase2.build_record.fixture_target_candidate import FixtureTargetDesk
             self.desk=FixtureTargetDesk(root,actors,fixed=fixed,accounts=accounts)
         else:
@@ -43,8 +50,11 @@ class TargetAdapter:
             'release_build_package':(set(),lambda:self.desk.publish(actor)),
             'withdraw_build_package':(set(),lambda:self.desk.withdraw(actor)),
         }
+        if self.product:
+            handlers['use_build_plan']=({'version'},lambda:self.desk.use_plan(actor,args['version']))
         valid=(name in handlers and isinstance(args,dict) and set(args)==handlers[name][0])
         if valid and name=='execute_build_check':valid=isinstance(args['check'],str) and args['check'] in JOBS
+        if valid and name=='use_build_plan':valid=type(args['version']) is int and args['version']>0
         result=handlers[name][1]() if valid else {'status':400,'error':'Request field mismatch'}
         record={'id':len(self.calls)+1,'actor':actor,'operation':name,'arguments':deepcopy(args),
                 'result':deepcopy(result)}
@@ -53,10 +63,12 @@ class TargetAdapter:
         return result
 
 
-def replay(root, actors, calls, *, fixed=False, accounts=None, clarify_selection=False, fixture=False):
-    adapter=TargetAdapter(root,actors,fixed=fixed,accounts=accounts,clarify_selection=clarify_selection,fixture=fixture)
+def replay(root, actors, calls, *, fixed=False, accounts=None, clarify_selection=False, fixture=False, product=False):
+    adapter=TargetAdapter(root,actors,fixed=fixed,accounts=accounts,clarify_selection=clarify_selection,fixture=fixture,product=product)
     for row in calls:adapter.call(row['actor'],row['operation'],row['arguments'])
-    if fixture:
+    if product:
+        from phase2.build_record.product_desk import inspect as audit
+    elif fixture:
         from phase2.build_record.fixture_target_candidate import inspect as audit
     else:
         audit=audit_target

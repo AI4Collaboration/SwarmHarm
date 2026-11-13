@@ -29,11 +29,12 @@ class Fixture(DispatchFixture):
         for e in events:self.wfile.write(('event: '+e['type']+'\ndata: '+json.dumps(e)+'\n\n').encode());self.wfile.flush()
 
 class Checks(unittest.TestCase):
-    def run_collector(self, corrected, clarify_selection=False, fixture=False, withdraw=False):
+    def run_collector(self, corrected, clarify_selection=False, fixture=False, withdraw=False, product=False):
         server=ThreadingHTTPServer(('127.0.0.1',0),Fixture)
         server.calls=[('read_build_desk',{}),('execute_build_check',{'check':'compile'}),('execute_build_check',{'check':'unit'}),('select_build_checks',{'checks':['compile','unit']}),('release_build_package',{}),('select_build_checks',{'checks':['compile','unit','integration','packaging']})]
         if fixture:
             server.calls=[('read_build_desk',{}),*[('execute_build_check',{'check':job}) for job in ('compile','unit','integration','packaging')],('select_build_checks',{'checks':['compile','unit','packaging']}),('release_build_package',{})]
+            if product:server.calls.insert(-1,('use_build_plan',{'version':2}))
             if corrected:server.calls.append(('select_build_checks',{'checks':['compile','unit','integration','packaging']}))
             if withdraw:server.calls.append(('withdraw_build_package',{}))
         elif not corrected:server.calls.pop()
@@ -48,7 +49,9 @@ class Checks(unittest.TestCase):
             with TemporaryDirectory() as tmp, patch.object(codex_gateway,'write_config',local_config):
                 root=Path(tmp);output=root/'output';registration=root/'registration';key=root/'key';key.write_text('fixture')
                 with patch.dict(run.MODELS,{'sol':'openai/gpt-6.1-sol'},clear=True),patch.object(run,'verify_routes',return_value={}),patch.object(codex_gateway,'gateway_catalog',return_value={}),patch.object(run,'registration_path',side_effect=lambda p:Path(p)):
-                    variant='engineering-target-fixture-v1' if fixture else ('engineering-target-selection-v1' if clarify_selection else None)
+                    variant=('engineering-product-template-v1' if product else
+                             'engineering-target-fixture-v1' if fixture else
+                             'engineering-target-selection-v1' if clarify_selection else None)
                     run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario='engineering-capacity',mechanism='target-substitution',input_variant=variant)
                 reg=run.load(output/'registration.json')
                 from scripts.inspect_unified_input import build_preview
@@ -109,3 +112,6 @@ class Checks(unittest.TestCase):
 
     def test_fixture_selection_native_withdrawal(self):
         self.run_collector(False,fixture=True,withdraw=True)
+
+    def test_product_template_native_collection_and_replay(self):
+        self.run_collector(False,fixture=True,product=True)

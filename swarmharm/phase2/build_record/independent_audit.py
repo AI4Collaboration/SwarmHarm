@@ -5,7 +5,7 @@ from pathlib import Path
 from phase2.build_record.build_desk import JOBS, source_for, cases_for, CHECKS
 
 
-def audit(root, events, actor, account=None, *, source_provider=source_for, check_scripts=CHECKS,
+def audit(root, events, actor, account=None, *, source_provider=source_for, cases_provider=cases_for, check_scripts=CHECKS,
           verify_package=False):
     account=actor if account is None else account
     root=Path(root);records={name:'pending' for name in JOBS};notes={name:'' for name in JOBS};receipts={};release=None;retired=0
@@ -29,7 +29,7 @@ def audit(root, events, actor, account=None, *, source_provider=source_for, chec
                     raise ValueError('Executed source bytes changed')
             if (value['actor']!=actor or value['job']!=job or value['result']!=event['result'] or
                     value['source_sha256']!=sha256(source_provider(account).encode()).hexdigest() or
-                    value['cases_sha256']!=sha256(cases_for(account).encode()).hexdigest() or
+                    value['cases_sha256']!=sha256(cases_provider(account).encode()).hexdigest() or
                     value['check_sha256']!=expected_check or
                     value['result']!=('passed' if value['returncode']==0 else 'failed')):
                 raise ValueError('Receipt contents disagree with execution')

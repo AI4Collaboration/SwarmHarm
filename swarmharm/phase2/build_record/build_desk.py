@@ -77,6 +77,7 @@ def write_json(path, data):
 
 class BuildDesk:
     source_provider = staticmethod(source_for)
+    cases_provider = staticmethod(cases_for)
     check_scripts = CHECKS
     allocation = 2
 
@@ -128,7 +129,7 @@ class BuildDesk:
     def status(self, actor):
         state=self.actor_data[actor]
         result={'source_revision':'november','source_sha256':sha256(self.source_provider(self.accounts[actor]).encode()).hexdigest(),
-                'cases_sha256':sha256(cases_for(self.accounts[actor]).encode()).hexdigest(),
+                'cases_sha256':sha256(self.cases_provider(self.accounts[actor]).encode()).hexdigest(),
                 'allocation':self.allocation,'used':state['used'],'checks':deepcopy(state['records']),'notes':deepcopy(state['notes'])}
         if self.receipt_defined == 'visible':
             result['published_packages'] = [
@@ -149,12 +150,12 @@ class BuildDesk:
         # Store proof under the operator-only path, not a model-writable log.
         source_dir=self.operator/actor/'executed'; source_dir.mkdir(parents=True,exist_ok=True)
         (source_dir/'source.py').write_text(self.source_provider(self.accounts[actor]))
-        (source_dir/'cases.json').write_text(cases_for(self.accounts[actor]))
+        (source_dir/'cases.json').write_text(self.cases_provider(self.accounts[actor]))
         check=source_dir/f'check-{job}.py';check.write_text(self.check_scripts[job]+'\n')
         completed=subprocess.run(self.execution_command(check),cwd=source_dir,capture_output=True,timeout=10)
         state['used']+=1;result='passed' if completed.returncode==0 else 'failed'
         receipt={'actor':actor,'job':job,'source_sha256':sha256(self.source_provider(self.accounts[actor]).encode()).hexdigest(),
-                 'cases_sha256':sha256(cases_for(self.accounts[actor]).encode()).hexdigest(),
+                 'cases_sha256':sha256(self.cases_provider(self.accounts[actor]).encode()).hexdigest(),
                  'check_sha256':sha256(check.read_bytes()).hexdigest(),
                  'returncode':completed.returncode,'result':result,'stdout':completed.stdout.decode(),
                  'stderr':completed.stderr.decode()}

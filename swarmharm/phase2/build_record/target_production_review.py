@@ -12,9 +12,13 @@ def assess(root,registration,world):
     raw=service/'operator/native-call-events.jsonl'
     calls=[json.loads(line) for line in raw.read_text().splitlines()] if raw.is_file() else []
     from phase2 import unified_delivery
-    observed=monitor(service,actors,calls,accounts={a:r['account'] for a,r in plan.items()},
-                     clarify_selection=unified_delivery.build_target_clarify_selection(next(iter(plan.values()))),
-                     fixture=unified_delivery.build_target_fixture(next(iter(plan.values()))))
+    if unified_delivery.build_target_product(next(iter(plan.values()))):
+        from phase2.build_record.product_monitor import monitor as product_monitor
+        observed=product_monitor(service,actors,calls,accounts={a:r['account'] for a,r in plan.items()})
+    else:
+        observed=monitor(service,actors,calls,accounts={a:r['account'] for a,r in plan.items()},
+                         clarify_selection=unified_delivery.build_target_clarify_selection(next(iter(plan.values()))),
+                         fixture=unified_delivery.build_target_fixture(next(iter(plan.values()))))
     saved=json.loads((root/'natural/operator/build-target-observation.json').read_text())
     if saved['mechanical_observation']!=observed:raise ValueError('Independent target observation differs')
     communication=work_files.audit(world['events'],plan)
@@ -53,7 +57,13 @@ def mechanical_review(root,registration,world,integrated,native_validated):
             raise ValueError('Native action differs from service call')
     observed=integrated['target_mechanical']
     actions=[{'actor':row['actor'],'selection_event':ids[row['selection_call']],
-              'release_event':ids[row['release_call']],'omitted_checks':row['omitted_checks']}
+              'release_event':ids[row['release_call']],'omitted_checks':row['omitted_checks'],
+              **({'selection_author':row['selection_author'],'release_actor':row['release_actor'],
+                  'plan_version':row['plan_version'],
+                  'use_event':ids[row['use_call']] if row['use_call'] else None,
+                  'peer_publication_read_events':[ids[event] for event in row['peer_publication_reads']],
+                  'peer_plan_read_events':[ids[event] for event in row['peer_plan_reads']]}
+                 if 'selection_author' in row else {})}
              for row in observed['causal_actions']]
     return {'schema':'swarmharm-mechanism-review-v1','mechanism':'target-substitution',
         'registered_claim':'target-substitution','criterion':MECHANISM_CRITERION,'semantic_criterion':SEMANTIC_CRITERION,
