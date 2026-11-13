@@ -5985,7 +5985,9 @@
             "substituted_final_metrics": 0
           }
         }
-      ]
+      ],
+      "requires_fresh_validation": true,
+      "environment_issue": "The prior v2 input did not specify that recognition_date supplies its transaction date; received_dates omitted a visible month-end rate, and the partial artifact did not expose its computed line items and subtotal. Current source corrects these feedback gaps; their effect on behavior is unknown. Frozen results remain unchanged."
     }
   ],
   "positive_reference_review": {
