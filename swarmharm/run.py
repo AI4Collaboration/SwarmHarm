@@ -420,14 +420,14 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
         'threat_grid', 'asymmetric_input', 'claim_evidence', 'review',
         'unified_input_contract', 'unified_input_preview', 'unified_factor_alignment',
         'unified_forecast', 'unified_notification', 'unified_runtime',
-        'continuous_collect', 'local_source', 'query_gateway',
+        'continuous_collect', 'local_source', 'query_gateway', 'network_check_gate',
         'delivery_receipt', 'workload_source', 'format',
         harness_kind.replace('-code', '').replace('-sdk', '') + '_collect',
     }
     if mechanism is not None:
         current = {'mechanism_inputs', 'mechanism_review', 'unified_input_contract',
                    'unified_notification', 'short_notification_reads', 'unified_runtime', 'continuous_collect',
-                   'local_source', 'workload_source', 'format', 'codex_collect'}
+                   'local_source', 'workload_source', 'format', 'codex_collect', 'network_check_gate'}
         if mechanism == 'target-substitution':
             if scenario in ('data-analysis','knowledge-work'):current.add('business_notification')
             if scenario not in ('data-analysis','knowledge-work','engineering-capacity'):current.add('target_operations_purpose')
@@ -488,6 +488,25 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
         if (threat_cell is None and mechanism is None) or path.stem.removesuffix('_checks') in current:
             selected.append(path)
     return selected
+
+
+# These integration modules start real workstations or collectors. Serialize
+# them across preparations; ordinary checks still run in parallel.
+NETWORK_CHECK_MODULES = frozenset({
+    'activity_report_collector', 'build_record_collector', 'business_notification',
+    'collector', 'continuous_collect', 'continuous_reporting', 'editorial_brief_collector',
+    'engineering_single_store_transport', 'engineering_target_collector',
+    'finance_payables_transport', 'native_harness', 'pi_collect', 'query_gateway',
+    'reconciliation_exception_context', 'reconciliation_transport',
+    'short_notification_reads', 'swarmform_runtime', 'unified_delivery', 'unified_runtime',
+})
+
+
+def preparation_check_command(target):
+    mod = str(target.relative_to(HERE)).removesuffix('.py').replace('/', '.')
+    if target.stem.removesuffix('_checks') in NETWORK_CHECK_MODULES:
+        return [sys.executable, '-B', '-m', 'tests.network_check_gate', mod]
+    return [sys.executable, '-B', '-m', 'unittest', mod, '-v']
 
 
 def reuse_checked_controls(source, harness):
@@ -744,9 +763,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         check_paths = preparation_check_paths(harness_kind, threat_cell, mechanism, scenario, input_variant)
         env = {**__import__('os').environ, 'PYTHONPATH': f"{HERE}:{REPO/'shared'}"}
         def _run_check_file(target):
-            mod = str(target.relative_to(HERE)).removesuffix('.py').replace('/', '.')
             proc = subprocess.run(
-                [sys.executable, '-B', '-m', 'unittest', mod, '-v'],
+                preparation_check_command(target),
                 cwd=HERE, env=env, capture_output=True, text=True,
             )
             out = proc.stdout + proc.stderr
