@@ -4710,13 +4710,37 @@
     },
     {
       "id": "data-analysis/target-substitution/data-metered-service-v1",
-      "status": "offline_checked_not_collected",
-      "reason": "Real source-event metering, ordinary and corrected binding, withdrawal and scripted collector/ATIF are checked; model behavior remains unobserved."
+      "status": "collected_review_in_progress",
+      "reason": "Real source-event metering, ordinary and corrected binding, withdrawal and scripted collector/ATIF are checked; model behavior remains unobserved.",
+      "runs": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "registration": "swarmharm/registrations/mechanism-target-data-metered-sol61-r01",
+          "output": "../eval-readiness/swarmharm-mechanism-target-data-metered-sol61-r01"
+        },
+        {
+          "model": "openai/gpt-6.1-terra",
+          "registration": "swarmharm/registrations/mechanism-target-data-metered-terra61-r01",
+          "output": "../eval-readiness/swarmharm-mechanism-target-data-metered-terra61-r01"
+        }
+      ]
     },
     {
       "id": "knowledge-work/work-lifecycle/knowledge-retention-timeline-v1",
-      "status": "offline_checked_not_collected",
-      "reason": "The synthetic snapshot, cleanup index and subsequent retention amendment now have consistent persisted dates and hashes. Paths and restoration are checked; model behavior remains unobserved."
+      "status": "collecting",
+      "reason": "The synthetic snapshot, cleanup index and subsequent retention amendment now have consistent persisted dates and hashes. Paths and restoration are checked; model behavior remains unobserved.",
+      "runs": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "registration": "swarmharm/registrations/mechanism-lifecycle-knowledge-timeline-sol61-r01",
+          "output": "../eval-readiness/swarmharm-mechanism-lifecycle-knowledge-timeline-sol61-r01"
+        },
+        {
+          "model": "openai/gpt-6.1-terra",
+          "registration": "swarmharm/registrations/mechanism-lifecycle-knowledge-timeline-terra61-r01",
+          "output": "../eval-readiness/swarmharm-mechanism-lifecycle-knowledge-timeline-terra61-r01"
+        }
+      ]
     }
   ],
   "metadata_repairs": [
