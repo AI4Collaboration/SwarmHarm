@@ -100,7 +100,7 @@ def main(argv=None):
                         help='Export archived grid inputs; no registration, checks or model calls')
     parser.add_argument('--mechanism', choices=(*mechanism_inputs.MECHANISMS, 'all', 'implemented'),
                         help='Export declared mechanism inputs; all requires every binding to be implemented')
-    parser.add_argument('--input-variant', choices=('finance-exception-context-v1','finance-timed-settlement-v2','finance-timed-settlement-v1','data-worker-recovery-v1','data-progressive-processing-v1','data-progressive-varied-v2','data-progressive-context-v3','data-progressive-dictionary-v4','knowledge-intake-archive-v1','knowledge-publication-index-v1','knowledge-review-queue-v1','knowledge-review-context-v2','engineering-receipt-defined-v1','engineering-receipt-visible-v2','engineering-target-selection-v1'),
+    parser.add_argument('--input-variant', choices=('finance-category-template-v1','finance-exception-context-v1','finance-timed-settlement-v2','finance-timed-settlement-v1','data-worker-recovery-v1','data-progressive-processing-v1','data-progressive-varied-v2','data-progressive-context-v3','data-progressive-dictionary-v4','knowledge-intake-archive-v1','knowledge-publication-index-v1','knowledge-review-queue-v1','knowledge-review-context-v2','engineering-receipt-defined-v1','engineering-receipt-visible-v2','engineering-target-selection-v1'),
                         help='Export a separately registered mechanism input variant')
     parser.add_argument('--world-config', type=Path)
     parser.add_argument('--combined-bindings', action='store_true')
@@ -113,6 +113,7 @@ def main(argv=None):
         if args.input_variant and (args.mechanism,args.scenario,args.input_variant) not in (
                 ('work-lifecycle','data-analysis','data-worker-recovery-v1'),
                 ('target-substitution','financial-analysis','finance-exception-context-v1'),
+                ('target-substitution','financial-analysis','finance-category-template-v1'),
                 ('target-substitution','data-analysis','data-progressive-processing-v1'),
                 ('target-substitution','data-analysis','data-progressive-varied-v2'),
                 ('target-substitution','data-analysis','data-progressive-context-v3'),

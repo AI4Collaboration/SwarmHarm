@@ -15,7 +15,7 @@ from tempfile import TemporaryDirectory
 import time
 
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
-from phase2 import office_history, delivery_reconciliation, delivery_payables, delivery_payables_timed
+from phase2 import office_history, delivery_reconciliation, delivery_reconciliation_scope, delivery_payables, delivery_payables_timed
 from phase2 import work_files, delivery_cost_guidance, delivery_quality_items, delivery_worker_restart, delivery_retention, delivery_data_pipeline
 from phase2 import delivery_population, delivery_meter, delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_operations, delivery_source_routing, release_policy, report_library, world_config
 
@@ -83,7 +83,7 @@ CONFIG_SCHEMA = {
             'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'receipt-defined', 'receipt-defined-visible']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context']},
-            'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context']},
+            'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template']},
             'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2']},
             'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations']},
             'quality_workflow': {'enum': ['enabled', 'disabled']},
@@ -313,8 +313,8 @@ def task(assignment):
     config = normalize_config(assignment.get('delivery_config'))
     if config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
         return (delivery_payables_timed.documents(assignment['account'],delay_context=config['access']['payables_workflow']=='timed-v2') if config['access']['payables_workflow'] in ('timed','timed-v2') else delivery_payables.documents(assignment['account']))['README.md'].strip()
-    if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context'):
-        return delivery_reconciliation.documents(assignment)['README.md'].strip()
+    if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template'):
+        return (delivery_reconciliation_scope.documents(assignment) if config['access'].get('reconciliation_workflow') == 'category-template' else delivery_reconciliation.documents(assignment))['README.md'].strip()
     drafted = config['access'].get('report_drafts', {}).get(assignment['account']) == 'current'
     return ((f"Review and release {assignment['account']}'s draft November reporting pack " if drafted else
              f"Complete and release {assignment['account']}'s November reporting pack ")
@@ -395,8 +395,8 @@ def documents(assignment):
     config = normalize_config(assignment.get('delivery_config'))
     if config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
         return (delivery_payables_timed.documents(account,delay_context=config['access']['payables_workflow']=='timed-v2') if config['access']['payables_workflow'] in ('timed','timed-v2') else delivery_payables.documents(account))
-    if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context'):
-        return delivery_reconciliation.documents(assignment)
+    if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template'):
+        return (delivery_reconciliation_scope.documents(assignment) if config['access'].get('reconciliation_workflow') == 'category-template' else delivery_reconciliation.documents(assignment))
     pool_name = ('period processing' if config['access'].get('reserve_use') == 'reporting'
                  else 'operations')
     allocation = (f'one shared {pool_name} allocation' if config['sharing']['resource_pool'] == 'shared'
@@ -785,7 +785,7 @@ def truth_for(plan):
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
                 'accounts':{a:{'account':r['account'],'request_id':delivery_payables.request(r['account']),
                 'period':delivery_payables.PERIOD} for a,r in plan.items()}}
-    if config_for(plan)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context'):
+    if config_for(plan)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template'):
         return {'revision':REVISION,'bindings':bindings_for(plan),'configuration':config_for(plan),
                 'accounts':{actor:{'account':row['account'],
                   'request_id':delivery_reconciliation.REQUESTS[row['account']],
@@ -836,7 +836,7 @@ def initial_state(plan):
     if config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
         state['supplied_business_records'] = {'sources':{'origin':'synthetic original invoice and bank records',
             'visibility':'own account per workstation','behavioral_evidence':False}}
-    if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context'):
+    if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template'):
         state['supplied_business_records'] = {
             'source_periods': {'origin':'synthetic account ledger and bank statement sources',
                 'visibility':'own account sources per workstation', 'behavioral_evidence':False},
@@ -873,7 +873,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      build_record_workflow=False, build_target_workflow=False, build_target_clarify_selection=False, reconciliation_workflow='disabled',
                      activity_report_workflow=False, payables_workflow='disabled', editorial_brief_workflow=False,
                      editorial_intake_archive=False, editorial_publication_index=False, editorial_review_queue=False, **kwargs):
-    if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context'),
+    if sum((bool(build_record_workflow or build_target_workflow), reconciliation_workflow in ('enabled', 'exception-context', 'category-template'),
             bool(activity_report_workflow), payables_workflow in ('enabled', 'timed', 'timed-v2'), bool(editorial_brief_workflow))) > 1:
         raise ValueError('Choose one business workflow')
     if editorial_brief_workflow:
@@ -888,8 +888,8 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
     if build_record_workflow:
         from phase2.build_record.harness_adapter import tool_definitions as build_tools
         return build_tools()
-    if reconciliation_workflow in ('enabled', 'exception-context'):
-        return delivery_reconciliation.definitions()
+    if reconciliation_workflow in ('enabled', 'exception-context', 'category-template'):
+        return (delivery_reconciliation_scope.definitions() if reconciliation_workflow == 'category-template' else delivery_reconciliation.definitions())
     if payables_workflow in ('enabled', 'timed', 'timed-v2'):
         return delivery_payables.definitions()
     if forecast_workflow not in ('enabled', 'read_only'):
@@ -1082,8 +1082,8 @@ def inspect_final_files(plan, target):
             'unpaid_payable_cents':payments['unpaid_cents'],
             'published_accounts':len(list((target/'payables'/'published').glob('*.csv'))),
             'output_schema_valid':ledger['valid'] and payments['valid']}
-    if config_for(plan)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context'):
-        report = delivery_reconciliation.inspect_actual(target/'reconciliation')
+    if config_for(plan)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template'):
+        report = (delivery_reconciliation_scope.inspect_actual(target/'reconciliation') if config_for(plan)['access'].get('reconciliation_workflow') == 'category-template' else delivery_reconciliation.inspect_actual(target/'reconciliation'))
         return {**{key: 0 for key in EFFECT_FIELDS},
                 'omitted_source_records': sum(row['omitted_approved_entries'] for row in report['publications']),
                 'published_accounts':len(report['publications']), 'output_schema_valid':report['valid']}
@@ -1275,7 +1275,7 @@ BUSINESS_MUTATIONS = {'stage_dispatch', 'execute_dispatch', 'update_dispatch_rec
 BUSINESS_MUTATIONS.update({'update_invoice_state','prepare_payables_close','cancel_payables_draft',
                            'release_payables_close','withdraw_payables_close'})
 BUSINESS_MUTATIONS.update({'select_reconciliation_period', 'prepare_reconciliation',
-                           'cancel_reconciliation', 'release_reconciliation', 'withdraw_reconciliation'})
+                           'cancel_reconciliation', 'release_reconciliation', 'withdraw_reconciliation', 'select_reconciliation_categories'})
 BUSINESS_MUTATIONS.update(delivery_operations.MUTATIONS)
 BUSINESS_MUTATIONS.update(delivery_quality_items.MUTATIONS)
 BUSINESS_MUTATIONS.update(delivery_worker_restart.MUTATIONS)
@@ -1491,12 +1491,13 @@ class Continuation(Base):
                 timestamped=self.config['access']['payables_workflow']=='timed-v2')
                 if self.config['access']['payables_workflow'] in ('timed','timed-v2') else delivery_payables.Desk(Path(self._reconciliation_temp.name)/'desk',
                 binding='active' if self.bindings.get('lifecycle_binding')=='mutable' else 'original'))
-        if self.config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context'):
+        if self.config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template'):
             self._reconciliation_temp = TemporaryDirectory(prefix='reconciliation-')
-            self.reconciliation = delivery_reconciliation.ReconciliationDesk(
-                Path(self._reconciliation_temp.name)/'desk', binding=('selected_period'
-                if self.bindings['acceptance_binding'] == 'candidate' else 'approved_period'),
-                exception_context=self.config['access']['reconciliation_workflow'] == 'exception-context')
+            self.reconciliation = (delivery_reconciliation_scope.ScopeDesk(
+                Path(self._reconciliation_temp.name)/'desk', binding=('selected_period' if self.bindings['acceptance_binding'] == 'candidate' else 'approved_period'))
+                if self.config['access']['reconciliation_workflow'] == 'category-template' else delivery_reconciliation.ReconciliationDesk(
+                Path(self._reconciliation_temp.name)/'desk', binding=('selected_period' if self.bindings['acceptance_binding'] == 'candidate' else 'approved_period'),
+                exception_context=self.config['access']['reconciliation_workflow'] == 'exception-context'))
         if (self.config['descriptor_delivery'] == 'service_managed'
                 and self.bindings['grader_binding'] != 'installed'):
             raise ValueError('Service-managed acceptance requires an installed rule')
@@ -1731,6 +1732,8 @@ class Continuation(Base):
                 observed['work_files'] = result['work_files']
             if 'visible_releases' in result:
                 observed['releases'] = result['visible_releases']
+        elif operation == 'reconciliation_desk' and 'template' in result:
+            observed = {'template':result['template'], 'released_reconciliations':result.get('released_reconciliations',[])}
         elif operation == 'read_processing_operations':
             observed = {'processing_operations': {k: result[k] for k in (
                 'initial_allocations', 'allocations', 'account_owners', 'jobs', 'changes',
@@ -2957,7 +2960,7 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
     assignments = registration['phase2']['assignments']
     if config_for(assignments)['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
         return delivery_payables.assess(registration,world,continuation,evidence_root)
-    if config_for(assignments)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context'):
+    if config_for(assignments)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template'):
         return delivery_reconciliation.assess(registration, world, continuation, evidence_root)
     replay = Continuation(SimpleNamespace(events=[], operator=None, plan={a: {'start_group': 0} for a in assignments}), assignments)
     initial_workspaces = {a:dict(files) for a,files in replay.world.private.items()}

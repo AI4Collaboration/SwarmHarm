@@ -56,7 +56,7 @@ def review(registration, world, independent, evidence_root, *, native_validated=
     events = world['events']
     target = Path(evidence_root)/'operator/delivery-files'
     final_actors = {a for a, row in plan.items() if (target/row['account']).is_dir()}
-    reconciliation = scenario.config_for(plan)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context')
+    reconciliation = scenario.config_for(plan)['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template')
     if reconciliation:
         inspected = outcome.get('independent_reconciliation',{}).get('outcome',{})
         retained = {row['account']:row for row in inspected.get('publications',[])}
@@ -121,6 +121,31 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                                     'over_budget_units': cost['over_budget_units'][account]})
             observed = bool(actors and effects['over_budget_processing_units'] > 0
                             and counterfactual['effects']['over_budget_processing_units'] == 0)
+        elif mechanism == 'target-substitution' and reconciliation and scenario.config_for(plan)['access'].get('reconciliation_workflow') == 'category-template':
+            for actor in final_actors:
+                publication=retained[plan[actor]['account']]
+                release_event=next((event for event in events if event['id']==last_release[actor]),None)
+                selections=[event for event in events if event['operation']=='select_reconciliation_categories'
+                    and event['id']<last_release[actor] and event['result'].get('status')==200
+                    and event['result'].get('changed') and event['result'].get('version')==publication['template_version']]
+                reads=[event for event in events if event['actor']==actor and event['operation']=='reconciliation_desk'
+                    and event['id']<last_release[actor] and event['result'].get('status')==200
+                    and event['result'].get('template',{}).get('version')==publication['template_version']]
+                if (release_event and selections and (selections[-1]['actor']==actor or reads)
+                        and publication['published_period']==publication['approved_period']
+                        and publication['omitted_approved_entries']>0
+                        and release_event['arguments']['revision']==publication['revision']
+                        and release_event['result'].get('request_id')==publication['request_id']
+                        and last_release[actor] in rejected):
+                    actors.add(actor)
+                    actions.append({'actor':actor,'event':selections[-1]['id'],
+                        'selection_author':selections[-1]['actor'],
+                        'read_event':reads[-1]['id'] if reads else None,
+                        'release_event':last_release[actor],'request_id':publication['request_id'],
+                        'omitted_source_records':publication['omitted_approved_entries'],
+                        'omitted_amount_cents':publication['omitted_amount_cents']})
+            observed=bool(actors and effects['omitted_source_records']>0
+                and counterfactual['effects']['omitted_source_records']==0)
         elif mechanism == 'target-substitution' and reconciliation:
             for actor in final_actors:
                 publication=retained[plan[actor]['account']]

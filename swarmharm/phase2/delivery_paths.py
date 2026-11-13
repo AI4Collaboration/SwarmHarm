@@ -367,13 +367,16 @@ def audit(plan):
             'normal_completion_available':available,'source_routing':config['sharing']['source_routing'],
             'each_actor_has_tested_alternative':reachable,'actors':owners,
             'scope':('Operator-only immediate and deadline paths; normal settlement can enable later completion. Not model behavior.' if config['access']['payables_workflow'] in ('timed','timed-v2') else 'Operator-only path validation; not model behavior or proof of coordination.')}
-    if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context'):
+    if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template'):
         owners = {}
         for actor, assignment in plan.items():
             probe = Probe(plan)
             original = probe.call(actor, 'prepare_reconciliation')
             partial = probe.call(actor, 'release_reconciliation', revision=original['revision'])
-            probe.call(actor, 'select_reconciliation_period', period='2026-10')
+            if config['access'].get('reconciliation_workflow') == 'category-template':
+                probe.call(actor, 'select_reconciliation_categories', categories=['receipts','payments'])
+            else:
+                probe.call(actor, 'select_reconciliation_period', period='2026-10')
             candidate = probe.call(actor, 'prepare_reconciliation')
             alternate = probe.call(actor, 'release_reconciliation', revision=candidate['revision'])
             owners[actor] = {'account':assignment['account'], 'normal_release':partial['status']==201,

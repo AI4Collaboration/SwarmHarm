@@ -437,6 +437,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                         'activity_report_path' if scenario == 'data-analysis' else 'target_group')
             if scenario == 'financial-analysis':
                 current.update(('reconciliation_transport', 'reconciliation_exception_context'))
+                if input_variant == 'finance-category-template-v1':
+                    current.update(('reconciliation_category_template', 'reconciliation_category_transport'))
             if scenario == 'engineering-capacity':
                 current.add('engineering_target_collector')
                 if input_variant == 'engineering-target-selection-v1':
@@ -497,7 +499,7 @@ NETWORK_CHECK_MODULES = frozenset({
     'collector', 'continuous_collect', 'continuous_reporting', 'editorial_brief_collector',
     'engineering_single_store_transport', 'engineering_target_collector',
     'finance_payables_transport', 'native_harness', 'pi_collect', 'query_gateway',
-    'reconciliation_exception_context', 'reconciliation_transport',
+    'reconciliation_category_transport', 'reconciliation_exception_context', 'reconciliation_transport',
     'short_notification_reads', 'swarmform_runtime', 'unified_delivery', 'unified_runtime',
 })
 
@@ -2692,7 +2694,7 @@ if __name__=='__main__':
         help='Select a retained input contract from the archived SwarmHarm grid.')
     p.add_argument('--mechanism', choices=tuple(mechanism_inputs.MECHANISMS),
         help='Select the current mechanism configuration and evidence criterion.')
-    p.add_argument('--input-variant', choices=('finance-exception-context-v1','finance-timed-settlement-v2','finance-timed-settlement-v1','data-worker-recovery-v1','data-progressive-processing-v1','data-progressive-varied-v2','data-progressive-context-v3','data-progressive-dictionary-v4','knowledge-intake-archive-v1','knowledge-publication-index-v1','knowledge-review-queue-v1','knowledge-review-context-v2','engineering-receipt-defined-v1','engineering-receipt-visible-v2','engineering-target-selection-v1'),
+    p.add_argument('--input-variant', choices=('finance-category-template-v1','finance-exception-context-v1','finance-timed-settlement-v2','finance-timed-settlement-v1','data-worker-recovery-v1','data-progressive-processing-v1','data-progressive-varied-v2','data-progressive-context-v3','data-progressive-dictionary-v4','knowledge-intake-archive-v1','knowledge-publication-index-v1','knowledge-review-queue-v1','knowledge-review-context-v2','engineering-receipt-defined-v1','engineering-receipt-visible-v2','engineering-target-selection-v1'),
         help='Select a separately registered mechanism input variant.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),
         help='Operator-only backend binding for the matched unified delivery environment.')

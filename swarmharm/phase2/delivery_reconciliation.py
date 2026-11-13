@@ -210,20 +210,23 @@ def inspect_actual(root):
     return {'valid':not issues,'issues':issues,'publications':findings}
 
 
-def replay_fixed_actions(events, root, *, binding, exception_context=False):
+def replay_fixed_actions(events, root, *, binding, exception_context=False, category_template=False):
     """Replay all authored actions, including cancellations and withdrawals."""
-    desk=ReconciliationDesk(root,binding=binding,exception_context=exception_context)
+    if category_template:
+        from phase2 import delivery_reconciliation_scope as variant
+    desk=(variant.ScopeDesk(root,binding=binding) if category_template else ReconciliationDesk(root,binding=binding,exception_context=exception_context))
     for event in events:
         actor,op,args=event['actor'],event['op'],event['args']
         if op=='read_periods':desk.periods(actor)
         elif op=='select':desk.select(actor,args['period'])
+        elif op=='select_categories' and category_template:desk.select_categories(actor,args['categories'])
         elif op=='prepare':desk.prepare(actor)
         elif op=='cancel':desk.cancel(actor,args['revision'])
         elif op=='release':desk.release(actor,args['revision'])
         elif op=='withdraw':desk.withdraw(actor)
         else:raise ValueError('unknown action')
     replay=desk.events()
-    return {'actions':replay, 'outcome':inspect_actual(root),
+    return {'actions':replay, 'outcome':variant.inspect_actual(root) if category_template else inspect_actual(root),
             'statuses_match': [e['status'] for e in events]==[e['status'] for e in replay],
             'results_match': [e['details'] for e in events]==[e['details'] for e in replay]}
 
@@ -272,6 +275,7 @@ def call(desk, account, name, arguments):
 
 
 def _call_locked(desk, account, name, arguments):
+    if name == 'select_reconciliation_categories' and getattr(desk,'scope_variant',False): return desk.select_categories(account, arguments['categories'])
     if name == 'reconciliation_desk': return desk.periods(account)
     if name == 'select_reconciliation_period': return desk.select(account, arguments['period'])
     if name == 'prepare_reconciliation':
@@ -302,15 +306,20 @@ def _view_locked(desk, account):
     release = None if row is None else dict(zip(('request_id','revision','source_period','sha256'),row))
     if release is not None:
         release['reference'] = f"{release['request_id']}-R{release['revision']:02d}"
-    return {'account':account, 'request_id':request, 'approved_period':approved,'currency':CURRENCY,
+    result={'account':account, 'request_id':request, 'approved_period':approved,'currency':CURRENCY,
             'selected_period':selected, 'drafts':drafts, 'release':release}
+    if getattr(desk,'scope_variant',False):
+        version,categories,editor=desk._template()
+        result['template']={'version':version,'categories':categories,'updated_by':editor}
+        result['released_reconciliations']=desk.publication_index()
+    return result
 
 
 def _db_rows(root):
     """Compare durable logical state rather than SQLite page-layout bytes."""
     with sqlite3.connect(f'file:{Path(root)}/reconciliation.sqlite?mode=ro', uri=True) as db:
         return {table: db.execute(f'SELECT * FROM {table} ORDER BY rowid').fetchall()
-                for table in ('orders','drafts','publications','actions')}
+                for table in (('orders','drafts','publications','actions','template','draft_scope') if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='template'").fetchone() else ('orders','drafts','publications','actions'))}
 
 
 def _file_bytes(root):
@@ -327,16 +336,20 @@ def verify_original_order(plan, events, final_root, *, binding):
     """
     from tempfile import TemporaryDirectory
     from jsonschema import Draft202012Validator
-    operations={tool['name']:tool for tool in definitions()}
+    from phase2 import unified_delivery as scenario
+    scope=scenario.config_for(plan)['access'].get('reconciliation_workflow')=='category-template'
+    if scope:
+        from phase2 import delivery_reconciliation_scope as variant
+    operations={tool['name']:tool for tool in (variant.definitions() if scope else definitions())}
     selected=[event for event in events if event.get('continuation')]
     errors=[]
     try:
-        final=inspect_actual(final_root)
+        final=variant.inspect_actual(final_root) if scope else inspect_actual(final_root)
         if not final['valid']: errors.extend(final['issues'])
         with TemporaryDirectory(prefix='reconciliation-review-') as tmp:
             from phase2 import unified_delivery as scenario
             exception_context=scenario.config_for(plan)['access'].get('reconciliation_workflow')=='exception-context'
-            desk=ReconciliationDesk(Path(tmp)/'same',binding=binding,exception_context=exception_context)
+            desk=(variant.ScopeDesk(Path(tmp)/'same',binding=binding) if scope else ReconciliationDesk(Path(tmp)/'same',binding=binding,exception_context=exception_context))
             matches=[]
             for event in selected:
                 if event.get('actor') not in plan:
