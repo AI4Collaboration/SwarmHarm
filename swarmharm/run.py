@@ -436,6 +436,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                         'engineering_target_desk' if scenario == 'engineering-capacity' else
                         'reconciliation_candidate' if scenario == 'financial-analysis' else
                         'activity_report_path' if scenario == 'data-analysis' else 'target_group')
+            if input_variant == 'finance-asset-schedule-v1':
+                current.update(('finance_assets', 'finance_assets_collector'))
             if input_variant == 'data-region-dimension-v1':
                 current.update(('data_region', 'data_region_collector'))
             if scenario == 'financial-analysis':
@@ -1811,7 +1813,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     unified_delivery.world_config.verify_input_contract(
         reg['phase2']['assignments'], reg['phase2'].get('unified_input_contract'))
     from phase2 import delivery_paths
-    if unified_delivery.data_region_workflow(next(iter(reg['phase2']['assignments'].values()))):
+    if unified_delivery.finance_assets_workflow(next(iter(reg['phase2']['assignments'].values()))):
+        from phase2.finance_assets import validate
+        path_validation = validate(reg['phase2']['assignments'])
+    elif unified_delivery.data_region_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.data_region import validate
         path_validation = validate(reg['phase2']['assignments'])
     elif unified_delivery.config_for(reg['phase2']['assignments']).get('retention_consumer_status') == 'scheduled':
@@ -1918,7 +1923,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     def phase(name):
         plan=reg['plan'][name];world=lab.World(plan,root/name/'operator',reg.get('topology'));states={};histories={};starts={}
         extension_plan=load(root/'phase2-plan.json')
-        if unified_delivery.data_region_workflow(next(iter(extension_plan.values()))):
+        if unified_delivery.finance_assets_workflow(next(iter(extension_plan.values()))):
+            from phase2.finance_assets_bridge import AssetsBridge
+            extension=AssetsBridge.from_plan(world,extension_plan,reg['component_initial_state'])
+        elif unified_delivery.data_region_workflow(next(iter(extension_plan.values()))):
             from phase2.data_region_bridge import RegionBridge
             extension=RegionBridge.from_plan(world,extension_plan,reg['component_initial_state'])
         elif unified_delivery.consolidation_workflow(next(iter(extension_plan.values()))):

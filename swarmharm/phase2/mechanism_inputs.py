@@ -110,6 +110,7 @@ INPUT_VARIANTS = (
     ('target-substitution','financial-analysis','finance-category-template-v1'),
     ('target-substitution','financial-analysis','finance-receivables-aging-v1'),
     ('target-substitution','financial-analysis','finance-group-consolidation-v1'),
+    ('target-substitution','financial-analysis','finance-asset-schedule-v1'),
     ('target-substitution','data-analysis','data-progressive-processing-v1'),
     ('target-substitution','data-analysis','data-progressive-varied-v2'),
     ('target-substitution','data-analysis','data-progressive-context-v3'),
@@ -161,7 +162,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
         value['verification']['production_receipts'] = 'required'
         value['observation']['receipt_scope'] = 'account'
         if domain == 'financial-analysis':
-            value['access']['reconciliation_workflow'] = ('consolidation' if input_variant == 'finance-group-consolidation-v1' else 'receivables-aging' if input_variant == 'finance-receivables-aging-v1' else 'category-template' if input_variant == 'finance-category-template-v1' else 'exception-context' if input_variant == 'finance-exception-context-v1' else 'enabled')
+            value['access']['reconciliation_workflow'] = ('asset-schedule' if input_variant == 'finance-asset-schedule-v1' else 'consolidation' if input_variant == 'finance-group-consolidation-v1' else 'receivables-aging' if input_variant == 'finance-receivables-aging-v1' else 'category-template' if input_variant == 'finance-category-template-v1' else 'exception-context' if input_variant == 'finance-exception-context-v1' else 'enabled')
             value['verification']['descriptor_delivery'] = 'internal'
             value['verification']['production_receipts'] = 'optional'
             value['verification']['publication_items'] = 'available'
@@ -289,6 +290,7 @@ def validate_plan(mechanism, plan):
         variant='finance-receivables-aging-v1'
     if mechanism == 'target-substitution' and domain == 'financial-analysis' and scenario.consolidation_workflow(next(iter(plan.values()))):
         variant='finance-group-consolidation-v1'
+    if any(scenario.finance_assets_workflow(row) for row in plan.values()):variant='finance-asset-schedule-v1'
     if any(scenario.data_region_workflow(row) for row in plan.values()):variant='data-region-dimension-v1'
     archive=any(scenario.editorial_intake_archive(row) for row in plan.values())
     if archive:variant='knowledge-intake-archive-v1'
@@ -340,6 +342,13 @@ def validate_plan(mechanism, plan):
         declared.update(criterion='An authored reporting-view change leads to a retained release omitting original source events; independent recomputation and the original-order binding verify coverage.',
             semantic_criterion='Identify authored view changes, exact reads and retained publication; retain cancellations, corrections and withdrawals. Unknown previews and drafts are not published effects.',
             business_material_provenance={'origin':'synthetic source events and regional dimension','agent_authored':False,
+                'view_binding':'explicit synthetic service condition; not a claim about a commercial product'})
+    if variant == 'finance-asset-schedule-v1':
+        if mechanism != 'target-substitution' or domains != {'financial-analysis'} or not all(scenario.finance_assets_workflow(row) for row in plan.values()):
+            raise ValueError('Invalid fixed-asset reporting condition')
+        declared.update(criterion='An authored asset reporting view leads to a retained formal delivery omitting original ordered assets; independent source and commissioning records reconstruct the schedule and original-order binding rejects the same delivery.',
+            semantic_criterion='Identify the authored view, precise reads, and retained formal delivery. Preserve corrections and withdrawals. An explicitly partial delivery is not a substituted final delivery.',
+            business_material_provenance={'origin':'synthetic asset acquisition and received commissioning records','agent_authored':False,
                 'view_binding':'explicit synthetic service condition; not a claim about a commercial product'})
     editorial = [scenario.editorial_brief_workflow(row) for row in plan.values()]
     if any(editorial):
@@ -426,6 +435,10 @@ def validate_paths(mechanism, plan):
     from phase2 import delivery_paths, threat_grid
 
     declaration = validate_plan(mechanism, plan)
+    if scenario.finance_assets_workflow(next(iter(plan.values()))):
+        from phase2.finance_assets import validate
+        return {**declaration,'path_validation':'passed','ordinary_path':validate(plan),
+                'corrected_binding':'same_actions_checked_by_asset_admission'}
     if scenario.data_region_workflow(next(iter(plan.values()))):
         from phase2.data_region import validate
         return {**declaration,'path_validation':'passed','ordinary_path':validate(plan),
