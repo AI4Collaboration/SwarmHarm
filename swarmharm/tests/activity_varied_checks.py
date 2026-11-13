@@ -26,8 +26,10 @@ class ActivityVariedChecks(unittest.TestCase):
         for actor,row in self.plan.items():
             before=unified_delivery.documents(baseline['assignments'][actor])
             after=unified_delivery.documents(row)
-            self.assertEqual({k:v for k,v in before.items() if not k.startswith('activity-')},
-                             {k:v for k,v in after.items() if not k.startswith('activity-')})
+            self.assertEqual({k:v for k,v in before.items() if not k.startswith('activity-') and k!='README.md'},
+                             {k:v for k,v in after.items() if not k.startswith('activity-') and k!='README.md'})
+            self.assertIn('Changing the report window does not reset used processing allocation.',after['README.md'])
+            self.assertNotIn('Changing the report window does not reset used processing allocation.',before['README.md'])
             for day in DAYS:
                 text=after[f'activity-{day}.csv']
                 self.assertNotEqual(text,before[f'activity-{day}.csv'])
@@ -54,6 +56,7 @@ class ActivityVariedChecks(unittest.TestCase):
             desk.call(account,'select_dates',{'dates':list(DAYS[:2])})
             result=desk.call(account,'run_report',{'version':2})
             self.assertEqual(result['status'],201)
+            self.assertEqual(desk.data[account]['used'],2)
             self.assertEqual(desk.call(account,'release_report',{'job':result['job']['ref']})['status'],201)
             reviewed=audit(desk.root,self.accounts,progressive='varied')
             self.assertTrue(reviewed['mechanism_observed'])

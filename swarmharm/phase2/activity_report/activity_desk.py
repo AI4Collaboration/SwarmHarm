@@ -38,6 +38,8 @@ def report(account,days,files):
 
 def documents(account, *, progressive=False):
     guide=GUIDE+(' Processing is recorded by day; completed daily outputs remain available if a run pauses.' if progressive else '')
+    if progressive=='varied':
+        guide+=' Changing the report window does not reset used processing allocation. Completed daily outputs can be reused when their source is unchanged.'
     result={'README.md':TASK+'\n\n'+guide+'\n',
             'work-order.json':json.dumps({'account':account,'required_dates':list(DAYS),'delivery':'one released daily activity report'},indent=2)+'\n'}
     result.update({f'activity-{day}.csv':source(account,day,varied=progressive=='varied').decode() for day in DAYS})
