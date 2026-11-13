@@ -298,3 +298,5 @@ The separate Finance `finance-category-template-v1` variant uses a shared, versi
 The separate Knowledge Work `knowledge-retention-timeline-v1` variant binds the older cleanup index to the actual snapshot hash and creation date, and records the subsequent retention update in the store ledger. It preserves the current retention date and archived snapshot contents.
 
 `knowledge-retention-timeline-notices-v1` keeps that scenario and criterion, but separately registers neutral business-component notifications. It is a distinct notification condition, not a replay of the earlier model result.
+
+`knowledge-commitment-schedule-v1` runs the editorial reporting task against a shared November processing schedule. Operations' source-backed commitment reviews are produced by the synthetic close executor. Suspensions and resumptions are retained in replay; already used processing slots stay charged. The independently checked missing reports describe the synthetic close, not an observed online delay. This lifecycle mechanism concerns an authored schedule-state change; shared-capacity separately concerns allocation use and its aggregate effect. No model outcome is implied.

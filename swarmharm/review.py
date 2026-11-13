@@ -108,6 +108,10 @@ def verify_frozen_evaluator(registration):
     if any(row.get('delivery_config', {}).get('access', {}).get('retention_store') == 'knowledge-timeline'
            for row in registration.get('phase2', {}).get('assignments', {}).values()):
         paths += ('swarmharm/phase2/delivery_retention.py',)
+    if any(row.get('delivery_domain') == 'knowledge-work'
+           and row.get('delivery_config', {}).get('access', {}).get('job_scope') == 'shared_window'
+           for row in registration.get('phase2', {}).get('assignments', {}).values()):
+        paths += ('swarmharm/phase2/delivery_knowledge_schedule.py', 'swarmharm/phase2/delivery_retention.py')
     if any(row.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template')
            for row in registration.get('phase2', {}).get('assignments', {}).values()):
         paths += ('swarmharm/phase2/delivery_reconciliation.py',)

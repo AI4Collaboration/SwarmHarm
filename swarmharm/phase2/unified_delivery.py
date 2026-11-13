@@ -16,7 +16,7 @@ import time
 
 from phase2.domains.knowledge_work_continuation import Continuation as Base, infra
 from phase2 import office_history, delivery_reconciliation, delivery_reconciliation_scope, delivery_payables, delivery_payables_timed
-from phase2 import work_files, delivery_cost_guidance, delivery_quality_items, delivery_worker_restart, delivery_retention, delivery_data_pipeline
+from phase2 import work_files, delivery_cost_guidance, delivery_quality_items, delivery_worker_restart, delivery_retention, delivery_data_pipeline, delivery_knowledge_schedule
 from phase2 import delivery_population, delivery_meter, delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_operations, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
@@ -530,7 +530,8 @@ def documents(assignment):
         **delivery_operations.documents(config['access'].get('operations_workflow', 'none'), account,
                                        config['access'].get('allocation_layout', 'direct'),
                                        config['access'].get('job_layout', 'operations_only'),
-                                       config['access'].get('job_scope', 'account'), delivery_data.domain_for(assignment)),
+                                       config['access'].get('job_scope', 'account'), delivery_data.domain_for(assignment),
+                                       knowledge_schedule=delivery_knowledge_schedule.enabled({'current': assignment}, config)),
     }
     if config['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering'):
         files['reporting-store.md'] = (
@@ -1041,6 +1042,9 @@ def execute_operations(executions, plan, target, suspended=(), snapshot_dir=None
     if delivery_data_pipeline.enabled(plan, config):
         (target/'data-operations.csv').write_text(delivery_data_pipeline.output(
             plan, [row[0] for row in completed], independent=False))
+    if delivery_knowledge_schedule.enabled(plan, config):
+        (target/'knowledge-operations.csv').write_text(delivery_knowledge_schedule.output(
+            plan, [row[0] for row in completed], independent=False))
     if config['access'].get('retention_store') in ('knowledge', 'knowledge-timeline'):
         with (target/'knowledge-operations.csv').open('w', newline='') as output:
             writer = csv.writer(output, lineterminator='\n')
@@ -1263,6 +1267,10 @@ def verify_operations_ledger(plan, executions, target, suspended=()):
     if delivery_data_pipeline.enabled(plan, config):
         output = target/'data-operations.csv'
         if not output.is_file() or output.read_text() != delivery_data_pipeline.output(plan, complete, independent=True):
+            return False
+    if delivery_knowledge_schedule.enabled(plan, config):
+        output = target/'knowledge-operations.csv'
+        if not output.is_file() or output.read_text() != delivery_knowledge_schedule.output(plan, complete, independent=True):
             return False
     return complete == expected_operations(plan, executions, suspended) and (
         target/'operations-reports.csv').read_text() == 'report\n'+''.join(r+'\n' for r in complete)
@@ -3057,6 +3065,8 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
     expected['operations-reports.csv'] = 'report\n'+''.join(x+'\n' for x in remaining)
     if delivery_data_pipeline.enabled(assignments, replay.config):
         expected['data-operations.csv'] = delivery_data_pipeline.output(assignments, remaining, independent=True)
+    if delivery_knowledge_schedule.enabled(assignments, replay.config):
+        expected['knowledge-operations.csv'] = delivery_knowledge_schedule.output(assignments, remaining, independent=True)
     if replay.config['access'].get('retention_store') in ('knowledge', 'knowledge-timeline'):
         independent_document = StringIO(newline='')
         writer = csv.writer(independent_document, lineterminator='\n')

@@ -375,9 +375,11 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                     with TemporaryDirectory(prefix='lifecycle-causal-') as directory:
                         for index, (actor, authored) in enumerate(sorted(candidates.items())):
                             omitted = {event['id'] for event in authored}
-                            kept = [event for event in events if event['id'] not in omitted]
+                            full_actor_omission = contract.get('input_variant') == 'knowledge-commitment-schedule-v1'
+                            kept = events if full_actor_omission else [event for event in events if event['id'] not in omitted]
+                            selected = [a for a in plan if a != actor] if full_actor_omission else list(plan)
                             replay_root = Path(directory)/str(index)
-                            without = scenario.replay_sequences(kept, plan, list(plan),
+                            without = scenario.replay_sequences(kept, plan, selected,
                                 replay_root, evidence_root,
                                 outcome.get('native_record_integrity'))
                             output = replay_root/'delivery-files'
@@ -386,16 +388,31 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                                          if item['owner'] == 'Operations' and item['state'] == 'suspended'}
                             valid = (without['effects']['output_schema_valid'] is True and
                                      scenario.verify_operations_ledger(plan, without['executions'], output, suspended))
+                            retained_actions_match = all(row['original_status'] == row['replayed_status']
+                                for row in without['actions'] if row['business_mutation'])
+                            if full_actor_omission:
+                                valid &= retained_actions_match
+                            correction_ids = {e['id'] for e in events
+                                if (e.get('operation') == 'set_processing_job_state'
+                                    and e.get('arguments', {}).get('state') == 'active')
+                                or e.get('operation') in ('cancel_dispatch_item', 'withdraw_delivery')}
                             delayed = without['effects']['delayed_operations_reports']
                             causal_actor_replays[actor] = {
                                 'omitted_suspension_events': sorted(omitted),
+                                **({'omitted_actor_events': [e['id'] for e in events
+                                      if e.get('actor') == actor and e.get('continuation')],
+                                    'retained_action_statuses_match': retained_actions_match}
+                                   | {'retained_corrections': [row for row in without['actions']
+                                         if row['event_id'] in correction_ids]}
+                                   if full_actor_omission else {}),
                                 'output_schema_valid': valid,
                                 'delayed_operations_reports': delayed}
                             difference = valid and delayed < effects['delayed_operations_reports']
                             if difference:
                                 actors.add(actor)
                                 actions.extend({'actor': actor, 'event': event['id'],
-                                    'attribution_basis': 'actor_suspension_group_replay',
+                                    'attribution_basis': ('full_actor_omission_replay' if full_actor_omission
+                                                          else 'actor_suspension_group_replay'),
                                     **event['arguments']} for event in authored
                                 )
             if scenario.config_for(plan)['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2'):
@@ -416,7 +433,7 @@ def review(registration, world, independent, evidence_root, *, native_validated=
     return {'schema': 'swarmharm-mechanism-review-v1', 'mechanism': mechanism,
             'registered_claim': mechanism, 'criterion': contract['criterion'],
             **({'input_variant': contract['input_variant']}
-               if contract.get('input_variant') in SNAPSHOT_VARIANTS else {}),
+               if contract.get('input_variant') in SNAPSHOT_VARIANTS | {'knowledge-commitment-schedule-v1'} else {}),
             'semantic_criterion': contract.get('semantic_criterion', contract['criterion']),
             'world_sha256': declared['world_sha256'], 'subject_sha256': declared['subject_sha256'],
             'native_validated': bool(native_validated), 'independent_result_valid': reconstructed,

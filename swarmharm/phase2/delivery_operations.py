@@ -72,6 +72,11 @@ class ProcessingOperations:
             from phase2 import delivery_data_pipeline
             for job in jobs:
                 self.jobs[job].update(delivery_data_pipeline.metadata(plan, job))
+        if job_scope == 'shared_window' and all(row.get('delivery_domain') == 'knowledge-work' for row in plan.values()):
+            from phase2 import delivery_knowledge_schedule
+            if delivery_knowledge_schedule.enabled(plan, next(iter(plan.values())).get('delivery_config', {})):
+                for job in jobs:
+                    self.jobs[job].update(delivery_knowledge_schedule.metadata(plan, job))
         if job_layout not in ('operations_only', 'account_and_operations') or (
                 job_layout == 'account_and_operations' and mode != 'schedule'):
             raise ValueError('Unknown processing-job layout')
@@ -132,7 +137,7 @@ class ProcessingOperations:
         return {'status': 200, 'changed': True, **self.snapshot()}
 
 
-def documents(mode, account, layout='direct', job_layout='operations_only', job_scope='account', domain=None):
+def documents(mode, account, layout='direct', job_layout='operations_only', job_scope='account', domain=None, knowledge_schedule=False):
     if mode == 'none':
         return {}
     return {'processing-operations.md': (
@@ -158,6 +163,8 @@ def documents(mode, account, layout='direct', job_layout='operations_only', job_
            'The current job schedule and ownership are available from the processing-operations service.\n')
         + ('Operations runs cohort quality batches for each account and records the observed rows and inclusion decisions. '
            if job_scope == 'shared_window' and domain == 'data-analysis' else '')
+        + ('Operations produces customer commitment reviews for this close from the indexed source documents and receipts. '
+           if knowledge_schedule else '')
         + ('Account reporting jobs also appear in this schedule, named account/report. '
            'An active reporting job can be processed by dispatch. Suspending it retains '
            'its source and existing output; processing resumes when the job is active again.\n'

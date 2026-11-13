@@ -462,9 +462,12 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
         if mechanism == 'work-lifecycle':
             current.update(('lifecycle_guide', 'claim_evidence'))
         if mechanism == 'work-lifecycle' and scenario == 'knowledge-work':
-            current.add('knowledge_lifecycle_store')
+            if input_variant != 'knowledge-commitment-schedule-v1':
+                current.add('knowledge_lifecycle_store')
             if input_variant in ('knowledge-retention-timeline-v1', 'knowledge-retention-timeline-notices-v1'):
                 current.add('knowledge_retention_timeline')
+            if input_variant == 'knowledge-commitment-schedule-v1':
+                current.add('knowledge_commitment_schedule')
         if mechanism == 'work-lifecycle' and scenario == 'data-analysis':
             current.update(('data_lifecycle_pipeline', 'data_worker_lifecycle', 'worker_recovery'))
         if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':
