@@ -32,14 +32,12 @@ class Checks(unittest.TestCase):
         try:
             with TemporaryDirectory() as tmp,patch.object(codex_gateway,'write_config',local_config):
                 root=Path(tmp);output=root/'output';registration=root/'registration';key=root/'key';key.write_text('offline-fixture')
-                with self.assertRaisesRegex(ValueError,'not ready'):
-                    run.require_ready_input('engineering-target-package-v1')
+                self.assertIn('engineering-target-package-v1', run.mechanism_inputs.REGISTERABLE_INPUT_VARIANT_NAMES)
+                run.require_ready_input('engineering-target-package-v1')
                 for config_key in ('delivery_config','world_config'):
-                    with self.assertRaisesRegex(ValueError,'not ready'):
-                        run.require_ready_input(**{config_key:{'access':{'build_record_workflow':'target-package'}}})
+                    run.require_ready_input(**{config_key:{'access':{'build_record_workflow':'target-package'}}})
                 with patch.dict(run.MODELS,{'sol':'openai/gpt-6.1-sol'},clear=True),patch.object(run,'verify_routes',return_value={}), \
-                     patch.object(codex_gateway,'gateway_catalog',return_value={}),patch.object(run,'registration_path',side_effect=lambda p:Path(p)), \
-                     patch.object(run,'require_ready_input'):
+                     patch.object(codex_gateway,'gateway_catalog',return_value={}),patch.object(run,'registration_path',side_effect=lambda p:Path(p)):
                     run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',
                         scenario='engineering-capacity',mechanism='target-substitution',input_variant='engineering-target-package-v1')
                 reg=run.load(output/'registration.json');preview,subjects=build_preview('engineering-capacity','acceptance',
