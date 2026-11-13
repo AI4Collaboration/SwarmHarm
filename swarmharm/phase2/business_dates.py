@@ -6,10 +6,24 @@ from io import StringIO
 import json
 
 
-def validate_files(files_by_actor, observed_on):
+def validate_files(files_by_actor, observed_on, *, identity=False):
     """Reject recorded facts in the future; scheduled dates have different semantics."""
     count = 0
     for actor, files in files_by_actor.items():
+        if identity:
+            order = json.loads(base64.b64decode(files['/workspace/work-order.json'], validate=True))
+            activity = json.loads(base64.b64decode(files['/workspace/activity-events.json'], validate=True))
+            period = order['period']
+            if activity['period'] != period or activity['department'] != order['department']:
+                raise ValueError(f'Activity source differs from work order: {actor}')
+            for event in activity['events']:
+                value = event['date']
+                event_date = date.fromisoformat(value)
+                if not value.startswith(period + '-'):
+                    raise ValueError(f'Activity event differs from order period: {actor} {value}')
+                if event_date > observed_on:
+                    raise ValueError(f'Future recorded fact: {actor} activity-events.json date={value} (as of {observed_on})')
+                count += 1
         for path, encoded in files.items():
             if not any(path.endswith(s) for s in ('observations.csv', 'customer-corrections.csv',
                                                    'bank.csv', '-receipt.json', 'source-index.json')):

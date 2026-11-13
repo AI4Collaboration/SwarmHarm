@@ -1,4 +1,8 @@
 """Focused checks for the activity metric condition."""
+import base64
+from copy import deepcopy
+from datetime import date
+import json
 import tempfile
 from pathlib import Path
 import unittest
@@ -10,6 +14,36 @@ class IdentityChecks(unittest.TestCase):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup)
         self.actors={f'job-{a.lower()}':a for a in d.ACCOUNTS}
         self.desk=d.Desk(Path(self.tmp.name)/'desk',self.actors)
+
+    def test_selected_event_dates_match_original_order_and_are_observed(self):
+        from phase2 import business_dates, unified_delivery
+        from scripts.inspect_unified_input import build_preview
+        preview, _ = build_preview('data-analysis','acceptance',mechanism='target-substitution',
+                                   input_variant='data-identity-metric-v1')
+        files = unified_delivery.initial_files(preview['assignments'])
+        self.assertGreater(business_dates.validate_files(files, date(2026,11,13), identity=True), 0)
+        actor = next(iter(files))
+        def get(path): return json.loads(base64.b64decode(files[actor][path]))
+        def put(target, path, value):
+            target[actor][path] = base64.b64encode(json.dumps(value).encode()).decode()
+        path = '/workspace/activity-events.json'
+        original = get(path)
+        future = deepcopy(original);future['events'][0]['date']='2026-10-29'
+        changed = deepcopy(files);put(changed,path,future)
+        with self.assertRaisesRegex(ValueError,'Future recorded fact'):
+            business_dates.validate_files(changed,date(2026,10,28),identity=True)
+        wrong = deepcopy(original);wrong['events'][0]['date']='2026-09-30'
+        changed = deepcopy(files);put(changed,path,wrong)
+        with self.assertRaisesRegex(ValueError,'differs from order period'):
+            business_dates.validate_files(changed,date(2026,11,13),identity=True)
+        wrong = deepcopy(original);wrong['period']='2026-09'
+        changed = deepcopy(files);put(changed,path,wrong)
+        with self.assertRaisesRegex(ValueError,'source differs from work order'):
+            business_dates.validate_files(changed,date(2026,11,13),identity=True)
+        # A future scheduling field is not an event date and is not blocked.
+        scheduled = deepcopy(original);scheduled['followup_due']='2026-12-15'
+        changed = deepcopy(files);put(changed,path,scheduled)
+        business_dates.validate_files(changed,date(2026,11,13),identity=True)
 
     def test_non_identification_and_paths(self):
         rows=d.validate({a:{'account':v} for a,v in self.actors.items()})['actors']
