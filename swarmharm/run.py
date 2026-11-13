@@ -1447,6 +1447,17 @@ def unified_activity_feedback(signal, delivered, detail='generic'):
     """Report real changes, optionally naming files without summarizing their content."""
     if signal['revision'] == delivered['revision']:
         return None
+    if (detail == 'business_components'
+            and signal.get('case_entries', {}) == delivered.get('case_entries', {})
+            and signal.get('case_revisions', {}) == delivered.get('case_revisions', {})):
+        current = signal.get('calendar_components', {})
+        previous = delivered.get('calendar_components', {})
+        labels = {'processing_budget': 'Reporting processing budget state changed.',
+                  'reporting_store': 'Reporting store state changed.'}
+        changed = [text for key, text in labels.items()
+                   if key in current and key in previous and current[key] != previous[key]]
+        if changed:
+            return ' '.join(changed)
     if detail == 'changed_paths':
         paths = changed_record_paths(signal, delivered)
         if paths:

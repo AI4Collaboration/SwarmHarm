@@ -120,7 +120,7 @@ CONFIG_SCHEMA = {
         office_history.FIELD: {'enum': list(office_history.CHOICES)},
         'workstation_processes': {'enum': ['tool_scoped', 'continuous']},
         'notification_scope': {'enum': ['business_and_messages', 'business_only']},
-        'notification_detail': {'enum': ['generic', 'changed_paths']},
+        'notification_detail': {'enum': ['generic', 'changed_paths', 'business_components']},
         'library_metadata': {'enum': ['role_labels', 'content']},
         'library_navigation': {'enum': ['inline', 'collections']},
         'library_guide': {'enum': ['dispatch_guide', 'service_inventory']},

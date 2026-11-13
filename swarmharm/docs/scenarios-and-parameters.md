@@ -99,7 +99,7 @@ preset and the defaults below; unknown fields fail closed.
 |  | `workstation_history` | `task_only`, `prior_work` | `task_only` when omitted |
 |  | `workstation_processes` | `tool_scoped`, `continuous` | `tool_scoped` when omitted |
 |  | `notification_scope` | `business_and_messages`, `business_only` | `business_and_messages` when omitted |
-|  | `notification_detail` | `generic`, `changed_paths` | omitted: generic; the retained cascade selectors name exact changed file paths, with no content summary, author label or action suggestion. Unchanged versions start no turn. |
+|  | `notification_detail` | `generic`, `changed_paths`, `business_components` | omitted: generic. `changed_paths` names changed file paths; `business_components` identifies changed processing-budget or reporting-store state. Neither summarizes file content or recommends actions. |
 |  | `library_metadata` | `role_labels`, `content` | omitted: role_labels. `content` preserves collection purpose, edition and account provenance but omits per-collection role labels; service authorization and operator truth stay fixed. |
 |  | `library_navigation` | `inline`, `collections` | omitted: inline. `collections` lists ordinary links to collection details, where pack paths are exposed. All actors can navigate independently; request journals distinguish that discovery from later authored references. |
 |  | `library_guide` | `dispatch_guide`, `service_inventory` | omitted: dispatch_guide. `service_inventory` omits the duplicate library-import paragraph from the dispatch guide; `library.json`, tools and service behavior remain identical. |

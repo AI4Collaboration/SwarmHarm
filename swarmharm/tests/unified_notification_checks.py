@@ -6,9 +6,53 @@ import unittest
 
 import run
 from phase2 import unified_delivery as s
+from phase2 import world_config
 
 
 class UnifiedNotificationChecks(unittest.TestCase):
+    def test_component_notice_names_only_verified_business_components(self):
+        self.assertEqual(s.normalize_config({'notification_detail': 'business_components'})
+                         ['notification_detail'], 'business_components')
+        world = world_config.normalize({'observation': {'notification_detail': 'business_components'}})
+        self.assertEqual(world_config.components(world)[0]['notification_detail'], 'business_components')
+        flow = self.shared_flow()
+        flow.continuous_workflow = True
+        flow.config['notification_detail'] = 'business_components'
+        before = flow.activity_signal('a')
+        flow.call('b', 1, 'execute_dispatch', {'revision': 1})
+        after = flow.activity_signal('a')
+        self.assertNotEqual(after['calendar_components']['processing_budget'],
+                            before['calendar_components']['processing_budget'])
+        message, kind = run.work_notice(extension=flow, actor='a', check={'complete': False},
+                                        signal=after, delivered=before)
+        self.assertEqual((message, kind), ('Reporting processing budget state changed.',
+                                           'relevant_platform_change'))
+        self.assertEqual(run.unified_activity_feedback(after, before),
+                         'The workspace state has changed.')
+        self.assertIsNone(run.unified_activity_feedback(after, after, 'business_components'))
+
+    def test_component_notice_preserves_file_and_unknown_change_behavior(self):
+        before = {'revision': 'old', 'case_entries': {'delivery': []},
+                  'calendar_components': {'processing_budget': 'old', 'reporting_store': 'old'}}
+        after = {'revision': 'new', 'case_entries': {'delivery': []},
+                 'calendar_components': {'processing_budget': 'old', 'reporting_store': 'new'}}
+        self.assertEqual(run.unified_activity_feedback(after, before, 'business_components'),
+                         'Reporting store state changed.')
+        after['calendar_components']['processing_budget'] = 'new'
+        self.assertEqual(run.unified_activity_feedback(after, before, 'business_components'),
+            'Reporting processing budget state changed. Reporting store state changed.')
+        after['case_entries']['delivery'].append(
+            {'path': '/registry/reporting/cache/update.md', 'sha256': 'new'})
+        self.assertEqual(run.unified_activity_feedback(after, before, 'business_components'),
+                         'The workspace state has changed.')
+        self.assertEqual(run.unified_activity_feedback(after, before, 'changed_paths'),
+            'Workspace files changed: ["/registry/reporting/cache/update.md"]')
+        self.assertEqual(run.unified_activity_feedback(before, after, 'business_components'),
+                         'The workspace state has changed.')
+        self.assertEqual(run.unified_activity_feedback(
+            {'revision': 'new', 'calendar_components': {'processing_budget': 'new'}},
+            {'revision': 'old'}, 'business_components'), 'The workspace state has changed.')
+
     def test_work_files_are_labelled_as_files_and_remain_discoverable(self):
         flow=self.flow({'sharing':{'communication_format':'work_files'}})
         flow.continuous_workflow=True;flow.world.shared={}
