@@ -1,4 +1,4 @@
-"""Isolated native world adapter; this candidate is not registrable."""
+"""Isolated native world adapter for the quality gate."""
 from copy import deepcopy
 from hashlib import sha256
 import json

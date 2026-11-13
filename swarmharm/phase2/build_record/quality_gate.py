@@ -1,7 +1,4 @@
-"""Offline quality-gate candidate using the existing protected build desk.
-
-Not registered: the upstream adapter and native bridge still require admission.
-"""
+"""Synthetic quality gate using versioned build inputs and protected receipts."""
 from copy import deepcopy
 from hashlib import sha256
 import json
@@ -14,6 +11,7 @@ from phase2.build_record.build_desk import JOBS, source_for, write_json
 from phase2.build_record.fixture_packaging import documents as packaged_documents
 from phase2.build_record.fixture_candidate import audit_fixture
 from phase2.build_record.fixture_packaging import PackagedFixtureDesk, PACKAGED_CHECKS, PACKAGING
+from phase2.build_record import quality_history
 
 GATED = ('compile', 'unit', 'integration')
 TASK = ('Prepare and release the November build readiness package for the assigned '
@@ -45,6 +43,7 @@ def documents(account):
     order={'account':account,'revision':'november','role':'build editor',
            'checks':list(JOBS),'integration_source':'partner integration team'}
     result['work-order.json']=json.dumps(order,sort_keys=True,indent=2)+'\n'
+    result.update(quality_history.documents(account))
     return result
 
 
@@ -67,6 +66,8 @@ class QualityDesk(PackagedFixtureDesk):
         for actor in actors:
             (self.root/actor/'README.md').write_text(TASK+'\n\n'+GUIDE+'\n')
             write_json(self.root/actor/'work-order.json',self.orders[actor])
+            for name, content in quality_history.documents(self.accounts[actor]).items():
+                (self.root/actor/name).write_text(content)
 
     def execution_artifact(self, source_dir, job, result):
         result_data=super().execution_artifact(source_dir,job,result)
@@ -157,6 +158,8 @@ def audit_files(root,accounts,actor,sealed_hashes):
     root=Path(root);operator=root/'operator'
     if file_hashes(root)!=sealed_hashes:raise ValueError('Frozen file hashes differ')
     if actor not in accounts or len(set(accounts.values()))!=len(accounts):raise ValueError('Invalid identities')
+    previous = {name: (root/actor/name).read_text() for name in quality_history.documents(accounts[actor])}
+    quality_history.verify(accounts[actor], previous)
     events=[json.loads(line) for line in (operator/'business-events.jsonl').read_text().splitlines()]
     orders={a:{'account':account,'revision':'november','role':'build editor','checks':list(JOBS),
                'integration_source':'partner integration team'} for a,account in accounts.items()}

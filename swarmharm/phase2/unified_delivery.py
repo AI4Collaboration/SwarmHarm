@@ -1044,7 +1044,13 @@ def truth_for(plan):
                 for actor,row in plan.items()}, 'source_revision':'november'}
         if build_quality_gate_workflow(next(iter(plan.values()))):
             from phase2.build_record.quality_gate import CHECKS,GATED
+            from phase2.build_record import quality_history
             truth['quality_profile']={'version':1,'author':'build desk','required_checks':list(GATED)}
+            truth['prior_builds']={'origin':'operator-generated synthetic prior build; prior runner executed before preparation',
+                'agent_authored':False,'revision':'october',
+                'files_sha256':{actor:{name:sha256(value.encode()).hexdigest()
+                    for name,value in quality_history.documents(row['account']).items()}
+                    for actor,row in plan.items()}}
             truth['integration_fixture']={'name':'integration-fixture.json','initial':'absent',
                 'visibility':'service-only','arrival':'not-scheduled',
                 'desk_check_sha256':sha256((CHECKS['integration']+'\n').encode()).hexdigest()}

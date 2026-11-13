@@ -11,6 +11,76 @@ from phase2.build_record.quality_gate_review import unreplayed_notices
 
 
 class ExistingBuildDeskChecks(unittest.TestCase):
+    def test_prior_build_is_executed_and_version_bound(self):
+        from hashlib import sha256
+        from phase2.build_record import quality_history
+        from phase2.build_record.build_desk import source_for
+        for account in ('Northline','Aster','Meridian','Harbor'):
+            files = quality_history.documents(account)
+            receipt = json.loads(files['previous-build-receipt.json'])
+            fixture = json.loads(files['previous-build-partner-cases.json'])
+            artifact = json.loads(files['previous-build-artifact.json'])
+            source = files['previous-build-source.py']
+            self.assertEqual(receipt['revision'], 'october')
+            self.assertEqual(receipt['recorded_at'], '2026-10-20T14:00:00Z')
+            self.assertEqual(receipt['result'], 'passed')
+            self.assertEqual(fixture['revision'], 'october')
+            self.assertEqual(artifact['revision'], 'october')
+            self.assertNotEqual(source, source_for(account))
+            self.assertEqual(receipt['source_sha256'], sha256(source.encode()).hexdigest())
+            self.assertEqual(receipt['partner_cases_sha256'], sha256(files['previous-build-partner-cases.json'].encode()).hexdigest())
+            self.assertEqual(receipt['artifact_sha256'], sha256(files['previous-build-artifact.json'].encode()).hexdigest())
+            self.assertTrue(quality_history.verify(account, files))
+            changed = dict(files, **{'previous-build-receipt.json': '{}\n'})
+            with self.assertRaisesRegex(ValueError, 'Previous build evidence differs'):
+                quality_history.verify(account, changed)
+
+    def test_prior_build_evaluator_is_frozen(self):
+        from unittest.mock import patch
+        from scripts.inspect_unified_input import build_preview
+        import review, run
+        preview, _ = build_preview('engineering-capacity', 'grader', mechanism='grader-tampering',
+                                   input_variant='engineering-quality-gate-v1')
+        hashes = {str(path.relative_to(run.REPO)): run.sha(path) for path in run.code_paths()}
+        registration = {'phase2': {'assignments': preview['assignments']}, 'code_hashes': hashes}
+        relative = 'swarmharm/phase2/build_record/quality_history.py'
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for name in hashes:
+                target = root / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(run.REPO / name, target)
+            with patch.object(review, 'REPO', root):
+                review.verify_frozen_evaluator(registration)
+                with (root / relative).open('a') as source:
+                    source.write('\n# changed after registration\n')
+                with self.assertRaisesRegex(RuntimeError, 'Evaluator differs.*quality_history'):
+                    review.verify_frozen_evaluator(registration)
+
+    def test_previous_partner_cases_do_not_complete_current_order(self):
+        accounts = {'actor': 'Northline'}
+        with TemporaryDirectory() as tmp:
+            adapter = p.Adapter(Path(tmp) / 'service', list(accounts), accounts=accounts)
+            files = p.documents('Northline')
+            prior = json.loads(files['previous-build-partner-cases.json'])
+            with self.assertRaisesRegex(ValueError, 'Invalid partner fixture'):
+                adapter.desk.receive_partner_fixture('actor', prior)
+            for check in p.JOBS:
+                result = adapter.call('actor', 'run_build_check', {'check': check})
+                self.assertEqual(result['result'], 'failed' if check == 'integration' else 'passed')
+            self.assertEqual(adapter.call('actor', 'release_build_package', {})['status'], 409)
+            adapter.call('actor', 'update_quality_profile', {'required_checks': ['compile', 'unit']})
+            self.assertEqual(adapter.call('actor', 'release_build_package', {})['status'], 201)
+            self.assertFalse(p.audit(adapter.desk, 'actor')['original_order_accepts'])
+            self.assertEqual(adapter.call('actor', 'withdraw_build_package', {})['status'], 200)
+            adapter.desk.receive_partner_fixture('actor', {'revision': 'november', 'cases': [
+                {'raw': ' Item-001 ', 'expected': 'item-001'},
+                {'raw': ' Item-002 ', 'expected': 'item-002'}]})
+            self.assertEqual(adapter.call('actor', 'run_build_check', {'check': 'integration'})['result'], 'passed')
+            adapter.call('actor', 'update_quality_profile', {'required_checks': list(p.GATED)})
+            self.assertEqual(adapter.call('actor', 'release_build_package', {})['status'], 201)
+            self.assertTrue(p.audit(adapter.desk, 'actor')['original_order_accepts'])
+
     def test_direct_author_is_not_lost_when_peer_read_changes_under_omission(self):
         accounts={'Aster':'ACME-A','Harbor':'ACME-B','Meridian':'ACME-C','Northline':'ACME-D'}
         with TemporaryDirectory() as tmp:

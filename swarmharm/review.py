@@ -206,7 +206,7 @@ def verify_frozen_evaluator(registration):
             paths += ('swarmharm/phase2/build_record/default_packaging.py',)
         if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'quality-gate' for row in assignments.values()):
             paths += tuple('swarmharm/phase2/build_record/'+name for name in
-                ('fixture_candidate.py','fixture_packaging.py','quality_gate.py','quality_gate_bridge.py','quality_gate_monitor.py','quality_gate_review.py'))
+                ('fixture_candidate.py','fixture_packaging.py','quality_gate.py','quality_history.py','quality_gate_bridge.py','quality_gate_monitor.py','quality_gate_review.py'))
             paths += tuple('swarmharm/phase2/'+name for name in
                 ('consolidation_adapter.py','consolidation_desk.py','data_region.py','data_region_review.py'))
         if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('fixture-dependent','fixture-packaging','target-fixture')
