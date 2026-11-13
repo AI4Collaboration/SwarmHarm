@@ -50,6 +50,14 @@ class Checks(unittest.TestCase):
         from phase2 import mechanism_inputs,mechanism_review,world_config
         p=m['assignments'];self.assertEqual(i,world_config.subject_inputs(mechanism_review.corrected_plan(p)))
         self.assertEqual(mechanism_inputs.validate_plan('work-lifecycle',p)['input_variant'],'knowledge-digest-queue-v1')
+        frozen=m['mechanism_contract']
+        self.assertEqual(frozen,mechanism_inputs.validate_plan('work-lifecycle',p))
+        self.assertIn('subscriber digest orders',frozen['criterion'])
+        self.assertIn('At least two agents',frozen['criterion'])
+        self.assertIn('shared file changes or peer reads are not replayed',frozen['criterion'])
+        self.assertIn('successful authored digest cancellation',frozen['semantic_criterion'])
+        self.assertNotIn('Operations snapshot',json.dumps(frozen))
+        self.assertNotIn(frozen['semantic_criterion'],json.dumps(i))
         self.assertTrue(all(not x['ordinary_before_deadline'] and x['alternative_release'] and x['later_requeue_delivered'] for x in q.validate(p)['actors'].values()))
         from types import SimpleNamespace
         from phase2 import knowledge_digest_bridge,unified_delivery
@@ -62,6 +70,14 @@ class Checks(unittest.TestCase):
             candidate.desk.start();protected.desk.start();actor=next(iter(p))
             self.assertEqual(candidate.desk.call(actor,'cancel_digest_order',{})['result']['status'],200)
             self.assertEqual(protected.desk.call(actor,'cancel_digest_order',{})['result']['status'],409)
+
+    def test_other_lifecycle_criteria_unchanged(self):
+        snapshot,_=build_preview('knowledge-work','availability',mechanism='work-lifecycle',input_variant='knowledge-retention-timeline-v1')
+        scheduled,_=build_preview('engineering-capacity','availability',mechanism='work-lifecycle',input_variant='engineering-scheduled-consumer-v1')
+        finance,_=build_preview('financial-analysis','availability',mechanism='work-lifecycle',input_variant='finance-account-retirement-recurring-v1')
+        self.assertIn('retained Operations snapshot',snapshot['mechanism_contract']['criterion'])
+        self.assertIn('snapshot removals',scheduled['mechanism_contract']['criterion'])
+        self.assertIn('payment lifecycle action',finance['mechanism_contract']['criterion'])
 
     def test_real_outputs_restore_and_actor_omissions(self):
         actors={a:a for a in ('a','b','c','d')}

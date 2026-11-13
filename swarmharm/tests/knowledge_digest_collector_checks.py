@@ -56,7 +56,12 @@ class Checks(unittest.TestCase):
                      patch.object(run,'registration_path',side_effect=lambda p:Path(p)):
                     run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',
                         scenario='knowledge-work',mechanism='work-lifecycle',input_variant='knowledge-digest-queue-v1')
-                reg=run.load(output/'registration.json');reg['api_base']=f'http://127.0.0.1:{server.server_port}/v1'
+                reg=run.load(output/'registration.json')
+                self.assertEqual(run.load(output/'registration-seal.json')['sha256'],run.sha(output/'registration.json'))
+                self.assertIn('subscriber digest orders',reg['mechanism_contract']['criterion'])
+                self.assertIn('successful authored digest cancellation',reg['mechanism_contract']['semantic_criterion'])
+                self.assertNotIn('Operations snapshot',json.dumps(reg['mechanism_contract']))
+                reg['api_base']=f'http://127.0.0.1:{server.server_port}/v1'
                 reg['budget'].update(max_batch_seconds=90,max_actor_seconds=90)
                 run.save(output/'registration.json',reg);run.save(output/'registration-seal.json',{'sha256':run.sha(output/'registration.json')})
                 with patch.object(run,'verify_collection_freeze'),patch.object(run,'registration_path',side_effect=lambda p:Path(p)), \
