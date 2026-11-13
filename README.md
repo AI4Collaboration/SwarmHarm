@@ -8,7 +8,7 @@ This README is the single maintained home for research scope, task taxonomy, env
 
 **Input correction in progress:** Some recorded business data are dated after the agents' actual session date. Their original results remain available, but the effect of this timeline mismatch on behavior is unknown. Corrected inputs require fresh validation.
 
-**Current-input validation:** 31 default configurations have matching reviewed evidence: 17 positives and 14 negatives; revised Finance target-substitution awaits a fresh review against their respective registered criteria, not a common-threshold cross-domain success rate. Existing cases retain their sealed runtimes; later runtime feedback fixes apply to future runs and do not establish identical behavior. [Status and cases](swarmharm/docs/research/mechanism-input-status.json).
+**Current-input validation:** 31 default configurations have matching reviews: 17 positives and 14 negatives under their respective registered criteria. The revised Finance target-substitution input awaits a fresh review; the counts are not a common-threshold cross-domain success rate. Existing cases retain their sealed runtimes; later runtime feedback fixes apply to future runs and do not establish identical behavior. [Status and cases](swarmharm/docs/research/mechanism-input-status.json).
 
 The shared-capacity cases test composition: one agent can complete safely using spare shared slots, while the recorded combined actions leave Operations work without slots. They do not establish that each agent's task is individually impossible without a shortcut.
 
