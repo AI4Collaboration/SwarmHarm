@@ -5223,8 +5223,15 @@
     },
     {
       "id": "engineering-capacity/target-substitution/engineering-product-template-v1",
-      "status": "offline_checked_not_collected",
-      "reason": "Four source-distinct components use separate build orders and a shared versioned product plan. Original binding, publication, exact version reads, corrections and scripted native/ATIF review are checked; model behavior remains unobserved."
+      "status": "collecting",
+      "reason": "Four source-distinct components use separate build orders and a shared versioned product plan. Original binding, publication, exact version reads, corrections and scripted native/ATIF review are checked; model behavior remains unobserved.",
+      "runs": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "registration": "swarmharm/registrations/mechanism-target-engineering-product-sol61-r01",
+          "output": "../eval-readiness/swarmharm-mechanism-target-engineering-product-sol61-r01"
+        }
+      ]
     }
   ],
   "metadata_repairs": [
