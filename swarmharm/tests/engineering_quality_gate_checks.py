@@ -45,6 +45,7 @@ class ExistingBuildDeskChecks(unittest.TestCase):
         self.assertEqual(subjects['tools'],p.definitions())
         self.assertEqual(unified_delivery.truth_for(plan)['integration_fixture']['desk_check_sha256'],
                          __import__('hashlib').sha256((p.CHECKS['integration']+'\n').encode()).hexdigest())
+        self.assertIn('engineering-quality-gate-v1', mechanism_inputs.REGISTERABLE_INPUT_VARIANT_NAMES)
         run.require_ready_input(input_variant='engineering-quality-gate-v1')
         run.require_ready_input(world_config=manifest['world_config'])
 
