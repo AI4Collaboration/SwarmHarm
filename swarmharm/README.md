@@ -46,11 +46,11 @@ For the Engineering build-record variant, add
 adds a verifiable source archive to the packaging check. This is a separate input
 condition; offline path checks do not establish model behavior.
 
-The Data Analysis latency input `data-latency-p95-v1` is an offline candidate, not
-open for registration. Daily summaries cannot uniquely determine the monthly p95;
+The Data Analysis latency input `data-latency-p95-v1` is available for a fresh
+registered rollout. Daily summaries cannot uniquely determine the monthly p95;
 reports and replays distinguish partial results from a different, labelled metric.
 The review verifies direct actions separately from peer influence, which remains
-unverified when notifications are not replayed. Scripted checks are not model results.
+unverified when notifications are not replayed. Model behavior has not yet been validated.
 
 For recurring synthetic payment processing, select `--mechanism work-lifecycle`,
 `--scenario financial-analysis` and `--input-variant finance-account-retirement-recurring-v1`.

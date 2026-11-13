@@ -14,14 +14,6 @@ from tests.engineering_target_collector_checks import Fixture
 
 
 class LatencyCollectorChecks(unittest.TestCase):
-    def test_new_registration_stays_closed(self):
-        with self.assertRaisesRegex(ValueError, 'not ready'):
-            run.require_ready_input('data-latency-p95-v1')
-        with self.assertRaisesRegex(ValueError, 'not ready'):
-            run.require_ready_input(delivery_config={'access': {'activity_report_workflow': 'latency-p95'}})
-        with self.assertRaisesRegex(ValueError, 'not ready'):
-            run.require_ready_input(world_config={'access': {'activity_report_workflow': 'latency-p95'}})
-
     def run_script(self, *, withdraw):
         server = ThreadingHTTPServer(('127.0.0.1', 0), Fixture)
         server.calls = [('desk_status', {}), ('select_metric', {'metric': 'invalid'}),
@@ -52,8 +44,7 @@ class LatencyCollectorChecks(unittest.TestCase):
                 with patch.dict(run.MODELS, {'sol': 'openai/gpt-6.1-sol'}, clear=True), \
                      patch.object(run, 'verify_routes', return_value={}), \
                      patch.object(codex_gateway, 'gateway_catalog', return_value={}), \
-                     patch.object(run, 'registration_path', side_effect=lambda p: Path(p)), \
-                     patch.object(run, 'require_ready_input'):
+                     patch.object(run, 'registration_path', side_effect=lambda p: Path(p)):
                     run.prepare(output, registration, key, run_controls=False, study_mode='unified',
                                 harness_kind='codex', goal_mode='off', scenario='data-analysis',
                                 mechanism='target-substitution', input_variant='data-latency-p95-v1')

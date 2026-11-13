@@ -610,10 +610,6 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
     under an unlabelled custom world.
     """
     workflow = lambda cfg: (cfg or {}).get('access', {}).get('editorial_brief_workflow')
-    latency = lambda cfg: (cfg or {}).get('access', {}).get('activity_report_workflow')
-    if (input_variant == 'data-latency-p95-v1' or latency(delivery_config) == 'latency-p95'
-            or latency(world_config) == 'latency-p95'):
-        raise ValueError('Data latency p95 is not ready for new registration: independent review is incomplete.')
     if (input_variant == 'knowledge-digest-queue-v1' or
             workflow(delivery_config) == 'digest-queue' or workflow(world_config) == 'digest-queue'):
         raise ValueError('Knowledge digest queue is not ready for new registration: the publication dependency needs a verifiable business redesign.')
