@@ -36,7 +36,7 @@ class FinanceGamingBudgetChecks(unittest.TestCase):
                     prior = base64.b64decode(old_files[path]).decode()
                     self.assertEqual(current, prior.replace(
                         'Each report processed by dispatch uses one slot in the current window. ',
-                        'Dispatch processing usage is recorded for the current window. '))
+                        'Each processed account report incurs one processing slot in the current window. '))
                 else:
                     self.assertEqual(current_files[path], old_files[path])
         observed = []

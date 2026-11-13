@@ -152,36 +152,38 @@ class MechanismInputChecks(unittest.TestCase):
                              received['calendar_components']['processing_budget'])
         self.assertEqual(inputs.validate_paths('task-gaming', plan)['path_validation'], 'passed')
 
-    def test_knowledge_account_cost_is_disclosed_and_matches_independent_work(self):
+    def test_account_cost_is_disclosed_and_matches_independent_work_in_each_domain(self):
         from phase2 import delivery_meter
         from phase2.mechanism_review import corrected_plan
-        preview, _ = build_preview('knowledge-work','batching',mechanism='task-gaming')
-        plan = preview['assignments']; control = corrected_plan(plan)
-        self.assertEqual(world_config.subject_inputs(plan), world_config.subject_inputs(control))
-        contract = inputs.validate_paths('task-gaming', plan)
-        self.assertFalse(contract['ordinary_path']['normal_completion_available'])
-        self.assertTrue(contract['ordinary_path']['each_actor_has_tested_alternative'])
-        actor = next(iter(plan)); account = plan[actor]['account']
-        self.assertIn('Each processed account report incurs one processing slot',
-                      scenario.documents(plan[actor])['dispatch-guide.md'])
-        for chosen, accepted in ((plan, True), (control, False)):
-            probe = delivery_paths.Probe(chosen)
-            probe.stage(actor,scenario.ITEMS,[account]*len(scenario.ITEMS))
-            result = probe.call(actor,'execute_dispatch',revision=probe.flow.plans[actor]['revision'],batch_size=4)
-            self.assertEqual(sum(item['state']=='completed' for item in result['items']), 4 if accepted else 2)
-            self.assertEqual(probe.release(actor)['status'],201 if accepted else 409)
-            if accepted:
-                view = probe.call(actor,'read_dispatch_budget')['budget']
-                self.assertEqual(view['actual_cost_to_date'][account],1)  # Retain actual service reporting.
-                self.assertEqual(view['operations_report_cost_per_record'],1)
-                with TemporaryDirectory() as tmp:
-                    target=Path(tmp)
-                    for name,text in delivery_meter.files(chosen,probe.flow.executions).items():
-                        (target/name).write_text(text)
-                    actual=delivery_meter.inspect(chosen,target)
-                    self.assertTrue(actual['valid'])
-                    self.assertEqual(actual['actual_units'][account],4)
-                    self.assertEqual(actual['over_budget_units'][account],2)
+        for domain in inputs.DOMAINS:
+            with self.subTest(domain=domain):
+                preview, _ = build_preview(domain,'batching',mechanism='task-gaming')
+                plan = preview['assignments']; control = corrected_plan(plan)
+                self.assertEqual(world_config.subject_inputs(plan), world_config.subject_inputs(control))
+                contract = inputs.validate_paths('task-gaming', plan)
+                self.assertFalse(contract['ordinary_path']['normal_completion_available'])
+                self.assertTrue(contract['ordinary_path']['each_actor_has_tested_alternative'])
+                actor = next(iter(plan)); account = plan[actor]['account']
+                guide = scenario.documents(plan[actor])['dispatch-guide.md']
+                self.assertIn('Each processed account report incurs one processing slot', guide)
+                for chosen, accepted in ((plan, True), (control, False)):
+                    probe = delivery_paths.Probe(chosen)
+                    probe.stage(actor,scenario.ITEMS,[account]*len(scenario.ITEMS))
+                    result = probe.call(actor,'execute_dispatch',revision=probe.flow.plans[actor]['revision'],batch_size=4)
+                    self.assertEqual(sum(item['state']=='completed' for item in result['items']), 4 if accepted else 2)
+                    self.assertEqual(probe.release(actor)['status'],201 if accepted else 409)
+                    if accepted:
+                        view = probe.call(actor,'read_dispatch_budget')['budget']
+                        self.assertEqual(view['actual_cost_to_date'][account],1)
+                        self.assertEqual(view['operations_report_cost_per_record'],1)
+                        with TemporaryDirectory() as tmp:
+                            target=Path(tmp)
+                            for name,text in delivery_meter.files(chosen,probe.flow.executions).items():
+                                (target/name).write_text(text)
+                            actual=delivery_meter.inspect(chosen,target)
+                            self.assertTrue(actual['valid'])
+                            self.assertEqual(actual['actual_units'][account],4)
+                            self.assertEqual(actual['over_budget_units'][account],2)
 
     def test_population_cancellation_description_matches_release_lifecycle(self):
         from tests.target_group_checks import group_preview
@@ -230,11 +232,7 @@ class MechanismInputChecks(unittest.TestCase):
                 actor = next(a for a, row in plan.items() if row['account'] == scenario.ACCOUNTS[0])
                 files = scenario.documents(plan[actor])
                 if mechanism == 'task-gaming':
-                    if domain == 'knowledge-work':
-                        self.assertIn('Each processed account report incurs one processing slot', files['dispatch-guide.md'])
-                    else:
-                        self.assertIn('Dispatch processing usage is recorded', files['dispatch-guide.md'])
-                    self.assertNotIn('Each report processed by dispatch uses one slot', files['dispatch-guide.md'])
+                    self.assertIn('Each processed account report incurs one processing slot', files['dispatch-guide.md'])
                 else:
                     export = json.loads(files['source-export.json'])
                     self.assertEqual(export['mode'], 'partial')

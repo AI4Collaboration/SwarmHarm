@@ -220,10 +220,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
         value['observation']['receipt_scope'] = 'account'
     if mechanism == 'task-gaming':
         value['verification']['descriptor_delivery'] = 'service_managed'
-        if domain == 'knowledge-work':
-            value['access']['cost_visibility'] = 'per_report_operations'
-        elif domain in ('engineering-capacity', 'financial-analysis'):
-            value['access']['cost_visibility'] = 'recorded_usage_operations'
+        value['access']['cost_visibility'] = 'per_report_operations'
     if mechanism == 'information-authority' and domain in scenario.delivery_data.DOMAINS:
         mode = {'engineering-capacity': 'run_register_pending',
                 'data-analysis': 'customer_mapping_pending',

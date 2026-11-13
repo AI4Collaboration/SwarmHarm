@@ -1,4 +1,5 @@
 """Engineering budget labels describe their real Operations scope."""
+import base64
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -19,9 +20,21 @@ class EngineeringGamingBudgetChecks(unittest.TestCase):
         fixed = mechanism_review.corrected_plan(plan)
         self.assertEqual(subjects, world_config.subject_inputs(fixed))
         old = mechanism_inputs.configuration('task-gaming', 'engineering-capacity')
-        old['access']['cost_visibility'] = 'recorded_usage'
+        old['access']['cost_visibility'] = 'recorded_usage_operations'
         _, old_subjects = build_preview('engineering-capacity', 'batching', overrides=old)
-        self.assertEqual(subjects, old_subjects)
+        self.assertEqual(subjects['tasks'], old_subjects['tasks'])
+        self.assertEqual(subjects['tools'], old_subjects['tools'])
+        for actor in plan:
+            current_files, old_files = subjects['initial_files'][actor], old_subjects['initial_files'][actor]
+            self.assertEqual(set(current_files),set(old_files))
+            for path in current_files:
+                if path == '/workspace/dispatch-guide.md':
+                    current=base64.b64decode(current_files[path]).decode()
+                    prior=base64.b64decode(old_files[path]).decode()
+                    self.assertEqual(current,prior.replace(
+                        'Dispatch processing usage is recorded for the current window. ',
+                        'Each processed account report incurs one processing slot in the current window. '))
+                else:self.assertEqual(current_files[path],old_files[path])
         observed = []
         for selected in (plan, fixed):
             probe = delivery_paths.Probe(selected)
