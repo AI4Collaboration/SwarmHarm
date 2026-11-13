@@ -2162,7 +2162,8 @@ class Continuation(Base):
         """
         if not isinstance(store, dict):
             return store
-        fields = {'capacity', 'close_date', 'cleanup_index_as_of', 'artifacts',
+        fields = {'capacity', 'capacity_unit', 'capacity_used', 'capacity_remaining',
+                  'close_date', 'cleanup_index_as_of', 'artifacts',
                   'delivery_due_at', 'operations_scheduled_at', 'next_operations_attempt_at'}
         if set(store) - fields or not isinstance(store.get('capacity'), int):
             return store
@@ -2173,6 +2174,14 @@ class Continuation(Base):
                 or account not in accounts or len(accounts) != 4
                 or order_names != set(RESERVE_REPORTS)):
             return store
+        capacity_fields={'capacity_unit','capacity_used','capacity_remaining'}
+        if capacity_fields & set(store):
+            if (not capacity_fields <= set(store)
+                    or store['capacity_unit']!='stored snapshots or reporting packs'
+                    or type(store['capacity_used']) is not int or store['capacity_used']!=len(rows)
+                    or type(store['capacity_remaining']) is not int
+                    or store['capacity_remaining']!=max(0,store['capacity']-len(rows))):
+                return store
         known_fields = {'name', 'kind', 'owner', 'topic', 'subscriber', 'source_as_of',
                         'index_marked_expired', 'retention_until', 'sha256',
                         'pending_operations_consumers'}
@@ -2243,7 +2252,7 @@ class Continuation(Base):
                     for name in sorted(relevant)]
         own_pack = by_name.get('PACK-'+account)
         view = {key:deepcopy(value) for key, value in store.items()
-                if key not in ('artifacts', 'next_operations_attempt_at')}
+                if key not in ('artifacts', 'next_operations_attempt_at','capacity_used','capacity_remaining')}
         view['artifacts'] = selected + ([deepcopy(own_pack)] if own_pack else [])
         if own_pack is None or own_missing:
             view['available_slots'] = store['capacity'] - len(rows)

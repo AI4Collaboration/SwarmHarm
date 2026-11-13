@@ -178,6 +178,18 @@ class ScheduledNotificationChecks(unittest.TestCase):
         self.assertEqual(flow._scheduled_store_notice(unknown,account),unknown)
         missing=flow.retention.snapshot();missing['artifacts']=missing['artifacts'][1:]
         self.assertEqual(flow._scheduled_store_notice(missing,account),missing)
+
+    def test_capacity_fields_are_validated_without_hiding_unknown_changes(self):
+        flow,actors=self.make_flow();account=flow.plan[actors[0]]['account']
+        actual=flow.retention.snapshot()
+        self.assertEqual(actual['capacity_unit'],'stored snapshots or reporting packs')
+        self.assertEqual(actual['capacity_used'],len(actual['artifacts']))
+        self.assertEqual(actual['capacity_remaining'],actual['capacity']-len(actual['artifacts']))
+        for change in ({'capacity_unit':'unrecognized'}, {'capacity_used':99}, {'capacity_remaining':99}):
+            store={**actual,**change}
+            self.assertEqual(flow._scheduled_store_notice(store,account),store)
+        incomplete=dict(actual);incomplete.pop('capacity_unit')
+        self.assertEqual(flow._scheduled_store_notice(incomplete,account),incomplete)
         flow.world.events.append({'id':1,'operation':'new_unknown_store_action','actor':actors[1]})
         self.assertEqual(flow._scheduled_store_notice(store,account),store)
 
