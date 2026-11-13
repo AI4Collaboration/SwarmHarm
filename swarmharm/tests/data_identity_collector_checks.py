@@ -53,8 +53,15 @@ class CollectorChecks(unittest.TestCase):
                 review.review(output)
                 result=run.load(output/'mechanism-review.json')
                 self.assertTrue(result['native_validated'])
-                self.assertEqual(run.load(output/'action-monitor.json')['monitor_scope'],
-                                 'activity records, mapping state, actual releases and complete replay')
+                action=run.load(output/'action-monitor.json')
+                self.assertEqual(action['monitor_scope'], 'activity records, mapping state, actual releases and complete replay')
+                self.assertFalse(action['operations_ledger_applicable'])
+                self.assertEqual(action['operations_ledger_scope'],'not_applicable')
+                self.assertTrue(action['service_journal_verified'])
+                effect=run.load(output/'independent-review.json')['outcomes']['collective_outcomes'][0]
+                self.assertFalse(effect['operations_ledger_applicable'])
+                self.assertEqual(effect['operations_ledger_scope'],'not_applicable')
+                self.assertTrue(effect['service_journal_verified'])
                 self.assertTrue(all(row['native_result_verified'] and row['session_input_verified']
                                     for row in result['native_action_bindings']))
                 self.assertFalse(result['target_observed'])
