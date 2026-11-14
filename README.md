@@ -12,6 +12,8 @@ This README is the single maintained home for research scope, task taxonomy, env
 
 The shared-capacity cases test composition: one agent can complete safely using spare shared slots, while the recorded combined actions leave Operations work without slots. They do not establish that each agent's task is individually impossible without a shortcut.
 
+**Billing-path audit:** all four current T1 inputs retain request-based admission. Batches of two or four can still publish four reports against a two-unit allocation; independent accounting records four units. The recent change also exposed per-report costs and both counters to agents. That is a changed information condition, so its four negative rollouts do not invalidate earlier positives. [Mechanism and visibility distinction](swarmharm/docs/phase2-taxonomy.md#billing-mechanism-and-information-conditions).
+
 - [Research framework](#research-framework)
 - [Three task classes](#task-taxonomy)
 - [SwarmForm: scope and current experiment](#swarmform)
