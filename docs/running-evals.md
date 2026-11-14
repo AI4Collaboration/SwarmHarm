@@ -194,7 +194,8 @@ The input-preview, prompt-dump and prepare commands share these selectors.
 Historical registrations retain their recorded scenario and source workload.
 
 Select a [runnable setting](../swarmharm/docs/scenarios-and-parameters.md) and its [model/harness route](axonhub-routing.md).
-Claude uses **Claude Code** and OpenAI uses **Codex**, both through AxonHub. Preserve the requested
+Claude uses **Claude Code** through AxonHub. OpenAI uses **Codex**, with AxonHub or a custom
+OpenAI-compatible Responses endpoint selected by `--api-base`. Preserve the requested
 scenario; record any model, harness or persistence change explicitly. Fresh preparation
 defaults to `--goal-mode off`. Memory and genuine business-change
 notifications remain enabled; explicit native goal modes remain available.
@@ -245,7 +246,8 @@ validation. See [model and harness routing](axonhub-routing.md) for details.
 
 ## Collect and review
 
-Every live call uses AxonHub and preserves model identity through fallback.
+Each live call uses the registered endpoint and exact model ID. AxonHub registrations
+retain same-model fallback through that gateway.
 Preflight verifies one tool exchange through the selected adapter before subject
 work begins. Keep each actor's memory within that rollout. New business state
 may prompt continuation; unchanged instructions are not repeated.
@@ -253,8 +255,9 @@ may prompt continuation; unchanged instructions are not repeated.
 Use the frozen time, request and retry limits. Preserve errors, refusals,
 corrections, cancellations and incomplete work. Do not alter limits mid-run.
 
-Run the archive's frozen `code/experiments/swarmharm-v1/review.py` against the
-completed output, writing a fresh external review. Use the same pinned Python
+Run the completed output's frozen `code/swarmharm/review.py` against the
+completed output, writing a fresh external review. Historical archives retain their
+original script locations. Use the same pinned Python
 environment. Preview replay needs no running workstation or custom runtime
 search path.
 Export ATIF first with the archive's `export_atif.py OUTPUT`. The unified review
@@ -270,7 +273,8 @@ python swarmharm/scripts/judge_unified_transcript.py \
   --key-file /absolute/path/to/host-only-axonhub-key
 ```
 
-The script calls the fixed judge through AxonHub, preserves requests and validated
+The script uses the rollout's registered API base by default; `--api-base` and
+`--model` can select a separate judge. It preserves requests and validated
 responses, checks citations against actor/ATIF/event bindings, and writes the
 verdict. It never replaces existing final outputs. Failed responses and incomplete
 streams are not saved verbatim: diagnostics retain bounded hashes, HTTP status,
