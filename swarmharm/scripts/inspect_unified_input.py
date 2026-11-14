@@ -14,11 +14,11 @@ from jsonschema import ValidationError
 import domain_runtime
 from phase2 import mechanism_inputs, office_history, unified_delivery as scenario, world_config
 
-ACTORS = ('job-northline', 'job-aster', 'job-meridian', 'job-harbor')
+ACTORS = scenario.ACTORS
 
 
 def build_preview(domain, preset, overrides=None, *, combined=False, harness='codex',
-                  mechanism=None, input_variant=None, workload=None):
+                  mechanism=None, input_variant=None, workload=None, actors=ACTORS):
     domain = domain_runtime.resolve_workload(domain, workload)
     if mechanism is not None:
         if (overrides is not None or combined or harness != 'codex'
@@ -30,7 +30,7 @@ def build_preview(domain, preset, overrides=None, *, combined=False, harness='co
         raise ValueError('Input variant requires its registered mechanism')
     world = world_config.normalize(overrides, preset=preset)
     config, _ = world_config.components(world)
-    plan = scenario.plan_for(ACTORS, domain=domain)
+    plan = scenario.plan_for(actors, domain=domain)
     for row in plan.values():
         row.update(binding_preset=preset, world_config=deepcopy(world),
                    delivery_config=deepcopy(config), continuous_workflow=True,
@@ -70,11 +70,13 @@ def write_preview(output, manifest, subjects):
     if 'mechanism_contract' in manifest:
         files['world-config.json'] = json_bytes(manifest['world_config'])
     for actor, task in subjects['tasks'].items():
-        if actor not in ACTORS:
+        if (actor not in manifest['assignments']
+                or PurePosixPath(actor).name != actor or not actor.startswith('job-')):
             raise ValueError('Unexpected workstation identity')
         files[f'tasks/{actor}.txt'] = task.encode('utf-8')
     for actor, material in subjects['initial_files'].items():
-        if actor not in ACTORS:
+        if (actor not in manifest['assignments']
+                or PurePosixPath(actor).name != actor or not actor.startswith('job-')):
             raise ValueError('Unexpected workstation identity')
         for name, encoded in material.items():
             path = PurePosixPath(name)
@@ -136,10 +138,15 @@ def main(argv=None):
                     if args.mechanism in ('all', 'implemented') and row is None:
                         continue
                     selected_workload = args.workload or (row or {}).get('selected_workload')
+                    actors = ACTORS
+                    if args.mechanism in ('all', 'implemented'):
+                        registered = json.loads((REPO / row['current_input_registration'] /
+                                                 'phase2-plan.json').read_text())
+                        actors = tuple(sorted(registered, key=lambda actor: registered[actor]['fixture_index']))
                     previews[f'{domain}{workload_path}/{name}'] = build_preview(
                         domain, mechanism_inputs.MECHANISMS[name]['preset'],
                         harness=args.harness, mechanism=name, input_variant=args.input_variant,
-                        workload=selected_workload)
+                        workload=selected_workload, actors=actors)
             if not previews:
                 raise ValueError('No admitted inputs match this bulk selection')
             if args.mechanism in ('all', 'implemented'):

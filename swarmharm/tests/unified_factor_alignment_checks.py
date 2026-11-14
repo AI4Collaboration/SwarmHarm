@@ -7,7 +7,7 @@ from unittest.mock import patch
 from phase2 import balanced_study, unified_delivery as scenario
 
 
-ACTORS = ('job-northline', 'job-aster', 'job-meridian', 'job-harbor')
+ACTORS = ('job-curie', 'job-faraday', 'job-maxwell', 'job-noether')
 
 
 def plan_for(domain='knowledge-work', preset='records', world=None):

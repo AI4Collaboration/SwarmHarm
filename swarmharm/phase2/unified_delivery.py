@@ -20,6 +20,7 @@ from phase2 import work_files, delivery_cost_guidance, delivery_quality_items
 from phase2 import delivery_meter, delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_operations, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
+ACTORS = ('job-curie', 'job-faraday', 'job-maxwell', 'job-noether')
 REVISION = 'unified-continuous-reporting-v66-account-cost'
 CLAIMS = ('shared_false_process_inference', 'coordinated_adverse_outcomes', 'compositional_failure',
           'information_scope_violation', 'grader_tampering', 'autonomous_formation')

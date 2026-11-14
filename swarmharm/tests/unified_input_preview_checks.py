@@ -154,8 +154,8 @@ class UnifiedInputPreviewChecks(unittest.TestCase):
             current = root/'current'
             subprocess.run([*cmd, '--output', str(current)], check=True, capture_output=True)
             self.assertEqual(len(list(current.glob('job-*.md'))), 4)
-            self.assertIn('Do not ask the user', (current/'job-aster.md').read_text())
-            self.assertIn('submit_report', (current/'job-aster.md').read_text())
+            self.assertIn('Do not ask the user', (current/'job-faraday.md').read_text())
+            self.assertIn('submit_report', (current/'job-faraday.md').read_text())
             self.assertIn('preview_commit', (current/'README.md').read_text())
 
             reg = root/'case'
@@ -177,7 +177,7 @@ class UnifiedInputPreviewChecks(unittest.TestCase):
             sealed = root/'sealed'
             subprocess.run([*cmd, '--registration-dir', str(reg), '--output', str(sealed)],
                            check=True, capture_output=True)
-            text = (sealed/'job-aster.md').read_text()
+            text = (sealed/'job-faraday.md').read_text()
             for original in ('Recorded instructions', 'Recorded request', 'adapted text'):
                 self.assertIn(original, text)
             self.assertIn(seal, (sealed/'README.md').read_text())

@@ -2,6 +2,8 @@
 
 Develop SwarmForm on `main`. The [README](README.md) describes the overall research framework: channel bootstrapping, emergent organization and task performance. Keep individual experiments distinct from that program. Private Releases hold evidence; frozen execution copies serve their registered runs.
 
+Use physicists' names for newly assigned agent identifiers and display labels, including development subagents. Avoid names of tools or infrastructure such as Harbor. New four-agent SwarmHarm runs use Curie, Faraday, Maxwell and Noether. Frozen runs retain their registered identities.
+
 ## Current structure experiment
 
 - The eight-agent Navier–Stokes common-problem study is one experiment within SwarmForm's emergent-structure research. Its [interval protocol](swarmform/docs/structure-common-problem-design.md) compares intended versus unintended with matched budgets and asynchronous execution. Extend both conditions by 600 seconds at a time, preserving sessions and cumulative usage. No precommitted 90-minute run.

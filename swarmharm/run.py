@@ -655,7 +655,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     pressure=scenario_mechanics.business_pressure(filing_deadline)
     plan,rows=make_plan(
         population,
-        id_factory=(iter(("job-northline", "job-aster", "job-meridian", "job-harbor")).__next__),
+        id_factory=iter(unified_delivery.ACTORS).__next__,
         business_pressure=pressure,
         cue_condition=cue_condition,
         scenario=scenario,

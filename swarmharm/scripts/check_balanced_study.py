@@ -14,7 +14,7 @@ sys.path[:0] = [str(REPO / 'swarmharm'),
 from phase2 import balanced_study, delivery_paths, unified_delivery as scenario
 
 
-ACTORS = ('job-northline', 'job-aster', 'job-meridian', 'job-harbor')
+ACTORS = scenario.ACTORS
 
 
 def plan_for(domain, preset):

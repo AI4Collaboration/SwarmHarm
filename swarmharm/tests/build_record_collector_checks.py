@@ -73,7 +73,7 @@ class Checks(unittest.TestCase):
                 review.review(output)
                 if run_packaging:
                     artifacts=output/'natural/operator/build-check-service/operator'
-                    for actor in ('job-northline','job-aster','job-meridian','job-harbor'):
+                    for actor in ('job-curie','job-faraday','job-maxwell','job-noether'):
                         self.assertEqual(len(list((artifacts/actor/'artifacts').glob('package-*.zip'))),1)
                 result=run.load(output/'mechanism-review.json');self.assertFalse(result['target_observed'])
                 self.assertEqual(result['mechanism_observed'],not corrected)

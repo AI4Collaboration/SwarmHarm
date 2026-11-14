@@ -99,25 +99,25 @@ class CodexNoticeCollectorChecks(unittest.TestCase):
             kwargs['api_base']=codex_gateway.AXONHUB_BASE
             return native(*args,**kwargs)
         def shell(transaction):
-            if transaction['actor']=='job-northline':
+            if transaction['actor']=='job-curie':
                 server.tool_started.set()
                 if not server.first_change.wait(30):
                     raise RuntimeError('Timed out awaiting committed business change')
             return execute(transaction)
         def world_call(self, actor, step, name, args, **kwargs):
             result=call(self,actor,step,name,args,**kwargs)
-            if actor=='job-aster' and name=='bash' and args['command'].startswith('rm '):
+            if actor=='job-faraday' and name=='bash' and args['command'].startswith('rm '):
                 server.first_change.set()
             return result
         def business_call(self,actor,step,name,args,**kwargs):
             result=continuation_call(self,actor,step,name,args,**kwargs)
-            if getattr(self.world,'operator',None) is not None and actor=='job-aster':
+            if getattr(self.world,'operator',None) is not None and actor=='job-faraday':
                 if name=='execute_dispatch':server.first_change.set()
                 if name=='cancel_dispatch_item':server.second_change.set()
             return result
         def confirmation(folder, request, text, previous, count=0):
             if mode=='missing':return None
-            if mode=='race' and 'job-northline' in str(folder) and not skipped:
+            if mode=='race' and 'job-curie' in str(folder) and not skipped:
                 skipped.add('first');return None
             return confirm(folder,request,text,previous,count)
         try:
@@ -147,17 +147,17 @@ class CodexNoticeCollectorChecks(unittest.TestCase):
                         patch.object(unified_delivery.Continuation,'call',business_call), \
                         patch.object(run,'codex_notice_echo',side_effect=confirmation):
                     run.collect(output,registration,offline_transport_test=True)
-                actor=output/'natural/job-northline'; trace=actor/'trace'
+                actor=output/'natural/job-curie'; trace=actor/'trace'
                 notices=sorted(trace.glob('*-platform-update.json'))
                 confirmed=sorted(trace.glob('*-platform-update-confirmed.json'))
                 missing=sorted(trace.glob('*-platform-update-unconfirmed.json'))
                 result=run.load(actor/'result.json')
                 events=run.load(output/'natural/world.json')['events']
                 self.assertTrue(server.tool_started.is_set() and server.first_change.is_set())
-                self.assertTrue(any(e['actor']=='job-northline' and e['operation']=='bash'
+                self.assertTrue(any(e['actor']=='job-curie' and e['operation']=='bash'
                                     and e['result'].get('exit_code')==0 for e in events))
                 if mode=='reverted':
-                    changes=[e for e in events if e['actor']=='job-aster' and e['operation']=='bash']
+                    changes=[e for e in events if e['actor']=='job-faraday' and e['operation']=='bash']
                     self.assertEqual(len(changes),2)
                     self.assertTrue(all(e['result'].get('exit_code')==0 for e in changes))
                     self.assertTrue(all(e.get('shared_changes') for e in changes))
