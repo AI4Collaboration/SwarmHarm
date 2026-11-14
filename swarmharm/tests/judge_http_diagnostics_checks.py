@@ -128,7 +128,7 @@ class Checks(unittest.TestCase):
             {'status':'failed','output':response['output']},
         ]:self.assertFalse(judge.completed_response_refusal(fake))
         with TemporaryDirectory() as tmp:
-            root=Path(tmp);(root/'transcript-judge-input.json').write_text('{}');(root/'action-monitor.json').write_text('{}')
+            root=Path(tmp);(root/'transcript-judge-input.json').write_text('{}');(root/'action-monitor.json').write_text('{}');(root/'registration.json').write_text('{}');(root/'natural').mkdir();(root/'natural/world.json').write_text('{}')
             key=root/'key';key.write_text('caller.secret.token')
             def completed(request,secret,capture):
                 capture.write(('data: '+json.dumps(response)+'\n\n').encode())
@@ -150,7 +150,7 @@ class Checks(unittest.TestCase):
             'content':[{'type':'refusal','refusal':token}]}]}
         for streaming in (False,True):
             with self.subTest(streaming=streaming), TemporaryDirectory() as tmp:
-                root=Path(tmp);(root/'transcript-judge-input.json').write_text('{}');(root/'action-monitor.json').write_text('{}')
+                root=Path(tmp);(root/'transcript-judge-input.json').write_text('{}');(root/'action-monitor.json').write_text('{}');(root/'registration.json').write_text('{}');(root/'natural').mkdir();(root/'natural/world.json').write_text('{}')
                 key=root/'key';key.write_text('caller.secret.token')
                 payload=json.dumps(response).encode()
                 if streaming:payload=b'data: '+json.dumps({'type':'response.completed','response':response}).encode()+b'\n\n'
@@ -230,7 +230,7 @@ class Checks(unittest.TestCase):
 
     def test_main_preserves_http_failure_without_error_body_or_key(self):
         with TemporaryDirectory() as tmp:
-            root=Path(tmp);(root/'transcript-judge-input.json').write_text('{}');(root/'action-monitor.json').write_text('{}')
+            root=Path(tmp);(root/'transcript-judge-input.json').write_text('{}');(root/'action-monitor.json').write_text('{}');(root/'registration.json').write_text('{}');(root/'natural').mkdir();(root/'natural/world.json').write_text('{}')
             caller='current.secret.key';unknown='other.secret.key';key=root/'key';key.write_text(caller)
             body=json.dumps({'error':{'message':unknown+' '+caller,'type':'server_error'}}).encode()
             with patch.object(judge,'post',side_effect=error(body)):
@@ -244,7 +244,7 @@ class Checks(unittest.TestCase):
 
     def test_failed_completed_response_keeps_only_hashes(self):
         with TemporaryDirectory() as tmp:
-            root=Path(tmp);(root/'transcript-judge-input.json').write_text('{}');(root/'action-monitor.json').write_text('{}')
+            root=Path(tmp);(root/'transcript-judge-input.json').write_text('{}');(root/'action-monitor.json').write_text('{}');(root/'registration.json').write_text('{}');(root/'natural').mkdir();(root/'natural/world.json').write_text('{}')
             token='unknown.short.dotted.secret';key=root/'key';key.write_text('current.secret.key')
             def complete_bad(request,secret,capture):
                 capture.write(('data: '+token+'\n\n').encode())
@@ -262,7 +262,7 @@ class Checks(unittest.TestCase):
 
     def test_main_preserves_stream_failure_without_body_or_key(self):
         with TemporaryDirectory() as tmp:
-            root=Path(tmp);(root/'transcript-judge-input.json').write_text('{}');(root/'action-monitor.json').write_text('{}')
+            root=Path(tmp);(root/'transcript-judge-input.json').write_text('{}');(root/'action-monitor.json').write_text('{}');(root/'registration.json').write_text('{}');(root/'natural').mkdir();(root/'natural/world.json').write_text('{}')
             token='other.segmented.secret';key=root/'key';key.write_text('current.secret.key')
             failure=judge.StreamFailure('failed',token.encode(),'provider_stated_refusal')
             with patch.object(judge,'post',side_effect=failure):
