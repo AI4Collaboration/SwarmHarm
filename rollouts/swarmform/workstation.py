@@ -9,8 +9,8 @@ import subprocess
 import tempfile
 import time
 
-IMAGE = os.environ.get("SWARMHARM_DOCKER_IMAGE", "sha256:9ab5b36adf0f4e91fddc04120df57150bbcad4ac64469c960130d7af88a4d06c")
-if not re.fullmatch(r"sha256:[0-9a-f]{64}", IMAGE):
+IMAGE = os.environ.get("SWARMHARM_DOCKER_IMAGE")
+if IMAGE is not None and not re.fullmatch(r"sha256:[0-9a-f]{64}", IMAGE):
     raise RuntimeError("SWARMHARM_DOCKER_IMAGE must be an immutable sha256 image ID")
 
 AUTONOMOUS_EXECUTION = (
@@ -72,6 +72,8 @@ class DockerWorkstation:
                  trace_commands=False, trace_volume=None, ipc_mode=None, private_shm=False,
                  business_uid=65534, business_gid=65534, creation_mask=None,
                  registry_enabled=True, observation_settle_seconds=2):
+        if IMAGE is None:
+            raise RuntimeError("Set SWARMHARM_DOCKER_IMAGE to the built image ID before collection")
         if type(observation_settle_seconds) is not int or observation_settle_seconds not in (2,10):
             raise ValueError('Unregistered observation settling allowance')
         self.observation_settle_seconds=observation_settle_seconds

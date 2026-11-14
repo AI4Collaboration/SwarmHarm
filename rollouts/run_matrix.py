@@ -1,16 +1,20 @@
 """Single-model SwarmForm component. Use scripts/run-evals for the full default lineup."""
 
 import argparse
+from contextlib import contextmanager
+import fcntl
 import hashlib
 import json
 import os
 from pathlib import Path
 import re
+import tarfile
 import subprocess
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "shared"))
 import model_lineup as defaults
+from process_control import run_process
 
 from swarmform.__main__ import CHANNELS, ROOT, source_digest, write_json
 from swarmform.formation_inputs import TASK_MODULES
@@ -36,6 +40,53 @@ def completed_evidence(directory):
         return True
     except (OSError, ValueError, TypeError, AttributeError):
         return False
+
+
+def archived_evidence(index):
+    """Verify the bundle before counting a moved or resumed attempt as complete."""
+    try:
+        row = json.loads(index.read_text())
+        sibling = index.with_name(index.name.removesuffix(".archive.json") + ".tar.gz")
+        archive = sibling if sibling.is_file() else Path(row["archive"])
+        if not archive.is_file():
+            return {"status": "archive_missing", "archive": str(archive)}
+        with archive.open("rb") as stream:
+            if hashlib.file_digest(stream, "sha256").hexdigest() != row["sha256"]:
+                raise ValueError("Archive checksum differs")
+        with tarfile.open(archive, "r:gz") as bundle:
+            entry = bundle.getmember("summary.json")
+            if not entry.isfile():
+                raise ValueError("Archive has no regular summary file")
+            with bundle.extractfile(entry) as stream:
+                status = json.load(stream)
+        complete = status.get("complete") and status.get("physical_stop_verified")
+        return {
+            "status": "archived" if complete else "incomplete",
+            "archive": str(archive),
+            "sha256": row["sha256"],
+        }
+    except (
+        OSError,
+        ValueError,
+        KeyError,
+        TypeError,
+        AttributeError,
+        tarfile.TarError,
+    ) as error:
+        return {"status": "archive_damaged", "error": str(error)}
+
+
+@contextmanager
+def batch_lock(root):
+    root.mkdir(parents=True, exist_ok=True)
+    with (root / ".run.lock").open("a") as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise RuntimeError(
+                "This output directory already has a running batch"
+            ) from None
+        yield
 
 
 def cases(args):
@@ -130,27 +181,33 @@ def main():
     from swarmform.__main__ import validate_endpoint
 
     validate_endpoint(args.base_url)
-    failures = 0
     source = source_digest()
-    from workstation import IMAGE
+    from swarmform.workstation import IMAGE
 
     rows = [{**row, "source_sha256": source, "image": IMAGE} for row in cases(args)]
-    if args.execute:
-        root = args.out.resolve()
-        root.mkdir(parents=True, exist_ok=True)
-        if (root / "plan.json").exists() and json.loads(
-            (root / "plan.json").read_text()
-        ) != rows:
-            parser.error(
-                "This output root contains a different plan; choose a fresh --out"
-            )
-        write_json(root / "plan.json", rows)
+    if not args.execute:
+        for row in rows:
+            print(json.dumps(row, sort_keys=True))
+        return 0
+    if IMAGE is None:
+        parser.error(
+            "Set SWARMHARM_DOCKER_IMAGE to the built image ID before collection"
+        )
+    with batch_lock(args.out.resolve()):
+        return execute_rows(args, rows, parser)
+
+
+def execute_rows(args, rows, parser):
+    root = args.out.resolve()
+    if (root / "plan.json").exists() and json.loads(
+        (root / "plan.json").read_text()
+    ) != rows:
+        parser.error("This output root contains a different plan; choose a fresh --out")
+    write_json(root / "plan.json", rows)
+    failures = 0
     records = []
     for row in rows:
         encoded = json.dumps(row, sort_keys=True)
-        if not args.execute:
-            print(encoded)
-            continue
         cohort_id = hashlib.sha256(encoded.encode()).hexdigest()[:16]
         slug = re.sub(r"[^\w.-]+", "-", args.model).strip(".-") or "model"
         directory = (
@@ -159,18 +216,11 @@ def main():
             / f"n{row['population']}"
             / (f"{row['task']}-{row['channel']}-r{row['replicate']}-{cohort_id}")
         )
-        summary = directory / "summary.json"
         record = {**row, "output": str(directory)}
         archive_index = directory.with_name(directory.name + ".archive.json")
         if not directory.exists() and archive_index.exists():
-            archive = json.loads(archive_index.read_text())
-            exists = Path(archive["archive"]).is_file()
-            record.update(
-                status="archived" if exists else "archive_missing",
-                archive=archive["archive"],
-                sha256=archive["sha256"],
-            )
-            failures += int(not exists)
+            record.update(archived_evidence(archive_index))
+            failures += int(record["status"] != "archived")
             records.append(record)
             write_json(root / "index.json", {"study": "swarmform", "runs": records})
             continue
@@ -189,6 +239,16 @@ def main():
             records.append(record)
             write_json(root / "index.json", {"study": "swarmform", "runs": records})
             continue
+        log = directory.with_name(directory.name + ".log")
+        if log.exists():
+            records.append({**record, "status": "incomplete", "log": str(log)})
+            failures += 1
+            write_json(root / "index.json", {"study": "swarmform", "runs": records})
+            continue
+        if source_digest() != row["source_sha256"]:
+            raise RuntimeError(
+                "Source changed during the batch; use a fresh output root"
+            )
         command = [
             sys.executable,
             "-m",
@@ -216,6 +276,8 @@ def main():
             args.base_url,
             "--out",
             str(directory),
+            "--expected-source-sha256",
+            row["source_sha256"],
         ]
         if args.revision:
             command.extend(["--revision", args.revision])
@@ -223,18 +285,17 @@ def main():
             command.extend(["--key-file", str(args.key_file.expanduser().resolve())])
         print("Starting", directory, flush=True)
         directory.parent.mkdir(parents=True, exist_ok=True)
-        log = directory.with_name(directory.name + ".log")
         write_json(
             root / "index.json",
             {"study": "swarmform", "runs": [*records, {**record, "status": "running"}]},
         )
         with log.open("a") as stream:
-            code = subprocess.run(
+            code, interrupted = run_process(
                 command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT
-            ).returncode
-        failures += int(code != 0)
+            )
+        failures += int(code != 0 or interrupted is not None)
         record.update(
-            status="complete" if code == 0 else "incomplete",
+            status="complete" if code == 0 and not interrupted else "incomplete",
             returncode=code,
             log=str(log),
         )
@@ -244,6 +305,8 @@ def main():
             )
         records.append(record)
         write_json(root / "index.json", {"study": "swarmform", "runs": records})
+        if interrupted:
+            break
     return int(failures != 0)
 
 

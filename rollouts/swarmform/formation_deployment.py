@@ -10,7 +10,7 @@ import subprocess
 
 from swarmform.file_deployment import FileDeployment
 from swarmform.socket_deployment import SocketDeployment, command
-from workstation import IMAGE
+from swarmform.workstation import IMAGE
 
 
 class WorkMemory(FileDeployment):

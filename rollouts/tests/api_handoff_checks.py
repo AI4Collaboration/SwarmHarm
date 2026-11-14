@@ -2,6 +2,8 @@
 
 import json
 import gzip
+import io
+import tarfile
 import os
 from pathlib import Path
 import subprocess
@@ -67,9 +69,20 @@ class APIHandoffChecks(unittest.TestCase):
                 out.parent.mkdir(parents=True, exist_ok=True)
                 if i == 0:
                     archive = out.with_suffix(".tar.gz")
-                    archive.write_bytes(b"fixture")
+                    with tarfile.open(archive, "w:gz") as bundle:
+                        raw = b'{"complete": true, "physical_stop_verified": true}'
+                        member = tarfile.TarInfo("summary.json")
+                        member.size = len(raw)
+                        bundle.addfile(member, io.BytesIO(raw))
                     out.with_name(out.name + ".archive.json").write_text(
-                        json.dumps({"archive": str(archive), "sha256": "fixture"})
+                        json.dumps(
+                            {
+                                "archive": str(archive),
+                                "sha256": hashlib.sha256(
+                                    archive.read_bytes()
+                                ).hexdigest(),
+                            }
+                        )
                     )
                 else:
                     out.mkdir()
@@ -126,6 +139,97 @@ class APIHandoffChecks(unittest.TestCase):
             )
             self.assertNotEqual(incompatible.returncode, 0)
             self.assertIn("different plan", incompatible.stderr)
+
+    def test_archive_integrity_and_relocated_incomplete_run(self):
+        import hashlib
+        from run_matrix import archived_evidence
+
+        with TemporaryDirectory() as directory:
+            archive = Path(directory) / "attempt.tar.gz"
+            index = Path(directory) / "attempt.archive.json"
+            with tarfile.open(archive, "w:gz") as bundle:
+                raw = b'{"complete": false, "physical_stop_verified": true}'
+                member = tarfile.TarInfo("summary.json")
+                member.size = len(raw)
+                bundle.addfile(member, io.BytesIO(raw))
+            index.write_text(
+                json.dumps(
+                    {
+                        "archive": "/old/machine/attempt.tar.gz",
+                        "sha256": hashlib.sha256(archive.read_bytes()).hexdigest(),
+                    }
+                )
+            )
+            self.assertEqual(archived_evidence(index)["status"], "incomplete")
+            archive.write_bytes(b"damaged")
+            self.assertEqual(archived_evidence(index)["status"], "archive_damaged")
+            archive.unlink()
+            self.assertEqual(archived_evidence(index)["status"], "archive_missing")
+
+    def test_batch_lock_and_failed_start_are_preserved(self):
+        import argparse
+        import hashlib
+        from run_matrix import batch_lock, execute_rows
+
+        rows = self.plan("--tasks", "planning-possible", "--populations", "4")
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            with batch_lock(root):
+                with self.assertRaisesRegex(
+                    RuntimeError, "already has a running batch"
+                ):
+                    with batch_lock(root):
+                        self.fail("Second writer acquired the lock")
+            for row in rows:
+                suffix = hashlib.sha256(
+                    json.dumps(row, sort_keys=True).encode()
+                ).hexdigest()[:16]
+                log = (
+                    root
+                    / "local-test-model"
+                    / "n4"
+                    / f"planning-possible-{row['channel']}-r1-{suffix}.log"
+                )
+                log.parent.mkdir(parents=True, exist_ok=True)
+                log.write_text("original startup failure")
+            args = SimpleNamespace(out=root, model="local-test-model")
+            with patch("run_matrix.run_process") as launch:
+                self.assertEqual(execute_rows(args, rows, argparse.ArgumentParser()), 1)
+            launch.assert_not_called()
+            self.assertEqual(
+                len(json.loads((root / "index.json").read_text())["runs"]), 4
+            )
+
+    def test_missing_image_fails_before_attempt_creation(self):
+        with TemporaryDirectory() as directory:
+            out = Path(directory) / "attempt"
+            env = dict(os.environ)
+            env.pop("SWARMHARM_DOCKER_IMAGE", None)
+            command = [
+                sys.executable,
+                str(ROOT / "rollouts/run_matrix.py"),
+                "--model",
+                "fixture",
+                "--harness",
+                "chat-completions",
+            ]
+            preview = subprocess.run(command, env=env, capture_output=True, text=True)
+            self.assertEqual(preview.returncode, 0, preview.stderr)
+            self.assertTrue(
+                all(
+                    json.loads(line)["image"] is None
+                    for line in preview.stdout.splitlines()
+                )
+            )
+            result = subprocess.run(
+                command + ["--execute", "--out", str(out)],
+                env=env,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("Set SWARMHARM_DOCKER_IMAGE", result.stderr)
+            self.assertFalse(out.exists())
 
     def test_triplets_have_only_the_registered_differences(self):
         from copy import deepcopy

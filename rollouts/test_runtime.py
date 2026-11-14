@@ -319,7 +319,7 @@ class LifecycleTests(unittest.TestCase):
 )
 class LargeArchiveTests(unittest.TestCase):
     def test_over_two_gibibytes_losslessly_archived_and_incremental(self):
-        from workstation import IMAGE
+        from swarmform.workstation import IMAGE
 
         name = "swarmform-archive-test-" + secrets.token_hex(6)
         subprocess.run(

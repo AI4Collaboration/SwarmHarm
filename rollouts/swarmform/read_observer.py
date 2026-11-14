@@ -15,7 +15,7 @@ from collections.abc import Mapping
 
 from atomic import atomic_json
 from swarmform.file_deployment import FileStation
-from workstation import IMAGE
+from swarmform.workstation import IMAGE
 from swarmform.strace_timing import FORMAT, HOST_CLOCK, current_command, legacy_line
 
 TRACE_ROOT = "/var/log/workstation"

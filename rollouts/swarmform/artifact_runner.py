@@ -4,7 +4,7 @@ No inference calls. Frame inputs contain no expected output or private source fa
 import base64
 import json
 from hashlib import sha256
-from workstation import DockerWorkstation
+from swarmform.workstation import DockerWorkstation
 
 RUNNER = '''import importlib.util,json
 from pathlib import Path

@@ -12,6 +12,7 @@ import sys
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO/'shared'))
 import model_lineup as defaults
+from process_control import run_process
 from guardrails import api_base_url, credential_file, outside_repository
 
 
@@ -117,7 +118,10 @@ def execute(args, expected, config):
                        '--population', '4', '--out', str(check), '--execute']
             if args.model_map: command += ['--model-map', str(args.model_map)]
             with (root/'api-check.log').open('a') as log:
-                subprocess.run(command, cwd=REPO, env=env, stdout=log, stderr=subprocess.STDOUT)
+                code, interrupted = run_process(command, cwd=REPO, env=env, stdout=log, stderr=subprocess.STDOUT)
+            if interrupted:
+                write(root/'index.json', dict(api_check='interrupted', batches=[]))
+                return 1
         if not integration_complete(check, expected):
             index_path = root/'index.json'
             index = json.loads(index_path.read_text()) if index_path.exists() else dict(batches=[])
@@ -139,11 +143,13 @@ def execute(args, expected, config):
                                  SWARMHARM_SANDBOX='docker', SWARMHARM_HARBOR_ENV=str(Path(python).parent.parent),
                                  SWARMHARM_NATIVE_CODEX=str(REPO/'shared/codex/node_modules/.bin/codex'))
                 with log_path.open('a') as log:
-                    result = subprocess.run(batch_command(python, study, model, expected['api_base'], output),
-                                            cwd=REPO, env=study_env, stdout=log, stderr=subprocess.STDOUT)
-                record.update(status='complete' if result.returncode == 0 else 'incomplete', returncode=result.returncode)
+                    code, interrupted = run_process(batch_command(python, study, model, expected['api_base'], output),
+                                                    cwd=REPO, env=study_env, stdout=log, stderr=subprocess.STDOUT)
+                record.update(status='complete' if code == 0 and not interrupted else 'incomplete', returncode=code)
+                if interrupted: record['interrupted'] = interrupted
                 records.append(record)
                 write(root/'index.json', dict(api_check='passed', batches=records))
+                if interrupted: return 1
                 if subprocess.check_output(['git', 'status', '--porcelain'], cwd=REPO).strip():
                     raise RuntimeError('An incomplete registration needs review; see the batch log')
         return int(any(r['returncode'] != 0 for r in records))

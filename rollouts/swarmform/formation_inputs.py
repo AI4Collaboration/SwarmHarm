@@ -66,7 +66,7 @@ def build_intended(key, population=3, *, names=None):
 def _build(key, channel, population, names):
     from swarmform.population import validate
     from swarmform.structure import audit_visible, theory_interface
-    from workstation import AUTONOMOUS_EXECUTION
+    from swarmform.workstation import AUTONOMOUS_EXECUTION
     validate(population, minimum=2)
     intended = channel is None
     startup, truth, metadata = module(key).build(key, population)

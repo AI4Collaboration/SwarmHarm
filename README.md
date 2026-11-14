@@ -156,6 +156,9 @@ These standalone commands use the lightweight Chat Completions runner, which nee
 only the Python dependencies above. The combined default experiment uses the native
 harnesses installed by `scripts/setup-defaults`; record the harness when comparing runs.
 Add `--execute --out /absolute/external/run-directory` for authorized collection.
+Planning needs no installed image. Execution requires the exported immutable image ID;
+there is no machine-specific fallback. Use `--served-model` when the API expects a
+different model name. Installation selects the Docker engine's architecture.
 **This revision is validated offline; no new model rollout is claimed.**
 A full 4/8/16/32 batch is 96 cohorts per repeat, or 288 with `--repeats 3`.
 Extensions at `--populations 64 128` add 48 cohorts per repeat, giving 432 total
@@ -193,7 +196,14 @@ removed. Capture failures mark the attempt incomplete and retain originals.
 After restoring storage, use
 `python rollouts/recover.py --run /path/to/attempt --out /path/to/recovery`
 and keep both directories. The matrix verifies sealed files before skipping
-completed work; use a fresh output root for a new attempt.
+completed work; archives are checksum verified and incomplete archives stay incomplete.
+A moved archive is found beside its index. Use a fresh output root for a new attempt.
+
+Only one batch may write an output root at a time. Source changes stop collection
+before another cohort starts. Ctrl-C or SIGTERM requests participant shutdown and
+waits for in-flight tools and evidence capture; the batch then exits without
+starting another cohort. An interrupted attempt remains incomplete and is preserved
+when the same plan is resumed. A startup failure with only a host log is preserved too.
 
 `outcomes.json` separates **task_satisfied** from **infeasibility_supported**.
 Decoder grading executes submitted code in an isolated workstation, compares
@@ -272,7 +282,7 @@ r257 is evidence from its original setting. [Current evidence and open findings]
 - Registrations and evidence indexes bind claims to exact source, model, population,
   runtime and trajectories. Use each historical case's sealed source to reproduce it.
 
-Use `python3 scripts/check-ci --plan` to inspect change-selected checks, then run
+Use `python3.12 scripts/check-ci --plan` to inspect change-selected checks, then run
 `scripts/check-ci` in the pinned Python 3.12 environment. Run each relevant check
 once; repeat after a related fix. `--full` is an explicit full regression.
 Keep keys, model outputs and compressed trajectories outside Git. Preserve original

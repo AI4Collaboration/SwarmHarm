@@ -5,8 +5,8 @@ import json
 import os
 from pathlib import Path
 import subprocess
-from workstation import DockerWorkstation
-import workstation
+from swarmform.workstation import DockerWorkstation
+from swarmform import workstation
 from atomic import atomic_json
 
 

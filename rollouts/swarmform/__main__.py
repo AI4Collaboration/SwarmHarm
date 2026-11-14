@@ -4,12 +4,14 @@ import argparse
 import asyncio
 import base64
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 import gzip
 import hashlib
 import json
 import os
 from pathlib import Path
 import shutil
+import signal
 import sys
 import subprocess
 import threading
@@ -45,6 +47,7 @@ def arguments():
         "--served-model",
         help="Provider ID when different from the native model identity",
     )
+    run.add_argument("--expected-source-sha256", help=argparse.SUPPRESS)
     run.add_argument("--population", "-n", type=int, required=True)
     run.add_argument("--names", choices=("numbered", "physicists"), default="numbered")
     run.add_argument(
@@ -189,6 +192,7 @@ class Cohort:
                 args.task, args.channel, args.population, names=args.names
             )
         )
+        self.interrupted = False
         self.last = {}
         self.window_open = None
         self.deadline = None
@@ -283,7 +287,8 @@ class Cohort:
         try:
             while not self.stopping.is_set():
                 request = {
-                    "model": self.args.model,
+                    "model": getattr(self.args, "served_model", None)
+                    or self.args.model,
                     "messages": messages,
                     "tools": tools,
                     "stream": False,
@@ -381,11 +386,17 @@ class Cohort:
             "deployment": {"shared": True},
             "channel_family": self.manifest["channel_family"],
         }
-        from workstation import IMAGE
+        from swarmform.workstation import IMAGE
         import platform
         import httpx
         from .inputs import digest
 
+        registered_source = source_digest()
+        expected = getattr(args, "expected_source_sha256", None)
+        if expected is not None and expected != registered_source:
+            raise RuntimeError(
+                "Source differs from the batch plan; no participants started"
+            )
         write_json(
             self.out / "runtime.json", await asyncio.to_thread(runtime_info, IMAGE)
         )
@@ -408,7 +419,7 @@ class Cohort:
                 "served_model": getattr(args, "served_model", None) or args.model,
                 "native_runtime": getattr(args, "_native_runtime", None),
                 "observation_policy": "post_tool_and_terminal_v1",
-                "source_sha256": source_digest(),
+                "source_sha256": registered_source,
                 "python": platform.python_version(),
                 "httpx": httpx.__version__,
                 "image": IMAGE,
@@ -543,7 +554,11 @@ class Cohort:
             self.out / "outcomes.json",
             inputs.module(args.task).outcome(args.task, outputs, self.truth),
         )
-        passed = bool(receipt["research_stop_verified"]) and not self.errors
+        passed = (
+            bool(receipt["research_stop_verified"])
+            and not self.errors
+            and not self.interrupted
+        )
         summary = {
             "complete": passed,
             "reason": self.reason,
@@ -583,8 +598,43 @@ def validate_endpoint(url):
         )
 
 
+@contextmanager
+def stopping_signals(cohort):
+    """Stop participants and seal evidence before a CLI interrupt returns."""
+    loop = asyncio.get_running_loop()
+    previous = {}
+
+    def stop():
+        cohort.interrupted = True
+        cohort.stop("operator_interrupt")
+
+    try:
+        if threading.current_thread() is threading.main_thread():
+            for signum in (signal.SIGINT, signal.SIGTERM):
+                previous[signum] = signal.getsignal(signum)
+                loop.add_signal_handler(signum, stop)
+        yield
+    finally:
+        for signum, handler in previous.items():
+            loop.remove_signal_handler(signum)
+            signal.signal(signum, handler)
+
+
 async def collect(args):
     import httpx
+    from swarmform.workstation import IMAGE
+
+    if IMAGE is None:
+        raise ValueError(
+            "Set SWARMHARM_DOCKER_IMAGE to the built image ID before collection"
+        )
+    if (
+        getattr(args, "harness", "chat-completions") == "chat-completions"
+        and getattr(args, "api_protocol", "chat-completions") != "chat-completions"
+    ):
+        raise ValueError(
+            "The lightweight runner requires --api-protocol chat-completions"
+        )
 
     validate_endpoint(args.base_url)
     asyncio.get_running_loop().set_default_executor(
@@ -619,21 +669,23 @@ async def collect(args):
             max_connections=args.population, max_keepalive_connections=args.population
         ),
     ) as client:
-        try:
-            summary = await Cohort(args, client, out).run()
-        except Exception as error:
-            stop = out / "physical-stop.json"
-            summary = {
-                "complete": False,
-                "reason": "collection_error",
-                "errors": {"collector": f"{type(error).__name__}: {error}"},
-                "physical_stop_verified": bool(
-                    stop.exists()
-                    and json.loads(stop.read_text()).get("research_stop_verified")
-                ),
-            }
-            write_json(out / "summary.json", summary)
-        seal_evidence(out)
+        cohort = Cohort(args, client, out)
+        with stopping_signals(cohort):
+            try:
+                summary = await cohort.run()
+            except Exception as error:
+                stop = out / "physical-stop.json"
+                summary = {
+                    "complete": False,
+                    "reason": "collection_error",
+                    "errors": {"collector": f"{type(error).__name__}: {error}"},
+                    "physical_stop_verified": bool(
+                        stop.exists()
+                        and json.loads(stop.read_text()).get("research_stop_verified")
+                    ),
+                }
+                write_json(out / "summary.json", summary)
+            seal_evidence(out)
     print(json.dumps(summary, indent=2))
     return 0 if summary["complete"] else 1
 

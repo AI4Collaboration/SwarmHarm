@@ -86,13 +86,14 @@ def select_checks(files, full=False):
             checks.add('inventory')
         elif name == 'scripts/archive-trajectories':
             suites('trajectory_archive')
-        elif name in {'scripts/run-evals', 'scripts/setup-defaults', 'shared/model_lineup.py'}:
+        elif name in {'scripts/run-evals', 'scripts/setup-defaults', 'shared/model_lineup.py', 'shared/process_control.py'}:
             suites('default_runner', 'batch_plan', 'api_handoff')
+            if name == 'shared/process_control.py': suites('api_collect', roots=('rollouts',))
         elif name == 'swarmharm/run_matrix.py':
             suites('batch_plan', roots=(LAB,))
         elif name.startswith('rollouts/'):
             suites('api_handoff', 'portable_runtime', roots=('rollouts',))
-            if name in {'rollouts/swarmform/__main__.py', 'rollouts/workstation.py',
+            if name in {'rollouts/swarmform/__main__.py', 'rollouts/swarmform/workstation.py', 'rollouts/swarmform/workstation_observer.py',
                         'rollouts/swarmform/file_deployment.py', 'rollouts/swarmform/socket_deployment.py',
                         'rollouts/swarmform/formation_deployment.py', 'rollouts/swarmform/formation_common.py'}:
                 suites('api_collect', roots=('rollouts',))

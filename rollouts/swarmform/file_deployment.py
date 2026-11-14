@@ -10,7 +10,7 @@ import subprocess
 import threading
 import time
 
-from workstation import DockerWorkstation, IMAGE
+from swarmform.workstation import DockerWorkstation, IMAGE
 
 EXPORTS = "/var/tmp/exports"
 WORKSTATION_ENVIRONMENT = {"HOME": "/workspace"}

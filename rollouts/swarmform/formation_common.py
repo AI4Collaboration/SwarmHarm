@@ -14,7 +14,7 @@ from swarmform.formation_inputs import PROJECT
 from swarmform.participant_stop import ParticipantStop
 from swarmform.population import account_ids
 from swarmform.read_observer import ObservedFileStation
-from workstation import HYDRATE, IMAGE, native_cwd_alias_code
+from swarmform.workstation import HYDRATE, IMAGE, native_cwd_alias_code
 
 
 def run(argv, data=None):

@@ -5,6 +5,10 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import gzip
 import hashlib
 import json
+import signal
+import subprocess
+import sys
+import time
 from pathlib import Path
 import threading
 from tempfile import TemporaryDirectory
@@ -87,6 +91,7 @@ class APICollectChecks(unittest.TestCase):
                     channel="filesystem",
                     seconds=60,
                     model="scripted-software-fixture",
+                    served_model="served-fixture-alias",
                     revision="fixture",
                     base_url=f"http://127.0.0.1:{server.server_port}/v1",
                     key_file=None,
@@ -103,6 +108,10 @@ class APICollectChecks(unittest.TestCase):
                 self.assertEqual(len(summary["finished"]), 4)
                 self.assertTrue(summary["physical_stop_verified"])
                 self.assertEqual(len(observed), 8)
+                self.assertEqual(
+                    {request["model"] for _, request in observed},
+                    {"served-fixture-alias"},
+                )
                 self.assertTrue(
                     all(path == "/v1/chat/completions" for path, _ in observed)
                 )
@@ -116,6 +125,132 @@ class APICollectChecks(unittest.TestCase):
                     self.assertEqual(
                         hashlib.sha256((out / name).read_bytes()).hexdigest(), expected
                     )
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join()
+
+    def test_cli_interrupt_seals_active_tools_and_stops_the_batch(self):
+        root = Path(__file__).resolve().parents[2]
+
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+
+            def do_POST(self):
+                self.rfile.read(int(self.headers["Content-Length"]))
+                body = json.dumps(
+                    {
+                        "choices": [
+                            {
+                                "message": {
+                                    "role": "assistant",
+                                    "content": None,
+                                    "tool_calls": [
+                                        {
+                                            "id": "slow_tool",
+                                            "type": "function",
+                                            "function": {
+                                                "name": "bash",
+                                                "arguments": json.dumps(
+                                                    {
+                                                        "command": "printf started; sleep 25"
+                                                    }
+                                                ),
+                                            },
+                                        }
+                                    ],
+                                },
+                                "finish_reason": "tool_calls",
+                            }
+                        ],
+                        "usage": {"total_tokens": 20},
+                    }
+                ).encode()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                try:
+                    self.wfile.write(body)
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
+
+        server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            with TemporaryDirectory() as directory:
+                out = Path(directory) / "batch"
+                command = [
+                    sys.executable,
+                    str(root / "rollouts/run_matrix.py"),
+                    "--model",
+                    "fixture",
+                    "--harness",
+                    "chat-completions",
+                    "--populations",
+                    "2",
+                    "--tasks",
+                    "planning-possible",
+                    "--base-url",
+                    f"http://127.0.0.1:{server.server_port}/v1",
+                    "--execute",
+                    "--out",
+                    str(out),
+                ]
+                with (Path(directory) / "batch.log").open("w+") as log:
+                    process = subprocess.Popen(
+                        command, cwd=root, stdout=log, stderr=log
+                    )
+                    try:
+                        deadline = time.monotonic() + 45
+                        active = False
+                        while time.monotonic() < deadline and process.poll() is None:
+                            for path in out.glob("**/Research*.jsonl.gz"):
+                                try:
+                                    with gzip.open(path, "rt") as stream:
+                                        active = active or any(
+                                            json.loads(line)["kind"] == "tool_start"
+                                            for line in stream
+                                        )
+                                except (EOFError, OSError):
+                                    continue
+                            if active:
+                                break
+                            time.sleep(0.05)
+                        self.assertTrue(
+                            active, "Collector never reached an active tool"
+                        )
+                        process.send_signal(signal.SIGTERM)
+                        self.assertEqual(process.wait(timeout=60), 1)
+                    finally:
+                        if process.poll() is None:
+                            process.send_signal(signal.SIGTERM)
+                            process.wait(timeout=60)
+                index = json.loads((out / "index.json").read_text())
+                self.assertEqual(len(index["runs"]), 1)
+                run = Path(index["runs"][0]["output"])
+                summary = json.loads((run / "summary.json").read_text())
+                self.assertFalse(summary["complete"])
+                self.assertEqual(summary["reason"], "operator_interrupt")
+                self.assertTrue(summary["physical_stop_verified"])
+                manifest = json.loads((run / "evidence-manifest.json").read_text())
+                for name, expected in manifest.items():
+                    self.assertEqual(
+                        hashlib.sha256((run / name).read_bytes()).hexdigest(), expected
+                    )
+                events = []
+                for path in run.glob("Research*.jsonl.gz"):
+                    with gzip.open(path, "rt") as stream:
+                        events.extend(json.loads(line) for line in stream)
+                started = {e["call_id"] for e in events if e["kind"] == "tool_start"}
+                completed = {
+                    e["call_id"]
+                    for e in events
+                    if e["kind"] in ("tool_result", "tool_error")
+                }
+                self.assertTrue(started <= completed)
         finally:
             server.shutdown()
             server.server_close()
@@ -158,23 +293,32 @@ class APICollectChecks(unittest.TestCase):
                     "planning-distributed", channel, 2, names="numbered"
                 )
                 instance = deployment(
-                    visible["startup"], {"channel_family": channel, "deployment": {"shared": True}},
+                    visible["startup"],
+                    {"channel_family": channel, "deployment": {"shared": True}},
                     observation_archive=Path(directory) / "reads",
                 )
                 try:
                     first, second = instance.stations
-                    private = next(p for p in visible["startup"][first]
-                                   if "/calendars/" in p and p not in visible["startup"][second])
+                    private = next(
+                        p
+                        for p in visible["startup"][first]
+                        if "/calendars/" in p and p not in visible["startup"][second]
+                    )
                     result, _ = instance.execute(second, "test ! -e " + private)
                     self.assertEqual(result["exit_code"], 0)
-                    result, _ = instance.execute(first,
+                    result, _ = instance.execute(
+                        first,
                         "printf 'fixture payload' > /workspace/payload.txt; "
-                        "python /workspace/projects.py write probe /workspace/payload.txt")
+                        "python /workspace/projects.py write probe /workspace/payload.txt",
+                    )
                     self.assertEqual(result["exit_code"], 0, result)
-                    result, _ = instance.execute(second,
-                        "python /workspace/projects.py read probe")
+                    result, _ = instance.execute(
+                        second, "python /workspace/projects.py read probe"
+                    )
                     self.assertEqual(result["exit_code"], 0, result)
-                    self.assertEqual(json.loads(result["stdout"])["text"], "fixture payload")
+                    self.assertEqual(
+                        json.loads(result["stdout"])["text"], "fixture payload"
+                    )
                 finally:
                     instance.close()
                 self.assertTrue(instance.closed)

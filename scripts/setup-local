@@ -29,7 +29,11 @@ done
 for adapter in $harnesses; do
   case "$adapter" in codex|claude|pi) ;; *) echo "Unknown harness: $adapter (use codex, claude, pi or all)" >&2; exit 1;; esac
 done
-case "$(uname -m)" in arm64|aarch64) platform=linux/arm64;; *) platform=linux/amd64;; esac
+case "$(docker info --format '{{.Architecture}}')" in
+  arm64|aarch64) platform=linux/arm64;;
+  amd64|x86_64) platform=linux/amd64;;
+  *) echo 'Use an ARM64 or AMD64 Linux Docker engine' >&2; exit 1;;
+esac
 provenance="$state/workstation-$(date +%Y%m%dT%H%M%S)-$$.json"
 "$runtime/bin/python" "$repo/scripts/build-workstation-image" --platform "$platform" --output "$provenance"
 image=$("$runtime/bin/python" -c 'import json,sys;print(json.load(open(sys.argv[1]))["image"])' "$provenance")

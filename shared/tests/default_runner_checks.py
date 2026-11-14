@@ -69,6 +69,7 @@ class DefaultRunnerChecks(unittest.TestCase):
                 return SimpleNamespace(returncode=0)
             with patch.object(runner.subprocess, 'run', side_effect=invoke), \
                  patch.object(runner.subprocess, 'check_output', return_value=b''), \
+                 patch.object(runner, 'run_process', side_effect=lambda command, **kw: (invoke(command, **kw).returncode, None)), \
                  patch.object(runner, 'source_signature', return_value=plan['source_sha256']), \
                  patch.dict(os.environ, {'OPENAI_API_KEY':'fixture-only'}):
                 self.assertEqual(runner.execute(args, plan, config), 0)
@@ -80,6 +81,23 @@ class DefaultRunnerChecks(unittest.TestCase):
             index = json.loads((root/'index.json').read_text())
             self.assertEqual(len(index['batches']), 22)
             self.assertNotIn('fixture-only', (root/'plan.json').read_text()+(root/'index.json').read_text())
+
+    def test_interruption_stops_before_next_model_or_study(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            plan = runner.plan('http://localhost:8000/v1')
+            self.make_api_evidence(root/'api-check', plan)
+            args = SimpleNamespace(out=root, key_file=None, model_map=None)
+            config = dict(python=sys.executable, images=dict(swarmform='form', swarmharm='harm'))
+            with patch.object(runner.subprocess, 'run', return_value=SimpleNamespace(returncode=0)), \
+                 patch.object(runner, 'source_signature', return_value=plan['source_sha256']), \
+                 patch.object(runner, 'run_process', return_value=(1, 'SIGTERM')) as run:
+                self.assertEqual(runner.execute(args, plan, config), 1)
+            run.assert_called_once()
+            batches = json.loads((root/'index.json').read_text())['batches']
+            self.assertEqual(len(batches), 1)
+            self.assertEqual(batches[0]['status'], 'incomplete')
+            self.assertEqual(batches[0]['interrupted'], 'SIGTERM')
 
     def test_partial_or_tampered_api_check_never_starts_study_or_repeats_check(self):
         with tempfile.TemporaryDirectory() as directory:

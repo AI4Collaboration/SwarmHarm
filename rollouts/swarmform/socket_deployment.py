@@ -11,7 +11,7 @@ import threading
 import time
 from swarmform.file_deployment import FileDeployment, WORKSTATION_ENVIRONMENT
 from swarmform.read_observer import ObservedFileStation
-from workstation import IMAGE
+from swarmform.workstation import IMAGE
 from swarmform.service_workstation import ServiceWorkstation
 
 

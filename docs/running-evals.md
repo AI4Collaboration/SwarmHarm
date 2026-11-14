@@ -37,9 +37,9 @@ per second. Both retain every captured request and action. After capture and rev
 compress a cohort without losing its directory layout:
 
 ```sh
-python3 scripts/archive-trajectories /absolute/external/cohort-directory
+python3.12 scripts/archive-trajectories /absolute/external/cohort-directory
 # Optional: delete the raw copy only after the archive has been verified.
-python3 scripts/archive-trajectories /absolute/external/another-cohort --remove-source
+python3.12 scripts/archive-trajectories /absolute/external/another-cohort --remove-source
 ```
 
 The tool checks the evidence manifest, archives every file, rereads and hashes the
@@ -69,11 +69,11 @@ For a SwarmForm capture failure, correct the host storage problem and use the
 retained resources listed in `recovery.json`. Export to a fresh directory:
 
 ```sh
-python3 rollouts/recover.py --run /absolute/external/incomplete-cohort \
+python3.12 rollouts/recover.py --run /absolute/external/incomplete-cohort \
   --out /absolute/external/recovered-evidence
 ```
 
 Recovery preserves the original attempt and does not restart model calls.
 
-Use `python3 scripts/check-ci --plan` and the pinned Python 3.12 environment for
+Use `python3.12 scripts/check-ci --plan` and the pinned Python 3.12 environment for
 necessary code checks. Setup and software fixtures do not require a hosted API key.
