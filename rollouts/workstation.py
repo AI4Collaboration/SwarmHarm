@@ -352,4 +352,3 @@ class DockerWorkstation:
                 self.closed = True
         if removed.returncode != 0 and b"No such container" not in removed.stderr:
             raise RuntimeError("Container removal unconfirmed")
-
