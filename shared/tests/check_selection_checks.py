@@ -18,7 +18,7 @@ class CheckSelectionChecks(unittest.TestCase):
         plan = select(['rollouts/run_matrix.py', 'rollouts/tests/__init__.py',
                        'scripts/archive-trajectories', 'swarmharm/run_matrix.py'])
         self.assertEqual(plan['tests'], ['tests.api_handoff_checks',
-            'tests.batch_plan_checks', 'tests.trajectory_archive_checks'])
+            'tests.batch_plan_checks', 'tests.portable_runtime_checks', 'tests.trajectory_archive_checks'])
         self.assertFalse(plan['docker'])
         self.assertEqual(plan['harnesses'], [])
 

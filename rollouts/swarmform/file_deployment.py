@@ -3,6 +3,7 @@ from swarmform.population import account_ids
 
 import base64
 from contextlib import ExitStack
+from concurrent.futures import ThreadPoolExecutor
 import json
 from pathlib import Path
 import secrets
@@ -111,11 +112,7 @@ class FileStation(DockerWorkstation):
     def prepare_continuous_command(self, shared):
         if shared:
             raise ValueError('This deployment uses a live volume, not boundary synchronization')
-        before = self.capture_frozen('before_command')
-        # The snapshot is quiescent; the next command must run alongside the
-        # existing business processes, including worker-created services.
-        self.resume_captured(before)
-        return before, [], []
+        return None, [], []
 
 
 class FileDeployment:
@@ -267,8 +264,22 @@ class FileDeployment:
             finally:
                 station.resume_captured(before)
 
+    def capture_terminal(self):
+        errors = []
+        with ThreadPoolExecutor(max_workers=min(8, max(1, len(self.stations)))) as pool:
+            futures = [pool.submit(station.capture_terminal)
+                       for station in self.stations.values() if hasattr(station, 'capture_terminal')]
+            for future in futures:
+                try:
+                    future.result()
+                except BaseException as error:
+                    errors.append(error)
+        if errors:
+            raise BaseExceptionGroup('Observation capture failed; cohort resources retained', errors)
+
     def close(self):
         if not self.closed:
+            self.capture_terminal()
             self.resources.close()
             self.closed = True
 

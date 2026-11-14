@@ -88,7 +88,7 @@ def select_checks(files, full=False):
         elif name == 'swarmharm/run_matrix.py':
             suites('batch_plan', roots=(LAB,))
         elif name.startswith('rollouts/'):
-            suites('api_handoff', roots=('rollouts',))
+            suites('api_handoff', 'portable_runtime', roots=('rollouts',))
             if name in {'rollouts/swarmform/__main__.py', 'rollouts/workstation.py'}:
                 suites('api_collect', roots=('rollouts',))
         elif name == 'scripts/check_format_contract.py':

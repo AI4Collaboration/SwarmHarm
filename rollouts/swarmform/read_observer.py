@@ -7,12 +7,10 @@ from pathlib import Path
 import re
 import os
 import secrets
-import shutil
-import ctypes
-import platform
+import gzip
 import subprocess
 import time
-from tempfile import TemporaryFile,NamedTemporaryFile
+from tempfile import NamedTemporaryFile
 from collections.abc import Mapping
 
 from atomic import atomic_json
@@ -20,23 +18,15 @@ from swarmform.file_deployment import FileStation
 from workstation import IMAGE
 from swarmform.strace_timing import FORMAT, HOST_CLOCK, current_command, legacy_line
 
-TRACE_ROOT = '/var/log/workstation'
-MAX_TRACE_BYTES=1024*1024*1024
-MAX_ACTIVE_BYTES=2*1024*1024*1024
+TRACE_ROOT = "/var/log/workstation"
+CHUNK_BYTES = 1024 * 1024
 
 
-class ObservationStorageAllowanceExceeded(RuntimeError):
-    """The complete captured bytes and receipt were retained before validation failed."""
-
-    def __init__(self, receipt):
-        super().__init__('Command observation reached its registered storage allowance')
-        self.retained_receipt = receipt
-
-
-READ_LOGS = r'''
-import json,os,sys,time
+READ_LOGS = r"""
+import hashlib,json,os,sys,time
 from pathlib import Path
 root=Path('/var/log/workstation')
+previous=json.load(sys.stdin)
 opened=set()
 for process in Path('/proc').iterdir():
     if not process.name.isdigit():continue
@@ -47,9 +37,27 @@ for process in Path('/proc').iterdir():
     except OSError:pass
 files=[]
 for p in sorted(root.iterdir()):
-    if p.is_file():
-        stat=p.stat()
-        files.append({'name':p.name,'bytes':stat.st_size,'device':stat.st_dev,'inode':stat.st_ino})
+    if not p.is_file():continue
+    stat=p.stat()
+    prior=previous.get(p.name)
+    offset=prior['bytes'] if prior else 0
+    if stat.st_size<offset:raise RuntimeError('Command observation shrank')
+    if prior and prior['identity']!={'device':stat.st_dev,'inode':stat.st_ino}:
+        raise RuntimeError('Command observation file identity changed')
+    digest=hashlib.sha256()
+    with p.open('rb') as source:
+        remaining=offset
+        while remaining:
+            data=source.read(min(1024*1024,remaining))
+            if not data:raise RuntimeError('Command observation shrank')
+            digest.update(data);remaining-=len(data)
+        if prior and digest.hexdigest()!=prior['sha256']:
+            raise RuntimeError('Command observation prefix changed')
+        source.seek(max(0,stat.st_size-1))
+        last=source.read(1)
+    files.append({'name':p.name,'bytes':stat.st_size,'offset':offset,
+                  'device':stat.st_dev,'inode':stat.st_ino,
+                  'complete_line':not stat.st_size or last==b'\n'})
 try:time_namespace=os.readlink('/proc/self/ns/time')
 except OSError:time_namespace=None
 clock={'boot_id':Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
@@ -61,59 +69,117 @@ output=sys.stdout.buffer
 output.write(json.dumps(header).encode()+b'\n')
 for item in files:
     with (root/item['name']).open('rb') as stream:
-        remaining=item['bytes']
+        stream.seek(item['offset'])
+        remaining=item['bytes']-item['offset']
         while remaining:
             data=stream.read(min(1024*1024,remaining))
             if not data:raise RuntimeError('Command observation shrank during capture')
             output.write(data);remaining-=len(data)
 output.flush()
-'''
-PRUNE_LOGS = r'''
+"""
+PRUNE_LOGS = r"""
 import hashlib,json
 from pathlib import Path
 for name,digest in json.load(__import__('sys').stdin).items():
     if Path(name).name!=name:raise ValueError('Invalid observation filename')
     p=Path('/var/log/workstation')/name
+    if not p.exists():continue
     with p.open('rb') as stream:
         actual=hashlib.file_digest(stream,'sha256').hexdigest()
     if actual!=digest:raise ValueError('Closed observation changed')
     p.unlink()
-'''
+"""
 
 
-def clone_prefix(source,destination):
-    """Use filesystem copy-on-write when available; preserve prior immutable blobs."""
-    if platform.system()=='Darwin':
-        library=ctypes.CDLL(None,use_errno=True)
-        clone=library.clonefile;clone.argtypes=[ctypes.c_char_p,ctypes.c_char_p,ctypes.c_int];clone.restype=ctypes.c_int
-        if clone(os.fsencode(source),os.fsencode(destination),0)==0:return True
-    elif platform.system()=='Linux':
-        import fcntl
+def store_chunk(directory, data):
+    digest = sha256(data).hexdigest()
+    destination = directory / (digest + ".gz")
+    if destination.exists():
+        with gzip.open(destination, "rb") as stream:
+            if stream.read(CHUNK_BYTES + 1) != data:
+                raise RuntimeError("Archived observation chunk changed")
+    else:
+        with NamedTemporaryFile(dir=directory, delete=False) as temporary:
+            temporary_path = Path(temporary.name)
+            try:
+                with gzip.GzipFile(
+                    fileobj=temporary, mode="wb", compresslevel=1, mtime=0
+                ) as compressed:
+                    compressed.write(data)
+                temporary.flush()
+                os.fsync(temporary.fileno())
+                temporary_path.replace(destination)
+            finally:
+                temporary_path.unlink(missing_ok=True)
+        descriptor = os.open(directory, os.O_RDONLY)
         try:
-            with source.open('rb') as original,destination.open('xb') as copy:
-                fcntl.ioctl(copy.fileno(),0x40049409,original.fileno())
-            return True
-        except OSError:destination.unlink(missing_ok=True)
-    return False
+            os.fsync(descriptor)
+        finally:
+            os.close(descriptor)
+    return {"blob": "chunks/" + destination.name, "bytes": len(data), "sha256": digest}
+
+
+def trace_blocks(archive, record):
+    """Read both original uncompressed receipts and chunked receipts."""
+    digest = sha256()
+    size = 0
+    if "chunks" in record:
+        for chunk in record["chunks"]:
+            with gzip.open(Path(archive) / chunk["blob"], "rb") as source:
+                data = source.read(chunk["bytes"] + 1)
+            if (
+                len(data) != chunk["bytes"]
+                or sha256(data).hexdigest() != chunk["sha256"]
+            ):
+                raise RuntimeError(
+                    "Archived observation chunk failed its integrity check"
+                )
+            digest.update(data)
+            size += len(data)
+            yield data
+    else:
+        with (Path(archive) / record["blob"]).open("rb") as source:
+            while data := source.read(CHUNK_BYTES):
+                digest.update(data)
+                size += len(data)
+                yield data
+    if size != record["bytes"] or digest.hexdigest() != record["sha256"]:
+        raise RuntimeError("Archived command observation failed its integrity check")
 
 
 def observed_reads(log):
     """Extract complete scalar reads only; path presence alone never earns a read."""
-    pattern = re.compile(r'^(\d+)\s+(\d+\.\d+)\s+(read|pread64)\(\d+<([^>]+)>, "((?:\\x[0-9a-f]{2})*)", (\d+)(?:, (\d+))?\) = (\d+)$')
+    pattern = re.compile(
+        r'^(\d+)\s+(\d+\.\d+)\s+(read|pread64)\(\d+<([^>]+)>, "((?:\\x[0-9a-f]{2})*)", (\d+)(?:, (\d+))?\) = (\d+)$'
+    )
     reads = []
     for number, line in enumerate(log.splitlines(), 1):
         match = pattern.fullmatch(legacy_line(line))
         if not match:
             continue
-        pid, timestamp, operation, raw_path, raw_bytes, requested, offset, returned = match.groups()
-        path = re.sub(r'\\x([0-9a-f]{2})', lambda m: chr(int(m[1], 16)), raw_path)
-        data = bytes.fromhex(raw_bytes.replace('\\x', ''))
-        if not path.startswith(('/workspace/', '/var/tmp/exports/', '/tmp/')) or len(data) != int(returned):
+        pid, timestamp, operation, raw_path, raw_bytes, requested, offset, returned = (
+            match.groups()
+        )
+        path = re.sub(r"\\x([0-9a-f]{2})", lambda m: chr(int(m[1], 16)), raw_path)
+        data = bytes.fromhex(raw_bytes.replace("\\x", ""))
+        if not path.startswith(("/workspace/", "/var/tmp/exports/", "/tmp/")) or len(
+            data
+        ) != int(returned):
             continue
-        reads.append({'line': number, 'pid': int(pid), 'at_unix': timestamp, 'operation': operation,
-                      'path': path, 'requested_bytes': int(requested), 'returned_bytes': len(data),
-                      'explicit_offset': int(offset) if offset is not None else None,
-                      'data_base64': base64.b64encode(data).decode(), 'sha256': sha256(data).hexdigest()})
+        reads.append(
+            {
+                "line": number,
+                "pid": int(pid),
+                "at_unix": timestamp,
+                "operation": operation,
+                "path": path,
+                "requested_bytes": int(requested),
+                "returned_bytes": len(data),
+                "explicit_offset": int(offset) if offset is not None else None,
+                "data_base64": base64.b64encode(data).decode(),
+                "sha256": sha256(data).hexdigest(),
+            }
+        )
     return reads
 
 
@@ -122,23 +188,60 @@ class ObservedFileStation(FileStation):
 
     def __init__(self, initial_files, *, archive, **kwargs):
         self.configure_archive(archive)
-        self.observation_volume='office-observation-'+secrets.token_hex(8)
-        self.observation_volume_removed=False
-        subprocess.run(['docker','volume','create','--label','org.swarmharm.managed=true',
-                        '--label',f'org.swarmharm.owner-pid={os.getpid()}',self.observation_volume],
-                       capture_output=True,check=True,timeout=20)
+        self.observation_volume = "office-observation-" + secrets.token_hex(8)
+        self.observation_volume_removed = False
+        subprocess.run(
+            [
+                "docker",
+                "volume",
+                "create",
+                "--label",
+                "org.swarmharm.managed=true",
+                "--label",
+                f"org.swarmharm.owner-pid={os.getpid()}",
+                self.observation_volume,
+            ],
+            capture_output=True,
+            check=True,
+            timeout=20,
+        )
         try:
-            subprocess.run(['docker','run','--rm','--pull=never','--network=none','--read-only',
-                            '--cap-drop=ALL','--mount',f'type=volume,src={self.observation_volume},dst={TRACE_ROOT}',
-                            IMAGE,'python','-I','-c',f'import os;os.chmod({TRACE_ROOT!r},0o700)'],
-                           capture_output=True,check=True,timeout=20)
-            super().__init__(initial_files,trace_commands=True,trace_volume=self.observation_volume,**kwargs)
+            subprocess.run(
+                [
+                    "docker",
+                    "run",
+                    "--rm",
+                    "--pull=never",
+                    "--network=none",
+                    "--read-only",
+                    "--cap-drop=ALL",
+                    "--mount",
+                    f"type=volume,src={self.observation_volume},dst={TRACE_ROOT}",
+                    IMAGE,
+                    "python",
+                    "-I",
+                    "-c",
+                    f"import os;os.chmod({TRACE_ROOT!r},0o700)",
+                ],
+                capture_output=True,
+                check=True,
+                timeout=20,
+            )
+            super().__init__(
+                initial_files,
+                trace_commands=True,
+                trace_volume=self.observation_volume,
+                **kwargs,
+            )
         except BaseException:
             self.remove_observation_volume()
             raise
         try:
             self.observer_version = subprocess.check_output(
-                ['docker', 'exec', self.name, 'strace', '--version'], text=True, timeout=10).splitlines()[0]
+                ["docker", "exec", self.name, "strace", "--version"],
+                text=True,
+                timeout=10,
+            ).splitlines()[0]
         except BaseException:
             self.close()
             raise
@@ -147,7 +250,9 @@ class ObservedFileStation(FileStation):
         self.archive = Path(archive).resolve()
         repo = Path(__file__).resolve().parents[2]
         if self.archive.is_relative_to(repo) or self.archive.exists():
-            raise ValueError('Choose a new observation directory outside the repository')
+            raise ValueError(
+                "Choose a new observation directory outside the repository"
+            )
         self.archive.mkdir(parents=True)
         self.command_count = self.capture_count = 0
         self.trace_files = {}
@@ -155,189 +260,305 @@ class ObservedFileStation(FileStation):
         self.observer_identity = secrets.token_hex(16)
         self.previous = ArchivedTraces(self.archive, self.trace_files)
         self.pruned = set()
+        self.trace_hashes = {}
+        self.terminal_captured = False
 
     def command_argv(self, command):
         self.command_count += 1
         original_hash = sha256(command.encode()).hexdigest()
-        if self.creation_mask:command='umask '+self.creation_mask+'\n'+command
+        if self.creation_mask:
+            command = "umask " + self.creation_mask + "\n" + command
         # This is before subprocess launch, in the collector's host process.
         # The immutable origin remains attached when a later command captures
         # this trace's still-running background descendants.
-        if not hasattr(self, 'trace_origins'):
+        if not hasattr(self, "trace_origins"):
             self.trace_origins = {}
             self.observer_identity = secrets.token_hex(16)
-        name = f'{self.command_count:06d}.log'
+        name = f"{self.command_count:06d}.log"
         self.trace_origins[name] = {
-            'trace_id': self.observer_identity+':'+name,
-            'command_ordinal': self.command_count, 'trace_file': name,
-            'station': self.name, 'command_sha256': original_hash,
-            'traced_shell_sha256': sha256(command.encode()).hexdigest(),
-            'launch_before_ns': time.monotonic_ns(), 'host_clock_domain': HOST_CLOCK['domain'],
-            'native_call': current_command() or None}
-        return ['docker', 'exec', '--user', '0:0', '--workdir', '/workspace', self.name, *getattr(self, 'account_view', ()),
-                'strace', '-DDD', '-f', '-ttt', '--relative-timestamps=ns', '-yy', '-s', '262144', '-xx',
-                # Pathname Unix sockets can cross a shared volume even with
-                # network=none. Keep their actual send/receive operations.
-                '-e', 'trace=%file,%desc,%process,%memory,%network', '-e', 'abbrev=!getdents64',
-                '-o', f'{TRACE_ROOT}/{self.command_count:06d}.log', '-u', f'{self.business_uid}:{self.business_gid}',
-                'timeout', '--kill-after=1s', '30s', 'bash', '-lc', command]
+            "trace_id": self.observer_identity + ":" + name,
+            "command_ordinal": self.command_count,
+            "trace_file": name,
+            "station": self.name,
+            "command_sha256": original_hash,
+            "traced_shell_sha256": sha256(command.encode()).hexdigest(),
+            "launch_before_ns": time.monotonic_ns(),
+            "host_clock_domain": HOST_CLOCK["domain"],
+            "native_call": current_command() or None,
+        }
+        atomic_json(self.archive / "origins.json", self.trace_origins)
+        return [
+            "docker",
+            "exec",
+            "--user",
+            "0:0",
+            "--workdir",
+            "/workspace",
+            self.name,
+            *getattr(self, "account_view", ()),
+            "strace",
+            "-DDD",
+            "-f",
+            "-ttt",
+            "--relative-timestamps=ns",
+            "-yy",
+            "-s",
+            "262144",
+            "-xx",
+            # Pathname Unix sockets can cross a shared volume even with
+            # network=none. Keep their actual send/receive operations.
+            "-e",
+            "trace=%file,%desc,%process,%memory,%network",
+            "-e",
+            "abbrev=!getdents64",
+            "-o",
+            f"{TRACE_ROOT}/{self.command_count:06d}.log",
+            "-u",
+            f"{self.business_uid}:{self.business_gid}",
+            "timeout",
+            "--kill-after=1s",
+            "30s",
+            "bash",
+            "-lc",
+            command,
+        ]
 
     def remove_observation_volume(self):
         if not self.observation_volume_removed:
-            subprocess.run(['docker','volume','rm',self.observation_volume],capture_output=True,check=True,timeout=20)
-            self.observation_volume_removed=True
+            subprocess.run(
+                ["docker", "volume", "rm", self.observation_volume],
+                capture_output=True,
+                check=True,
+                timeout=20,
+            )
+            self.observation_volume_removed = True
 
     def retain_traces(self):
-        # Long-running services keep one trace open. Disk storage and bounded
-        # host streaming preserve that history without using business RAM.
-        blobs=self.archive/'blobs';blobs.mkdir(exist_ok=True)
-        incomplete=[];seen=set();active_bytes=0;oversized=[]
-        with TemporaryFile() as capture:
-            capture_started_ns = time.monotonic_ns()
-            subprocess.run(['docker','exec','--user','0:0',self.name,*getattr(self,'account_view',()),'python','-I','-c',READ_LOGS],
-                           stdout=capture,stderr=subprocess.PIPE,check=True,timeout=60)
-            capture_completed_ns = time.monotonic_ns()
-            capture.seek(0);observed=json.loads(capture.readline(1024*1024))
-            guest_clock = observed.get('guest_clock')
-            guest_domain = sha256(json.dumps(guest_clock,sort_keys=True).encode()).hexdigest() if guest_clock else None
-            for item in observed['files']:
-                name,size=item['name'],item['bytes']
-                if Path(name).name!=name or name in seen or not isinstance(size,int) or size<0:
-                    raise RuntimeError('Invalid command observation header')
-                seen.add(name)
-                if name in self.pruned:raise RuntimeError('A closed command observation was reopened')
-                prior=self.trace_files.get(name)
-                if prior and size<prior['bytes']:raise RuntimeError('Command observation is no longer append-only')
-                identity = {'device':item.get('device'),'inode':item.get('inode')}
-                prior_identity = (prior or {}).get('timing',{}).get('file_identity')
-                if prior_identity and prior_identity != identity:
-                    raise RuntimeError('Command observation file identity changed')
-                previous=(self.archive/prior['blob']).open('rb') if prior else None
-                digest=sha256();last=b'';offset=0
-                temporary=NamedTemporaryFile(dir=blobs,delete=False);temporary_name=Path(temporary.name);temporary.close();temporary_name.unlink()
-                cloned=bool(prior and clone_prefix(self.archive/prior['blob'],temporary_name))
+        chunks = self.archive / "chunks"
+        chunks.mkdir(exist_ok=True)
+        previous = {
+            name: {
+                "bytes": row["bytes"],
+                "sha256": row["sha256"],
+                "identity": row["timing"]["file_identity"],
+            }
+            for name, row in self.trace_files.items()
+            if name not in self.pruned
+        }
+        argv = [
+            "docker",
+            "exec",
+            "-i",
+            "--user",
+            "0:0",
+            self.name,
+            *getattr(self, "account_view", ()),
+            "python",
+            "-I",
+            "-c",
+            READ_LOGS,
+        ]
+        started = time.monotonic_ns()
+        with NamedTemporaryFile(dir=self.archive) as errors:
+            with subprocess.Popen(
+                argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=errors
+            ) as process:
                 try:
-                    with temporary_name.open('r+b' if cloned else 'wb') as temporary:
-                        while offset<size:
-                            block=capture.read(min(1024*1024,size-offset))
-                            if not block:raise RuntimeError('Command observation capture is incomplete')
-                            if prior and offset<prior['bytes']:
-                                count=min(len(block),prior['bytes']-offset)
-                                if previous.read(count)!=block[:count]:raise RuntimeError('Command observation is no longer append-only')
-                            digest.update(block)
-                            skip=min(len(block),max(0,prior['bytes']-offset)) if cloned else 0
-                            if skip<len(block):temporary.seek(offset+skip);temporary.write(block[skip:])
-                            offset+=len(block);last=block[-1:]
-                    if previous and previous.read(1):raise RuntimeError('Archived observation differs from its recorded length')
-                    hexdigest=digest.hexdigest();destination=blobs/hexdigest
-                    if destination.exists():temporary_name.unlink()
-                    else:temporary_name.replace(destination)
-                finally:
-                    if previous:previous.close()
-                    temporary_name.unlink(missing_ok=True)
-                origin = getattr(self,'trace_origins',{}).get(name)
-                timing = {'format':FORMAT, 'origin':origin, 'prefix_from_byte_zero':True,
-                    'single_tracer':origin is not None, 'file_identity':identity,
-                    'closed':name in observed['closed'],
-                    'capture':{'sequence':self.capture_count+1,'started_ns':capture_started_ns,
-                        'completed_ns':capture_completed_ns,'host_clock_domain':HOST_CLOCK['domain'],
-                        'guest_clock_domain':guest_domain}}
-                self.trace_files[name]={'bytes':size,'sha256':hexdigest,'blob':f'blobs/{hexdigest}',
-                    'prefix_storage':'copy_on_write' if cloned else 'streamed','timing':timing}
-                if name not in observed['closed']:active_bytes+=size
-                elif size and last!=b'\n':incomplete.append(name)
-                if size>MAX_TRACE_BYTES:oversized.append(name)
-            if capture.read(1):raise RuntimeError('Unexpected bytes after command observation capture')
-        if set(self.trace_files)-seen-self.pruned:raise RuntimeError('An unarchived command observation disappeared')
-        self.capture_count+=1;files=dict(self.trace_files)
-        exceeded=bool(oversized or active_bytes>MAX_ACTIVE_BYTES)
-        record={'commands_started':self.command_count,'observer':getattr(self,'observer_version',None),
-                'files':files,'claim_scope':'process_operations_not_model_comprehension','incomplete_closed_logs':incomplete,
-                'timing_schema':1,'host_clock':HOST_CLOCK,'guest_clock':guest_clock,
-                'storage':{'kind':'private_disk_volume','max_trace_bytes':MAX_TRACE_BYTES,'max_active_bytes':MAX_ACTIVE_BYTES,
-                           'active_bytes':active_bytes,'oversized_logs':oversized,'allowance_exceeded':exceeded}}
-        path=self.archive/f'{self.capture_count:06d}.json';atomic_json(path,record)
-        if incomplete:raise RuntimeError('Closed command observation is truncated: '+','.join(incomplete))
-        receipt={'path':str(path),'sha256':sha256(path.read_bytes()).hexdigest()}
-        if exceeded:raise ObservationStorageAllowanceExceeded(receipt)
-        closed={name:files[name]['sha256'] for name in observed['closed']}
-        if closed:
-            subprocess.run(['docker','exec','-i','--user','0:0',self.name,*getattr(self,'account_view',()),'python','-I','-c',PRUNE_LOGS],
-                           input=json.dumps(closed),text=True,capture_output=True,check=True,timeout=60)
+                    process.stdin.write(json.dumps(previous).encode())
+                    process.stdin.close()
+                    receipt = self.archive_capture(process.stdout, started)
+                    if process.wait() != 0:
+                        errors.seek(0)
+                        raise RuntimeError(
+                            "Observation transfer failed: "
+                            + errors.read(4000).decode(errors="replace")
+                        )
+                except BaseException:
+                    process.kill()
+                    process.wait()
+                    raise
+        return self.commit_capture(*receipt, started)
+
+    def archive_capture(self, capture, started):
+        header = capture.readline(1024 * 1024)
+        if not header.endswith(b"\n"):
+            raise RuntimeError("Incomplete observation header")
+        observed = json.loads(header)
+        pending = dict(self.trace_files)
+        hashes = dict(self.trace_hashes)
+        seen = set()
+        incomplete = []
+        guest_clock = observed.get("guest_clock")
+        guest_domain = sha256(
+            json.dumps(guest_clock, sort_keys=True).encode()
+        ).hexdigest()
+        for item in observed["files"]:
+            name, size, offset = item["name"], item["bytes"], item["offset"]
+            if (
+                Path(name).name != name
+                or name in seen
+                or type(size) is not int
+                or not 0 <= offset <= size
+            ):
+                raise RuntimeError("Invalid command observation header")
+            seen.add(name)
+            if name in self.pruned:
+                raise RuntimeError("A closed command observation was reopened")
+            prior = self.trace_files.get(name)
+            if offset != (prior["bytes"] if prior else 0):
+                raise RuntimeError("Command observation offset changed")
+            identity = {"device": item["device"], "inode": item["inode"]}
+            if prior and prior["timing"]["file_identity"] != identity:
+                raise RuntimeError("Command observation identity changed")
+            digest = hashes[name].copy() if name in hashes else sha256()
+            parts = list(prior["chunks"]) if prior else []
+            remaining = size - offset
+            while remaining:
+                data = capture.read(min(CHUNK_BYTES, remaining))
+                if not data:
+                    raise RuntimeError("Command observation capture is incomplete")
+                parts.append(store_chunk(self.archive / "chunks", data))
+                digest.update(data)
+                remaining -= len(data)
+            closed = name in observed["closed"]
+            if closed and not item["complete_line"]:
+                incomplete.append(name)
+            origin = self.trace_origins.get(name)
+            pending[name] = {
+                "bytes": size,
+                "sha256": digest.hexdigest(),
+                "chunks": parts,
+                "storage": "gzip-chunks-v1",
+                "timing": {
+                    "format": FORMAT,
+                    "origin": origin,
+                    "prefix_from_byte_zero": True,
+                    "single_tracer": origin is not None,
+                    "file_identity": identity,
+                    "closed": closed,
+                    "capture": {
+                        "sequence": self.capture_count + 1,
+                        "started_ns": started,
+                        "completed_ns": time.monotonic_ns(),
+                        "host_clock_domain": HOST_CLOCK["domain"],
+                        "guest_clock_domain": guest_domain,
+                    },
+                },
+            }
+            hashes[name] = digest
+        if capture.read(1):
+            raise RuntimeError("Unexpected bytes after command observation capture")
+        missing = set(self.trace_files) - seen - self.pruned
+        if any(not self.trace_files[name]["timing"]["closed"] for name in missing):
+            raise RuntimeError("An unarchived command observation disappeared")
+        return observed, pending, hashes, incomplete
+
+    def commit_capture(self, observed, pending, hashes, incomplete, started):
+        record = {
+            "commands_started": self.command_count,
+            "observer": getattr(self, "observer_version", None),
+            "files": pending,
+            "claim_scope": "process_operations_not_model_comprehension",
+            "incomplete_closed_logs": incomplete,
+            "timing_schema": 1,
+            "host_clock": HOST_CLOCK,
+            "guest_clock": observed.get("guest_clock"),
+            "storage": {
+                "kind": "gzip-chunks-v1",
+                "chunk_bytes": CHUNK_BYTES,
+                "captured_bytes": sum(r["bytes"] for r in pending.values()),
+                "transferred_bytes": sum(
+                    r["bytes"] - r["offset"] for r in observed["files"]
+                ),
+            },
+        }
+        path = self.archive / f"{self.capture_count + 1:06d}.json"
+        atomic_json(path, record)
+        self.capture_count += 1
+        self.trace_files.clear()
+        self.trace_files.update(pending)
+        self.trace_hashes = hashes
+        if incomplete:
+            raise RuntimeError(
+                "Closed command observation is truncated: " + ",".join(incomplete)
+            )
+        closed = {name: pending[name]["sha256"] for name in observed["closed"]}
+        if closed and getattr(self, "prune_archived", True):
+            subprocess.run(
+                [
+                    "docker",
+                    "exec",
+                    "-i",
+                    "--user",
+                    "0:0",
+                    self.name,
+                    *getattr(self, "account_view", ()),
+                    "python",
+                    "-I",
+                    "-c",
+                    PRUNE_LOGS,
+                ],
+                input=json.dumps(closed),
+                text=True,
+                capture_output=True,
+                check=True,
+                timeout=180,
+            )
             self.pruned.update(closed)
-        return receipt
+        return {"path": str(path), "sha256": sha256(path.read_bytes()).hexdigest()}
 
     def execute(self, command, shared):
+        self.terminal_captured = False
         before = self.command_count
         result, snapshot = super().execute(command, shared)
-        try:
-            snapshot['command_observation'] = self.retain_traces()
-        except ObservationStorageAllowanceExceeded as error:
-            # Execution and complete capture succeeded. Keep the actual result
-            # available to shutdown even when the controller closes admission
-            # before handing it back to the native session.
-            snapshot['command_observation'] = error.retained_receipt
-            snapshot['observation_storage_limit'] = error.retained_receipt
-            self.observation_allowance_reported = True
-        snapshot['command_observation']['started_traces'] = [
-            self.trace_origins[f'{n:06d}.log'] for n in range(before+1,self.command_count+1)]
+        snapshot["command_observation"] = self.retain_traces()
+        snapshot["command_observation"]["started_traces"] = [
+            self.trace_origins[f"{n:06d}.log"]
+            for n in range(before + 1, self.command_count + 1)
+        ]
         return result, snapshot
+
+    def capture_terminal(self):
+        if self.terminal_captured or self.closed or not self.initialized:
+            return
+        errors = []
+        try:
+            self.capture_frozen("terminal")
+        except BaseException as error:
+            errors.append(error)
+        try:
+            self.retain_traces()
+        except BaseException as error:
+            errors.append(error)
+        if errors:
+            raise BaseExceptionGroup(
+                "Terminal observation capture failed; originals retained", errors
+            )
+        self.terminal_captured = True
 
     def close(self):
         if self.closed and self.observation_volume_removed:
             return
-        errors = []
-        safe_to_remove = True
-        # Preserve unarchived originals after an unknown capture failure.
-        # A storage-limit verdict is different: retain_traces has already
-        # verified and retained the complete capture before raising it.
-        if not self.closed and self.initialized:
-            try:
-                self.capture_frozen('terminal')
-            except BaseException as error:
-                errors.append(error)
-                safe_to_remove = False
-            try:
-                self.retain_traces()
-            except ObservationStorageAllowanceExceeded as error:
-                # A previously reported resource boundary is not a new cleanup
-                # failure. Unknown capture and removal errors still propagate.
-                if not getattr(self, 'observation_allowance_reported', False):
-                    errors.append(error)
-            except BaseException as error:
-                errors.append(error)
-                safe_to_remove = False
-        if safe_to_remove and not self.closed:
-            try:
-                removed = subprocess.run(['docker', 'rm', '-f', self.name],
-                                         capture_output=True, timeout=20)
-                if removed.returncode and b'No such container' not in removed.stderr:
-                    raise RuntimeError('Workstation removal unconfirmed')
-                self.closed = True
-            except BaseException as error:
-                errors.append(error)
-        if safe_to_remove:
-            try:
-                self.remove_observation_volume()
-            except BaseException as error:
-                errors.append(error)
-        if len(errors) == 1:
-            raise errors[0]
-        if errors:
-            raise BaseExceptionGroup('Workstation capture and cleanup failures', errors)
+        self.capture_terminal()
+        if not self.closed:
+            removed = subprocess.run(
+                ["docker", "rm", "-f", self.name], capture_output=True, timeout=20
+            )
+            if removed.returncode and b"No such container" not in removed.stderr:
+                raise RuntimeError("Workstation removal unconfirmed")
+            self.closed = True
+        self.remove_observation_volume()
 
 
 class ArchivedTraces(Mapping):
     """Load an explicitly requested trace; closed logs need only their receipts in RAM."""
+
     def __init__(self, archive, files):
         self.archive, self.files = archive, files
 
     def __getitem__(self, name):
         record = self.files[name]
-        data = (self.archive/record['blob']).read_bytes()
-        if len(data) != record['bytes'] or sha256(data).hexdigest() != record['sha256']:
-            raise RuntimeError('Archived command observation failed its integrity check')
-        return data
+        return b"".join(trace_blocks(self.archive, record))
 
     def __iter__(self):
         return iter(self.files)

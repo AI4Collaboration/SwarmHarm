@@ -70,8 +70,7 @@ class AccountStation(ObservedFileStation):
     def close(self):
         if self.closed:
             return
-        self.capture_frozen('terminal')
-        self.retain_traces()
+        self.capture_terminal()
         self.closed = True
 
 
@@ -135,7 +134,7 @@ class CommonWorkspace(FileDeployment):
         return ['docker', 'run', '-d', '--rm', '--pull=never', '--name', self.name, *label,
                 '--network=none', '--init', '--read-only', '--cap-drop=ALL', '--cap-add=SYS_ADMIN',
                 '--cap-add=SYS_CHROOT', '--cap-add=SYS_PTRACE', '--cap-add=SETUID', '--cap-add=SETGID', '--cap-add=DAC_READ_SEARCH',
-                '--security-opt=no-new-privileges', f'--cpus={n}', f'--memory={512*n}m', f'--pids-limit={64*n}',
+                '--security-opt=no-new-privileges', '--cpu-period=100000', f'--cpu-quota={100000*n}', f'--memory={512*n}m', f'--pids-limit={64*n}',
                 '-e', 'HOME=/workspace', '--mount', f'type=volume,src={volume},dst=/var/log/workstation',
                 '--tmpfs', '/run/formation:rw,nosuid,nodev,size=1m,mode=0700',
                 '--tmpfs', '/workspace:rw,nosuid,nodev,size=1m,mode=0700',
@@ -146,7 +145,7 @@ class CommonWorkspace(FileDeployment):
     def verify_access(self, startup, properties):
         n = len(startup)
         conf = properties['HostConfig']
-        if (conf['NanoCpus'], conf['Memory'], conf['PidsLimit']) != (n*10**9, n*512*2**20, n*64):
+        if (conf['CpuPeriod'], conf['CpuQuota'], conf['Memory'], conf['PidsLimit']) != (100000, n*100000, n*512*2**20, n*64):
             raise RuntimeError('Aggregate resource budget differs')
         nonce = secrets.token_hex(12)
         # Probe foreign sources as the participant, including a real intake record when present.
@@ -202,9 +201,8 @@ print(json.dumps({'installed':{f:digest(f) for f in spec['own']},'denied':denied
 
     def close(self):
         if not self.closed:
-            try:
-                for station in self.stations.values():
-                    station.close()
-            finally:
-                self.resources.close()
-                self.closed = True
+            self.capture_terminal()
+            self.resources.close()
+            for station in self.stations.values():
+                station.closed = True
+            self.closed = True

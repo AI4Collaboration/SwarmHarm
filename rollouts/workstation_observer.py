@@ -63,6 +63,8 @@ def freeze(observe_traced=False, subject_uid=None, settle_seconds=2, *, account_
     subject_uid = (65534 if observe_traced else os.getuid()) if subject_uid is None else subject_uid
     if type(subject_uid) is not int or not 0<=subject_uid<2**32-1:raise ValueError('Invalid observed account')
     deadline = time.monotonic() + settle_seconds
+    final_check = False
+    mount_namespace = os.readlink('/proc/self/ns/mnt') if account_view else None
     try:
         while True:
             pending = []
@@ -70,6 +72,14 @@ def freeze(observe_traced=False, subject_uid=None, settle_seconds=2, *, account_
                 if not path.name.isdigit() or int(path.name) in (1, os.getpid()):
                     continue
                 try:
+                    owner = path.stat().st_uid
+                    if owner != subject_uid:
+                        if not observe_traced or owner != 0:
+                            continue
+                        if (path / 'comm').read_text().strip() != 'strace':
+                            continue
+                        if account_view and os.readlink(path / 'ns/mnt') != mount_namespace:
+                            continue
                     item = process_info(path.name)
                 except (FileNotFoundError, ProcessLookupError, PermissionError):
                     continue
@@ -100,8 +110,11 @@ def freeze(observe_traced=False, subject_uid=None, settle_seconds=2, *, account_
                     continue
             if not pending:
                 return list(stopped.values()), list(observed.values())
-            if time.monotonic() >= deadline:
+            if final_check:
                 raise ObservationNotSettled(f'Workstation processes did not settle for observation: {pending}')
+            # Confirm delivered stop signals even if the scan itself consumed
+            # the settling interval on a heavily populated shared workstation.
+            final_check = time.monotonic() >= deadline
             time.sleep(.005)
     except BaseException:
         resume(stopped.values())

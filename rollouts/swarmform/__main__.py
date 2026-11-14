@@ -3,6 +3,7 @@
 import argparse
 import asyncio
 import base64
+from concurrent.futures import ThreadPoolExecutor
 import gzip
 import hashlib
 import json
@@ -10,6 +11,7 @@ import os
 from pathlib import Path
 import shutil
 import sys
+import subprocess
 import threading
 import time
 from urllib.parse import urlsplit
@@ -80,17 +82,74 @@ def source_digest(base=None):
     return digest.hexdigest()
 
 
+def runtime_info(image):
+    details = json.loads(
+        subprocess.check_output(
+            ["docker", "image", "inspect", image], text=True, timeout=30
+        )
+    )[0]
+    host = json.loads(
+        subprocess.check_output(
+            [
+                "docker",
+                "info",
+                "--format",
+                '{"cpus":{{.NCPU}},"memory_bytes":{{.MemTotal}},"server_version":"{{.ServerVersion}}"}',
+            ],
+            text=True,
+            timeout=30,
+        )
+    )
+    packages = subprocess.check_output(
+        [
+            "docker",
+            "run",
+            "--rm",
+            "--pull=never",
+            "--network=none",
+            image,
+            "dpkg-query",
+            "-W",
+            "curl",
+            "procps",
+            "ripgrep",
+            "strace",
+        ],
+        text=True,
+        timeout=30,
+    )
+    return {
+        "image_id": details["Id"],
+        "architecture": details["Architecture"],
+        "host": host,
+        "packages": dict(line.split("\t", 1) for line in packages.splitlines()),
+    }
+
+
 def write_json(path, value):
-    tmp = path.with_suffix(".pending")
-    tmp.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
-    tmp.replace(path)
+    from atomic import atomic_json
+
+    atomic_json(path, value)
 
 
 def emit(path, value):
-    with gzip.open(path, "at", encoding="utf-8") as stream:
-        stream.write(
-            json.dumps(value, ensure_ascii=False, separators=(",", ":")) + "\n"
-        )
+    with path.open("ab") as raw:
+        offset = raw.tell()
+        try:
+            with gzip.GzipFile(
+                fileobj=raw, mode="wb", compresslevel=1, mtime=0
+            ) as stream:
+                stream.write(
+                    (
+                        json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+                        + "\n"
+                    ).encode()
+                )
+            raw.flush()
+            os.fsync(raw.fileno())
+        except BaseException:
+            raw.truncate(offset)
+            raise
 
 
 class Cohort:
@@ -113,19 +172,29 @@ class Cohort:
         self.reason = "all_finished"
         self.errors = {}
         self.active_tools = set()
+        self.snapshot_count = 0
 
     def snapshot(self, actor, phase, value):
         with self.lock:
+            sequence = self.snapshot_count + 1
             emit(
                 self.out / "observations.jsonl.gz",
-                {"actor": actor, "phase": phase, "at": time.time(), "snapshot": value},
+                {
+                    "sequence": sequence,
+                    "actor": actor,
+                    "phase": phase,
+                    "at": time.time(),
+                    "snapshot": value,
+                },
             )
+            self.snapshot_count = sequence
             if (
                 self.window_open
                 and time.monotonic() <= self.deadline
                 and phase != "terminal"
             ):
                 self.last[actor] = value
+            return {"path": "observations.jsonl.gz", "sequence": sequence}
 
     def stop(self, reason):
         if not self.stopping.is_set():
@@ -134,14 +203,35 @@ class Cohort:
             self.stopping.set()
 
     def trace(self, actor, kind, **fields):
-        emit(
-            self.out / (actor + ".jsonl.gz"),
-            {"kind": kind, "s": time.monotonic() - self.start, **fields},
-        )
+        with self.lock:
+            emit(
+                self.out / (actor + ".jsonl.gz"),
+                {"kind": kind, "s": time.monotonic() - self.start, **fields},
+            )
 
     def tool(self, actor, cmd, call_id):
         with command_binding(actor=actor, call_id=call_id):
-            return self.station.execute(actor, cmd)
+            try:
+                result, snapshot = self.station.execute(actor, cmd)
+                self.trace(
+                    actor,
+                    "tool_result",
+                    call_id=call_id,
+                    result=result,
+                    observation=snapshot.get("observation_reference"),
+                    command_observation=snapshot.get("command_observation"),
+                    timing=snapshot.get("workstation_service_timing"),
+                )
+                return result, snapshot
+            except Exception as error:
+                self.trace(actor, "tool_error", call_id=call_id, error=str(error))
+                raise
+
+    def tool_completed(self, task, actor, call_id):
+        self.active_tools.discard(task)
+        if not task.cancelled() and (error := task.exception()) is not None:
+            self.errors[f"tool_{actor}_{call_id}"] = repr(error)
+            self.stop("tool_error")
 
     async def participant(self, actor):
         fn = self.visible["tools"][0]
@@ -208,6 +298,7 @@ class Cohort:
                     if usage["tools"] >= MAX_TOOLS:
                         self.stop("tool_budget")
                         return
+                    usage["tools"] += 1
                     invocation = call["function"]
                     try:
                         command = json.loads(invocation["arguments"])["command"]
@@ -225,11 +316,12 @@ class Cohort:
                             asyncio.to_thread(self.tool, actor, command, call["id"])
                         )
                         self.active_tools.add(task)
-                        task.add_done_callback(self.active_tools.discard)
+                        task.add_done_callback(
+                            lambda completed, actor=actor, call_id=call["id"]: (
+                                self.tool_completed(completed, actor, call_id)
+                            )
+                        )
                         result, snapshot = await asyncio.shield(task)
-                        self.snapshot(actor, "after_tool", snapshot)
-                    usage["tools"] += 1
-                    self.trace(actor, "tool_result", call_id=call["id"], result=result)
                     messages.append(
                         {
                             "role": "tool",
@@ -264,6 +356,9 @@ class Cohort:
         from .inputs import digest
 
         write_json(
+            self.out / "runtime.json", await asyncio.to_thread(runtime_info, IMAGE)
+        )
+        write_json(
             self.out / "registration.json",
             {
                 "task": args.task,
@@ -275,6 +370,7 @@ class Cohort:
                 "revision": args.revision,
                 "base_url": args.base_url,
                 "study_version": "chat-completions-v1",
+                "observation_policy": "post_tool_and_terminal_v1",
                 "source_sha256": source_digest(),
                 "python": platform.python_version(),
                 "httpx": httpx.__version__,
@@ -313,9 +409,31 @@ class Cohort:
         stopper = ParticipantStop(self.station)
         workers = []
         watch = None
+        horizon = 0
+        receipt = {"research_stop_verified": False}
         try:
             write_json(self.out / "bindings.json", self.station.bindings)
-            await asyncio.to_thread(stopper.arm)
+            recovery = {}
+            for actor, station in self.station.stations.items():
+                recovery[actor] = {
+                    "container": station.name,
+                    "account_view": getattr(station, "account_view", []),
+                    "business_uid": station.business_uid,
+                    "observation_roots": station.observation_roots,
+                    "archive": str(station.archive.relative_to(self.out)),
+                }
+            write_json(
+                self.out / "recovery-bindings.json",
+                {
+                    "participants": recovery,
+                    "service": getattr(
+                        getattr(self.station, "service", None), "name", None
+                    ),
+                    "memory_anchor": getattr(self.station, "anchor", None),
+                },
+            )
+            arm_receipt = await asyncio.to_thread(stopper.arm)
+            write_json(self.out / "stop-armed.json", arm_receipt)
             self.start = time.monotonic()
             self.deadline = self.start + args.seconds
             self.window_open = True
@@ -348,13 +466,33 @@ class Cohort:
             try:
                 receipt = await asyncio.to_thread(stopper.stop, reason=self.reason)
                 write_json(self.out / "physical-stop.json", receipt)
-                await asyncio.gather(*workers, return_exceptions=True)
-                if self.active_tools:
-                    await asyncio.gather(
-                        *list(self.active_tools), return_exceptions=True
+            except Exception as error:
+                self.errors["shutdown"] = repr(error)
+            await asyncio.gather(*workers, return_exceptions=True)
+            results = await asyncio.gather(
+                *tuple(self.active_tools), return_exceptions=True
+            )
+            for index, result in enumerate(results):
+                if isinstance(result, BaseException):
+                    self.errors[f"tool_{index}"] = str(result)
+            try:
+                if receipt["research_stop_verified"]:
+                    await asyncio.to_thread(self.station.close)
+                else:
+                    self.errors["shutdown"] = (
+                        "Participant stop unverified; original resources retained"
                     )
-            finally:
-                await asyncio.to_thread(self.station.close)
+            except Exception as error:
+                self.errors["capture"] = repr(error)
+            if self.errors:
+                write_json(
+                    self.out / "recovery.json",
+                    {
+                        "resources": self.station.bindings,
+                        "errors": self.errors,
+                        "instructions": "Keep these Docker resources until all terminal observations are exported.",
+                    },
+                )
         if getattr(self.station, "terminal_service", None):
             write_json(self.out / "service.json", self.station.terminal_service)
         outputs = {actor: {} for actor in self.visible["startup"]}
@@ -422,6 +560,9 @@ async def collect(args):
     import httpx
 
     validate_endpoint(args.base_url)
+    asyncio.get_running_loop().set_default_executor(
+        ThreadPoolExecutor(max_workers=max(32, args.population + 4))
+    )
     key_file = getattr(args, 'key_file', None)
     key = (Path(key_file).expanduser().read_text().strip() if key_file
            else os.environ.get("OPENAI_API_KEY"))
@@ -431,7 +572,12 @@ async def collect(args):
         raise ValueError("Choose an output directory outside the repository")
     out.mkdir(parents=True, exist_ok=False)
     async with httpx.AsyncClient(
-        headers=headers, timeout=args.seconds, follow_redirects=False
+        headers=headers,
+        timeout=args.seconds,
+        follow_redirects=False,
+        limits=httpx.Limits(
+            max_connections=args.population, max_keepalive_connections=args.population
+        ),
     ) as client:
         try:
             summary = await Cohort(args, client, out).run()
