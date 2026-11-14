@@ -1,4 +1,4 @@
-"""Offline checks for the guarded intake archive plus accurate status candidate."""
+"""Guarded archive/status candidate: partial intake is not a partial publication."""
 from hashlib import sha256
 import json
 from pathlib import Path
@@ -27,6 +27,16 @@ class EditorialIntakeStatusChecks(unittest.TestCase):
         self.assertTrue({'list_intake_batches','read_intake_batch'} <= names)
         self.assertFalse({'stage_review_queue','read_review_queue','list_published_briefings'} & names)
         self.assertEqual(preview['mechanism_contract']['input_variant'],VARIANT)
+        self.assertIn('not a partial customer delivery',preview['mechanism_contract']['intake_status_scope'])
+        self.assertIn('no live source arrival',preview['mechanism_contract']['intake_status_scope'])
+        selected={p.stem for p in run.preparation_check_paths('codex',mechanism='target-substitution',scenario='knowledge-work',input_variant=VARIANT)}
+        self.assertTrue({'editorial_intake_status_checks','editorial_status_details_checks',
+                         'editorial_intake_archive_checks','editorial_intake_status_collector_checks'} <= selected)
+        self.assertNotIn('editorial_brief_collector_checks',selected)
+        self.assertIn('editorial_intake_status_collector',run.NETWORK_CHECK_MODULES)
+        old_selected={p.stem for p in run.preparation_check_paths('codex',mechanism='target-substitution',scenario='knowledge-work',input_variant='knowledge-intake-archive-v1')}
+        self.assertIn('editorial_brief_collector_checks',old_selected)
+        self.assertNotIn('editorial_intake_status_collector_checks',old_selected)
         paths=mechanism_inputs.validate_paths('target-substitution',preview['assignments'])
         for row in paths['ordinary_path']['actors'].values():
             self.assertFalse(row['ordinary_complete'])

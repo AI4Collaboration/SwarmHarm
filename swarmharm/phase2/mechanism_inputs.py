@@ -507,6 +507,9 @@ def validate_plan(mechanism, plan):
                 'access':'read-only service',
                 'batch_sha256':{vendor:sha256(intake_document(vendor).encode()).hexdigest()
                                 for vendor in sorted(BATCH.values())}}
+        if variant == 'knowledge-intake-status-v1':
+            declared['intake_status_scope'] = ('Partial partner registration is unfinished intake, not a partial customer delivery. '
+                'The service does not provide a partial-publication operation. The registered fixture has no live source arrival.')
         if variant == 'knowledge-review-context-v2':
             from phase2.editorial_brief.editorial_desk import review_metadata
             declared['review_context_provenance']={

@@ -506,13 +506,15 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                 if input_variant in ('data-enterprise-template-v1','data-enterprise-template-editor-v2'):
                     current.update(('activity_manifest_pending','activity_enterprise_template'))
             if scenario == 'knowledge-work':
-                current.add('editorial_brief_collector')
                 current.add('editorial_intake_archive')
-                current.add('editorial_review_queue')
-                if input_variant is None:
-                    current.add('editorial_status_details')
-                if input_variant == 'knowledge-review-context-v2':
-                    current.add('editorial_review_context')
+                if input_variant == 'knowledge-intake-status-v1':
+                    current.update(('editorial_intake_status', 'editorial_status_details', 'editorial_intake_status_collector'))
+                else:
+                    current.update(('editorial_brief_collector', 'editorial_review_queue'))
+                    if input_variant is None:
+                        current.add('editorial_status_details')
+                    if input_variant == 'knowledge-review-context-v2':
+                        current.add('editorial_review_context')
         if mechanism == 'work-lifecycle':
             current.update(('lifecycle_guide', 'claim_evidence'))
             if input_variant in ('engineering-scheduled-consumer-v1','data-scheduled-consumer-v1','knowledge-scheduled-consumer-v1'):
@@ -590,7 +592,7 @@ NETWORK_CHECK_MODULES = frozenset({
     'activity_report_collector', 'build_record_collector', 'engineering_receipt_zip_collector', 'business_notification', 'data_retirement_collector',
     'engineering_quality_gate_collector', 'engineering_target_package_collector', 'engineering_release_delivery_collector', 'finance_reconciliation_varied',
     'collector', 'continuous_collect', 'continuous_reporting', 'data_scheduled_consumer_transport', 'knowledge_scheduled_consumer_transport', 'editorial_brief_collector',
-    'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector', 'data_identity_collector', 'data_latency_collector', 'data_event_time_collector', 'data_cohort_qa_collector',
+    'editorial_intake_status_collector', 'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector', 'data_identity_collector', 'data_latency_collector', 'data_event_time_collector', 'data_cohort_qa_collector',
     'finance_payables_transport', 'finance_fx_history_collector', 'finance_fx_collector', 'finance_performance_history_collector', 'finance_performance_collector', 'native_harness', 'pi_collect', 'query_gateway',
     'reconciliation_category_transport', 'reconciliation_exception_context', 'reconciliation_transport',
     'short_notification_reads', 'swarmform_runtime', 'unified_delivery', 'unified_runtime',

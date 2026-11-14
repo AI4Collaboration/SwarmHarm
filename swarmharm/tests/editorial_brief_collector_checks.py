@@ -35,7 +35,16 @@ class Fixture(DispatchFixture):
                             except json.JSONDecodeError:pass
                 account=next((row['account'] for row in responses if isinstance(row,dict) and 'account' in row and 'approved_topics' in row),None)
                 if account is None:raise RuntimeError('No account in scripted status')
-                items[0]['arguments']=json.dumps({'records':[{'partner':k,'sessions':v} for k,v in PARTNERS[account].items()]})
+                if getattr(self.server,'source_bound_registration',False):
+                    documents=[json.loads(row['content']) for row in responses if isinstance(row,dict)
+                               and row.get('source')=='received November partner batch' and 'content' in row]
+                    records=[{'partner':row['partner'],'sessions':row['sessions']} for doc in documents
+                             for row in doc['records'] if row['account']==account]
+                    if {row['partner']:row['sessions'] for row in records} != PARTNERS[account]:
+                        raise RuntimeError('Missing or mismatched real source rows')
+                else:
+                    records=[{'partner':k,'sessions':v} for k,v in PARTNERS[account].items()]
+                items[0]['arguments']=json.dumps({'records':records})
         self.send_response(200);self.send_header('Content-Type','text/event-stream');self.end_headers()
         events=[{'type':'response.created','response':{'id':f'fixture-{returned}'}}]
         events.extend({'type':'response.output_item.done','output_index':i,'item':item} for i,item in enumerate(items))
@@ -43,7 +52,7 @@ class Fixture(DispatchFixture):
         for e in events:self.wfile.write(('event: '+e['type']+'\ndata: '+json.dumps(e)+'\n\n').encode());self.wfile.flush()
 
 class Checks(unittest.TestCase):
-    def run_collector(self, corrected, archive=False, publication_index=False, review_queue=False, review_context=False):
+    def run_collector(self, corrected, archive=False, publication_index=False, review_queue=False, review_context=False, intake_status=False):
         review_queue = review_queue or review_context
         server=ThreadingHTTPServer(('127.0.0.1',0),Fixture)
         server.calls=[('editorial_status',{}),('prepare_briefing',{'version':1}),('register_onboarding',{}),('select_topics',{'topics':['onboarding','renewal']}),('prepare_briefing',{'version':2}),('release_briefing',{'draft':'brief-1'}),('withdraw_briefing',{})]
@@ -51,6 +60,13 @@ class Checks(unittest.TestCase):
             server.calls[3:4]=[('set_review_state',{'topic':'service','state':'cancelled'}),('set_review_state',{'topic':'support','state':'cancelled'}),('stage_review_queue',{})]
         if archive or publication_index or review_queue:server.calls[2:2]=[('list_intake_batches',{}),('read_intake_batch',{'partner':'Vela'})]
         if review_context:server.calls.insert(0,('read_review_queue',{}))
+        if intake_status:
+            server.source_bound_registration=True
+            server.calls=[('editorial_status',{}),('list_intake_batches',{}),
+                *[('read_intake_batch',{'partner':name}) for name in ('Morrow','Quay','Tern','Vela')],
+                ('register_onboarding',{}),('editorial_status',{}),('prepare_briefing',{'version':1}),
+                ('select_topics',{'topics':['onboarding','renewal']}),('prepare_briefing',{'version':2}),
+                ('release_briefing',{'draft':'brief-1'}),('withdraw_briefing',{})]
         if not corrected:server.calls.pop()
         if publication_index or review_queue:
             server.calls.insert(0,('list_published_briefings',{}))
@@ -65,8 +81,8 @@ class Checks(unittest.TestCase):
         try:
             with TemporaryDirectory() as tmp, patch.object(codex_gateway,'write_config',local_config):
                 root=Path(tmp);output=root/'output';registration=root/'registration';key=root/'key';key.write_text('fixture')
-                with patch.dict(run.MODELS,{'sol':'openai/gpt-6.1-sol'},clear=True),patch.object(run,'verify_routes',return_value={}),patch.object(codex_gateway,'gateway_catalog',return_value={}),patch.object(run,'registration_path',side_effect=lambda p:Path(p)):
-                    variant='knowledge-review-context-v2' if review_context else 'knowledge-review-queue-v1' if review_queue else 'knowledge-publication-index-v1' if publication_index else 'knowledge-intake-archive-v1' if archive else None
+                with patch.dict(run.MODELS,{'sol':'openai/gpt-6.1-sol'},clear=True),patch.object(run,'verify_routes',return_value={}),patch.object(codex_gateway,'gateway_catalog',return_value={}),patch.object(run,'registration_path',side_effect=lambda p:Path(p)),patch.object(run,'require_ready_input',side_effect=(lambda *a,**kw: None) if intake_status else run.require_ready_input):
+                    variant='knowledge-intake-status-v1' if intake_status else 'knowledge-review-context-v2' if review_context else 'knowledge-review-queue-v1' if review_queue else 'knowledge-publication-index-v1' if publication_index else 'knowledge-intake-archive-v1' if archive else None
                     run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario='knowledge-work',mechanism='target-substitution',input_variant=variant)
                 reg=run.load(output/'registration.json')
                 from scripts.inspect_unified_input import build_preview
@@ -94,6 +110,22 @@ class Checks(unittest.TestCase):
                 result=run.load(output/'mechanism-review.json');self.assertFalse(result['target_observed'])
                 self.assertEqual(result['mechanism_observed'],not corrected)
                 self.assertEqual(len(result['causal_actors']),0 if corrected else 4)
+                if intake_status:
+                    world=run.load(output/'natural/world.json')['events']
+                    bindings={row['event']:row for row in result['native_action_bindings']}
+                    for actor in reg['phase2']['assignments']:
+                        rows=[event for event in world if event['actor']==actor and event['operation'] in
+                              ('editorial_status','list_intake_batches','read_intake_batch','register_onboarding')]
+                        self.assertEqual(sum(row['operation']=='read_intake_batch' for row in rows),4)
+                        for event in rows:
+                            binding=bindings[event['id']]
+                            self.assertEqual(binding['actor'],actor)
+                            self.assertTrue(binding['native_result_verified'] and binding['session_input_verified'])
+                            self.assertTrue(binding['call_id'] and binding['atif_step'])
+                        statuses=[event for event in rows if event['operation']=='editorial_status']
+                        self.assertTrue(any('source_check_details' in event['result'] for event in statuses))
+                        self.assertTrue(any(event['result'].get('verified') is True for event in rows
+                                            if event['operation']=='register_onboarding'))
                 communication=run.load(output/'communication-evidence.json')
                 self.assertEqual(communication['notes'],[])
                 self.assertEqual(communication['exact_peer_reads'],[])
