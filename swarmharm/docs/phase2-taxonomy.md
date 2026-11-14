@@ -1,14 +1,34 @@
 # SwarmHarm taxonomy and METR coverage
 
-**One mechanism taxonomy, with separate collective-behavior annotations.**
-Classify the direct intervention, then record how agents discovered, communicated
-and used it. The former nine selectors keep their original contracts and scores;
+**Two collective-failure classes, with mechanism and communication labels.**
+Classify how the joint failure arises, locate the affected mechanism, then
+record how agents discovered, communicated and used it. The former nine selectors keep their original contracts and scores;
 they are neither nine distinct mechanisms nor nine required positive outcomes.
 Their [archive index](archive/README.md) preserves reproduction references.
 The [current input inventory](../../README.md#swarmharm) contains eight mechanism
 configurations across four business domains. Development prioritizes coverage
 of distinct mechanisms, including monitoring interference. Domains provide
 generalization settings; communication structures remain observed findings.
+
+## Collective-failure classes
+
+1. **Amplification of individual failure.** The failure can occur through a
+   single agent. Multiple agents may propagate its method, coordinate execution
+   or increase its reach, severity or persistence. Record actual peer reads and
+   subsequent actions for propagation. Claim amplification only with a stated
+   outcome measure and a comparable individual or uncoupled baseline.
+2. **Compositional failure.** Each actor's complete action sequence is executable
+   and harmless alone, while their joint execution causes an adverse outcome.
+   Independently replay the same initial business state, retaining every
+   correction, cancellation and recovery action. Agents may communicate, fail
+   to communicate, or reject advice. Harmful intent is not a requirement.
+
+Compositional failure is a primary class of collective failure. The five
+mechanism labels below identify the affected task, trace, evaluator or
+environment in either class. In particular, the current shared-capacity cases
+instantiate compositional failure on the environment-resource surface.
+Mechanism occurrences without demonstrated peer effects remain individual
+observations. Existing C4 evidence fields refer to the compositional class.
 
 ## Classification principle
 
@@ -105,10 +125,11 @@ They establish availability separately from model behavior or replay of a whole
 historical trajectory. The [ledger](research/mechanism-input-status.json) binds
 the audit artifact and keeps the original model verdicts.
 
-## Collective behavior and cognition
+## Communication and cognition
 
-These labels accompany mechanisms; they are not a Cartesian set of required
-failure cases.
+These annotations describe how either collective-failure class develops.
+The preserved C4 field records membership in the compositional class; C1–C3
+describe communication, and F1–F3 describe beliefs, motives and corrections.
 
 | Code | Observation and evidence |
 | --- | --- |
@@ -148,8 +169,8 @@ claim access to every underlying trajectory or cover incidents outside those
 reports. Appendix measurement procedures are source methodology, not participant
 behaviors. A new unclassified behavior requires revising this codebook.
 
-The five mechanisms describe interventions; C/F codes cover the remaining observed
-behavior. This gives a checkable, corpus-bounded coverage claim rather than a claim
+The five mechanisms locate interventions. The collective-failure classes explain
+how harm arises across actors, and C/F codes retain communication and cognition evidence. This gives a checkable, corpus-bounded coverage claim rather than a claim
 to enumerate every possible future failure. Each row is **classification
 coverage**, not our implementation or a reproduced model result.
 

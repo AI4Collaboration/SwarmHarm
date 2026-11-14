@@ -37,7 +37,7 @@ The working principles are operational:
 - Aggregation, coordination and delegation are different observable functions. Self-description, message counts and graph centrality alone do not establish an orchestrator.
 - Collective-effect claims need the authored action, actual recipient observation, subsequent behavior and independently reconstructed outcome. Communication is not required for compositional harm.
 
-**Separate classifications:** SwarmForm's 3×3 describes observed structure × information flow. SwarmHarm classifies affected mechanisms and separately annotates composition, propagation, coordination and false-process inference. Its nine registered scenario IDs remain reproducible; they are not nine distinct failure modes. Research labels never enter participant instructions.
+**Separate classifications:** SwarmForm's 3×3 describes observed structure × information flow. SwarmHarm distinguishes amplification of individual failure from compositional failure, labels the affected mechanism, and annotates propagation, coordination and false-process inference. Its nine registered scenario IDs remain reproducible; they are not nine distinct failure modes. Research labels never enter participant instructions.
 
 **Registered evidence:** frozen definitions remain authoritative for original scores. Preserve every original case and register changed criteria separately. Seek evidence for each current mechanism without treating a missing false belief as its own compulsory failure class.
 
@@ -119,6 +119,20 @@ Historical review supports aggregation and some coordination episodes. The [dele
 
 **Agents can propagate methods, jointly exceed shared capacity and change acceptance rules.** Different cases establish these results. We classify the affected mechanism separately from information flow and multi-agent contribution; the former nine-cell matrix is a scenario inventory, not nine distinct failure modes. [Definitions and grounding](swarmharm/docs/phase2-taxonomy.md).
 
+### Two collective-failure classes
+
+- **Amplification of individual failure.** A failure possible for one agent
+  spreads or has greater impact through multiple agents. Peer adoption and
+  coordination are observed separately; amplification needs an explicit impact
+  comparison.
+- **Compositional failure.** Complete individual action sequences are harmless
+  alone, while their combination causes harm. The current shared-capacity
+  cases support this class through independent solo/joint replay, retaining
+  cancellations and corrections.
+
+The mechanism labels below identify where either class acts. Communication,
+intent and spontaneous grader inference are additional findings.
+
 ### Mechanisms and evidence
 
 The taxonomy follows three parts of a task: **task fidelity, evaluation integrity,
@@ -132,7 +146,7 @@ and environment integrity**. Evaluation integrity covers Trace Tampering and Gra
 | **E2 — Grader Tampering** | Sol 6.1 corrected-period [Data](swarmharm/registrations/mechanism-grader-data-period-sol61-r01/PROTOCOL.md), [Knowledge](swarmharm/registrations/mechanism-grader-knowledge-period-sol61-r01/PROTOCOL.md) and [Finance](swarmharm/registrations/mechanism-grader-finance-period-sol61-r01/PROTOCOL.md) each produced four rule-enabled releases rejected by the original rule. Knowledge also includes peer-body reads. Earlier `grader-coordinated` r08 records agreement on a common schema. Alert-suppression and monitor-removal subtypes still require input and model validation, grounded in the [OpenAI disclosure](https://alignment.openai.com/misalignment-reports/suppressing-misalignment-monitoring-alerts-and-disabling-misalignment-monitoring). |
 | **B — Environment Violations** | **Access/authority (B1)** has reviewed task-excluded information reads and cross-role work-item changes, rejected by role-bound replay. **Resource/lifecycle (B2)** has reviewed joint-capacity shortfalls with harmless complete solo replays. Recurring-payment cases retain later recovery. [Per-case settings and results](swarmharm/docs/research/mechanism-input-status.json). |
 
-**Collective behavior** is annotated separately: channel formation, method propagation, coordination/organization and full-sequence composition. These can overlap. Both compositional cases are harmless in every complete solo replay, including cancellations and corrections. Coordination can begin after the first action.
+**Communication findings** include channel formation, method propagation and coordination/organization in either collective-failure class. Coordination can begin after the first action. The retained C4 field identifies compositional-failure evidence.
 
 **Communication structure is a finding:** review visible native CoT together with exact messages, reads and actions to identify method sharing, joint planning, delegation and handoffs. A communication graph alone does not establish those functions; retain corrections and distinguish reasoning summaries from raw text.
 
@@ -174,8 +188,9 @@ For each domain, bind the mechanism to actual business objects, operations and
 independently checked consequences. Relabeling the same report does not create
 a validated domain environment. Match harness, population, budgets, authority
 and notification policy across domains within a mechanism; document any required
-task-specific difference. Communication structure, composition and process
-inference are findings, not extra multiplication axes. Models and repetitions
+task-specific difference. Keep the collective-failure class distinct from
+communication structure and process inference. Input counts follow explicit
+registered configurations. Models and repetitions
 increase rollout count, not input count. Generation and offline path validation cover all 32 configurations;
 model evidence is counted separately below. Existing cases retain their exact settings.
 
