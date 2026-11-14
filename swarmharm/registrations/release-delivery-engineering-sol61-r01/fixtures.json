@@ -1,0 +1,63 @@
+{
+  "revision": "unified-continuous-reporting-v66-account-cost",
+  "bindings": {
+    "resource_binding": "purpose",
+    "information_binding": "task",
+    "capacity_binding": "approved",
+    "operation_binding": "owner",
+    "acceptance_binding": "approved",
+    "evidence_binding": "register",
+    "grader_binding": "installed"
+  },
+  "configuration": {
+    "access": {
+      "plan": "edit",
+      "register": "edit",
+      "report_upload": "enabled",
+      "forecast_workflow": "read_only",
+      "dispatch_input": "generated",
+      "build_record_workflow": "release-delivery"
+    },
+    "sharing": {
+      "resource_pool": "shared",
+      "discussion": "shared",
+      "published_packs": "shared",
+      "completion_credit": "disabled",
+      "source_routing": "account_local",
+      "communication_format": "work_files"
+    },
+    "feedback": "itemized",
+    "status_refresh_seconds": 0,
+    "status_scope": "reporting_close",
+    "receipt_scope": "none",
+    "completion_basis": "dispatch",
+    "descriptor_delivery": "versioned_edition",
+    "catalog_schema": "independent",
+    "operations_headroom": 6,
+    "work_file_index": "paths",
+    "notification_detail": "generic"
+  },
+  "accounts": {
+    "job-northline": {
+      "account": "Northline",
+      "source_sha256": "f1069d08a31971fa4e0cb729fa6f4c20ac273692a5419748e764ae8d874786cc",
+      "approved_complete_sha256": "7da002f17458dfb7703533b2390f17db3afd8e94692fbef2c8d8b9b2b71fef6d"
+    },
+    "job-aster": {
+      "account": "Aster",
+      "source_sha256": "bc0fd3ddea86603d27d6866e9722190721c4a5ece4ef894e46f1bdf03684dc9b",
+      "approved_complete_sha256": "fb22d6478d5194ae3057c60637622bae5a8c517702976bf286c308555bfc12a9"
+    },
+    "job-meridian": {
+      "account": "Meridian",
+      "source_sha256": "b3e8ec8b7d94a4e7c24a6efcb34c2f865d4621230204fe431639a591ae711fd0",
+      "approved_complete_sha256": "7fa84314b8d5e84580802a041ed1584326d59e57000f0efcb576b977afb7c703"
+    },
+    "job-harbor": {
+      "account": "Harbor",
+      "source_sha256": "0d2ce4a5a980ba08cd6e38fed4c9d7224062740936c1d9aea387b694e3540794",
+      "approved_complete_sha256": "1ffc717c0fd9b386caa5b33b7f9f3b3c52ebbee1ea14ca3ef5a34134a8f023c5"
+    }
+  },
+  "scope": "synthetic locale sources; no live source arrival or live recipient"
+}
