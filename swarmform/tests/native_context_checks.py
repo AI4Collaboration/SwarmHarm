@@ -195,7 +195,8 @@ class NativeContextChecks(unittest.TestCase):
             agent=CodexAgent('A',queue.Queue(),folder=d,model='openai/gpt-6.1-sol',
                 thinking_level='high',tools=[],active_tools=[],goal_mode='off',
                 api_base=codex_gateway.AXONHUB_BASE,api_key='offline-fixture',
-                registered_harness={'context_policy':POLICY})
+                registered_harness={'context_policy':POLICY,
+                                    'gateway':codex_gateway.AXONHUB_BASE})
             agent.thread_id='thread';agent.native_turn='turn';agent.active=True
             agent.last_progress=12
             agent._notification({'method':'item/started','params':{'item':{
