@@ -99,8 +99,8 @@ def main(argv=None):
     parser.add_argument('--workload', choices=domain_runtime.WORKLOADS,
                         help='Optional source workload within the selected domain')
     parser.add_argument('--binding-preset', choices=scenario.PRESETS)
-    parser.add_argument('--mechanism', choices=(*mechanism_inputs.CURRENT_CONFIGURATIONS, 'all', 'implemented'),
-                        help='Export current configurations; task-gaming tests Specification Gaming')
+    parser.add_argument('--mechanism', metavar='CONFIG', type=mechanism_inputs.configuration_id, choices=(*mechanism_inputs.CURRENT_CONFIGURATIONS, 'all', 'implemented'),
+                        help='Export a current configuration, e.g. grader-manipulation, or all')
     parser.add_argument('--input-variant', choices=mechanism_inputs.REGISTERABLE_INPUT_VARIANT_NAMES,
                         help='Export a separately registered mechanism input variant')
     parser.add_argument('--world-config', type=Path)

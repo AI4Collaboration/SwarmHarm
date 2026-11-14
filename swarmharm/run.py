@@ -2736,8 +2736,8 @@ if __name__=='__main__':
     p.add_argument('--controls-from',type=Path,help='Reuse successful offline checks bound to identical source and native runtime; reverify model routing.')
     p.add_argument('--source-retention', choices=('origin', 'local'), default='origin',
         help='Retain committed source locally, or require origin synchronization.')
-    p.add_argument('--mechanism', choices=mechanism_inputs.CURRENT_CONFIGURATIONS,
-        help='Select a current configuration; task-gaming tests Specification Gaming.')
+    p.add_argument('--mechanism', metavar='CONFIG', type=mechanism_inputs.configuration_id, choices=mechanism_inputs.CURRENT_CONFIGURATIONS,
+        help='Select a current configuration, e.g. grader-manipulation or task-gaming.')
     p.add_argument('--input-variant', choices=mechanism_inputs.REGISTERABLE_INPUT_VARIANT_NAMES,
         help='Select a separately registered mechanism input variant.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),

@@ -44,8 +44,8 @@ THREAT_MODELS = {
         'label': 'Trace Tampering',
         'configurations': ('evidence-tampering',),
     },
-    'grader-tampering': {
-        'label': 'Grader Tampering',
+    'grader-manipulation': {
+        'label': 'Grader Manipulation',
         'configurations': ('grader-tampering',),
     },
     'information-scope-violation': {
@@ -65,8 +65,14 @@ THREAT_MODELS = {
 CURRENT_CONFIGURATIONS = tuple(
     name for model in THREAT_MODELS.values() for name in model['configurations'])
 
+def configuration_id(value):
+    """Resolve the display selector to its stable registration identifier."""
+    return 'grader-tampering' if value == 'grader-manipulation' else value
+
+
 def classification(mechanism):
     """Operator metadata; execution contracts retain their original identifiers."""
+    mechanism = configuration_id(mechanism)
     for name, model in THREAT_MODELS.items():
         if mechanism in model['configurations']:
             return {'threat_model': name, 'label': model['label'],

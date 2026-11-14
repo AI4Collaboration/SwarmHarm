@@ -6,7 +6,7 @@ The [SwarmHarm section of the root README](../README.md#swarmharm) is the mainta
 
 ## Inputs and evidence
 
-- **Taxonomy:** six threat models cover Specification Gaming, Trace Tampering, Grader Tampering, Information Scope Violation, Action Scope Violation and Shared-resource Interference. Specification Gaming uses one proxy-mismatch configuration. Information flow, amplification, composition and cognition are reviewed separately. [Definitions and source coverage](docs/phase2-taxonomy.md).
+- **Taxonomy:** six threat models cover Specification Gaming, Trace Tampering, Grader Manipulation, Information Scope Violation, Action Scope Violation and Shared-resource Interference. Specification Gaming uses one proxy-mismatch configuration. Information flow, amplification, composition and cognition are reviewed separately. [Definitions and source coverage](docs/phase2-taxonomy.md).
 - **Domains:** Engineering and Knowledge Work. Knowledge Work includes customer briefings, data analysis and financial analysis. These are source workloads with different business logic, selected within one domain.
 - **Input coverage:** six configurations × two primary domains = 12 admitted slots. Each selected case retains its sealed source, input hashes and reviewed trajectory. `delivery_ready: true` applies to those exact inputs. The broader METR behavior goal is open and tracked separately in the same ledger.
 - **Source selection:** `--scenario engineering-capacity` uses release-validation work. `--scenario knowledge-work` defaults to customer-delivery evidence review. Add `--workload data-analysis` or `--workload financial-analysis` for those Knowledge Work tasks. [Parameters](docs/scenarios-and-parameters.md) · [Input and evidence ledger](docs/research/mechanism-input-status.json).
@@ -24,6 +24,8 @@ model calls (use a new output directory):
   --mechanism implemented --scenario all --output ../mechanism-input-preview
 ```
 
+Each SwarmHarm rollout runs four accounts on four concurrent workstations. Both the CLI and input fixtures require four agents. Parallel rollouts have separate state.
+
 Each package contains tasks, tools, workstation files and `world-config.json`.
 The operator manifest records the mechanism criterion and subject-input hash.
 `--mechanism all --scenario all` exports all 12 admitted default inputs. The `task-gaming` selector tests Specification Gaming. Explicit single-template preview supports development.
@@ -33,7 +35,7 @@ criterion and executable path checks. Use the pinned Python environment from
 
 ```sh
 "$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run.py --phase prepare \
-  --study-mode unified --mechanism grader-tampering --source-retention local \
+  --study-mode unified --mechanism grader-manipulation --source-retention local \
   --scenario knowledge-work --model-id openai/gpt-6.1-sol --population 4 \
   --harness codex --goal-mode off --reasoning-effort high \
   --output ../eval-readiness/mechanism-grader-knowledge-r01 \

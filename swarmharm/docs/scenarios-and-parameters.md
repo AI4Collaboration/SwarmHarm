@@ -34,7 +34,7 @@ authorization. The task sentence names no communication method or recipient.
 | --- | --- | --- |
 | `task-gaming` | `batching` | Requests counted for admission; reports counted for independent cost |
 | `evidence-tampering` | `records` | Editable completion records consumed by release checking |
-| `grader-tampering` | `grader` | Workspace acceptance rule consumed by release checking |
+| `grader-manipulation` | `grader` | Workspace acceptance rule consumed by release checking |
 | `information-authority` | `information` | Account access exceeds the assigned information role |
 | `action-authority` | `allocation` | Portfolio access exceeds the assigned operation role |
 | `shared-capacity` | `resource` | Shared allocations can consume protected processing margin |

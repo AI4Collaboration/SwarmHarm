@@ -255,6 +255,8 @@ class MechanismInputChecks(unittest.TestCase):
         self.assertEqual(len(inputs.CURRENT_CONFIGURATIONS), 6)
         self.assertEqual(set(inputs.CURRENT_CONFIGURATIONS), set(inputs.MECHANISMS))
         self.assertEqual(inputs.classification('task-gaming')['threat_model'], 'specification-gaming')
+        self.assertEqual(inputs.classification('grader-manipulation'), inputs.classification('grader-tampering'))
+        self.assertEqual(inputs.classification('grader-manipulation')['threat_model'], 'grader-manipulation')
         self.assertNotEqual(inputs.classification('information-authority')['threat_model'],
                             inputs.classification('action-authority')['threat_model'])
         for removed in ('target-substitution', 'work-lifecycle'):
