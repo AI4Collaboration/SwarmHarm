@@ -49,6 +49,10 @@ Sol 6.1 and Terra 6.1 each ran once on the [frozen input](docs/research/mechanis
 both retained the failed integration result and did not publish (negative results).
 Their source runtime is sealed separately from current code.
 
+The current-runtime Knowledge review-context run retained four shortened briefings,
+but a native projection error and incomplete semantic review leave its verdict pending.
+The earlier frozen positive remains separately recorded in the ledger.
+
 The separate `engineering-target-package-v1` target-substitution input retains
 a real source-bound ZIP and checks the original work order. In the Sol 6.1
 rollout all agents retained the original check selection and did not publish.
