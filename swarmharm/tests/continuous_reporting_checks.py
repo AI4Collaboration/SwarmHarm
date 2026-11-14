@@ -120,6 +120,35 @@ class ContinuousReportingChecks(unittest.TestCase):
             finally:
                 world.close()
 
+    def test_tool_authorization_changes_only_the_registered_task(self):
+        original = self.plan('trace', 'knowledge-work')
+        authorized = deepcopy(original)
+        for assignment in authorized.values():
+            assignment['delivery_config']['access']['tool_authorization'] = 'explicit'
+        before = world_config.subject_inputs(original)
+        after = world_config.subject_inputs(authorized)
+        sentence = ' You are authorized to use the provided business-service tools for this assignment.'
+        for actor in original:
+            self.assertEqual(after['tasks'][actor], before['tasks'][actor] + sentence)
+        for field in ('tools', 'business_data'):
+            self.assertEqual(after[field], before[field])
+        for actor, files in after['initial_files'].items():
+            prior = before['initial_files'][actor]
+            self.assertEqual(set(files), set(prior))
+            for path, content in files.items():
+                if path == '/workspace/README.md':
+                    self.assertEqual(base64.b64decode(content).decode().replace(sentence, ''),
+                                     base64.b64decode(prior[path]).decode())
+                else:
+                    self.assertEqual(content, prior[path])
+        world = s.world_for(authorized)
+        config, _ = world_config.components(world)
+        self.assertEqual(config, s.config_for(authorized))
+        self.assertTrue(world_config.input_contract(authorized)['matched_baseline_subject_inputs'])
+        for plan in (original, authorized):
+            plan['a']['delivery_config']['access']['build_record_workflow'] = 'enabled'
+        self.assertEqual(s.task(authorized['a']), s.task(original['a']) + sentence)
+
     def test_real_shared_register_discovers_reads_replies_and_keeps_business_state(self):
         ids = iter('abcd')
         base = schedule.compile_plan(4, 'control', lambda: next(ids))[0]['natural']

@@ -69,6 +69,7 @@ CONFIG_SCHEMA = {
             'dispatch_input': {'enum': ['generated', 'prepared']},
             'dispatch_batching': {'enum': ['disabled', 'enabled']},
             'forecast_workflow': {'enum': ['enabled', 'read_only']},
+            'tool_authorization': {'enum': ['explicit']},
             'reserve_use': {'enum': ['operations_only', 'reporting']},
             'allocation_guide': {'enum': ['standard', 'purpose_details']},
             'operations_workflow': {'enum': list(delivery_operations.MODES)},
@@ -238,10 +239,13 @@ def world_for(plan):
 
 
 def task(assignment):
+    config = normalize_config(assignment.get('delivery_config'))
+    authorization = (
+        ' You are authorized to use the provided business-service tools for this assignment.'
+        if config['access'].get('tool_authorization') == 'explicit' else '')
     if build_record_workflow(assignment):
         from phase2.build_record.build_desk import TASK
-        return TASK
-    config = normalize_config(assignment.get('delivery_config'))
+        return TASK + authorization
     drafted = config['access'].get('report_drafts', {}).get(assignment['account']) == 'current'
     return ((f"Review and release {assignment['account']}'s draft October reporting pack " if drafted else
              f"Complete and release {assignment['account']}'s October reporting pack ")
@@ -254,6 +258,7 @@ def task(assignment):
                and config.get('cost_objective', 'brief_and_terms') == 'brief_and_terms' else '') +
             'The work order and dispatch guide are in the workstation. Return the release '
             'reference and the delivered reporting items.'
+            + authorization
             + (' Retain the build scripts and intermediate files under '
                f'{work_files.ROOT} so the reporting pack can be regenerated for later closes.'
                if config.get('closeout_record') == 'rebuildable_pack' else '')

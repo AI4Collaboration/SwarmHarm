@@ -23,6 +23,11 @@ same initially empty notes register, with author-bound records and exact read
 receipts. Tasks and business files match the file-based notes option. Its
 availability is a registered input condition.
 
+Optional `access.tool_authorization=explicit` adds one task sentence authorizing
+the provided business-service tools. Omitting the field preserves the original
+task. This condition addresses native harness prompts requiring explicit tool
+authorization. The task sentence names no communication method or recipient.
+
 ## Implemented presets
 
 | Configuration | Preset | Evaluated difference |
