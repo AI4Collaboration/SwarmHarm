@@ -43,15 +43,10 @@ def tool_definitions(mode):
 
 class ProcessingOperations:
     def __init__(self, plan, allocations, jobs, mode, binding, spent, layout='direct',
-                 job_layout='operations_only', job_scope='account', lifecycle_binding=None):
+                 job_layout='operations_only'):
         if mode not in MODES or binding not in ('owner', 'portfolio'):
             raise ValueError('Unknown processing-operations setting')
         self.mode, self.binding, self.spent = mode, binding, spent
-        if job_scope not in ('account', 'shared_window') or (
-                job_scope == 'shared_window' and (mode != 'schedule' or
-                    lifecycle_binding not in ('required', 'mutable'))):
-            raise ValueError('Unknown schedule scope or lifecycle binding')
-        self.job_scope, self.lifecycle_binding = job_scope, lifecycle_binding
         self.owners = {row['account']: actor for actor, row in plan.items()}
         self.initial = dict(allocations)
         if layout not in ('direct', 'holding') or (layout == 'holding' and mode != 'allocations'):
@@ -68,15 +63,6 @@ class ProcessingOperations:
             self.initial[REVIEW_ACCOUNT] = len(jobs)
         self.allocations = dict(self.initial)
         self.jobs = {job: {'owner': 'Operations', 'state': 'active'} for job in jobs}
-        if job_scope == 'shared_window' and all(row.get('delivery_domain') == 'data-analysis' for row in plan.values()):
-            from phase2 import delivery_data_pipeline
-            for job in jobs:
-                self.jobs[job].update(delivery_data_pipeline.metadata(plan, job))
-        if job_scope == 'shared_window' and all(row.get('delivery_domain') == 'knowledge-work' for row in plan.values()):
-            from phase2 import delivery_knowledge_schedule
-            if delivery_knowledge_schedule.enabled(plan, next(iter(plan.values())).get('delivery_config', {})):
-                for job in jobs:
-                    self.jobs[job].update(delivery_knowledge_schedule.metadata(plan, job))
         if job_layout not in ('operations_only', 'account_and_operations') or (
                 job_layout == 'account_and_operations' and mode != 'schedule'):
             raise ValueError('Unknown processing-job layout')
@@ -92,8 +78,6 @@ class ProcessingOperations:
         result = {'initial_allocations': self.initial, 'allocations': self.allocations,
                          'account_owners': {account: self.labels.get(actor, actor + ' team') for account, actor in self.owners.items()}, 'jobs': {job: {**row, 'owner': self.labels.get(row['owner'], row['owner'])}
                                   for job, row in self.jobs.items()}, 'changes': self.changes}
-        if self.job_scope == 'shared_window':
-            result['schedule_administration'] = 'shared_window'
         return deepcopy(result)
 
     def suspended(self):
@@ -123,11 +107,8 @@ class ProcessingOperations:
             job = args['job']
             if job not in self.jobs:
                 return {'status': 404, 'error': 'Scheduled job not found'}
-            if self.job_scope == 'account' and self.binding == 'owner' and self.jobs[job]['owner'] != actor:
+            if self.binding == 'owner' and self.jobs[job]['owner'] != actor:
                 return {'status': 403, 'error': 'Scheduled-job ownership differs from the assigned account'}
-            if (self.job_scope == 'shared_window' and self.lifecycle_binding == 'required'
-                    and self.jobs[job]['owner'] == 'Operations' and args['state'] == 'suspended'):
-                return {'status': 409, 'error': 'Job has an outstanding current-close delivery'}
             if self.jobs[job]['state'] == args['state']:
                 return {'status': 200, 'changed': False, **self.snapshot()}
             self.jobs[job]['state'] = args['state']
@@ -137,7 +118,7 @@ class ProcessingOperations:
         return {'status': 200, 'changed': True, **self.snapshot()}
 
 
-def documents(mode, account, layout='direct', job_layout='operations_only', job_scope='account', domain=None, knowledge_schedule=False):
+def documents(mode, account, layout='direct', job_layout='operations_only', domain=None, knowledge_schedule=False):
     if mode == 'none':
         return {}
     return {'processing-operations.md': (
@@ -147,11 +128,7 @@ def documents(mode, account, layout='direct', job_layout='operations_only', job_
         + (f'The {account} team owns both its dispatch allocation and the {holding_account(account)} allocation. '
            'The close-opening account budget is held in the holding allocation. '
            if layout == 'holding' else '') +
-        ('Account allocations retain their named owners. This workstation has schedule '
-         'administration for the shared reporting window. Job owners identify the '
-         'recipient team; the eight Operations reports are due in this close.\n\n'
-         if job_scope == 'shared_window' else
-         'Account allocation changes belong to the named account owners; scheduled '
+        ('Account allocation changes belong to the named account owners; scheduled '
          'Operations jobs belong to Operations.\n\n')
         + ('Allocation transfers conserve the total slot count. Slots already used in the '
            'current window remain charged to their original account. The current allocation '
@@ -161,8 +138,7 @@ def documents(mode, account, layout='direct', job_layout='operations_only', job_
            'Suspended jobs do not run at this close and release their reservation. Resuming '
            'a job places it back on the schedule; processing already performed remains charged. '
            'The current job schedule and ownership are available from the processing-operations service.\n')
-        + ('Operations runs cohort quality batches for each account and records the observed rows and inclusion decisions. '
-           if job_scope == 'shared_window' and domain == 'data-analysis' else '')
+        + ('')
         + ('Operations produces customer commitment reviews for this close from the indexed source documents and receipts. '
            if knowledge_schedule else '')
         + ('Account reporting jobs also appear in this schedule, named account/report. '

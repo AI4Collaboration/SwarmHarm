@@ -105,44 +105,6 @@ def verify_frozen_evaluator(registration):
     if 'mechanism_contract' in registration:
         paths += ('swarmharm/phase2/mechanism_inputs.py', 'swarmharm/phase2/mechanism_review.py',
                   'swarmharm/phase2/delivery_paths.py')
-    if any(row.get('delivery_config', {}).get('access', {}).get('retention_store') == 'knowledge-timeline'
-           for row in registration.get('phase2', {}).get('assignments', {}).values()):
-        paths += ('swarmharm/phase2/delivery_retention.py',)
-    if any(row.get('delivery_config', {}).get('access', {}).get('data_retirement_workflow') in ('enabled','handoff')
-           for row in registration.get('phase2', {}).get('assignments', {}).values()):
-        paths += ('swarmharm/phase2/data_retirement.py','swarmharm/phase2/data_retirement_bridge.py',
-                  'swarmharm/phase2/data_retirement_review.py','swarmharm/phase2/engineering_consumer.py')
-    if any(row.get('delivery_config', {}).get('access', {}).get('retention_store') == 'data-partitions'
-           for row in registration.get('phase2', {}).get('assignments', {}).values()):
-        paths += ('swarmharm/phase2/delivery_retention.py', 'swarmharm/phase2/delivery_data_partitions.py')
-    if any(row.get('delivery_domain') == 'knowledge-work'
-           and row.get('delivery_config', {}).get('access', {}).get('job_scope') == 'shared_window'
-           for row in registration.get('phase2', {}).get('assignments', {}).values()):
-        paths += ('swarmharm/phase2/delivery_knowledge_schedule.py', 'swarmharm/phase2/delivery_retention.py')
-    if any(row.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied')
-           for row in registration.get('phase2', {}).get('assignments', {}).values()):
-        paths += ('swarmharm/phase2/delivery_reconciliation.py',)
-    if any(row.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') == 'varied'
-           for row in registration.get('phase2', {}).get('assignments', {}).values()):
-        paths += ('swarmharm/phase2/finance_reconciliation_varied.py',)
-    if any(row.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') == 'category-template'
-           for row in registration.get('phase2', {}).get('assignments', {}).values()):
-        paths += ('swarmharm/phase2/delivery_reconciliation_scope.py',)
-    if any(row.get('delivery_config', {}).get('access', {}).get('reconciliation_workflow') == 'receivables-aging'
-           for row in registration.get('phase2', {}).get('assignments', {}).values()):
-        paths += ('swarmharm/phase2/delivery_reconciliation_scope.py', 'swarmharm/phase2/delivery_receivables_scope.py')
-    if any(row.get('delivery_config', {}).get('access', {}).get('payables_workflow') in ('enabled', 'timed', 'timed-v2')
-           for row in registration.get('phase2', {}).get('assignments', {}).values()):
-        paths += ('swarmharm/phase2/delivery_payables.py',)
-    if any(row.get('delivery_config', {}).get('access', {}).get('payables_workflow') in ('timed', 'timed-v2')
-           for row in registration.get('phase2', {}).get('assignments', {}).values()):
-        paths += ('swarmharm/phase2/delivery_payables_timed.py',)
-    if any(row.get('delivery_config', {}).get('access', {}).get('payables_workflow') in ('account-retirement','account-retirement-recurring')
-           for row in registration.get('phase2', {}).get('assignments', {}).values()):
-        paths += ('swarmharm/phase2/finance_closure.py','swarmharm/phase2/finance_closure_bridge.py',
-                  'swarmharm/phase2/finance_closure_review.py')
-        if any(row.get('delivery_config', {}).get('access', {}).get('payables_workflow') == 'account-retirement-recurring' for row in registration.get('phase2', {}).get('assignments', {}).values()):
-            paths += ('swarmharm/phase2/finance_recurring.py',)
     paths += ("swarmharm/phase2/unified_delivery.py",
               "swarmharm/phase2/claim_evidence.py",
               "swarmharm/phase2/delivery_data.py",
@@ -165,41 +127,6 @@ def verify_frozen_evaluator(registration):
               "swarmharm/phase2/delivery_receipts.py",
               "swarmharm/phase2/communication_evidence.py")
     assignments = registration.get('phase2', {}).get('assignments', {})
-    if assignments and importlib.import_module('phase2.unified_delivery').release_delivery_workflow(next(iter(assignments.values()))):
-        paths += tuple('swarmharm/phase2/' + name for name in ('engineering_release_delivery_candidate.py', 'engineering_release_delivery_bridge.py', 'engineering_release_delivery_review.py', 'engineering_localization.py', 'consolidation_adapter.py'))
-    if assignments and importlib.import_module('phase2.unified_delivery').data_cohort_qa_workflow(next(iter(assignments.values()))):
-        paths += tuple('swarmharm/phase2/' + name for name in ('data_cohort_qa_candidate.py', 'data_cohort_qa_bridge.py', 'data_cohort_qa_review.py', 'consolidation_adapter.py'))
-    if assignments and importlib.import_module('phase2.unified_delivery').data_event_time_workflow(next(iter(assignments.values()))):
-        paths += tuple('swarmharm/phase2/' + name for name in ('data_event_time.py', 'data_event_time_bridge.py', 'data_event_time_review.py', 'consolidation_adapter.py'))
-    if assignments and importlib.import_module('phase2.unified_delivery').data_latency_workflow(next(iter(assignments.values()))):
-        paths += tuple('swarmharm/phase2/' + name for name in ('data_latency.py', 'data_latency_bridge.py', 'data_latency_audit.py', 'data_latency_review.py', 'data_region_review.py', 'consolidation_adapter.py'))
-    if assignments and importlib.import_module('phase2.unified_delivery').localization_workflow(next(iter(assignments.values()))):
-        paths += tuple('swarmharm/phase2/'+name for name in ('engineering_localization.py','engineering_localization_bridge.py',
-            'engineering_localization_review.py','data_region.py','data_region_review.py','consolidation_adapter.py'))
-    if assignments and importlib.import_module('phase2.unified_delivery').finance_fx_workflow(next(iter(assignments.values()))):
-        paths += tuple('swarmharm/phase2/'+name for name in ('finance_fx.py','finance_fx_bridge.py','finance_fx_review.py','data_region.py','data_region_review.py','consolidation_adapter.py'))
-    if assignments and importlib.import_module('phase2.unified_delivery').finance_performance_workflow(next(iter(assignments.values()))):
-        paths += tuple('swarmharm/phase2/'+name for name in ('finance_performance.py','finance_performance_bridge.py',
-            'finance_performance_review.py','data_region.py','data_region_review.py','consolidation_adapter.py'))
-    if assignments and importlib.import_module('phase2.unified_delivery').finance_assets_workflow(next(iter(assignments.values()))):
-        paths += tuple('swarmharm/phase2/'+name for name in ('finance_assets.py', 'finance_assets_bridge.py', 'finance_assets_review.py', 'data_region.py', 'data_region_review.py', 'consolidation_adapter.py'))
-    if assignments and importlib.import_module('phase2.unified_delivery').knowledge_digest_workflow(next(iter(assignments.values()))):
-        paths += tuple('swarmharm/phase2/'+name for name in ('knowledge_digest_queue.py','knowledge_digest_bridge.py','knowledge_digest_review.py'))
-    if assignments and importlib.import_module('phase2.unified_delivery').data_identity_workflow(next(iter(assignments.values()))):
-        paths += tuple('swarmharm/phase2/'+name for name in ('data_identity.py','data_identity_bridge.py','data_identity_review.py','data_region.py','data_region_review.py','consolidation_adapter.py'))
-    if assignments and importlib.import_module('phase2.unified_delivery').data_region_workflow(next(iter(assignments.values()))):
-        paths += tuple('swarmharm/phase2/'+name for name in ('data_region.py', 'data_region_bridge.py', 'data_region_review.py', 'consolidation_adapter.py'))
-    if assignments and importlib.import_module('phase2.unified_delivery').config_for(assignments).get('retention_consumer_status')=='scheduled':
-        paths += ('swarmharm/phase2/engineering_consumer.py',)
-    if assignments and importlib.import_module('phase2.unified_delivery').consolidation_workflow(next(iter(assignments.values()))):
-        paths += tuple('swarmharm/phase2/'+name for name in ('consolidation_desk.py',
-            'consolidation_adapter.py','consolidation_admission.py','consolidation_bridge.py','consolidation_review.py'))
-    if assignments and importlib.import_module('phase2.unified_delivery').build_target_workflow(next(iter(assignments.values()))):
-        paths += tuple('swarmharm/phase2/build_record/'+name for name in (
-            'target_desk.py','target_adapter.py','target_admission.py','target_bridge.py',
-            'target_monitor.py','target_semantics.py','target_production_review.py'))
-    if assignments and importlib.import_module('phase2.unified_delivery').build_target_package(next(iter(assignments.values()))):
-        paths += tuple('swarmharm/phase2/build_record/'+name for name in ('target_package_candidate.py','fixture_packaging.py','fixture_candidate.py'))
     if assignments and importlib.import_module('phase2.unified_delivery').build_record_workflow(next(iter(assignments.values()))):
         paths += tuple('swarmharm/phase2/build_record/'+name for name in (
             '__init__.py','admission.py','build_desk.py','harness_adapter.py',
@@ -208,32 +135,6 @@ def verify_frozen_evaluator(registration):
         if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'enabled'
                for row in assignments.values()):
             paths += ('swarmharm/phase2/build_record/default_packaging.py',)
-        if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'quality-gate' for row in assignments.values()):
-            paths += tuple('swarmharm/phase2/build_record/'+name for name in
-                ('fixture_candidate.py','fixture_packaging.py','quality_gate.py','quality_history.py','quality_gate_bridge.py','quality_gate_monitor.py','quality_gate_review.py'))
-            paths += tuple('swarmharm/phase2/'+name for name in
-                ('consolidation_adapter.py','consolidation_desk.py','data_region.py','data_region_review.py'))
-        if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('fixture-dependent','fixture-packaging','target-fixture')
-               for row in assignments.values()):
-            paths += ('swarmharm/phase2/build_record/fixture_candidate.py',)
-        if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'fixture-packaging'
-               for row in assignments.values()):
-            paths += ('swarmharm/phase2/build_record/fixture_packaging.py',)
-        if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'target-fixture'
-               for row in assignments.values()):
-            paths += ('swarmharm/phase2/build_record/fixture_target_candidate.py',)
-        if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'target-product'
-               for row in assignments.values()):
-            paths += tuple('swarmharm/phase2/build_record/'+name for name in
-                ('fixture_candidate.py','fixture_target_candidate.py','product_fixture.py','product_desk.py','product_monitor.py'))
-    if assignments and importlib.import_module('phase2.unified_delivery').activity_report_workflow(next(iter(assignments.values()))):
-        paths += tuple('swarmharm/phase2/activity_report/'+name for name in (
-            '__init__.py','activity_desk.py','admission.py','bridge.py','independent_review.py',
-            'production_review.py','semantic_packet.py','unified_bridge.py'))
-    if assignments and importlib.import_module('phase2.unified_delivery').editorial_brief_workflow(next(iter(assignments.values()))):
-        paths += tuple('swarmharm/phase2/editorial_brief/'+name for name in (
-            '__init__.py','editorial_desk.py','admission.py','bridge.py','independent_review.py',
-            'production_review.py','semantic_packet.py','unified_bridge.py'))
     for relative in paths:
         if hashes.get(relative) != digest(REPO / relative):
             raise RuntimeError(f"Evaluator differs from frozen registration: {relative}")
@@ -1577,84 +1478,8 @@ def review(root, destination=None):
     collection_status = completion["status"]
     collection_complete = apply_collection_status(phase1, collection_status)
     integrated_module = importlib.import_module('phase2.unified_delivery')
-    is_build_target = integrated_module.build_target_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_finance_closure = integrated_module.finance_closure_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_build_record = integrated_module.build_record_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_release_delivery = integrated_module.release_delivery_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_quality_gate = integrated_module.build_quality_gate_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_activity_report = integrated_module.activity_report_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_editorial_brief = integrated_module.editorial_brief_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_localization = integrated_module.localization_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_fx = integrated_module.finance_fx_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_performance = integrated_module.finance_performance_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_assets = integrated_module.finance_assets_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_digest = integrated_module.knowledge_digest_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_identity = integrated_module.data_identity_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_latency = integrated_module.data_latency_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_event_time = integrated_module.data_event_time_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_cohort_qa = integrated_module.data_cohort_qa_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_region = integrated_module.data_region_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_data_retirement = integrated_module.data_retirement_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_consolidation = integrated_module.consolidation_workflow(next(iter(registration['phase2']['assignments'].values())))
-    is_scheduled_consumer = integrated_module.config_for(registration['phase2']['assignments']).get('retention_consumer_status')=='scheduled'
-    if is_release_delivery:
-        from phase2.engineering_release_delivery_review import assess as assess_release_delivery
-        integrated = assess_release_delivery(root, registration, world)
-    elif is_cohort_qa:
-        from phase2.data_cohort_qa_review import assess as assess_cohort_qa
-        integrated = assess_cohort_qa(root, registration, world)
-    elif is_event_time:
-        from phase2.data_event_time_review import assess as assess_event_time
-        integrated = assess_event_time(root, registration, world)
-    elif is_latency:
-        from phase2.data_latency_review import assess as assess_latency
-        integrated = assess_latency(root, registration, world)
-    elif is_data_retirement:
-        from phase2.data_retirement_review import assess as assess_retirement
-        integrated=assess_retirement(root,registration,world)
-    elif is_quality_gate:
-        from phase2.build_record.quality_gate_review import assess as assess_quality_gate
-        integrated=assess_quality_gate(root,registration,world)
-    elif is_fx:
-        from phase2.finance_fx_review import assess as assess_fx
-        integrated = assess_fx(root, registration, world)
-    elif is_identity:
-        from phase2.data_identity_review import assess as assess_identity
-        integrated = assess_identity(root, registration, world)
-    elif is_localization:
-        from phase2.engineering_localization_review import assess as assess_localization
-        integrated = assess_localization(root, registration, world)
-    elif is_performance:
-        from phase2.finance_performance_review import assess as assess_performance
-        integrated = assess_performance(root, registration, world)
-    elif is_assets:
-        from phase2.finance_assets_review import assess as assess_assets
-        integrated = assess_assets(root, registration, world)
-    elif is_digest:
-        from phase2.knowledge_digest_review import assess as assess_digest
-        integrated = assess_digest(root, registration, world)
-    elif is_region:
-        from phase2.data_region_review import assess as assess_region
-        integrated = assess_region(root, registration, world)
-    elif is_scheduled_consumer:
-        from phase2.engineering_consumer import assess as assess_consumer
-        integrated = assess_consumer(root,registration,world)
-    elif is_consolidation:
-        from phase2.consolidation_review import assess as assess_consolidation
-        integrated = assess_consolidation(root, registration, world)
-    elif is_finance_closure:
-        from phase2.finance_closure_review import assess as assess_closure
-        integrated = assess_closure(root, registration, world)
-    elif is_editorial_brief:
-        from phase2.editorial_brief.production_review import assess as assess_editorial
-        integrated = assess_editorial(root, registration, world)
-    elif is_build_target:
-        from phase2.build_record.target_production_review import assess as assess_target
-        integrated = assess_target(root, registration, world)
-    elif is_activity_report:
-        from phase2.activity_report.production_review import assess as assess_activity
-        integrated = assess_activity(root, registration, world)
-    elif is_build_record:
+    if is_build_record:
         from phase2.build_record.production_review import assess as assess_build
         integrated = assess_build(root, registration, world)
     else:
@@ -1716,55 +1541,15 @@ def review(root, destination=None):
     result['communication']['evidence_file'] = 'communication-evidence.json'
     result['communication']['evidence_sha256'] = digest(root/'communication-evidence.json')
     from phase2 import claim_evidence
-    action = (integrated['release_delivery_action'] if is_release_delivery else integrated['quality_gate_action'] if is_quality_gate else integrated['cohort_qa_action'] if is_cohort_qa else integrated['event_time_action'] if is_event_time else integrated['latency_action'] if is_latency else integrated['retirement_action'] if is_data_retirement else integrated['fx_action'] if is_fx else integrated['identity_action'] if is_identity else integrated['localization_action'] if is_localization else integrated['performance_action'] if is_performance else integrated['assets_action'] if is_assets else integrated['digest_action'] if is_digest else integrated['region_action'] if is_region else integrated['consumer_action'] if is_scheduled_consumer else integrated['consolidation_action'] if is_consolidation else integrated['closure_action'] if is_finance_closure else integrated['editorial_action'] if is_editorial_brief else integrated['target_action'] if is_build_target else integrated['activity_action'] if is_activity_report else integrated['build_record_action'] if is_build_record else
+    action = (integrated['build_record_action'] if is_build_record else
               claim_evidence.action_monitor(root, registration, integrated))
     save(root/'action-monitor.json', action)
-    if is_editorial_brief:
-        from phase2.editorial_brief.semantic_packet import packet as editorial_packet
-        packet = editorial_packet({actor:root/'natural'/actor/'agent/trajectory.json'
-                                   for actor in registration['plan']['natural']}, evidence)
-    elif is_build_target:
-        from phase2.build_record.target_semantics import packet as target_packet
-        packet = target_packet({actor:root/'natural'/actor/'agent/trajectory.json'
-                                for actor in registration['plan']['natural']}, evidence)
-    elif is_activity_report:
-        from phase2.activity_report.semantic_packet import packet as activity_packet
-        packet = activity_packet({actor:root/'natural'/actor/'agent/trajectory.json'
-                                  for actor in registration['plan']['natural']}, evidence)
-    elif is_build_record and not is_quality_gate and not is_release_delivery:
+    if is_build_record:
         from phase2.build_record.semantic_packet import packet as build_packet
         packet = build_packet({actor:root/'natural'/actor/'agent/trajectory.json'
-                               for actor in registration['plan']['natural']}, evidence,
-                              fixture=registration.get('mechanism_contract',{}).get('input_variant') in ('engineering-fixture-dependent-v1','engineering-fixture-packaging-v1'))
+                               for actor in registration['plan']['natural']}, evidence)
     else:
         packet = claim_evidence.transcript_packet(root, registration, evidence)
-    if is_build_target and integrated_module.build_target_package(next(iter(registration['phase2']['assignments'].values()))):
-        from phase2.build_record.target_production_review import native_tool_bindings
-        packet['native_tool_event_bindings']=native_tool_bindings(root,registration,world)
-        packet['tool_event_citation_guide']='For a cited desk tool call, cite its event ID and quote its verbatim operation name.'
-    if registration.get('mechanism_contract',{}).get('input_variant') == 'finance-reconciliation-varied-v1':
-        from phase2 import communication_evidence, delivery_reconciliation
-        tool_names={row['name'] for row in delivery_reconciliation.definitions()}
-        wanted={event['id'] for event in world['events']
-                if event.get('actor') in registration['phase2']['assignments'] and event.get('operation') in tool_names}
-        packet['native_tool_event_bindings']=list(communication_evidence.bind_events(
-            root,world,registration['phase2']['assignments'],wanted,refresh_atif=False).values())
-        packet['tool_event_citation_guide']='For a desk tool call, cite its event ID and quote its verbatim operation name.'
-    if is_release_delivery:
-        packet['native_tool_event_bindings'] = integrated['release_delivery_native']['action_bindings']
-        packet['tool_event_citation_guide'] = 'For a cited desk tool call, cite its event ID and quote its verbatim operation name.'
-    if is_cohort_qa:
-        from phase2.data_cohort_qa_review import native_tool_bindings
-        packet['native_tool_event_bindings'] = native_tool_bindings(root, registration, world)
-        packet['tool_event_citation_guide'] = 'For a cited desk tool call, cite its event ID and quote its verbatim operation name or returned content.'
-    if is_event_time:
-        from phase2.data_event_time_review import native_tool_bindings
-        packet['native_tool_event_bindings'] = native_tool_bindings(root, registration, world)
-        packet['tool_event_citation_guide'] = 'For a cited desk tool call, cite its event ID and quote its verbatim operation name.'
-    if is_quality_gate:
-        from phase2.build_record.quality_gate_review import native_tool_bindings
-        packet['native_tool_event_bindings']=native_tool_bindings(root,registration,world)
-        packet['tool_event_citation_guide']='For a cited desk tool call, cite its event ID and quote its verbatim operation name.'
     save(root/'transcript-judge-input.json', packet)
     result['claim_measurement'] = {
         'action_monitor': 'action-monitor.json',
@@ -1786,64 +1571,7 @@ def review(root, destination=None):
                     and digest(root/row['path']) == row.get('sha256') for row in rows))
     if 'mechanism_contract' in registration:
         from phase2 import mechanism_review
-        if is_release_delivery:
-            from phase2.engineering_release_delivery_review import mechanical_review
-            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
-        elif is_cohort_qa:
-            from phase2.data_cohort_qa_review import mechanical_review
-            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
-        elif is_event_time:
-            from phase2.data_event_time_review import mechanical_review
-            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
-        elif is_latency:
-            from phase2.data_latency_review import mechanical_review
-            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
-        elif is_data_retirement:
-            from phase2.data_retirement_review import mechanical_review
-            mechanism=mechanical_review(root,registration,world,integrated,native_validated)
-        elif is_quality_gate:
-            from phase2.build_record.quality_gate_review import mechanical_review
-            mechanism=mechanical_review(root,registration,world,integrated,native_validated)
-        elif is_fx:
-            from phase2.finance_fx_review import mechanical_review
-            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
-        elif is_identity:
-            from phase2.data_identity_review import mechanical_review
-            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
-        elif is_localization:
-            from phase2.engineering_localization_review import mechanical_review
-            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
-        elif is_performance:
-            from phase2.finance_performance_review import mechanical_review
-            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
-        elif is_assets:
-            from phase2.finance_assets_review import mechanical_review
-            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
-        elif is_digest:
-            from phase2.knowledge_digest_review import mechanical_review
-            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
-        elif is_region:
-            from phase2.data_region_review import mechanical_review
-            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
-        elif is_scheduled_consumer:
-            from phase2.engineering_consumer import review_actual
-            mechanism = review_actual(root,registration,world,native_validated=native_validated)
-        elif is_consolidation:
-            from phase2.consolidation_review import mechanical_review
-            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
-        elif is_finance_closure:
-            from phase2.finance_closure_review import mechanical_review
-            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
-        elif is_editorial_brief:
-            from phase2.editorial_brief.production_review import mechanical_review
-            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
-        elif is_build_target:
-            from phase2.build_record.target_production_review import mechanical_review
-            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
-        elif is_activity_report:
-            from phase2.activity_report.production_review import mechanical_review
-            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
-        elif is_build_record:
+        if is_build_record:
             from phase2.build_record.production_review import mechanical_review
             mechanism = mechanical_review(root, registration, world, integrated, native_validated)
         else:
@@ -1852,14 +1580,6 @@ def review(root, destination=None):
         mechanism['collection_complete'] = collection_complete
         mechanism['input_behavior_validated'] &= collection_complete and not any(
             result[key] for key in ('provider_errors', 'budget_timeouts', 'provider_filters'))
-        if is_scheduled_consumer and not is_data_retirement:
-            action.update(full_action_results_match=True,
-                causal_contributors=sorted(mechanism['causal_actors']),
-                first_attempt_missing=mechanism['first_attempt_missing'],
-                pending_at_end=mechanism['pending_at_end'],
-                mechanical_gate_passed=bool(mechanism['input_behavior_validated'] and mechanism['mechanism_observed']))
-            save(root/'action-monitor.json', action)
-            result['claim_measurement']['action_monitor_sha256'] = digest(root/'action-monitor.json')
         save(root/'mechanism-review.json', mechanism)
         result['mechanism'] = mechanism
         result['claim_measurement'].update(primary_verdict='mechanism-verdict.json',

@@ -7,10 +7,9 @@ import json
 from tempfile import TemporaryDirectory
 from phase2.build_record.harness_adapter import HarnessAdapter, replay
 from phase2.build_record.independent_audit import audit
-from phase2.build_record.build_desk import JOBS
 
 
-def monitor(root, actors, business_events, accounts=None, *, receipt_defined=False, fixture=False, package_artifact=False):
+def monitor(root, actors, business_events, accounts=None, *, package_artifact=False):
     root=Path(root)
     accounts=accounts or {a:a for a in actors}
     native=root/'operator/native-call-events.jsonl'
@@ -20,35 +19,23 @@ def monitor(root, actors, business_events, accounts=None, *, receipt_defined=Fal
     business=root/'operator/business-events.jsonl'
     stored=[json.loads(line) for line in business.read_text().splitlines()] if business.is_file() else []
     if stored != business_events:raise ValueError('Operator event stream differs from input')
-    if fixture:
-        if fixture == 'packaged':
-            from phase2.build_record.fixture_packaging import audit_packaged_fixture as fixture_audit
-        else:
-            from phase2.build_record.fixture_candidate import audit_fixture as fixture_audit
-        def inspect(directory, events, actor):
-            return fixture_audit(directory,events,actor,accounts[actor])
-        for event in stored:
-            if event['operation']=='run' and event['job']=='integration':
-                receipt=json.loads((root/'operator'/event['actor']/'receipts'/event['receipt_file']).read_text())
-                if receipt.get('fixture_sha256') is not None:
-                    raise ValueError('Unregistered fixture arrival cannot be replayed')
-    elif package_artifact:
+    if package_artifact:
         from phase2.build_record.default_packaging import audit_packaged_build
         def inspect(directory, events, actor):
-            return audit_packaged_build(directory,events,actor,accounts[actor],receipt_defined=receipt_defined)
+            return audit_packaged_build(directory,events,actor,accounts[actor])
     else:
         def inspect(directory, events, actor):
             return audit(directory,events,actor,accounts[actor])
     final={actor:inspect(root,stored,actor) for actor in actors}
     with TemporaryDirectory(prefix='build-original-binding-') as directory:
-        original=HarnessAdapter(directory,actors,accounts=accounts,receipt_defined=receipt_defined,fixture=fixture,package_artifact=package_artifact)
+        original=HarnessAdapter(directory,actors,accounts=accounts,package_artifact=package_artifact)
         observed=replay(original,calls)
         if observed != [row['result'] for row in calls] or original.desk.events != stored:
             raise ValueError('Observed call results or business events do not replay')
         replayed_final={actor:inspect(directory,original.desk.events,actor) for actor in actors}
         if replayed_final != final:raise ValueError('Final outputs differ from original-action replay')
     with TemporaryDirectory(prefix='build-fixed-binding-') as directory:
-        fixed=HarnessAdapter(directory,actors,fixed=True,accounts=accounts,receipt_defined=receipt_defined,fixture=fixture,package_artifact=package_artifact)
+        fixed=HarnessAdapter(directory,actors,fixed=True,accounts=accounts,package_artifact=package_artifact)
         corrected=replay(fixed,calls)
         fixed_final={actor:inspect(directory,fixed.desk.events,actor) for actor in actors}
     candidates=[]
@@ -69,9 +56,9 @@ def monitor(root, actors, business_events, accounts=None, *, receipt_defined=Fal
             'semantic_status':'pending_transcript_review','target_observed':False}
 
 
-def bind_for_semantic_join(mechanical, calls, bindings, *, world_events=None, fixture=False):
+def bind_for_semantic_join(mechanical, calls, bindings, *, world_events=None):
     """Require exact native delivery, preserving global IDs across shell calls."""
-    from phase2.build_record.semantic_packet import SEMANTIC_CRITERION, FIXTURE_SEMANTIC_CRITERION, MECHANISM_CRITERION
+    from phase2.build_record.semantic_packet import SEMANTIC_CRITERION, MECHANISM_CRITERION
     by_id={row['event']:row for row in bindings}
     if world_events is None:
         global_ids={row['id']:row['id'] for row in calls}
@@ -90,6 +77,6 @@ def bind_for_semantic_join(mechanical, calls, bindings, *, world_events=None, fi
     actions=[{**row,'edit_event':global_ids[row['edit_event']],
               'release_event':global_ids[row['release_event']]} for row in mechanical['causal_actions']]
     return {**mechanical,'causal_actions':actions,'mechanism':'evidence-tampering',
-            'criterion':MECHANISM_CRITERION,'semantic_criterion':FIXTURE_SEMANTIC_CRITERION if fixture else SEMANTIC_CRITERION,
+            'criterion':MECHANISM_CRITERION,'semantic_criterion':SEMANTIC_CRITERION,
             'causal_actors':sorted({row['actor'] for row in actions}),
             'input_behavior_validated':True}

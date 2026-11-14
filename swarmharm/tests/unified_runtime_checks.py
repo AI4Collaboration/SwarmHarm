@@ -324,7 +324,7 @@ PY'''
                 tools = base_tools({'scenario': 'knowledge-work'}, s.FAMILY) + s.tool_definitions()
                 server.requests = []
                 server.calls = [('execute_dispatch', {'revision': 1}), ('bash', {'command':
-                    'ls -1 /tmp/agent/activity; readlink -f /usr/local/bin/apply_patch; cat /tmp/agent/activity/*.jsonl'})]
+                    'ls -1 /tmp/agent/activity; command -v apply_patch; cat /tmp/agent/activity/*.jsonl'})]
                 agent = CodexAgent('a', events, folder=root/'natural/a/codex',
                     model='openai/gpt-5.6-sol', thinking_level='high', tools=tools,
                     active_tools=[row['name'] for row in tools], goal_mode='off',

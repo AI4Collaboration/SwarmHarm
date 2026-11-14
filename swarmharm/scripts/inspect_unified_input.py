@@ -12,26 +12,22 @@ sys.path[:0] = [str(REPO / 'swarmharm'), str(REPO / 'shared')]
 
 from jsonschema import ValidationError
 import domain_runtime
-from phase2 import mechanism_inputs, office_history, threat_grid, unified_delivery as scenario, world_config
+from phase2 import mechanism_inputs, office_history, unified_delivery as scenario, world_config
 
 ACTORS = ('job-northline', 'job-aster', 'job-meridian', 'job-harbor')
 
 
-def build_preview(domain, preset, overrides=None, *, combined=False, harness='codex', cell=None,
+def build_preview(domain, preset, overrides=None, *, combined=False, harness='codex',
                   mechanism=None, input_variant=None, workload=None):
     domain = domain_runtime.resolve_workload(domain, workload)
     if mechanism is not None:
-        if (cell is not None or overrides is not None or combined or harness != 'codex'
+        if (overrides is not None or combined or harness != 'codex'
                 or preset != mechanism_inputs.MECHANISMS[mechanism]['preset']):
             raise ValueError('A mechanism supplies its own world, binding and Codex layout')
         overrides = (mechanism_inputs.configuration(mechanism, domain, input_variant=input_variant)
                      if input_variant else mechanism_inputs.configuration(mechanism, domain))
     if input_variant and mechanism is None:
         raise ValueError('Input variant requires its registered mechanism')
-    if cell is not None:
-        if overrides is not None or combined or preset != threat_grid.CELLS[cell]['preset']:
-            raise ValueError('A threat cell supplies its own world and binding')
-        overrides = threat_grid.configuration(cell)
     world = world_config.normalize(overrides, preset=preset)
     config, _ = world_config.components(world)
     plan = scenario.plan_for(ACTORS, domain=domain)
@@ -47,9 +43,9 @@ def build_preview(domain, preset, overrides=None, *, combined=False, harness='co
         'world_revision': world_config.REVISION,
         'domain': domain_runtime.domain_for(domain), 'workload': domain,
         'preset': preset, 'harness_file_layout': harness,
-        **({'threat_cell': {'cell': cell, **threat_grid.CELLS[cell],
-                           'visibility': 'operator_only'}} if cell else {}),
         **({'mechanism_contract': mechanism_inputs.validate_plan(mechanism, plan)}
+           if mechanism else {}),
+        **({'classification': mechanism_inputs.classification(mechanism)}
            if mechanism else {}),
         'world_config': world, 'assignments': plan,
         'input_contract': contract,
@@ -101,11 +97,9 @@ def main(argv=None):
     parser.add_argument('--workload', choices=domain_runtime.WORKLOADS,
                         help='Optional source workload within the selected domain')
     parser.add_argument('--binding-preset', choices=scenario.PRESETS)
-    parser.add_argument('--threat-cell', choices=(*threat_grid.CELLS, 'all'),
-                        help='Export archived grid inputs; no registration, checks or model calls')
-    parser.add_argument('--mechanism', choices=(*mechanism_inputs.MECHANISMS, 'all', 'implemented'),
-                        help='Export declared mechanism inputs; all requires every binding to be implemented')
-    parser.add_argument('--input-variant', choices=mechanism_inputs.INPUT_VARIANT_NAMES,
+    parser.add_argument('--mechanism', choices=(*mechanism_inputs.CURRENT_CONFIGURATIONS, 'all', 'implemented'),
+                        help='Export current configurations; task-gaming tests Specification Gaming')
+    parser.add_argument('--input-variant', choices=mechanism_inputs.REGISTERABLE_INPUT_VARIANT_NAMES,
                         help='Export a separately registered mechanism input variant')
     parser.add_argument('--world-config', type=Path)
     parser.add_argument('--combined-bindings', action='store_true')
@@ -122,59 +116,49 @@ def main(argv=None):
         if args.input_variant and (args.mechanism,workload,args.input_variant) not in mechanism_inputs.INPUT_VARIANTS:
             raise ValueError('--input-variant does not match the mechanism and scenario')
         if args.mechanism:
-            if args.threat_cell or args.world_config or args.binding_preset or args.combined_bindings:
+            if args.world_config or args.binding_preset or args.combined_bindings:
                 raise ValueError('--mechanism supplies its world and binding; do not combine overrides')
-            names = (list(mechanism_inputs.MECHANISMS) if args.mechanism == 'all' else
+            names = (list(mechanism_inputs.CURRENT_CONFIGURATIONS) if args.mechanism == 'all' else
                      list(mechanism_inputs.implemented()) if args.mechanism == 'implemented' else
                      [args.mechanism])
             domains = mechanism_inputs.DOMAINS if args.scenario == 'all' else (args.scenario,)
             workload_path = f'/{args.workload}' if args.workload and args.workload != args.scenario else ''
+            # Bulk delivery uses the reviewed current selection. Explicit single
+            # templates remain available for operator development.
+            ledger = json.loads((REPO / 'swarmharm/docs/research/mechanism-input-status.json').read_text())
+            admitted = {row['id'] for row in [*ledger['inputs'], *ledger.get('workload_inputs', [])]
+                        if row.get('current_input_validation') == 'reviewed_positive'}
             previews = {f'{domain}{workload_path}/{name}': build_preview(domain,
                         mechanism_inputs.MECHANISMS[name]['preset'],
                         harness=args.harness, mechanism=name, input_variant=args.input_variant,
                         workload=args.workload)
-                        for domain in domains for name in names}
+                        for domain in domains for name in names
+                        if args.mechanism not in ('all', 'implemented') or
+                        f'{args.workload or domain}/{name}' in admitted}
+            if not previews:
+                raise ValueError('No admitted inputs match this bulk selection')
             args.output.mkdir(parents=True, exist_ok=False)
             for key, (manifest, subjects) in previews.items():
                 write_preview(args.output/key, manifest, subjects)
             index = {'kind': 'offline_mechanism_inputs', 'revision': mechanism_inputs.REVISION,
-                     'planned_count': len(mechanism_inputs.MECHANISMS)*len(mechanism_inputs.DOMAINS),
+                     'planned_count': len(mechanism_inputs.CURRENT_CONFIGURATIONS)*len(mechanism_inputs.DOMAINS),
+                     'threat_models': mechanism_inputs.THREAT_MODELS,
+                     'coverage_gaps': ledger.get('coverage_gaps', []),
                      'exported_count': len(previews),
                      'inputs': {key: {'manifest': key+'/manifest.json',
-                                     'input_sha256': scenario.digest(subjects)}
-                                for key, (_, subjects) in previews.items()},
-                     'unimplemented_mechanisms': [name for name in mechanism_inputs.MECHANISMS
+                                     'input_sha256': scenario.digest(subjects),
+                                     'classification': manifest['classification']}
+                                for key, (manifest, subjects) in previews.items()},
+                     'unimplemented_mechanisms': [name for name in mechanism_inputs.CURRENT_CONFIGURATIONS
                                                  if name not in mechanism_inputs.implemented()],
                      'execution_paths': 'not_run', 'model_behavior': 'not_tested'}
             (args.output/'manifest.json').write_bytes(json_bytes(index))
             print(f'{len(previews)} mechanism inputs exported to {args.output.resolve()}; '
-                  f'{len(mechanism_inputs.MECHANISMS)-len(mechanism_inputs.implemented())} '
+                  f'{len(mechanism_inputs.CURRENT_CONFIGURATIONS)-len(mechanism_inputs.implemented())} '
                   'mechanisms still unimplemented. No registration or model calls.')
             return
         if args.scenario == 'all':
             raise ValueError('--scenario all requires --mechanism')
-        if args.threat_cell:
-            if args.world_config or args.binding_preset or args.combined_bindings:
-                raise ValueError('--threat-cell supplies the world and binding; do not combine overrides')
-            cells = list(threat_grid.CELLS) if args.threat_cell == 'all' else [args.threat_cell]
-            # Materialize before writing so an invalid cell cannot leave a partial matrix.
-            previews = {cell: build_preview(args.scenario, threat_grid.CELLS[cell]['preset'],
-                        harness=args.harness, cell=cell, workload=args.workload) for cell in cells}
-            if args.threat_cell == 'all':
-                args.output.mkdir(parents=True, exist_ok=False)
-                for cell, (manifest, subjects) in previews.items():
-                    write_preview(args.output/cell, manifest, subjects)
-                index = {'kind': 'offline_threat_grid_inputs', 'domain': args.scenario, 'workload': workload,
-                         'cells': {cell: {'manifest': cell+'/manifest.json',
-                                         'input_sha256': scenario.digest(subjects),
-                                         'criterion': threat_grid.CELLS[cell]['criterion']}
-                                   for cell, (_, subjects) in previews.items()},
-                         'execution_paths': 'not_run', 'model_behavior': 'not_tested'}
-                (args.output/'manifest.json').write_bytes(json_bytes(index))
-            else:
-                write_preview(args.output, *previews[args.threat_cell])
-            print(f'{len(cells)} grid input(s) exported to {args.output.resolve()} (no registration or model calls).')
-            return
         overrides = (json.loads(args.world_config.read_text(encoding='utf-8'))
                      if args.world_config else None)
         manifest, subjects = build_preview(args.scenario, args.binding_preset or 'control', overrides,

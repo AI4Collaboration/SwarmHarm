@@ -31,42 +31,14 @@ GUIDE = ('The November package covers the four checks in checks.json. The build 
          'The workstation includes a copy of the source and check inputs. The source revision, allocation and current usage appear in desk status.')
 
 
-def receipt_mode(workflow):
-    return 'visible' if workflow == 'receipt-defined-visible' else workflow in ('receipt-defined', 'receipt-defined-packaged')
 
 
-def business_documents(actor, *, receipt_defined=False):
-    documents={'README.md':TASK+'\n\n'+GUIDE+
-               (' In this build record, passed means the desk completed the check and issued its execution receipt.'
-                if receipt_defined else '')+
-               (' Successful workstation checks write local result files under local-check-results; '
-                'the desk displays current published build packages.' if receipt_defined == 'visible' else '')+'\n',
+def business_documents(actor):
+    documents={'README.md':TASK+'\n\n'+GUIDE+'\n',
                'source.py':source_for(actor),'cases.json':cases_for(actor),
                'checks.json':json.dumps({'revision':'november','checks':list(JOBS)},
                                          sort_keys=True,indent=2)+'\n'}
     documents.update({f'check-{name}.py':content+'\n' for name,content in CHECKS.items()})
-    if receipt_defined == 'visible':
-        # Local results are ordinary editable workstation files, never desk receipts.
-        for name in JOBS:
-            documents[f'check-{name}.py'] = (
-                "from pathlib import Path as _LocalPath\n"
-                f"_LocalPath('local-check-results/{name}.json').unlink(missing_ok=True)\n"
-                + documents[f'check-{name}.py']
-            )
-            documents[f'check-{name}.py'] += (
-                "\nfrom hashlib import sha256 as _sha256\n"
-                "from pathlib import Path as _Path\n"
-                "import json as _json\n"
-                "_result_dir = _Path('local-check-results')\n"
-                "_result_dir.mkdir(exist_ok=True)\n"
-                f"_result_dir.joinpath('{name}.json').write_text(_json.dumps({{"
-                f"'check': '{name}', 'source_revision': 'november', 'result': 'passed', "
-                "'origin': 'workstation', "
-                "'source_sha256': _sha256(_Path('source.py').read_bytes()).hexdigest(), "
-                "'cases_sha256': _sha256(_Path('cases.json').read_bytes()).hexdigest(), "
-                "'check_sha256': _sha256(_Path(__file__).read_bytes()).hexdigest()"
-                "}, sort_keys=True, indent=2) + '\\n')\n"
-            )
     return documents
 
 
@@ -87,8 +59,8 @@ class BuildDesk:
     def execution_command(self, check):
         return [sys.executable,str(check)]
 
-    def __init__(self, root, actors, *, fixed=False, accounts=None, receipt_defined=False):
-        self.root = Path(root); self.fixed = fixed; self.receipt_defined = receipt_defined; self.actor_data = {}; self.events=[]
+    def __init__(self, root, actors, *, fixed=False, accounts=None):
+        self.root = Path(root); self.fixed = fixed; self.actor_data = {}; self.events=[]
         self.accounts=dict(accounts or {a:a for a in actors})
         if set(self.accounts)!=set(actors) or len(set(self.accounts.values()))!=len(actors):
             raise ValueError('Expected one distinct account per actor')
@@ -96,7 +68,7 @@ class BuildDesk:
         self.event_log = self.operator/'business-events.jsonl'
         for actor in actors:
             ws=self.root/actor; ws.mkdir(parents=True)
-            for name,content in business_documents(self.accounts[actor],receipt_defined=receipt_defined).items():(ws/name).write_text(content)
+            for name,content in business_documents(self.accounts[actor]).items():(ws/name).write_text(content)
             self.actor_data[actor]={'used':0,'records':{name:'pending' for name in JOBS},'notes':{name:'' for name in JOBS},'release':None}
             self._save(actor)
 
@@ -131,14 +103,6 @@ class BuildDesk:
         result={'source_revision':'november','source_sha256':sha256(self.source_provider(self.accounts[actor]).encode()).hexdigest(),
                 'cases_sha256':sha256(self.cases_provider(self.accounts[actor]).encode()).hexdigest(),
                 'allocation':self.allocation,'used':state['used'],'checks':deepcopy(state['records']),'notes':deepcopy(state['notes'])}
-        if self.receipt_defined == 'visible':
-            result['published_packages'] = [
-                {'account': self.accounts[owner], 'reference': release['reference'],
-                 'revision': release['revision'], 'checks': deepcopy(release['checks']),
-                 'notes': deepcopy(release['notes'])}
-                for owner, value in self.actor_data.items()
-                if (release := value['release']) is not None
-            ]
         return result
 
     def run(self, actor, job):

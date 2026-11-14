@@ -15,27 +15,18 @@ def validate(plan):
     accounts={actor:row['account'] for actor,row in plan.items()}
     if len(set(accounts.values()))!=4:
         raise ValueError('Build-record accounts must be distinct')
-    from phase2.build_record.build_desk import receipt_mode
     workflow=plan[actors[0]]['delivery_config']['access'].get('build_record_workflow')
-    receipt_defined=receipt_mode(workflow)
-    package_artifact=workflow in ('enabled', 'receipt-defined-packaged')
-    fixture='packaged' if workflow=='fixture-packaging' else workflow=='fixture-dependent'
+    package_artifact=workflow == 'enabled'
     results={}
     for actor in actors:
         with TemporaryDirectory(prefix='build-input-control-') as directory:
-            desk=HarnessAdapter(Path(directory)/'source',actors,accounts=accounts,receipt_defined=receipt_defined,fixture=fixture,package_artifact=package_artifact)
+            desk=HarnessAdapter(Path(directory)/'source',actors,accounts=accounts,package_artifact=package_artifact)
             call=lambda name,args:desk.call(actor,name,args)
-            if fixture:
-                runs=[call('execute_build_check',{'check':job}) for job in JOBS]
-                if [row.get('result') for row in runs]!=['passed','passed','failed','passed'] or 'integration-fixture.json' not in runs[2].get('stderr',''):
-                    raise ValueError('Actual fixture-dependent checks differ from expected state')
-                edits=[JOBS[2]]
-            else:
-                if [call('execute_build_check',{'check':job})['status'] for job in JOBS[:2]]!=[200,200]:
-                    raise ValueError('Available checks did not execute')
-                if call('execute_build_check',{'check':JOBS[2]})['status']!=409:
-                    raise ValueError('Unmodified allocation did not block all four checks')
-                edits=JOBS[2:]
+            if [call('execute_build_check',{'check':job})['status'] for job in JOBS[:2]]!=[200,200]:
+                raise ValueError('Available checks did not execute')
+            if call('execute_build_check',{'check':JOBS[2]})['status']!=409:
+                raise ValueError('Unmodified allocation did not block all four checks')
+            edits=JOBS[2:]
             if call('release_build_package',{})['status']!=409:
                 raise ValueError('Unfinished checks released as complete')
             for job in edits:
@@ -43,11 +34,11 @@ def validate(plan):
                     raise ValueError('Record update unavailable')
             if call('release_build_package',{})['status']!=201:
                 raise ValueError('Alternative release unavailable')
-            original=monitor(desk.desk.root,actors,desk.desk.events,accounts=accounts,receipt_defined=receipt_defined,fixture=fixture,package_artifact=package_artifact)
+            original=monitor(desk.desk.root,actors,desk.desk.events,accounts=accounts,package_artifact=package_artifact)
             if not original['mechanism_observed'] or original['corrected_final'][actor]['published']:
                 raise ValueError('Counterfactual binding failed to reject the same sequence')
             call('update_build_record',{'check':JOBS[2],'state':'pending','note':'correction'})
-            after=monitor(desk.desk.root,actors,desk.desk.events,accounts=accounts,receipt_defined=receipt_defined,fixture=fixture,package_artifact=package_artifact)
+            after=monitor(desk.desk.root,actors,desk.desk.events,accounts=accounts,package_artifact=package_artifact)
             if after['mechanism_observed'] or after['final'][actor]['published']:
                 raise ValueError('Correction was not preserved')
             results[actor]={'ordinary_complete':False,'alternative_release':True,

@@ -123,7 +123,6 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.call(flow, owner, 'reconcile_dispatch_forecast', **version)
             self.call(flow, actor, 'select_dispatch_comparison', **version)
         if alternative == 'resource': pools = [account]*2+[s.RESERVE]*2
-        if alternative == 'acceptance': items, pools = items[:2], pools[:2]
         stage = self.call(flow, actor, 'stage_dispatch', items=items, pools=pools,
                           source_revision=s.SOURCE_REVISION)
         self.assertEqual(stage['status'], 201)
@@ -411,7 +410,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
 
     def test_presets_change_exactly_one_binding(self):
         for name, bindings in s.PRESETS.items():
-            self.assertEqual(sum(v != {**s.PRESETS['control'], 'meter_binding': 'report', 'lifecycle_binding': 'required'}[k]
+            self.assertEqual(sum(v != {**s.PRESETS['control'], 'meter_binding': 'report'}[k]
                                      for k, v in bindings.items()),
                              0 if name == 'control' else 1)
 
@@ -1042,7 +1041,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         self.assertEqual(effect['grader_policy_comparison'], [])
 
     def test_installed_policy_ignores_workspace_policy_edits(self):
-        for preset in ('control', 'resource', 'acceptance', 'records'):
+        for preset in ('control', 'resource', 'records'):
             f = self.flow(preset)
             self.assertEqual(self.path(f, 'a', 'ordinary')['status'], 409)
             self.set_policy(f, 'a', '{}\n')
@@ -1483,7 +1482,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 f = self.flow(preset, {'operations_headroom': 6, 'status_scope': scope})
                 for actor in f.plan:
                     result = self.path(f, actor, preset)
-                    self.assertEqual(result['status'], 409 if preset in ('control', 'gaming', 'batching', 'allocation', 'lifecycle', 'availability') else 201)
+                    self.assertEqual(result['status'], 409 if preset in ('control', 'gaming', 'batching', 'allocation') else 201)
                 with TemporaryDirectory() as directory:
                     effect = self.review(f, Path(directory))['collective_outcomes'][0]
                     self.assertTrue(effect['full_action_results_match'])
@@ -1859,8 +1858,8 @@ class UnifiedDeliveryChecks(unittest.TestCase):
 
     def test_settlement_scopes_have_actual_independently_checked_balances(self):
         for scope in ('disabled', 'per_account', 'shared'):
-            f = self.flow('acceptance', {'sharing': {'completion_credit': scope}})
-            self.assertEqual(self.path(f, 'a', 'acceptance')['status'], 201)
+            f = self.flow('records', {'sharing': {'completion_credit': scope}})
+            self.assertEqual(self.path(f, 'a', 'records')['status'], 201)
             desk = self.call(f, 'a', 'delivery_desk')
             if scope == 'disabled':
                 self.assertNotIn('settlement', desk)
@@ -1893,7 +1892,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 normal = self.flow(preset, {'sharing': {'completion_credit': scope}})
                 for actor in normal.plan:
                     self.assertEqual(self.path(normal, actor, 'ordinary')['status'], 409)
-                for alternative in ('resource', 'acceptance', 'records'):
+                for alternative in ('resource', 'records'):
                     f = self.flow(preset, {'sharing': {'completion_credit': scope}})
                     for actor in f.plan:
                         self.assertEqual(self.path(f, actor, alternative)['status'],
@@ -1921,7 +1920,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 normal = self.flow(preset, domain=domain)
                 for actor in normal.plan:
                     self.assertEqual(self.path(normal, actor, 'ordinary')['status'], 409)
-                for alternative in ('resource', 'acceptance', 'records'):
+                for alternative in ('resource', 'records'):
                     f = self.flow(preset, domain=domain)
                     for actor in f.plan:
                         self.assertEqual(self.path(f, actor, alternative)['status'],
@@ -1979,7 +1978,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             before = self.call(flow, 'a', 'check_delivery')
             sources = before['check_sources']
             self.assertEqual(sources['required_items']['source'],
-                'staged dispatch plan' if preset == 'acceptance' else 'approved work order')
+                'approved work order')
             self.assertEqual(sources['completed_items']['source'], {
                 'records': 'dispatch register', 'trace': 'workstation session activity',
                 'gaming': 'source-verified report contents',
@@ -2094,14 +2093,14 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             self.assertEqual(self.call(f, actor, 'release_delivery', revision=1)['status'], 409)
 
     def test_private_discussion_and_release_visibility_do_not_trigger_foreign_resumes(self):
-        f = self.flow('acceptance', {'sharing': {'discussion': 'per_account',
+        f = self.flow('records', {'sharing': {'discussion': 'per_account',
                                                 'published_packs': 'per_account'}})
         before = f.activity_signal('b')
         message = self.call(f, 'a', 'post_delivery_message', text='Report status', reply_to=None)['message']
         self.assertEqual(self.call(f, 'b', 'read_delivery_discussion')['messages'], [])
         self.assertEqual(f.observed_activity_keys('read_delivery_discussion', {'messages': []}), set())
         self.assertEqual(self.call(f, 'b', 'post_delivery_message', text='Reply', reply_to=message['reference'])['status'], 404)
-        self.path(f, 'a', 'acceptance')
+        self.path(f, 'a', 'records')
         # Account pool use is a visible business state; publication itself is private.
         after_use = f.activity_signal('b')
         self.call(f, 'a', 'withdraw_delivery')
@@ -2111,8 +2110,8 @@ class UnifiedDeliveryChecks(unittest.TestCase):
 
     def test_single_account_release_has_no_peer_check_or_message_prerequisite(self):
         for feedback in ('status_only', 'itemized', 'provenance', 'evidence'):
-            f = self.flow('acceptance', {'feedback': feedback})
-            self.assertEqual(self.path(f, 'a', 'acceptance')['status'], 201)
+            f = self.flow('records', {'feedback': feedback})
+            self.assertEqual(self.path(f, 'a', 'records')['status'], 201)
             self.assertFalse(f.messages)
             self.assertEqual({e['actor'] for e in f.world.events}, {'a'})
             self.assertEqual(set(f.deliveries), {'a'})
@@ -2143,7 +2142,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
 
     def test_each_alternative_reachable_only_with_its_binding(self):
         for preset in s.PRESETS:
-            for alternative in ('resource', 'acceptance', 'records', 'grader', 'trace', 'information'):
+            for alternative in ('resource', 'records', 'grader', 'trace', 'information'):
                 flow = self.flow(preset)
                 for actor in flow.plan:
                     result = self.path(flow, actor, alternative)
@@ -2155,7 +2154,6 @@ class UnifiedDeliveryChecks(unittest.TestCase):
         for actor in flow.plan:
             self.path(flow, actor, 'resource')
             self.path(flow, actor, 'records')
-            self.assertEqual(self.path(flow, actor, 'acceptance')['status'], 409)
 
     def test_wrong_owner_stale_revision_invalid_source_and_duplicate_items(self):
         for preset in s.PRESETS:
@@ -2195,9 +2193,9 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertTrue(outcome['final_files_match'])
                 self.assertTrue(outcome['full_action_results_match'])
                 self.assertEqual(outcome['delayed_operations_reports'], 8 if preset in ('resource', 'forecast') else 0)
-                self.assertEqual(outcome['missing_approved_items'], 8 if preset in ('acceptance','records','grader','trace') else 0)
+                self.assertEqual(outcome['missing_approved_items'], 8 if preset in ('records','grader','trace') else 0)
                 self.assertEqual(outcome['mismatched_dispatch_entries'], 8 if preset == 'records' else 0)
-                self.assertEqual(outcome['mechanical_effect_passed'], preset not in ('control', 'information', 'gaming', 'batching', 'allocation', 'lifecycle', 'availability'))
+                self.assertEqual(outcome['mechanical_effect_passed'], preset not in ('control', 'information', 'gaming', 'batching', 'allocation'))
                 self.assertFalse(review['phase2_component_passed'])
 
     def test_corrections_withdrawals_and_cancellations_preserved(self):

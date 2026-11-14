@@ -24,7 +24,7 @@ class DeliveryPathChecks(unittest.TestCase):
                 with self.subTest(domain=domain, preset=preset):
                     report = paths.audit(self.plan(preset, domain=domain))
                     self.assertFalse(report['normal_completion_available'])
-                    if preset in ('gaming', 'batching', 'allocation', 'lifecycle', 'availability'):
+                    if preset in ('gaming', 'batching', 'allocation'):
                         # The default upload-disabled surface cannot exploit the
                         # content proxy. Batching and operations tools also require
                         # their declared interface. Mechanism inputs enable these.
@@ -58,7 +58,7 @@ class DeliveryPathChecks(unittest.TestCase):
                     paths.require_challenge(report, preset)
 
     def test_challenge_cannot_silently_become_normally_solvable(self):
-        for preset in ('grader', 'resource', 'acceptance', 'information'):
+        for preset in ('grader', 'resource', 'information'):
             plan = self.plan(preset, {'access': {'report_upload': 'enabled'},
                 'verification': {'completion_basis': 'contents'}})
             report = paths.audit(plan)

@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "docs/dataset-admission-contract.json"
 ACTIVE_STATUS = ROOT / "swarmform/docs/live-rollout-status.json"
 REPORTING = ROOT / "swarmharm/docs/research/reporting-run-index.json"
-THREAT_GRID = ROOT / "swarmharm/docs/research/threat-grid-status.json"
+RETAINED_CASES = ROOT / "swarmharm/docs/research/retained-positive-cases.json"
 REGISTRATIONS = ROOT / "swarmharm/registrations"
 REGISTRATION_ROOTS = (REGISTRATIONS, ROOT / "swarmform/registrations")
 
@@ -20,41 +20,23 @@ def fail(message):
     raise SystemExit("contract check failed: " + message)
 
 
-def grid_registrations():
-    """Use the current grid ledger without rewriting historical reporting scores."""
-    ledger = json.loads(THREAT_GRID.read_text())
-    entries = [row['registration_directory'] for row in ledger['cells']]
-    entries += ledger.get('active_registrations', [])
-    for row in ledger.get('registration_attempts', []):
-        archive = row.get('registration_archive')
-        if archive:
-            if (row.get('status') not in ('reviewed_negative', 'reviewed_positive',
-                                          'reviewed_negative_input_revision_needed')
-                    or not archive.get('path')
-                    or not re.fullmatch('[0-9a-f]{64}', archive.get('sha256', ''))):
-                fail('invalid archived grid registration reference')
-        else:
-            if not row.get('registration_directory'):
-                if (row.get('status') in ('preparation_failed', 'preparation_failed_no_collection',
-                                          'launch_failed_before_start')
-                        and not row.get('model_calls') and not row.get('model_requests')):
-                    continue  # A pre-collection failure has no sealed rollout.
-                fail('collected grid attempt lacks a registration or archive reference')
-            entries.append(row['registration_directory'])
-    entries += list(ledger.get('current_target_coverage', {}).get('cases', {}).values())
+def retained_case_registrations():
+    """Validate original seals for the retained positive examples."""
+    ledger = json.loads(RETAINED_CASES.read_text())
+    entries = [row['registration_directory'] for row in ledger['cases']]
     retained = set()
     for entry in entries:
         if isinstance(entry, dict):
             entry = entry['registration_directory']
         folder = (ROOT / 'swarmharm' / entry).resolve()
         if folder.parent != REGISTRATIONS.resolve():
-            fail(f"grid registration is outside the maintained directory: {entry}")
+            fail(f"retained case registration is outside the maintained directory: {entry}")
         registration = folder / 'registration.json'
         seal = folder / 'registration-seal.json'
         if not registration.is_file() or not seal.is_file():
-            fail(f"grid registration lacks sealed inputs: {entry}")
+            fail(f"retained case registration lacks sealed inputs: {entry}")
         if json.loads(seal.read_text()).get('sha256') != hashlib.sha256(registration.read_bytes()).hexdigest():
-            fail(f"grid registration seal differs: {entry}")
+            fail(f"retained case registration seal differs: {entry}")
         retained.add(str(folder.relative_to(ROOT)))
     return retained
 
@@ -264,7 +246,7 @@ def main():
         seal = json.loads(seal_path.read_text())
         if seal.get("sha256") != hashlib.sha256((folder / "registration.json").read_bytes()).hexdigest():
             fail(f"frozen registration seal differs: {name}")
-    expected = archived | current | frozen | grid_registrations() | mechanism_registrations()
+    expected = archived | current | frozen | retained_case_registrations() | mechanism_registrations()
     if actual != expected:
         fail(f"maintained registrations differ: {sorted(actual ^ expected)}")
     if contract["registration_index"] != str(REPORTING.relative_to(ROOT)):

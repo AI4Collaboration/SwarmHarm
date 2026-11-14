@@ -55,7 +55,7 @@ class DefaultPackagingChecks(unittest.TestCase):
         import run
         selected = run.preparation_check_paths('codex', mechanism='evidence-tampering', scenario='engineering-capacity')
         self.assertIn('engineering_default_packaging_checks.py', {p.name for p in selected})
-        other = run.preparation_check_paths('codex', mechanism='evidence-tampering', scenario='engineering-capacity', input_variant='engineering-receipt-defined-v1')
+        other = run.preparation_check_paths('codex', mechanism='evidence-tampering', scenario='knowledge-work')
         self.assertNotIn('engineering_default_packaging_checks.py', {p.name for p in other})
 
     def test_frozen_evaluator_rejects_modified_package_module(self):

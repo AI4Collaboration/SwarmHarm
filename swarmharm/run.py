@@ -9,7 +9,6 @@ import fcntl
 from hashlib import sha256
 from importlib.metadata import version as package_version
 import importlib.util
-import io
 import http.client
 import json
 import re
@@ -19,7 +18,6 @@ import subprocess
 import sys
 import time
 from threading import Lock
-import unittest
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -354,15 +352,6 @@ def validate_component_scenario(scenario, family):
     if scenario not in allowed:
         raise ValueError('Component family and scenario differ')
 
-def validate_performance_preparation(delivery_config):
-    if delivery_config['access'].get('reconciliation_workflow')=='performance':
-        raise ValueError('Performance v1 has a dated-input defect and is retained only as frozen evidence; use finance-performance-method-v2')
-
-
-def validate_fx_preparation(delivery_config):
-    if delivery_config['access'].get('reconciliation_workflow')=='fx-expense':
-        raise ValueError('FX v1 has a dated-input defect and is retained only as frozen evidence; use finance-fx-expense-v2')
-
 
 def make_plan(
     population=4,
@@ -425,8 +414,8 @@ def control_harness_contract(harness):
     return value
 
 
-def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scenario=None, input_variant=None):
-    """Current-grid preparation checks current paths, not every retained study."""
+def preparation_check_paths(harness_kind, mechanism=None, scenario=None, input_variant=None):
+    """Select checks for the registered configuration and native adapter."""
     current = {
         'threat_grid', 'asymmetric_input', 'claim_evidence', 'review',
         'unified_input_contract', 'unified_input_preview', 'unified_factor_alignment',
@@ -437,141 +426,22 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
     }
     if mechanism is not None:
         current = {'mechanism_inputs', 'mechanism_review', 'unified_input_contract',
-                   'unified_notification', 'short_notification_reads', 'unified_runtime', 'continuous_collect',
+                   'unified_notification', 'unified_runtime', 'continuous_collect',
                    'local_source', 'workload_source', 'format', 'codex_collect', 'network_check_gate'}
-        if input_variant == 'engineering-release-delivery-v1':
-            current.update(('engineering_release_delivery_candidate', 'engineering_release_delivery_bridge', 'engineering_release_delivery_collector'))
         if (input_variant == 'engineering-allocation-guide-v1' or
                 (input_variant is None and mechanism == 'grader-tampering' and scenario == 'engineering-capacity')):
             current.add('engineering_pool_guide')
-        if input_variant == 'engineering-quality-gate-v1':
-            current.update(('engineering_quality_gate', 'engineering_quality_gate_collector'))
-        if input_variant == 'engineering-target-package-v1':
-            current.update(('engineering_target_package_candidate','engineering_target_package_collector'))
-        if input_variant == 'data-cohort-qa-v1':
-            current.update(('data_cohort_qa_candidate', 'data_cohort_qa_step', 'data_cohort_qa_collector'))
-        if mechanism == 'target-substitution':
-            if input_variant == 'data-event-time-v1':
-                current.update(('data_event_time', 'data_event_time_collector'))
-            if input_variant == 'data-latency-p95-v1':
-                current.add('data_latency_collector')
-            if scenario in ('data-analysis','knowledge-work'):current.add('business_notification')
-            if scenario not in ('data-analysis','knowledge-work','engineering-capacity'):current.add('target_operations_purpose')
-            current.add('editorial_brief_path' if scenario == 'knowledge-work' else
-                        'engineering_target_desk' if scenario == 'engineering-capacity' else
-                        'reconciliation_candidate' if scenario == 'financial-analysis' else
-                        'activity_report_path' if scenario == 'data-analysis' else 'target_group')
-            if input_variant == 'engineering-localization-v1':
-                current.update(('engineering_localization', 'engineering_localization_collector'))
-            if input_variant in ('finance-fx-expense-v1','finance-fx-expense-v2'):
-                current.update(('finance_fx', 'finance_fx_citation'))
-                current.add('finance_fx_history_collector' if input_variant=='finance-fx-expense-v2' else 'finance_fx_collector')
-            if input_variant in ('finance-performance-method-v1','finance-performance-method-v2'):
-                current.update(('finance_performance', 'finance_performance_citation'))
-                current.add('finance_performance_history_collector' if input_variant=='finance-performance-method-v2' else 'finance_performance_collector')
-            if input_variant == 'finance-asset-schedule-v1':
-                current.update(('finance_assets', 'finance_assets_collector'))
-            if input_variant == 'data-identity-metric-v1':
-                current.update(('data_identity', 'data_identity_collector', 'data_identity_citation'))
-            if input_variant == 'data-region-dimension-v1':
-                current.update(('data_region', 'data_region_collector'))
-            if scenario == 'financial-analysis':
-                current.update(('reconciliation_transport', 'reconciliation_exception_context'))
-                if input_variant in (None, 'finance-reconciliation-varied-v1'):
-                    current.add('finance_reconciliation_varied')
-                if input_variant == 'finance-group-consolidation-v1':
-                    current.update(('consolidation_desk', 'consolidation_adapter', 'consolidation_collector'))
-                if input_variant == 'finance-category-template-v1':
-                    current.update(('reconciliation_category_template', 'reconciliation_category_transport'))
-                if input_variant == 'finance-receivables-aging-v1':
-                    current.add('receivables_aging')
-            if scenario == 'engineering-capacity':
-                current.add('engineering_target_collector')
-                if input_variant == 'engineering-target-selection-v1':
-                    current.add('engineering_target_selection')
-                if input_variant == 'engineering-target-fixture-v1':
-                    current.add('engineering_fixture_target_candidate')
-                if input_variant == 'engineering-product-template-v1':
-                    current.add('engineering_product_template')
-            if scenario == 'data-analysis':
-                current.add('activity_report_collector')
-                if input_variant in ('data-progressive-context-v3','data-progressive-dictionary-v4'):
-                    current.add('activity_context')
-                if input_variant == 'data-progressive-dictionary-v4':
-                    current.add('activity_dictionary')
-                if input_variant == 'data-metered-service-v1':
-                    current.add('activity_metered_service')
-                if input_variant == 'data-manifest-pending-v1':
-                    current.add('activity_manifest_pending')
-                if input_variant in ('data-enterprise-template-v1','data-enterprise-template-editor-v2'):
-                    current.update(('activity_manifest_pending','activity_enterprise_template'))
-            if scenario == 'knowledge-work':
-                current.add('editorial_intake_archive')
-                if input_variant == 'knowledge-intake-status-v1':
-                    current.update(('editorial_intake_status', 'editorial_status_details', 'editorial_intake_status_collector'))
-                else:
-                    current.update(('editorial_brief_collector', 'editorial_review_queue'))
-                    if input_variant is None:
-                        current.add('editorial_status_details')
-                    if input_variant == 'knowledge-review-context-v2':
-                        current.add('editorial_review_context')
-        if mechanism == 'work-lifecycle':
-            current.update(('lifecycle_guide', 'claim_evidence'))
-            if input_variant in ('engineering-scheduled-consumer-v1','data-scheduled-consumer-v1','knowledge-scheduled-consumer-v1'):
-                current.add('scheduled_consumer_final')
-        if mechanism == 'work-lifecycle' and scenario == 'knowledge-work':
-            if input_variant == 'knowledge-scheduled-consumer-v1':current.update(('knowledge_scheduled_consumer','knowledge_scheduled_consumer_transport','scheduled_notification','engineering_consumer','retention_citation'))
-            if input_variant not in ('knowledge-commitment-schedule-v1','knowledge-digest-queue-v1'):
-                current.add('knowledge_lifecycle_store')
-            if input_variant in (None, 'knowledge-retention-timeline-v1', 'knowledge-retention-timeline-notices-v1', 'knowledge-retention-consumers-v1'):
-                current.add('knowledge_retention_timeline')
-            if input_variant == 'knowledge-retention-consumers-v1':
-                current.add('knowledge_retention_consumers')
-            if input_variant == 'knowledge-commitment-schedule-v1':
-                current.add('knowledge_commitment_schedule')
-        if mechanism == 'work-lifecycle' and scenario == 'data-analysis':
-            if input_variant in ('data-export-retirement-v1','data-procurement-handoff-v1'):
-                current.update(('data_retirement', 'data_retirement_bridge', 'data_retirement_collector'))
-                if input_variant=='data-procurement-handoff-v1':current.add('data_procurement_handoff')
-            else:
-                current.update(('data_lifecycle_pipeline', 'data_worker_lifecycle', 'worker_recovery'))
-            if input_variant == 'data-partitions-v1':
-                current.update(('data_partition_lifecycle', 'data_partition_transport', 'retention_causality', 'retention_citation'))
-            if input_variant == 'data-scheduled-consumer-v1':
-                current.update(('data_scheduled_consumer', 'data_scheduled_consumer_transport', 'engineering_consumer', 'retention_citation'))
-        if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':
-            current.update(('finance_payables', 'finance_payables_transport'))
-        if mechanism == 'work-lifecycle' and scenario == 'financial-analysis':
-            current.update(('finance_timed_payables', 'finance_timed_v2'))
-            if input_variant in ('finance-account-retirement-v1','finance-account-retirement-recurring-v1'):current.update(('finance_closure','finance_closure_collector','finance_citation'))
-            if input_variant == 'finance-account-retirement-recurring-v1':current.add('finance_recurring')
-        if mechanism == 'work-lifecycle' and scenario in ('engineering-capacity', 'knowledge-work') and input_variant != 'knowledge-digest-queue-v1':
-            current.update(('retention_causality', 'retention_citation'))
-        if mechanism == 'work-lifecycle' and scenario == 'engineering-capacity':
-            current.update(('engineering_single_store', 'engineering_single_store_transport'))
-            current.update(('engineering_lifecycle_guide', 'engineering_lifecycle_schedule',
-                            'lifecycle_causality', 'retention_store'))
         if mechanism == 'grader-tampering' and scenario == 'data-analysis':
             current.add('late_identity')
-        if mechanism == 'information-authority' and input_variant != 'data-cohort-qa-v1':
+        if mechanism == 'information-authority':
             current.add('information_source_gaps')
         if mechanism == 'task-gaming' and scenario == 'engineering-capacity':
             current.add('engineering_gaming_budget')
-        if mechanism == 'evidence-tampering' and scenario == 'engineering-capacity' and input_variant == 'engineering-report-records-v1':
-            current.add('engineering_report_records')
-        if (mechanism == 'evidence-tampering' and scenario == 'engineering-capacity'
-                and input_variant not in ('engineering-report-records-v1', 'engineering-release-delivery-v1')):
-            current.update(('build_record_path', 'build_record_receipt_guide'))
-            if input_variant == 'engineering-receipt-zip-v1':
-                current.update(('engineering_receipt_zip', 'engineering_receipt_zip_collector'))
-            else:
-                current.add('build_record_collector')
+        if mechanism == 'evidence-tampering' and scenario == 'engineering-capacity':
+            current.update(('build_record_path', 'engineering_default_packaging'))
+            current.add('build_record_collector')
             if input_variant is None:
                 current.add('engineering_default_packaging')
-            if input_variant in ('engineering-fixture-dependent-v1','engineering-fixture-packaging-v1'):
-                current.add('engineering_fixture_candidate')
-            if input_variant == 'engineering-fixture-packaging-v1':
-                current.add('engineering_fixture_packaging')
         if mechanism == 'task-gaming' and scenario == 'financial-analysis':
             current.add('finance_gaming_budget')
     selected = []
@@ -580,7 +450,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                    'codex_collect_checks.py': 'codex'}.get(path.name)
         if adapter is not None and adapter != harness_kind:
             continue
-        if (threat_cell is None and mechanism is None) or path.stem.removesuffix('_checks') in current:
+        if (mechanism is None) or path.stem.removesuffix('_checks') in current:
             selected.append(path)
     return selected
 
@@ -588,13 +458,16 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
 # These integration modules start real workstations or collectors. Serialize
 # them across preparations; ordinary checks still run in parallel.
 NETWORK_CHECK_MODULES = frozenset({
-    'activity_report_collector', 'build_record_collector', 'engineering_receipt_zip_collector', 'business_notification', 'data_retirement_collector',
-    'engineering_quality_gate_collector', 'engineering_target_package_collector', 'engineering_release_delivery_collector', 'finance_reconciliation_varied',
-    'collector', 'continuous_collect', 'continuous_reporting', 'data_scheduled_consumer_transport', 'knowledge_scheduled_consumer_transport', 'editorial_brief_collector',
-    'editorial_intake_status_collector', 'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector', 'data_identity_collector', 'data_latency_collector', 'data_event_time_collector', 'data_cohort_qa_collector',
-    'finance_payables_transport', 'finance_fx_history_collector', 'finance_fx_collector', 'finance_performance_history_collector', 'finance_performance_collector', 'native_harness', 'pi_collect', 'query_gateway',
-    'reconciliation_category_transport', 'reconciliation_exception_context', 'reconciliation_transport',
-    'short_notification_reads', 'swarmform_runtime', 'unified_delivery', 'unified_runtime',
+    'build_record_collector',
+    'collector',
+    'continuous_collect',
+    'continuous_reporting',
+    'native_harness',
+    'pi_collect',
+    'query_gateway',
+    'swarmform_runtime',
+    'unified_delivery',
+    'unified_runtime',
 })
 
 
@@ -633,48 +506,18 @@ def reuse_checked_controls(source, harness, check_paths):
 
 
 def require_ready_input(input_variant=None, *, delivery_config=None, world_config=None, mechanism=None, scenario=None):
-    """Block new registrations for a known business-design contradiction.
-
-    Frozen registrations and their archived evaluator are unaffected. Inspect
-    both configuration entry points so the same workflow cannot be registered
-    under an unlabelled custom world.
-    """
-    guide = lambda cfg: (cfg or {}).get('access', {}).get('allocation_guide')
-    if (input_variant == 'engineering-allocation-guide-v1'
-            or guide(delivery_config) == 'purpose_details' or guide(world_config) == 'purpose_details'):
+    """Validate named variants and their configuration before registration."""
+    guide = any((config or {}).get('access', {}).get('allocation_guide') == 'purpose_details'
+                for config in (delivery_config, world_config))
+    if input_variant == 'engineering-allocation-guide-v1' or guide:
         if not (input_variant == 'engineering-allocation-guide-v1'
                 and mechanism == 'grader-tampering' and scenario == 'engineering-capacity'
                 and delivery_config is None and world_config is None):
-            raise ValueError('Detailed allocation guide requires its explicitly declared Engineering grader variant without custom overrides.')
-    build = lambda cfg: (cfg or {}).get('access', {}).get('build_record_workflow')
-    receipt_zip = (input_variant == 'engineering-receipt-zip-v1' or build(delivery_config) == 'receipt-defined-packaged'
-                   or build(world_config) == 'receipt-defined-packaged')
-    if receipt_zip and not (input_variant == 'engineering-receipt-zip-v1'
-            and mechanism == 'evidence-tampering' and scenario == 'engineering-capacity'
-            and delivery_config is None and world_config is None):
-        raise ValueError('Engineering receipt ZIP requires its explicit evidence-tampering Engineering variant without custom overrides.')
-    release_input = (input_variant == 'engineering-release-delivery-v1'
-                     or build(delivery_config) == 'release-delivery' or build(world_config) == 'release-delivery')
-    if release_input and not (input_variant == 'engineering-release-delivery-v1'
-            and mechanism == 'evidence-tampering' and scenario == 'engineering-capacity'
-            and delivery_config is None and world_config is None):
-        raise ValueError('Engineering release-delivery requires the explicitly declared evidence-tampering Engineering variant without custom overrides.')
-    workflow = lambda cfg: (cfg or {}).get('access', {}).get('editorial_brief_workflow')
-    intake_status = (input_variant == 'knowledge-intake-status-v1' or workflow(delivery_config) == 'with_archive_status'
-                     or workflow(world_config) == 'with_archive_status')
-    if intake_status and not (input_variant == 'knowledge-intake-status-v1'
-            and mechanism == 'target-substitution' and scenario == 'knowledge-work'
-            and delivery_config is None and world_config is None):
-        raise ValueError('Knowledge intake status requires its explicit Knowledge Work target-substitution variant without custom overrides.')
-    retirement = lambda cfg: (cfg or {}).get('access', {}).get('data_retirement_workflow')
-    activity = lambda cfg: (cfg or {}).get('access', {}).get('activity_report_workflow')
-    if (activity(delivery_config) == 'cohort-qa' or activity(world_config) == 'cohort-qa') and input_variant != 'data-cohort-qa-v1':
-        raise ValueError('Group cohort review requires its declared mechanism input variant.')
-    if input_variant == 'data-export-retirement-v1' or retirement(delivery_config) == 'enabled' or retirement(world_config) == 'enabled':
-        raise ValueError('Data export retirement is not ready for new registration: native evidence and independent review are incomplete.')
-    if (input_variant == 'knowledge-digest-queue-v1' or
-            workflow(delivery_config) == 'digest-queue' or workflow(world_config) == 'digest-queue'):
-        raise ValueError('Knowledge digest queue is not ready for new registration: the publication dependency needs a verifiable business redesign.')
+            raise ValueError('Allocation guide requires its explicitly declared Engineering grader variant without custom overrides.')
+    if input_variant is not None:
+        mechanism_inputs.configuration(mechanism, scenario, input_variant=input_variant)
+        if delivery_config is not None or world_config is not None:
+            raise ValueError('Input variants supply their own configuration')
 
 
 def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
@@ -685,7 +528,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode=None, harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', threat_cell=None, mechanism=None, input_variant=None, workload=None):
+            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', mechanism=None, input_variant=None, workload=None):
     scenario = domain_runtime.resolve_workload(scenario, workload)
     require_ready_input(input_variant, delivery_config=delivery_config, world_config=world_config, mechanism=mechanism, scenario=scenario)
     if source_retention not in ('origin', 'local'):
@@ -730,7 +573,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         raise ValueError('Unified study mode requires the common reporting environment')
     component_family = unified_delivery.FAMILY
     if mechanism is not None:
-        if (threat_cell is not None or comparison_design is not None or delivery_config is not None
+        if (comparison_design is not None or delivery_config is not None
                 or combined_bindings or target_claim is not None):
             raise ValueError('A mechanism supplies its own configuration and criterion')
         validate_mechanism_settings(harness_kind, goal_mode, reasoning_effort, MODELS)
@@ -742,23 +585,6 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         binding_preset, world_config = preset, expected
     if input_variant and mechanism is None:
         raise ValueError('Input variant requires its registered mechanism')
-    if threat_cell is not None:
-        definition = threat_grid.CELLS[threat_cell]
-        if (harness_kind != 'codex' or goal_mode != 'off' or reasoning_effort != 'high'
-                or set(MODELS.values()) != {'openai/gpt-6.1-sol'}):
-            raise ValueError('Threat-grid validation requires Sol 6.1, Codex, high reasoning and goal off')
-        if binding_preset not in (None, definition['preset']):
-            raise ValueError('Threat cell and binding preset differ')
-        binding_preset = definition['preset']
-        if delivery_config is not None or combined_bindings or comparison_design is not None:
-            raise ValueError('Threat-cell inputs cannot be mixed with another design')
-        expected = threat_grid.configuration(threat_cell)
-        if world_config is not None and world_config != expected:
-            raise ValueError('Threat-cell world differs from its input contract')
-        world_config = expected
-        if target_claim not in (None, definition['legacy_claim']):
-            raise ValueError('Threat-cell auxiliary claim differs')
-        target_claim = definition['legacy_claim']
     if goal_mode != 'off' and (harness_kind,goal_mode) not in (('pi-sdk','goal_command'),('codex','codex_goal'),('claude-code','claude_goal')):
         raise ValueError('Independent components require off or the selected harness native goal')
     if comparison_design is not None and comparison_design != balanced_study.NAME:
@@ -770,21 +596,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     unified_delivery.world_config.selection(world_config, binding_preset,
                                             combined=combined_bindings)
     delivery_config, _ = unified_delivery.world_config.components(world_config)
-    validate_fx_preparation(delivery_config)
-    validate_performance_preparation(delivery_config)
-    if (delivery_config['access'].get('editorial_brief_workflow') in ('enabled','with_archive','with_archive_status','with_publications','with_review_queue','with_review_context')
-            and (mechanism != 'target-substitution' or scenario != 'knowledge-work')):
-        raise ValueError('Editorial briefing requires Knowledge Work target-substitution')
-    if (delivery_config['access'].get('activity_report_workflow') in ('enabled','progressive','progressive-varied','progressive-varied-context','progressive-varied-context-dictionary','progressive-metered','progressive-manifest','progressive-manifest-shared','progressive-manifest-shared-editor')
-            and (mechanism != 'target-substitution' or scenario != 'data-analysis')):
-        raise ValueError('Activity report requires Data Analysis target-substitution')
-    if (delivery_config['access'].get('activity_report_workflow') == 'latency-p95'
-            and (mechanism != 'target-substitution' or scenario != 'data-analysis')):
-        raise ValueError('Latency report requires Data Analysis target-substitution')
-    if (delivery_config['access'].get('build_record_workflow') in ('target','target-clear')
-            and (mechanism != 'target-substitution' or scenario != 'engineering-capacity')):
-        raise ValueError('Build-target configuration requires Engineering target-substitution')
-    if (delivery_config['access'].get('build_record_workflow') in ('enabled', 'receipt-defined', 'receipt-defined-visible')
+    if (delivery_config['access'].get('build_record_workflow') == 'enabled'
             and (mechanism != 'evidence-tampering' or scenario != 'engineering-capacity')):
         raise ValueError('Build-record configuration requires Engineering evidence-tampering')
     if comparison_design == balanced_study.NAME:
@@ -868,26 +680,6 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'all_workstations_ready_before_release':True,
         'first_request_start_barrier':True}
     budget=deepcopy(BUDGET)
-    if input_variant in ('engineering-scheduled-consumer-v1','data-scheduled-consumer-v1','knowledge-scheduled-consumer-v1'):
-        from phase2.engineering_consumer import ACTIVATION_RESERVE, CONSUMER_DELAY
-        if min(budget['max_actor_seconds'],budget['max_batch_seconds']) < CONSUMER_DELAY+ACTIVATION_RESERVE:
-            raise ValueError('Registered observation window must include the scheduled consumer')
-    if input_variant == 'knowledge-digest-queue-v1':
-        from phase2 import knowledge_digest_queue
-        if min(budget['max_actor_seconds'],budget['max_batch_seconds']) <= knowledge_digest_queue.OBSERVATION_MIN+knowledge_digest_queue.ACTIVATION_RESERVE:
-            raise ValueError('Registered observation window must include the digest windows')
-    if input_variant in ('finance-timed-settlement-v1','finance-timed-settlement-v2'):
-        from phase2 import delivery_payables_timed
-        if min(budget['max_actor_seconds'],budget['max_batch_seconds']) <= delivery_payables_timed.SETTLEMENT_SECONDS:
-            raise ValueError('Registered observation window must include the actual settlement time')
-    if input_variant in ('finance-account-retirement-v1','finance-account-retirement-recurring-v1'):
-        from phase2 import finance_closure
-        if input_variant=='finance-account-retirement-recurring-v1':
-            from phase2.finance_recurring import OBSERVATION_MIN, ACTIVATION_RESERVE
-            required_window=OBSERVATION_MIN+ACTIVATION_RESERVE
-        else:required_window=finance_closure.SECOND_WINDOW
-        if min(budget['max_actor_seconds'],budget['max_batch_seconds']) <= required_window:
-            raise ValueError('Registered observation window must include both payment windows')
     if harness_kind in ('claude-code','codex'):
         if harness_kind=='codex':budget['max_output_tokens_per_response']=None
         budget.update(max_transport_attempts_per_request=1,transport_retry_backoff_seconds=0)
@@ -906,7 +698,6 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     save(root/'fixtures.json',rows);save(root/'activation-plan.json',activation)
     save(root/'topology.json',topology_spec)
     shutil.copy2(HERE/'source-manifest.json',root/'source-manifest.json')
-    continuation_path = HERE / ('phase2/component_workflow.py')
     continuation_module=(unified_delivery)
     phase2_plan=(deepcopy(unified_plan))
     for assignment in phase2_plan.values():
@@ -918,23 +709,21 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     if mechanism is not None:
         from phase2 import business_dates
         business_dates.validate_files(unified_delivery.initial_files(phase2_plan), datetime.now(timezone.utc).date(),
-            identity=unified_delivery.data_identity_workflow(next(iter(phase2_plan.values()))))
+            identity=False)
     save(root/'phase2-plan.json',phase2_plan)
     mechanism_contract = (mechanism_inputs.validate_paths(mechanism, phase2_plan)
                           if mechanism is not None else None)
     if run_controls:
         from phase2 import delivery_paths
-        if threat_cell is not None:
-            threat_grid.contract(threat_cell, phase2_plan)
-        elif mechanism is None:
+        if mechanism is None:
             delivery_paths.require_challenge(delivery_paths.audit(phase2_plan),
                                             binding_preset, target_claim)
     if controls_from is not None:
         if not run_controls: raise ValueError('Offline check reuse cannot disable validation')
-        check_paths = preparation_check_paths(harness_kind, threat_cell, mechanism, scenario, input_variant)
+        check_paths = preparation_check_paths(harness_kind, mechanism, scenario, input_variant)
         save(root/'controls.json',reuse_checked_controls(controls_from,harness,check_paths))
     elif run_controls:
-        check_paths = preparation_check_paths(harness_kind, threat_cell, mechanism, scenario, input_variant)
+        check_paths = preparation_check_paths(harness_kind, mechanism, scenario, input_variant)
         env = {**__import__('os').environ, 'PYTHONPATH': f"{HERE}:{REPO/'shared'}"}
         def _run_check_file(target):
             proc = subprocess.run(
@@ -959,8 +748,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         save(root/'controls.json',{'passed':controls_passed,'model_calls':0,
             'test_methods':total_tests,'prompt_contract_passed':prompt_check.returncode == 0,
             'check_modules':[str(p.relative_to(HERE)) for p in check_paths],
-            'check_scope':('mechanism_delivery' if mechanism else 'current_threat_grid'
-                           if threat_cell else 'retained_studies'), 'log':log})
+            'check_scope':('mechanism_delivery' if mechanism else 'reporting_delivery'), 'log':log})
         if not controls_passed:raise RuntimeError(log)
     else:
         save(root/'controls.json',{'passed':True,'model_calls':0,'test_methods':0,
@@ -980,24 +768,21 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         audit['natural'][actor]['tools'] += continuation_module.tool_definitions(
             family=component_family,
             **({'continuous_workflow': True,
-                'build_record_workflow': ('release-delivery' if unified_delivery.release_delivery_workflow(phase2_plan[actor]) else 'quality-gate' if unified_delivery.build_quality_gate_workflow(phase2_plan[actor]) else 'localization' if unified_delivery.localization_workflow(phase2_plan[actor]) else unified_delivery.build_record_workflow(phase2_plan[actor])),
-                'build_target_workflow': unified_delivery.build_target_workflow(phase2_plan[actor]),
-                'build_target_clarify_selection': unified_delivery.build_target_clarify_selection(phase2_plan[actor]),
-                'build_target_product': unified_delivery.build_target_product(phase2_plan[actor]),
-                'activity_report_workflow': unified_delivery.activity_report_workflow(phase2_plan[actor]),
-                'data_region_workflow': unified_delivery.data_region_workflow(phase2_plan[actor]),
-                'data_identity_workflow': unified_delivery.data_identity_workflow(phase2_plan[actor]),
-                'data_latency_workflow': unified_delivery.data_latency_workflow(phase2_plan[actor]),
-                'data_event_time_workflow': unified_delivery.data_event_time_workflow(phase2_plan[actor]),
-                'data_cohort_qa_workflow': unified_delivery.data_cohort_qa_workflow(phase2_plan[actor]),
-                'data_retirement_workflow': unified_delivery.data_retirement_workflow(phase2_plan[actor]),
-                'data_retirement_handoff': unified_delivery.config_for(phase2_plan)['access'].get('data_retirement_workflow')=='handoff',
-                'knowledge_digest_workflow': unified_delivery.knowledge_digest_workflow(phase2_plan[actor]),
-                'activity_shared_template': unified_delivery.activity_report_progressive(phase2_plan[actor]) in ('manifest-shared','manifest-shared-editor'),
-                'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(phase2_plan[actor]),
-                'editorial_intake_archive': unified_delivery.editorial_intake_archive(phase2_plan[actor]),
-                'editorial_publication_index': unified_delivery.editorial_publication_index(phase2_plan[actor]),
-                'editorial_review_queue': unified_delivery.editorial_review_queue(phase2_plan[actor]),
+                'build_record_workflow': unified_delivery.build_record_workflow(phase2_plan[actor]),
+                'build_target_workflow': False,
+                'build_target_clarify_selection': False,
+                'build_target_product': False,
+                'data_region_workflow': False,
+                'data_identity_workflow': False,
+                'data_latency_workflow': False,
+                'data_event_time_workflow': False,
+                'data_cohort_qa_workflow': False,
+                'data_retirement_handoff': False,
+                'knowledge_digest_workflow': False,
+                'activity_shared_template': False,
+                'editorial_intake_archive': False,
+                'editorial_publication_index': False,
+                'editorial_review_queue': False,
                 'forecast_workflow': unified_delivery.config_for(
                     phase2_plan)['access']['forecast_workflow'],
                 'source_routing': unified_delivery.config_for(
@@ -1007,13 +792,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'operations_workflow': unified_delivery.config_for(phase2_plan)['access'].get('operations_workflow', 'none'),
                 'quality_workflow': unified_delivery.config_for(phase2_plan)['access'].get('quality_workflow', 'disabled'),
                 'dispatch_batching': unified_delivery.config_for(phase2_plan)['access'].get('dispatch_batching', 'disabled'),
-                'worker_recovery': unified_delivery.config_for(phase2_plan)['access'].get('worker_recovery', 'disabled'),
-                'retention_store': unified_delivery.config_for(phase2_plan)['access'].get('retention_store', 'disabled'),
                 'report_upload': unified_delivery.config_for(phase2_plan)['access']['report_upload'],
                 'publication_items': unified_delivery.config_for(phase2_plan).get('publication_items', 'available'),
-                'population_plan': unified_delivery.config_for(phase2_plan)['access'].get('population_plan', 'approved'),
-                'reconciliation_workflow': unified_delivery.config_for(phase2_plan)['access'].get('reconciliation_workflow', 'disabled'),
-                'payables_workflow': unified_delivery.config_for(phase2_plan)['access'].get('payables_workflow','disabled')}),
+                }),
             include_subject_goal=False,
             **({'proof_stage': proof_stage} if proof_stage != 'off' else {}))
     save(root/'initial-input-audit.json', audit)
@@ -1326,10 +1107,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'Native harness records are authoritative; controller projections do not '
             'establish unexposed provider input.\n')
     reg['input_hashes']['PROTOCOL.md']=sha(root/'PROTOCOL.md')
-    if threat_cell is not None:
-        reg['threat_grid'] = threat_grid.contract(threat_cell, phase2_plan)
     if mechanism is not None:
         reg['mechanism_contract'] = mechanism_contract
+        reg['classification'] = mechanism_inputs.classification(mechanism)
     unified_delivery.configure_registration(reg, root, target_claim=target_claim,
                                              combined_bindings=combined_bindings)
     if mechanism is not None:
@@ -1764,26 +1544,13 @@ def acknowledge_tool_activity(extension, operation, result, signal, delivered, b
     calendar_revision = calendar(operation, result) if calendar else None
     components = signal.get('calendar_components')
     authored = getattr(extension, 'acknowledge_authored_calendar_changes', False)
-    scoped = getattr(extension, '_scheduled_notice_projection_enabled', None)
-    if authored and scoped and scoped():
-        # Do not acknowledge changes racing with the returned tool result. The
-        # complete intervening event range must consist of this actor's work.
-        lo = before.get('event_cursor') if before else None
-        hi = signal.get('event_cursor')
-        events = getattr(getattr(extension, 'world', None), 'events', ())
-        between = [row for row in events if isinstance(row.get('id'),int)
-                   and isinstance(lo,int) and isinstance(hi,int) and lo<row['id']<=hi]
-        authored = bool(actor is not None and between and all(row.get('actor')==actor for row in between))
     if components is not None:
         known = deepcopy(delivered.get('calendar_components', {}))
         if calendar_revision == signal.get('calendar_revision'):
             known = deepcopy(components)
         else:
             read_components = getattr(extension, 'observed_calendar_components', None)
-            actor_components = getattr(extension, 'observed_scheduled_calendar_components', None)
-            if actor is not None and actor_components:
-                known.update(actor_components(actor, operation, result, before=before))
-            elif read_components:
+            if read_components:
                 known.update(read_components(operation, result))
             if before and authored:
                 # A synchronous own action acknowledges only components already
@@ -1967,67 +1734,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     unified_delivery.world_config.verify_input_contract(
         reg['phase2']['assignments'], reg['phase2'].get('unified_input_contract'))
     from phase2 import delivery_paths
-    if unified_delivery.release_delivery_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.engineering_release_delivery_candidate import validate
-        path_validation = validate(reg['phase2']['assignments'])
-    elif unified_delivery.data_cohort_qa_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.data_cohort_qa_candidate import validate
-        path_validation = validate(reg['phase2']['assignments'])
-    elif unified_delivery.data_event_time_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.data_event_time import validate
-        path_validation = validate(reg['phase2']['assignments'])
-    elif unified_delivery.data_latency_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.data_latency import validate
-        path_validation = validate(reg['phase2']['assignments'])
-    elif unified_delivery.data_retirement_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.data_retirement import validate
-        path_validation=validate(reg['phase2']['assignments'])
-    elif unified_delivery.build_quality_gate_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.build_record.quality_gate import validate
-        path_validation = validate(reg['phase2']['assignments'])
-    elif unified_delivery.localization_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.engineering_localization import validate
-        path_validation = validate(reg['phase2']['assignments'])
-    elif unified_delivery.finance_fx_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.finance_fx import validate
-        path_validation = validate(reg['phase2']['assignments'])
-    elif unified_delivery.finance_performance_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.finance_performance import validate
-        path_validation = validate(reg['phase2']['assignments'])
-    elif unified_delivery.finance_assets_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.finance_assets import validate
-        path_validation = validate(reg['phase2']['assignments'])
-    elif unified_delivery.knowledge_digest_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.knowledge_digest_queue import validate
-        path_validation = validate(reg['phase2']['assignments'])
-    elif unified_delivery.data_identity_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.data_identity import validate
-        path_validation = validate(reg['phase2']['assignments'])
-    elif unified_delivery.data_region_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.data_region import validate
-        path_validation = validate(reg['phase2']['assignments'])
-    elif unified_delivery.config_for(reg['phase2']['assignments']).get('retention_consumer_status') == 'scheduled':
-        from phase2.engineering_consumer import validate_paths
-        path_validation = validate_paths(reg['phase2']['assignments'])
-    elif unified_delivery.consolidation_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.consolidation_admission import validate
-        path_validation = validate(reg['phase2']['assignments'])
-    elif unified_delivery.finance_closure_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        if unified_delivery.config_for(reg['phase2']['assignments'])['access']['payables_workflow']=='account-retirement-recurring':
-            from phase2.finance_recurring import validate
-        else:
-            from phase2.finance_closure import validate
-        path_validation = validate(reg['phase2']['assignments'])
-    elif unified_delivery.editorial_brief_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.editorial_brief.admission import validate
-        path_validation = validate(reg['phase2']['assignments'])
-    elif unified_delivery.activity_report_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.activity_report.admission import validate
-        path_validation = validate(reg['phase2']['assignments'])
-    elif unified_delivery.build_target_workflow(next(iter(reg['phase2']['assignments'].values()))):
-        from phase2.build_record.target_admission import validate
-        path_validation = validate(reg['phase2']['assignments'])
-    elif unified_delivery.build_record_workflow(next(iter(reg['phase2']['assignments'].values()))):
+    if unified_delivery.build_record_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.build_record.admission import validate
         path_validation = validate(reg['phase2']['assignments'])
     else:
@@ -2080,7 +1787,6 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     api_key=None if subscription else AXONHUB_KEY_FILE.read_text().strip()
     api_base=None if subscription else registration_api_base(reg)
     formation_review=module('swarmharm_v1_runtime_review',HERE/'review.py')
-    continuation_path = HERE / ('phase2/component_workflow.py')
     continuation_module=(unified_delivery)
     initial=load(root/'initial-input-audit.json');response_review=[];transport_attempts=[]
     state_lock=Lock()
@@ -2110,61 +1816,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     def phase(name):
         plan=reg['plan'][name];world=lab.World(plan,root/name/'operator',reg.get('topology'));states={};histories={};starts={}
         extension_plan=load(root/'phase2-plan.json')
-        if unified_delivery.localization_workflow(next(iter(extension_plan.values()))):
-            from phase2.engineering_localization_bridge import LocalizationBridge
-            extension=LocalizationBridge.from_plan(world,extension_plan,reg['component_initial_state'])
-        elif unified_delivery.finance_fx_workflow(next(iter(extension_plan.values()))):
-            from phase2.finance_fx_bridge import FxBridge
-            extension=FxBridge.from_plan(world,extension_plan,reg['component_initial_state'])
-        elif unified_delivery.finance_performance_workflow(next(iter(extension_plan.values()))):
-            from phase2.finance_performance_bridge import PerformanceBridge
-            extension=PerformanceBridge.from_plan(world,extension_plan,reg['component_initial_state'])
-        elif unified_delivery.finance_assets_workflow(next(iter(extension_plan.values()))):
-            from phase2.finance_assets_bridge import AssetsBridge
-            extension=AssetsBridge.from_plan(world,extension_plan,reg['component_initial_state'])
-        elif unified_delivery.knowledge_digest_workflow(next(iter(extension_plan.values()))):
-            from phase2.knowledge_digest_bridge import DigestBridge
-            extension=DigestBridge.from_plan(world,extension_plan,reg['component_initial_state'])
-        elif unified_delivery.data_identity_workflow(next(iter(extension_plan.values()))):
-            from phase2.data_identity_bridge import IdentityBridge
-            extension=IdentityBridge.from_plan(world,extension_plan,reg['component_initial_state'])
-        elif unified_delivery.data_region_workflow(next(iter(extension_plan.values()))):
-            from phase2.data_region_bridge import RegionBridge
-            extension=RegionBridge.from_plan(world,extension_plan,reg['component_initial_state'])
-        elif unified_delivery.consolidation_workflow(next(iter(extension_plan.values()))):
-            from phase2.consolidation_bridge import ConsolidationBridge
-            extension=ConsolidationBridge.from_plan(world,extension_plan,reg['component_initial_state'])
-        elif unified_delivery.data_retirement_workflow(next(iter(extension_plan.values()))):
-            from phase2.data_retirement_bridge import RetirementBridge
-            extension=RetirementBridge.from_plan(world,extension_plan,reg['component_initial_state'])
-        elif unified_delivery.finance_closure_workflow(next(iter(extension_plan.values()))):
-            from phase2.finance_closure_bridge import ClosureBridge
-            extension=ClosureBridge.from_plan(world,extension_plan,reg['component_initial_state'])
-        elif unified_delivery.editorial_brief_workflow(next(iter(extension_plan.values()))):
-            from phase2.editorial_brief.unified_bridge import UnifiedEditorialBridge
-            extension=UnifiedEditorialBridge.from_plan(world,extension_plan,reg['component_initial_state'])
-        elif unified_delivery.data_cohort_qa_workflow(next(iter(extension_plan.values()))):
-            from phase2.data_cohort_qa_bridge import UnifiedCohortBridge
-            extension = UnifiedCohortBridge.from_plan(world, extension_plan, reg['component_initial_state'])
-        elif unified_delivery.data_event_time_workflow(next(iter(extension_plan.values()))):
-            from phase2.data_event_time_bridge import UnifiedEventTimeBridge
-            extension = UnifiedEventTimeBridge.from_plan(world, extension_plan, reg['component_initial_state'])
-        elif unified_delivery.data_latency_workflow(next(iter(extension_plan.values()))):
-            from phase2.data_latency_bridge import UnifiedLatencyBridge
-            extension = UnifiedLatencyBridge.from_plan(world, extension_plan, reg['component_initial_state'])
-        elif unified_delivery.activity_report_workflow(next(iter(extension_plan.values()))):
-            from phase2.activity_report.unified_bridge import UnifiedActivityBridge
-            extension=UnifiedActivityBridge.from_plan(world,extension_plan,reg['component_initial_state'])
-        elif unified_delivery.release_delivery_workflow(next(iter(extension_plan.values()))):
-            from phase2.engineering_release_delivery_bridge import ReleaseDeliveryBridge
-            extension = ReleaseDeliveryBridge.from_plan(world, extension_plan, reg['component_initial_state'])
-        elif unified_delivery.build_quality_gate_workflow(next(iter(extension_plan.values()))):
-            from phase2.build_record.quality_gate_bridge import QualityGateBridge
-            extension=QualityGateBridge.from_plan(world,extension_plan,reg['component_initial_state'])
-        elif unified_delivery.build_target_workflow(next(iter(extension_plan.values()))):
-            from phase2.build_record.target_bridge import TargetBridge
-            extension=TargetBridge.from_plan(world,extension_plan,reg['component_initial_state'])
-        elif unified_delivery.build_record_workflow(next(iter(extension_plan.values()))):
+        if unified_delivery.build_record_workflow(next(iter(extension_plan.values()))):
             from phase2.build_record.unified_bridge import UnifiedBuildBridge
             extension=UnifiedBuildBridge.from_plan(world,extension_plan,reg['component_initial_state'])
         else:
@@ -2178,37 +1830,30 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         turn_records={};executed_calls={}
         phase2_definitions = continuation_module.tool_definitions(
             **({'continuous_workflow': True,
-                'build_record_workflow': ('release-delivery' if unified_delivery.release_delivery_workflow(next(iter(extension.plan.values()))) else 'quality-gate' if unified_delivery.build_quality_gate_workflow(next(iter(extension.plan.values()))) else 'localization' if unified_delivery.localization_workflow(next(iter(extension.plan.values()))) else unified_delivery.build_record_workflow(next(iter(extension.plan.values())))),
-                'build_target_workflow': unified_delivery.build_target_workflow(next(iter(extension.plan.values()))),
-                'build_target_clarify_selection': unified_delivery.build_target_clarify_selection(next(iter(extension.plan.values()))),
-                'build_target_product': unified_delivery.build_target_product(next(iter(extension.plan.values()))),
-                'activity_report_workflow': unified_delivery.activity_report_workflow(next(iter(extension.plan.values()))),
-                'data_region_workflow': unified_delivery.data_region_workflow(next(iter(extension.plan.values()))),
-                'data_identity_workflow': unified_delivery.data_identity_workflow(next(iter(extension.plan.values()))),
-                'data_latency_workflow': unified_delivery.data_latency_workflow(next(iter(extension.plan.values()))),
-                'data_event_time_workflow': unified_delivery.data_event_time_workflow(next(iter(extension.plan.values()))),
-                'data_cohort_qa_workflow': unified_delivery.data_cohort_qa_workflow(next(iter(extension.plan.values()))),
-                'data_retirement_workflow': unified_delivery.data_retirement_workflow(next(iter(extension.plan.values()))),
-                'data_retirement_handoff': unified_delivery.config_for(extension.plan)['access'].get('data_retirement_workflow')=='handoff',
-                'knowledge_digest_workflow': unified_delivery.knowledge_digest_workflow(next(iter(extension.plan.values()))),
-                'activity_shared_template': unified_delivery.activity_report_progressive(next(iter(extension.plan.values()))) in ('manifest-shared','manifest-shared-editor'),
-                'editorial_brief_workflow': unified_delivery.editorial_brief_workflow(next(iter(extension.plan.values()))),
-                'editorial_intake_archive': unified_delivery.editorial_intake_archive(next(iter(extension.plan.values()))),
-                'editorial_publication_index': unified_delivery.editorial_publication_index(next(iter(extension.plan.values()))),
-                'editorial_review_queue': unified_delivery.editorial_review_queue(next(iter(extension.plan.values()))),
+                'build_record_workflow': unified_delivery.build_record_workflow(next(iter(extension.plan.values()))),
+                'build_target_workflow': False,
+                'build_target_clarify_selection': False,
+                'build_target_product': False,
+                'data_region_workflow': False,
+                'data_identity_workflow': False,
+                'data_latency_workflow': False,
+                'data_event_time_workflow': False,
+                'data_cohort_qa_workflow': False,
+                'data_retirement_handoff': False,
+                'knowledge_digest_workflow': False,
+                'activity_shared_template': False,
+                'editorial_intake_archive': False,
+                'editorial_publication_index': False,
+                'editorial_review_queue': False,
                 'forecast_workflow': extension.config['access']['forecast_workflow'],
                 'source_routing': extension.config['sharing']['source_routing'],
                 'catalog_schema': extension.config.get('catalog_schema', 'independent'),
                 'operations_workflow': extension.config['access'].get('operations_workflow', 'none'),
                 'quality_workflow': extension.config['access'].get('quality_workflow', 'disabled'),
                 'dispatch_batching': extension.config['access'].get('dispatch_batching', 'disabled'),
-                'worker_recovery': extension.config['access'].get('worker_recovery', 'disabled'),
-                'retention_store': extension.config['access'].get('retention_store', 'disabled'),
                 'report_upload': extension.config['access']['report_upload'],
                 'publication_items': extension.config.get('publication_items', 'available'),
-                'population_plan': extension.config['access'].get('population_plan', 'approved'),
-                'reconciliation_workflow': extension.config['access'].get('reconciliation_workflow', 'disabled'),
-                'payables_workflow': extension.config['access'].get('payables_workflow','disabled')}),
+                }),
             **({'family': reg['phase2']['component_family'],
                 'include_subject_goal': bool(reg.get('subject_goal'))}))
         phase2_tool_names=[tool['name'] for tool in phase2_definitions]
@@ -2281,41 +1926,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 states[actor][f'{harness_folder}_session']=value
             activation_time=utc()
             consumer_budget=None
-            if (getattr(extension, 'config', {}).get('retention_consumer_status') == 'scheduled'
-                    and not unified_delivery.data_retirement_workflow(next(iter(extension.plan.values())))):
-                from phase2.engineering_consumer import ACTIVATION_RESERVE, remaining_observation_limit
-                batch_remaining=max(0.0,deadline-time.monotonic())
-                limit=remaining_observation_limit(budget['max_actor_seconds'],batch_remaining)
-                extension.retention.activate(observation_limit=limit)
-                consumer_budget={'batch_remaining_seconds':batch_remaining,'actor_budget_seconds':budget['max_actor_seconds'],
-                                 'reserve_seconds':ACTIVATION_RESERVE,'observation_limit_seconds':limit}
             recurring_budget=None
             digest_budget=None
             retirement_budget=None
-            if unified_delivery.data_retirement_workflow(next(iter(extension.plan.values()))):
-                batch_remaining=max(0.0,deadline-time.monotonic())
-                limit=min(budget['max_actor_seconds'],batch_remaining)-5.0
-                extension.start_cycle(limit)
-                retirement_budget={'batch_remaining_seconds':batch_remaining,'actor_budget_seconds':budget['max_actor_seconds'],
-                                   'reserve_seconds':5.0,'observation_limit_seconds':limit}
-            if unified_delivery.knowledge_digest_workflow(next(iter(extension.plan.values()))):
-                from phase2.knowledge_digest_queue import OBSERVATION_MIN, ACTIVATION_RESERVE
-                batch_remaining=max(0.0,deadline-time.monotonic())
-                limit=min(budget['max_actor_seconds'],batch_remaining)-ACTIVATION_RESERVE
-                if limit<OBSERVATION_MIN:raise ValueError('Remaining budget does not cover digest observation')
-                extension.configure_observation_limit(limit)
-                digest_budget={'batch_remaining_seconds':batch_remaining,'actor_budget_seconds':budget['max_actor_seconds'],
-                               'reserve_seconds':ACTIVATION_RESERVE,'observation_limit_seconds':limit}
-                extension.start_digest_cycle(activation_time)
-            if getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') == 'account-retirement-recurring':
-                from phase2.finance_recurring import ACTIVATION_RESERVE, remaining_observation_limit
-                batch_remaining=max(0.0,deadline-time.monotonic())
-                limit=remaining_observation_limit(budget['max_actor_seconds'],batch_remaining)
-                extension.configure_observation_limit(limit)
-                recurring_budget={'batch_remaining_seconds':batch_remaining,'actor_budget_seconds':budget['max_actor_seconds'],
-                                  'reserve_seconds':ACTIVATION_RESERVE,'observation_limit_seconds':limit}
-            if getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') in ('timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring'):
-                extension.start_payables_cycle(activation_time)
             save(root/name/'activation.json',{
                 **({'recurring_observation_budget':recurring_budget} if recurring_budget else {}),
                 **({'consumer_observation_budget':consumer_budget} if consumer_budget else {}),
@@ -2914,7 +2527,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     for candidate in active.copy():
                         if states[candidate]['status']=='waiting_for_platform_change':
                             submit(candidate)
-                if continuation_update_pending() and extension.advance_business_time(time.monotonic()-(extension._clock_start if (unified_delivery.knowledge_digest_workflow(next(iter(extension.plan.values()))) or getattr(extension, 'config', {}).get('access', {}).get('payables_workflow') in ('timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring')) else continuation_began)):
+                if continuation_update_pending() and extension.advance_business_time(time.monotonic()-continuation_began):
                     export();wake_waiting()
                 if phase2_pending is not None and not running and not source_handoff_ready(reg,world):
                     if publication_pending() or followup_pending():
@@ -3031,7 +2644,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
 
             export()
             if hasattr(extension, 'close_reconciliation'):
-                extension.close_reconciliation()
+                pass
             save(root/name/'actors.json',states)
         return states,world.summary()
     def preflight(provider,model):
@@ -3156,10 +2769,8 @@ if __name__=='__main__':
     p.add_argument('--controls-from',type=Path,help='Reuse successful offline checks bound to identical source and native runtime; reverify model routing.')
     p.add_argument('--source-retention', choices=('origin', 'local'), default='origin',
         help='Retain committed source locally, or require origin synchronization.')
-    p.add_argument('--threat-cell', choices=tuple(threat_grid.CELLS),
-        help='Select a retained input contract from the archived SwarmHarm grid.')
-    p.add_argument('--mechanism', choices=tuple(mechanism_inputs.MECHANISMS),
-        help='Select the current mechanism configuration and evidence criterion.')
+    p.add_argument('--mechanism', choices=mechanism_inputs.CURRENT_CONFIGURATIONS,
+        help='Select a current configuration; task-gaming tests Specification Gaming.')
     p.add_argument('--input-variant', choices=mechanism_inputs.REGISTERABLE_INPUT_VARIANT_NAMES,
         help='Select a separately registered mechanism input variant.')
     p.add_argument('--binding-preset', choices=tuple(unified_delivery.PRESETS),
@@ -3176,7 +2787,7 @@ if __name__=='__main__':
     p.add_argument('--component-family', choices=(unified_delivery.FAMILY,), default=unified_delivery.FAMILY,
         help='Reporting and delivery service.')
     a=p.parse_args()
-    if a.phase=='prepare' and a.binding_preset is None and a.threat_cell is None and a.mechanism is None:
+    if a.phase=='prepare' and a.binding_preset is None and a.mechanism is None:
         p.error('--binding-preset is required during preparation')
     if a.phase=='prepare' and a.api_base.rstrip('/')!=AXONHUB_API_BASE:
         p.error('All live rollouts must use the registered AxonHub API base')
@@ -3201,6 +2812,6 @@ if __name__=='__main__':
             delivery_config=load(a.delivery_config) if a.delivery_config is not None else None,
             world_config=load(a.world_config) if a.world_config is not None else None,
             combined_bindings=a.combined_bindings,comparison_design=a.comparison_design,
-            source_retention=a.source_retention,threat_cell=a.threat_cell,mechanism=a.mechanism,
+            source_retention=a.source_retention,mechanism=a.mechanism,
             input_variant=a.input_variant,workload=a.workload)
     else:collect(root,registration_dir)

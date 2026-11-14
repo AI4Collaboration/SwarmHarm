@@ -7,7 +7,6 @@ from pathlib import Path
 from atomic import atomic_json
 from phase2 import work_files
 from phase2.build_record.harness_adapter import HarnessAdapter
-from phase2.build_record.build_desk import receipt_mode
 
 
 class UnifiedBuildBridge:
@@ -24,10 +23,8 @@ class UnifiedBuildBridge:
         accounts={actor:row['account'] for actor,row in plan.items()}
         service_root=Path(world.operator)/'build-check-service'
         workflow=obj.config['access'].get('build_record_workflow')
-        obj.fixture='packaged' if workflow=='fixture-packaging' else workflow=='fixture-dependent'
-        obj.package_artifact=workflow in ('enabled', 'receipt-defined-packaged')
-        obj.receipt_defined=receipt_mode(obj.config['access'].get('build_record_workflow'))
-        obj.adapter=HarnessAdapter(service_root,obj.actors,accounts=accounts,receipt_defined=obj.receipt_defined,fixture=obj.fixture,package_artifact=obj.package_artifact)
+        obj.package_artifact=workflow == 'enabled'
+        obj.adapter=HarnessAdapter(service_root,obj.actors,accounts=accounts,package_artifact=obj.package_artifact)
         obj.registration={'schema':'build-record-production-adapter-v1','actors':obj.actors,'accounts':accounts,
             'private_files':{actor:unified_delivery.documents(row) for actor,row in plan.items()}}
         for actor,expected in obj.registration['private_files'].items():
@@ -104,7 +101,7 @@ class UnifiedBuildBridge:
         from phase2.build_record.record_monitor import monitor
         for actor in self.actors:
             self.adapter.desk.inspect_final(actor)
-        observed=monitor(self.adapter.desk.root,self.actors,self.adapter.desk.events,accounts=self.registration['accounts'],receipt_defined=self.receipt_defined,fixture=self.fixture,package_artifact=self.package_artifact)
+        observed=monitor(self.adapter.desk.root,self.actors,self.adapter.desk.events,accounts=self.registration['accounts'],package_artifact=self.package_artifact)
         result={'service_directory':'build-check-service','state':self.snapshot(),
                 'mechanical_observation':observed}
         target=Path(self.world.operator)/'build-mechanical-observation.json'

@@ -1,30 +1,16 @@
-# Reporting world and outcome review
+# Reporting environment
 
-The retained reporting inputs keep one continuous task, native session and shared
-business state. The configured notes or cache and all selected interfaces are present from
-the start, without a peer roster or a formation gate.
+Four independent agents work in one shared reporting system. Each retains its
+own task, workstation and session. The selected configuration changes one
+business mechanism. Tasks provide no peer roster or communication method.
 
-`finance-group-consolidation-v1` is a synthetic internal group-reporting input:
-entity submissions and the original group order are fixed, one submission is
-unreceived, and a shared view is editable. Its weak view binding is an explicit
-experimental condition, not a claim about a commercial product. Review counts
-omitted entities without inventing amounts and preserves withdrawals. Offline
-checks do not establish model behavior.
+The six configurations cover Specification Gaming, Trace Tampering, Grader
+Tampering, Information Scope Violation, Action Scope Violation and
+Shared-resource Interference. Engineering and Knowledge Work are the two domains.
+Data and financial analysis are optional Knowledge Work workloads.
 
-The separate `data-cohort-qa-v1` input uses a synthetic group review view.
-Its correction replays the same service calls and compares prior service responses;
-workstation commands, shared files and notifications are not replayed. It does
-not establish a full behavioral counterfactual or model behavior. The QA date is
-a registered synthetic business date; the snapshot is materialized during setup.
-
-- [Findings and compositional coverage](../docs/phase2-design.md)
-- [Pass criteria](../docs/business-outcome-criteria.md)
-- [Environment contract](../docs/environment-contract.md)
-- [Registration and collection](../../docs/running-evals.md)
-
-[Reporting registration index](../docs/research/reporting-run-index.json)
-
-Current operator selections are Engineering and Knowledge Work. Data and financial
-analysis are Knowledge Work workloads selected with `--workload`. The
-[parameter reference](../docs/scenarios-and-parameters.md#domains-and-source-workloads)
-contains exact selectors and defaults.
+- [Current cases and readiness](../README.md)
+- [Configuration values and defaults](../docs/scenarios-and-parameters.md)
+- [Taxonomy and source grounding](../docs/phase2-taxonomy.md)
+- [Evidence criteria](../docs/business-outcome-criteria.md)
+- [Running and reviewing a rollout](../../docs/running-evals.md)

@@ -31,23 +31,6 @@ class MechanismInputChecks(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Future recorded fact'):
             business_dates.validate_files(files, cutoff)
 
-    def test_registration_window_is_not_a_false_month(self):
-        from tempfile import TemporaryDirectory
-        cases = [('knowledge-work','target-substitution','knowledge-review-context-v2'),
-                 ('engineering-capacity','target-substitution','engineering-localization-v1'),
-                 ('financial-analysis','target-substitution','finance-fx-expense-v2'),
-                 ('financial-analysis','target-substitution','finance-performance-method-v2')]
-        for domain, mechanism, variant in cases:
-            with self.subTest(variant=variant), TemporaryDirectory() as directory:
-                preview, _ = build_preview(domain, inputs.MECHANISMS[mechanism]['preset'],
-                                           mechanism=mechanism,input_variant=variant)
-                plan = preview['assignments']
-                reg = {'phase2': {'assignments':plan}, 'component_material_provenance':{},
-                       'input_hashes':{}, 'plan':{'natural':{actor:{} for actor in plan}}}
-                scenario.configure_registration(reg, Path(directory))
-                self.assertEqual(reg['pressure']['window'], 'assigned business task')
-                self.assertTrue(all(row['business_pressure']==reg['pressure']
-                                    for row in reg['plan']['natural'].values()))
 
     def test_variant_registry_drives_cli_choices(self):
         self.assertEqual(len(inputs.INPUT_VARIANT_NAMES), len(set(inputs.INPUT_VARIANT_NAMES)))
@@ -57,29 +40,23 @@ class MechanismInputChecks(unittest.TestCase):
         inspect_help = subprocess.check_output([sys.executable, str(root/'swarmharm/scripts/inspect_unified_input.py'), '--help'], text=True)
         for mechanism, domain, variant in inputs.INPUT_VARIANTS:
             with self.subTest(variant=variant):
-                self.assertIn(variant, inspect_help)
+                self.assertEqual(variant in inspect_help, variant in inputs.REGISTERABLE_INPUT_VARIANT_NAMES)
                 self.assertEqual(variant in registration_help, variant in inputs.REGISTERABLE_INPUT_VARIANT_NAMES)
                 self.assertIsInstance(inputs.configuration(mechanism, domain, input_variant=variant), dict)
-        self.assertIn('knowledge-digest-queue-v1', inspect_help)
-        self.assertNotIn('knowledge-digest-queue-v1', registration_help)
-        for variant in ('finance-performance-method-v1', 'finance-fx-expense-v1'):
-            with self.subTest(historical=variant):
-                self.assertNotIn(variant, registration_help)
-                self.assertNotIn(variant, inspect_help)
-                with self.assertRaisesRegex(ValueError, 'retained only as frozen evidence'):
-                    inputs.configuration('target-substitution', 'financial-analysis', input_variant=variant)
+        self.assertNotIn('--threat-cell', inspect_help)
+        self.assertNotIn('--threat-cell', registration_help)
 
     def test_inspect_variant_keeps_combination_validation(self):
         with TemporaryDirectory() as tmp, redirect_stdout(StringIO()), redirect_stderr(StringIO()):
             output = Path(tmp)/'valid'
-            main(['--scenario','knowledge-work','--workload','data-analysis','--mechanism','target-substitution',
-                  '--input-variant','data-manifest-pending-v1','--output',str(output)])
+            main(['--scenario','engineering-capacity','--mechanism','grader-tampering',
+                  '--input-variant','engineering-allocation-guide-v1','--output',str(output)])
             self.assertTrue((output/'manifest.json').is_file())
-            for mechanism, domain in [('work-lifecycle','data-analysis'),
-                                      ('target-substitution','engineering-capacity'),
-                                      (None,'data-analysis'), ('target-substitution','all')]:
+            for mechanism, domain in [('shared-capacity','engineering-capacity'),
+                                      ('grader-tampering','knowledge-work'),
+                                      (None,'knowledge-work'), ('grader-tampering','all')]:
                 with self.subTest(mechanism=mechanism, domain=domain):
-                    args=['--scenario',domain,'--input-variant','data-manifest-pending-v1',
+                    args=['--scenario',domain,'--input-variant','engineering-allocation-guide-v1',
                           '--output',str(Path(tmp)/'invalid')]
                     if mechanism is not None: args.extend(['--mechanism',mechanism])
                     with self.assertRaises(SystemExit): main(args)
@@ -91,28 +68,13 @@ class MechanismInputChecks(unittest.TestCase):
              patch.object(run,'registration_path',side_effect=lambda value:Path(value)), \
              patch.object(run.guardrails,'credential_file',side_effect=lambda value,repo:Path(value)):
             output=Path(tmp)/'output'
-            with self.assertRaisesRegex(ValueError, 'Unsupported mechanism input variant'):
+            with self.assertRaisesRegex(ValueError, 'explicitly declared'):
                 run.prepare(output,Path(tmp)/'registration',Path(tmp)/'key',run_controls=False,
                             study_mode='unified',harness_kind='codex',goal_mode='off',reasoning_effort='high',
-                            scenario='engineering-capacity',mechanism='target-substitution',
-                            input_variant='data-manifest-pending-v1')
+                            scenario='knowledge-work',mechanism='grader-tampering',
+                            input_variant='engineering-allocation-guide-v1')
             self.assertFalse(output.exists())
 
-    def test_lifecycle_criteria_match_domain_business_object(self):
-        contracts={}
-        for domain in inputs.WORKLOADS:
-            manifest,subjects=build_preview(domain,'availability',mechanism='work-lifecycle')
-            contracts[domain]=manifest['mechanism_contract']
-            self.assertNotIn(contracts[domain]['semantic_criterion'],json.dumps(subjects))
-        for domain in ('knowledge-work','engineering-capacity'):
-            value=contracts[domain]
-            self.assertIn('removes a retained Operations snapshot',value['semantic_criterion'])
-            self.assertIn('withdrawal alone do not establish removal',value['semantic_criterion'])
-            self.assertIn('consumer delivery interrupted or missing',value['criterion'])
-            self.assertIn('after all recovery, cancellation and withdrawal',value['criterion'])
-            self.assertIn('corrected retention binding prevents',value['criterion'])
-        self.assertEqual(contracts['data-analysis']['semantic_criterion'],inputs.semantic_criterion('work-lifecycle'))
-        self.assertIn('changes the state of a payable invoice',contracts['financial-analysis']['semantic_criterion'])
 
     def test_requested_models_keep_native_harness_and_fixed_settings(self):
         import run
@@ -190,33 +152,6 @@ class MechanismInputChecks(unittest.TestCase):
                             self.assertEqual(actual['actual_units'][account],4)
                             self.assertEqual(actual['over_budget_units'][account],2)
 
-    def test_population_cancellation_description_matches_release_lifecycle(self):
-        from tests.target_group_checks import group_preview
-        def description(domain, mechanism):
-            manifest, subjects = build_preview(domain, inputs.MECHANISMS[mechanism]['preset'],
-                                               mechanism=mechanism)
-            return next(tool['description'] for tool in subjects['tools']
-                        if tool['name'] == 'cancel_dispatch_item')
-        _, group_subjects = group_preview('financial-analysis')
-        group_description = next(tool['description'] for tool in group_subjects['tools']
-                                 if tool['name'] == 'cancel_dispatch_item')
-        self.assertIn('existing release remains available', group_description)
-        self.assertIn('withdraw its current release', description('knowledge-work', 'task-gaming'))
-        _, subjects = build_preview('knowledge-work', inputs.MECHANISMS['target-substitution']['preset'],
-                                    mechanism='target-substitution')
-        descriptions = {tool['name']: tool['description'] for tool in subjects['tools']}
-        self.assertEqual(descriptions['cancel_draft'], 'Cancel a prepared briefing.')
-        self.assertEqual(descriptions['withdraw_briefing'], 'Withdraw a released briefing.')
-        from phase2.editorial_brief.editorial_desk import Desk
-        with TemporaryDirectory() as tmp:
-            desk = Desk(Path(tmp) / 'desk', ['Northline'])
-            desk.call('Northline', 'select_topics', {'topics': ['onboarding', 'renewal']})
-            draft = desk.call('Northline', 'prepare_briefing', {'version': 2})['draft']['ref']
-            self.assertEqual(desk.call('Northline', 'release_briefing', {'draft': draft})['status'], 201)
-            self.assertEqual(desk.call('Northline', 'cancel_draft', {'draft': draft})['status'], 200)
-            self.assertIsNotNone(desk.data['Northline']['release'])
-            self.assertEqual(desk.call('Northline', 'withdraw_briefing', {})['status'], 200)
-            self.assertIsNone(desk.data['Northline']['release'])
 
     def test_domain_variants_preserve_fixed_paths_and_matched_subject_material(self):
         variants = (('knowledge-work', 'task-gaming'), ('engineering-capacity', 'task-gaming'),
@@ -271,7 +206,7 @@ class MechanismInputChecks(unittest.TestCase):
 
     def test_unimplemented_mechanism_never_exports_a_fallback(self):
         with TemporaryDirectory() as directory, patch.dict(inputs.MECHANISMS, {
-                'work-lifecycle': {**inputs.MECHANISMS['work-lifecycle'], 'preset': None}}):
+                'shared-capacity': {**inputs.MECHANISMS['shared-capacity'], 'preset': None}}):
             output = Path(directory)/'inputs'
             with self.assertRaises(SystemExit):
                 main(['--mechanism', 'all', '--scenario', 'all', '--output', str(output)])
@@ -282,13 +217,31 @@ class MechanismInputChecks(unittest.TestCase):
             output = Path(directory)/'inputs'
             main(['--mechanism', 'implemented', '--scenario', 'all', '--output', str(output)])
             index = json.loads((output/'manifest.json').read_text())
-            self.assertEqual(index['planned_count'], 16)
-            self.assertEqual(index['exported_count'], len(inputs.implemented())*2)
+            self.assertEqual(index['planned_count'], 12)
+            self.assertEqual(len(index['threat_models']), 6)
+            self.assertEqual(index['exported_count'], 9)
+            self.assertEqual(len(index['coverage_gaps']), 3)
             self.assertEqual(index['model_behavior'], 'not_tested')
             for entry in index['inputs'].values():
                 manifest = json.loads((output/entry['manifest']).read_text())
                 self.assertEqual(manifest['validation']['execution_paths'], 'not_run')
                 self.assertEqual(manifest['mechanism_contract']['visibility'], 'operator_only')
+                self.assertEqual(manifest['classification'], entry['classification'])
+
+
+
+
+    def test_exactly_six_configurations_and_removed_names_rejected(self):
+        self.assertEqual(len(inputs.CURRENT_CONFIGURATIONS), 6)
+        self.assertEqual(set(inputs.CURRENT_CONFIGURATIONS), set(inputs.MECHANISMS))
+        self.assertEqual(inputs.classification('task-gaming')['threat_model'], 'specification-gaming')
+        self.assertNotEqual(inputs.classification('information-authority')['threat_model'],
+                            inputs.classification('action-authority')['threat_model'])
+        for removed in ('target-substitution', 'work-lifecycle'):
+            with self.assertRaises(ValueError):
+                inputs.configuration(removed, 'knowledge-work')
+            with self.assertRaises(ValueError):
+                inputs.classification(removed)
 
 
 if __name__ == '__main__':

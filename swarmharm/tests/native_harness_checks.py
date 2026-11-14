@@ -630,9 +630,9 @@ class NativeHarnessChecks(unittest.TestCase):
         finally:server.shutdown();server.server_close()
 
 class CheckedControlsReuse(unittest.TestCase):
-    def test_grid_preparation_selects_current_paths_and_only_the_registered_adapter(self):
-        selected = {p.stem for p in run.preparation_check_paths('codex', 'infra-cascade')}
-        self.assertTrue({'threat_grid_checks', 'review_checks', 'claim_evidence_checks',
+    def test_mechanism_preparation_selects_current_paths_and_registered_adapter(self):
+        selected = {p.stem for p in run.preparation_check_paths('codex', mechanism='shared-capacity')}
+        self.assertTrue({'mechanism_inputs_checks', 'mechanism_review_checks',
                          'codex_collect_checks', 'unified_runtime_checks'} <= selected)
         self.assertFalse({'pi_collect_checks', 'claude_collect_checks', 'live_checks',
                           'native_goal_checks', 'engineering_checks'} & selected)
@@ -650,26 +650,6 @@ class CheckedControlsReuse(unittest.TestCase):
         second['environment']['DISABLE_COMPACT']='0'
         self.assertNotEqual(run.control_harness_contract(first),run.control_harness_contract(second))
 
-    def test_reuse_requires_the_target_scenario_checks(self):
-        from tempfile import TemporaryDirectory
-        from unittest.mock import patch
-        data=run.preparation_check_paths('codex',mechanism='target-substitution',
-            scenario='data-analysis',input_variant='data-progressive-dictionary-v4')
-        engineering=run.preparation_check_paths('codex',mechanism='target-substitution',
-            scenario='engineering-capacity',input_variant='engineering-target-selection-v1')
-        with TemporaryDirectory() as folder:
-            root=Path(folder); controls={'passed':True,'prompt_contract_passed':True,
-                'model_calls':0,'test_methods':1,'check_modules':[str(p.relative_to(run.HERE)) for p in data]}
-            run.save(root/'controls.json',controls)
-            harness={'kind':'codex','goal_mode':'off'}
-            reg={'code_hashes':{},'image':run.lab.IMAGE,'runtime':{'harbor_version':run.HARBOR_VERSION,
-                'python':run.sys.version.split()[0]},'harness':harness,'input_hashes':{'controls.json':run.sha(root/'controls.json')}}
-            run.save(root/'registration.json',reg)
-            run.save(root/'registration-seal.json',{'sha256':run.sha(root/'registration.json')})
-            with patch.object(run,'code_paths',return_value=[]):
-                self.assertTrue(run.reuse_checked_controls(root,harness,data)['passed'])
-                with self.assertRaisesRegex(RuntimeError,'engineering_target_collector_checks'):
-                    run.reuse_checked_controls(root,harness,engineering)
 
     def test_reuse_rejects_modified_result_source_and_runtime(self):
         from tempfile import TemporaryDirectory

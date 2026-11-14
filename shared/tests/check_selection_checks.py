@@ -15,8 +15,7 @@ changed = ENTRY['changed_files']
 
 class CheckSelectionChecks(unittest.TestCase):
     def test_reporting_collectors_share_the_docker_concurrency_limit(self):
-        for stem in ('consolidation_collector', 'reconciliation_transport',
-                     'reconciliation_exception_context', 'continuous_collect'):
+        for stem in ('build_record_collector', 'codex_notice_collector', 'continuous_collect'):
             with self.subTest(stem=stem):
                 self.assertTrue(ENTRY['uses_docker'](stem))
                 plan = select([f'swarmharm/tests/{stem}_checks.py'])

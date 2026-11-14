@@ -28,12 +28,7 @@ def normalize(value=None, *, preset='control', delivery=None):
     }
     if 'meter_binding' in bindings:
         result['verification']['quota_meter'] = bindings['meter_binding']
-    if ('lifecycle_binding' in bindings or cfg['access'].get('job_scope') == 'shared_window'
-            or cfg['access'].get('worker_recovery') == 'enabled'
-            or cfg['access'].get('retention_store') in ('enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions')
-            or cfg['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring')):
-        result['verification']['job_lifecycle'] = bindings.get('lifecycle_binding', 'required')
-    optional_observations = (office_history.FIELD, 'workstation_processes', 'notification_scope', 'notification_detail', 'work_file_index', 'activity_scope', 'library_metadata', 'library_navigation', 'library_guide', 'library_connections', 'preview_records', 'check_summary', 'budget_view', 'retention_consumer_status')
+    optional_observations = (office_history.FIELD, 'workstation_processes', 'notification_scope', 'notification_detail', 'work_file_index', 'activity_scope', 'library_metadata', 'library_navigation', 'library_guide', 'library_connections', 'preview_records', 'check_summary', 'budget_view', )
     for field in optional_observations:
         if field in cfg:
             result['observation'][field] = cfg[field]
@@ -59,10 +54,9 @@ def normalize(value=None, *, preset='control', delivery=None):
             **deepcopy(scenario.CONFIG_SCHEMA['properties']['sharing']['properties']),
             'operations_headroom': deepcopy(scenario.CONFIG_SCHEMA['properties']['operations_headroom'])}},
         'verification': {'type': 'object', 'additionalProperties': False, 'properties': {
-            'required_items': {'enum': ['approved', 'candidate']},
+            'required_items': {'enum': ['approved']},
             'capacity_basis': {'enum': ['approved', 'forecast']},
             'quota_meter': {'enum': ['report', 'request']},
-            'job_lifecycle': {'enum': ['required', 'mutable']},
             'completion_evidence': {'enum': ['executed', 'register', 'native', 'contents']},
             'native_evidence_accounts': deepcopy(scenario.CONFIG_SCHEMA['properties']['native_evidence_accounts']),
             'grader_source': {'enum': ['installed', 'workspace']},
@@ -89,7 +83,7 @@ def components(world):
     access, coupling, verification, observation = (world[key]
         for key in ('access', 'coupling', 'verification', 'observation'))
     config = {'access': {key: access[key] for key in (
-                  'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout', 'allocation_guide', 'job_layout', 'population_plan', 'job_scope', 'cost_visibility', 'analytics_snapshot', 'quality_workflow', 'worker_recovery', 'retention_store', 'build_record_workflow', 'reconciliation_workflow', 'activity_report_workflow', 'data_retirement_workflow', 'payables_workflow', 'editorial_brief_workflow')
+                  'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout', 'allocation_guide', 'job_layout', 'cost_visibility', 'analytics_snapshot', 'quality_workflow', 'build_record_workflow', )
                   if key in access},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
                                                        'published_packs', 'completion_credit',
@@ -119,8 +113,6 @@ def components(world):
                 'grader_binding': verification['grader_source']}
     if 'quota_meter' in verification:
         bindings['meter_binding'] = verification['quota_meter']
-    if 'job_lifecycle' in verification:
-        bindings['lifecycle_binding'] = verification['job_lifecycle']
     return deepcopy(config), deepcopy(bindings)
 
 
@@ -129,8 +121,7 @@ def selection(world, preset, *, combined=False):
     from phase2 import unified_delivery as scenario
     _, bindings = components(normalize(world))
     baseline = {**scenario.PRESETS['control'], **(
-        {'meter_binding': 'report'} if 'meter_binding' in bindings else {}), **(
-        {'lifecycle_binding': 'required'} if 'lifecycle_binding' in bindings else {})}
+        {'meter_binding': 'report'} if 'meter_binding' in bindings else {})}
     expected = baseline if preset == 'control' else scenario.PRESETS[preset]
     changed = {key: {'baseline': baseline[key], 'selected': value}
                for key, value in bindings.items() if value != baseline[key]}
@@ -156,46 +147,19 @@ def subject_inputs(plan):
     return {'tasks': {actor: scenario.task(row) for actor, row in plan.items()},
             'tools': scenario.tool_definitions(
                 continuous_workflow=bool(next(iter(plan.values())).get('continuous_workflow')),
-                build_record_workflow=('release-delivery' if scenario.release_delivery_workflow(next(iter(plan.values()))) else 'quality-gate' if scenario.build_quality_gate_workflow(next(iter(plan.values()))) else 'localization' if scenario.localization_workflow(next(iter(plan.values()))) else scenario.build_record_workflow(next(iter(plan.values())))),
-                build_target_workflow=scenario.build_target_workflow(next(iter(plan.values()))),
-                build_target_clarify_selection=scenario.build_target_clarify_selection(next(iter(plan.values()))),
-                build_target_product=scenario.build_target_product(next(iter(plan.values()))),
-                activity_report_workflow=scenario.activity_report_workflow(next(iter(plan.values()))),
-                data_region_workflow=scenario.data_region_workflow(next(iter(plan.values()))),
-                data_identity_workflow=scenario.data_identity_workflow(next(iter(plan.values()))),
-                data_latency_workflow=scenario.data_latency_workflow(next(iter(plan.values()))),
-                data_event_time_workflow=scenario.data_event_time_workflow(next(iter(plan.values()))),
-                data_cohort_qa_workflow=scenario.data_cohort_qa_workflow(next(iter(plan.values()))),
-                data_retirement_workflow=scenario.data_retirement_workflow(next(iter(plan.values()))),
-                data_retirement_handoff=scenario.config_for(plan)['access'].get('data_retirement_workflow')=='handoff',
-                knowledge_digest_workflow=scenario.knowledge_digest_workflow(next(iter(plan.values()))),
-                activity_shared_template=scenario.activity_report_progressive(next(iter(plan.values()))) in ('manifest-shared','manifest-shared-editor'),
-                editorial_brief_workflow=scenario.editorial_brief_workflow(next(iter(plan.values()))),
-                editorial_intake_archive=scenario.editorial_intake_archive(next(iter(plan.values()))),
-                editorial_publication_index=scenario.editorial_publication_index(next(iter(plan.values()))),
-                editorial_review_queue=scenario.editorial_review_queue(next(iter(plan.values()))),
+                build_record_workflow=scenario.build_record_workflow(next(iter(plan.values()))),
                 forecast_workflow=config['access']['forecast_workflow'],
                 source_routing=config['sharing']['source_routing'],
                 catalog_schema=config.get('catalog_schema', 'independent'),
                 operations_workflow=config['access'].get('operations_workflow', 'none'),
                 quality_workflow=config['access'].get('quality_workflow', 'disabled'),
                 dispatch_batching=config['access'].get('dispatch_batching', 'disabled'),
-                worker_recovery=config['access'].get('worker_recovery', 'disabled'),
-                retention_store=config['access'].get('retention_store', 'disabled'),
                 report_upload=config['access']['report_upload'],
                 publication_items=config.get('publication_items', 'available'),
-                population_plan=config['access'].get('population_plan', 'approved'),
-                reconciliation_workflow=config['access'].get('reconciliation_workflow', 'disabled'),
-                payables_workflow=config['access'].get('payables_workflow', 'disabled')),
+                ),
             'initial_files': scenario.initial_files(plan),
-            'business_data': (scenario.truth_for(plan)['accounts'] if (scenario.data_cohort_qa_workflow(next(iter(plan.values()))) or scenario.data_event_time_workflow(next(iter(plan.values()))) or scenario.data_latency_workflow(next(iter(plan.values()))) or scenario.data_identity_workflow(next(iter(plan.values()))) or scenario.finance_fx_workflow(next(iter(plan.values()))) or scenario.finance_performance_workflow(next(iter(plan.values()))) or scenario.localization_workflow(next(iter(plan.values()))) or scenario.knowledge_digest_workflow(next(iter(plan.values()))) or scenario.consolidation_workflow(next(iter(plan.values()))) or scenario.data_region_workflow(next(iter(plan.values()))) or scenario.finance_assets_workflow(next(iter(plan.values())))) else
-                scenario.truth_for(plan)['accounts'] if config['access'].get('payables_workflow') in ('enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring') else
-                {actor: {'request_id':scenario.delivery_reconciliation.REQUESTS[row['account']],
-                 'approved_period':scenario.delivery_reconciliation.APPROVED,
-                 'source_periods':list(scenario.delivery_reconciliation.PERIODS)} for actor,row in plan.items()}
-                if config['access'].get('reconciliation_workflow') in ('enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied') else
-                scenario.truth_for(plan)['accounts'] if (scenario.build_record_workflow(next(iter(plan.values()))) or scenario.activity_report_workflow(next(iter(plan.values()))) or scenario.editorial_brief_workflow(next(iter(plan.values())))) else
-                {actor: scenario.delivery_data.source_data(row) for actor, row in plan.items()})}
+            'business_data': scenario.truth_for(plan)['accounts'] if scenario.build_record_workflow(next(iter(plan.values()))) else
+                {actor: scenario.delivery_data.source_data(row) for actor, row in plan.items()}}
 
 
 def input_contract(plan, *, combined=False):

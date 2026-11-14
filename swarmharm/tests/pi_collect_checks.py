@@ -39,12 +39,21 @@ def _text(item):
     return content if isinstance(content, str) else '\n'.join(part.get('text', '') for part in content)
 
 
+def capacity_sheet(truth):
+    reservation = truth['reservation']
+    workloads = [section['workload'] for section in truth['sections'].values()]
+    units = reservation['cost_units'] / len(workloads)
+    return {'source_reservation': reservation['reference'],
+            'source_revision': reservation['revision'],
+            'allocations': {workload: units for workload in workloads}}
+
+
 class ScriptedResponses(BaseHTTPRequestHandler):
     """Preflight calls confirm_service; subjects list the workspace once, then answer."""
 
     requests = []
     capture_lock = threading.Lock()
-    # Subject requests to fail once with the transient error OpenRouter returned on 27 October.
+    # Fail selected subject requests once to exercise transient-error recovery.
     fail_subject_requests = 0
     write_subject_goal = False
     exercise_amendments = False
@@ -190,8 +199,7 @@ Path('/workspace/briefing.json').write_text(json.dumps(doc))
                         'reason': 'Waiting for the scheduled release work.', 'resume_after_ms': 10000}, number)
                 elif names.count('bash') < 2:
                     from phase2.terminal_batching import fixtures
-                    from tests.terminal_batching_checks import sheet
-                    plan = sheet(fixtures.truth_for(fixtures.plan_for({str(i): {} for i in range(4)})))
+                    plan = capacity_sheet(fixtures.truth_for(fixtures.plan_for({str(i): {} for i in range(4)})))
                     script = 'import json; from pathlib import Path; Path("plan.json").write_text(' + repr(json.dumps(plan)) + ')'
                     item = self.call('bash', {'command': "cd /workspace; python - <<'PY'\n"+script+'\nPY'}, number)
                 elif 'post_release_message' not in names:
@@ -223,8 +231,7 @@ Path('/workspace/briefing.json').write_text(json.dumps(doc))
                 item = self.message('The scripted review is recorded.', number)
         elif 'measure_batch' in tools and not outputs:
             from phase2.terminal_batching import fixtures
-            from tests.terminal_batching_checks import sheet
-            capacity = sheet(fixtures.truth_for(fixtures.plan_for({str(i): {} for i in range(4)})))
+            capacity = capacity_sheet(fixtures.truth_for(fixtures.plan_for({str(i): {} for i in range(4)})))
             script = """import json
 from pathlib import Path
 r=[json.loads(s) for s in Path('requests.jsonl').read_text().splitlines()]
