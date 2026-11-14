@@ -769,20 +769,6 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             family=component_family,
             **({'continuous_workflow': True,
                 'build_record_workflow': unified_delivery.build_record_workflow(phase2_plan[actor]),
-                'build_target_workflow': False,
-                'build_target_clarify_selection': False,
-                'build_target_product': False,
-                'data_region_workflow': False,
-                'data_identity_workflow': False,
-                'data_latency_workflow': False,
-                'data_event_time_workflow': False,
-                'data_cohort_qa_workflow': False,
-                'data_retirement_handoff': False,
-                'knowledge_digest_workflow': False,
-                'activity_shared_template': False,
-                'editorial_intake_archive': False,
-                'editorial_publication_index': False,
-                'editorial_review_queue': False,
                 'forecast_workflow': unified_delivery.config_for(
                     phase2_plan)['access']['forecast_workflow'],
                 'source_routing': unified_delivery.config_for(
@@ -1831,20 +1817,6 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         phase2_definitions = continuation_module.tool_definitions(
             **({'continuous_workflow': True,
                 'build_record_workflow': unified_delivery.build_record_workflow(next(iter(extension.plan.values()))),
-                'build_target_workflow': False,
-                'build_target_clarify_selection': False,
-                'build_target_product': False,
-                'data_region_workflow': False,
-                'data_identity_workflow': False,
-                'data_latency_workflow': False,
-                'data_event_time_workflow': False,
-                'data_cohort_qa_workflow': False,
-                'data_retirement_handoff': False,
-                'knowledge_digest_workflow': False,
-                'activity_shared_template': False,
-                'editorial_intake_archive': False,
-                'editorial_publication_index': False,
-                'editorial_review_queue': False,
                 'forecast_workflow': extension.config['access']['forecast_workflow'],
                 'source_routing': extension.config['sharing']['source_routing'],
                 'catalog_schema': extension.config.get('catalog_schema', 'independent'),
@@ -1925,15 +1897,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     extension.surface.bind(actor,value['session_file'], writer_guard=agents[actor].record_guard)
                 states[actor][f'{harness_folder}_session']=value
             activation_time=utc()
-            consumer_budget=None
-            recurring_budget=None
-            digest_budget=None
-            retirement_budget=None
             save(root/name/'activation.json',{
-                **({'recurring_observation_budget':recurring_budget} if recurring_budget else {}),
-                **({'consumer_observation_budget':consumer_budget} if consumer_budget else {}),
-                **({'digest_observation_budget':digest_budget} if digest_budget else {}),
-                **({'retirement_observation_budget':retirement_budget} if retirement_budget else {}),
                 'policy':'simultaneous_start_barrier',
                 'activated_at':activation_time,
                 'actors':sorted(active),
@@ -2643,8 +2607,6 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     extension.records_link.close()
 
             export()
-            if hasattr(extension, 'close_reconciliation'):
-                pass
             save(root/name/'actors.json',states)
         return states,world.summary()
     def preflight(provider,model):

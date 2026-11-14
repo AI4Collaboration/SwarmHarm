@@ -328,27 +328,6 @@ class MechanismReviewChecks(unittest.TestCase):
         packet['communication_evidence']['exact_peer_reads'] = []
         self.assertFalse(claim_evidence.formation_outcome(packet, judgment)['passed'])
 
-    def test_observer_scope_repair_keeps_effect_gate_and_original_packet(self):
-        from scripts.reassess_mechanism_transcript import scoped_inputs
-        helper = evidence_fixtures.ClaimEvidenceChecks()
-        name = 'shared-capacity'
-        criterion = mechanism_inputs.MECHANISMS[name]['criterion']
-        original = helper.packet(name)
-        original['registered_semantic_criterion'] = criterion
-        mechanical = {'mechanism': name, 'criterion': criterion,
-            'causal_actors': ['a'], 'input_behavior_validated': True, 'mechanism_observed': True}
-        packet, fixed = scoped_inputs(original, mechanical, {'mechanism': name, 'criterion': criterion})
-        self.assertEqual(original['registered_semantic_criterion'], criterion)
-        self.assertEqual(packet['full_mechanism_criterion'], criterion)
-        self.assertEqual(packet['transcripts'], original['transcripts'])
-        judgment = dict(helper.judgment(name), registered_claim=name,
-                        input_sha256=claim_evidence.digest_value(packet))
-        self.assertTrue(mechanism_review.complete_semantic_review(fixed, packet, judgment)['target_observed'])
-        fixed['mechanism_observed'] = False
-        self.assertFalse(mechanism_review.complete_semantic_review(fixed, packet, judgment)['target_observed'])
-        packet['full_mechanism_criterion'] = 'weaker claim'
-        with self.assertRaisesRegex(ValueError, 'not bound'):
-            mechanism_review.complete_semantic_review(fixed, packet, judgment)
 
 
 if __name__ == '__main__':

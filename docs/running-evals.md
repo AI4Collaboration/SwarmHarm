@@ -276,19 +276,6 @@ not mean the provider did not refuse. Exact failed-response text is irrecoverabl
 from these diagnostics; use authorized gateway logs if more detail is needed.
 Existing frozen evaluations retain their original scripts and evidence.
 
-For an independent re-review of an account-retirement finance case after the
-ATIF-only citation binding fix, use a clean committed checkout and a new external
-directory. This reads the original packet and saved response without a model call:
-
-```bash
-python swarmharm/scripts/reprocess_finance_judgment.py \
-  --output /absolute/path/to/original-output \
-  --response-file /absolute/path/to/original-output/transcript-judge-attempts/0001-response.json \
-  --review-dir /absolute/path/to/new-independent-review
-```
-
-The new directory contains the reviewed bindings, result and source/input hashes;
-it does not replace the original score or frozen evidence.
 Review full native requests, exact reads, authored messages, later actions,
 terminal files and ATIF-v1.8 continuity. Independently reconstruct effects from
 protected evidence. Preview, acceptance and self-report are not final outcomes.

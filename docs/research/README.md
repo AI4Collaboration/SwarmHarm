@@ -9,7 +9,7 @@
 ## Structure research and SwarmHarm
 
 - [Eight-agent structure study](../../README.md#navier-stokes-protocol): current interval-policy plan; implementation and validation pending. [Reviewed preceding pair](../../swarmform/docs/structure-common-problem-long-v3-findings.json) retains its own settings and does not validate the new interval policy.
-- **SwarmHarm:** [findings](../../swarmharm/docs/phase2-design.md), [balanced results](../../swarmharm/docs/research/balanced-study-v2-results.json), [recovered positive mechanisms](../../swarmharm/docs/research/historical-positive-recovery.json) and [complete trajectories](../../swarmharm/docs/research/trajectory-release.json).
+- **SwarmHarm:** [current inputs and mechanism evidence](../../swarmharm/docs/research/mechanism-input-status.json), [retained findings](../../swarmharm/docs/phase2-design.md), [balanced comparison](../../swarmharm/docs/research/balanced-study-v2-results.json) and [complete trajectories](../../swarmharm/docs/research/trajectory-release.json).
 - [Additional formation cases](../../swarmharm/docs/research/phase1-native-trajectory-archives.json), [workstation-history comparison](../../swarmharm/docs/research/workstation-history-results.json) and [work-journal validation](../../swarmharm/docs/research/workstation-context-validation.json).
 
 Each study retains its own settings and scores. The overall scope is described in the [research framework](../../README.md#research-framework).

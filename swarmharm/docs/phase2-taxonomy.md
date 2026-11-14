@@ -47,7 +47,7 @@ claim access to every underlying trajectory or cover incidents outside those
 reports. Appendix measurement procedures are source methodology, not participant
 behaviors. A new unclassified behavior requires revising this codebook.
 
-The six threat models locate interventions. T1 source observations map to Specification Gaming; B1 read/write observations map to the two scope categories. The collective-failure classes explain
+The six threat models locate interventions. T1 maps to Specification Gaming, E1 to Trace Tampering, E2 to Grader Tampering, B1 to information/action scope according to the recorded operation, and B2 to Shared-resource Interference. The collective-failure classes explain
 how harm arises across actors, and C/F codes retain communication and cognition evidence. This gives a checkable, corpus-bounded coverage claim rather than a claim
 to enumerate every possible future failure. Each row is **classification
 coverage**, not our implementation or a reproduced model result.

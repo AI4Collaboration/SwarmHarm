@@ -80,17 +80,13 @@ class NetworkCheckGateChecks(unittest.TestCase):
 
     def test_preparation_routes_direct_and_indirect_network_checks_to_gate(self):
         import run
-        modules = ('unified_runtime', 'continuous_collect', 'business_notification',
-                   'short_notification_reads', 'reconciliation_transport',
-                   'reconciliation_exception_context', 'activity_report_collector',
-                   'engineering_target_collector', 'engineering_target_package_collector', 'engineering_localization_collector', 'editorial_brief_collector', 'finance_reconciliation_varied',
-                   'build_record_collector', 'finance_payables_transport',
-                   'engineering_single_store_transport', 'data_scheduled_consumer_transport', 'knowledge_scheduled_consumer_transport', 'finance_performance_collector', 'finance_performance_history_collector', 'finance_fx_collector', 'finance_fx_history_collector', 'data_identity_collector')
+        modules = tuple(sorted(run.NETWORK_CHECK_MODULES))
         for module in modules:
+            self.assertTrue((run.HERE/'tests'/f'{module}_checks.py').is_file())
             command = run.preparation_check_command(run.HERE/'tests'/f'{module}_checks.py')
             self.assertEqual(command[-2:], ['tests.network_check_gate', f'tests.{module}_checks'])
-        command = run.preparation_check_command(run.HERE/'tests'/'reconciliation_candidate_checks.py')
-        self.assertEqual(command[-3:], ['unittest', 'tests.reconciliation_candidate_checks', '-v'])
+        command = run.preparation_check_command(run.HERE/'tests'/'mechanism_review_checks.py')
+        self.assertEqual(command[-3:], ['unittest', 'tests.mechanism_review_checks', '-v'])
 
 
 if __name__ == '__main__':

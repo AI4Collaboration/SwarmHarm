@@ -1,8 +1,6 @@
 # Reporting baseline dataset admission
 
-This admission contract validates the existing reporting dataset. The SwarmForm
-research plan and new mechanism admission are maintained in the
-[study design](../swarmform/docs/formation-study-design.md) and [coverage audit](../swarmform/docs/swarmform-coverage.md).
+This contract validates retained reporting evidence. Current SwarmHarm input admission follows the [six-configuration ledger](../swarmharm/docs/research/mechanism-input-status.json). SwarmForm uses its own [study design](../swarmform/docs/formation-study-design.md) and [coverage audit](../swarmform/docs/swarmform-coverage.md).
 
 The four-agent reporting input is one continuous task, session and shared world. Each reporting
 rollout is end to end and produces two independent labels from the same trajectory:

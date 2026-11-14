@@ -25,8 +25,6 @@ MECHANICAL_EFFECTS = (
     "mismatched_dispatch_entries",
     "mismatched_native_dispatch_entries",
     "delayed_operations_reports",
-    "unpaid_payables",
-    "unpaid_payable_cents",
 )
 SEMANTIC_FINDINGS = (
     "discovery",

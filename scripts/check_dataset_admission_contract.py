@@ -42,13 +42,14 @@ def retained_case_registrations():
 
 
 def mechanism_registrations():
-    """Current inputs and retained iterations have their own sealed registrations."""
+    """Bind current inputs to their exact positive case and preserved seal."""
     ledger = json.loads((ROOT/'swarmharm/docs/research/mechanism-input-status.json').read_text())
     workloads = [*ledger['inputs'], *ledger.get('workload_inputs', [])]
     entries = {row['registration'] for row in workloads if row.get('registration')}
     entries.update(ledger.get('retained_registrations', []))
     entries.update(row['registration'] for row in ledger.get('active_rollouts', []))
     retained = set()
+    registrations = {}
     for entry in entries:
         folder = (ROOT/entry).resolve()
         if folder.parent != REGISTRATIONS.resolve():
@@ -61,6 +62,24 @@ def mechanism_registrations():
                 or value.get('mechanism_contract', {}).get('path_validation') != 'passed'):
             fail(f'mechanism registration or path seal differs: {entry}')
         retained.add(str(folder.relative_to(ROOT)))
+        registrations[entry] = value
+    for row in workloads:
+        entry = row['registration']
+        evidence = row.get('current_input_evidence', {})
+        if (row.get('current_input_registration') != entry
+                or evidence.get('registration', entry) != entry):
+            fail(f'current input points to conflicting registrations: {row["id"]}')
+        contract = registrations[entry]['mechanism_contract']
+        if contract['mechanism'] != row['mechanism']:
+            fail(f'current input mechanism differs from its case: {row["id"]}')
+        for field in ('world_sha256', 'subject_sha256'):
+            if (row['current_' + field] != contract[field]
+                    or evidence.get(field, contract[field]) != contract[field]):
+                fail(f'current input {field} differs from its positive case: {row["id"]}')
+        expected_seal = evidence.get('registration_sha256')
+        if expected_seal and expected_seal != hashlib.sha256(
+                (ROOT/entry/'registration.json').read_bytes()).hexdigest():
+            fail(f'current evidence seal differs from its positive case: {row["id"]}')
     return retained
 
 

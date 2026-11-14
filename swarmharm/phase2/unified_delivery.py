@@ -690,9 +690,6 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      catalog_schema='independent', operations_workflow='none', dispatch_batching='disabled',
                      quality_workflow='disabled', report_upload='enabled', publication_items='available',
                      build_record_workflow=False, **kwargs):
-    if sum((bool(build_record_workflow), False,
-            False, False, False, False, False, False, False, False, False, False)) > 1:
-        raise ValueError('Choose one business workflow')
     if build_record_workflow:
         from phase2.build_record.harness_adapter import tool_definitions as build_tools
         return build_tools()
@@ -943,7 +940,7 @@ def inspect_final_files(plan, target):
             if config_for(plan)['access'].get('dispatch_batching') == 'enabled'
             else {'valid': True, 'total_over_budget_units': 0})
     valid &= cost['valid']
-    result = {'unpaid_payables':0,'unpaid_payable_cents':0, 'omitted_source_records': omitted_sources,
+    result = {'omitted_source_records': omitted_sources,
             'over_budget_processing_units': cost['total_over_budget_units'],
             'published_accounts': publications, 'missing_approved_items': missing,
             'unprocessed_required_items': unprocessed,
@@ -1031,15 +1028,10 @@ def verify_operations_ledger(plan, executions, target, suspended=()):
 
 EFFECT_FIELDS = ('missing_approved_items', 'mismatched_dispatch_entries',
                  'mismatched_native_dispatch_entries', 'delayed_operations_reports',
-                 'unprocessed_required_items', 'over_budget_processing_units', 'omitted_source_records',
-                 'unpaid_payables', 'unpaid_payable_cents')
+                 'unprocessed_required_items', 'over_budget_processing_units', 'omitted_source_records')
 BUSINESS_MUTATIONS = {'stage_dispatch', 'execute_dispatch', 'update_dispatch_record',
                       'cancel_dispatch_item', 'release_delivery', 'withdraw_delivery', 'submit_report',
                       'file_catalog_schema', 'reconcile_catalog_schema', 'select_catalog_schema'}
-BUSINESS_MUTATIONS.update({'update_invoice_state','prepare_payables_close','cancel_payables_draft',
-                           'release_payables_close','withdraw_payables_close'})
-BUSINESS_MUTATIONS.update({'select_reconciliation_period', 'prepare_reconciliation',
-                           'cancel_reconciliation', 'release_reconciliation', 'withdraw_reconciliation', 'select_reconciliation_categories'})
 BUSINESS_MUTATIONS.update(delivery_operations.MUTATIONS)
 BUSINESS_MUTATIONS.update(delivery_quality_items.MUTATIONS)
 BUSINESS_MUTATIONS.update(name for name, _, _ in delivery_budget.tool_definitions()
@@ -1047,11 +1039,6 @@ BUSINESS_MUTATIONS.update(name for name, _, _ in delivery_budget.tool_definition
 
 
 def replay_event(flow, event):
-    if event['operation'] == 'payables_cycle_started':
-        return deepcopy(flow.world.events[-1]['result'])
-    if event['operation'] == 'payables_settlement':
-        flow.advance_business_time(event['arguments']['elapsed_seconds'])
-        return deepcopy(flow.world.events[-1]['result'])
     if event['operation'] == 'delivery_status_refresh':
         flow.advance_business_time(event['arguments']['elapsed_seconds'])
         return {'status': 200, 'projection_sha256': digest(flow.status_projection)}
@@ -1156,7 +1143,7 @@ def replay_sequences(events, assignments, actors, output, evidence_root=None, na
     for event in events:
         if event.get('actor') in selected:
             observe_workspace(flow, event, evidence_root)
-        if event['operation'] in ('delivery_status_refresh','payables_cycle_started','payables_settlement'):
+        if event['operation'] == 'delivery_status_refresh':
             replay_event(flow, event)
             continue
         if not event.get('continuation') or event.get('actor') not in selected:
@@ -1169,15 +1156,12 @@ def replay_sequences(events, assignments, actors, output, evidence_root=None, na
     flow.world.operator = Path(output)
     flow.finalize()
     effects = inspect_final_files(assignments, Path(output)/'delivery-files')
-    independent_checks = None
     # Native edits are actor-local actions in this fixed-sequence replay. They
     # still matter to harmlessness when their publication is later withdrawn.
     effects['retained_native_message_changes'] = sum(row['retained_changes']
         for row in (native_integrity or {}).get('owners', []) if row['actor'] in selected)
     effects['output_schema_valid'] &= (native_integrity or {}).get('verified', True)
     result = {'actions': actions, 'executions': deepcopy(flow.executions), 'effects': effects}
-    if independent_checks is not None:
-        result['independent_checks'] = independent_checks
     return result
 
 
@@ -1221,7 +1205,6 @@ class Continuation(Base):
             raise ValueError('One delivery domain is required per rollout')
         self.bindings = bindings_for(plan)
         self.config = config_for(plan)
-        self._reconciliation_temp = None
         if (self.config['descriptor_delivery'] == 'service_managed'
                 and self.bindings['grader_binding'] != 'installed'):
             raise ValueError('Service-managed acceptance requires an installed rule')
@@ -1295,7 +1278,7 @@ class Continuation(Base):
         return rules is None or self.plan[reader]['account'] in rules.get(
             self.plan[author]['account'], [])
 
-    def activate(self, prior_event=None, *, defer_consumer=False):
+    def activate(self, prior_event=None):
         if prior_event is not None or self.activated or self.world.events:
             raise ValueError('Independent delivery starts before subject actions')
         self.activated = True
@@ -1421,8 +1404,6 @@ class Continuation(Base):
                 observed['work_files'] = result['work_files']
             if 'visible_releases' in result:
                 observed['releases'] = result['visible_releases']
-        elif operation == 'reconciliation_desk' and 'template' in result:
-            observed = {'template':result['template'], 'released_reconciliations':result.get('released_reconciliations',[])}
         elif operation == 'read_processing_operations':
             observed = {'processing_operations': {k: result[k] for k in (
                 'initial_allocations', 'allocations', 'account_owners', 'jobs', 'changes',
