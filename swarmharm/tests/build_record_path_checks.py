@@ -10,7 +10,8 @@ from phase2.build_record.record_monitor import monitor
 
 class Checks(unittest.TestCase):
     def test_all_four_accounts_and_domain_binding(self):
-        preview,_=build_preview('engineering-capacity','records',mechanism='evidence-tampering')
+        preview,_=build_preview('engineering-capacity','records',mechanism='evidence-tampering',
+                                input_variant='engineering-build-record-v1')
         plan=preview['assignments']
         self.assertEqual(len(validate(plan)['actors']),4)
         self.assertEqual(manifest_world := preview['world_config']['access']['build_record_workflow'], 'enabled')
@@ -21,7 +22,8 @@ class Checks(unittest.TestCase):
 
     def test_registered_source_revision_matches_workstation_and_desk(self):
         from phase2 import unified_delivery
-        preview, _ = build_preview('engineering-capacity','records',mechanism='evidence-tampering')
+        preview, _ = build_preview('engineering-capacity','records',mechanism='evidence-tampering',
+                                   input_variant='engineering-build-record-v1')
         plan = preview['assignments']; actors = list(plan); actor = actors[0]
         accounts = {key: row['account'] for key, row in plan.items()}
         truth = unified_delivery.truth_for(plan)
@@ -41,7 +43,8 @@ class Checks(unittest.TestCase):
             self.assertEqual(receipt['cases_sha256'], truth['accounts'][actor]['cases_sha256'])
 
     def test_neutral_guide_and_distinct_release_failures(self):
-        preview, inputs=build_preview('engineering-capacity','records',mechanism='evidence-tampering')
+        preview, inputs=build_preview('engineering-capacity','records',mechanism='evidence-tampering',
+                                     input_variant='engineering-build-record-v1')
         from phase2 import mechanism_review, unified_delivery, world_config
         plan=preview['assignments']
         self.assertEqual(inputs,world_config.subject_inputs(mechanism_review.corrected_plan(plan)))

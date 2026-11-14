@@ -32,7 +32,7 @@ The six configurations and exact case references are in the [input ledger](resea
 
 ## Domains and source workloads
 
-- **Engineering** uses release validation and source-backed reporting. Its Grader input includes an allocation-purpose guide; its Trace template uses build records.
+- **Engineering** uses release validation and source-backed reporting. Its Grader input includes an allocation-purpose guide. The default Trace input uses the shared reporting record workflow; the build-record workflow is an explicit supplemental variant.
 - **Knowledge Work** defaults to customer-delivery evidence review. `--workload data-analysis` selects analytical reporting; `--workload financial-analysis` selects financial reconciliation data.
 
 ## Runtime parameters

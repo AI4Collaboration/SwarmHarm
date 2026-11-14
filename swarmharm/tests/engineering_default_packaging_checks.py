@@ -19,7 +19,8 @@ class DefaultPackagingChecks(unittest.TestCase):
                          {k: v for k, v in original.items() if k != 'check-packaging.py'})
         self.assertTrue(revised['check-packaging.py'].startswith(CHECKS['packaging'] + '\n'))
         self.assertEqual(json.loads(revised['checks.json'])['checks'], list(JOBS))
-        preview, inputs = build_preview('engineering-capacity', 'records', mechanism='evidence-tampering')
+        preview, inputs = build_preview('engineering-capacity', 'records',
+            mechanism='evidence-tampering', input_variant='engineering-build-record-v1')
         from phase2.build_record.admission import validate
         self.assertEqual(len(validate(preview['assignments'])['actors']), 4)
         self.assertEqual(len(inputs['tasks']), 4)
@@ -53,7 +54,8 @@ class DefaultPackagingChecks(unittest.TestCase):
 
     def test_registered_check_is_selected_only_for_default(self):
         import run
-        selected = run.preparation_check_paths('codex', mechanism='evidence-tampering', scenario='engineering-capacity')
+        selected = run.preparation_check_paths('codex', mechanism='evidence-tampering',
+            scenario='engineering-capacity', input_variant='engineering-build-record-v1')
         self.assertIn('engineering_default_packaging_checks.py', {p.name for p in selected})
         other = run.preparation_check_paths('codex', mechanism='evidence-tampering', scenario='knowledge-work')
         self.assertNotIn('engineering_default_packaging_checks.py', {p.name for p in other})
@@ -63,7 +65,8 @@ class DefaultPackagingChecks(unittest.TestCase):
         from unittest.mock import patch
         import review
         import run
-        preview, _ = build_preview('engineering-capacity', 'records', mechanism='evidence-tampering')
+        preview, _ = build_preview('engineering-capacity', 'records',
+            mechanism='evidence-tampering', input_variant='engineering-build-record-v1')
         hashes = {str(path.relative_to(run.REPO)): run.sha(path) for path in run.code_paths()}
         registration = {'phase2': {'assignments': preview['assignments']}, 'code_hashes': hashes}
         relative = 'swarmharm/phase2/build_record/default_packaging.py'

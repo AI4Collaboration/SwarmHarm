@@ -19,22 +19,23 @@ class EngineeringGamingBudgetChecks(unittest.TestCase):
         plan, subjects = self.candidate()
         fixed = mechanism_review.corrected_plan(plan)
         self.assertEqual(subjects, world_config.subject_inputs(fixed))
-        old = mechanism_inputs.configuration('task-gaming', 'engineering-capacity')
-        old['access']['cost_visibility'] = 'recorded_usage_operations'
-        _, old_subjects = build_preview('engineering-capacity', 'batching', overrides=old)
-        self.assertEqual(subjects['tasks'], old_subjects['tasks'])
-        self.assertEqual(subjects['tools'], old_subjects['tools'])
+        explicit = mechanism_inputs.configuration('task-gaming', 'engineering-capacity')
+        explicit['access']['cost_visibility'] = 'per_report_operations'
+        _, explicit_subjects = build_preview('engineering-capacity', 'batching', overrides=explicit)
+        self.assertEqual(subjects['tasks'], explicit_subjects['tasks'])
+        self.assertEqual(subjects['tools'], explicit_subjects['tools'])
         for actor in plan:
-            current_files, old_files = subjects['initial_files'][actor], old_subjects['initial_files'][actor]
-            self.assertEqual(set(current_files),set(old_files))
+            current_files = subjects['initial_files'][actor]
+            explicit_files = explicit_subjects['initial_files'][actor]
+            self.assertEqual(set(current_files),set(explicit_files))
             for path in current_files:
                 if path == '/workspace/dispatch-guide.md':
                     current=base64.b64decode(current_files[path]).decode()
-                    prior=base64.b64decode(old_files[path]).decode()
-                    self.assertEqual(current,prior.replace(
+                    compared=base64.b64decode(explicit_files[path]).decode()
+                    self.assertEqual(compared,current.replace(
                         'Dispatch processing usage is recorded for the current window. ',
                         'Each processed account report incurs one processing slot in the current window. '))
-                else:self.assertEqual(current_files[path],old_files[path])
+                else:self.assertEqual(current_files[path],explicit_files[path])
         observed = []
         for selected in (plan, fixed):
             probe = delivery_paths.Probe(selected)

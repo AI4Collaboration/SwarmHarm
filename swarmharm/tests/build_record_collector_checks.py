@@ -51,11 +51,11 @@ class Checks(unittest.TestCase):
             with TemporaryDirectory() as tmp, patch.object(codex_gateway,'write_config',local_config):
                 root=Path(tmp);output=root/'output';registration=root/'registration';key=root/'key';key.write_text('fixture')
                 with patch.dict(run.MODELS,{'sol':'openai/gpt-6.1-sol'},clear=True),patch.object(run,'verify_routes',return_value={}),patch.object(codex_gateway,'gateway_catalog',return_value={}),patch.object(run,'registration_path',side_effect=lambda p:Path(p)):
-                    run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario='engineering-capacity',mechanism='evidence-tampering')
+                    run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario='engineering-capacity',mechanism='evidence-tampering',input_variant='engineering-build-record-v1')
                 reg=run.load(output/'registration.json')
                 from scripts.inspect_unified_input import build_preview
                 from phase2 import world_config, unified_delivery
-                preview,subjects=build_preview('engineering-capacity','records',mechanism='evidence-tampering')
+                preview,subjects=build_preview('engineering-capacity','records',mechanism='evidence-tampering',input_variant='engineering-build-record-v1')
                 self.assertEqual(preview['world_config'],reg['phase2']['assignments'][next(iter(reg['phase2']['assignments']))]['world_config'])
                 self.assertEqual(subjects,world_config.subject_inputs(reg['phase2']['assignments']))
                 self.assertEqual(reg['mechanism_contract']['subject_sha256'],unified_delivery.digest(subjects))

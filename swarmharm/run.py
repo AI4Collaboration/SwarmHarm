@@ -437,11 +437,9 @@ def preparation_check_paths(harness_kind, mechanism=None, scenario=None, input_v
             current.add('information_source_gaps')
         if mechanism == 'task-gaming' and scenario == 'engineering-capacity':
             current.add('engineering_gaming_budget')
-        if mechanism == 'evidence-tampering' and scenario == 'engineering-capacity':
+        if input_variant == 'engineering-build-record-v1':
             current.update(('build_record_path', 'engineering_default_packaging'))
             current.add('build_record_collector')
-            if input_variant is None:
-                current.add('engineering_default_packaging')
         if mechanism == 'task-gaming' and scenario == 'financial-analysis':
             current.add('finance_gaming_budget')
     selected = []

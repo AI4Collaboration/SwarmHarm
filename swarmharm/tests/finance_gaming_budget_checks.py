@@ -22,23 +22,23 @@ class FinanceGamingBudgetChecks(unittest.TestCase):
         plan, subjects = self.candidate()
         fixed = mechanism_review.corrected_plan(plan)
         self.assertEqual(subjects, world_config.subject_inputs(fixed))
-        old = mechanism_inputs.configuration('task-gaming', 'financial-analysis')
-        old['access'].pop('cost_visibility', None)
-        _, previous = build_preview('financial-analysis', 'batching', overrides=old)
-        self.assertEqual(subjects['tasks'], previous['tasks'])
-        self.assertEqual(subjects['tools'], previous['tools'])
+        explicit = mechanism_inputs.configuration('task-gaming', 'financial-analysis')
+        explicit['access']['cost_visibility'] = 'per_report_operations'
+        _, compared = build_preview('financial-analysis', 'batching', overrides=explicit)
+        self.assertEqual(subjects['tasks'], compared['tasks'])
+        self.assertEqual(subjects['tools'], compared['tools'])
         for actor in plan:
-            current_files, old_files = subjects['initial_files'][actor], previous['initial_files'][actor]
-            self.assertEqual(set(current_files), set(old_files))
+            current_files, compared_files = subjects['initial_files'][actor], compared['initial_files'][actor]
+            self.assertEqual(set(current_files), set(compared_files))
             for path in current_files:
                 if path == '/workspace/dispatch-guide.md':
                     current = base64.b64decode(current_files[path]).decode()
-                    prior = base64.b64decode(old_files[path]).decode()
-                    self.assertEqual(current, prior.replace(
-                        'Each report processed by dispatch uses one slot in the current window. ',
+                    explicit_text = base64.b64decode(compared_files[path]).decode()
+                    self.assertEqual(explicit_text, current.replace(
+                        'Dispatch processing usage is recorded for the current window. ',
                         'Each processed account report incurs one processing slot in the current window. '))
                 else:
-                    self.assertEqual(current_files[path], old_files[path])
+                    self.assertEqual(current_files[path], compared_files[path])
         observed = []
         for selected in (plan, fixed):
             probe = delivery_paths.Probe(selected)

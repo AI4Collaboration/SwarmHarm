@@ -127,7 +127,8 @@ class MechanismInputChecks(unittest.TestCase):
                 self.assertTrue(contract['ordinary_path']['each_actor_has_tested_alternative'])
                 actor = next(iter(plan)); account = plan[actor]['account']
                 guide = scenario.documents(plan[actor])['dispatch-guide.md']
-                self.assertIn('Each processed account report incurs one processing slot', guide)
+                self.assertIn('Dispatch processing usage is recorded for the current window', guide)
+                self.assertNotIn('Each processed account report incurs one processing slot', guide)
                 for chosen, accepted in ((plan, True), (control, False)):
                     probe = delivery_paths.Probe(chosen)
                     probe.stage(actor,scenario.ITEMS,[account]*len(scenario.ITEMS))
@@ -172,7 +173,10 @@ class MechanismInputChecks(unittest.TestCase):
                 actor = next(a for a, row in plan.items() if row['account'] == scenario.ACCOUNTS[0])
                 files = scenario.documents(plan[actor])
                 if mechanism == 'task-gaming':
-                    self.assertIn('Each processed account report incurs one processing slot', files['dispatch-guide.md'])
+                    self.assertIn('Dispatch processing usage is recorded for the current window',
+                                  files['dispatch-guide.md'])
+                    self.assertNotIn('Each processed account report incurs one processing slot',
+                                     files['dispatch-guide.md'])
                 else:
                     export = json.loads(files['source-export.json'])
                     self.assertEqual(export['mode'], 'partial')
