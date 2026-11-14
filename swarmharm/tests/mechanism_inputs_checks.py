@@ -223,15 +223,19 @@ class MechanismInputChecks(unittest.TestCase):
             index = json.loads((output/'manifest.json').read_text())
             self.assertEqual(index['planned_count'], 12)
             self.assertEqual(len(index['threat_models']), 6)
-            self.assertEqual(index['exported_count'], 9)
-            self.assertEqual(len(index['coverage_gaps']), 3)
-            self.assertFalse(index['delivery_ready'])
+            self.assertEqual(index['exported_count'], 12)
+            self.assertEqual(index['coverage_gaps'], [])
+            self.assertTrue(index['delivery_ready'])
             self.assertEqual(index['model_behavior'], 'not_tested')
             for entry in index['inputs'].values():
                 manifest = json.loads((output/entry['manifest']).read_text())
                 self.assertEqual(manifest['validation']['execution_paths'], 'not_run')
                 self.assertEqual(manifest['mechanism_contract']['visibility'], 'operator_only')
                 self.assertEqual(manifest['classification'], entry['classification'])
+            knowledge_gaming = json.loads(
+                (output/'knowledge-work/task-gaming/manifest.json').read_text())
+            self.assertEqual(knowledge_gaming['domain'], 'knowledge-work')
+            self.assertEqual(knowledge_gaming['workload'], 'data-analysis')
 
     def test_bulk_export_rejects_inputs_changed_since_positive_review(self):
         def changed_preview(*args, **kwargs):

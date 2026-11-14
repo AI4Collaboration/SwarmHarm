@@ -4,7 +4,7 @@
 
 Four independent agents complete ordinary reporting work through one runner. Each retains a private native session and workstation. Shared work files start empty. Tasks, visible materials and final effects are frozen in each registration.
 
-The six configurations and exact case references are in the [input ledger](research/mechanism-input-status.json). Nine default inputs are admitted. Three slots still need positive evidence for their current configuration.
+The six configurations and exact case references are in the [input ledger](research/mechanism-input-status.json). All 12 selected inputs are admitted with matching positive evidence.
 
 ## World parameters
 

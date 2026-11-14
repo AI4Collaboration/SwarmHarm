@@ -128,19 +128,25 @@ def main(argv=None):
             ledger = json.loads((REPO / 'swarmharm/docs/research/mechanism-input-status.json').read_text())
             admitted = {row['id']: row for row in [*ledger['inputs'], *ledger.get('workload_inputs', [])]
                         if row.get('current_input_validation') == 'reviewed_positive'}
-            previews = {f'{domain}{workload_path}/{name}': build_preview(domain,
-                        mechanism_inputs.MECHANISMS[name]['preset'],
+            previews = {}
+            for domain in domains:
+                for name in names:
+                    row_id = f'{args.workload or domain}/{name}'
+                    row = admitted.get(row_id)
+                    if args.mechanism in ('all', 'implemented') and row is None:
+                        continue
+                    selected_workload = args.workload or (row or {}).get('selected_workload')
+                    previews[f'{domain}{workload_path}/{name}'] = build_preview(
+                        domain, mechanism_inputs.MECHANISMS[name]['preset'],
                         harness=args.harness, mechanism=name, input_variant=args.input_variant,
-                        workload=args.workload)
-                        for domain in domains for name in names
-                        if args.mechanism not in ('all', 'implemented') or
-                        f'{args.workload or domain}/{name}' in admitted}
+                        workload=selected_workload)
             if not previews:
                 raise ValueError('No admitted inputs match this bulk selection')
             if args.mechanism in ('all', 'implemented'):
                 for manifest, subjects in previews.values():
                     contract = manifest['mechanism_contract']
-                    row = admitted[f'{manifest["workload"]}/{contract["mechanism"]}']
+                    row_key = args.workload or manifest['domain']
+                    row = admitted[f'{row_key}/{contract["mechanism"]}']
                     if (scenario.digest(subjects) != row['current_subject_sha256']
                             or contract['world_sha256'] != row['current_world_sha256']):
                         raise ValueError('Exported input differs from its reviewed positive: ' + row['id'])

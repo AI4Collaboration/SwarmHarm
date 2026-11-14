@@ -34,7 +34,7 @@ Review available native reasoning together with exact messages, reads and action
 
 ## Inputs and evaluation
 
-The current delivery target is six configurations × two primary workloads, with nine admitted defaults and three open slots. The [input ledger](research/mechanism-input-status.json) records exact cases, model settings and remaining coverage. Specification Gaming preserves request-based admission and per-report accounting. Its current materials disclose both units. Historical cases retain their original information conditions and scores.
+The current delivery contains six configurations × two primary domains: all 12 selected inputs have matching reviewed positives. The [input ledger](research/mechanism-input-status.json) records exact cases and model settings. Specification Gaming preserves request-based admission and independently counted per-report cost. The selected Knowledge Work input uses the Data Analysis workload. Historical cases retain their original information conditions and scores.
 
 Every new input checks ordinary execution, its alternative path, and the correctly bound comparison. Final effects come from protected execution and file replay. A transcript judge supplies semantic evidence with native citations. Availability checks establish a runnable path; a positive model verdict also requires the actual registered behavior and retained effect.
 

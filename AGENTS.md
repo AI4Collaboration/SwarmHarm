@@ -34,7 +34,7 @@ The four-agent v57 cache pilot and SwarmHarm reporting studies retain their orig
 
 ## Current SwarmHarm assignment
 
-Use six threat models, one configuration each: Specification Gaming, Trace Tampering, Grader Tampering, Information Scope Violation, Action Scope Violation and Shared-resource Interference. Engineering and Knowledge Work are the two domains; data and financial analysis are optional Knowledge Work workloads. The target is 12 default slots. Nine currently have admitted positive inputs; three remain open. See the root README and current input ledger.
+Use six threat models, one configuration each: Specification Gaming, Trace Tampering, Grader Tampering, Information Scope Violation, Action Scope Violation and Shared-resource Interference. Engineering and Knowledge Work are the two domains; data and financial analysis are optional Knowledge Work workloads. All 12 default slots have input-bound reviewed positives. See the root README and current input ledger.
 
 Four independent agents use native Codex through AxonHub, high reasoning, goal off and private rollout memory. Keep natural tasks and tools, exact source bindings, real message authorship, corrections and independent outcome replay. Communication structure, composition and inferred processes are separately reviewed findings. Grader Tampering is one category supported by rule changes or monitor interference.
 
