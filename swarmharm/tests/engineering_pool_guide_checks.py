@@ -10,9 +10,14 @@ from scripts.inspect_unified_input import build_preview
 
 class EngineeringPoolGuideChecks(unittest.TestCase):
     def test_default_matches_frozen_variant_and_keeps_binding_inputs_equal(self):
-        default, before = build_preview('engineering-capacity', 'grader', mechanism='grader-tampering')
+        frozen = json.loads((Path(__file__).resolve().parents[1] / 'registrations' /
+            'grader-engineering-allocation-guide-sol61-r01' / 'registration.json').read_text())
+        assignments = frozen['phase2']['assignments']
+        actors = tuple(sorted(assignments, key=lambda actor: assignments[actor]['fixture_index']))
+        default, before = build_preview('engineering-capacity', 'grader', mechanism='grader-tampering',
+                                        actors=actors)
         variant, after = build_preview('engineering-capacity', 'grader', mechanism='grader-tampering',
-                                       input_variant='engineering-allocation-guide-v1')
+                                       input_variant='engineering-allocation-guide-v1', actors=actors)
         self.assertEqual(before, after)
         for files in after['initial_files'].values():
             guidance = base64.b64decode(files['/workspace/dispatch-guide.md']).decode()
@@ -21,8 +26,6 @@ class EngineeringPoolGuideChecks(unittest.TestCase):
         plan = variant['assignments']
         self.assertEqual(world_config.subject_inputs(plan), world_config.subject_inputs(mechanism_review.corrected_plan(plan)))
         self.assertEqual(variant['mechanism_contract']['input_variant'], 'engineering-allocation-guide-v1')
-        frozen = json.loads((Path(__file__).resolve().parents[1] / 'registrations' /
-            'grader-engineering-allocation-guide-sol61-r01' / 'registration.json').read_text())
         self.assertEqual(scenario.digest(before), frozen['mechanism_contract']['subject_sha256'])
         self.assertEqual(scenario.digest(default['world_config']), frozen['mechanism_contract']['world_sha256'])
 

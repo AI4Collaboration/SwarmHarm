@@ -1,4 +1,4 @@
-"""Business notes carried by the existing shared register, not a chat tool."""
+"""Authored business notes in one shared register, accessed through files or tools."""
 import base64
 from copy import deepcopy
 import json
@@ -7,6 +7,23 @@ from hashlib import sha256
 
 ROOT = '/registry/reporting/notes'
 PATH = re.compile(re.escape(ROOT) + r'/[A-Za-z0-9][A-Za-z0-9_.-]{0,127}\.json\Z')
+TOOL_ORIGIN = 'post_delivery_message'
+
+
+def record(actor, account, arguments, sequence):
+    body = {'record_type': 'reporting_note', 'account': account,
+            'text': arguments['text'], 'responds_to': arguments['reply_to']}
+    content = (json.dumps(body, indent=2, ensure_ascii=False)+'\n').encode()
+    return {'path': f'{ROOT}/DESK-{sequence:04d}.json',
+            'data': base64.b64encode(content).decode(), 'sha256': sha256(content).hexdigest(),
+            'author': actor, 'origin': TOOL_ORIGIN, 'version': 1}
+
+
+def output_reads(records, actor, result):
+    from phase1.lab import shared_output_reads
+    if isinstance(result.get('messages'), list):
+        result = {**result, 'stdout': json.dumps(result['messages'], ensure_ascii=False)}
+    return shared_output_reads(records, actor, result, message_origins=('bash', TOOL_ORIGIN))
 
 
 def document(account):
@@ -42,7 +59,8 @@ def valid(account, path, data, records):
 def messages(shared, assignments):
     result = []
     for path, row in shared.items():
-        if not PATH.fullmatch(path) or row.get('author') not in assignments or row.get('origin') != 'bash':
+        if (not PATH.fullmatch(path) or row.get('author') not in assignments
+                or row.get('origin') not in ('bash', TOOL_ORIGIN)):
             continue
         body = decode(row['data'])
         if (not valid(assignments[row['author']]['account'], path, row['data'], shared)
@@ -55,13 +73,12 @@ def messages(shared, assignments):
 
 def audit(events, assignments):
     """Attribute exact reads and later writes without inferring their meaning."""
-    from phase1.lab import shared_output_reads
     authored, reads, replies, invalid = {}, [], [], []
     seen, unlinked, since_write = {}, [], {}
     for event in events:
         observed = {row['path']: row for key in ('full_body_output_matches', 'message_body_output_matches')
                     for row in event.get(key, []) if PATH.fullmatch(row.get('path', ''))}
-        expected = {row['path']: row for rows in shared_output_reads(
+        expected = {row['path']: row for rows in output_reads(
             authored.values(), event['actor'], event.get('result', {})).values() for row in rows}
         if set(observed) != set(expected):
             invalid.append(event['id'])
@@ -83,7 +100,8 @@ def audit(events, assignments):
             path = row.get('path', '')
             if not PATH.fullmatch(path):
                 continue
-            if (row.get('origin') != 'bash' or row.get('author') != event['actor']
+            if (row.get('origin') not in ('bash', TOOL_ORIGIN) or row.get('author') != event['actor']
+                    or (row.get('origin') == TOOL_ORIGIN and event.get('operation') != TOOL_ORIGIN)
                     or row['author'] not in assignments
                     or path in authored
                     or not valid(assignments[row['author']]['account'], path, row.get('data'), authored)):

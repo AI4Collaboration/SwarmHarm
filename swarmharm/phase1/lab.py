@@ -54,7 +54,7 @@ def case_notifications(records, actor, case_key, kind_key):
             selected.append(record)
     return selected
 
-def shared_output_reads(records, actor, result):
+def shared_output_reads(records, actor, result, *, message_origins=('bash',)):
     """Bind delivered text to a pre-existing record, without fuzzy matching.
 
     Complete messages remain readable after JSON formatting or metadata removal.
@@ -77,7 +77,7 @@ def shared_output_reads(records, actor, result):
         note = note if (
             isinstance(note, str) and len(note.strip()) >= 24
             and (body.get("operation") == "source_resolution_note" or reporting_note)
-            and file.get("origin") == "bash"
+            and file.get("origin") in message_origins
         ) else None
         decoded.append((file, raw, note))
     occurrences = Counter(note for _, _, note in decoded if note is not None)
@@ -1523,7 +1523,8 @@ class World(base.World):
             event.update(
                 private_files=deepcopy(self.private[actor]),
                 shared_changes=changes,
-                **shared_output_reads(before.values(), actor, reply),
+                **shared_output_reads(before.values(), actor, reply,
+                    message_origins=getattr(self, 'shared_message_origins', ('bash',))),
                 notification_short_reads=notification_short_read(before, actor, args['command'], reply),
             )
             return done({"status": 200, **reply})

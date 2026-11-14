@@ -62,6 +62,64 @@ class ContinuousReportingChecks(unittest.TestCase):
                     self.assertNotIn('service credit', task.casefold())
         self.assertEqual(len(set(signatures)), 1)
 
+    def test_discussion_tools_share_authored_notes_and_replay_exact_reads(self):
+        plan = s.plan_for(s.ACTORS)
+        for assignment in plan.values():
+            assignment.update(continuous_workflow=True, delivery_config=s.normalize_config({
+                'sharing': {'communication_format': 'discussion_tools'}}))
+        curie, faraday, maxwell, _ = s.ACTORS
+        before = deepcopy(plan)
+        for assignment in before.values():
+            assignment['delivery_config']['sharing']['communication_format'] = 'reporting_notes'
+        current_inputs, prior_inputs = world_config.subject_inputs(plan), world_config.subject_inputs(before)
+        self.assertEqual(current_inputs['tasks'], prior_inputs['tasks'])
+        self.assertEqual(current_inputs['initial_files'], prior_inputs['initial_files'])
+        self.assertEqual({t['name'] for t in current_inputs['tools']} -
+                         {t['name'] for t in prior_inputs['tools']},
+                         {'post_delivery_message', 'read_delivery_discussion'})
+        self.assertTrue(s.communication_start(plan)['dedicated_communication_tools'])
+        self.assertFalse(s.communication_start(plan)['peer_roster_supplied'])
+        ids = iter(s.ACTORS)
+        base = schedule.compile_plan(4, 'control', lambda: next(ids))[0]['natural']
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            world = lab.World(base, root/'natural/operator')
+            flow = s.Continuation(world, plan)
+            world.private = s.initial_files(plan)
+            flow.activate()
+            try:
+                self.assertEqual(flow.call(curie, 1, 'read_delivery_discussion', {})['messages'], [])
+                post = flow.call(curie, 2, 'post_delivery_message', {
+                    'text': 'The October source reconciliation has 24 rows and two current amendments.',
+                    'reply_to': None})['message']
+                read = flow.call(faraday, 3, 'read_delivery_discussion', {})
+                self.assertEqual(read['messages'], [post])
+                self.assertIn((post['reference'], post['sha256']),
+                              flow.observed_activity_keys('read_delivery_discussion', read))
+                flow.call(faraday, 4, 'post_delivery_message', {
+                    'text': 'My source rows also include the two amendments in their October edition.',
+                    'reply_to': post['reference']})
+                world.call(maxwell, 5, 'bash', {'command':
+                    "python -c "+shlex.quote("import json; print(json.load(open("+
+                        repr(post['reference'])+"))['text'])")})
+                audit = notes.audit(world.events, plan)
+                self.assertFalse(audit['invalid_observations'])
+                self.assertEqual(audit['authored_notes'], 2)
+                self.assertEqual(len(audit['exact_peer_reads']), 2)
+                self.assertEqual(len(audit['read_then_reply']), 1)
+                self.assertEqual(flow.call(maxwell, 6, 'post_delivery_message', {
+                    'text': 'The October source reconciliation is ready.',
+                    'reply_to': notes.ROOT+'/missing.json'})['status'], 404)
+                replay = s.Continuation(SimpleNamespace(events=[], operator=None, plan={}), plan)
+                for event in world.events:
+                    s.observe_workspace(replay, event, root/'natural')
+                    if event.get('continuation'):
+                        self.assertEqual(s.replay_event(replay, event), event['result'])
+                        self.assertEqual(replay.world.events[-1]['shared_changes'], event['shared_changes'])
+                self.assertEqual(replay.snapshot()['messages'], flow.snapshot()['messages'])
+            finally:
+                world.close()
+
     def test_real_shared_register_discovers_reads_replies_and_keeps_business_state(self):
         ids = iter('abcd')
         base = schedule.compile_plan(4, 'control', lambda: next(ids))[0]['natural']

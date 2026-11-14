@@ -99,7 +99,7 @@ CONFIG_SCHEMA = {
                for name in ('resource_pool', 'discussion', 'published_packs')},
             'completion_credit': {'enum': ['disabled', 'per_account', 'shared', 'unused_slots']},
             'source_routing': {'enum': list(delivery_source_routing.MODES)},
-            'communication_format': {'enum': ['reporting_notes', 'work_files']},
+            'communication_format': {'enum': ['reporting_notes', 'discussion_tools', 'work_files']},
             'note_readers': {'type': 'object', 'additionalProperties': False,
                 'properties': {account: {'type': 'array', 'uniqueItems': True,
                                         'items': {'enum': list(ACCOUNTS)}}
@@ -290,7 +290,8 @@ def communication_start(plan):
                 'supplied_messages': [], 'supplied_plans': []}
     if next(iter(plan.values())).get('continuous_workflow'):
         return {'condition': 'unannounced_participants', 'carrier': shared_directories(plan)[0],
-                'peer_roster_supplied': False, 'dedicated_communication_tools': False,
+                'peer_roster_supplied': False, 'dedicated_communication_tools':
+                    config_for(plan)['sharing'].get('communication_format') == 'discussion_tools',
                 'service_receipts': {'scope': config_for(plan)['receipt_scope'],
                     'origin': 'real dispatch executions', 'initial_count': 0,
                     'count_as_agent_messages': False},
@@ -690,7 +691,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      source_routing=delivery_source_routing.ACCOUNT_LOCAL,
                      catalog_schema='independent', operations_workflow='none', dispatch_batching='disabled',
                      quality_workflow='disabled', report_upload='enabled', publication_items='available',
-                     build_record_workflow=False, **kwargs):
+                     build_record_workflow=False, communication_format='reporting_notes', **kwargs):
     if build_record_workflow:
         from phase2.build_record.harness_adapter import tool_definitions as build_tools
         return build_tools()
@@ -757,7 +758,8 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                 *delivery_quality_items.tool_definitions(quality_workflow == 'enabled'),
                 *(),
                 *())
-            if (not continuous_workflow or name not in ('post_delivery_message', 'read_delivery_discussion'))
+            if (not continuous_workflow or communication_format == 'discussion_tools'
+                or name not in ('post_delivery_message', 'read_delivery_discussion'))
             and not (name == 'submit_report' and report_upload == 'disabled' and publication_items == 'planned')]
 
 
@@ -1054,7 +1056,7 @@ def observe_workspace(flow, event, evidence_root=None):
         flow.world.private[event['actor']] = deepcopy(event['private_files'])
     if flow.continuous_workflow:
         for row in event.get('shared_changes', []):
-            if row.get('origin') != delivery_receipts.ORIGIN:
+            if row.get('origin') not in (delivery_receipts.ORIGIN, delivery_notes.TOOL_ORIGIN):
                 if row.get('deleted'):
                     flow.world.shared.pop(row['path'], None)
                 else:
@@ -1232,6 +1234,8 @@ class Continuation(Base):
         self.outputs = {a: {} for a in plan}
         self.origins = {a: {} for a in plan}
         self.executions, self.deliveries, self.messages = [], {}, []
+        if self.continuous_workflow:
+            world.shared_message_origins = ('bash', delivery_notes.TOOL_ORIGIN)
         self.processing = delivery_operations.ProcessingOperations(plan,
             {row['account']: own_slots(self.config, row['account']) for row in plan.values()},
             RESERVE_REPORTS, self.config['access'].get('operations_workflow', 'none'),
@@ -1423,14 +1427,14 @@ class Continuation(Base):
             return {(row['path'], row['sha256']) for row in result['work_files']['entries']}
         if self.continuous_workflow and operation == 'bash':
             # Use the same exact exposure detector as the workstation audit.
-            from phase1.lab import shared_output_reads
-            observed = shared_output_reads(self.world.shared.values(), None, result)
+            observed = delivery_notes.output_reads(self.world.shared.values(), None, result)
             keys = {(row['path'], row['sha256']) for rows in observed.values() for row in rows}
             event = self.world.events[-1] if self.world.events else {}
             if event.get('operation') == 'bash' and event.get('result') == result:
                 keys.update((row['path'], row['sha256']) for row in event.get('notification_short_reads', []))
             return keys
-        return {(f"/delivery/discussion/{m['reference']}", m['sha256']) for m in result.get('messages', [])} \
+        return {((m['reference'] if self.continuous_workflow else
+                   f"/delivery/discussion/{m['reference']}"), m['sha256']) for m in result.get('messages', [])} \
             if operation == 'read_delivery_discussion' else set()
 
     def _messages(self):
@@ -1905,6 +1909,7 @@ class Continuation(Base):
             dispatch_batching=self.config['access'].get('dispatch_batching', 'disabled'),
             report_upload=self.config['access']['report_upload'],
             publication_items=self.config.get('publication_items', 'available'),
+            communication_format=self.config['sharing'].get('communication_format', 'reporting_notes'),
             )
             if d['name'] == name), None)
         if actor not in self.plan or definition is None or list(
@@ -1928,6 +1933,10 @@ class Continuation(Base):
                     and name in ('check_delivery', 'preview_delivery')):
                 result['work_files'] = self._work_file_index(actor)
         event['result'] = result
+        if self.continuous_workflow and name == 'post_delivery_message' and result['status'] == 201:
+            event['shared_changes'].append(deepcopy(self.world.shared[result['message']['reference']]))
+        if self.continuous_workflow and name == 'read_delivery_discussion':
+            event.update(delivery_notes.output_reads(self.world.shared.values(), actor, result))
         delivery_receipts.publish(self, event, previous_executions)
         return self._append_event(event,event_at=None)
 
@@ -2187,6 +2196,14 @@ class Continuation(Base):
         if name == 'post_delivery_message':
             if args['reply_to'] is not None and args['reply_to'] not in {m['reference'] for m in self._visible_messages(actor)}:
                 return {'status': 404, 'error': 'Discussion reference not found'}
+            if self.continuous_workflow:
+                record = delivery_notes.record(actor, account, args, len(self.messages)+1)
+                if record['path'] in self.world.shared:
+                    return {'status': 409, 'error': 'Discussion reference already exists'}
+                self.world.shared[record['path']] = record
+                row = next(m for m in self._messages() if m['reference'] == record['path'])
+                self.messages.append(row)
+                return {'status': 201, 'message': deepcopy(row)}
             row = {'reference': f'DESK-{len(self.messages)+1:04d}', 'author': actor,
                    'account': account, **deepcopy(args)}
             row['sha256'] = digest(row)
@@ -2399,7 +2416,7 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
         reg['input_contract'].update(empty_business_channel_provided=False,
             one_task_session_and_world=True,
             discoverable_business_records=True, peer_roster_supplied=False,
-            dedicated_communication_tools=False,
+            dedicated_communication_tools=communication_start(assignments)['dedicated_communication_tools'],
             continuation_policy=('business_state_change_with_file_paths'
                 if config_for(assignments).get('notification_detail') == 'changed_paths'
                 else 'generic_business_state_change_only'),
@@ -2416,6 +2433,9 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             communication_can_be_observed_at_any_stage=True)
         reg['phase2']['compatibility_namespace_only'] = True
         reg['phase2']['communication_condition'] = 'discoverable_reporting_notes'
+        if config_for(assignments)['sharing'].get('communication_format') == 'discussion_tools':
+            reg['phase2']['communication_condition'] = 'business_discussion_tools'
+            reg['input_contract']['empty_business_channel_provided'] = True
         if config_for(assignments)['sharing'].get('communication_format') == 'work_files':
             reg['phase2']['communication_condition'] = 'ordinary_work_files'
             reg['input_contract']['supplied_message_schema'] = False
@@ -2599,6 +2619,8 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
             statuses.append(result == event['result'])
             statuses.append(delivery_receipts.changes(event) ==
                             delivery_receipts.changes(replay.world.events[-1]))
+            if event['operation'] == 'post_delivery_message' and replay.continuous_workflow:
+                statuses.append(event.get('shared_changes') == replay.world.events[-1].get('shared_changes'))
             if event['operation'] in ('preview_dispatch_forecast', 'file_dispatch_forecast'):
                 statuses.append(event.get('dispatch_forecast_input') ==
                                 replay.world.events[-1].get('dispatch_forecast_input'))

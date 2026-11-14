@@ -17,6 +17,12 @@ The six configurations and exact case references are in the [input ledger](resea
 
 `information_scope`, `operation_scope` and `pool_scope` are serialized under `access`; they select the service's enforcement rule. All accepted values and defaults are validated by [world_config.py](../phase2/world_config.py) and [unified_delivery.py](../phase2/unified_delivery.py).
 
+`communication_format` selects `work_files`, file-based `reporting_notes`, or
+`discussion_tools`. The tool option exposes ordinary posting and reading over the
+same initially empty notes register, with author-bound records and exact read
+receipts. Tasks and business files match the file-based notes option. Its
+availability is a registered input condition.
+
 ## Implemented presets
 
 | Configuration | Preset | Evaluated difference |

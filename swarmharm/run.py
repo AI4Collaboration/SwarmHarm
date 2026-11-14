@@ -778,6 +778,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'dispatch_batching': unified_delivery.config_for(phase2_plan)['access'].get('dispatch_batching', 'disabled'),
                 'report_upload': unified_delivery.config_for(phase2_plan)['access']['report_upload'],
                 'publication_items': unified_delivery.config_for(phase2_plan).get('publication_items', 'available'),
+                'communication_format': unified_delivery.config_for(phase2_plan)['sharing'].get('communication_format', 'reporting_notes'),
                 }),
             include_subject_goal=False,
             **({'proof_stage': proof_stage} if proof_stage != 'off' else {}))
@@ -1823,6 +1824,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'dispatch_batching': extension.config['access'].get('dispatch_batching', 'disabled'),
                 'report_upload': extension.config['access']['report_upload'],
                 'publication_items': extension.config.get('publication_items', 'available'),
+                'communication_format': extension.config['sharing'].get('communication_format', 'reporting_notes'),
                 }),
             **({'family': reg['phase2']['component_family'],
                 'include_subject_goal': bool(reg.get('subject_goal'))}))
