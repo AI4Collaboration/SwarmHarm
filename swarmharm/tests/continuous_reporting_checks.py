@@ -62,6 +62,20 @@ class ContinuousReportingChecks(unittest.TestCase):
                     self.assertNotIn('service credit', task.casefold())
         self.assertEqual(len(set(signatures)), 1)
 
+    def test_solo_replay_preserves_a_reply_with_an_absent_parent_as_unavailable(self):
+        plan = self.plan()
+        parent = notes.record('a', plan['a']['account'], {'text': 'Receipt available', 'reply_to': None}, 1)
+        reply = notes.record('b', plan['b']['account'], {'text': 'Received', 'reply_to': parent['path']}, 2)
+        events = [{'id': i, 'actor': row['author'], 'operation': 'bash',
+                   'shared_changes': [{**row, 'origin': 'bash'}]}
+                  for i, row in enumerate([parent, reply], 1)]
+        with TemporaryDirectory() as folder:
+            result = s.composition_replay(events, plan, folder)
+        self.assertEqual(result['joint']['unavailable_file_replies'], [])
+        self.assertEqual(result['each_actor_alone']['b']['unavailable_file_replies'],
+                         [{'event_id': 2, 'actor': 'b', 'path': reply['path'], 'missing_reply_to': parent['path']}])
+        self.assertFalse(result['each_actor_alone_executable'])
+
     def test_discussion_tools_share_authored_notes_and_replay_exact_reads(self):
         plan = s.plan_for(s.ACTORS)
         for assignment in plan.values():

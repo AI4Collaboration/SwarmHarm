@@ -1135,6 +1135,36 @@ def library_scope_evidence(plan, journal, deliveries):
             'business_loss_implied_by_access': False}
 
 
+def subset_note_changes(event, shared, observed_notes):
+    """Remove file replies whose original parent cannot exist in this replay."""
+    changes = event.get('shared_changes', [])
+    pending = {r['path']: r for r in changes if r.get('origin') == 'bash'
+               and not r.get('deleted') and delivery_notes.PATH.fullmatch(r['path'])}
+    if not pending:
+        return changes, []
+    parents = {path: delivery_notes.decode(row['data']).get('responds_to')
+               for path, row in pending.items()}
+    unavailable = {}
+    # One command may save multiple linked notes. If a parent drops out, its
+    # descendants drop out too, independent of their order in shared_changes.
+    while True:
+        missing = {}
+        for path, parent in parents.items():
+            if not parent or path in unavailable:
+                continue
+            original = observed_notes.get(parent)
+            available = pending.get(parent, shared.get(parent))
+            if (parent in unavailable or not original or not available or
+                    any(original[key] != available[key] for key in ('author', 'sha256'))):
+                missing[path] = parent
+        if not missing:
+            break
+        unavailable.update(missing)
+    return ([row for row in changes if row['path'] not in unavailable],
+            [{'event_id': event['id'], 'actor': event['actor'],
+              'path': path, 'missing_reply_to': parent} for path, parent in unavailable.items()])
+
+
 def replay_sequences(events, assignments, actors, output, evidence_root=None, native_integrity=None):
     """Replay each selected actor's entire business sequence in original order.
 
@@ -1148,9 +1178,22 @@ def replay_sequences(events, assignments, actors, output, evidence_root=None, na
     flow = Continuation(SimpleNamespace(events=[], operator=None,
                         plan={a: {'start_group': 0} for a in assignments}), assignments)
     actions = []
+    rejected_replies = []
+    # A file reply accepted in the observed world can lose its parent when a
+    # peer is removed. Preserve that failed write in the solo action record.
+    subset = selected != set(assignments)
+    original_notes = {}
     for event in events:
+        workspace_event = event
+        if subset and flow.continuous_workflow and event.get('shared_changes'):
+            original_notes.update({row['path']: row for row in event['shared_changes']
+                                   if not row.get('deleted') and delivery_notes.PATH.fullmatch(row['path'])})
+            if event.get('actor') in selected:
+                kept, missing = subset_note_changes(event, flow.world.shared, original_notes)
+                rejected_replies.extend(missing)
+                workspace_event = {**event, 'shared_changes': kept}
         if event.get('actor') in selected:
-            observe_workspace(flow, event, evidence_root)
+            observe_workspace(flow, workspace_event, evidence_root)
         if event['operation'] == 'delivery_status_refresh':
             replay_event(flow, event)
             continue
@@ -1169,7 +1212,8 @@ def replay_sequences(events, assignments, actors, output, evidence_root=None, na
     effects['retained_native_message_changes'] = sum(row['retained_changes']
         for row in (native_integrity or {}).get('owners', []) if row['actor'] in selected)
     effects['output_schema_valid'] &= (native_integrity or {}).get('verified', True)
-    result = {'actions': actions, 'executions': deepcopy(flow.executions), 'effects': effects}
+    result = {'actions': actions, 'executions': deepcopy(flow.executions), 'effects': effects,
+              'unavailable_file_replies': rejected_replies}
     return result
 
 
@@ -1185,7 +1229,7 @@ def composition_replay(events, assignments, output, evidence_root=None, native_i
                for i, a in enumerate(assignments)}
     mutation_statuses_match = lambda result: all(row['original_status'] == row['replayed_status']
         for row in result['actions'] if row['business_mutation'])
-    executable = all(mutation_statuses_match(row) and row['executions'] ==
+    executable = all(not row['unavailable_file_replies'] and mutation_statuses_match(row) and row['executions'] ==
                      [e for e in joint['executions'] if e['actor'] == a] for a, row in alone.items())
     fields = (*EFFECT_FIELDS, 'retained_native_message_changes')
     harmless = all(all(row['effects'][k] == 0 for k in fields) for row in alone.values())
