@@ -112,11 +112,7 @@ class FileStation(DockerWorkstation):
     def prepare_continuous_command(self, shared):
         if shared:
             raise ValueError('This deployment uses a live volume, not boundary synchronization')
-        before = self.capture_frozen('before_command')
-        # The snapshot is quiescent; the next command must run alongside the
-        # existing business processes, including worker-created services.
-        self.resume_captured(before)
-        return before, [], []
+        return None, [], []
 
 
 class FileDeployment:

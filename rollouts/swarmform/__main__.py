@@ -165,19 +165,29 @@ class Cohort:
         self.reason = "all_finished"
         self.errors = {}
         self.active_tools = set()
+        self.snapshot_count = 0
 
     def snapshot(self, actor, phase, value):
         with self.lock:
+            sequence = self.snapshot_count + 1
             emit(
                 self.out / "observations.jsonl.gz",
-                {"actor": actor, "phase": phase, "at": time.time(), "snapshot": value},
+                {
+                    "sequence": sequence,
+                    "actor": actor,
+                    "phase": phase,
+                    "at": time.time(),
+                    "snapshot": value,
+                },
             )
+            self.snapshot_count = sequence
             if (
                 self.window_open
                 and time.monotonic() <= self.deadline
                 and phase != "terminal"
             ):
                 self.last[actor] = value
+            return {"path": "observations.jsonl.gz", "sequence": sequence}
 
     def stop(self, reason):
         if not self.stopping.is_set():
@@ -196,8 +206,15 @@ class Cohort:
         with command_binding(actor=actor, call_id=call_id):
             try:
                 result, snapshot = self.station.execute(actor, cmd)
-                self.snapshot(actor, "after_tool", snapshot)
-                self.trace(actor, "tool_result", call_id=call_id, result=result)
+                self.trace(
+                    actor,
+                    "tool_result",
+                    call_id=call_id,
+                    result=result,
+                    observation=snapshot.get("observation_reference"),
+                    command_observation=snapshot.get("command_observation"),
+                    timing=snapshot.get("workstation_service_timing"),
+                )
                 return result, snapshot
             except Exception as error:
                 self.trace(actor, "tool_error", call_id=call_id, error=str(error))
@@ -346,6 +363,7 @@ class Cohort:
                 "revision": args.revision,
                 "base_url": args.base_url,
                 "study_version": "chat-completions-v1",
+                "observation_policy": "post_tool_and_terminal_v1",
                 "source_sha256": source_digest(),
                 "python": platform.python_version(),
                 "httpx": httpx.__version__,
