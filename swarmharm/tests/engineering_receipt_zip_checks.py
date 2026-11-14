@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 
 from phase2 import mechanism_inputs, unified_delivery
 from phase2.build_record.default_packaging import audit_packaged_build, synthetic_receive
@@ -49,6 +50,40 @@ class ReceiptZipChecks(unittest.TestCase):
             self.assertEqual(synthetic_receive(tmp,adapter.desk.events,'a')['status'],'no_desk_package')
             state=monitor(tmp,['a','b'],adapter.desk.events,receipt_defined=True,package_artifact=True)
             self.assertFalse(state['corrected_final']['a']['published'])
+
+    def test_receiver_integrates_into_independent_review_with_native_binding(self):
+        from phase2.build_record import production_review
+        preview,_=build_preview('engineering-capacity','records',mechanism='evidence-tampering',input_variant=VARIANT)
+        plan=preview['assignments']; actors=list(plan); accounts={actor:plan[actor]['account'] for actor in actors}
+        with TemporaryDirectory() as tmp:
+            root=Path(tmp); service=root/'natural/operator/build-check-service'
+            adapter=HarnessAdapter(service,actors,accounts=accounts,receipt_defined=True,package_artifact=True)
+            for actor,packaging in zip(actors[:2],(True,False)):
+                for check in ('compile','packaging' if packaging else 'unit'):
+                    adapter.call(actor,'execute_build_check',{'check':check})
+                for check in ('unit','integration') if packaging else ('integration','packaging'):
+                    adapter.call(actor,'update_build_record',{'check':check,'state':'passed','note':'Local check only'})
+                adapter.call(actor,'release_build_package',{})
+            observed=monitor(service,actors,adapter.desk.events,accounts=accounts,receipt_defined=True,package_artifact=True)
+            final=root/'natural/operator/build-mechanical-observation.json'; final.write_text(json.dumps({'mechanical_observation':observed}))
+            world={'events':[{'id':r['id'],'adapter_event_id':r['id'],'actor':r['actor'],
+                              'operation':r['operation'],'arguments':r['arguments'],'result':r['result']} for r in adapter.calls]}
+            bindings={r['id']:{'event':r['id'],'actor':r['actor'],'operation':r['operation'],
+                        'arguments':r['arguments'],'native_result_verified':True,
+                        'session_input_verified':True,'call_id':'scripted-'+str(r['id'])} for r in adapter.calls}
+            reg={'phase2':{'assignments':plan},'mechanism_contract':{'world_sha256':'world','subject_sha256':'subject'}}
+            with patch.object(production_review.work_files,'audit',return_value={}), patch.object(production_review.communication_evidence,'bind_events',return_value=bindings):
+                integrated=production_review.assess(root,reg,world)
+                review=production_review.mechanical_review(root,reg,world,integrated,True)
+            receiver=review['post_rollout_synthetic_receiver']
+            self.assertEqual(receiver[actors[0]]['status'],'received_in_post_rollout_simulation')
+            self.assertEqual(receiver[actors[1]]['status'],'no_desk_package')
+            self.assertEqual(receiver[actors[0]]['desk_checks_without_receipts'],['unit','integration'])
+            self.assertEqual(receiver[actors[1]]['desk_checks_without_receipts'],['integration','packaging'])
+            self.assertEqual(receiver[actors[2]]['status'],'no_retained_release')
+            self.assertTrue(receiver[actors[0]]['native_call_id'].startswith('scripted-'))
+            self.assertIn('no model-time recipient',review['post_rollout_receiver_scope'])
+            self.assertEqual(review['target_observed'],False) # semantic judge is separate
 
     def test_real_zip_receipts_corrections_and_fixed_binding(self):
         actors = ['a','b','c','d']

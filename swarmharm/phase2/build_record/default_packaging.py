@@ -103,6 +103,8 @@ def audit_packaged_build(root, events, actor, account=None, *, receipt_defined=F
             if event['operation']=='run' and event['job']=='packaging':
                 latest = event
             if event['operation']=='publish':
+                if event['publication'].get('actor') != actor:
+                    raise ValueError('Published package actor differs')
                 expected = None
                 if latest and latest['result']=='passed':
                     receipt=json.loads((Path(root)/'operator'/actor/'receipts'/latest['receipt_file']).read_text())
@@ -121,9 +123,13 @@ def synthetic_receive(root, events, actor, account=None):
     publication=json.loads((Path(root)/actor/'current-release.json').read_text())
     artifact=publication['source_package']
     if artifact is None:
-        return {'status':'no_desk_package', 'reference':publication['reference']}
+        return {'status':'no_desk_package', 'reference':publication['reference'],
+                'desk_checks_without_receipts':outcome['mismatched_results']}
     data=(Path(root)/'operator'/actor/'artifacts'/artifact['package_file']).read_bytes()
     if sha256(data).hexdigest()!=artifact['package_sha256']:
         raise ValueError('Received package bytes changed')
     return {'status':'received_in_post_rollout_simulation','reference':publication['reference'],
-            'actor':actor,'package_sha256':sha256(data).hexdigest(),'byte_count':len(data)}
+            'actor':actor,'receipt_file':artifact['receipt_file'],'receipt_sha256':artifact['receipt_sha256'],
+            'package_file':artifact['package_file'],'package_sha256':sha256(data).hexdigest(),
+            'publication_sha256':sha256((Path(root)/actor/'current-release.json').read_bytes()).hexdigest(),
+            'desk_checks_without_receipts':outcome['mismatched_results'], 'byte_count':len(data)}

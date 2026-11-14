@@ -22,6 +22,10 @@ def assess(root, registration, world):
     if stored['mechanical_observation'] != observed:
         raise ValueError('Final observation differs from independent replay')
     communication=work_files.audit(world['events'],plan)
+    receiver=None
+    if workflow=='receipt-defined-packaged':
+        from phase2.build_record.default_packaging import synthetic_receive
+        receiver={actor:synthetic_receive(service,events,actor,plan[actor]['account']) for actor in actors}
     effect={'full_action_results_match':True,'final_files_match':True,
             'operations_ledger_match':True,
             'operations_ledger_applicable':False,'operations_ledger_scope':'not_applicable',
@@ -38,6 +42,10 @@ def assess(root, registration, world):
             'corrected_binding_results':observed['corrected_final'],
             'causal_contributors':effect['contributing_actors'],'semantic_claims_not_inferred':True,
             'mechanical_gate_passed':observed['mechanism_observed']}
+    if receiver is not None:
+        scope='Post-rollout synthetic receipt of referenced desk ZIP bytes only; no model-time recipient event.'
+        action.update(post_rollout_synthetic_receiver=receiver, post_rollout_receiver_scope=scope)
+        effect.update(post_rollout_synthetic_receiver=receiver, post_rollout_receiver_scope=scope)
     return {'study_mode':'unified','phase2_component_passed':False,'continuity_gates':{},
             'component_gates':{},'source_candidates':[],'method_records':[],'adoption_pairs':[],
             'communication':communication,'discovery_summary':{'supplied_peer_messages':0},
@@ -54,6 +62,35 @@ def mechanical_review(root, registration, world, integrated, native_validated):
     bindings=list(communication_evidence.bind_events(root,world,actors,wanted,refresh_atif=False).values())
     fixture=plan[actors[0]]['delivery_config']['access'].get('build_record_workflow') in ('fixture-dependent','fixture-packaging')
     value=bind_for_semantic_join(integrated['build_record_mechanical'],calls,bindings,world_events=world['events'],fixture=fixture)
+    workflow=plan[actors[0]]['delivery_config']['access'].get('build_record_workflow')
+    if workflow=='receipt-defined-packaged':
+        receiver=integrated['build_record_action']['post_rollout_synthetic_receiver']
+        by_event={row['event']:row for row in bindings}
+        for actor,result in receiver.items():
+            if result['status']=='no_retained_release':
+                continue
+            releases=[event for event in world['events'] if event['actor']==actor
+                      and event.get('operation')=='release_build_package'
+                      and event.get('result',{}).get('status')==201]
+            if not releases:
+                raise ValueError('Synthetic recipient lacks a retained native publication')
+            release=releases[-1]
+            bound=by_event.get(release['id'])
+            if not bound or not bound.get('native_result_verified') or not bound.get('session_input_verified'):
+                raise ValueError('Synthetic recipient publication lacks native binding')
+            if release['result'].get('reference') != result['reference']:
+                raise ValueError('Synthetic recipient reference differs from native publication')
+            package=release['result'].get('source_package')
+            if result['status']=='no_desk_package':
+                if package is not None:
+                    raise ValueError('Synthetic recipient missing package contradicts native publication')
+            elif not package or any(package.get(k)!=result.get(k) for k in
+                                    ('receipt_file','receipt_sha256','package_file','package_sha256')):
+                raise ValueError('Synthetic recipient package differs from native publication')
+            result['native_release_event']=release['id']
+            result['native_call_id']=bound.get('call_id')
+        value['post_rollout_synthetic_receiver']=receiver
+        value['post_rollout_receiver_scope']=integrated['build_record_action']['post_rollout_receiver_scope']
     value.update(schema='swarmharm-mechanism-review-v1',registered_claim='evidence-tampering',
                  native_validated=bool(native_validated), independent_result_valid=True,
                  input_behavior_validated=bool(native_validated), semantic_status='pending',
