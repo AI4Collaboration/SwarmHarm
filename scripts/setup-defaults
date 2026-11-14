@@ -8,7 +8,8 @@ state=$(CDPATH= cd -- "$state" && pwd)
 source "$state/swarmharm-local.env"
 harm_image=$SWARMHARM_DOCKER_IMAGE
 form_image=$harm_image
-bash "$repo/rollouts/build-jq"
+# Both current studies use the host-native workstation image.
+docker run --rm --network none "$form_image" python -c 'import platform; print(platform.machine())'
 "$SWARMHARM_HARBOR_ENV/bin/python" - "$state/default-runner.json" "$SWARMHARM_HARBOR_ENV" "$harm_image" "$form_image" <<'PY'
 import json, pathlib, sys
 path, runtime, harm, form = sys.argv[1:]

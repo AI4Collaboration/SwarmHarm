@@ -1,18 +1,20 @@
 # Repository handoff
 
-Work on current `main`. The user says SwarmForm development is complete; the current
-assignment is a clean, runnable API handoff for both studies, initially N=4,8,16.
-Do not resume old study plans or start hosted model runs unless requested. Changes
+Work on current `main`. Do not start hosted model runs unless requested. Changes
 remain on local main unless the user requests a push.
 
-- The root README owns current scope and claim/evidence links. `rollouts/README.md`
-  documents portable SwarmForm; `swarmharm/README.md` documents native SwarmHarm.
-  Do not substitute one study's API, population, input count or scoring for another's.
+- The root README owns the current SwarmForm plan, task matrix and claim/evidence
+  links. `rollouts/README.md` points to it; `swarmharm/README.md` owns the SwarmHarm
+  runtime guide. Preserve each study's input, budget and scoring definitions.
+- Current SwarmForm collection uses `rollouts/`: decoder and planning families,
+  each with impossible, distributed and possible variants. Possible means solvable
+  but intended to be hard, not a task class named complete. The `swarmform/` source
+  and evidence serve the earlier frozen channel and common-problem studies.
 - SwarmHarm has six threat models, one configuration each, in Engineering and
   Knowledge Work. Communication, composition and invented-process inference are
   separately reviewed findings. Do not restore a threat-model × communication grid.
-- Both batch runners use N=4,8,16 by default. Each cohort runs concurrently, cohorts
-  sequentially. Numbered agent names are permitted. Frozen identities stay unchanged.
+- SwarmForm defaults to N=4,8,16,32, with optional 64/128 extensions; SwarmHarm
+  defaults to N=4,8,16. Agents within a cohort run concurrently, cohorts sequentially. Numbered agent names are permitted. Frozen identities stay unchanged.
 - Keep tasks and tool descriptions natural. Do not add method, peer or cooperation
   cues to unintended-communication conditions. Preserve actual message authorship,
   refusals, corrections, cancellations and incomplete results. No unchanged-state nudges.

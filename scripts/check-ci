@@ -6,7 +6,6 @@ import concurrent.futures
 import contextlib
 import json
 import os
-import shutil
 from pathlib import Path
 import subprocess
 import sys
@@ -24,8 +23,7 @@ WORKLOADS = {'engineering': 'engineering_input', 'fulfillment': 'fulfillment_inp
 DOCKER_TESTS = {'swarmform_deployment', 'swarmform_read_observer', 'swarmform_runtime',
                 'swarmform_workstation_retention', 'workstation_patch', 'structure_native',
                 'swarmform_domain', 'native_harness', 'swarmform_collection', 'research_latency',
-                'live', 'collector', 'native_goal', 'query_gateway', 'unified_runtime',
-                'reference_runtime'}
+                'live', 'collector', 'native_goal', 'query_gateway', 'unified_runtime'}
 
 
 def uses_docker(stem):
@@ -88,20 +86,15 @@ def select_checks(files, full=False):
             checks.add('inventory')
         elif name == 'scripts/archive-trajectories':
             suites('trajectory_archive')
-        elif name in {'scripts/run-evals', 'scripts/setup-defaults', 'shared/model_lineup.py', 'shared/batch_resume.py'}:
-            suites('default_runner', 'batch_plan', 'api_handoff', 'batch_resume')
-            if name == 'scripts/setup-defaults':
-                suites('reference_runtime', roots=('rollouts',))
+        elif name in {'scripts/run-evals', 'scripts/setup-defaults', 'shared/model_lineup.py'}:
+            suites('default_runner', 'batch_plan', 'api_handoff')
         elif name == 'swarmharm/run_matrix.py':
             suites('batch_plan', roots=(LAB,))
         elif name.startswith('rollouts/'):
             suites('api_handoff', 'portable_runtime', roots=('rollouts',))
-            if name in {'rollouts/swarmform/program_reference.py', 'rollouts/swarmform/__main__.py',
-                        'rollouts/swarmform/formation_common.py', 'rollouts/swarmform/formation_deployment.py',
-                        'rollouts/swarmform/file_deployment.py', 'rollouts/swarmform/job_deployment.py',
-                        'rollouts/swarmform/read_observer.py', 'rollouts/workstation.py', 'rollouts/check_runtime.py'}:
-                suites('reference_runtime', roots=('rollouts',))
-            if name in {'rollouts/swarmform/__main__.py', 'rollouts/workstation.py'}:
+            if name in {'rollouts/swarmform/__main__.py', 'rollouts/workstation.py',
+                        'rollouts/swarmform/file_deployment.py', 'rollouts/swarmform/socket_deployment.py',
+                        'rollouts/swarmform/formation_deployment.py', 'rollouts/swarmform/formation_common.py'}:
                 suites('api_collect', roots=('rollouts',))
         elif name == 'scripts/check_format_contract.py':
             checks.add('format')
@@ -192,7 +185,7 @@ def select_checks(files, full=False):
         elif name == 'swarmform/scripts/run_swarmform_structure.py':
             suites('swarmform_structure', 'structure_timeline', 'structure_native', 'publication_updates', 'sustained_research', 'research_latency')
         elif name in {'shared/api_transport.py', 'shared/model_session.py', 'scripts/check-model-lineup'}:
-            suites('model_transport', 'api_handoff', 'batch_plan', 'codex_login')
+            suites('model_transport', 'api_handoff', 'batch_plan')
             harnesses.update(('codex', 'claude', 'pi'))
         elif name == 'shared/guardrails.py':
             suites('native_harness', 'local_source', 'batch_plan', 'model_transport')
@@ -201,7 +194,6 @@ def select_checks(files, full=False):
                             if name.startswith('shared/' + a)), None)
             if adapter:
                 suites(adapter + '_collect', 'native_*', 'format')
-                if adapter == 'codex':suites('codex_login')
                 harnesses.add(adapter)
             else:
                 suites('*')  # Shared runtime and evidence code serves both studies.
@@ -312,8 +304,7 @@ def main(argv=None):
         return 0
     if plan['dependencies'] and sys.version_info[:2] != (3, 12):
         parser.error('Selected code checks need Python 3.12 from the pinned runtime environment.')
-    missing = [h for h in plan['harnesses'] if (not shutil.which('codex') if h == 'codex'
-               else not (ROOT / 'shared' / h / 'node_modules').is_dir())]
+    missing = [h for h in plan['harnesses'] if not (ROOT / 'shared' / h / 'node_modules').is_dir()]
     if missing:
         parser.error('Selected checks need these harnesses: scripts/setup-local ' + ' '.join(missing))
     commands = {

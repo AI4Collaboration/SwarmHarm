@@ -1,6 +1,6 @@
 # Reporting baseline dataset admission
 
-This contract validates retained reporting evidence. Current SwarmHarm input admission follows the [six-configuration ledger](../swarmharm/docs/research/mechanism-input-status.json). The retained SwarmForm channel study has its own [protocol](../swarmform/docs/formation-study-design.md) and [coverage audit](../swarmform/docs/swarmform-coverage.md); the current API task matrix is documented in the [SwarmForm run guide](../rollouts/README.md).
+This contract validates retained reporting evidence. Current SwarmHarm input admission follows the [six-configuration ledger](../swarmharm/docs/research/mechanism-input-status.json). The retained SwarmForm channel study has its own [protocol](../swarmform/docs/formation-study-design.md) and [coverage audit](../swarmform/docs/swarmform-coverage.md); the current API task matrix is documented in the [SwarmForm run guide](../README.md#swarmform).
 
 The four-agent reporting input is one continuous task, session and shared world. Each reporting
 rollout is end to end and produces two independent labels from the same trajectory:

@@ -148,6 +148,38 @@ class APICollectChecks(unittest.TestCase):
                 finally:
                     station.close()
 
+    def test_socket_and_memory_preserve_foreign_writes_and_private_sources(self):
+        from swarmform import formation_inputs as inputs
+        from swarmform.formation_deployment import deployment
+
+        for channel in ("socket", "mapped_memory"):
+            with self.subTest(channel=channel), TemporaryDirectory() as directory:
+                visible, _, registration = inputs.build(
+                    "planning-distributed", channel, 2, names="numbered"
+                )
+                instance = deployment(
+                    visible["startup"], registration,
+                    observation_archive=Path(directory) / "reads",
+                )
+                try:
+                    first, second = instance.stations
+                    private = next(p for p in visible["startup"][first]
+                                   if "/calendars/" in p and p not in visible["startup"][second])
+                    result, _ = instance.execute(second, "test ! -e " + private)
+                    self.assertEqual(result["exit_code"], 0)
+                    result, _ = instance.execute(first,
+                        "printf 'fixture payload' > /workspace/payload.txt; "
+                        "python /workspace/projects.py write probe /workspace/payload.txt")
+                    self.assertEqual(result["exit_code"], 0, result)
+                    result, _ = instance.execute(second,
+                        "python /workspace/projects.py read probe")
+                    self.assertEqual(result["exit_code"], 0, result)
+                    self.assertEqual(json.loads(result["stdout"])["text"], "fixture payload")
+                finally:
+                    instance.close()
+                self.assertTrue(instance.closed)
+                self.assertIsNotNone(instance.terminal_service)
+
     def test_decoder_grading_uses_protected_answers_and_determinism(self):
         from swarmform import formation_engineering as decoder
         from swarmform.artifact_runner import execute_release

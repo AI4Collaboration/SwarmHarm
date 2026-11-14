@@ -26,7 +26,7 @@ from swarmform.__main__ import seal_evidence
 from run_matrix import completed_evidence
 from swarmform.file_deployment import FileDeployment
 from swarmform.formation_common import CommonWorkspace
-from swarmform.job_deployment import JobDeployment, create_private_network
+from swarmform.socket_deployment import SocketDeployment, create_private_network
 from swarmform.read_observer import ObservedFileStation, trace_blocks
 
 
@@ -188,14 +188,14 @@ class LifecycleTests(unittest.TestCase):
             1, "docker", stderr="Pool overlaps with other one on this address space"
         )
         with patch(
-            "swarmform.job_deployment.command", side_effect=[collision, None]
+            "swarmform.socket_deployment.command", side_effect=[collision, None]
         ) as run:
             create_private_network("test-network")
         self.assertEqual(run.call_count, 2)
         for call in run.call_args_list:
             argv = call.args[0]
             self.assertTrue(argv[argv.index("--subnet") + 1].endswith("/29"))
-        deployment = JobDeployment.__new__(JobDeployment)
+        deployment = SocketDeployment.__new__(SocketDeployment)
         deployment.closed = False
         deployment.stations = {}
         deployment.resources = Mock()

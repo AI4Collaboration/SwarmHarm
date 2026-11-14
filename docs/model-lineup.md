@@ -19,7 +19,7 @@ This verifies connectivity and record capture, not benchmark outcomes or larger-
   lineup then has 10 models.
 - **Google:** Gemini 4 Argon (`google/gemini-4-argon`).
   [Official version list](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/model-versions).
-- **Moonshot:** Kimi K3 (`moonshotai/kimi-k3`).
+- **Moonshot:** Kimi K3.1 Pro (`moonshotai/kimi-k3.1-pro`).
   [Official model guide](https://platform.kimi.ai/docs/guide/kimi-k3-1-pro-quickstart).
 - **Z.ai:** full GLM-5.3 (`z-ai/glm-5.3`).
   [Official model guide](https://docs.z.ai/guides/llm/glm-5.3).
@@ -54,8 +54,8 @@ all 11 models; this only maps provider spellings. The lower-level study runners 
 The standalone `scripts/check-model-lineup` command remains available when only an
 API check is needed. Its results are integration evidence, not study outcomes.
 
-Compare N=4,8,16 with task materials and per-agent budgets held fixed within each
-study. Goal stays off; each agent retains its own session. High reasoning is
+SwarmForm defaults to N=4,8,16,32; SwarmHarm to N=4,8,16. Hold task materials
+and per-agent budgets fixed within each study. Goal stays off; each agent retains its own session. High reasoning is
 requested and the actual upstream parameter is recorded; this does not imply
 equal compute across models. Never relabel historical runs with these new adapters.
 [SwarmForm setup](../rollouts/README.md) · [SwarmHarm setup](../swarmharm/README.md).

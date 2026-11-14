@@ -8,7 +8,7 @@
 
 ## Structure research and SwarmHarm
 
-- [Retained eight-agent structure results](../../swarmform/docs/structure-common-problem-long-v3-findings.json) keep their original settings. The current runnable task matrix and budgets are in the [SwarmForm API guide](../../rollouts/README.md).
+- [Retained eight-agent structure results](../../swarmform/docs/structure-common-problem-long-v3-findings.json) keep their original settings. The current runnable task matrix and budgets are in the [SwarmForm API guide](../../README.md#swarmform).
 - **SwarmHarm:** [current inputs and mechanism evidence](../../swarmharm/docs/research/mechanism-input-status.json), [retained findings](../../swarmharm/docs/phase2-design.md), [balanced comparison](../../swarmharm/docs/research/balanced-study-v2-results.json) and [complete trajectories](../../swarmharm/docs/research/trajectory-release.json).
 - [Additional formation cases](../../swarmharm/docs/research/phase1-native-trajectory-archives.json), [workstation-history comparison](../../swarmharm/docs/research/workstation-history-results.json) and [work-journal validation](../../swarmharm/docs/research/workstation-context-validation.json).
 

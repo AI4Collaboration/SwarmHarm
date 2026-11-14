@@ -3,36 +3,14 @@ import base64
 import gzip
 import json
 import os
-from pathlib import Path
 import secrets
 import shlex
 from hashlib import sha256
 import subprocess
 
 from swarmform.file_deployment import FileDeployment
-from swarmform.job_deployment import JobDeployment, command
+from swarmform.socket_deployment import SocketDeployment, command
 from workstation import IMAGE
-
-
-class ArtifactService(JobDeployment):
-    connection_path = "/workspace/project-access.json"
-    service_url = "http://projects:8080"
-    service_alias = "projects"
-
-    def __init__(self, startup, **kwargs):
-        super().__init__(startup, **kwargs)
-        for binding in self.bindings.values():
-            for field in ("shared_job_scope", "processing_profile", "processing_capacity"):
-                binding.pop(field, None)
-            binding.update(channel_family="socket", service_state_path="/workspace/project-store.json")
-
-    def service_files(self, accounts, profile):
-        return {
-            "/workspace/formation_store.py": Path(__file__).with_name("formation_store.py").read_text(),
-            "/workspace/formation_service.py": Path(__file__).with_name("formation_service.py").read_text(),
-            "/workspace/server.py": "from formation_service import serve\nserve()\n",
-            "/workspace/accounts.json": json.dumps(accounts),
-        }
 
 
 class WorkMemory(FileDeployment):
@@ -122,7 +100,7 @@ def deployment(startup, registration, **observations):
     family = registration["channel_family"]
     shared = registration["deployment"]["shared"]
     if family == "socket":
-        instance = ArtifactService(startup, shared=shared, **observations)
+        instance = SocketDeployment(startup, shared=shared, **observations)
         return checked(instance, startup, registration)
     options = dict(population=len(startup), observation_settle_seconds=2, **observations)
     if family == "mapped_memory":

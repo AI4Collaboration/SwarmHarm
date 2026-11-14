@@ -1,4 +1,4 @@
-"""Plan or execute matched SwarmForm cohorts against one Chat Completions deployment."""
+"""Single-model SwarmForm component. Use scripts/run-evals for the full default lineup."""
 
 import argparse
 import hashlib
@@ -8,6 +8,9 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "shared"))
+import model_lineup as defaults
 
 from swarmform.__main__ import CHANNELS, ROOT, source_digest, write_json
 from swarmform.formation_inputs import TASK_MODULES
@@ -52,11 +55,25 @@ def cases(args):
                         model=args.model,
                         revision=args.revision,
                         base_url=args.base_url,
+                        harness=getattr(args, "harness", "chat-completions"),
+                        api_protocol=getattr(args, "api_protocol", "chat-completions"),
+                        served_model=getattr(args, "served_model", None) or args.model,
                     )
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--harness",
+        choices=["auto", "codex", "claude-code", "pi-sdk", "chat-completions"],
+        default="auto",
+    )
+    parser.add_argument(
+        "--api-protocol",
+        choices=["chat-completions", "native"],
+        default="chat-completions",
+    )
+    parser.add_argument("--served-model")
     parser.add_argument("--model", required=True, help="Exact served model ID")
     parser.add_argument(
         "--revision", help="Immutable checkpoint or deployment revision"
@@ -65,16 +82,23 @@ def main():
         "--base-url",
         default=os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1"),
     )
-    parser.add_argument("--populations", nargs="+", type=int, default=[4, 8, 16, 32])
-    parser.add_argument("--key-file", type=Path, default=os.environ.get("OPENAI_API_KEY_FILE"))
     parser.add_argument(
-        "--tasks", nargs="+", choices=TASK_MODULES, default=list(TASK_MODULES)
+        "--populations",
+        nargs="+",
+        type=int,
+        default=list(defaults.SWARMFORM_POPULATIONS),
+    )
+    parser.add_argument(
+        "--key-file", type=Path, default=os.environ.get("OPENAI_API_KEY_FILE")
+    )
+    parser.add_argument(
+        "--tasks", nargs="+", choices=TASK_MODULES, default=list(defaults.TASKS)
     )
     parser.add_argument(
         "--names", choices=["numbered", "physicists"], default="numbered"
     )
     parser.add_argument("--seconds", type=int, default=600)
-    parser.add_argument("--repeats", type=int, default=1)
+    parser.add_argument("--repeats", type=int, default=defaults.REPEATS)
     parser.add_argument(
         "--execute", action="store_true", help="Run planned rows sequentially"
     )
@@ -82,6 +106,11 @@ def main():
         "--out", type=Path, help="Parent directory outside the repository"
     )
     args = parser.parse_args()
+    if args.harness == "auto":
+        sys.path.insert(0, str(ROOT.parent / "shared"))
+        from guardrails import native_harness
+
+        args.harness = native_harness({"model": args.model})
     if not (
         1 <= args.seconds <= 600 and args.repeats >= 1 and min(args.populations) >= 2
     ):
@@ -105,13 +134,17 @@ def main():
     source = source_digest()
     from workstation import IMAGE
 
-    rows = [{**row, 'source_sha256': source, 'image': IMAGE} for row in cases(args)]
+    rows = [{**row, "source_sha256": source, "image": IMAGE} for row in cases(args)]
     if args.execute:
         root = args.out.resolve()
         root.mkdir(parents=True, exist_ok=True)
-        if (root/'plan.json').exists() and json.loads((root/'plan.json').read_text()) != rows:
-            parser.error('This output root contains a different plan; choose a fresh --out')
-        write_json(root/'plan.json', rows)
+        if (root / "plan.json").exists() and json.loads(
+            (root / "plan.json").read_text()
+        ) != rows:
+            parser.error(
+                "This output root contains a different plan; choose a fresh --out"
+            )
+        write_json(root / "plan.json", rows)
     records = []
     for row in rows:
         encoded = json.dumps(row, sort_keys=True)
@@ -127,21 +160,24 @@ def main():
             / (f"{row['task']}-{row['channel']}-r{row['replicate']}-{cohort_id}")
         )
         summary = directory / "summary.json"
-        record = {**row, 'output': str(directory)}
-        archive_index = directory.with_name(directory.name+'.archive.json')
+        record = {**row, "output": str(directory)}
+        archive_index = directory.with_name(directory.name + ".archive.json")
         if not directory.exists() and archive_index.exists():
             archive = json.loads(archive_index.read_text())
-            exists = Path(archive['archive']).is_file()
-            record.update(status='archived' if exists else 'archive_missing',
-                          archive=archive['archive'], sha256=archive['sha256'])
+            exists = Path(archive["archive"]).is_file()
+            record.update(
+                status="archived" if exists else "archive_missing",
+                archive=archive["archive"],
+                sha256=archive["sha256"],
+            )
             failures += int(not exists)
             records.append(record)
-            write_json(root/'index.json', {'study': 'swarmform', 'runs': records})
+            write_json(root / "index.json", {"study": "swarmform", "runs": records})
             continue
         if directory.exists():
             if completed_evidence(directory):
                 print("Already completed", directory, flush=True)
-                record['status'] = 'complete'
+                record["status"] = "complete"
             else:
                 print(
                     "Preserved incomplete or damaged attempt",
@@ -149,9 +185,9 @@ def main():
                     file=sys.stderr,
                 )
                 failures += 1
-                record['status'] = 'incomplete'
+                record["status"] = "incomplete"
             records.append(record)
-            write_json(root/'index.json', {'study': 'swarmform', 'runs': records})
+            write_json(root / "index.json", {"study": "swarmform", "runs": records})
             continue
         command = [
             sys.executable,
@@ -170,6 +206,12 @@ def main():
             str(args.seconds),
             "--model",
             args.model,
+            "--harness",
+            args.harness,
+            "--api-protocol",
+            args.api_protocol,
+            "--served-model",
+            args.served_model or args.model,
             "--base-url",
             args.base_url,
             "--out",
@@ -181,16 +223,27 @@ def main():
             command.extend(["--key-file", str(args.key_file.expanduser().resolve())])
         print("Starting", directory, flush=True)
         directory.parent.mkdir(parents=True, exist_ok=True)
-        log = directory.with_name(directory.name+'.log')
-        write_json(root/'index.json', {'study': 'swarmform', 'runs': [*records, {**record, 'status': 'running'}]})
-        with log.open('a') as stream:
-            code = subprocess.run(command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT).returncode
+        log = directory.with_name(directory.name + ".log")
+        write_json(
+            root / "index.json",
+            {"study": "swarmform", "runs": [*records, {**record, "status": "running"}]},
+        )
+        with log.open("a") as stream:
+            code = subprocess.run(
+                command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT
+            ).returncode
         failures += int(code != 0)
-        record.update(status='complete' if code == 0 else 'incomplete', returncode=code, log=str(log))
+        record.update(
+            status="complete" if code == 0 else "incomplete",
+            returncode=code,
+            log=str(log),
+        )
         if directory.exists():
-            record['raw_bytes'] = sum(p.stat().st_size for p in directory.rglob('*') if p.is_file())
+            record["raw_bytes"] = sum(
+                p.stat().st_size for p in directory.rglob("*") if p.is_file()
+            )
         records.append(record)
-        write_json(root/'index.json', {'study': 'swarmform', 'runs': records})
+        write_json(root / "index.json", {"study": "swarmform", "runs": records})
     return int(failures != 0)
 
 

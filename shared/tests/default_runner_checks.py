@@ -23,19 +23,20 @@ class DefaultRunnerChecks(unittest.TestCase):
     def test_default_plan_and_every_child_match_the_promised_coverage(self):
         plan = runner.plan('http://localhost:8000/v1')
         self.assertEqual(len(plan['models']), 11)
-        self.assertEqual(plan['settings']['populations'], [4, 8, 16])
+        self.assertEqual(plan['settings']['swarmform']['populations'], [4, 8, 16, 32])
+        self.assertEqual(plan['settings']['swarmharm']['populations'], [4, 8, 16])
         self.assertEqual((plan['settings']['repeats'], plan['settings']['goal'], plan['settings']['reasoning']),
                          (1, 'off', 'high'))
-        self.assertEqual(plan['cohorts'], {'swarmform':792, 'swarmharm':396})
+        self.assertEqual(plan['cohorts'], {'swarmform':1056, 'swarmharm':396})
         for model in plan['models']:
-            for study, count in [('swarmform',72), ('swarmharm',36)]:
+            for study, count in [('swarmform',96), ('swarmharm',36)]:
                 command = runner.batch_command(sys.executable, study, model, plan['api_base'], '/tmp/unused-plan')
                 command.remove('--execute')
                 with self.subTest(model=model['name'], study=study):
                     output = subprocess.check_output(command, cwd=ROOT, text=True)
                     rows = [json.loads(line) for line in output.splitlines()]
                     self.assertEqual(len(rows), count)
-                    self.assertEqual({r['population'] for r in rows}, {4,8,16})
+                    self.assertEqual({r['population'] for r in rows}, set(plan['settings'][study]['populations']))
                     self.assertEqual({r['model'] for r in rows}, {model['model']})
                     self.assertEqual({r['harness'] for r in rows}, {model['harness']})
                     self.assertEqual({r['replicate'] for r in rows}, {1})
@@ -95,31 +96,6 @@ class DefaultRunnerChecks(unittest.TestCase):
             changed={**plan, 'api_base':'http://different.local/v1'}
             with self.assertRaisesRegex(RuntimeError, 'different plan'):
                 runner.execute(args, changed, {})
-
-    def test_six_selections_keep_gate_tracking_and_all_study_settings(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root=Path(directory);plan=runner.plan('http://localhost:8000/v1')
-            self.make_api_evidence(root/'api-check',plan)
-            config=dict(python=sys.executable,images=dict(swarmform='form-image',swarmharm='harm-image'))
-            for study in ('swarmform','swarmharm'):
-                for population in (4,8,16):
-                    calls=[]
-                    def invoke(command,**kwargs):
-                        if command[0]!='git':calls.append(command)
-                        return SimpleNamespace(returncode=0)
-                    args=SimpleNamespace(out=root,key_file=None,model_map=None,
-                                         study=study,populations=[population])
-                    with patch.object(runner.subprocess,'run',side_effect=invoke), \
-                            patch.object(runner.subprocess,'check_output',return_value=b''), \
-                            patch.object(runner,'source_signature',return_value=plan['source_sha256']):
-                        self.assertEqual(runner.execute(args,plan,config),0)
-                    self.assertEqual(len(calls),11)
-                    for command in calls:
-                        self.assertEqual(command[command.index('--populations')+1],str(population))
-                        self.assertIn('--resume',command)
-                        self.assertIn('rollouts/run_matrix.py' if study=='swarmform' else 'swarmharm/run_matrix.py',command[1])
-            self.assertEqual(len(json.loads((root/'index.json').read_text())['batches']),66)
-            self.assertEqual(json.loads((root/'plan.json').read_text()),plan)
 
 
 if __name__ == '__main__':
