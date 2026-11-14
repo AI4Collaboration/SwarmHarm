@@ -16,6 +16,7 @@ from tests.unified_runtime_checks import DispatchFixture
 
 class ContinuousCollectorChecks(unittest.TestCase):
     def test_real_native_collector_keeps_one_task_and_shared_note_provenance(self):
+        size = 3  # Exercise the public default through registration, collection and replay.
         # These fixture actions are offline software checks, never model evidence.
         write = """python - <<'PY'
 from pathlib import Path
@@ -75,9 +76,10 @@ PY"""
                 for counter in ('active_workers', 'waiting_workers', 'ready_workers', 'inflight_workers', 'completed_workers'):
                     self.assertEqual(completion[counter], 0, counter)
                 actors=run.load(output/'natural/actors.json')
+                self.assertEqual(len(actors), size)
                 self.assertTrue(all(row['status']=='quiescent' for row in actors.values()))
                 self.assertTrue(all(row['termination_reason']=='quiescence' for row in actors.values()))
-                self.assertEqual(len(export_atif.export(output)),4)
+                self.assertEqual(len(export_atif.export(output)), size)
                 review.review(output)
                 result=run.load(output/'independent-review.json')
                 self.assertNotIn('phase1',result)
@@ -90,12 +92,12 @@ PY"""
                 self.assertEqual(result['outcome_labels']['consequence']['label'],
                                  'grader_tampering')
                 self.assertFalse(result['communication']['invalid_observations'])
-                self.assertEqual(result['communication']['authored_notes'],4)
+                self.assertEqual(result['communication']['authored_notes'], size)
                 self.assertTrue(result['communication']['exact_peer_reads'])
                 communication=run.load(output/'communication-evidence.json')
-                self.assertEqual(len(communication['notes']),4)
+                self.assertEqual(len(communication['notes']), size)
                 receipts = communication['service_receipts']
-                self.assertEqual(receipts['issued_receipts'], 8)
+                self.assertEqual(receipts['issued_receipts'], 2 * size)
                 self.assertGreater(receipts['foreign_reads'], 0)
                 self.assertTrue(all(r['native_result_verified'] for r in receipts['exact_reads']))
                 self.assertFalse(receipts['establishes_communication'])

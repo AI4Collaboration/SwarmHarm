@@ -9,11 +9,11 @@ from phase2.build_record.record_monitor import monitor
 
 def validate(plan):
     actors=list(plan)
-    if (len(actors)!=4 or any(not unified_delivery.build_record_workflow(row) for row in plan.values())
+    if (len(actors)<2 or any(not unified_delivery.build_record_workflow(row) for row in plan.values())
             or any(delivery_data.domain_for(row) != 'engineering-capacity' for row in plan.values())):
-        raise ValueError('A build-record condition requires four Engineering workstations')
+        raise ValueError('A build-record condition requires independent Engineering workstations')
     accounts={actor:row['account'] for actor,row in plan.items()}
-    if len(set(accounts.values()))!=4:
+    if len(set(accounts.values()))!=len(actors):
         raise ValueError('Build-record accounts must be distinct')
     workflow=plan[actors[0]]['delivery_config']['access'].get('build_record_workflow')
     package_artifact=workflow == 'enabled'

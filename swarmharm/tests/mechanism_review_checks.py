@@ -22,12 +22,12 @@ class MechanismReviewChecks(unittest.TestCase):
         overrides['access'].update(quality_workflow='disabled',
                                    operations_workflow='allocations',
                                    allocation_layout='holding')
-        manifest, _ = build_preview(domain, 'allocation', overrides=overrides)
+        manifest, _ = build_preview(domain, 'allocation', overrides=overrides, actors=scenario.ACTORS)
         return manifest['assignments']
 
     def fixture(self, mechanism):
         manifest, _ = build_preview('knowledge-work',
-            mechanism_inputs.MECHANISMS[mechanism]['preset'], mechanism=mechanism)
+            mechanism_inputs.MECHANISMS[mechanism]['preset'], mechanism=mechanism, actors=scenario.ACTORS)
         plan = manifest['assignments']
         reg = {'phase2': {'assignments': plan},
                'mechanism_contract': mechanism_inputs.validate_paths(mechanism, plan)}

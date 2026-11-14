@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 import subprocess
 
-from inspect_unified_input import ACTORS, REPO, build_preview
+from inspect_unified_input import REPO, build_preview
 import domain_runtime
 from jsonschema import ValidationError
 from claude_agent import SYSTEM_PROMPT as CLAUDE_PROMPT
@@ -55,9 +55,9 @@ def registered_inputs(folder):
     return header, sealed("initial-input-audit.json"), sealed("initial-file-audit.json")
 
 
-def configured_inputs(domain, preset, world, harness, workload=None):
+def configured_inputs(domain, preset, world, harness, workload=None, population=unified_delivery.cohort.DEFAULT_POPULATION):
     selected = domain_runtime.resolve_workload(domain, workload)
-    manifest, subjects = build_preview(domain, preset, world, harness=harness, workload=workload)
+    manifest, subjects = build_preview(domain, preset, world, harness=harness, workload=workload, actors=unified_delivery.cohort.actor_ids(population))
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip()
     dirty = bool(subprocess.check_output(["git", "status", "--porcelain"], cwd=REPO))
     audits = {
@@ -95,6 +95,7 @@ def render(actor, audit, files):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, help="New directory outside the checkout")
+    parser.add_argument("--population", "--agents", "-N", type=int, help="Preview workstation count (default 3)")
     parser.add_argument("--registration-dir", type=Path, help="Read verified, sealed inputs for a collected case")
     parser.add_argument("--scenario", choices=domain_runtime.SUPPORTED)
     parser.add_argument("--workload", choices=domain_runtime.WORKLOADS)
@@ -102,7 +103,8 @@ def main(argv=None):
     parser.add_argument("--world-config", type=Path)
     parser.add_argument("--harness", choices=("codex", "claude-code"))
     args = parser.parse_args(argv)
-    if args.registration_dir and any((args.scenario, args.workload, args.binding_preset, args.world_config, args.harness)):
+    if args.registration_dir and any(value is not None for value in (
+            args.scenario, args.workload, args.binding_preset, args.world_config, args.harness, args.population)):
         parser.error("Choose a sealed registration or a current configuration")
     default_dir = REPO.parent/"eval-readiness"/"prompt-dumps"/datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     try:
@@ -115,14 +117,16 @@ def main(argv=None):
         else:
             domain, preset = args.scenario or "knowledge-work", args.binding_preset or "records"
             config_path = args.world_config or REPO/"swarmharm/configs/unified-balanced-envelope.json"
-            header, audits, files = configured_inputs(domain, preset, json.loads(config_path.read_bytes()), args.harness or "codex", args.workload)
-        if set(audits) != set(ACTORS) or set(files) != set(audits):
-            raise ValueError("Expected inputs for the four reporting workstations")
-        pages = {f"{a}.md": render(a, audits[a], files[a]) for a in ACTORS}
+            header, audits, files = configured_inputs(domain, preset, json.loads(config_path.read_bytes()), args.harness or "codex", args.workload,
+                args.population if args.population is not None else unified_delivery.cohort.DEFAULT_POPULATION)
+        if not audits or set(files) != set(audits) or any(Path(a).name != a or not a.startswith("job-") for a in audits):
+            raise ValueError("Expected matching, named reporting workstations")
+        pages = {f"{a}.md": render(a, audits[a], files[a]) for a in audits}
+        header["population"] = len(audits)
         index = ["# Reporting inputs", json_block(header),
                  "Each workstation page contains the declared task, tool schemas and initial files. "
                  "The native trajectory records the messages actually exchanged during a rollout."]
-        index.extend(f"- [{a}]({a}.md)" for a in ACTORS)
+        index.extend(f"- [{a}]({a}.md)" for a in audits)
         pages["README.md"] = "\n\n".join(index) + "\n"
         output.mkdir(parents=True, exist_ok=False)
         for name, page in pages.items():

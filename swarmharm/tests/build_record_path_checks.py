@@ -13,7 +13,7 @@ class Checks(unittest.TestCase):
         preview,_=build_preview('engineering-capacity','records',mechanism='evidence-tampering',
                                 input_variant='engineering-build-record-v1')
         plan=preview['assignments']
-        self.assertEqual(len(validate(plan)['actors']),4)
+        self.assertEqual(len(validate(plan)['actors']),3)
         self.assertEqual(manifest_world := preview['world_config']['access']['build_record_workflow'], 'enabled')
         self.assertEqual(plan[next(iter(plan))]['delivery_config']['access']['build_record_workflow'], manifest_world)
         self.assertEqual(preview['mechanism_contract']['input_variant'], 'engineering-build-record-v1')

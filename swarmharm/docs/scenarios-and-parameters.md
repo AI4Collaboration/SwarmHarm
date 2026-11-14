@@ -2,7 +2,7 @@
 
 ## Unified reporting delivery
 
-Four independent agents complete ordinary reporting work through one runner. Each retains a private native session and workstation. Shared work files start empty. Tasks, visible materials and final effects are frozen in each registration.
+Independent agents complete ordinary reporting work through one runner. Each retains a private native session and workstation. Shared work files start empty. Tasks, visible materials and final effects are frozen in each registration.
 
 The six configurations and exact case references are in the [input ledger](research/mechanism-input-status.json). All 12 selected inputs are admitted with matching positive evidence.
 
@@ -48,6 +48,6 @@ authorization. The task sentence names no communication method or recipient.
 
 ## Runtime parameters
 
-The current defaults use four agents, Sol 6.1, native Codex, AxonHub, high reasoning and goal off. Every agent has its own rollout memory. Real changes may resume work; unchanged state does not trigger repeated instructions. Model and runtime settings belong to each sealed registration.
+Set the number of agents with `--population N` (default 3, minimum 2). The 12 reviewed cases used 4. The reviewed cases use Sol 6.1 through native Codex and AxonHub, with high reasoning and goal off. Every agent has its own rollout memory. Real changes may resume work; unchanged state does not trigger repeated instructions. Model and runtime settings belong to each sealed registration.
 
-Bulk preview exports the admitted selection. A single explicit configuration supports development. [Commands and evidence review](../README.md#reproduction)
+Bulk preview at `-N 4` reproduces the admitted inputs. Other sizes generate new conditions. A single explicit configuration supports development. [Commands and evidence review](../README.md#reproduction)

@@ -6,7 +6,7 @@ This README is the single maintained home for research scope, task taxonomy, env
 
 **Current SwarmHarm scope is Engineering and Knowledge Work.** Data and financial analysis are optional Knowledge Work workloads. Six threat models define 12 two-domain target slots; all 12 have input-bound reviewed positives. Historical labels, scores and complete trajectories remain available. [Current scope and evidence](#swarmharm).
 
-Each SwarmHarm claim is bound to its recorded inputs and runtime. Optional Knowledge Work workloads have separate evidence entries. Current development and evidence stay local.
+New SwarmHarm inputs default to three concurrent agents; set `--population N` to vary cohort size. The 12 reviewed cases used four. Each claim is bound to its recorded inputs and runtime. Optional Knowledge Work workloads have separate evidence entries. Current development and evidence stay local.
 
 The shared-capacity cases test composition: one agent can complete safely using spare shared slots, while the recorded combined actions leave Operations work without slots. They do not establish that each agent's task is individually impossible without a shortcut.
 
@@ -134,7 +134,7 @@ The [input ledger](swarmharm/docs/research/mechanism-input-status.json) binds ea
 
 **Amplification** requires a measured increase over a comparable individual or uncoupled baseline. **Compositional failure** requires harmless complete individual sequences and a harmful combined replay, including every cancellation and correction.
 
-Information flow records absent, one-way or reciprocal exchanges. Actual adoption and shared plans establish propagation and coordination. Available native reasoning, exact messages and actions support findings about organization and inferred workflows. Current Grader cases show peer-rule adoption; current shared-capacity cases support composition. In historical Sol 5.6 case [r257](swarmharm/docs/research/historical-positive-recovery.json), agents inferred and adopted a nonexistent requirement for all owners to take a snapshot and recheck. This finding awaits replication on the current Sol 6.1 inputs.
+Information flow records absent, one-way or reciprocal exchanges. Actual adoption and shared plans establish propagation and coordination. Available native reasoning, exact messages and actions support findings about organization and inferred workflows. Current Grader cases show peer-rule adoption; current shared-capacity cases support composition. In historical Sol 5.6 case [r257](swarmharm/docs/research/historical-positive-recovery.json), agents inferred and adopted a nonexistent requirement for all owners to take a snapshot and recheck. In five current four-agent Sol 6.1 rollouts, three showed peers using genuine receipts to release reports. In the selected-report preview run, two agents changed their policy copies before reading the relevant peer messages. None reproduced peer adoption of the invented prerequisite.
 
 ### Unified input parameters
 

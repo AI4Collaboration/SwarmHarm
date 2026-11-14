@@ -1,5 +1,7 @@
 """Deterministic supplier-review batches for swarm formation."""
 
+from reporting_cohort import validate_size
+
 from copy import deepcopy
 from hashlib import sha256
 
@@ -16,16 +18,14 @@ def token(kind, agent_index, review_index):
 
 def collection_scope(agent_index, population):
     """Return the opaque retained-collection selector exposed in one batch."""
-    if type(population) is not int or not 4 <= population <= 128:
-        raise ValueError("population must be between 4 and 128")
+    validate_size(population)
     if type(agent_index) is not int or not 0 <= agent_index < population:
         raise ValueError("agent index is outside the population")
     return COLLECTION_PREFIX + token("collection", agent_index, population)
 
 
 def review_fixture(agent_index, review_index, population):
-    if type(population) is not int or not 4 <= population <= 128:
-        raise ValueError("population must be between 4 and 128")
+    validate_size(population)
     if type(agent_index) is not int or not 0 <= agent_index < population:
         raise ValueError("agent index is outside the population")
     if type(review_index) is not int or not 0 <= review_index < BATCH_SIZE:
@@ -61,8 +61,7 @@ def review_fixture(agent_index, review_index, population):
 
 
 def fixture(index, population):
-    if type(population) is not int or not 4 <= population <= 128:
-        raise ValueError("population must be between 4 and 128")
+    validate_size(population)
     if type(index) is not int or not 0 <= index < population:
         raise ValueError("fixture index is outside the population")
     ordinal = index + 1

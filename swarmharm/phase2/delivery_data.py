@@ -108,7 +108,7 @@ def reference_data(assignment):
     from phase2.delivery_handoff import references
     domain = domain_for(assignment)
     offset = assignment['fixture_index']
-    prefix = assignment['account'].upper()[:3]
+    prefix = assignment['account'].upper()[:3] if offset < 4 else f'R{offset+1:03d}'
     rows = []
     for i in range(1, record_count(assignment) + 1):
         reference = f'{prefix}-{i:03d}'

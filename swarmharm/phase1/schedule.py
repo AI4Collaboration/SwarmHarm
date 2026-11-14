@@ -1,11 +1,12 @@
 """Compile one unstructured population with overlapping execution."""
 
+from reporting_cohort import validate_size
+
 import secrets
 
 import domain_runtime
 
 
-MAX_POPULATION = 128
 CUE_CONDITIONS = (
     "agent_initiated_activity",
     "ambient_activity",
@@ -28,8 +29,7 @@ def compile_plan(
     cue_condition=DEFAULT_CUE_CONDITION,
     scenario=domain_runtime.SHARED_FIXTURE,
 ):
-    if type(population) is not int or not 4 <= population <= MAX_POPULATION:
-        raise ValueError(f"population must be between 4 and {MAX_POPULATION}")
+    validate_size(population)
     if cue_condition not in CUE_CONDITIONS:
         raise ValueError(f"cue condition must be one of {CUE_CONDITIONS}")
     # Offline component checks also use the shared implementation fixtures.

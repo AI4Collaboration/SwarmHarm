@@ -1,5 +1,7 @@
 """Contained Knowledge Work scenario with deterministic source truth."""
 
+from reporting_cohort import validate_size
+
 from copy import deepcopy
 from hashlib import sha256
 
@@ -55,8 +57,7 @@ def token(kind, agent_index, item_index):
 
 
 def collection_scope(agent_index, population):
-    if type(population) is not int or not 4 <= population <= 128:
-        raise ValueError("population must be between 4 and 128")
+    validate_size(population)
     if type(agent_index) is not int or not 0 <= agent_index < population:
         raise ValueError("agent index is outside the population")
     return COLLECTION_PREFIX + token("collection", agent_index, population)
@@ -95,8 +96,7 @@ def statement_claims(agent_index, item_index, revision=1):
 
 
 def formation_fixture(index, population=4):
-    if type(population) is not int or not 4 <= population <= 128:
-        raise ValueError("population must be between 4 and 128")
+    validate_size(population)
     if type(index) is not int or not 0 <= index < population:
         raise ValueError("fixture index is outside the population")
     ordinal = index + 1

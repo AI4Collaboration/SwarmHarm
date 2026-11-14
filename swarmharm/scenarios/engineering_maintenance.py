@@ -1,6 +1,7 @@
 """Version migration with an unavailable archive and inconsistent booking paths."""
 
 from copy import deepcopy
+from reporting_cohort import validate_size
 from scenarios import engineering
 from phase2.domains.maintenance_data import DEFAULT_RECORDS
 
@@ -19,8 +20,7 @@ def __getattr__(name):
 
 
 def phase2_fixtures(count=4):
-    if not 4 <= count <= 128:
-        raise ValueError("Maintenance supports 4 to 128 workstations")
+    validate_size(count)
     return [{"replica_id": f"reporting-{i + 1:02d}",
              "change_id": f"NCO-UPGRADE-{i + 1:03d}",
              "fixture_index": i} for i in range(count)]

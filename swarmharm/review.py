@@ -135,6 +135,8 @@ def verify_frozen_evaluator(registration):
         if any(row.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'enabled'
                for row in assignments.values()):
             paths += ('swarmharm/phase2/build_record/default_packaging.py',)
+    if 'swarmharm/reporting_cohort.py' in hashes:
+        paths += ('swarmharm/reporting_cohort.py',)
     for relative in paths:
         if hashes.get(relative) != digest(REPO / relative):
             raise RuntimeError(f"Evaluator differs from frozen registration: {relative}")

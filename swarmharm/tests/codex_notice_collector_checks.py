@@ -130,7 +130,7 @@ class CodexNoticeCollectorChecks(unittest.TestCase):
                         patch.object(run,'verify_routes',return_value={}), \
                         patch.object(codex_gateway,'gateway_catalog',return_value={}), \
                         patch.object(run,'registration_path',side_effect=lambda p:Path(p)):
-                    run.prepare(output,registration,key,run_controls=False,study_mode='unified',
+                    run.prepare(output,registration,key,run_controls=False,population=4,study_mode='unified',
                                 harness_kind='codex',goal_mode='off',scenario='engineering-capacity',
                                 binding_preset='control',world_config=world)
                 reg=run.load(output/'registration.json')

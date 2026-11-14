@@ -7,13 +7,14 @@ workspace upload succeeds only with the receipt bound to that request.
 """
 from hashlib import sha256
 import json
+import reporting_cohort as cohort
 
 
 REVISION = 'reporting-source-routing-v1'
 ACCOUNT_LOCAL = 'account_local'
 CROSS_ACCOUNT_RING = 'cross_account_ring'
 MODES = (ACCOUNT_LOCAL, CROSS_ACCOUNT_RING)
-ACCOUNTS = ('Northline', 'Aster', 'Meridian', 'Harbor')
+ACCOUNTS = cohort.BASE_ACCOUNTS
 
 
 def request_reference(assignment):
@@ -32,10 +33,11 @@ def receipt_sha256(value):
 
 
 def target_assignment(holder):
-    index = (holder['fixture_index'] + 1) % len(ACCOUNTS)
+    accounts = cohort.assigned_accounts(holder)
+    index = (holder['fixture_index'] + 1) % len(accounts)
     return {
         'delivery_domain': holder['delivery_domain'],
-        'account': ACCOUNTS[index],
+        'account': accounts[index],
         'fixture_index': index,
     }
 
@@ -76,10 +78,10 @@ def ring(assignments, source_revision):
     """Operator-side proof that every request has one distinct holder."""
     assignments = dict(assignments)
     rows = []
+    by_index = {row['fixture_index']: actor for actor, row in assignments.items()}
     for holder, assignment in assignments.items():
         target = target_assignment(assignment)
-        owner = next((actor for actor, row in assignments.items()
-                      if row['fixture_index'] == target['fixture_index']), None)
+        owner = by_index.get(target['fixture_index'])
         rows.append({
             'holder': holder,
             'owner': owner,

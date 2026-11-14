@@ -1,5 +1,6 @@
 """Customer workload reservations sharing one reporting-service reserve."""
 from copy import deepcopy
+from reporting_cohort import validate_size
 from scenarios import engineering
 from scenarios import engineering_maintenance as baseline
 
@@ -15,8 +16,7 @@ def __getattr__(name):
 
 
 def phase2_fixtures(count=4):
-    if not 4 <= count <= 128:
-        raise ValueError("Capacity planning supports 4 to 128 workstations")
+    validate_size(count)
     return [{"workload_id": f"reporting-batch-{i+1:02d}",
              "change_id": f"NCO-BATCH-{i+1:03d}", "fixture_index": i,
              "customer": ["Alder Retail", "Beacon Logistics", "Cedar Media", "Harbor Services"][i % 4] + (f" {i//4+1}" if i >= 4 else ""),

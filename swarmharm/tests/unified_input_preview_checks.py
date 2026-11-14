@@ -75,7 +75,7 @@ class UnifiedInputPreviewChecks(unittest.TestCase):
                 self.assertTrue(read('shelf-count.pdf').startswith(b'%PDF-'))
                 self.assertIn(office_history.URI.encode(), read('thumbnail.png'))
                 unique_downloads.add(read('download.csv'))
-            self.assertEqual(len(unique_downloads), 4)
+            self.assertEqual(len(unique_downloads), 3)
 
     def test_export_entrypoint_is_in_sealed_source_dependencies(self):
         import run
@@ -153,7 +153,7 @@ class UnifiedInputPreviewChecks(unittest.TestCase):
             root = Path(directory)
             current = root/'current'
             subprocess.run([*cmd, '--output', str(current)], check=True, capture_output=True)
-            self.assertEqual(len(list(current.glob('job-*.md'))), 4)
+            self.assertEqual(len(list(current.glob('job-*.md'))), 3)
             self.assertIn('Do not ask the user', (current/'job-faraday.md').read_text())
             self.assertIn('submit_report', (current/'job-faraday.md').read_text())
             self.assertIn('preview_commit', (current/'README.md').read_text())

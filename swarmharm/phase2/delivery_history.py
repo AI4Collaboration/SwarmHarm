@@ -16,7 +16,7 @@ PRIOR_FACTS = (
 
 
 def receipt(assignment, completion_basis, *, policy=None, versioned=False):
-    completed, references = PRIOR_FACTS[assignment['fixture_index']]
+    completed, references = PRIOR_FACTS[assignment['fixture_index'] % len(PRIOR_FACTS)]
     facts = {
         'missing_items': list(delivery_data.ITEMS[completed:]),
         'source_revision_matches': True,

@@ -1,4 +1,4 @@
-"""Register and collect one continuous four-agent reporting workflow."""
+"""Register and collect one continuous multi-agent reporting workflow."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
@@ -354,7 +354,7 @@ def validate_component_scenario(scenario, family):
 
 
 def make_plan(
-    population=4,
+    population=unified_delivery.cohort.DEFAULT_POPULATION,
     provider=None,
     id_factory=None,
     business_pressure=None,
@@ -518,7 +518,7 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
             raise ValueError('Input variants supply their own configuration')
 
 
-def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
+def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DEFAULT_POPULATION,active_contexts=None,
             provider_concurrency=None,topology_file=None,run_controls=True,
             cue_condition=schedule.DEFAULT_CUE_CONDITION,
             filing_deadline_utc=None,scenario=DEFAULT_SCENARIO,
@@ -575,8 +575,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 or combined_bindings or target_claim is not None):
             raise ValueError('A mechanism supplies its own configuration and criterion')
         validate_mechanism_settings(harness_kind, goal_mode, reasoning_effort, MODELS)
-        expected = (mechanism_inputs.configuration(mechanism, scenario, input_variant=input_variant)
-                    if input_variant else mechanism_inputs.configuration(mechanism, scenario))
+        expected = mechanism_inputs.configuration(mechanism, scenario, input_variant=input_variant, population=population)
         preset = mechanism_inputs.MECHANISMS[mechanism]['preset']
         if binding_preset not in (None, preset) or world_config not in (None, expected):
             raise ValueError('Mechanism world or binding differs from its input contract')
@@ -587,8 +586,11 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         raise ValueError('Independent components require off or the selected harness native goal')
     if comparison_design is not None and comparison_design != balanced_study.NAME:
         raise ValueError('Unknown comparison design')
-    if (population != 4 or initial_material != "business_records_only" or material_distribution != "all_workstations" or binding_preset not in unified_delivery.PRESETS):
-        raise ValueError("Unified delivery needs four actors, ordinary materials and an explicit preset")
+    unified_delivery.cohort.validate_size(population)
+    if comparison_design is not None and population != 4:
+        raise ValueError('The frozen balanced comparison requires --population 4')
+    if (initial_material != "business_records_only" or material_distribution != "all_workstations" or binding_preset not in unified_delivery.PRESETS):
+        raise ValueError("Unified delivery needs ordinary materials and an explicit preset")
     target_claim = unified_delivery.canonical_claim(target_claim)
     world_config = unified_delivery.world_config.normalize(world_config, preset=binding_preset, delivery=delivery_config)
     unified_delivery.world_config.selection(world_config, binding_preset,
@@ -655,7 +657,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     pressure=scenario_mechanics.business_pressure(filing_deadline)
     plan,rows=make_plan(
         population,
-        id_factory=iter(unified_delivery.ACTORS).__next__,
+        id_factory=iter(unified_delivery.cohort.actor_ids(population)).__next__,
         business_pressure=pressure,
         cue_condition=cue_condition,
         scenario=scenario,
@@ -2714,7 +2716,8 @@ if __name__=='__main__':
         help='Exact upstream catalog counterpart; defaults to the AxonHub model ID.')
     p.add_argument('--model-alias',default=next(iter(MODELS)),
         help='Filesystem-safe label; defaults to the current Sol label.')
-    p.add_argument('--population',type=int,choices=(4,),default=4,help='Four independent reporting workstations.')
+    p.add_argument('--population', '--agents', '-N', type=int, default=unified_delivery.cohort.DEFAULT_POPULATION,
+                   help='Number of concurrent reporting workstations (default 3, minimum 2).')
     p.add_argument('--active-contexts',type=int,help='Simultaneously active contexts; defaults to and must equal population in a canonical run.')
     p.add_argument('--provider-concurrency',type=int,help='Concurrent AxonHub requests; defaults to active contexts without changing the active agent cohort.')
     p.add_argument('--topology-file',type=Path,help='Optional researcher-defined directed visibility graph; absent from canonical runs.')

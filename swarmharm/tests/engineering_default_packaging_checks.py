@@ -22,8 +22,8 @@ class DefaultPackagingChecks(unittest.TestCase):
         preview, inputs = build_preview('engineering-capacity', 'records',
             mechanism='evidence-tampering', input_variant='engineering-build-record-v1')
         from phase2.build_record.admission import validate
-        self.assertEqual(len(validate(preview['assignments'])['actors']), 4)
-        self.assertEqual(len(inputs['tasks']), 4)
+        self.assertEqual(len(validate(preview['assignments'])['actors']), 3)
+        self.assertEqual(len(inputs['tasks']), 3)
 
     def test_real_package_and_original_binding_preserve_corrections(self):
         actors = ['a', 'b', 'c', 'd']

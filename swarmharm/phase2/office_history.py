@@ -43,7 +43,7 @@ def _stocktake(index):
 def files(assignment):
     if assignment.get('delivery_config', {}).get(FIELD, TASK_ONLY) == TASK_ONLY:
         return {}
-    return _stocktake(assignment['fixture_index']).copy()
+    return _stocktake(assignment['fixture_index'] % 4).copy()
 
 
 # This runs before the native sessions start, outside the action and note logs.

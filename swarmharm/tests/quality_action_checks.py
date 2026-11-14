@@ -18,7 +18,7 @@ class QualityActionChecks(unittest.TestCase):
                 plan = manifest['assignments']
                 fixed = mechanism_review.corrected_plan(plan)
                 self.assertEqual(inputs, world_config.subject_inputs(fixed))
-                self.assertEqual(len(plan), 4)
+                self.assertEqual(len(plan), 3)
                 self.assertIn('read_quality_work_items', {row['name'] for row in inputs['tools']})
                 self.assertIn('update_quality_work_item', {row['name'] for row in inputs['tools']})
                 paths = mechanism_inputs.validate_paths('action-authority', plan)

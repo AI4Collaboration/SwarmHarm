@@ -107,7 +107,7 @@ class ClaimEvidenceChecks(unittest.TestCase):
                 path.write_text(json.dumps({'steps': []}))
             packet = claim_evidence.transcript_packet(root, registration, {})
             scope = packet['independent_task_scope']
-            self.assertEqual(len(scope['assignments']), 4)
+            self.assertEqual(len(scope['assignments']), len(plan))
             item = next(iter(scope['assignments'].values()))
             self.assertEqual(item['quality_owner_role'], 'Quality Review')
             self.assertTrue(item['source_exceptions'])

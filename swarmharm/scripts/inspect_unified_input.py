@@ -18,14 +18,15 @@ ACTORS = scenario.ACTORS
 
 
 def build_preview(domain, preset, overrides=None, *, combined=False, harness='codex',
-                  mechanism=None, input_variant=None, workload=None, actors=ACTORS):
+                  mechanism=None, input_variant=None, workload=None, actors=None):
+    if actors is None:
+        actors = scenario.cohort.actor_ids(scenario.cohort.DEFAULT_POPULATION)
     domain = domain_runtime.resolve_workload(domain, workload)
     if mechanism is not None:
         if (overrides is not None or combined or harness != 'codex'
                 or preset != mechanism_inputs.MECHANISMS[mechanism]['preset']):
             raise ValueError('A mechanism supplies its own world, binding and Codex layout')
-        overrides = (mechanism_inputs.configuration(mechanism, domain, input_variant=input_variant)
-                     if input_variant else mechanism_inputs.configuration(mechanism, domain))
+        overrides = mechanism_inputs.configuration(mechanism, domain, input_variant=input_variant, population=len(actors))
     if input_variant and mechanism is None:
         raise ValueError('Input variant requires its registered mechanism')
     world = world_config.normalize(overrides, preset=preset)
@@ -39,7 +40,7 @@ def build_preview(domain, preset, overrides=None, *, combined=False, harness='co
     return {
         'kind': 'offline_business_input_preview',
         'entrypoint': {'study_mode': 'unified', 'component_family': scenario.FAMILY},
-        'scenario_revision': scenario.REVISION,
+        'scenario_revision': scenario.REVISION, 'population': len(plan),
         'world_revision': world_config.REVISION,
         'domain': domain_runtime.domain_for(domain), 'workload': domain,
         'preset': preset, 'harness_file_layout': harness,
@@ -94,6 +95,8 @@ def write_preview(output, manifest, subjects):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--population', '--agents', '-N', type=int, default=scenario.cohort.DEFAULT_POPULATION,
+                        help='Concurrent workstations (default 3); use 4 for the published inputs.')
     parser.add_argument('--scenario', choices=(*domain_runtime.SUPPORTED, 'all'),
                         default='engineering-capacity')
     parser.add_argument('--workload', choices=domain_runtime.WORKLOADS,
@@ -111,6 +114,8 @@ def main(argv=None):
                         help='New directory for the operator preview, not a registration')
     args = parser.parse_args(argv)
     try:
+        requested_actors = scenario.cohort.actor_ids(args.population)
+        reviewed_cohort = args.population == len(ACTORS)
         if args.scenario == 'all' and args.workload:
             raise ValueError('--workload requires one --scenario')
         workload = (domain_runtime.resolve_workload(args.scenario, args.workload)
@@ -138,8 +143,8 @@ def main(argv=None):
                     if args.mechanism in ('all', 'implemented') and row is None:
                         continue
                     selected_workload = args.workload or (row or {}).get('selected_workload')
-                    actors = ACTORS
-                    if args.mechanism in ('all', 'implemented'):
+                    actors = requested_actors
+                    if reviewed_cohort and args.mechanism in ('all', 'implemented'):
                         registered = json.loads((REPO / row['current_input_registration'] /
                                                  'phase2-plan.json').read_text())
                         actors = tuple(sorted(registered, key=lambda actor: registered[actor]['fixture_index']))
@@ -149,7 +154,7 @@ def main(argv=None):
                         workload=selected_workload, actors=actors)
             if not previews:
                 raise ValueError('No admitted inputs match this bulk selection')
-            if args.mechanism in ('all', 'implemented'):
+            if reviewed_cohort and args.mechanism in ('all', 'implemented'):
                 for manifest, subjects in previews.values():
                     contract = manifest['mechanism_contract']
                     row_key = args.workload or manifest['domain']
@@ -164,7 +169,8 @@ def main(argv=None):
                      'planned_count': len(mechanism_inputs.CURRENT_CONFIGURATIONS)*len(mechanism_inputs.DOMAINS),
                      'threat_models': mechanism_inputs.THREAT_MODELS,
                      'coverage_gaps': ledger.get('coverage_gaps', []),
-                     'delivery_ready': (ledger['delivery_ready'] and args.scenario == 'all'
+                     'population': args.population,
+                     'delivery_ready': (reviewed_cohort and ledger['delivery_ready'] and args.scenario == 'all'
                                         and args.mechanism in ('all', 'implemented')),
                      'exported_count': len(previews),
                      'inputs': {key: {'manifest': key+'/manifest.json',
@@ -184,7 +190,7 @@ def main(argv=None):
         overrides = (json.loads(args.world_config.read_text(encoding='utf-8'))
                      if args.world_config else None)
         manifest, subjects = build_preview(args.scenario, args.binding_preset or 'control', overrides,
-            combined=args.combined_bindings, harness=args.harness, workload=args.workload)
+            combined=args.combined_bindings, harness=args.harness, workload=args.workload, actors=requested_actors)
         write_preview(args.output, manifest, subjects)
     except (OSError, ValueError, ValidationError) as error:
         parser.error(str(error))

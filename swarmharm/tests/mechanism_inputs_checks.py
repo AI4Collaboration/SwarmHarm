@@ -194,7 +194,7 @@ class MechanismInputChecks(unittest.TestCase):
                     result = inputs.validate_paths(mechanism, manifest['assignments'])
                     self.assertEqual(result['path_validation'], 'passed')
                     self.assertEqual(result['model_behavior'], 'not_tested')
-                    self.assertEqual(len(subjects['tasks']), 4)
+                    self.assertEqual(len(subjects['tasks']), scenario.cohort.DEFAULT_POPULATION)
                     self.assertEqual(manifest['communication_start']['supplied_messages'], [])
                     for task in subjects['tasks'].values():
                         self.assertNotIn(mechanism, task)
@@ -213,13 +213,13 @@ class MechanismInputChecks(unittest.TestCase):
                 'shared-capacity': {**inputs.MECHANISMS['shared-capacity'], 'preset': None}}):
             output = Path(directory)/'inputs'
             with self.assertRaises(SystemExit):
-                main(['--mechanism', 'all', '--scenario', 'all', '--output', str(output)])
+                main(['--mechanism', 'all', '--scenario', 'all', '-N', '4', '--output', str(output)])
             self.assertFalse(output.exists())
 
     def test_export_keeps_coverage_and_model_validation_separate(self):
         with TemporaryDirectory() as directory:
             output = Path(directory)/'inputs'
-            main(['--mechanism', 'implemented', '--scenario', 'all', '--output', str(output)])
+            main(['--mechanism', 'implemented', '--scenario', 'all', '-N', '4', '--output', str(output)])
             index = json.loads((output/'manifest.json').read_text())
             self.assertEqual(index['planned_count'], 12)
             self.assertEqual(len(index['threat_models']), 6)
@@ -248,8 +248,31 @@ class MechanismInputChecks(unittest.TestCase):
                 patch('scripts.inspect_unified_input.build_preview', side_effect=changed_preview):
             output = Path(directory)/'inputs'
             with self.assertRaises(SystemExit):
-                main(['--mechanism', 'all', '--scenario', 'all', '--output', str(output)])
+                main(['--mechanism', 'all', '--scenario', 'all', '-N', '4', '--output', str(output)])
             self.assertFalse(output.exists())
+
+    def test_cohort_size_tracks_account_ring_inputs_and_scaled_capacity(self):
+        from phase2 import delivery_source_routing
+        for n in (2, 3, 4, 8, 33, 129):
+            actors = scenario.cohort.actor_ids(n)
+            plan = scenario.plan_for(actors)
+            self.assertEqual(len(plan), n)
+            self.assertEqual(len({r['account'] for r in plan.values()}), n)
+            ring = delivery_source_routing.ring(plan, scenario.SOURCE_REVISION)
+            self.assertTrue(ring['one_distinct_holder_per_request'])
+            self.assertEqual(ring['rows'][-1]['owner'], actors[0])
+        plan = build_preview('knowledge-work', 'resource', mechanism='shared-capacity',
+                             actors=scenario.cohort.actor_ids(8))[0]['assignments']
+        from phase2 import threat_grid
+        controls = deepcopy(plan)
+        for row in controls.values():
+            row.update(binding_preset='control', world_config=world_config.normalize(
+                preset='control', delivery=row['delivery_config']))
+        witness = threat_grid.processing_margin_probe(plan, controls)
+        self.assertEqual(witness['joint'], {'released_accounts': 8, 'delayed_operations_reports': 2})
+        self.assertEqual(witness['protected_reservation']['delayed_operations_reports'], 0)
+        with self.assertRaises(ValueError):
+            scenario.cohort.actor_ids(1)
 
     def test_exactly_six_configurations_and_removed_names_rejected(self):
         self.assertEqual(len(inputs.CURRENT_CONFIGURATIONS), 6)

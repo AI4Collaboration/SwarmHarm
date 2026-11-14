@@ -64,7 +64,8 @@ To inspect business inputs before registering or running anything:
 ```
 
 The new directory contains normalized parameters and input hashes in `manifest.json`,
-tasks, tool definitions, and readable files for all four workstations. Use the same
+tasks, tool definitions, and readable files for each workstation. The default is three.
+Set `--population N` in both preview and preparation to select a different size. Use the same
 `--world-config` and `--binding-preset` options as preparation. This checks input
 consistency without Docker, credentials or model calls; it does not validate
 execution paths or model behavior. Native startup instructions and runtime settings
@@ -223,7 +224,7 @@ installation of the same version. Install the selected adapter's pinned lockfile
    source, image and complete native harness contract (including goal controls, tools,
    prompts and executable hashes), and coverage of every check required by the target scenario; every model route is checked afresh. Checks do not establish model behavior.
 4. Commit source locally; push first only when using origin source retention. Prepare a fresh registration with the exact model,
-   supported harness, goal setting, four-agent population and existing host key.
+   supported harness, goal setting, selected population and existing host key.
    Unified inputs always get an exact-configuration path check, including when
    reusing the software checks. Its operator-only result is sealed in
    `phase2.path_validation`; collection recomputes it before inference.
@@ -286,7 +287,7 @@ trajectories in linked releases.
 ## SwarmForm cache rollout
 
 The following settings reproduce the reviewed four-agent v57 pilot. Use the normal preparation and collection flow above with
-`--scenario knowledge-work --binding-preset control --target-claim autonomous_formation` and
+`--population 4 --scenario knowledge-work --binding-preset control --target-claim autonomous_formation` and
 `--world-config swarmharm/configs/swarmform-work-cache.json`.
 Omit `--comparison-design`; that option selects the separate SwarmHarm comparison.
 The permitted model comparisons are `openai/gpt-5.6-sol` and `openai/gpt-6.1-sol`,

@@ -24,11 +24,11 @@ model calls (use a new output directory):
   --mechanism implemented --scenario all --output ../mechanism-input-preview
 ```
 
-Each SwarmHarm rollout runs four accounts on four concurrent workstations. Both the CLI and input fixtures require four agents. Parallel rollouts have separate state.
+Set **`--population N`** (or `-N`) when exporting inputs or preparing a rollout. The default is **3** concurrent workstations, with one account and private session per agent. Use `-N 4` to reproduce the published cases or, for example, `-N 8` to generate an eight-agent condition. Shared-capacity inputs reserve enough spare slots for N−1 accounts; the last account can displace two Operations reports. A new size needs its own live evidence. The local launcher defaults to 16 total workstation networks across concurrent runs. Larger hosts can configure `SWARMHARM_MAX_WORKSTATION_NETWORKS` to match available capacity.
 
 Each package contains tasks, tools, workstation files and `world-config.json`.
 The operator manifest records the mechanism criterion and subject-input hash.
-`--mechanism all --scenario all` exports all 12 admitted default inputs. The `task-gaming` selector tests Specification Gaming. Explicit single-template preview supports development.
+`--mechanism all --scenario all` with `-N 4` exports all 12 admitted four-agent inputs. The `task-gaming` selector tests Specification Gaming. Explicit single-template preview supports development.
 The same selector prepares a native rollout with its own sealed mechanism
 criterion and executable path checks. Use the pinned Python environment from
 `bash scripts/setup-local`, native Codex and the existing AxonHub key:

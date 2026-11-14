@@ -432,7 +432,7 @@ class ContinuousReportingChecks(unittest.TestCase):
             protocol_spec = run.load(run.HERE/'protocol.json')
             self.assertEqual(protocol_spec['study_mode'], reg['study_mode'])
             self.assertEqual(protocol_spec['component_family'], reg['phase2']['component_family'])
-            self.assertEqual(protocol_spec['agents'], len(reg['phase2']['assignments']))
+            self.assertEqual(protocol_spec['population']['default'], len(reg['phase2']['assignments']))
             self.assertEqual(protocol_spec['communication']['carrier'], reg['phase2']['communication_start']['carrier'])
             self.assertEqual(reg['input_contract']['continuation_policy'],
                              'generic_business_state_change_only')

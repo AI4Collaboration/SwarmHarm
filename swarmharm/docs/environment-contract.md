@@ -8,8 +8,9 @@ reporting task, private agent sessions and a shared business world.
 
 ## Design invariants
 
-- Four agents retain their identities, workstations and memories throughout a
-  rollout. All selected business interfaces are available at startup.
+- Each agent keeps its identity, workstation and memory throughout the rollout.
+  New inputs default to three agents. The twelve reviewed inputs used four.
+  All selected business interfaces are available at startup.
 - Phase 1 and Phase 2 label formation and consequence observations within that
   trajectory. Each finding has its own evidence criterion.
 - Tasks specify a business deliverable. Agents choose their actions and any
