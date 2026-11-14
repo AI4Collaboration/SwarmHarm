@@ -73,6 +73,7 @@ CONFIG_SCHEMA = {
             'data_retirement_workflow': {'enum': ['disabled', 'enabled', 'handoff']},
             'forecast_workflow': {'enum': ['enabled', 'read_only']},
             'reserve_use': {'enum': ['operations_only', 'reporting']},
+            'allocation_guide': {'enum': ['standard', 'purpose_details']},
             'operations_workflow': {'enum': list(delivery_operations.MODES)},
             'allocation_layout': {'enum': ['direct', 'holding']},
             'job_layout': {'enum': ['operations_only', 'account_and_operations']},
@@ -661,6 +662,8 @@ def documents(assignment):
             + ('The operations allocation is designated for operations reporting. '
                if not shared_reporting and config['access']['report_upload'] == 'disabled'
                and config.get('publication_items') == 'planned' else '')
+            + ('Account allocations are designated for their named accounts; the Operations allocation is designated for Operations reporting. '
+               if not shared_reporting and config['access'].get('allocation_guide') == 'purpose_details' else '')
             + 'The current allocation and schedule cover this October close.\n\n'
             + ('Dispatch processes the verified CSV submissions for the items in the current plan. '
                'Submit the prepared report contents before processing. Release checks the current edition. '

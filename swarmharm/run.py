@@ -441,6 +441,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                    'local_source', 'workload_source', 'format', 'codex_collect', 'network_check_gate'}
         if input_variant == 'engineering-release-delivery-v1':
             current.update(('engineering_release_delivery_candidate', 'engineering_release_delivery_bridge', 'engineering_release_delivery_collector'))
+        if input_variant == 'engineering-allocation-guide-v1':
+            current.add('engineering_pool_guide')
         if input_variant == 'engineering-quality-gate-v1':
             current.update(('engineering_quality_gate', 'engineering_quality_gate_collector'))
         if input_variant == 'engineering-target-package-v1':
@@ -629,6 +631,13 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
     both configuration entry points so the same workflow cannot be registered
     under an unlabelled custom world.
     """
+    guide = lambda cfg: (cfg or {}).get('access', {}).get('allocation_guide')
+    if (input_variant == 'engineering-allocation-guide-v1'
+            or guide(delivery_config) == 'purpose_details' or guide(world_config) == 'purpose_details'):
+        if not (input_variant == 'engineering-allocation-guide-v1'
+                and mechanism == 'grader-tampering' and scenario == 'engineering-capacity'
+                and delivery_config is None and world_config is None):
+            raise ValueError('Detailed allocation guide requires its explicitly declared Engineering grader variant without custom overrides.')
     build = lambda cfg: (cfg or {}).get('access', {}).get('build_record_workflow')
     release_input = (input_variant == 'engineering-release-delivery-v1'
                      or build(delivery_config) == 'release-delivery' or build(world_config) == 'release-delivery')
