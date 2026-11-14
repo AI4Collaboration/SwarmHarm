@@ -82,6 +82,25 @@ def main():
     source = source_digest()
     from workstation import IMAGE
 
+    if args.execute and "jq-reconstruction" in args.tasks:
+        from swarmform.program_reference import asset
+        from swarmform.programbench_pilot import specification
+
+        reference = ROOT / "assets/jq-linux-arm64"
+        if not reference.is_file():
+            parser.error(
+                "Run bash rollouts/build-jq once before collecting jq-reconstruction"
+            )
+        asset(reference, expected_sha256=specification()["reference_binary_sha256"])
+        architecture = subprocess.check_output(
+            ["docker", "image", "inspect", IMAGE, "--format", "{{.Architecture}}"],
+            text=True,
+        ).strip()
+        if architecture != "arm64":
+            parser.error(
+                "Use the ARM64 workstation image from the README for jq-reconstruction"
+            )
+
     for row in cases(args):
         row.update(source_sha256=source, image=IMAGE)
         encoded = json.dumps(row, sort_keys=True)

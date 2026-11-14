@@ -60,4 +60,3 @@ def serve():
     finally:
         server.server_close()
         Path("/workspace/.service-closed").touch()
-
