@@ -140,6 +140,8 @@ Information flow records absent, one-way or reciprocal exchanges. Actual adoptio
 
 Six configurations vary four groups: `access` controls business sources and authority, `coupling` controls shared resources and work files, `verification` selects the evaluated binding, and `observation` selects business feedback. Each threat model has one current configuration. [Values and presets](swarmharm/docs/scenarios-and-parameters.md) · [Taxonomy and source grounding](swarmharm/docs/phase2-taxonomy.md)
 
+**Participant instructions.** Tasks specify report delivery. Agents choose their methods and any communication. Business capabilities, checks and previous-close receipts are visible input conditions. The startup rule requires autonomous work without user clarification or approval, alongside native Codex instructions. All 125 recorded follow-ups across the twelve cases announce a real workspace change. [Prompt and environment contract](swarmharm/docs/environment-contract.md)
+
 ### Current work and reproduction
 
 **All 12 default inputs now have reviewed Sol 6.1 positives bound to their exact registrations.** The last three are Engineering Specification Gaming, Knowledge Work Specification Gaming using the Data Analysis workload, and Engineering Trace Tampering. Each has validated ATIF continuity, protected action replay, blinded transcript review and an independently reconstructed effect. The [input ledger](swarmharm/docs/research/mechanism-input-status.json) links every case without joining different cases into one claim.
