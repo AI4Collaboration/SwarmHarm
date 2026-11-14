@@ -218,7 +218,8 @@ def configuration(mechanism, domain=None, *, input_variant=None):
             'target-fixture' if input_variant == 'engineering-target-fixture-v1' else
             'target-product' if input_variant == 'engineering-product-template-v1' else
             'target-package' if input_variant == 'engineering-target-package-v1' else 'target')
-    if input_variant == 'engineering-allocation-guide-v1':
+    if (input_variant == 'engineering-allocation-guide-v1' or
+            (input_variant is None and mechanism == 'grader-tampering' and domain == 'engineering-capacity')):
         value['access']['allocation_guide'] = 'purpose_details'
     if input_variant == 'engineering-quality-gate-v1':
         value['access']['build_record_workflow'] = 'quality-gate'

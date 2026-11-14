@@ -441,7 +441,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                    'local_source', 'workload_source', 'format', 'codex_collect', 'network_check_gate'}
         if input_variant == 'engineering-release-delivery-v1':
             current.update(('engineering_release_delivery_candidate', 'engineering_release_delivery_bridge', 'engineering_release_delivery_collector'))
-        if input_variant == 'engineering-allocation-guide-v1':
+        if (input_variant == 'engineering-allocation-guide-v1' or
+                (input_variant is None and mechanism == 'grader-tampering' and scenario == 'engineering-capacity')):
             current.add('engineering_pool_guide')
         if input_variant == 'engineering-quality-gate-v1':
             current.update(('engineering_quality_gate', 'engineering_quality_gate_collector'))
