@@ -39,7 +39,7 @@ provider keys. The provider must support Chat Completions with function tools an
 usage counters. Model availability still depends on that key.
 
 Both study runners select **Codex for OpenAI, Claude Code for Claude, and Pi for
-Gemini, Kimi, GLM and DeepSeek**. Install all three once with `bash scripts/setup-local all`.
+Gemini, Kimi, GLM and DeepSeek**. `bash scripts/setup-defaults` installs all three and prepares both studies.
 The host-side adapter translates the native Responses/Messages formats to Chat
 Completions. Native harnesses retain their own sessions and instructions. Each
 agent's compressed transport records retain both request formats, the upstream
@@ -47,25 +47,26 @@ response, returned model ID and request ID. The adapter never changes models or
 silently retries with another provider.
 
 ```sh
+bash scripts/setup-defaults
 export OPENAI_BASE_URL="https://your-provider.example/v1"
-export OPENAI_API_KEY_FILE="$HOME/.config/swarmharm/provider.key"
-# Or set OPENAI_API_KEY in the host environment. Never commit credentials.
-python3.12 scripts/check-model-lineup --out ../model-check --execute
+export OPENAI_API_KEY="your-key"
+python3.12 scripts/run-evals --execute
 ```
 
-This starts four independent native sessions **per model**, processing models in
-sequence. Each must read an order, reuse its private code in a second tool call,
-and save a receipt. Inspect `summary.json`, the per-agent native records and
-`evidence-manifest.json` before scaling. This is an integration check, not a study
-result. It preserves failed attempts; repeat into a new output directory after a
-repair. No model calls occur without `--execute`.
+This is the complete default: all 11 models, both studies, N=4/8/16, one repeat,
+high reasoning and goal off. The N=4 API check runs first automatically. Each agent
+must read an order, reuse its private code in a second tool call, and save a receipt.
+Complete records are stored under `../swarm-runs/`. The same command resumes that
+plan without replacing existing attempts. No model calls occur without `--execute`.
 
-Use `--models sol haiku` for a subset. If your provider names models differently,
-pass `--model-map models.json`, a JSON object such as
-`{"sol":"gpt-6.1-sol","haiku":"claude-haiku-5-5"}`. Unspecified names keep
-the exact IDs above. This maps names for the same selected models, not substitutes.
-The study runners use `--model` for the listed identity and `--served-model` for
-its provider ID.
+Use `OPENAI_API_KEY_FILE` instead of `OPENAI_API_KEY` if preferred. If your provider
+names models differently, optional `--model-map models.json` accepts a JSON object
+such as `{"sol":"gpt-6.1-sol","haiku":"claude-haiku-5-5"}`. The default still selects
+all 11 models; this only maps provider spellings. The lower-level study runners use
+`--model` and `--served-model` for optional custom runs.
+
+The standalone `scripts/check-model-lineup` command remains available when only an
+API check is needed. Its results are integration evidence, not study outcomes.
 
 `--api-protocol native` skips translation when the same endpoint supports native
 Responses (Codex/Pi) and Messages (Claude Code). The default is

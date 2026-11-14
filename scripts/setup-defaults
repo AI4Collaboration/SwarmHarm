@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Install the complete default lineup and both studies. No model requests.
+set -euo pipefail
+repo=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+bash "$repo/scripts/setup-local" all
+state=${SWARMHARM_READINESS:-"$repo/../eval-readiness"}
+state=$(CDPATH= cd -- "$state" && pwd)
+source "$state/swarmharm-local.env"
+harm_image=$SWARMHARM_DOCKER_IMAGE
+form_image=$harm_image
+if [ "$(docker image inspect "$harm_image" --format '{{.Architecture}}')" != arm64 ]; then
+  provenance="$state/swarmform-arm64-$(date +%Y%m%dT%H%M%S)-$$.json"
+  "$SWARMHARM_HARBOR_ENV/bin/python" "$repo/scripts/build-workstation-image" \
+    --platform linux/arm64 --output "$provenance"
+  form_image=$("$SWARMHARM_HARBOR_ENV/bin/python" -c 'import json,sys;print(json.load(open(sys.argv[1]))["image"])' "$provenance")
+fi
+bash "$repo/rollouts/build-jq"
+# Check that the host can actually execute the ARM64 task, including on x86 hosts.
+docker run --rm --network none --platform linux/arm64 "$form_image" python -c 'import platform; print(platform.machine())'
+"$SWARMHARM_HARBOR_ENV/bin/python" - "$state/default-runner.json" "$SWARMHARM_HARBOR_ENV" "$harm_image" "$form_image" <<'PY'
+import json, pathlib, sys
+path, runtime, harm, form = sys.argv[1:]
+pathlib.Path(path).write_text(json.dumps({'python': str(pathlib.Path(runtime).resolve()/'bin/python'),
+    'images': {'swarmharm': harm, 'swarmform': form}}, indent=2)+'\n')
+PY
+printf 'Ready. Set OPENAI_BASE_URL and OPENAI_API_KEY, then run: python3.12 scripts/run-evals --execute\n'

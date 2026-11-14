@@ -5,40 +5,50 @@
 - **SwarmForm:** how agents discover communication and work together. [API setup and task matrix](rollouts/README.md).
 - **SwarmHarm:** six threat models in Engineering and Knowledge Work; 12 selected four-agent inputs have reviewed Sol 6.1 positives. [API setup and input parameters](swarmharm/README.md).
 
-## Run at N = 4, 8, 16
+## Run the default experiment
 
-Both batch runners default to **4 → 8 → 16**, one repeat. Agents within a cohort run concurrently; cohorts run sequentially. Select an exact served model ID and an output directory outside Git. A changed population is a new experimental condition, not an already validated result.
+**Only supply your API URL and key.** The default runs all [11 models](docs/model-lineup.md)
+at **N=4, 8, 16**, one repeat per setting, high reasoning, goal off and independent
+agent memory. OpenAI uses Codex, Claude uses Claude Code, and the other models use Pi.
+Both studies are included; no model, task, population or output selection is required.
 
-| Study | API and runtime | Configurations per N | Full 4/8/16 batch |
-| --- | --- | --- | --- |
-| SwarmForm | OpenAI-compatible Chat Completions, function tools and token usage | 6 tasks × 4 communication conditions = 24 | 72 cohorts / 672 agent trajectories |
-| SwarmHarm | OpenAI-compatible Chat Completions, native model-family harness | 6 threat models × 2 domains = 12 | 36 cohorts / 336 agent trajectories |
+Install Python 3.12, Node.js 22.19+, Git and Docker first. The complete SwarmForm
+matrix needs ARM64 execution (native or Docker emulation). From a fresh clone:
 
 ```sh
-# After the setup in the selected study's guide. These commands only print plans.
-python rollouts/run_matrix.py --model "$MODEL" --populations 4 8 16
-"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run_matrix.py --model "$MODEL" --populations 4 8 16
+bash scripts/setup-defaults
+export OPENAI_BASE_URL="https://your-provider.example/v1"
+export OPENAI_API_KEY="your-key"
+python3.12 scripts/run-evals --execute
 ```
 
-New runs generate inputs from tracked source. No historical trajectory bundle or
-pre-existing local workspace is required. Follow the selected guide to install
-runtimes and build its image/reference assets.
+Setup installs all three harnesses, builds the images and verifies the jq reference.
+The runner first checks all 11 models with N=4, then runs the complete matrices below.
+Agents within each cohort run concurrently; cohorts and model batches run sequentially.
+Registrations are committed locally, with an automatic runner identity if Git has none.
+It does not push commits. Our tests use AxonHub; your endpoint can be any compatible
+provider supporting Chat Completions, function tools and token usage.
 
-[Model lineup and verified setup](docs/model-lineup.md): all 11 models across OpenAI,
-Anthropic, Google, Moonshot, Z.ai and DeepSeek passed N=4 startup, tool use and
-native-record checks. Exact model IDs and full integration records are linked there.
+| Study | Settings per model | Cohorts per model | All 11 models |
+| --- | --- | --- | --- |
+| SwarmForm | 6 tasks × 4 communication conditions × N=4/8/16 | 72 | 792 |
+| SwarmHarm | 6 threat models × 2 domains × N=4/8/16 | 36 | 396 |
 
-Add `--execute --out /absolute/external/run-directory` to collect. Both accept
-`OPENAI_BASE_URL` and either `OPENAI_API_KEY` or `OPENAI_API_KEY_FILE`.
-SwarmHarm commits each fresh registration locally before collection; configure
-Git author details first. No push is required. One API URL and one key cover the lineup. OpenAI uses Codex, Claude uses Claude Code,
-and the other listed models use Pi. The host-side adapter translates native requests
-to Chat Completions. Only our own tests use AxonHub; external users supply their endpoint.
+**Total: 1,188 study cohorts / 11,088 agent trajectories**, plus the initial 44-agent
+API check. Results go automatically to `../swarm-runs/`, outside Git:
+`api-check/`, `swarmform/<model>/` and `swarmharm/<model>/`, with plans, progress
+indexes, logs and complete per-cohort records. Re-running the command resumes the
+same plan and preserves existing complete or incomplete attempts. A failed API check
+stops the study batch and remains available for inspection.
 
-A batch writes `plan.json`, a live `index.json`, per-cohort logs and separate
-trajectory directories. Reusing an identical plan preserves completed and partial
-attempts instead of rerunning them. Use a fresh output root for a new attempt.
-See [storage and compression](docs/running-evals.md#trajectory-storage).
+Omit `--execute` to preview without model calls. Optional `--out` selects a fresh
+output root for a new experiment; `--model-map` adapts provider ID spellings without
+changing the selected models. `OPENAI_API_KEY_FILE` can replace `OPENAI_API_KEY`.
+[Storage and compression](docs/running-evals.md#trajectory-storage).
+
+All 11 models passed our N=4 startup, tool-use and native-record checks.
+[Results and full integration evidence](docs/model-lineup.md). New N=8/16 runs retain
+their own evidence. Historical inputs and scores remain unchanged.
 
 <a id="research-framework"></a>
 ## Research framework

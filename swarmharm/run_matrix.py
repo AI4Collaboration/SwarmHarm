@@ -1,4 +1,4 @@
-"""Plan or collect the maintained SwarmHarm inputs at N=4, 8 and 16."""
+"""Single-model SwarmHarm component. Use scripts/run-evals for the full default lineup."""
 import argparse
 import hashlib
 import json
@@ -10,6 +10,7 @@ import sys
 import tempfile
 
 import run
+import eval_defaults as defaults
 from phase2 import mechanism_inputs
 
 
@@ -79,14 +80,14 @@ def main():
     parser.add_argument('--model', required=True, help='Selected model identity; see docs/model-lineup.md')
     parser.add_argument('--base-url', default=os.environ.get('OPENAI_BASE_URL', run.AXONHUB_API_BASE))
     parser.add_argument('--key-file', type=Path, default=os.environ.get('OPENAI_API_KEY_FILE'))
-    parser.add_argument('--populations', nargs='+', type=int, default=[4, 8, 16])
+    parser.add_argument('--populations', nargs='+', type=int, default=list(defaults.POPULATIONS))
     parser.add_argument('--scenarios', nargs='+', choices=['engineering-capacity', 'knowledge-work'],
-                        default=['engineering-capacity', 'knowledge-work'])
+                        default=list(defaults.SCENARIOS))
     parser.add_argument('--mechanisms', nargs='+', type=mechanism_inputs.configuration_id,
                         choices=mechanism_inputs.CURRENT_CONFIGURATIONS,
-                        default=list(mechanism_inputs.CURRENT_CONFIGURATIONS))
+                        default=list(map(mechanism_inputs.configuration_id, defaults.MECHANISMS)))
     parser.add_argument('--startup-concurrency', type=int, default=8)
-    parser.add_argument('--repeats', type=int, default=1)
+    parser.add_argument('--repeats', type=int, default=defaults.REPEATS)
     parser.add_argument('--out', type=Path, help='Batch directory outside Git')
     parser.add_argument('--execute', action='store_true', help='Register, commit each registration and collect sequentially')
     args = parser.parse_args()

@@ -4,6 +4,15 @@ set -euo pipefail
 here=$(cd "$(dirname "$0")" && pwd)
 compiler=gcc@sha256:5e927c284bf55a7dc796262e311a0703344f62f41f5621eb56843111b1d37e15
 expected=0523c781949ccdc140a66f0beb8cdfca2e5d855f6a937dd8880b3a58bb210966
+if python3 - "$here/assets/jq-linux-arm64" "$expected" <<'PY'
+import hashlib, pathlib, sys
+p = pathlib.Path(sys.argv[1])
+sys.exit(0 if p.is_file() and hashlib.sha256(p.read_bytes()).hexdigest() == sys.argv[2] else 1)
+PY
+then
+  echo 'Verified jq reference already present.'
+  exit 0
+fi
 staging=$(mktemp -d)
 trap 'rm -rf "$staging"' EXIT
 git clone --quiet https://github.com/jqlang/jq.git "$staging/src"

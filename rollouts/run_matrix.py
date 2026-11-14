@@ -1,4 +1,4 @@
-"""Plan or execute matched SwarmForm cohorts against one Chat Completions deployment."""
+"""Single-model SwarmForm component. Use scripts/run-evals for the full default lineup."""
 
 import argparse
 import hashlib
@@ -8,6 +8,9 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'shared'))
+import eval_defaults as defaults
 
 from swarmform.__main__ import CHANNELS, ROOT, source_digest, write_json
 from swarmform.formation_inputs import TASK_MODULES
@@ -71,16 +74,16 @@ def main():
         "--base-url",
         default=os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1"),
     )
-    parser.add_argument("--populations", nargs="+", type=int, default=[4, 8, 16])
+    parser.add_argument("--populations", nargs="+", type=int, default=list(defaults.POPULATIONS))
     parser.add_argument("--key-file", type=Path, default=os.environ.get("OPENAI_API_KEY_FILE"))
     parser.add_argument(
-        "--tasks", nargs="+", choices=TASK_MODULES, default=list(TASK_MODULES)
+        "--tasks", nargs="+", choices=TASK_MODULES, default=list(defaults.TASKS)
     )
     parser.add_argument(
         "--names", choices=["numbered", "physicists"], default="numbered"
     )
     parser.add_argument("--seconds", type=int, default=600)
-    parser.add_argument("--repeats", type=int, default=1)
+    parser.add_argument("--repeats", type=int, default=defaults.REPEATS)
     parser.add_argument(
         "--execute", action="store_true", help="Run planned rows sequentially"
     )

@@ -17,19 +17,16 @@ The current Engineering and Knowledge Work Specification Gaming cases each conta
 <a id="reproduction"></a>
 ## Run from a fresh checkout
 
-Requires Git, Python 3.12, Node.js 22.19 or newer, npm and a running Docker engine.
-Configure your Git author name and email before committing registrations.
-macOS and Linux are supported. Setup installs the pinned native Codex and Harbor
-runtime and builds the workstation image.
-Setup records installed system-package versions and the resulting image digest.
-Use that recorded image to reproduce a run; later builds can resolve newer packages.
+Use the [default experiment in the root README](../README.md#run-the-default-experiment).
+Run `bash scripts/setup-defaults`, set `OPENAI_BASE_URL` and `OPENAI_API_KEY`, then
+`python3.12 scripts/run-evals --execute`. It installs the pinned runtimes and images,
+checks the complete 11-model lineup at N=4, and runs both studies at N=4/8/16.
+SwarmHarm includes all six mechanisms in Engineering and Knowledge Work:
+36 cohorts per model, 396 in total, under `../swarm-runs/swarmharm/<model>/`.
+The default runner supplies a local registration author if Git has none.
 
-```sh
-git clone https://github.com/AI4Collaboration/SwarmHarm.git
-cd SwarmHarm
-bash scripts/setup-local
-source ../eval-readiness/swarmharm-local.env
-```
+The following sections describe **optional single-model or single-input runs**.
+They are not extra configuration steps for the default experiment.
 
 ### Configure the API and input
 
@@ -47,6 +44,7 @@ are exact: use `--served-model` if the provider's ID differs from the native ide
 The 12 reviewed cases retain their original Sol 6.1/AxonHub settings.
 
 ```sh
+source ../eval-readiness/swarmharm-local.env
 export SWARMHARM_API_BASE="https://your-provider.example/v1"
 export SWARMHARM_MODEL="gpt-6.1-sol"
 export SWARMHARM_API_KEY_FILE="$HOME/.config/swarmharm/provider.key"
@@ -126,7 +124,7 @@ Native records and validated ATIF trajectories are under `natural/<agent>/`.
 A settled session or successful publication alone does not establish a research claim.
 All corrections, withdrawals and partial work remain in the review.
 
-### Batch N = 4, 8, 16
+### Optional single-model batch
 
 The batch runner uses all 12 maintained inputs at each requested N: **36 cohorts /
 336 agent trajectories per model and repeat**. It records a plan, commits each
@@ -134,8 +132,8 @@ registration locally, collects sequentially, exports ATIF and runs independent
 review. It does not run the separately billed transcript judge automatically.
 Passed software checks are reused only when their source, runtime and required
 coverage match; each input still receives its own path validation.
-Agents within each cohort remain concurrent. Start with `--populations 4` and
-one `--scenarios` / `--mechanisms` selection to verify your endpoint first.
+Agents within each cohort remain concurrent. The default runner performs the
+N=4 API check automatically before any study batch.
 
 ```sh
 export OPENAI_BASE_URL="$SWARMHARM_API_BASE"

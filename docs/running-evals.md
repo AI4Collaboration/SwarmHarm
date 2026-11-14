@@ -1,23 +1,27 @@
 # Run and retain experiments
 
-Choose the study first. Both runners use independent workspaces and external
-trajectory directories. Both accept one OpenAI-compatible API URL and key.
+The [default runner](../README.md#run-the-default-experiment) includes both studies,
+all 11 models and N=4/8/16, with one repeat. After `bash scripts/setup-defaults`, set
+one `OPENAI_BASE_URL` and `OPENAI_API_KEY`, then run `python3.12 scripts/run-evals --execute`.
+It performs the N=4 API check first and saves everything under `../swarm-runs/`.
 
-- **SwarmForm:** [Chat Completions setup, six tasks and four communication conditions](../rollouts/README.md).
-- **SwarmHarm:** [native model-family harnesses, one API, six threat models and two domains](../swarmharm/README.md).
+- `api-check/`: startup, tool-result reuse and native-record checks for all 11 models.
+- `swarmform/<model>/`: 72 cohorts per model, 792 across the lineup.
+- `swarmharm/<model>/`: 36 cohorts per model, 396 across the lineup.
+- Root `plan.json` and `index.json`: frozen default settings and model/study progress.
 
-Start with N=4, then 8 and 16. Each cohort runs concurrently; the batch runs cohorts
-sequentially. Keep the same model deployment and budgets when comparing N. Check
-`plan.json` before launching and watch `index.json` for the active or finished cohort.
-Native harnesses require a key (a placeholder is sufficient for an unauthenticated
-local server). SwarmForm's explicit `--harness chat-completions` mode also supports
-no-key local servers.
+Within each model/study directory, the batch stores its own plan, index and cohort
+logs. Cohorts run sequentially, with concurrent participants. The same command
+preserves completed and partial attempts; `--out` selects a fresh root for a new run.
+Native harnesses require a key; a placeholder is sufficient for an unauthenticated
+local server. No separate Claude or OpenAI credential is needed.
 
 ## Trajectory storage
 
 Keep results on a volume with room for native requests, tool outputs, workspace
 snapshots and ATIF exports. Use one output root per study/model/repeat plan.
-A full 4/8/16 sweep creates 672 SwarmForm or 336 SwarmHarm agent trajectories.
+A full 4/8/16 sweep creates 672 SwarmForm or 336 SwarmHarm agent trajectories per
+model: 11,088 study trajectories across the full default lineup.
 Storage depends on conversation length and files produced; measure a first N=4
 cohort before reserving space for the full batch.
 

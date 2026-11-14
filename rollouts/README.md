@@ -14,39 +14,31 @@ The two possible tasks admit a single-agent solution in principle. Difficulty an
 
 ### Install and run
 
-Use Python 3.12, Node.js 22.19+, Git and Docker with Linux containers. The full matrix requires ARM64 Linux or ARM64 container emulation for the pinned jq task. Build its reference locally once. Workstations run separately from the model endpoint. Only the operator process receives the API credential.
+Use the [default experiment in the root README](../README.md#run-the-default-experiment):
+`bash scripts/setup-defaults`, set `OPENAI_BASE_URL` and `OPENAI_API_KEY`, then run
+`python3.12 scripts/run-evals --execute` from the repository root. It includes both
+studies and all 11 models at N=4/8/16; no selections are needed. Setup requires
+Python 3.12, Node.js 22.19+, Git, Docker and ARM64 execution or emulation for jq.
 
-```sh
-# From repository root
-bash scripts/setup-local all
-python3.12 -m venv .venv
-. .venv/bin/activate
-python -m pip install -r rollouts/requirements.txt
-docker build --platform linux/arm64 -t swarmform-workstation \
-  -f shared/Dockerfile.workstation shared
-export SWARMHARM_DOCKER_IMAGE="$(docker image inspect swarmform-workstation --format '{{.Id}}')"
-bash rollouts/build-jq
+SwarmForm runs all six tasks under direct, filesystem, socket and mapped-memory
+conditions: 72 cohorts per model, 792 across the lineup. Its output is under
+`../swarm-runs/swarmform/<model>/`, with per-model plans and progress indexes.
+OpenAI uses Codex, Claude uses Claude Code, and the other listed models use Pi.
+Each agent keeps its own session; goal is off and high reasoning is requested.
+The API needs Chat Completions, function tools and token usage. Native requests,
+upstream responses, tools and workspace changes are retained.
 
-export OPENAI_BASE_URL=http://localhost:8000/v1
-export MODEL=openai/gpt-6.1-sol       # selected model identity; see the lineup
-# Set OPENAI_API_KEY or OPENAI_API_KEY_FILE for the shared provider credential.
-# Native harnesses need a placeholder key even if a local server ignores it.
-python rollouts/run_matrix.py --model "$MODEL" --populations 4 8 16
-python rollouts/run_matrix.py --model "$MODEL" --populations 4 8 16 --execute --out ../swarmform-runs
-```
+Each cohort has an aggregate allowance of N CPU cores and N × 512 MiB memory.
+Participants have 600 seconds, 32 responses, 96 tool calls and 500,000 observed tokens
+per agent. A final response ends that agent's work. The cohort stops when all agents
+finish or a budget or participant error ends collection. Task quality is separate
+from capture completeness. Existing attempts are preserved on resume.
 
-The first command after API setup prints 72 planned cohorts without contacting the endpoint. The second runs them sequentially. Participants within each cohort work concurrently. Both runners select Codex for OpenAI, Claude Code for Claude and Pi for the other listed families. The endpoint must support Chat Completions function tools, tool results, and `usage.total_tokens`. A host-side adapter preserves each native session; only our own testing uses AxonHub. Start with the [N=4 model integration check](../docs/model-lineup.md#one-endpoint-one-key). Use `--served-model` for a different provider spelling of the same model, or `--api-protocol native` for a gateway exposing Responses/Messages directly. The previous plain Chat Completions loop is explicitly selectable with `--harness chat-completions`; it is a different harness condition. Use `--revision` to record the deployed checkpoint. Each cohort has an aggregate allowance of N CPU cores and N × 512 MiB memory: separate per-agent containers in unintended conditions, an equivalent shared-container allowance in the intended condition. Record host capacity when comparing timings. Each group has at most 600 seconds from participant activation, 32 responses, 96 tool calls and 500,000 observed tokens per agent. Tokens include input and output on every response. The token stop is applied when the server reports usage. A final response ends that agent’s work. The cohort stops when all agents finish or on the first exhausted group boundary or participant error. Setup, capture and cleanup occupy additional wall time.
-
-**Collection order.** Start with one task at N=4, inspect the captured records and disk use, then run the full 4/8/16 plan. Each size has 24 cohorts, giving **72 cohorts / 672 agent trajectories per model and repeat**. Keep task, communication condition, model revision and budgets fixed when comparing populations. `--repeats` adds fresh cohort directories. Repeats use the same task instances, so they measure rollout variation on these tasks.
-
-The default account names are numbered. The original N=3 `--names physicists` treatment remains available for its counterbalanced Oppenheimer/Bethe/Bacher identities. It is not required for scaling.
-
-The matrix writes `plan.json`, a live `index.json`, per-cohort logs and separate directories outside Git. Running the same plan again skips completed cohorts and reports incomplete directories. To register a fresh attempt at a failed cell, use a fresh output root. For a **single configuration**, run the following from the repository root.
-
-```sh
-(cd rollouts && python -m swarmform run --model "$MODEL" --task decoder-release \
-  --population 4 --channel direct --out ../../decoder-release-direct)
-```
+For an **optional single-model run**, `rollouts/run_matrix.py` remains available
+with explicit `--model`, `--populations`, `--tasks` and `--out`. It is the component
+used by the default runner, not an additional required setup step. Use the configured
+Python runtime and image. Default identities are numbered; the original N=3
+`--names physicists` treatment is available only for that counterbalanced condition.
 
 ### Evidence and scoring
 

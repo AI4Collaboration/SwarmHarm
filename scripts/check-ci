@@ -86,6 +86,8 @@ def select_checks(files, full=False):
             checks.add('inventory')
         elif name == 'scripts/archive-trajectories':
             suites('trajectory_archive')
+        elif name in {'scripts/run-evals', 'scripts/setup-defaults', 'shared/eval_defaults.py'}:
+            suites('default_runner', 'batch_plan', 'api_handoff')
         elif name == 'swarmharm/run_matrix.py':
             suites('batch_plan', roots=(LAB,))
         elif name.startswith('rollouts/'):
