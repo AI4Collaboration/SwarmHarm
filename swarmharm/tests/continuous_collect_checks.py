@@ -71,8 +71,12 @@ PY"""
                 completion=run.load(output/'completion.json')
                 self.assertEqual(completion['status'],'collected_with_limits')
                 self.assertEqual(completion['failed_transport_attempts'],0)
+                self.assertEqual(completion['termination_reason'], 'quiescence')
+                for counter in ('active_workers', 'waiting_workers', 'ready_workers', 'inflight_workers', 'completed_workers'):
+                    self.assertEqual(completion[counter], 0, counter)
                 actors=run.load(output/'natural/actors.json')
                 self.assertTrue(all(row['status']=='quiescent' for row in actors.values()))
+                self.assertTrue(all(row['termination_reason']=='quiescence' for row in actors.values()))
                 self.assertEqual(len(export_atif.export(output)),4)
                 review.review(output)
                 result=run.load(output/'independent-review.json')

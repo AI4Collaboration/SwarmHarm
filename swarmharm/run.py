@@ -2568,8 +2568,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 state=states[actor]
                 if state['status']=='waiting_for_platform_change':
                     state['status']='completed' if complete_together else 'quiescent'
-                    if termination_reason == 'no_reachable_wake':
-                        state['termination_reason'] = termination_reason
+                    state['termination_reason'] = termination_reason
                     if complete_together:
                         final=cohort_completion.finals[actor]
                         state['final']=final['text']
@@ -2579,6 +2578,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     world.close_actor(actor);export(actor);active.remove(actor)
         except BaseException as error:
             termination_reason=('rollout_limit' if isinstance(error,RolloutLimit)
+                else 'observer_hold' if isinstance(error,ObservationHold)
                 else 'provider_hold' if isinstance(error,Hold)
                 else 'operator_interrupted' if isinstance(error,KeyboardInterrupt)
                 else 'collector_error')
@@ -2608,6 +2608,11 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
 
             export()
             save(root/name/'actors.json',states)
+            # The last live progress event precedes session shutdown.
+            with state_lock:
+                progress.update(termination_reason=termination_reason,
+                    active_workers=0, waiting_workers=0, ready_workers=0, inflight_workers=0,
+                    completed_workers=sum(state['status']=='completed' for state in states.values()))
         return states,world.summary()
     def preflight(provider,model):
         """One tool round trip through the registered harness and authentication."""
