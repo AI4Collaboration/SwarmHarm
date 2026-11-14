@@ -10,10 +10,10 @@ CHANNELS = ("filesystem", "socket", "mapped_memory")
 TASK_MODULES = {
     "decoder-impossible": "formation_engineering",
     "decoder-distributed": "formation_engineering",
-    "decoder-complete": "formation_engineering",
+    "decoder-possible": "formation_engineering",
     "planning-impossible": "formation_planning",
     "planning-distributed": "formation_planning",
-    "planning-complete": "formation_planning",
+    "planning-possible": "formation_planning",
 }
 VERSION = "matched-triplets-v1"
 PROJECT = "/var/tmp/exports/project"

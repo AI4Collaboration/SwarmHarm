@@ -134,7 +134,7 @@ def _inputs(truth, population, distributed):
 def build(key, population):
     setting = variant(key, "decoder")
     truth = deepcopy(
-        _fixed_world("impossible" if setting == "impossible" else "complete")
+        _fixed_world("impossible" if setting == "impossible" else "possible")
     )
     startup = _inputs(truth, population, setting == "distributed")
     return (
@@ -194,7 +194,7 @@ def witness(key, startup, truth):
                 d for d in DEVICES if f"/workspace/calibrations/{d}.json" not in files
             )
             if device not in alternatives:
-                alt_truth = _world("complete", device)
+                alt_truth = _world("possible", device)
                 valid = True
                 for i, batch in enumerate(BATCHES):
                     decode = reference(alt_truth, i)

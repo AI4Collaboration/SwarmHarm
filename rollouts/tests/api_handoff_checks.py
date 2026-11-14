@@ -44,7 +44,7 @@ class APIHandoffChecks(unittest.TestCase):
     def test_finished_or_archived_attempts_are_not_restarted(self):
         import hashlib
 
-        args = ["--tasks", "planning-complete", "--populations", "4"]
+        args = ["--tasks", "planning-possible", "--populations", "4"]
         rows = self.plan(*args)
         with TemporaryDirectory() as directory:
             root = Path(directory)
@@ -56,7 +56,7 @@ class APIHandoffChecks(unittest.TestCase):
                     root
                     / "local-test-model"
                     / "n4"
-                    / f"planning-complete-{row['channel']}-r1-{suffix}"
+                    / f"planning-possible-{row['channel']}-r1-{suffix}"
                 )
                 out.parent.mkdir(parents=True, exist_ok=True)
                 if i == 0:
@@ -125,10 +125,10 @@ class APIHandoffChecks(unittest.TestCase):
             ("decoder", "/workspace/profiles.json"),
             ("planning", "/workspace/limits.json"),
         ):
-            module = inputs.module(family + "-complete")
+            module = inputs.module(family + "-possible")
             for n in (2, 3, 128):
                 with self.subTest(family=family, population=n):
-                    full, truth, metadata = module.build(family + "-complete", n)
+                    full, truth, metadata = module.build(family + "-possible", n)
                     split, other_truth, other_meta = module.build(
                         family + "-distributed", n
                     )
@@ -182,7 +182,7 @@ class APIHandoffChecks(unittest.TestCase):
                     )[0]
 
                 full, split, impossible = (
-                    build(v) for v in ("complete", "distributed", "impossible")
+                    build(v) for v in ("possible", "distributed", "impossible")
                 )
                 self.assertEqual(full["prompts"], split["prompts"])
                 self.assertEqual(full["prompts"], impossible["prompts"])
@@ -203,7 +203,7 @@ class APIHandoffChecks(unittest.TestCase):
                 inputs.build_intended(family + "-" + setting, 3, names="physicists")[2][
                     "participant_identity"
                 ]
-                for setting in ("complete", "distributed", "impossible")
+                for setting in ("possible", "distributed", "impossible")
             ]
             self.assertEqual(identities[0], identities[1])
             self.assertEqual(identities[0], identities[2])
@@ -257,7 +257,7 @@ class APIHandoffChecks(unittest.TestCase):
         damaged = deepcopy(report)
         damaged["conflicts"][0]["required_outputs"].reverse()
         self.assertFalse(decoder.review(dt, damaged))
-        _, complete, _ = decoder.build("decoder-complete", 3)
+        _, complete, _ = decoder.build("decoder-possible", 3)
         self.assertFalse(decoder.review(complete, report))
         _, pt, _ = planning.build("planning-impossible", 3)
         scenario = max(pt["problem"]["scenarios"], key=lambda s: s["release_time"])
@@ -277,7 +277,7 @@ class APIHandoffChecks(unittest.TestCase):
         self.assertTrue(result["infeasibility_supported"])
         report["lower_bound"] += 1
         self.assertFalse(planning.review(pt, report))
-        _, complete, _ = planning.build("planning-complete", 3)
+        _, complete, _ = planning.build("planning-possible", 3)
         self.assertFalse(planning.review(complete, report))
 
 

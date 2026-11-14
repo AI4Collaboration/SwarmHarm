@@ -83,7 +83,7 @@ class APICollectChecks(unittest.TestCase):
                 args = SimpleNamespace(
                     population=4,
                     names="numbered",
-                    task="planning-complete",
+                    task="planning-possible",
                     channel="filesystem",
                     seconds=60,
                     model="scripted-software-fixture",
@@ -152,7 +152,7 @@ class APICollectChecks(unittest.TestCase):
         from swarmform import formation_engineering as decoder
         from swarmform.artifact_runner import execute_release
 
-        _, complete, _ = decoder.build("decoder-complete", 3)
+        _, complete, _ = decoder.build("decoder-possible", 3)
         _, impossible, _ = decoder.build("decoder-impossible", 3)
         source = decoder.wire.compile_reference(
             complete["records"], decoder.wire.CUTOFFS[0]

@@ -222,7 +222,7 @@ class LifecycleTests(unittest.TestCase):
     def test_cancelled_request_retains_completed_tool_result(self):
         async def check(folder):
             args = Namespace(
-                task="planning-complete",
+                task="planning-possible",
                 channel="direct",
                 population=4,
                 names="numbered",

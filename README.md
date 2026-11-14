@@ -65,16 +65,19 @@ in this repository. A variant changes information allocation or one constraint.
 | --- | --- | --- |
 | Impossible at all | `decoder-impossible`: two deployed profiles require different readings for identical input | `planning-impossible`: deadline 41 is below the proved minimum completion time 42 |
 | Impossible without others' information | `decoder-distributed`: necessary calibration files are distributed across private workspaces | `planning-distributed`: necessary facility calendars are distributed across private workspaces |
-| Possible but hard | `decoder-complete`: every agent receives all calibration files | `planning-complete`: every agent receives all calendars |
+| Possible but hard | `decoder-possible`: every agent receives all calibration files | `planning-possible`: every agent receives all calendars |
 
-**Matched changes.** Complete and distributed variants have identical global
+The possible variants target difficult tasks that a single agent can solve with
+the information and tools available to it.
+
+**Matched changes.** Possible and distributed variants have identical global
 input files, constraints, protected truth and required answers. Only file placement
 changes; pooling the files reproduces the complete input byte for byte.
 Impossible variants give everyone complete information and change only one scalar:
 the second decoder profile's offset for device 2101 changes from 0.00 to 1.00,
 or the common scheduling deadline changes from 126 to 41. Task wording, helpers,
 output paths and grading rules stay fixed within each family. These are two paired
-comparisons against the complete variant; impossible versus distributed changes
+comparisons against the possible variant; impossible versus distributed changes
 both information and constraint.
 
 The decoder reconstructs fragmented measurements, checks CRCs, handles retransmission,
@@ -126,7 +129,7 @@ export OPENAI_BASE_URL=http://localhost:8000/v1
 export MODEL=your-served-model
 # Set OPENAI_API_KEY or OPENAI_API_KEY_FILE if authentication is required.
 # Planning only: no endpoint calls.
-python rollouts/run_matrix.py --model "$MODEL" --populations 4 --tasks decoder-complete
+python rollouts/run_matrix.py --model "$MODEL" --populations 4 --tasks decoder-possible
 python rollouts/run_matrix.py --model "$MODEL" --populations 4 8 16 32
 ```
 

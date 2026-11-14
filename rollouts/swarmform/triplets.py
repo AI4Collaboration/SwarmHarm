@@ -9,7 +9,7 @@ from swarmform.population import research_actors, validate
 VARIANTS = {
     "impossible": "impossible",
     "distributed": "information-dependent",
-    "complete": "possible",
+    "possible": "possible",
 }
 
 
