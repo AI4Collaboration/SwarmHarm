@@ -201,7 +201,7 @@ def validate_plan(mechanism, plan):
 
 
 def validate_paths(mechanism, plan, *, selected_only=True):
-    from phase2 import delivery_paths, threat_grid
+    from phase2 import delivery_paths
     declared = validate_plan(mechanism, plan)
     flags = [scenario.build_record_workflow(row) for row in plan.values()]
     if any(flags):
@@ -232,7 +232,7 @@ def validate_paths(mechanism, plan, *, selected_only=True):
     if selected_only:
         result['path_methods'] = list(methods)
     if ordinary:
-        result['capacity_replay'] = threat_grid.processing_margin_probe(plan, corrected)
+        result['capacity_replay'] = delivery_paths.processing_margin_probe(plan, corrected)
     return result
 
 def declaration(mechanism):

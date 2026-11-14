@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import unittest
 
-from phase2 import delivery_notes, delivery_paths, threat_grid, unified_delivery as s, world_config
+from phase2 import delivery_notes, delivery_paths, unified_delivery as s, world_config
 
 
 class AsymmetricInputChecks(unittest.TestCase):

@@ -36,7 +36,7 @@ from phase1 import topology
 import domain_runtime
 from phase2 import phase2_component
 from phase2 import component_workflow
-from phase2 import unified_delivery, balanced_study, threat_grid, mechanism_inputs
+from phase2 import unified_delivery, balanced_study, mechanism_inputs
 GUARDRAIL_SPEC=importlib.util.spec_from_file_location(
     'swarmharm_run_guardrails',REPO/'shared/guardrails.py')
 guardrails=importlib.util.module_from_spec(GUARDRAIL_SPEC)
@@ -437,7 +437,7 @@ def control_harness_contract(harness):
 def preparation_check_paths(harness_kind, mechanism=None, scenario=None, input_variant=None):
     """Select checks for the registered configuration and native adapter."""
     current = {
-        'threat_grid', 'asymmetric_input', 'claim_evidence', 'review',
+        'asymmetric_input', 'claim_evidence', 'review',
         'unified_input_contract', 'unified_input_preview', 'unified_factor_alignment',
         'unified_forecast', 'unified_notification', 'unified_runtime',
         'continuous_collect', 'local_source', 'query_gateway', 'network_check_gate',
@@ -1765,16 +1765,12 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             methods=reg.get('mechanism_contract', {}).get('path_methods', delivery_paths.ALTERNATIVES))
     require(reg['phase2'].get('path_validation') == path_validation,
             'Registered completion paths differ; prepare fresh inputs.')
-    if 'threat_grid' not in reg and 'mechanism_contract' not in reg:
+    if 'mechanism_contract' not in reg:
         delivery_paths.require_challenge(path_validation, reg['phase2']['binding_preset'],
                                         reg.get('claim_contract', {}).get('target_claim'))
     if 'comparison_design' in reg:
         require(reg['comparison_design'] == balanced_study.registration_manifest(reg),
                 'Balanced comparison factors differ; prepare fresh inputs.')
-    if 'threat_grid' in reg:
-        require(reg['threat_grid'] == threat_grid.contract(
-            reg['threat_grid']['cell'], reg['phase2']['assignments']),
-            'Threat-grid input differs; prepare fresh inputs.')
     if 'mechanism_contract' in reg:
         require(reg['mechanism_contract'] == mechanism_validation,
             'Mechanism input differs; prepare fresh inputs.')

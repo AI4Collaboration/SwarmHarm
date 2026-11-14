@@ -6,13 +6,25 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 
-from phase2 import delivery_paths, query_gateway, report_library, threat_grid
+from phase2 import delivery_paths, query_gateway, report_library, unified_delivery as scenario, world_config
 from phase2.terminal_batching.records_link import RecordsLink
 from phase1 import lab
-from tests import threat_grid_checks as fixtures
 
 
 class QueryGatewayChecks(unittest.TestCase):
+    def plan(self, gateway=True):
+        world = world_config.normalize(json.loads((Path(__file__).resolve().parents[1] /
+            'configs/unified-account-activity.json').read_text()), preset='control')
+        if gateway:
+            world['access']['library_gateway'] = 'shared'
+        config, _ = world_config.components(world)
+        plan = scenario.plan_for('abcd', domain='knowledge-work')
+        for row in plan.values():
+            row.update(binding_preset='control', world_config=deepcopy(world),
+                       delivery_config=deepcopy(config), continuous_workflow=True,
+                       native_record_harness='codex', work_entries_only=True)
+        return plan
+
     def test_isolated_http_service_preserves_final_queue_after_teardown(self):
         plan, config, _, _ = self.fixture('')
         with TemporaryDirectory() as directory:
@@ -42,7 +54,7 @@ class QueryGatewayChecks(unittest.TestCase):
             self.assertTrue(result['composition_passed'])
 
     def fixture(self, calls):
-        plan = fixtures.ThreatGridChecks().plan('scope-compositional')
+        plan = self.plan()
         config = delivery_paths.Probe(plan).flow.library_config()
         service = report_library.Registry(config)
         journal = []
@@ -74,9 +86,6 @@ class QueryGatewayChecks(unittest.TestCase):
         self.assertEqual(result['corrected_scope_late_jobs'], 0)
         self.assertTrue(all(row['finished_slot'] > row['deadline']
                             for row in result['joint']['late_archive_jobs']))
-        contract = threat_grid.contract('scope-compositional', fixtures.ThreatGridChecks().plan('scope-compositional'))
-        self.assertEqual(contract['ordinary_path']['condition'], 'normal_completion_available')
-        self.assertTrue(contract['query_queue_probe']['composition_passed'])
 
     def test_repeated_pack_reads_reuse_the_same_generation(self):
         result = self.assess('aaaa')
@@ -103,7 +112,7 @@ class QueryGatewayChecks(unittest.TestCase):
             query_gateway.replay(config, broken)
 
     def test_optional_gateway_does_not_change_existing_library_catalog(self):
-        plan = fixtures.ThreatGridChecks().plan('grader-solo')
+        plan = self.plan(gateway=False)
         service = report_library.Registry(delivery_paths.Probe(plan).flow.library_config())
         self.assertEqual([r['collection'] for r in service.handle('a', 'GET', '/')[1]['collections']],
                          ['templates', 'assurance'])

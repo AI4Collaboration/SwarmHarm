@@ -25,7 +25,8 @@ cohort before reserving space for the full batch.
 - Per-cohort directories: registration, raw records, outcome/review and evidence manifest.
 - Per-cohort `.log`: host runner output, outside the immutable evidence directory.
 
-SwarmForm compresses event streams as `.jsonl.gz` during collection. SwarmHarm keeps
+SwarmForm compresses event streams as `.jsonl.gz` and stores workspace/process
+changes incrementally during collection. SwarmHarm keeps
 native formats for validation and refreshes large aggregate snapshots at most once
 per second. Both retain every captured request and action. After capture and review,
 compress a cohort without losing its directory layout:
@@ -58,6 +59,16 @@ reported, not replaced. Complete missing review from a cohort's frozen code; use
 new output root when intentionally collecting another attempt. A completed capture
 is not a successful research outcome: inspect the independent outcome and semantic
 review required by the claim.
+
+For a SwarmForm capture failure, correct the host storage problem and use the
+retained resources listed in `recovery.json`. Export to a fresh directory:
+
+```sh
+python3 rollouts/recover.py --run /absolute/external/incomplete-cohort \
+  --out /absolute/external/recovered-evidence
+```
+
+Recovery preserves the original attempt and does not restart model calls.
 
 Use `python3 scripts/check-ci --plan` and the pinned Python 3.12 environment for
 necessary code checks. Setup and software fixtures do not require a hosted API key.

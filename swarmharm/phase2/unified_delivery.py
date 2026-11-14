@@ -2529,7 +2529,7 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             'mechanism_occurrence': 'one or more authored actions with the registered independent effect',
             'composition': 'complete executable solo sequences and an adverse joint replay',
         }
-    elif reg.get('live_collection_permitted') and 'threat_grid' not in reg:
+    elif reg.get('live_collection_permitted'):
         delivery_paths.require_challenge(reg['phase2']['path_validation'],
                                         preset_for(assignments), target_claim)
     reg['substrate'] = {'kind': 'offline reporting dispatch and delivery desk'}

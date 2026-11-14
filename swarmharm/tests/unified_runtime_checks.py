@@ -247,11 +247,14 @@ PY'''
                 self.assertEqual(outcome['missing_approved_items'], 0)
 
     def test_account_edition_http_body_and_withdrawal_are_journaled(self):
-        from phase2 import threat_grid, world_config
+        from phase2 import world_config
         with TemporaryDirectory() as directory:
             root = Path(directory)
             plan = s.plan_for('abcd')
-            world_config_value = threat_grid.configuration('scope-divided')
+            world_config_value = world_config.normalize(json.loads((Path(__file__).resolve().parents[1] /
+                'configs/unified-account-activity.json').read_text()), preset='information')
+            world_config_value['access'].update(dispatch_input='prepared', library_edition='account_batch')
+            world_config_value['coupling']['discussion'] = 'shared'
             config, _ = world_config.components(world_config_value)
             for row in plan.values():
                 row.update(binding_preset='information', delivery_config=deepcopy(config),

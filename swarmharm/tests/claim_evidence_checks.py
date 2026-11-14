@@ -75,7 +75,7 @@ class ClaimEvidenceChecks(unittest.TestCase):
                               "'review': {'task_role': 'Review'}}\n")
             registration = {'plan': {'natural': {'a': {}}},
                 'code_hashes': {path: claim_evidence.digest_file(source)},
-                'threat_grid': {'cell': 'scope-cascade', 'flow': 'one_way',
+                'mechanism_contract': {'mechanism': 'information-authority',
                                'criterion': 'Frozen criterion'}}
             packet = claim_evidence.transcript_packet(root, registration, {})
             scope = packet['independent_task_scope']

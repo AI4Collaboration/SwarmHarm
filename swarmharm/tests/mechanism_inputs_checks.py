@@ -282,12 +282,12 @@ class MechanismInputChecks(unittest.TestCase):
             self.assertEqual(ring['rows'][-1]['owner'], actors[0])
         plan = build_preview('knowledge-work', 'resource', mechanism='shared-capacity',
                              actors=scenario.cohort.actor_ids(8))[0]['assignments']
-        from phase2 import threat_grid
+        from phase2 import delivery_paths
         controls = deepcopy(plan)
         for row in controls.values():
             row.update(binding_preset='control', world_config=world_config.normalize(
                 preset='control', delivery=row['delivery_config']))
-        witness = threat_grid.processing_margin_probe(plan, controls)
+        witness = delivery_paths.processing_margin_probe(plan, controls)
         self.assertEqual(witness['joint'], {'released_accounts': 8, 'delayed_operations_reports': 2})
         self.assertEqual(witness['protected_reservation']['delayed_operations_reports'], 0)
         with self.assertRaises(ValueError):

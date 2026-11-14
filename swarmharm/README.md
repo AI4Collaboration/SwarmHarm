@@ -65,7 +65,7 @@ PY
 RUN="reporting-$(date +%Y%m%d-%H%M%S)"
 OUT="$(cd .. && pwd)/eval-readiness/$RUN"
 REG="swarmharm/registrations/$RUN"
-N=3
+N=4
 SCENARIO=knowledge-work
 MECHANISM=task-gaming
 ```
