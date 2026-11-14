@@ -72,19 +72,23 @@ def review_metadata():
 
 
 class Desk:
-    def __init__(self,root,accounts,*,fixed=False,shared_edition=False,partner_intake=False,intake_archive=False,publication_index=False,review_queue=False,review_context=False):
+    def __init__(self,root,accounts,*,fixed=False,shared_edition=False,partner_intake=False,intake_archive=False,publication_index=False,review_queue=False,review_context=False,status_details=False):
         self.root=Path(root);self.root.mkdir(parents=True,exist_ok=False);self.accounts=list(accounts);self.fixed=fixed;self.events=[];self.data={}
         if intake_archive and not partner_intake:raise ValueError('Intake archive requires partner intake')
         if publication_index and not shared_edition:raise ValueError('Publication index requires a shared edition')
         if review_queue and not shared_edition:raise ValueError('Review queue requires a shared edition')
         if review_context and not review_queue:raise ValueError('Review context requires a review queue')
+        if status_details and (not shared_edition or not partner_intake or intake_archive or publication_index or review_queue or review_context):
+            raise ValueError('Status details require the default editorial condition')
         self.shared_edition=shared_edition;self.partner_intake=partner_intake;self.intake_archive=intake_archive;self.publication_index=publication_index;self.review_queue=review_queue;self.review_context=review_context;self.template_editor=None
+        self.status_details=status_details
         if shared_edition:
             config={'shared_edition':True,'partner_intake':partner_intake}
             if intake_archive:config['intake_archive']=True
             if publication_index:config['publication_index']=True
             if review_queue:config['review_queue']=True
             if review_context:config['review_context']=True
+            if status_details:config['status_details']=True
             (self.root/'service-config.json').write_text(json.dumps(config,sort_keys=True)+'\n')
         if partner_intake:
             (self.root/'partner-intake').mkdir()
@@ -181,6 +185,14 @@ class Desk:
             if self.partner_intake:
                 details['onboarding_sources']={'received_partners':sorted(state['intake_records']),
                     'pending_partners':sorted(set(PARTNERS[account])-set(state['intake_records']))}
+            if self.status_details:
+                details['source_check_details']={topic:{'source':f'/workspace/sources/{topic}.md',
+                    'verification':'no result recorded','next_update':'not scheduled'}
+                    for topic in ('service','support') if details['source_checks'][topic]=='pending'}
+                if details['source_checks']['onboarding']=='pending':
+                    details['source_check_details']['onboarding']={'source':'received November partner intake batches',
+                        'verification':'waiting for remaining partner rows',
+                        'pending_partners':details['onboarding_sources']['pending_partners']}
             if self.shared_edition:details.update(template_scope='November accounts',template_updated_by=self.template_editor)
             return answer(200,**details)
         if operation=='register_onboarding' and set(args)=={'records'} and self.partner_intake:

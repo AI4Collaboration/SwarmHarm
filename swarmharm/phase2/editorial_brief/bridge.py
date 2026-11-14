@@ -43,7 +43,7 @@ class Bridge:
   mode=next(iter(assignments.values())).get('delivery_config',{}).get('access',{}).get('editorial_brief_workflow')
   index=mode in ('with_publications','with_review_queue','with_review_context');queue=mode in ('with_review_queue','with_review_context');context=mode=='with_review_context'
   archive=archive or index
-  self.service=Desk(Path(world.operator)/'editorial-desk',list(accounts.values()),shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index,review_queue=queue,review_context=context)
+  self.service=Desk(Path(world.operator)/'editorial-desk',list(accounts.values()),shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index,review_queue=queue,review_context=context,status_details=mode=='enabled')
   world.shared_directories=[work_files.ROOT];world.mutable_shared_root=work_files.ROOT
   world.shared_record_validator=lambda actor,path,data,records:work_files.valid(path,data)
   world.shared_record_visibility=lambda actor,row:True

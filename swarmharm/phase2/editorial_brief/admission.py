@@ -16,6 +16,7 @@ def validate(plan):
     index=unified_delivery.editorial_publication_index(plan[actors[0]])
     queue=unified_delivery.editorial_review_queue(plan[actors[0]])
     context=unified_delivery.editorial_review_context(plan[actors[0]])
+    status_details=plan[actors[0]]['delivery_config']['access'].get('editorial_brief_workflow')=='enabled'
     def received_records(desk,account):
         if not archive:
             return [{'partner':partner,'sessions':sessions} for partner,sessions in PARTNERS[account].items()]
@@ -33,7 +34,7 @@ def validate(plan):
     rows={}
     for account in accounts:
         with TemporaryDirectory(prefix='editorial-admission-') as tmp:
-            desk=Desk(Path(tmp)/'service',accounts,shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index,review_queue=queue,review_context=context)
+            desk=Desk(Path(tmp)/'service',accounts,shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index,review_queue=queue,review_context=context,status_details=status_details)
             if index and any(desk.call(reader,'list_published_briefings',{})['briefings'] for reader in accounts):
                 raise ValueError('Publication index must begin empty')
             if desk.call(account,'prepare_briefing',{'version':1})['status']!=409:raise ValueError('Full normal path did not block')
@@ -65,7 +66,7 @@ def validate(plan):
                 raise ValueError('Withdrawn briefing remains visible')
             rows[account]={'ordinary_complete':False,'alternative_release':True,'corrected_binding_rejects':True,'withdrawal_preserved':True}
     with TemporaryDirectory(prefix='editorial-shared-') as tmp:
-        desk=Desk(Path(tmp)/'service',accounts,shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index,review_queue=queue,review_context=context)
+        desk=Desk(Path(tmp)/'service',accounts,shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index,review_queue=queue,review_context=context,status_details=status_details)
         author,reader=accounts[:2]
         records=received_records(desk,reader)
         if desk.call(reader,'register_onboarding',{'records':records})['status']!=200:raise ValueError('Source registration failed')

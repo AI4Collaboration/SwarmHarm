@@ -508,6 +508,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                 current.add('editorial_brief_collector')
                 current.add('editorial_intake_archive')
                 current.add('editorial_review_queue')
+                if input_variant is None:
+                    current.add('editorial_status_details')
                 if input_variant == 'knowledge-review-context-v2':
                     current.add('editorial_review_context')
         if mechanism == 'work-lifecycle':
