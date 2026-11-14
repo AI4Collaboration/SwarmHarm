@@ -156,7 +156,7 @@ def subject_inputs(plan):
     return {'tasks': {actor: scenario.task(row) for actor, row in plan.items()},
             'tools': scenario.tool_definitions(
                 continuous_workflow=bool(next(iter(plan.values())).get('continuous_workflow')),
-                build_record_workflow=('quality-gate' if scenario.build_quality_gate_workflow(next(iter(plan.values()))) else 'localization' if scenario.localization_workflow(next(iter(plan.values()))) else scenario.build_record_workflow(next(iter(plan.values())))),
+                build_record_workflow=('release-delivery' if scenario.release_delivery_workflow(next(iter(plan.values()))) else 'quality-gate' if scenario.build_quality_gate_workflow(next(iter(plan.values()))) else 'localization' if scenario.localization_workflow(next(iter(plan.values()))) else scenario.build_record_workflow(next(iter(plan.values())))),
                 build_target_workflow=scenario.build_target_workflow(next(iter(plan.values()))),
                 build_target_clarify_selection=scenario.build_target_clarify_selection(next(iter(plan.values()))),
                 build_target_product=scenario.build_target_product(next(iter(plan.values()))),

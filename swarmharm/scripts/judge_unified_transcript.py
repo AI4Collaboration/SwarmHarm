@@ -343,11 +343,115 @@ def preflight_cohort(root, packet, mechanical, *, expected_registration_sha256=N
     return cohort if is_cohort else None
 
 
+def preflight_release_delivery(root, packet, mechanical, *, expected_registration_sha256=None):
+    """Reconstruct the whole release_delivery packet and validate frozen evidence before judging."""
+    from phase2 import communication_evidence
+    root = Path(root)
+    registration_path = root / 'registration.json'
+    registration_bytes = registration_path.read_bytes()
+    if expected_registration_sha256 is not None and sha256(registration_bytes).hexdigest() != expected_registration_sha256:
+        raise ValueError('Release-delivery registration changed during judgment')
+    registration = json.loads(registration_bytes)
+    world = json.loads((root / 'natural/world.json').read_text())
+    is_release_delivery = registration.get('mechanism_contract', {}).get('input_variant') == 'engineering-release-delivery-v1'
+    if not is_release_delivery and (mechanical or {}).get('input_variant') == 'engineering-release-delivery-v1':
+        raise ValueError('Release-delivery review does not match the registered condition')
+    if is_release_delivery:
+        from phase2.engineering_release_delivery_review import assess, mechanical_review
+        from phase2.engineering_release_delivery_bridge import native_tool_bindings
+        from export_atif import export_actor
+        import review as independent_review
+        seal = json.loads((root / 'registration-seal.json').read_text())
+        if seal.get('sha256') != sha256(registration_path.read_bytes()).hexdigest():
+            raise ValueError('Release-delivery registration seal differs')
+        for field, prefix in (('code_hashes', root / 'code'), ('input_hashes', root)):
+            for name, expected in registration[field].items():
+                path = prefix / name
+                if not path.is_file() or path.is_symlink() or sha256(path.read_bytes()).hexdigest() != expected:
+                    raise ValueError('Release-delivery frozen source or input differs')
+        if (registration.get('mechanism_contract', {}).get('input_variant') != 'engineering-release-delivery-v1'
+                or registration.get('component_initial_state', {}).get('live_partner_source_arrivals') is not False):
+            raise ValueError('Release-delivery registered condition differs')
+        independent_review.verify_frozen_evaluator(registration)
+        manifest_sha = independent_review.verify_evidence_manifest(root)
+        independent_review.reconcile_tool_commits(root, world)
+        saved_review = json.loads((root / 'independent-review.json').read_text())
+        packet_path = root / 'transcript-judge-input.json'
+        if (saved_review.get('evidence_manifest_sha256') != manifest_sha
+                or saved_review.get('claim_measurement', {}).get('transcript_judge_input_sha256') != sha256(packet_path.read_bytes()).hexdigest()
+                or json.loads(packet_path.read_text()) != packet
+                or set(packet['actors']) != set(registration['phase2']['assignments'])):
+            raise ValueError('Release-delivery independent review or transcript packet differs')
+        # Verify native continuity independently before trusting any external
+        # mechanical verdict. Existing exports are reconstructed, never replaced.
+        actors = registration['phase2']['assignments']
+        rows = json.loads((root / 'atif-validation.json').read_text())['trajectories']
+        if len(rows) != len(actors) or {row.get('actor') for row in rows} != set(actors):
+            raise ValueError('Release-delivery ATIF actor coverage differs')
+        by_actor = {row['actor']: row for row in rows}
+        fields = ('phase', 'actor', 'path', 'schema_version', 'requests', 'tool_results', 'sha256', 'native_continuity_passed')
+        for actor in actors:
+            if not (root / 'natural' / actor / 'agent/trajectory.json').is_file():
+                raise ValueError('Release-delivery ATIF export is missing')
+            rebuilt = export_actor(root, 'natural', actor)
+            if (rebuilt['requests'] <= 0 or rebuilt['schema_version'] != 'ATIF-v1.8'
+                    or rebuilt['native_continuity_passed'] is not True
+                    or packet['transcripts'][actor]['atif_sha256'] != rebuilt['sha256']
+                    or any(rebuilt.get(key) != by_actor[actor].get(key) for key in fields)):
+                raise ValueError('Release-delivery ATIF continuity differs')
+        # Independently recompute candidates, actors, role replay and native
+        # bindings. External mechanical fields must match exactly, not merely
+        # name the same variant or claim.
+        integrated = assess(root, registration, world)
+        expected = mechanical_review(root, registration, world, integrated, True)
+        completion = json.loads((root / 'completion.json').read_text())
+        classes_path = root / 'response-review.json'
+        classes = json.loads(classes_path.read_text()) if classes_path.exists() else []
+        complete = completion['status'] in ('collected', 'collected_with_limits')
+        errors = {key: sum(row.get('status') == status for row in classes) for key, status in
+                  (('provider_errors', 'provider_error'), ('budget_timeouts', 'budget_timeout'),
+                   ('provider_filters', 'provider_filter'))}
+        if (saved_review.get('collection_status') != completion['status']
+                or any(saved_review.get(key) != count for key, count in errors.items())):
+            raise ValueError('Release-delivery collection status differs')
+        expected['collection_complete'] = complete
+        expected['input_behavior_validated'] &= complete and not any(errors.values())
+        if mechanical != expected or saved_review.get('mechanism') != expected:
+            raise ValueError('Release-delivery mechanical review differs from independent replay')
+        release_delivery = {row['event']: row for row in native_tool_bindings(root, registration, world)}
+        evidence = communication_evidence.build(root, world, integrated['communication'], registration['plan']['natural'])
+        reconstructed_packet = claim_evidence.transcript_packet(root, registration, evidence)
+        reconstructed_packet['native_tool_event_bindings'] = list(release_delivery.values())
+        reconstructed_packet['tool_event_citation_guide'] = 'For a cited desk tool call, cite its event ID and quote its verbatim operation name.'
+        if reconstructed_packet != packet:
+            raise ValueError('Release-delivery transcript packet differs from independent reconstruction')
+        # Check every repository module actually imported by this evaluator;
+        # the deliberately corrected judge entrypoint alone may differ.
+        judge_path = Path(__file__).resolve()
+        for module in list(sys.modules.values()):
+            name = getattr(module, '__file__', None)
+            if not name or name.startswith('<'):
+                continue
+            path = Path(name).resolve()
+            if path == judge_path:
+                continue
+            try:
+                relative = path.relative_to(REPO).as_posix()
+            except ValueError:
+                continue
+            expected_hash = registration['code_hashes'].get(relative)
+            if expected_hash is None or not path.is_file() or sha256(path.read_bytes()).hexdigest() != expected_hash:
+                raise ValueError('Release-delivery imported evaluator differs from frozen source')
+    return release_delivery if is_release_delivery else None
+
+
 def reconstruct_citation_bindings(root, packet, judgment, mechanical, *, expected_registration_sha256=None):
     """Reconstruct the native evidence used by individual citations."""
     from phase2 import communication_evidence
     root = Path(root)
     cohort = preflight_cohort(root, packet, mechanical, expected_registration_sha256=expected_registration_sha256)
+    release_delivery = preflight_release_delivery(root, packet, mechanical, expected_registration_sha256=expected_registration_sha256)
+    cohort = release_delivery if release_delivery is not None else cohort
     world = json.loads((root / 'natural/world.json').read_text())
     wanted = citation_events(judgment, mechanical)
     bindings = list(communication_evidence.bind_events(
@@ -357,7 +461,7 @@ def reconstruct_citation_bindings(root, packet, judgment, mechanical, *, expecte
             enriched = cohort.get(native['event'])
             if enriched is None:
                 continue
-            if {key: value for key, value in enriched.items() if key != 'returned_result'} != native:
+            if {key: value for key, value in enriched.items() if key not in ('returned_result', 'upload_snapshot')} != native:
                 raise ValueError('Cohort native binding differs from citation binding')
             bindings[index] = enriched
     return bindings
@@ -397,7 +501,8 @@ def main(argv=None):
     # Verify before even creating the request, and repeat after a response so
     # an evidence change during the model call cannot be silently accepted.
     cohort = preflight_cohort(root, packet, mechanical, expected_registration_sha256=registration_sha)
-    is_cohort = cohort is not None
+    release_delivery = preflight_release_delivery(root, packet, mechanical, expected_registration_sha256=registration_sha)
+    is_cohort = cohort is not None or release_delivery is not None
     request_value = {**claim_evidence.judge_request(packet, args.model), 'stream': True}
     attempts, attempt = next_attempt(review_root)
     attempt_request = attempts / f"{attempt}-request.json"

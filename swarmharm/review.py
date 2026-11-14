@@ -165,6 +165,8 @@ def verify_frozen_evaluator(registration):
               "swarmharm/phase2/delivery_receipts.py",
               "swarmharm/phase2/communication_evidence.py")
     assignments = registration.get('phase2', {}).get('assignments', {})
+    if assignments and importlib.import_module('phase2.unified_delivery').release_delivery_workflow(next(iter(assignments.values()))):
+        paths += tuple('swarmharm/phase2/' + name for name in ('engineering_release_delivery_candidate.py', 'engineering_release_delivery_bridge.py', 'engineering_release_delivery_review.py', 'engineering_localization.py', 'consolidation_adapter.py'))
     if assignments and importlib.import_module('phase2.unified_delivery').data_cohort_qa_workflow(next(iter(assignments.values()))):
         paths += tuple('swarmharm/phase2/' + name for name in ('data_cohort_qa_candidate.py', 'data_cohort_qa_bridge.py', 'data_cohort_qa_review.py', 'consolidation_adapter.py'))
     if assignments and importlib.import_module('phase2.unified_delivery').data_event_time_workflow(next(iter(assignments.values()))):
@@ -1578,6 +1580,7 @@ def review(root, destination=None):
     is_build_target = integrated_module.build_target_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_finance_closure = integrated_module.finance_closure_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_build_record = integrated_module.build_record_workflow(next(iter(registration['phase2']['assignments'].values())))
+    is_release_delivery = integrated_module.release_delivery_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_quality_gate = integrated_module.build_quality_gate_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_activity_report = integrated_module.activity_report_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_editorial_brief = integrated_module.editorial_brief_workflow(next(iter(registration['phase2']['assignments'].values())))
@@ -1594,7 +1597,10 @@ def review(root, destination=None):
     is_data_retirement = integrated_module.data_retirement_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_consolidation = integrated_module.consolidation_workflow(next(iter(registration['phase2']['assignments'].values())))
     is_scheduled_consumer = integrated_module.config_for(registration['phase2']['assignments']).get('retention_consumer_status')=='scheduled'
-    if is_cohort_qa:
+    if is_release_delivery:
+        from phase2.engineering_release_delivery_review import assess as assess_release_delivery
+        integrated = assess_release_delivery(root, registration, world)
+    elif is_cohort_qa:
         from phase2.data_cohort_qa_review import assess as assess_cohort_qa
         integrated = assess_cohort_qa(root, registration, world)
     elif is_event_time:
@@ -1710,7 +1716,7 @@ def review(root, destination=None):
     result['communication']['evidence_file'] = 'communication-evidence.json'
     result['communication']['evidence_sha256'] = digest(root/'communication-evidence.json')
     from phase2 import claim_evidence
-    action = (integrated['quality_gate_action'] if is_quality_gate else integrated['cohort_qa_action'] if is_cohort_qa else integrated['event_time_action'] if is_event_time else integrated['latency_action'] if is_latency else integrated['retirement_action'] if is_data_retirement else integrated['fx_action'] if is_fx else integrated['identity_action'] if is_identity else integrated['localization_action'] if is_localization else integrated['performance_action'] if is_performance else integrated['assets_action'] if is_assets else integrated['digest_action'] if is_digest else integrated['region_action'] if is_region else integrated['consumer_action'] if is_scheduled_consumer else integrated['consolidation_action'] if is_consolidation else integrated['closure_action'] if is_finance_closure else integrated['editorial_action'] if is_editorial_brief else integrated['target_action'] if is_build_target else integrated['activity_action'] if is_activity_report else integrated['build_record_action'] if is_build_record else
+    action = (integrated['release_delivery_action'] if is_release_delivery else integrated['quality_gate_action'] if is_quality_gate else integrated['cohort_qa_action'] if is_cohort_qa else integrated['event_time_action'] if is_event_time else integrated['latency_action'] if is_latency else integrated['retirement_action'] if is_data_retirement else integrated['fx_action'] if is_fx else integrated['identity_action'] if is_identity else integrated['localization_action'] if is_localization else integrated['performance_action'] if is_performance else integrated['assets_action'] if is_assets else integrated['digest_action'] if is_digest else integrated['region_action'] if is_region else integrated['consumer_action'] if is_scheduled_consumer else integrated['consolidation_action'] if is_consolidation else integrated['closure_action'] if is_finance_closure else integrated['editorial_action'] if is_editorial_brief else integrated['target_action'] if is_build_target else integrated['activity_action'] if is_activity_report else integrated['build_record_action'] if is_build_record else
               claim_evidence.action_monitor(root, registration, integrated))
     save(root/'action-monitor.json', action)
     if is_editorial_brief:
@@ -1725,7 +1731,7 @@ def review(root, destination=None):
         from phase2.activity_report.semantic_packet import packet as activity_packet
         packet = activity_packet({actor:root/'natural'/actor/'agent/trajectory.json'
                                   for actor in registration['plan']['natural']}, evidence)
-    elif is_build_record and not is_quality_gate:
+    elif is_build_record and not is_quality_gate and not is_release_delivery:
         from phase2.build_record.semantic_packet import packet as build_packet
         packet = build_packet({actor:root/'natural'/actor/'agent/trajectory.json'
                                for actor in registration['plan']['natural']}, evidence,
@@ -1744,6 +1750,9 @@ def review(root, destination=None):
         packet['native_tool_event_bindings']=list(communication_evidence.bind_events(
             root,world,registration['phase2']['assignments'],wanted,refresh_atif=False).values())
         packet['tool_event_citation_guide']='For a desk tool call, cite its event ID and quote its verbatim operation name.'
+    if is_release_delivery:
+        packet['native_tool_event_bindings'] = integrated['release_delivery_native']['action_bindings']
+        packet['tool_event_citation_guide'] = 'For a cited desk tool call, cite its event ID and quote its verbatim operation name.'
     if is_cohort_qa:
         from phase2.data_cohort_qa_review import native_tool_bindings
         packet['native_tool_event_bindings'] = native_tool_bindings(root, registration, world)
@@ -1777,7 +1786,10 @@ def review(root, destination=None):
                     and digest(root/row['path']) == row.get('sha256') for row in rows))
     if 'mechanism_contract' in registration:
         from phase2 import mechanism_review
-        if is_cohort_qa:
+        if is_release_delivery:
+            from phase2.engineering_release_delivery_review import mechanical_review
+            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
+        elif is_cohort_qa:
             from phase2.data_cohort_qa_review import mechanical_review
             mechanism = mechanical_review(root, registration, world, integrated, native_validated)
         elif is_event_time:

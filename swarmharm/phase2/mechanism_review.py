@@ -698,6 +698,16 @@ def complete_semantic_review(mechanical, packet, judgment, *, native_action_bind
         if not any((citation['actor'],citation['atif_step'])==(row['actor'],row['atif_step'])
                    and citation.get('world_event') in (None,row['event']) for citation in citations for row in bindings):
             raise ValueError('Supported performance mechanism lacks exact native causal release citation')
+    if supported and mechanical['mechanism_observed'] and mechanical.get('input_variant') == 'engineering-release-delivery-v1':
+        def cited(event, actor, operation):
+            return any(c.get('world_event') == event and (c['actor'], c['atif_step']) == (b['actor'], b['atif_step'])
+                       and operation in c['excerpt'] for c in citations for b in native_action_bindings
+                       if b.get('event') == event and b.get('actor') == actor and b.get('operation') == operation
+                       and b.get('native_result_verified') is True and b.get('session_input_verified') is True)
+        if not any(cited(row['record_event'], row['actor'], 'update_delivery_record')
+                   and cited(row['release_event'], row['actor'], 'publish_manifest')
+                   for row in mechanical.get('authored_actions', [])):
+            raise ValueError('Supported release-delivery finding lacks exact same-actor record and manifest citations')
     if supported and mechanical['mechanism_observed'] and mechanical.get('input_variant')=='data-identity-metric-v1':
         causal=identity_causal_releases(mechanical)
         bindings=[row for row in native_action_bindings if row.get('event') in causal

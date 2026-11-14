@@ -81,7 +81,7 @@ CONFIG_SCHEMA = {
             'job_scope': {'enum': ['account', 'shared_window']},
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions']},
-            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'target-package', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'localization', 'quality-gate']},
+            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'target-package', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'localization', 'quality-gate', 'release-delivery']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor', 'region-dimension', 'identity-metric', 'latency-p95', 'event-time', 'cohort-qa']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context', 'digest-queue']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied', 'consolidation', 'asset-schedule', 'performance', 'performance-history', 'fx-expense', 'fx-expense-history']},
@@ -241,7 +241,11 @@ def localization_workflow(assignment):
 
 
 def build_record_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'target-package', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'quality-gate')
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'target-package', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'quality-gate', 'release-delivery')
+
+
+def release_delivery_workflow(assignment):
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'release-delivery'
 
 
 def build_quality_gate_workflow(assignment):
@@ -368,6 +372,9 @@ def world_for(plan):
 
 
 def task(assignment):
+    if release_delivery_workflow(assignment):
+        from phase2.engineering_release_delivery_candidate import documents
+        return documents(assignment['account'])['README.md'].strip()
     if data_cohort_qa_workflow(assignment):
         from phase2.data_cohort_qa_candidate import documents
         return documents(assignment['account'])['README.md'].split('\n', 1)[0]
@@ -492,6 +499,9 @@ def communication_start(plan):
 
 
 def documents(assignment):
+    if release_delivery_workflow(assignment):
+        from phase2.engineering_release_delivery_candidate import documents as release_documents
+        return release_documents(assignment['account'])
     if data_cohort_qa_workflow(assignment):
         from phase2.data_cohort_qa_candidate import documents as cohort_documents
         return cohort_documents(assignment['account'])
@@ -952,6 +962,12 @@ def shared_directories(plan):
 
 
 def truth_for(plan):
+    if release_delivery_workflow(next(iter(plan.values()))):
+        from phase2.engineering_release_delivery_candidate import approved_complete, source, _json, _hash
+        return {'revision': REVISION, 'bindings': bindings_for(plan), 'configuration': config_for(plan),
+                'accounts': {actor: {'account': row['account'], 'source_sha256': _hash(_json(source(row['account']))),
+                    'approved_complete_sha256': _hash(_json(approved_complete(row['account'])))} for actor, row in plan.items()},
+                'scope': 'synthetic locale sources; no live source arrival or live recipient'}
     if data_cohort_qa_workflow(next(iter(plan.values()))):
         from phase2.data_cohort_qa_candidate import sources, original_order, materialize_qa, authority_policy, encode, digest as data_digest
         return {'revision': REVISION, 'bindings': bindings_for(plan), 'configuration': config_for(plan),
@@ -1132,6 +1148,13 @@ def _engineering_consumer_calendar():
 
 
 def initial_state(plan):
+    if release_delivery_workflow(next(iter(plan.values()))):
+        return {'origin': 'prepared_business_records', 'study_track': 'continuous_unified',
+                'assignments': deepcopy(plan), 'files_sha256': digest(initial_files(plan)),
+                'communication_start': communication_start(plan), 'shared_directories': shared_directories(plan),
+                'live_partner_source_arrivals': False, 'supplied_peer_messages': [], 'supplied_methods': [],
+                'supplied_business_records': {'locale_source': {'origin': 'synthetic partial partner export',
+                    'scheduled_arrival': False, 'behavioral_evidence': False}}}
     if data_cohort_qa_workflow(next(iter(plan.values()))):
         return {'origin': 'prepared_business_records', 'study_track': 'continuous_unified',
                 'assignments': deepcopy(plan), 'files_sha256': digest(initial_files(plan)),
@@ -1339,6 +1362,9 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
     if build_record_workflow == 'localization':
         from phase2.engineering_localization import definitions
         return definitions()
+    if build_record_workflow == 'release-delivery':
+        from phase2.engineering_release_delivery_bridge import ReleaseDeliveryBridge
+        return ReleaseDeliveryBridge.definitions()
     if build_record_workflow == 'quality-gate':
         from phase2.build_record.quality_gate import definitions
         return definitions()
@@ -3541,7 +3567,10 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             reg['phase2']['communication_condition'] = 'ordinary_work_files'
             reg['input_contract']['supplied_message_schema'] = False
         reg['phase2']['independent_outcome'] += '; exact authored-note exposure and read-then-reply reconstruction'
-    if data_cohort_qa_workflow(next(iter(assignments.values()))):
+    if release_delivery_workflow(next(iter(assignments.values()))):
+        from phase2.engineering_release_delivery_candidate import validate
+        reg['phase2']['path_validation'] = validate(assignments)
+    elif data_cohort_qa_workflow(next(iter(assignments.values()))):
         from phase2.data_cohort_qa_candidate import validate
         reg['phase2']['path_validation'] = validate(assignments)
     elif data_event_time_workflow(next(iter(assignments.values()))):

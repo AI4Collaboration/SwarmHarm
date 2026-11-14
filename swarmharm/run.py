@@ -626,6 +626,10 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
     both configuration entry points so the same workflow cannot be registered
     under an unlabelled custom world.
     """
+    build = lambda cfg: (cfg or {}).get('access', {}).get('build_record_workflow')
+    if (input_variant == 'engineering-release-delivery-v1' or build(delivery_config) == 'release-delivery'
+            or build(world_config) == 'release-delivery'):
+        raise ValueError('Engineering release-delivery input is not ready for registration: native evidence and independent review remain incomplete.')
     workflow = lambda cfg: (cfg or {}).get('access', {}).get('editorial_brief_workflow')
     retirement = lambda cfg: (cfg or {}).get('access', {}).get('data_retirement_workflow')
     activity = lambda cfg: (cfg or {}).get('access', {}).get('activity_report_workflow')
@@ -941,7 +945,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         audit['natural'][actor]['tools'] += continuation_module.tool_definitions(
             family=component_family,
             **({'continuous_workflow': True,
-                'build_record_workflow': ('quality-gate' if unified_delivery.build_quality_gate_workflow(phase2_plan[actor]) else 'localization' if unified_delivery.localization_workflow(phase2_plan[actor]) else unified_delivery.build_record_workflow(phase2_plan[actor])),
+                'build_record_workflow': ('release-delivery' if unified_delivery.release_delivery_workflow(phase2_plan[actor]) else 'quality-gate' if unified_delivery.build_quality_gate_workflow(phase2_plan[actor]) else 'localization' if unified_delivery.localization_workflow(phase2_plan[actor]) else unified_delivery.build_record_workflow(phase2_plan[actor])),
                 'build_target_workflow': unified_delivery.build_target_workflow(phase2_plan[actor]),
                 'build_target_clarify_selection': unified_delivery.build_target_clarify_selection(phase2_plan[actor]),
                 'build_target_product': unified_delivery.build_target_product(phase2_plan[actor]),
@@ -1927,7 +1931,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     unified_delivery.world_config.verify_input_contract(
         reg['phase2']['assignments'], reg['phase2'].get('unified_input_contract'))
     from phase2 import delivery_paths
-    if unified_delivery.data_cohort_qa_workflow(next(iter(reg['phase2']['assignments'].values()))):
+    if unified_delivery.release_delivery_workflow(next(iter(reg['phase2']['assignments'].values()))):
+        from phase2.engineering_release_delivery_candidate import validate
+        path_validation = validate(reg['phase2']['assignments'])
+    elif unified_delivery.data_cohort_qa_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.data_cohort_qa_candidate import validate
         path_validation = validate(reg['phase2']['assignments'])
     elif unified_delivery.data_event_time_workflow(next(iter(reg['phase2']['assignments'].values()))):
@@ -2112,6 +2119,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         elif unified_delivery.activity_report_workflow(next(iter(extension_plan.values()))):
             from phase2.activity_report.unified_bridge import UnifiedActivityBridge
             extension=UnifiedActivityBridge.from_plan(world,extension_plan,reg['component_initial_state'])
+        elif unified_delivery.release_delivery_workflow(next(iter(extension_plan.values()))):
+            from phase2.engineering_release_delivery_bridge import ReleaseDeliveryBridge
+            extension = ReleaseDeliveryBridge.from_plan(world, extension_plan, reg['component_initial_state'])
         elif unified_delivery.build_quality_gate_workflow(next(iter(extension_plan.values()))):
             from phase2.build_record.quality_gate_bridge import QualityGateBridge
             extension=QualityGateBridge.from_plan(world,extension_plan,reg['component_initial_state'])
@@ -2132,7 +2142,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         turn_records={};executed_calls={}
         phase2_definitions = continuation_module.tool_definitions(
             **({'continuous_workflow': True,
-                'build_record_workflow': ('quality-gate' if unified_delivery.build_quality_gate_workflow(next(iter(extension.plan.values()))) else 'localization' if unified_delivery.localization_workflow(next(iter(extension.plan.values()))) else unified_delivery.build_record_workflow(next(iter(extension.plan.values())))),
+                'build_record_workflow': ('release-delivery' if unified_delivery.release_delivery_workflow(next(iter(extension.plan.values()))) else 'quality-gate' if unified_delivery.build_quality_gate_workflow(next(iter(extension.plan.values()))) else 'localization' if unified_delivery.localization_workflow(next(iter(extension.plan.values()))) else unified_delivery.build_record_workflow(next(iter(extension.plan.values())))),
                 'build_target_workflow': unified_delivery.build_target_workflow(next(iter(extension.plan.values()))),
                 'build_target_clarify_selection': unified_delivery.build_target_clarify_selection(next(iter(extension.plan.values()))),
                 'build_target_product': unified_delivery.build_target_product(next(iter(extension.plan.values()))),
