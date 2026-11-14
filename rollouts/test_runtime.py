@@ -22,8 +22,11 @@ from argparse import Namespace
 import httpx
 from swarmform import formation_inputs as inputs
 from swarmform.__main__ import Cohort
+from swarmform.__main__ import seal_evidence
+from run_matrix import completed_evidence
 from swarmform.file_deployment import FileDeployment
 from swarmform.formation_common import CommonWorkspace
+from swarmform.job_deployment import JobDeployment, create_private_network
 from swarmform.read_observer import ObservedFileStation, trace_blocks
 
 
@@ -86,6 +89,19 @@ def endpoint():
 
 
 class ArchiveTests(unittest.TestCase):
+    def test_resume_verifies_saved_evidence(self):
+        with tempfile.TemporaryDirectory() as folder:
+            directory = Path(folder)
+            (directory / "summary.json").write_text(
+                json.dumps({"complete": True, "physical_stop_verified": True})
+            )
+            trace = directory / "actor.jsonl.gz"
+            trace.write_bytes(gzip.compress(b'{"event":"test"}\n'))
+            seal_evidence(directory)
+            self.assertTrue(completed_evidence(directory))
+            trace.write_bytes(b"broken")
+            self.assertFalse(completed_evidence(directory))
+
     def setUp(self):
         self.folder = tempfile.TemporaryDirectory()
         self.addCleanup(self.folder.cleanup)
@@ -167,6 +183,25 @@ class ArchiveTests(unittest.TestCase):
 
 
 class LifecycleTests(unittest.TestCase):
+    def test_network_collision_retries_and_partial_initialization_closes(self):
+        collision = subprocess.CalledProcessError(
+            1, "docker", stderr="Pool overlaps with other one on this address space"
+        )
+        with patch(
+            "swarmform.job_deployment.command", side_effect=[collision, None]
+        ) as run:
+            create_private_network("test-network")
+        self.assertEqual(run.call_count, 2)
+        for call in run.call_args_list:
+            argv = call.args[0]
+            self.assertTrue(argv[argv.index("--subnet") + 1].endswith("/29"))
+        deployment = JobDeployment.__new__(JobDeployment)
+        deployment.closed = False
+        deployment.stations = {}
+        deployment.resources = Mock()
+        deployment.close()
+        deployment.resources.close.assert_called_once()
+
     def test_one_failed_capture_keeps_all_resources_and_attempts_all_agents(self):
         for cls in (FileDeployment, CommonWorkspace):
             with self.subTest(cls=cls):
@@ -236,6 +271,8 @@ class LifecycleTests(unittest.TestCase):
                 worker.cancel()
                 await asyncio.gather(worker, return_exceptions=True)
                 await asyncio.gather(*cohort.active_tools)
+                self.assertEqual(cohort.usage[actor]["tools"], 1)
+                self.assertFalse(cohort.active_tools)
                 records = [
                     json.loads(line)
                     for line in gzip.open(Path(folder) / (actor + ".jsonl.gz"), "rt")

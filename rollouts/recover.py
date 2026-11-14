@@ -6,11 +6,13 @@ import hashlib
 import json
 from pathlib import Path
 import subprocess
+from types import SimpleNamespace
 
 from atomic import atomic_json
 from swarmform.__main__ import ROOT, seal_evidence
 from swarmform.read_observer import ObservedFileStation, trace_blocks
 from swarmform.service_workstation import ServiceWorkstation
+from swarmform.participant_stop import ParticipantStop
 
 
 def main():
@@ -25,13 +27,41 @@ def main():
     run, out = args.run.resolve(), args.out.resolve()
     if out.is_relative_to(ROOT.parent) or out.is_relative_to(run):
         parser.error("Recovery output must be outside the repository and original run")
-    stop = json.loads((run / "physical-stop.json").read_bytes())
-    if not stop.get("research_stop_verified"):
-        parser.error(
-            "A verified participant stop is required before terminal evidence recovery"
-        )
     bindings = json.loads((run / "recovery-bindings.json").read_bytes())
+    stop_path = run / "physical-stop.json"
+    stop = json.loads(stop_path.read_bytes()) if stop_path.exists() else {}
+    if not stop.get("research_stop_verified"):
+        # A full host disk may have prevented the final stop receipt from being
+        # saved. The original launch gates were sealed before research started.
+        arm_path = run / "stop-armed.json"
+        if not arm_path.exists():
+            parser.error(
+                "Recovery needs the original stop receipt or armed launch gates"
+            )
+        armed = json.loads(arm_path.read_bytes())
+        deployment = SimpleNamespace(
+            stations={
+                actor: SimpleNamespace(
+                    name=binding["container"],
+                    business_uid=binding["business_uid"],
+                    account_view=binding["account_view"],
+                )
+                for actor, binding in bindings["participants"].items()
+            }
+        )
+        stopper = ParticipantStop(deployment)
+        stopper.arm_receipt = armed
+        stopper.armed = armed["actors"]
+        stopper.controls = {
+            actor: row["control"] for actor, row in armed["actors"].items()
+        }
+        stop = stopper.stop(reason="evidence_recovery")
+        if not stop["research_stop_verified"]:
+            parser.error(
+                "Recovery could not verify participant shutdown: " + json.dumps(stop)
+            )
     out.mkdir(parents=True, exist_ok=False)
+    atomic_json(out / "physical-stop.json", stop)
     failures = {}
     try:
         for actor, binding in bindings["participants"].items():
@@ -61,7 +91,7 @@ def main():
                         for _ in trace_blocks(station.archive, record):
                             pass
             except Exception as error:
-                failures[actor] = f"{type(error).__name__}: {error}"
+                failures[actor] = repr(error)
         if bindings.get("service"):
             try:
                 service = ServiceWorkstation.__new__(ServiceWorkstation)
@@ -70,9 +100,11 @@ def main():
                 service.service_archive.mkdir()
                 service.service_capture_count = 0
                 service.observation_sink = None
-                service.capture_frozen("recovered_terminal")
+                service.trace_commands = False
+                values = service.capture_frozen("recovered_terminal")
+                service.resume_captured(values)
             except Exception as error:
-                failures["service"] = f"{type(error).__name__}: {error}"
+                failures["service"] = repr(error)
         if bindings.get("memory_anchor"):
             try:
                 reply = subprocess.run(

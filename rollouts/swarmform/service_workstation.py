@@ -2,10 +2,12 @@
 import base64
 from hashlib import sha256
 import json
+import os
 from pathlib import Path
 import subprocess
 from workstation import DockerWorkstation
 import workstation
+from atomic import atomic_json
 
 
 class ServiceWorkstation(DockerWorkstation):
@@ -23,6 +25,10 @@ class ServiceWorkstation(DockerWorkstation):
         error_path=raw_path.with_suffix('.stderr')
         with raw_path.open('xb') as output,error_path.open('xb') as errors:
             process=subprocess.run(['docker','exec',self.name,'python','-I','-c',code],stdout=output,stderr=errors,timeout=180)
+            output.flush()
+            os.fsync(output.fileno())
+            errors.flush()
+            os.fsync(errors.fileno())
         if process.returncode:raise RuntimeError('Service capture failed; retained '+str(raw_path))
         with raw_path.open('rb') as stream:
             line=stream.readline()
@@ -41,7 +47,7 @@ class ServiceWorkstation(DockerWorkstation):
             import hashlib
             digest=hashlib.file_digest(stream,'sha256').hexdigest()
         index={'phase':phase,'raw':raw_path.name,'raw_sha256':digest,'bytes':header['bytes'],'files':hashes}
-        raw_path.with_suffix('.json').write_text(json.dumps(index,indent=2)+'\n')
+        atomic_json(raw_path.with_suffix('.json'), index)
         values['service_observation_reference']=index
         if self.observation_sink is not None:values['observation_reference']=self.observation_sink(phase,values)
         return values

@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path
 import sys
+import subprocess
 import threading
 import time
 from urllib.parse import urlsplit
@@ -62,13 +63,59 @@ def source_digest():
             *ROOT.glob("swarmform/fixtures/*"),
             ROOT / "requirements.txt",
             ROOT / "build-jq",
+            ROOT / "Dockerfile.workstation",
+            ROOT.parent / "experiments/runtime/workstation_patch.py",
         ]
     )
     digest = hashlib.sha256()
     for path in files:
-        digest.update(path.relative_to(ROOT).as_posix().encode() + b"\0")
+        digest.update(path.relative_to(ROOT.parent).as_posix().encode() + b"\0")
         digest.update(hashlib.sha256(path.read_bytes()).digest())
     return digest.hexdigest()
+
+
+def runtime_info(image):
+    details = json.loads(
+        subprocess.check_output(
+            ["docker", "image", "inspect", image], text=True, timeout=30
+        )
+    )[0]
+    host = json.loads(
+        subprocess.check_output(
+            [
+                "docker",
+                "info",
+                "--format",
+                '{"cpus":{{.NCPU}},"memory_bytes":{{.MemTotal}},"server_version":"{{.ServerVersion}}"}',
+            ],
+            text=True,
+            timeout=30,
+        )
+    )
+    packages = subprocess.check_output(
+        [
+            "docker",
+            "run",
+            "--rm",
+            "--pull=never",
+            "--network=none",
+            image,
+            "dpkg-query",
+            "-W",
+            "curl",
+            "procps",
+            "ripgrep",
+            "strace",
+        ],
+        text=True,
+        timeout=30,
+    )
+    return {
+        "image_id": details["Id"],
+        "architecture": details["Architecture"],
+        "host": host,
+        "packages": dict(line.split("\t", 1) for line in packages.splitlines()),
+    }
 
 
 def write_json(path, value):
@@ -116,7 +163,7 @@ class Cohort:
         self.stopping = asyncio.Event()
         self.reason = "all_finished"
         self.errors = {}
-        self.active_tools = []
+        self.active_tools = set()
 
     def snapshot(self, actor, phase, value):
         with self.lock:
@@ -154,6 +201,12 @@ class Cohort:
             except Exception as error:
                 self.trace(actor, "tool_error", call_id=call_id, error=str(error))
                 raise
+
+    def tool_completed(self, task, actor, call_id):
+        self.active_tools.discard(task)
+        if not task.cancelled() and (error := task.exception()) is not None:
+            self.errors[f"tool_{actor}_{call_id}"] = repr(error)
+            self.stop("tool_error")
 
     async def participant(self, actor):
         fn = self.visible["tools"][0]
@@ -220,6 +273,7 @@ class Cohort:
                     if usage["tools"] >= MAX_TOOLS:
                         self.stop("tool_budget")
                         return
+                    usage["tools"] += 1
                     invocation = call["function"]
                     try:
                         command = json.loads(invocation["arguments"])["command"]
@@ -236,9 +290,13 @@ class Cohort:
                         task = asyncio.create_task(
                             asyncio.to_thread(self.tool, actor, command, call["id"])
                         )
-                        self.active_tools.append(task)
+                        self.active_tools.add(task)
+                        task.add_done_callback(
+                            lambda completed, actor=actor, call_id=call["id"]: (
+                                self.tool_completed(completed, actor, call_id)
+                            )
+                        )
                         result, snapshot = await asyncio.shield(task)
-                    usage["tools"] += 1
                     messages.append(
                         {
                             "role": "tool",
@@ -272,6 +330,9 @@ class Cohort:
         import httpx
         from .inputs import digest
 
+        write_json(
+            self.out / "runtime.json", await asyncio.to_thread(runtime_info, IMAGE)
+        )
         write_json(
             self.out / "registration.json",
             {
@@ -334,7 +395,8 @@ class Cohort:
                     "memory_anchor": getattr(self.station, "anchor", None),
                 },
             )
-            await asyncio.to_thread(stopper.arm)
+            arm_receipt = await asyncio.to_thread(stopper.arm)
+            write_json(self.out / "stop-armed.json", arm_receipt)
             self.start = time.monotonic()
             self.deadline = self.start + args.seconds
             self.window_open = True
@@ -368,9 +430,11 @@ class Cohort:
                 receipt = await asyncio.to_thread(stopper.stop, reason=self.reason)
                 write_json(self.out / "physical-stop.json", receipt)
             except Exception as error:
-                self.errors["shutdown"] = f"{type(error).__name__}: {error}"
+                self.errors["shutdown"] = repr(error)
             await asyncio.gather(*workers, return_exceptions=True)
-            results = await asyncio.gather(*self.active_tools, return_exceptions=True)
+            results = await asyncio.gather(
+                *tuple(self.active_tools), return_exceptions=True
+            )
             for index, result in enumerate(results):
                 if isinstance(result, BaseException):
                     self.errors[f"tool_{index}"] = str(result)
@@ -382,7 +446,7 @@ class Cohort:
                         "Participant stop unverified; original resources retained"
                     )
             except Exception as error:
-                self.errors["capture"] = f"{type(error).__name__}: {error}"
+                self.errors["capture"] = repr(error)
             if self.errors:
                 write_json(
                     self.out / "recovery.json",

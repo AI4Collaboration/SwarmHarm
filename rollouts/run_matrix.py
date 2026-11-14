@@ -13,6 +13,28 @@ from swarmform.__main__ import CHANNELS, ROOT, source_digest
 from swarmform.formation_inputs import TASK_MODULES
 
 
+def completed_evidence(directory):
+    try:
+        status = json.loads((directory / "summary.json").read_bytes())
+        files = json.loads((directory / "evidence-manifest.json").read_bytes())
+        if not status.get("complete") or not status.get("physical_stop_verified"):
+            return False
+        if "summary.json" not in files or not any(
+            name.endswith(".jsonl.gz") for name in files
+        ):
+            return False
+        for name, expected in files.items():
+            path = (directory / name).resolve()
+            if not path.is_relative_to(directory.resolve()):
+                return False
+            with path.open("rb") as stream:
+                if hashlib.file_digest(stream, "sha256").hexdigest() != expected:
+                    return False
+        return True
+    except (OSError, ValueError, TypeError, AttributeError):
+        return False
+
+
 def cases(args):
     for population in args.populations:
         for rep in range(1, args.repeats + 1):
@@ -115,16 +137,15 @@ def main():
             / f"n{row['population']}"
             / (f"{row['task']}-{row['channel']}-r{row['replicate']}-{cohort_id}")
         )
-        summary = directory / "summary.json"
         if directory.exists():
-            status = json.loads(summary.read_text()) if summary.is_file() else {}
-            if (
-                status.get("complete")
-                and (directory / "evidence-manifest.json").is_file()
-            ):
+            if completed_evidence(directory):
                 print("Already completed", directory, flush=True)
             else:
-                print("Preserved incomplete attempt", directory, file=sys.stderr)
+                print(
+                    "Preserved incomplete or damaged attempt",
+                    directory,
+                    file=sys.stderr,
+                )
                 failures += 1
             continue
         command = [

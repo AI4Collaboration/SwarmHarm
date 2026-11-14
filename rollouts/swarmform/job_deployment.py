@@ -2,6 +2,7 @@
 import base64
 from contextlib import ExitStack
 import json
+from ipaddress import IPv4Network
 from pathlib import Path
 import secrets
 import subprocess
@@ -15,6 +16,22 @@ from swarmform.service_workstation import ServiceWorkstation
 
 def command(argv):
     return subprocess.run(argv,check=True,capture_output=True,text=True,timeout=30)
+
+
+def create_private_network(name):
+    # Each network has just a client and service. Docker's automatic /16 pools
+    # can run out before N=32, so allocate small, non-overlapping internal nets.
+    for _ in range(128):
+        subnet = IPv4Network(((10 << 24) | (secrets.randbits(21) << 3), 29))
+        try:
+            command(['docker', 'network', 'create', '--internal',
+                     '--subnet', str(subnet), '--label',
+                     'org.swarmharm.managed=true', name])
+            return
+        except subprocess.CalledProcessError as error:
+            if 'Pool overlaps' not in (error.stderr or ''):
+                raise
+    raise RuntimeError('Could not allocate a free private network subnet')
 
 
 class JobStation(ObservedFileStation):
@@ -62,7 +79,7 @@ class JobDeployment(FileDeployment):
                 if config['key'] in accounts:raise ValueError('Account identities must differ')
                 accounts[config['key']]={'actor':actor,'scope':'office' if shared else actor}
                 network='office-network-'+secrets.token_hex(8)
-                command(['docker','network','create','--internal','--label','org.swarmharm.managed=true',network])
+                create_private_network(network)
                 self.resources.callback(self._remove_network,network);self.networks[actor]=network
             initial=self.service_files(accounts,profile)
             first=next(iter(self.networks.values()))
@@ -148,6 +165,8 @@ class JobDeployment(FileDeployment):
         FileDeployment._remove_volume(self,name)
 
     def _close_service(self):
+        if getattr(self, 'service', None) is None:
+            return
         if not self.service.closed and self.service.initialized:
             command(['docker','exec',self.service.name,'python','-c',
                 "from pathlib import Path; Path('/workspace/.close-service').touch()"])
