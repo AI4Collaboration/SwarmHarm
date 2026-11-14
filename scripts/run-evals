@@ -11,7 +11,7 @@ import sys
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO/'shared'))
-import eval_defaults as defaults
+import model_lineup as defaults
 import model_lineup
 from guardrails import api_base_url, credential_file, outside_repository
 
@@ -111,6 +111,8 @@ def execute(args, expected, config):
         python = config['python']
         check = root/'api-check'
         if not check.exists():
+            print(f"Checking all 11 models at N=4; log: {root/'api-check.log'}", flush=True)
+            write(root/'index.json', dict(api_check='running', batches=[]))
             command = [python, str(REPO/'scripts/check-model-lineup'), '--base-url', expected['api_base'],
                        '--population', '4', '--out', str(check), '--execute']
             if args.model_map: command += ['--model-map', str(args.model_map)]
@@ -118,6 +120,7 @@ def execute(args, expected, config):
                 subprocess.run(command, cwd=REPO, env=env, stdout=log, stderr=subprocess.STDOUT)
         if not integration_complete(check, expected):
             raise RuntimeError('N=4 API check is incomplete or failed; see api-check.log. Preserved without rerunning.')
+        print('N=4 API check passed; starting or resuming the study matrices.', flush=True)
         records = []
         for model in expected['models']:
             for study in ('swarmform', 'swarmharm'):

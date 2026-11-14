@@ -86,7 +86,7 @@ def select_checks(files, full=False):
             checks.add('inventory')
         elif name == 'scripts/archive-trajectories':
             suites('trajectory_archive')
-        elif name in {'scripts/run-evals', 'scripts/setup-defaults', 'shared/eval_defaults.py'}:
+        elif name in {'scripts/run-evals', 'scripts/setup-defaults', 'shared/model_lineup.py', 'shared/eval_defaults.py'}:
             suites('default_runner', 'batch_plan', 'api_handoff')
         elif name == 'swarmharm/run_matrix.py':
             suites('batch_plan', roots=(LAB,))
@@ -182,7 +182,7 @@ def select_checks(files, full=False):
                 suites('structure_business' if stem=='business_review' else 'structure_timeline', 'swarmform_structure')
         elif name == 'swarmform/scripts/run_swarmform_structure.py':
             suites('swarmform_structure', 'structure_timeline', 'structure_native', 'publication_updates', 'sustained_research', 'research_latency')
-        elif name in {'shared/api_transport.py', 'shared/model_session.py', 'shared/model_lineup.py', 'scripts/check-model-lineup'}:
+        elif name in {'shared/api_transport.py', 'shared/model_session.py', 'scripts/check-model-lineup'}:
             suites('model_transport', 'api_handoff', 'batch_plan')
             harnesses.update(('codex', 'claude', 'pi'))
         elif name == 'shared/guardrails.py':

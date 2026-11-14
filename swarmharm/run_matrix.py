@@ -10,7 +10,7 @@ import sys
 import tempfile
 
 import run
-import eval_defaults as defaults
+import model_lineup as defaults
 from phase2 import mechanism_inputs
 
 
