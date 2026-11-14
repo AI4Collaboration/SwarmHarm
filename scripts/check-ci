@@ -75,7 +75,8 @@ def select_checks(files, full=False):
                 pass
             else:
                 suites('*', roots=(name.split('/')[0],))
-        elif (name == 'swarmharm/README.md' or
+        elif (name in {'swarmharm/README.md', 'swarmharm/phase1/README.md',
+                       'swarmharm/phase2/README.md'} or
                 name.startswith(('docs/', 'swarmform/docs/', 'swarmharm/docs/')) or '/registrations/' in name or (
                 path.suffix == '.md' and not name.startswith(('swarmform/swarmform/', 'swarmform/structure/', 'swarmharm/', 'shared/')))):
             if name == 'swarmform/docs/live-rollout-status.json' or (

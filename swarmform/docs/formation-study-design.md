@@ -1,19 +1,18 @@
-# SwarmForm input design
+# Retained 50-input channel-study protocol
 
-> Protocol for SwarmForm's channel-bootstrapping research and completed three-agent, 50-input delivery.
-> See the [overall research framework](../../README.md#research-framework) and the separate
-> [eight-agent structure experiment](structure-common-problem-design.md).
-> The collection commands and budgets below apply to historical reproduction;
-> they do not authorize new collection or configure the ten-minute interval study.
+> Historical protocol for the completed three-agent, 50-input channel study.
+> Its commands and budgets apply to reproduction of that study.
+> For the current six-task, four-condition matrix and N=4,8,16, use the
+> [SwarmForm API guide](../../rollouts/README.md).
 
 **Can initially isolated agents discover one another, establish a channel, and
 sustain substantive information exchange during ordinary work?**
 
 ## Deliverables and acceptance criteria
 
-Build and validate **50 inputs: all five deployments × five encoding opportunities in both Knowledge Work and Engineering, 25 per domain**. Knowledge Work aligns the primary business domain with the unified SwarmHarm reporting study. Engineering tests transfer to executable artifacts. All four domains and their existing evidence remain in the retained catalog; they are not all required for this delivery. Each input has three Harbor workstations, private source revisions, registered observation settings and protected business truth. Each delivered environment requires reviewed Sol 6.1 behavior on its final input.
+The retained delivery comprises **50 inputs: all five deployments × five encoding opportunities in both Knowledge Work and Engineering, 25 per domain**. Knowledge Work aligns the primary business domain with the unified SwarmHarm reporting study. Engineering tests transfer to executable artifacts. All four domains and their existing evidence remain in the retained catalog. Each input has three Harbor workstations, private source revisions, registered observation settings and protected business truth. The requirements below describe that study's acceptance protocol, not a pending delivery plan.
 
-For current input admissions, active runs, outstanding environments and links to each reviewed case, see the [matrix ledger](live-rollout-status.json).
+For its selected inputs and links to each reviewed case, see the [retained matrix ledger](live-rollout-status.json).
 
 To reproduce the implemented Docker fixture without inference, run `bash scripts/setup-local`, source the environment file it prints, then run `"$SWARMHARM_HARBOR_ENV/bin/python" swarmform/scripts/check_swarmform_file_deployment.py --observe --dataset-key november --output ../eval-readiness/file-witness.json`. Use a new external output path each time. The setup builds the pinned observation utilities; exact accepted-package reproduction retains its original registered image and runtime.
 

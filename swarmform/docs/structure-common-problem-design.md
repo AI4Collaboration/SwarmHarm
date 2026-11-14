@@ -1,12 +1,12 @@
-# Eight-agent common-problem research — ten-minute increments
+# Retained proposal: eight-agent research in ten-minute increments
 
-This is the detailed protocol for one eight-agent common-problem experiment
-within SwarmForm's emergent-structure research. The [root README](../../README.md#research-framework)
-describes the broader program, including channel bootstrapping and task performance.
+This is an unimplemented historical proposal, retained for references from the
+structure-study records. It does not configure the current API runner or define
+handoff work. Use the [SwarmForm API guide](../../rollouts/README.md) for the
+current six tasks, four communication conditions and N=4,8,16 commands.
 
-Design agreed; interval runtime implementation and offline validation remain
-pending. No new registration or research collection is authorized by this
-design discussion. The cancelled pair's deleted trajectories stay deleted.
+The retained results use their own original registrations; they do not validate
+this proposed interval policy.
 
 ## Task and matched conditions
 

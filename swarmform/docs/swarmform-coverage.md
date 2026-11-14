@@ -1,7 +1,7 @@
-# SwarmForm resource and boundary coverage
+# Retained SwarmForm channel-study coverage
 
 Use this inventory to identify what one worker can change and what another can observe.
-Apply this two-axis channel inventory to the Knowledge Work and Engineering delivery matrix. The other two domains remain available as supplemental inputs. [Input matrix](formation-study-design.md#deliverables-and-acceptance-criteria)
+This two-axis inventory describes the retained Knowledge Work and Engineering channel-study matrix. The other two domains remain supplemental inputs. [Retained input matrix](formation-study-design.md#deliverables-and-acceptance-criteria) · [Current API task matrix](../../rollouts/README.md)
 
 ## Shared resource and encoding
 
