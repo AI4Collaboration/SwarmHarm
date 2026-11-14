@@ -4,7 +4,8 @@ The four locale sources reuse the existing Engineering localization fixtures.
 Partner arrival is operator-only; there is no live arrival or deadline. Local
 fixed-response tests exercise the runner and native evidence bindings, but they
 are not model results or proof of a formal registration. The input remains
-guarded until independent review and a real frozen registration are complete.
+available only as the explicitly declared variant. A real frozen registration
+needs its own independent verification before collection.
 GitLab documents versioned package-file uploads:
 https://docs.gitlab.com/cli/packages/upload/
 """

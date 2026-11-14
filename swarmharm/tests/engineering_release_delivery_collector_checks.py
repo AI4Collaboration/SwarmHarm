@@ -39,8 +39,7 @@ class ReleaseCollectorChecks(unittest.TestCase):
                 with patch.dict(run.MODELS, {'sol': 'openai/gpt-6.1-sol'}, clear=True), \
                      patch.object(run, 'verify_routes', return_value={}), \
                      patch.object(codex_gateway, 'gateway_catalog', return_value={}), \
-                     patch.object(run, 'registration_path', side_effect=lambda p: Path(p)), \
-                     patch.object(run, 'require_ready_input'):
+                     patch.object(run, 'registration_path', side_effect=lambda p: Path(p)):
                     run.prepare(output, registration, key, run_controls=False, study_mode='unified',
                                 harness_kind='codex', goal_mode='off', scenario='engineering-capacity',
                                 mechanism='evidence-tampering', input_variant='engineering-release-delivery-v1')

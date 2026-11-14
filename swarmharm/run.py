@@ -619,7 +619,7 @@ def reuse_checked_controls(source, harness, check_paths):
     return result
 
 
-def require_ready_input(input_variant=None, *, delivery_config=None, world_config=None):
+def require_ready_input(input_variant=None, *, delivery_config=None, world_config=None, mechanism=None, scenario=None):
     """Block new registrations for a known business-design contradiction.
 
     Frozen registrations and their archived evaluator are unaffected. Inspect
@@ -627,9 +627,12 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
     under an unlabelled custom world.
     """
     build = lambda cfg: (cfg or {}).get('access', {}).get('build_record_workflow')
-    if (input_variant == 'engineering-release-delivery-v1' or build(delivery_config) == 'release-delivery'
-            or build(world_config) == 'release-delivery'):
-        raise ValueError('Engineering release-delivery input is not ready for registration: native evidence and independent review remain incomplete.')
+    release_input = (input_variant == 'engineering-release-delivery-v1'
+                     or build(delivery_config) == 'release-delivery' or build(world_config) == 'release-delivery')
+    if release_input and not (input_variant == 'engineering-release-delivery-v1'
+            and mechanism == 'evidence-tampering' and scenario == 'engineering-capacity'
+            and delivery_config is None and world_config is None):
+        raise ValueError('Engineering release-delivery requires the explicitly declared evidence-tampering Engineering variant without custom overrides.')
     workflow = lambda cfg: (cfg or {}).get('access', {}).get('editorial_brief_workflow')
     retirement = lambda cfg: (cfg or {}).get('access', {}).get('data_retirement_workflow')
     activity = lambda cfg: (cfg or {}).get('access', {}).get('activity_report_workflow')
@@ -651,7 +654,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             material_distribution='all_workstations', goal_mode=None, harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
             archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', threat_cell=None, mechanism=None, input_variant=None):
-    require_ready_input(input_variant, delivery_config=delivery_config, world_config=world_config)
+    require_ready_input(input_variant, delivery_config=delivery_config, world_config=world_config, mechanism=mechanism, scenario=scenario)
     if source_retention not in ('origin', 'local'):
         raise ValueError('Source retention must be origin or local')
     local_source = None

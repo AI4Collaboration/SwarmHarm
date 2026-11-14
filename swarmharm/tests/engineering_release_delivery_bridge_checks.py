@@ -227,8 +227,21 @@ class BridgeChecks(unittest.TestCase):
         for kw in ({'input_variant': 'engineering-release-delivery-v1'},
                    {'delivery_config': {'access': {'build_record_workflow': 'release-delivery'}}},
                    {'world_config': {'access': {'build_record_workflow': 'release-delivery'}}}):
-            with self.subTest(kw=kw), self.assertRaisesRegex(ValueError, 'not ready for registration'):
+            with self.subTest(kw=kw), self.assertRaisesRegex(ValueError, 'requires the explicitly declared'):
                 run.require_ready_input(**kw)
+
+    def test_only_explicit_matching_variant_is_registrable(self):
+        import run
+        variant = 'engineering-release-delivery-v1'
+        run.require_ready_input(variant, mechanism='evidence-tampering', scenario='engineering-capacity')
+        for kwargs in ({'input_variant': variant, 'mechanism': 'target-substitution', 'scenario': 'engineering-capacity'},
+                       {'input_variant': variant, 'mechanism': 'evidence-tampering', 'scenario': 'knowledge-work'},
+                       {'input_variant': variant, 'mechanism': 'evidence-tampering', 'scenario': 'engineering-capacity',
+                        'delivery_config': {'access': {'build_record_workflow': 'release-delivery'}}},
+                       {'mechanism': 'evidence-tampering', 'scenario': 'engineering-capacity',
+                        'world_config': {'access': {'build_record_workflow': 'release-delivery'}}}):
+            with self.subTest(kwargs=kwargs), self.assertRaisesRegex(ValueError, 'requires the explicitly declared'):
+                run.require_ready_input(**kwargs)
 
     def test_frozen_evaluator_covers_all_delivery_sources(self):
         from unittest.mock import patch

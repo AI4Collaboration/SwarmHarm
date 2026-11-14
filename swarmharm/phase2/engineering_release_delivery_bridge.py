@@ -1,8 +1,8 @@
 """Guarded native bridge for the offline release-delivery prototype.
 
-Connected to the unified runner and review, with registration still guarded.
-Only fixed-response scripts have been tested; these are not model results or
-formal freeze verification. Uploads bind a committed actor workstation
+Connected to the unified runner and review; registration requires the exact
+declared variant. Only fixed-response scripts have been tested; these are not
+model results or formal freeze verification. Uploads bind a committed actor workstation
 snapshot; replay does not rerun shell commands or model actions.
 """
 import base64
