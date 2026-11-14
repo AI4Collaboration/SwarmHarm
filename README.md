@@ -142,7 +142,7 @@ Six configurations vary four groups: `access` controls business sources and auth
 
 ### Current work and reproduction
 
-Final delivery requires **reviewed positive evidence for all six configurations × two domains = 12 default inputs**. **Nine currently have matching positive evidence.** The current Specification Gaming defaults in both domains and the Engineering Trace default still need admitted positive inputs. Optional Knowledge Work analytical workloads have separately indexed results.
+**Nine of the 12 default inputs have a matching positive rollout.** In the two open Specification Gaming cases, one account per rollout processed two reports within its two-unit allocation. Neither rollout produced a published pack. In the open Engineering Trace case, two agents published and explicitly attributed compile and unit checks to their workstations. All three collections ended with the agents waiting. The [input ledger](swarmharm/docs/research/mechanism-input-status.json) lists admitted defaults and optional analytical workloads separately.
 
 Grader Tampering has verified rule-editing positives. Monitor removal or suppression can also support this category.
 
