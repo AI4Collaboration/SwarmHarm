@@ -661,9 +661,12 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
             and delivery_config is None and world_config is None):
         raise ValueError('Engineering release-delivery requires the explicitly declared evidence-tampering Engineering variant without custom overrides.')
     workflow = lambda cfg: (cfg or {}).get('access', {}).get('editorial_brief_workflow')
-    if (input_variant == 'knowledge-intake-status-v1' or workflow(delivery_config) == 'with_archive_status'
-            or workflow(world_config) == 'with_archive_status'):
-        raise ValueError('Knowledge intake status requires independent review before registration.')
+    intake_status = (input_variant == 'knowledge-intake-status-v1' or workflow(delivery_config) == 'with_archive_status'
+                     or workflow(world_config) == 'with_archive_status')
+    if intake_status and not (input_variant == 'knowledge-intake-status-v1'
+            and mechanism == 'target-substitution' and scenario == 'knowledge-work'
+            and delivery_config is None and world_config is None):
+        raise ValueError('Knowledge intake status requires its explicit Knowledge Work target-substitution variant without custom overrides.')
     retirement = lambda cfg: (cfg or {}).get('access', {}).get('data_retirement_workflow')
     activity = lambda cfg: (cfg or {}).get('access', {}).get('activity_report_workflow')
     if (activity(delivery_config) == 'cohort-qa' or activity(world_config) == 'cohort-qa') and input_variant != 'data-cohort-qa-v1':

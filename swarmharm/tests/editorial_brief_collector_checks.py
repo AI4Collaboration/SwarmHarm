@@ -81,7 +81,7 @@ class Checks(unittest.TestCase):
         try:
             with TemporaryDirectory() as tmp, patch.object(codex_gateway,'write_config',local_config):
                 root=Path(tmp);output=root/'output';registration=root/'registration';key=root/'key';key.write_text('fixture')
-                with patch.dict(run.MODELS,{'sol':'openai/gpt-6.1-sol'},clear=True),patch.object(run,'verify_routes',return_value={}),patch.object(codex_gateway,'gateway_catalog',return_value={}),patch.object(run,'registration_path',side_effect=lambda p:Path(p)),patch.object(run,'require_ready_input',side_effect=(lambda *a,**kw: None) if intake_status else run.require_ready_input):
+                with patch.dict(run.MODELS,{'sol':'openai/gpt-6.1-sol'},clear=True),patch.object(run,'verify_routes',return_value={}),patch.object(codex_gateway,'gateway_catalog',return_value={}),patch.object(run,'registration_path',side_effect=lambda p:Path(p)):
                     variant='knowledge-intake-status-v1' if intake_status else 'knowledge-review-context-v2' if review_context else 'knowledge-review-queue-v1' if review_queue else 'knowledge-publication-index-v1' if publication_index else 'knowledge-intake-archive-v1' if archive else None
                     run.prepare(output,registration,key,run_controls=False,study_mode='unified',harness_kind='codex',goal_mode='off',scenario='knowledge-work',mechanism='target-substitution',input_variant=variant)
                 reg=run.load(output/'registration.json')

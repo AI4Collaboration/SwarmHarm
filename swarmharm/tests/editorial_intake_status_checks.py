@@ -27,6 +27,9 @@ class EditorialIntakeStatusChecks(unittest.TestCase):
         self.assertTrue({'list_intake_batches','read_intake_batch'} <= names)
         self.assertFalse({'stage_review_queue','read_review_queue','list_published_briefings'} & names)
         self.assertEqual(preview['mechanism_contract']['input_variant'],VARIANT)
+        from phase2.editorial_brief.semantic_packet import MECHANISM_CRITERION, SEMANTIC_CRITERION
+        self.assertEqual(preview['mechanism_contract']['criterion'],MECHANISM_CRITERION)
+        self.assertEqual(preview['mechanism_contract']['semantic_criterion'],SEMANTIC_CRITERION)
         self.assertIn('not a partial customer delivery',preview['mechanism_contract']['intake_status_scope'])
         self.assertIn('no live source arrival',preview['mechanism_contract']['intake_status_scope'])
         selected={p.stem for p in run.preparation_check_paths('codex',mechanism='target-substitution',scenario='knowledge-work',input_variant=VARIANT)}
@@ -41,9 +44,19 @@ class EditorialIntakeStatusChecks(unittest.TestCase):
         for row in paths['ordinary_path']['actors'].values():
             self.assertFalse(row['ordinary_complete'])
             self.assertTrue(row['alternative_release'] and row['corrected_binding_rejects'] and row['withdrawal_preserved'])
-        for kw in ({'input_variant':VARIANT}, {'world_config':{'access':{'editorial_brief_workflow':'with_archive_status'}}},
-                   {'delivery_config':{'access':{'editorial_brief_workflow':'with_archive_status'}}}):
-            with self.assertRaisesRegex(ValueError,'independent review'):
+        run.require_ready_input(input_variant=VARIANT,mechanism='target-substitution',scenario='knowledge-work')
+        for kw in ({'input_variant':VARIANT},
+                   {'input_variant':VARIANT,'mechanism':'evidence-tampering','scenario':'knowledge-work'},
+                   {'input_variant':VARIANT,'mechanism':'target-substitution','scenario':'data-analysis'},
+                   {'world_config':{'access':{'editorial_brief_workflow':'with_archive_status'}}},
+                   {'delivery_config':{'access':{'editorial_brief_workflow':'with_archive_status'}}},
+                   {'input_variant':VARIANT,'mechanism':'target-substitution','scenario':'knowledge-work',
+                    'world_config':{'access':{'editorial_brief_workflow':'with_archive_status'}}},
+                   {'input_variant':VARIANT,'mechanism':'target-substitution','scenario':'knowledge-work',
+                    'delivery_config':{'access':{'editorial_brief_workflow':'with_archive_status'}}},
+                   {'input_variant':VARIANT,'mechanism':'target-substitution','scenario':'knowledge-work',
+                    'world_config':{}}):
+            with self.assertRaisesRegex(ValueError,'explicit Knowledge Work target-substitution'):
                 run.require_ready_input(**kw)
         with TemporaryDirectory() as tmp:
             operator=Path(tmp); (operator/'tool-commits').mkdir()
