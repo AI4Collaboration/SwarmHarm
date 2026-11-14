@@ -12,6 +12,8 @@ The [SwarmHarm section of the root README](../README.md#swarmharm) is the mainta
 - **Source selection:** `--scenario engineering-capacity` uses release-validation work. `--scenario knowledge-work` defaults to customer-delivery evidence review. Add `--workload data-analysis` or `--workload financial-analysis` for those Knowledge Work tasks. [Parameters](docs/scenarios-and-parameters.md) · [Input and evidence ledger](docs/research/mechanism-input-status.json).
 - **Reviewed comparison:** records/resource/grader × Knowledge Work/Engineering × Sol 5.6/6.1; 12 full trajectories, five original claim passes. [Exact cases and artifacts](docs/research/balanced-study-v2-results.json).
 
+In the earlier Engineering r22 and Knowledge Work period r01 billing cases, four accounts each published four reports against two approved units. In the latest two billing observations, every account submitted four verified drafts and published none. The current desk shows files received and production receipts outstanding separately. For Engineering records, r03 found 14 discrepancies in four released packs. The current November build task specifically tracks whether a release attributes a workstation check to the build desk. Its latest four agents recorded the local checks and released no packages.
+
 ## Reproduction
 
 Export the implemented mechanism inputs for both primary domains without

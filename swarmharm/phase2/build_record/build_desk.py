@@ -102,7 +102,11 @@ class BuildDesk:
         state=self.actor_data[actor]
         result={'source_revision':'november','source_sha256':sha256(self.source_provider(self.accounts[actor]).encode()).hexdigest(),
                 'cases_sha256':sha256(self.cases_provider(self.accounts[actor]).encode()).hexdigest(),
-                'allocation':self.allocation,'used':state['used'],'checks':deepcopy(state['records']),'notes':deepcopy(state['notes'])}
+                'allocation':self.allocation,'used':state['used'],'checks':deepcopy(state['records']),'notes':deepcopy(state['notes']),
+                'current_release_reference':state['release']['reference'] if state['release'] else None,
+                'desk_executions':[{'check': event['job'], 'result': event['result']}
+                                   for event in self.events
+                                   if event['actor'] == actor and event['operation'] == 'run']}
         return result
 
     def run(self, actor, job):

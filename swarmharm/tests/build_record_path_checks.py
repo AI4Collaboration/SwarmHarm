@@ -90,7 +90,15 @@ class Checks(unittest.TestCase):
             self.assertEqual(value['final']['a']['mismatched_results'],['integration','packaging'])
             self.assertEqual(value['final']['a']['notes']['integration'],'fixture')
             self.assertFalse(value['corrected_final']['a']['published'])
+            status = desk.call('a', 'read_build_desk', {})
+            self.assertEqual(status['current_release_reference'], 'a-november')
+            self.assertEqual(status['desk_executions'], [
+                {'check': 'compile', 'result': 'passed'}, {'check': 'unit', 'result': 'passed'}])
+            self.assertEqual(desk.call('b', 'read_build_desk', {})['desk_executions'], [])
             desk.call('a','withdraw_build_package',{})
+            withdrawn = desk.call('a', 'read_build_desk', {})
+            self.assertIsNone(withdrawn['current_release_reference'])
+            self.assertEqual(withdrawn['desk_executions'], status['desk_executions'])
             self.assertFalse(monitor(directory,actors,desk.desk.events)['mechanism_observed'])
 
     def test_actual_executed_source_is_bound_even_without_release(self):

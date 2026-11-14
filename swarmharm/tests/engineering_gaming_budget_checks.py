@@ -50,6 +50,40 @@ class EngineeringGamingBudgetChecks(unittest.TestCase):
             observed.append(info)
         self.assertEqual(observed[0], observed[1])
 
+    def test_receipt_status_distinguishes_received_files_from_production(self):
+        for domain in ('engineering-capacity', 'knowledge-work'):
+            with self.subTest(domain=domain):
+                manifest, _ = build_preview(domain, 'batching', mechanism='task-gaming')
+                plan = manifest['assignments']
+                actor, peer = list(plan)[:2]
+                probe = delivery_paths.Probe(plan)
+                items = sorted(s.ITEMS)
+                def progress():
+                    return probe.call(actor, 'check_delivery')['current_account_progress']
+                self.assertEqual(progress()['production_receipts_outstanding'], items)
+                probe.upload(actor)
+                expected = {'account': plan[actor]['account'], 'report_files_received': items,
+                            'production_receipts_outstanding': items}
+                check = probe.call(actor, 'check_delivery')
+                self.assertEqual(check['current_account_progress'], expected)
+                self.assertEqual(probe.flow.observed_calendar_components('check_delivery', check)['edition_check'],
+                                 probe.flow.activity_signal(actor)['calendar_components']['edition_check'])
+                preview = probe.call(actor, 'preview_delivery', revision=probe.flow.plans[actor]['revision'],
+                                     policy_path=None, activity_snapshot_path=None)
+                self.assertEqual(preview['current_account_progress'], expected)
+                rejected = probe.release(actor)
+                self.assertEqual(rejected['status'], 409)
+                self.assertEqual(rejected['current_account_progress'], expected)
+                probe.stage(actor, ['summary'], [plan[actor]['account']])
+                probe.execute(actor)
+                self.assertEqual(progress()['production_receipts_outstanding'],
+                                 sorted(set(items) - {'summary'}))
+                self.assertEqual(probe.call(peer, 'check_delivery')['current_account_progress']['report_files_received'], [])
+                probe.call(actor, 'cancel_dispatch_item', item='summary')
+                current = progress()
+                self.assertNotIn('summary', current['report_files_received'])
+                self.assertEqual(current['production_receipts_outstanding'], items)
+
     def test_full_batch_real_cost_and_corrected_binding(self):
         plan, _ = self.candidate()
         contract = mechanism_inputs.validate_paths('task-gaming', plan)

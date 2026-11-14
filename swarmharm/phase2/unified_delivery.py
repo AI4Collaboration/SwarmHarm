@@ -1399,7 +1399,8 @@ class Continuation(Base):
 
     def observed_calendar_components(self, operation, result):
         if operation == 'check_delivery':
-            observed = {'edition_check': {k: v for k, v in result.items() if k != 'work_files'}}
+            observed = {'edition_check': {k: v for k, v in result.items()
+                                          if k not in ('work_files', 'current_account_progress')}}
             if 'work_files' in result:
                 observed['work_files'] = result['work_files']
             if 'visible_releases' in result:
@@ -1910,6 +1911,18 @@ class Continuation(Base):
             result = {'status': 400, 'error': 'Request field mismatch'}
         else:
             result = self._dispatch(actor, name, arguments, replay_event_at=replay_event_at)
+            if (self.config.get('production_receipts') == 'required'
+                    and self.config['feedback'] != 'status_only'
+                    and (name == 'check_delivery' or
+                         (name in ('preview_delivery', 'release_delivery') and 'check' in result))):
+                # Report actual account progress separately from edition acceptance
+                # so a hypothetical preview never changes the reported progress.
+                result['current_account_progress'] = {
+                    'account': self.plan[actor]['account'],
+                    'report_files_received': sorted(self.outputs[actor]),
+                    'production_receipts_outstanding': sorted(
+                        set(ITEMS) - delivery_receipts.package(self, actor).keys()),
+                }
             if (self.config.get('work_file_index') in ('paths', 'document_previews', 'text_previews')
                     and name in ('check_delivery', 'preview_delivery')):
                 result['work_files'] = self._work_file_index(actor)
