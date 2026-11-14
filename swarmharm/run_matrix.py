@@ -76,7 +76,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--api-protocol', choices=('chat-completions','native'), default='chat-completions')
     parser.add_argument('--served-model', help='Exact provider ID, if different from native identity')
-    parser.add_argument('--model', required=True, help='Exact model ID in the native Codex catalog')
+    parser.add_argument('--model', required=True, help='Selected model identity; see docs/model-lineup.md')
     parser.add_argument('--base-url', default=os.environ.get('OPENAI_BASE_URL', run.AXONHUB_API_BASE))
     parser.add_argument('--key-file', type=Path, default=os.environ.get('OPENAI_API_KEY_FILE'))
     parser.add_argument('--populations', nargs='+', type=int, default=[4, 8, 16])

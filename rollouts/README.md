@@ -29,7 +29,8 @@ bash rollouts/build-jq
 
 export OPENAI_BASE_URL=http://localhost:8000/v1
 export MODEL=openai/gpt-6.1-sol       # selected model identity; see the lineup
-# Set OPENAI_API_KEY or OPENAI_API_KEY_FILE if your server requires authentication.
+# Set OPENAI_API_KEY or OPENAI_API_KEY_FILE for the shared provider credential.
+# Native harnesses need a placeholder key even if a local server ignores it.
 python rollouts/run_matrix.py --model "$MODEL" --populations 4 8 16
 python rollouts/run_matrix.py --model "$MODEL" --populations 4 8 16 --execute --out ../swarmform-runs
 ```
