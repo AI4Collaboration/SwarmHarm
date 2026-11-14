@@ -8,7 +8,7 @@ import platform
 import subprocess
 import tempfile
 
-from guardrails import require_same_harness
+from guardrails import require_same_harness, api_base_url
 import codex_agent as legacy
 
 AXONHUB_BASE = 'https://lmportal.iefbr14.xyz/v1'
@@ -66,8 +66,8 @@ def cli_identity():
 
 
 def validate_model(model):
-    if not model.startswith('openai/gpt-') or any(c.isspace() for c in model):
-        raise ValueError('Use an explicit openai/gpt-* AxonHub model ID')
+    if not model.startswith(('openai/gpt-', 'gpt-')) or any(c.isspace() for c in model):
+        raise ValueError('Use an explicit GPT model ID with a matching native Codex profile')
 
 
 @contextmanager
@@ -81,8 +81,9 @@ def gateway_env(home, api_base=None, api_key=None):
     env = {name: os.environ[name] for name in ('PATH','USER','LOGNAME','TMPDIR','LANG','LC_ALL') if name in os.environ}
     env.update(HOME=str(home), CODEX_HOME=str(home))
     if api_base is not None or api_key is not None:
-        if api_base != AXONHUB_BASE or not api_key:
-            raise ValueError('Codex requires the registered AxonHub base and host key')
+        api_base_url(api_base)
+        if not api_key:
+            raise ValueError('Codex requires the registered API base and host key')
         env['SWARMHARM_AXONHUB_KEY'] = api_key
     return env
 
@@ -115,12 +116,13 @@ GOAL_PROGRESS_GUARD = {
 }
 
 
-def harness_registration(goal_mode, model, *, context_policy=None):
+def harness_registration(goal_mode, model, *, context_policy=None, api_base=AXONHUB_BASE):
     validate_model(model)
-    return runtime_registration(goal_mode, context_policy=context_policy)
+    return runtime_registration(goal_mode, context_policy=context_policy, api_base=api_base)
 
 
-def runtime_registration(goal_mode, *, context_policy=None):
+def runtime_registration(goal_mode, *, context_policy=None, api_base=AXONHUB_BASE):
+    api_base = api_base_url(api_base)
     from codex_context import policy
     context_policy = policy(context_policy)
     from codex_session import NETWORK_ERROR_CODES
@@ -128,7 +130,7 @@ def runtime_registration(goal_mode, *, context_policy=None):
         raise ValueError('Unsupported native Codex goal mode')
     with isolated_home() as home:
         catalog = native_catalog(home)
-    return {**({'context_policy': context_policy} if context_policy else {}), 'kind':'codex','authentication':'axonhub','gateway':AXONHUB_BASE,
+    return {**({'context_policy': context_policy} if context_policy else {}), 'kind':'codex','authentication':('axonhub' if api_base == AXONHUB_BASE else 'openai-compatible'),'gateway':api_base,
         'codex_cli':cli_identity(), 'installed':{'codex-cli':cli_identity()['version']},
         'native_catalog_sha256':digest(catalog), 'goal_mode':goal_mode,
         'goal_progress_guard':dict(GOAL_PROGRESS_GUARD) if goal_mode=='codex_goal' else None,
@@ -153,14 +155,16 @@ def runtime_registration(goal_mode, *, context_policy=None):
 
 
 def verify_runtime(harness):
-    if harness.get('authentication') != 'axonhub' or harness.get('gateway') != AXONHUB_BASE:
+    api_base = api_base_url(harness.get('gateway'))
+    expected_auth = 'axonhub' if api_base == AXONHUB_BASE else 'openai-compatible'
+    if harness.get('authentication') != expected_auth:
         raise ValueError('Unregistered Codex authentication route')
     expected_guard = GOAL_PROGRESS_GUARD if harness.get('goal_mode') == 'codex_goal' else None
     if harness.get('goal_progress_guard') != expected_guard:
         raise RuntimeError('Codex goal guard changed; prepare a fresh registration')
     if cli_identity() != harness['codex_cli']:
         raise RuntimeError('Codex executable changed; prepare a fresh registration')
-    require_same_harness(harness, runtime_registration(harness['goal_mode'], context_policy=harness.get('context_policy')))
+    require_same_harness(harness, runtime_registration(harness['goal_mode'], context_policy=harness.get('context_policy'), api_base=api_base))
 
 
 def native_tools(goal_mode):
@@ -177,7 +181,8 @@ def command(goal_mode='off'):
             'app-server','--listen','stdio://']
 
 
-def write_config(home, workspace, definitions, endpoint, model, effort, catalog, *, context_policy=None):
+def write_config(home, workspace, definitions, endpoint, model, effort, catalog, *, context_policy=None, api_base=AXONHUB_BASE):
+    api_base = api_base_url(api_base)
     from codex_context import policy
     context_policy = policy(context_policy)
     validate_model(model)
@@ -196,13 +201,18 @@ def write_config(home, workspace, definitions, endpoint, model, effort, catalog,
         f'tool_output_token_limit={TOOL_OUTPUT_TOKEN_LIMIT}',
         'model_catalog_json='+json.dumps(str(home/'catalog.json')),
         '[skills.bundled]','enabled=false',
-        '[model_providers.axonhub]','name="AxonHub"','base_url='+json.dumps(AXONHUB_BASE),
+        '[model_providers.axonhub]','name="AxonHub"','base_url='+json.dumps(api_base),
         'env_key="SWARMHARM_AXONHUB_KEY"','wire_api="responses"','requires_openai_auth=false',
         '[mcp_servers.work]','required=true','tool_timeout_sec=300',
         'default_tools_approval_mode="approve"',
         'command='+json.dumps(sys.executable),
         'args='+json.dumps([str(Path(__file__).parent/'codex_mcp.py'),str(definitions),str(endpoint)]),
         '[tools.experimental_request_user_input]','enabled=false']
+    if api_base != AXONHUB_BASE:
+        config[1] = 'model_provider="openai_compatible"'
+        config[config.index('[model_providers.axonhub]')] = '[model_providers.openai_compatible]'
+        config[config.index('name="AxonHub"')] = 'name="OpenAI-compatible API"'
+        config.insert(config.index('requires_openai_auth=false') + 1, 'supports_websockets=false')
     if context_policy:
         config[config.index('model_auto_compact_token_limit=2147483647')] = 'model_auto_compact_token_limit='+str(context_policy['auto_compact_token_limit'])
         config.insert(0, 'features.async_compaction=false')

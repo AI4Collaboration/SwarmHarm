@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import urllib.error
 import urllib.request
+from urllib.parse import urlsplit
 
 
 def outside_repository(path, repository, label):
@@ -25,14 +26,26 @@ def require_unified_backend():
         raise ValueError('Unified live workstations require Docker for the isolated reporting-library links.')
 
 
+def api_base_url(value):
+    value = str(value).rstrip('/')
+    parsed = urlsplit(value)
+    if (parsed.scheme not in ('http', 'https') or not parsed.hostname
+            or parsed.username is not None or parsed.password is not None
+            or parsed.query or parsed.fragment or any(c.isspace() for c in value)):
+        raise ValueError('API base must be an HTTP(S) URL without credentials, query or fragment')
+    if parsed.path.endswith(('/responses', '/chat/completions', '/messages')):
+        raise ValueError('Use the API base URL, including its version path, without an endpoint suffix')
+    return value
+
+
 def credential_file(path, repository):
     if path is None:
-        raise ValueError("An existing host-only AxonHub key file is required")
-    resolved = outside_repository(path, repository, "AxonHub key file")
+        raise ValueError("An existing host-only API key file is required")
+    resolved = outside_repository(path, repository, "API key file")
     if not resolved.is_file():
-        raise ValueError("The AxonHub key file must be a regular file")
+        raise ValueError("The API key file must be a regular file")
     if not resolved.read_text().strip():
-        raise ValueError("The AxonHub key file is empty")
+        raise ValueError("The API key file is empty")
     return resolved
 
 

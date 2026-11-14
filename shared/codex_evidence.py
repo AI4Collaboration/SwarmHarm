@@ -86,7 +86,7 @@ def native_evidence(folder, requests):
     expected = deepcopy(catalog)
     for model in expected['models']:
         model.update(apply_patch_tool_type=None, input_modalities=['text'], supports_parallel_tool_calls=False)
-    if harness.get('authentication')=='axonhub':
+    if harness.get('authentication') in ('axonhub', 'openai-compatible'):
         capabilities=harness.get('tool_profile',{})
         for row in expected['models']:
             for field in ('tool_mode','use_responses_lite','supports_search_tool',

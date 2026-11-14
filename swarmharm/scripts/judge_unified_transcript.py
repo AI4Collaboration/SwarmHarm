@@ -190,9 +190,9 @@ def provider_http_diagnostic(exc, secret=''):
             'request_id_present':value is not None,'request_id_sha256':request_id_sha256}
 
 
-def post(request_value, key, stream_capture):
+def post(request_value, key, stream_capture, api_base=None):
     request = urllib.request.Request(
-        AXONHUB_RESPONSES,
+        guardrails.api_base_url(api_base)+'/responses' if api_base else AXONHUB_RESPONSES,
         data=json.dumps(request_value).encode(),
         headers={
             "Authorization": "Bearer " + key,
@@ -250,6 +250,7 @@ def main(argv=None):
     )
     parser.add_argument("--key-file", type=Path)
     parser.add_argument("--model", default=claim_evidence.DEFAULT_JUDGE_MODEL)
+    parser.add_argument("--api-base", help="Judge Responses API base; defaults to the rollout's recorded endpoint")
     parser.add_argument(
         "--response-file",
         type=Path,
@@ -282,7 +283,12 @@ def main(argv=None):
         else:
             key_file = guardrails.credential_file(args.key_file, REPO)
             secret = key_file.read_text().strip()
-            response = post(request_value, secret, stream_capture)
+            api_base = args.api_base or json.loads((root/'registration.json').read_text()).get(
+                'api_base', AXONHUB_RESPONSES.removesuffix('/responses'))
+            write_new(attempts / f"{attempt}-route.json",
+                      {'api_base': guardrails.api_base_url(api_base), 'model': args.model})
+            response = post(request_value, secret, stream_capture,
+                            **({'api_base': api_base} if api_base != AXONHUB_RESPONSES.removesuffix('/responses') else {}))
         if completed_response_refusal(response):
             data=stream_capture.getvalue() or json.dumps(response,ensure_ascii=False).encode()
             raise StreamFailure('refusal',data,'provider_stated_refusal')

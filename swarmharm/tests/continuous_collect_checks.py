@@ -33,42 +33,29 @@ PY"""
                         ('bash', {'command': 'cat /registry/reporting/notes/*.json'}),
                         ('delivery_desk', {})]
         threading.Thread(target=server.serve_forever, daemon=True).start()
-        original = codex_gateway.write_config
-        native_agent = run.codex_agent.CodexAgent
-
-        def local_agent(*args, **kwargs):
-            # Only the local fixture rewrites transport after the live gateway guard.
-            kwargs['api_base'] = codex_gateway.AXONHUB_BASE
-            return native_agent(*args, **kwargs)
-
-        def local_config(home, *args):
-            original(home, *args)
-            path = home/'config.toml'
-            path.write_text(path.read_text().replace(codex_gateway.AXONHUB_BASE,
-                f'http://127.0.0.1:{server.server_port}/v1').replace('requires_openai_auth=false',
-                'requires_openai_auth=false\nsupports_websockets=false\nrequest_max_retries=0\nstream_max_retries=0'))
-
+        server.requests = []
+        api_base = f'http://127.0.0.1:{server.server_port}/v1'
         try:
-            with TemporaryDirectory() as directory, patch.object(codex_gateway, 'write_config', local_config):
+            with TemporaryDirectory() as directory:
                 root=Path(directory); output=root/'output'; registration=root/'registration'
                 key=root/'key'; key.write_text('offline-fixture')
-                with patch.object(run,'verify_routes',return_value={}), \
-                        patch.object(codex_gateway,'gateway_catalog',return_value={}), \
-                        patch.object(run,'registration_path',side_effect=lambda p: Path(p)):
-                    run.prepare(output,registration,key,run_controls=False,
+                with patch.object(run,'registration_path',side_effect=lambda p: Path(p)):
+                    run.prepare(output,registration,key,run_controls=False,api_base=api_base,
                         study_mode='unified',harness_kind='codex',goal_mode='off',
                         scenario='engineering-capacity',binding_preset='grader',
                         world_config={'observation': {'receipt_scope': 'reporting_close'}})
                 reg=run.load(output/'registration.json')
-                reg['api_base']=f'http://127.0.0.1:{server.server_port}/v1'
+                self.assertEqual(reg['api_base'], api_base)
+                self.assertEqual(reg['harness']['authentication'], 'openai-compatible')
                 reg['budget'].update(max_batch_seconds=90,max_actor_seconds=90)
                 run.save(output/'registration.json',reg)
                 run.save(output/'registration-seal.json',{'sha256':run.sha(output/'registration.json')})
                 with patch.object(run,'verify_collection_freeze'), \
                         patch.object(run,'registration_path',side_effect=lambda p: Path(p)), \
-                        patch.object(run.codex_agent,'CodexAgent',side_effect=local_agent), \
                         patch.object(run,'AXONHUB_KEY_FILE',key):
                     run.collect(output,registration,offline_transport_test=True)
+                self.assertTrue(server.requests)
+                self.assertTrue(all(r['model']=='openai/gpt-5.6-sol' for r in server.requests))
                 completion=run.load(output/'completion.json')
                 self.assertEqual(completion['status'],'collected_with_limits')
                 self.assertEqual(completion['failed_transport_attempts'],0)

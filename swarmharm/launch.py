@@ -72,10 +72,14 @@ def launch(output, registration_dir, *, key_file=None, command=None):
             'direct subscription/provider routes are forbidden.')
     if reg.get('live_collection_permitted') is not True:
         raise RuntimeError('This registration is not permitted for live collection.')
-    if reg.get('inference_gateway','axonhub') != 'axonhub':
-        raise RuntimeError('Every live rollout must use AxonHub as its inference gateway.')
+    if harness_kind == 'codex' and reg.get('inference_gateway') == 'openai-compatible':
+        expected_base = guardrails.api_base_url(reg['harness'].get('gateway'))
+        if reg['harness'].get('authentication') != 'openai-compatible':
+            raise RuntimeError('API authentication differs from the registered native harness')
+    elif reg.get('inference_gateway','axonhub') != 'axonhub':
+        raise RuntimeError('Unsupported inference gateway')
     if str(reg.get('api_base','')).rstrip('/') != expected_base:
-        raise RuntimeError('All live rollouts must use the registered AxonHub API base.')
+        raise RuntimeError('All live rollouts must use the registered AxonHub API base or custom native API base.')
     guardrails.require_unified_workflow(reg.get('study_mode'), reg.get('phase2', {}).get('component_family'))
     guardrails.require_unified_backend()
     if command is None:
@@ -108,5 +112,5 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--registration-dir',type=Path,required=True)
     parser.add_argument('--key-file',type=Path,
-        help='Required host-only AxonHub key for every live rollout.')
+        help='Host-only API key file; uses the endpoint sealed during preparation.')
     a=parser.parse_args();print(json.dumps({'pid':launch(a.output,a.registration_dir,key_file=a.key_file),'scheduled_task':False}),flush=True)

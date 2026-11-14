@@ -48,8 +48,11 @@ class CodexAgent:
         self.gateway = api_base is not None or api_key is not None
         if self.gateway:
             import codex_gateway as runtime
-            if api_base != runtime.AXONHUB_BASE or not api_key:
-                raise ValueError('Codex requires AxonHub base and host key')
+            api_base = runtime.api_base_url(api_base)
+            if not api_key:
+                raise ValueError('Codex requires a host API key')
+            if registered_harness and registered_harness.get('gateway') != api_base:
+                raise ValueError('Codex API base differs from the registered route')
         runtime.validate_model(model)
         if goal_mode not in (('off','codex_goal') if self.gateway else ('off',)):
             raise ValueError('Unsupported Codex goal mode')
@@ -187,7 +190,8 @@ class CodexAgent:
                 stack.callback(self.listener.close)
                 self.runtime.write_config(self.home, workspace, self.tool_path, endpoint,
                     self.model, self.effort, catalog,
-                    **({'context_policy': self.context_policy} if self.context_policy else {}))
+                    **({'context_policy': self.context_policy} if self.context_policy else {}),
+                    **({'api_base': self.api_base} if self.gateway and self.api_base != self.runtime.AXONHUB_BASE else {}))
                 shutil.copy2(self.home / 'catalog.json', self.folder / 'tool-profile.json')
                 shutil.copy2(self.home / 'config.toml', self.folder / 'config.toml')
                 self.rpc = CodexRpc(self.runtime.command(self.goal_mode) if self.gateway else self.runtime.command(), env=(self.runtime.gateway_env(self.home, self.api_base, self.api_key) if self.gateway

@@ -6,6 +6,8 @@ This README is the single maintained home for research scope, task taxonomy, env
 
 **Current SwarmHarm scope is Engineering and Knowledge Work.** Data and financial analysis are optional Knowledge Work workloads. Six threat models define 12 two-domain target slots; all 12 have input-bound reviewed positives. Historical labels, scores and complete trajectories remain available. [Current scope and evidence](#swarmharm).
 
+**Run SwarmHarm** — [Fresh-checkout setup, OpenAI-compatible API, collection and review](swarmharm/README.md#run-from-a-fresh-checkout).
+
 New SwarmHarm inputs default to three concurrent agents; set `--population N` to vary cohort size. The 12 reviewed cases used four. Each claim is bound to its recorded inputs and runtime. Optional Knowledge Work workloads have separate evidence entries. Current development and evidence stay local.
 
 The shared-capacity cases test composition: one agent can complete safely using spare shared slots, while the recorded combined actions leave Operations work without slots. They do not establish that each agent's task is individually impossible without a shortcut.

@@ -1,7 +1,8 @@
 # Model and harness routing
 
-For the active SwarmForm matrix use native Codex through **AxonHub** for both Sol models. All supported adapters route live inference through AxonHub, including Claude Code. Direct
-provider and subscription inference are not rollout routes.
+The SwarmForm matrix and historical reproduction use native harnesses through **AxonHub**, including Claude Code. New SwarmHarm Codex runs also accept a registered OpenAI-compatible Responses endpoint through `--api-base`. See the [API quickstart](../swarmharm/README.md#run-from-a-fresh-checkout).
+
+The following routing policy describes the AxonHub condition.
 
 - **Claude models: Claude Code.** This includes Haiku, Sonnet and Opus.
 - **OpenAI models: Codex.** Pi is not a fallback route.

@@ -98,3 +98,48 @@ class LocalSourceChecks(unittest.TestCase):
                     run.subprocess, 'check_output', side_effect=output):
                 with self.assertRaisesRegex(RuntimeError, 'pushed to origin'):
                     run.verify_collection_freeze(raw, registration, reg)
+
+
+class CompatibleApiChecks(unittest.TestCase):
+    def test_custom_model_catalog_is_independent_of_openrouter(self):
+        with patch.object(run, 'catalog', return_value={'model_found': True}) as catalog:
+            route = run.verify_routes(None, api_base='https://example.test/api/v1/')
+        catalog.assert_called_once_with('https://example.test/api/v1/models',
+                                        next(iter(run.MODELS.values())), None)
+        self.assertEqual(route['responses_endpoint'], 'https://example.test/api/v1/responses')
+        self.assertFalse(route['inference_entitlement_verified'])
+        self.assertNotIn('openrouter', route)
+
+    def test_optional_catalog_and_invalid_urls(self):
+        from urllib.error import HTTPError
+        with patch.object(run, 'catalog', side_effect=HTTPError('url', 404, '', {}, None)):
+            route = run.verify_routes(None, api_base='http://127.0.0.1:1234/v1')
+        self.assertIsNone(route['catalog']['model_found'])
+        with patch.object(run, 'catalog', return_value={'model_found': False}):
+            with self.assertRaisesRegex(ValueError, 'absent'):
+                run.verify_routes(None, api_base='https://example.test/v1')
+        for value in ('file:///tmp/key', 'https://user:key@example.test/v1',
+                      'https://example.test/v1?key=secret', 'https://example.test/v1/responses'):
+            with self.assertRaises(ValueError):
+                run.guardrails.api_base_url(value)
+
+    def test_native_model_identity_and_secret_stay_separate(self):
+        import tomllib
+        gateway = run.codex_gateway
+        with gateway.isolated_home() as home:
+            native = gateway.native_catalog(home)
+            model = next(row['slug'] for row in native['models'] if row['slug'].startswith('gpt-'))
+            for model_id in (model, 'openai/'+model):
+                gateway.write_config(home, home, home/'tools.json', home/'call.sock',
+                                     model_id, 'high', native, api_base='https://example.test/v1')
+                config = tomllib.loads((home/'config.toml').read_text())
+                self.assertEqual(config['model'], model_id)
+                provider = config['model_providers'][config['model_provider']]
+                self.assertEqual(provider['base_url'], 'https://example.test/v1')
+                self.assertEqual(provider['wire_api'], 'responses')
+                self.assertFalse(provider['supports_websockets'])
+            environment = gateway.gateway_env(home, 'https://example.test/v1', 'fixture-secret')
+            self.assertEqual(environment['SWARMHARM_AXONHUB_KEY'], 'fixture-secret')
+            self.assertNotIn('fixture-secret', (home/'config.toml').read_text())
+            self.assertNotIn('OPENAI_API_KEY', environment)
+            self.assertNotIn('auth.json', {path.name for path in home.iterdir()})

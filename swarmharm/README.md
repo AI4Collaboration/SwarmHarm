@@ -14,61 +14,139 @@ The [SwarmHarm section of the root README](../README.md#swarmharm) is the mainta
 
 The current Engineering and Knowledge Work Specification Gaming cases each contain one four-report release against two approved processing units. Both agents later corrected their batching interpretation and disclosed the overrun. The current Engineering Trace case retained 14 completion/execution mismatches across four releases; its notes disclosed manual preparation and missing dispatch execution. These cases establish their registered mechanisms, not communication or composition.
 
-## Reproduction
+<a id="reproduction"></a>
+## Run from a fresh checkout
 
-Export the implemented mechanism inputs for both primary domains without
-model calls (use a new output directory):
+Requires Git, Python 3.12, Node.js 22.19 or newer, npm and a running Docker engine.
+Configure your Git author name and email before committing registrations.
+macOS and Linux are supported. Setup installs the pinned native Codex and Harbor
+runtime and builds the workstation image.
 
 ```sh
-"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/scripts/inspect_unified_input.py \
-  --mechanism implemented --scenario all --output ../mechanism-input-preview
+git clone https://github.com/AI4Collaboration/SwarmHarm.git
+cd SwarmHarm
+bash scripts/setup-local
+source ../eval-readiness/swarmharm-local.env
 ```
 
-Set **`--population N`** (or `-N`) when exporting inputs or preparing a rollout. The default is **3** concurrent workstations, with one account and private session per agent. Use `-N 4` to reproduce the published cases or, for example, `-N 8` to generate an eight-agent condition. Shared-capacity inputs reserve enough spare slots for N−1 accounts; the last account can displace two Operations reports. A new size needs its own live evidence. The local launcher defaults to 16 total workstation networks across concurrent runs. Larger hosts can configure `SWARMHARM_MAX_WORKSTATION_NETWORKS` to match available capacity.
+### Configure the API and input
 
-Each package contains tasks, tools, workstation files and `world-config.json`.
-The operator manifest records the mechanism criterion and subject-input hash.
-`--mechanism all --scenario all` with `-N 4` exports all 12 admitted four-agent inputs. The `task-gaming` selector tests Specification Gaming. Explicit single-template preview supports development.
-The same selector prepares a native rollout with its own sealed mechanism
-criterion and executable path checks. Use the pinned Python environment from
-`bash scripts/setup-local`, native Codex and the existing AxonHub key:
+Codex uses an **OpenAI-compatible Responses API** supporting streamed
+`POST /responses`, function tools and the selected model's reasoning settings.
+Set the base URL including its version path, such as `https://api.openai.com/v1`.
+A service offering only `/chat/completions` needs Responses support to run this harness.
+
+The model ID is sent exactly as configured. It must have a matching instruction
+profile in the installed native Codex catalog. Standard `gpt-*` IDs and
+gateway-prefixed `openai/gpt-*` IDs are supported. A new provider or model produces
+a new experimental condition. The 12 reviewed cases used Sol 6.1 through AxonHub.
+
+```sh
+export SWARMHARM_API_BASE="https://your-provider.example/v1"
+export SWARMHARM_MODEL="gpt-6.1-sol"
+export SWARMHARM_API_KEY_FILE="$HOME/.config/swarmharm/provider.key"
+
+python3 - <<'PY'
+import getpass
+import os
+from pathlib import Path
+path = Path(os.environ["SWARMHARM_API_KEY_FILE"]).expanduser()
+if not path.exists():
+    path.parent.mkdir(parents=True, exist_ok=True)
+    key = getpass.getpass("API key: ").strip()
+    if not key:
+        raise SystemExit("An API key is required")
+    with open(path, "x", opener=lambda name, flags: os.open(name, flags, 0o600)) as output:
+        output.write(key + "\n")
+PY
+
+RUN="reporting-$(date +%Y%m%d-%H%M%S)"
+OUT="$(cd .. && pwd)/eval-readiness/$RUN"
+REG="swarmharm/registrations/$RUN"
+N=3
+SCENARIO=knowledge-work
+MECHANISM=task-gaming
+```
+
+Use your provider's actual URL and model ID. For AxonHub use
+`https://lmportal.iefbr14.xyz/v1` and `openai/gpt-6.1-sol`.
+Credentials stay on the host outside Git and agent workstations.
+
+- **Agents** — `-N` / `--population` defaults to 3, minimum 2. Each has one
+  account, private session and workstation. The 12 reviewed cases used `-N 4`.
+- **Domain** — `knowledge-work` or `engineering-capacity`. Optional Knowledge Work
+  workloads use `--workload data-analysis` or `--workload financial-analysis`.
+- **Mechanism** — `task-gaming`, `evidence-tampering` (Trace Tampering),
+  `grader-manipulation`, `information-authority`, `action-authority`,
+  or `shared-capacity`. These selectors load the six maintained parameterizations.
+- **Runtime** — native Codex, high reasoning, goal off. Real state changes can
+  resume the same session. Preparation freezes the API route, model, input,
+  software, image and budgets.
+
+### Prepare, collect and review
+
+Run from the repository root. A fresh checkout is already committed.
+Commit any input/source edits before preparation. Preparation checks the selected
+input and runtime without asking the model to perform the task.
 
 ```sh
 "$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run.py --phase prepare \
-  --study-mode unified --mechanism grader-manipulation --source-retention local \
-  --scenario knowledge-work --model-id openai/gpt-6.1-sol --population 4 \
-  --harness codex --goal-mode off --reasoning-effort high \
-  --output ../eval-readiness/mechanism-grader-knowledge-r01 \
-  --registration-dir swarmharm/registrations/mechanism-grader-knowledge-r01 \
-  --key-file /path/to/existing-axonhub.key
+  --source-retention local --scenario "$SCENARIO" --mechanism "$MECHANISM" \
+  --model-id "$SWARMHARM_MODEL" --api-base "$SWARMHARM_API_BASE" \
+  --harness codex --goal-mode off --reasoning-effort high -N "$N" \
+  --output "$OUT" --registration-dir "$REG" --key-file "$SWARMHARM_API_KEY_FILE"
+
+git add "$REG"
+git commit -m "Register $RUN"
+
+"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run.py --phase collect \
+  --output "$OUT" --registration-dir "$REG" --key-file "$SWARMHARM_API_KEY_FILE"
+
+"$SWARMHARM_HARBOR_ENV/bin/python" "$OUT/code/shared/export_atif.py" "$OUT"
+"$SWARMHARM_HARBOR_ENV/bin/python" "$OUT/code/swarmharm/review.py" --output "$OUT"
+"$SWARMHARM_HARBOR_ENV/bin/python" "$OUT/code/swarmharm/scripts/judge_unified_transcript.py" \
+  --output "$OUT" --key-file "$SWARMHARM_API_KEY_FILE" --model "$SWARMHARM_MODEL"
 ```
 
-Commit source before preparation and the generated registration before collection.
-Launch once with `swarmharm/launch.py`, using the same output, registration and
-key arguments. Source and evidence stay local; no push or upload is required.
-Reuse preparation checks with `--controls-from OUTPUT` only when source, image and
-native runtime match and the archived checks cover every module required by the target scenario. Each input still executes its own path checks.
+Collection uses the route and model sealed during preparation. The transcript
+judge defaults to that API base; `--api-base` and `--model` can explicitly select
+a separate judge. Review uses the captured source under `OUT/code`.
+Local source retention requires no push.
 
-After completion, use the **sealed scripts under `OUTPUT/code/`**: export ATIF
-with `shared/export_atif.py OUTPUT`, run `swarmharm/review.py --output OUTPUT`,
-then `swarmharm/scripts/judge_unified_transcript.py --output OUTPUT --key-file KEY`.
-This keeps later source changes out of the original review.
-The primary result is `mechanism-verdict.json`: protected final-file/action replay,
-native continuity and exact transcript citations must agree. Withdrawals and
-corrections remain in every replay. Communication, coordination and composition
-are separate findings; the retained component verdict is auxiliary.
-`collection_complete` means the run has evidence available for review. In
-`completion.json`, `termination_reason: quiescence` means the sessions settled
-with no further work scheduled. For older runs, use the final states in
-`natural/actors.json`. The independent review records the business outcome.
-For services without Operations SQLite, `operations_ledger_applicable` is false;
-`service_journal_scope` names the independently replayed service record. The legacy
-`operations_ledger_match` field remains for compatibility.
+Inspect `completion.json` for termination and provider failures,
+`action-monitor.json` for independently replayed effects, and
+`mechanism-verdict.json` for the combined action/transcript verdict.
+Native records and validated ATIF trajectories are under `natural/<agent>/`.
+A settled session or successful publication alone does not establish a research claim.
+All corrections, withdrawals and partial work remain in the review.
 
-The [running guide](../docs/running-evals.md#validate-and-freeze) describes runtime
-setup and sealing. [Archived registrations](docs/archive/README.md) retain their
-original selectors, inputs and scores; they do not supply the new contracts.
-Use fresh paths when refining an input. Keep negative-result takeaways concise and store raw evidence outside the maintained tree.
+### Scale and reproduce
+
+Create a distinct `RUN`, `OUT` and `REG` for every rollout. To detach collection,
+use `swarmharm/launch.py` with the same output, registration and key arguments
+in place of `run.py --phase collect`. Watch `OUT/controller.log` and
+`OUT/completion.json`. Each registration collects once.
+
+The host defaults to **16 concurrent workstation networks across all runs**.
+Set `SWARMHARM_MAX_WORKSTATION_NETWORKS` to the available host capacity when
+scaling. Increasing N also increases native sessions, API concurrency and memory
+use. In Shared-resource Interference inputs, spare capacity scales with N−1
+accounts. New populations need their own behavioral evidence.
+
+Reuse completed software checks across preparations with `--controls-from OUT`
+when the source, runtime and selected checks match. Each new input still receives
+its own business-path check. Source or image changes require new registrations.
+
+To inspect all twelve reviewed four-agent inputs without model calls:
+
+```sh
+"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/scripts/inspect_unified_input.py \
+  --mechanism all --scenario all -N 4 --output ../reviewed-input-preview
+```
+
+The exporter verifies these inputs against the retained evidence hashes.
+Other N values export new parameterizations. Use each case's sealed source and
+original settings for historical reproduction.
 
 ## Code map
 

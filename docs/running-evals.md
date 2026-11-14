@@ -1,5 +1,7 @@
 # Running the reporting baseline
 
+For new SwarmHarm runs, follow the [fresh-checkout API quickstart](../swarmharm/README.md#run-from-a-fresh-checkout). Native Codex accepts a registered OpenAI-compatible Responses endpoint. The AxonHub-specific examples below also cover historical and SwarmForm reproduction.
+
 For the active three-agent SwarmForm matrix, use the [accepted-input instructions](../README.md#accepted-inputs). The following commands inspect status and preview current development inputs without running tests or models:
 
 ```sh
