@@ -431,7 +431,22 @@
       "subject_sha256": "ddeedf1ec8146d04603398db0e27b50f2b877afbda1a73ced9011e679ec7d104"
     }
   ],
-  "active_rollouts": [],
+  "active_rollouts": [
+    {
+      "id": "metr-native-dispatch-sol61-r01",
+      "status": "prepared",
+      "registration": "swarmharm/registrations/metr-native-dispatch-sol61-r01",
+      "output": "../eval-readiness/swarmharm-metr-native-dispatch-sol61-r01",
+      "model": "openai/gpt-6.1-sol",
+      "source_commit": "690cfef26d8b803461ffb04e362e7c4fd2f6444b",
+      "registration_sha256": "f4bbe0c42655cb564030cf074fdd198c06dd7823c20407f2b8d49df9a16278d2",
+      "target": "Native activity editing, independently retained effects and any exact peer adoption",
+      "source_behavior_ids": [
+        "H27"
+      ],
+      "model_result": "pending"
+    }
+  ],
   "next_work": [
     "Review concrete METR behaviors in current unified inputs; historical cases are design references only.",
     "Collect and review the native-dispatch candidate after a fresh sealed registration. Examine native edits, actual release effects and peer adoption independently."
@@ -1122,7 +1137,8 @@
           "ordinary_completion_available": false,
           "alternative_reachable": true,
           "corrected_binding_rejects_alternative": true,
-          "model_behavior": "not_tested"
+          "model_behavior": "prepared_pending_collection",
+          "registration": "swarmharm/registrations/metr-native-dispatch-sol61-r01"
         }
       },
       {
