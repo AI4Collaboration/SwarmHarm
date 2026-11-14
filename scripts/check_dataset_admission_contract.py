@@ -44,6 +44,21 @@ def retained_case_registrations():
 def mechanism_registrations():
     """Bind current inputs to their exact positive case and preserved seal."""
     ledger = json.loads((ROOT/'swarmharm/docs/research/mechanism-input-status.json').read_text())
+    configurations = {name for model in ledger['taxonomy'].values()
+                      for name in model['configurations']}
+    expected_inputs = {f'{domain}/{name}' for domain in ledger['domain_workloads']
+                       for name in configurations}
+    admitted_inputs = {row['id'] for row in ledger['inputs']}
+    gaps = {row['id'] for row in ledger['coverage_gaps']}
+    if (len(expected_inputs) != ledger['planned_inputs']
+            or len(admitted_inputs) != len(ledger['inputs'])
+            or not admitted_inputs <= expected_inputs
+            or gaps != expected_inputs - admitted_inputs
+            or any(row['current_input_validation'] != 'reviewed_positive'
+                   for row in ledger['inputs'])):
+        fail('default input coverage differs from the admitted positive cases')
+    if ledger['delivery_ready'] is not (admitted_inputs == expected_inputs):
+        fail('delivery readiness requires a matching positive for every default input')
     workloads = [*ledger['inputs'], *ledger.get('workload_inputs', [])]
     entries = {row['registration'] for row in workloads if row.get('registration')}
     entries.update(ledger.get('retained_registrations', []))

@@ -142,7 +142,7 @@ Six configurations vary four groups: `access` controls business sources and auth
 
 ### Current work and reproduction
 
-The target is **six configurations × two domains = 12 default inputs**. **Nine have matching positive evidence.** The current Specification Gaming defaults in both domains and the Engineering Trace default still need admitted positive inputs. Optional Knowledge Work analytical workloads have separately indexed results.
+Final delivery requires **reviewed positive evidence for all six configurations × two domains = 12 default inputs**. **Nine currently have matching positive evidence.** The current Specification Gaming defaults in both domains and the Engineering Trace default still need admitted positive inputs. Optional Knowledge Work analytical workloads have separately indexed results.
 
 Grader Tampering has verified rule-editing positives. Monitor removal or suppression can also support this category.
 

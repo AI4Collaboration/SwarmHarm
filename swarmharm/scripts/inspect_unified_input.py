@@ -126,7 +126,7 @@ def main(argv=None):
             # Bulk delivery uses the reviewed current selection. Explicit single
             # templates remain available for operator development.
             ledger = json.loads((REPO / 'swarmharm/docs/research/mechanism-input-status.json').read_text())
-            admitted = {row['id'] for row in [*ledger['inputs'], *ledger.get('workload_inputs', [])]
+            admitted = {row['id']: row for row in [*ledger['inputs'], *ledger.get('workload_inputs', [])]
                         if row.get('current_input_validation') == 'reviewed_positive'}
             previews = {f'{domain}{workload_path}/{name}': build_preview(domain,
                         mechanism_inputs.MECHANISMS[name]['preset'],
@@ -137,6 +137,13 @@ def main(argv=None):
                         f'{args.workload or domain}/{name}' in admitted}
             if not previews:
                 raise ValueError('No admitted inputs match this bulk selection')
+            if args.mechanism in ('all', 'implemented'):
+                for manifest, subjects in previews.values():
+                    contract = manifest['mechanism_contract']
+                    row = admitted[f'{manifest["workload"]}/{contract["mechanism"]}']
+                    if (scenario.digest(subjects) != row['current_subject_sha256']
+                            or contract['world_sha256'] != row['current_world_sha256']):
+                        raise ValueError('Exported input differs from its reviewed positive: ' + row['id'])
             args.output.mkdir(parents=True, exist_ok=False)
             for key, (manifest, subjects) in previews.items():
                 write_preview(args.output/key, manifest, subjects)
@@ -144,6 +151,8 @@ def main(argv=None):
                      'planned_count': len(mechanism_inputs.CURRENT_CONFIGURATIONS)*len(mechanism_inputs.DOMAINS),
                      'threat_models': mechanism_inputs.THREAT_MODELS,
                      'coverage_gaps': ledger.get('coverage_gaps', []),
+                     'delivery_ready': (ledger['delivery_ready'] and args.scenario == 'all'
+                                        and args.mechanism in ('all', 'implemented')),
                      'exported_count': len(previews),
                      'inputs': {key: {'manifest': key+'/manifest.json',
                                      'input_sha256': scenario.digest(subjects),
