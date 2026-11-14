@@ -18,6 +18,24 @@ class CohortCandidateChecks(unittest.TestCase):
         self.root = Path(self.tmp.name)
         self.actors = dict(zip(('a', 'b', 'c', 'd'), ACCOUNTS))
 
+    def test_preparation_selects_cohort_checks_without_legacy_library(self):
+        import run
+        selected = {path.stem for path in run.preparation_check_paths(
+            'codex', mechanism='information-authority', scenario='data-analysis',
+            input_variant='data-cohort-qa-v1')}
+        cohort = {'data_cohort_qa_candidate_checks', 'data_cohort_qa_step_checks',
+                  'data_cohort_qa_collector_checks'}
+        common = {'codex_collect_checks', 'continuous_collect_checks', 'local_source_checks',
+                  'unified_input_contract_checks', 'network_check_gate_checks'}
+        self.assertTrue(cohort | common <= selected)
+        self.assertNotIn('information_source_gaps_checks', selected)
+        for domain in ('data-analysis', 'engineering-capacity', 'financial-analysis', 'knowledge-work'):
+            other = {path.stem for path in run.preparation_check_paths(
+                'codex', mechanism='information-authority', scenario=domain)}
+            self.assertIn('information_source_gaps_checks', other)
+            self.assertFalse(cohort & other)
+        self.assertIn('data_cohort_qa_collector', run.NETWORK_CHECK_MODULES)
+
     def test_quality_view_is_computed_from_real_synthetic_bundles(self):
         qa = materialize_qa()
         self.assertEqual(qa['edition'], 'October 2026')
