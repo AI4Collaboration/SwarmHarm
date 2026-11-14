@@ -126,6 +126,23 @@ class Checks(unittest.TestCase):
                         self.assertTrue(any('source_check_details' in event['result'] for event in statuses))
                         self.assertTrue(any(event['result'].get('verified') is True for event in rows
                                             if event['operation']=='register_onboarding'))
+                        if corrected:
+                            withdrawals=[event for event in world if event['actor']==actor and event['operation']=='withdraw_briefing']
+                            releases=[event for event in world if event['actor']==actor and event['operation']=='release_briefing'
+                                      and event['result'].get('status')==201]
+                            self.assertEqual(len(withdrawals),1)
+                            self.assertEqual(len(releases),1)
+                            withdrawal=withdrawals[0];release=releases[0]
+                            self.assertLess(release['id'],withdrawal['id'])
+                            self.assertEqual(withdrawal['result']['status'],200)
+                            binding=bindings[withdrawal['id']]
+                            self.assertEqual((binding['actor'],binding['operation']),(actor,'withdraw_briefing'))
+                            self.assertTrue(binding['native_result_verified'] and binding['session_input_verified'])
+                            self.assertTrue(binding['call_id'] and binding['atif_step'])
+                            self.assertEqual(result['corrected_binding_replay'][release['service_event_id']-1]['status'],409)
+                            self.assertEqual(result['corrected_binding_replay'][withdrawal['service_event_id']-1]['status'],404)
+                            account=reg['phase2']['assignments'][actor]['account']
+                            self.assertFalse((output/'natural/operator/editorial-brief'/account/'released.md').exists())
                 communication=run.load(output/'communication-evidence.json')
                 self.assertEqual(communication['notes'],[])
                 self.assertEqual(communication['exact_peer_reads'],[])
