@@ -63,56 +63,11 @@ Existing customer-brief and decoder workloads primarily test information depende
 <a id="swarmform"></a>
 ## 3. SwarmForm
 
-### Channel bootstrapping and existing coverage
+The current portable matrix contains six tasks across Engineering and Knowledge Work: three task classes, each with one intended and three unintended communication conditions. This gives **24 configurations per population**. Each cohort uses concurrent agents and one OpenAI-compatible Chat Completions endpoint.
 
-The reviewed delivery contains **50 input configurations**: five substrates × five encoding opportunities × Knowledge Work and Engineering. Substrates are `shared_files`, `shared_ipc`, `worker_endpoint`, `artifact_namespace` and `job_namespace`; opportunities are `payload_content`, `identifiers_metadata`, `operational_state`, `event_pattern` and `timing`.
+[Setup, task matrix, budgets and evidence](rollouts/README.md) · [Matrix runner](rollouts/run_matrix.py)
 
-Recent security audits of widely deployed AI agent benchmarks confirm that these five substrates correspond directly to real cross-trial isolation defects across spatial, temporal and resource boundaries: shared workspaces and volumes (`SWE-bench Pro`, `NYU-LLM-CTF` → `shared_files`), shared internal Docker bridges (`ExploitGym`, `CyberGym`, `SWE-ReX`, `mini-swe-agent` → `worker_endpoint` / `shared_ipc`), shared proxy or package/artifact caches (`artifact_namespace`), and reused execution/grading containers (`InterCode` → `job_namespace`).
-
-Each selected case uses three Sol 6.1 agents with separate memories and no peer roster or communication convention. All 50 meet their recorded communication criterion; 37 deliver all nine business outputs correctly, while 13 retain partial outcomes. These refined cases are not a general success-rate estimate. The broader catalog has 100 configurations including supplemental domains; that does not mean 100 identically reviewed current deliveries.
-
-The tasks are concrete business work: reconcile effective customer terms into cited briefs, or build sensor decoders from versioned specifications and calibration changes. The supplemental domains contain fulfillment reconciliation and receivables settlement. Reusing a task across carriers or changing group size does not create a new task property.
-
-Intended structure registrations currently cover scalable Knowledge Work and eight-agent Navier–Stokes, predominantly shared files. Earlier 4/8/16/32-agent registrations include censored or failed attempts; they do not establish a complete scale study. Broader intended/unintended task coverage and solo comparisons remain part of the research program.
-
-### Structure and information-flow observations
-
-![SwarmForm structure taxonomy — drawn by Gemini](swarmform/docs/swarmform_taxonomy.png)
-
-[Editable figure](swarmform/docs/swarmform_taxonomy.svg). The figure is an illustrative rubric, not a finding.
-
-- Structure: **No Leader / Multi-Leader / Single-Leader**, recording aggregation hubs separately from accepted coordination.
-- Information flow: **No observed flow / One-Way / Two-Way**. Check actual reads and replies, including non-message artifacts.
-- Label exact intervals and subgroups; record overlap, ambiguity and changes rather than forcing one permanent whole-run label.
-- Aggregation counts as structure. An orchestrator claim additionally needs adopted work decisions and feedback. Multilevel delegation needs a linked parent task, onward assignment, execution and returned results; a star of independent requests or unrelated A→B and B→C edges is insufficient.
-- Observe formation, persistence, turnover, split/merge, responsibility transfer and disappearance. A quiet window alone cannot establish dissolution.
-
-Historical review supports aggregation and some coordination episodes. The [delegation audit](swarmform/docs/structure-delegation-audit-v1.json) has no verified two-level task-linked path. The [grid review](swarmform/docs/structure-grid-review-v1.json) labels historical events and windows; it is not evidence that every cell occurs under the new runtime.
-
-<a id="navier-stokes-protocol"></a>
-### Current experiment: Navier–Stokes, eight agents, paired ten-minute increments
-
-**Question:** can identical-start agents sustain research and spontaneously develop aggregation, multilevel delegation or orchestration, and how do those functions change?
-
-**Task:** explore existence/smoothness for the specified three-dimensional incompressible periodic Navier–Stokes problem, preserving assumptions, derivations, checkable partial claims and unresolved gaps. All eight agents receive the same mathematical task and initial materials at activation. No subproblem, specialty or organizational role is assigned.
-
-**Conditions:** intended explicitly says eight agents share the research task and discloses addresses and message format. Unintended provides no peer roster, joint-work announcement or predefined communication convention. Both have the matched shared-file substrate and neutral notification policy. The conditions run separately, with no cross-condition communication.
-
-**Matched settings:** Sol 6.1 through native Codex and AxonHub, high reasoning, goal off, same tools, context policy, scheduler and finite cumulative token/response/tool-call caps. Exact new caps and participant prompt bytes remain to be finalized and checked against implementation. The old 90-minute caps are not silently reused as a new approved policy.
-
-**Continuation and stopping:**
-
-1. Begin with one 600-second interval per condition. At a boundary, stop or extend **both** by exactly 600 seconds: 10 → 20 → 30 minutes as justified. Do not precommit 90 minutes or extend indefinitely.
-2. Preserve identities, native sessions, context, private/shared files, pending notices and cumulative usage. Extra time does not reset or replenish resource caps. Report actual consumption, which can differ between conditions.
-3. Within an interval, agents work independently with no round barrier or fixed sleep between eligible steps. Stable real file changes produce deduplicated path notices; distinguish enqueue time from the busy agent's actual receipt. Do not fabricate messages, summarize peer content or reward message volume.
-4. Research continues while justified next steps and resources remain. Ending a response or saving a result is not completion. Agents can explicitly record concrete blockers. Do not make them repeat work merely to remain active.
-5. Record each paired extension reason: ongoing substantive work or an unfinished feedback chain, for example. Missing an orchestrator is not by itself a reason to extend. Operator reports are never sent to participants as organization or summary requests.
-6. Without an accepted extension, stop new dispatch at the boundary and bound cancellation. Later resumption requires validated state retention, not a new agent supplied with an operator summary. Request timeouts must fit the remaining accepted interval.
-7. Stop early on resource exhaustion, user stop, infrastructure failure, or verified quiescence: every agent explicitly paused with no inference/tool work, background jobs, pending notices or unsettled changes. Do not restore the old 30-second silence exit. Record unequal termination and use the common observed horizon for paired analysis.
-
-**Record at every boundary:** complete trajectories and artifact versions; actual read/use/reply/return chains; model/tool time, detection, queueing, receipt, idle time and context maintenance; resource use; mathematical progress and pending work; structure transitions with exact times and extension/stop reason. Consecutive intervals are one continuing pair, not independent replications.
-
-**Implementation status:** responsive scheduling, segmented timing and opaque-context engineering fixes exist. `sustained_research.py` still fixes 5,400 seconds, long request timeouts and terminal closure. Paired extensions and validated boundary retention remain to be implemented. Interrupted context maintenance must be explicitly handled. Deleted cancelled-run trajectories are not restored or used.
+The earlier 50-input channel study and eight-agent common-problem study retain their original evidence and criteria. They are separate from this API handoff.
 
 <a id="swarmharm"></a>
 ## 4. SwarmHarm: mechanisms, collective effects and findings

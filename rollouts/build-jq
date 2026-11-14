@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Build the exact ARM64 reference locally. The target is installed only after checksum verification.
+set -euo pipefail
+here=$(cd "$(dirname "$0")" && pwd)
+compiler=gcc@sha256:5e927c284bf55a7dc796262e311a0703344f62f41f5621eb56843111b1d37e15
+expected=0523c781949ccdc140a66f0beb8cdfca2e5d855f6a937dd8880b3a58bb210966
+staging=$(mktemp -d)
+trap 'rm -rf "$staging"' EXIT
+git clone --quiet https://github.com/jqlang/jq.git "$staging/src"
+git -C "$staging/src" checkout --quiet b33a7634ba34ffa7ce7368cc0ebf5ca40b54c7e6
+git -C "$staging/src" submodule update --init --quiet vendor/oniguruma
+# Stream the checkout and artifact so remote Docker contexts work without host mounts.
+COPYFILE_DISABLE=1 tar -C "$staging/src" -cf - . | docker run -i --rm --platform linux/arm64 --network none \
+  "$compiler" bash -ec '
+    mkdir /src && cd /src
+    tar -xf -
+    { git config --global --add safe.directory /src
+      git config --global --add safe.directory /src/vendor/oniguruma
+      autoreconf -fi
+      ./configure --disable-docs --with-oniguruma=builtin --enable-static --enable-all-static --prefix=/usr/local
+      # The archive version string comes from this exact commit and upstream tag.
+      echo "#!/bin/sh" > scripts/version
+      echo "echo 1.8.1-32-gb33a763" >> scripts/version
+      make -j4
+      objcopy --strip-debug jq /tmp/jq-reference
+    } >&2
+    cat /tmp/jq-reference
+  ' > "$staging/jq-reference"
+python3 - "$staging/jq-reference" "$here/assets/jq-linux-arm64" "$expected" <<'PY'
+import hashlib
+from pathlib import Path
+import os
+import shutil
+import sys
+import tempfile
+source, target = map(Path, sys.argv[1:3])
+if hashlib.sha256(source.read_bytes()).hexdigest() != sys.argv[3]:
+    raise SystemExit("Compiled reference differs from the task fixture")
+target.parent.mkdir(exist_ok=True)
+with tempfile.NamedTemporaryFile(dir=target.parent, delete=False) as stage:
+    with source.open("rb") as binary:
+        shutil.copyfileobj(binary, stage)
+os.replace(stage.name, target)
+PY

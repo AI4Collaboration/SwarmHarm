@@ -1,0 +1,160 @@
+"""Plan or execute matched SwarmForm cohorts against one Chat Completions deployment."""
+
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import sys
+
+from swarmform.__main__ import CHANNELS, ROOT, source_digest
+from swarmform.formation_inputs import TASK_MODULES
+
+
+def cases(args):
+    for population in args.populations:
+        for rep in range(1, args.repeats + 1):
+            for task in args.tasks:
+                # Cycle the first condition across replicates.
+                offset = (rep - 1) % len(CHANNELS)
+                for channel in CHANNELS[offset:] + CHANNELS[:offset]:
+                    yield dict(
+                        task=task,
+                        channel=channel,
+                        population=population,
+                        names=args.names,
+                        seconds=args.seconds,
+                        replicate=rep,
+                        model=args.model,
+                        revision=args.revision,
+                        base_url=args.base_url,
+                    )
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--model", required=True, help="Exact served model ID")
+    parser.add_argument(
+        "--revision", help="Immutable checkpoint or deployment revision"
+    )
+    parser.add_argument(
+        "--base-url",
+        default=os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1"),
+    )
+    parser.add_argument("--populations", nargs="+", type=int, default=[3])
+    parser.add_argument(
+        "--tasks", nargs="+", choices=TASK_MODULES, default=list(TASK_MODULES)
+    )
+    parser.add_argument(
+        "--names", choices=["numbered", "physicists"], default="numbered"
+    )
+    parser.add_argument("--seconds", type=int, default=600)
+    parser.add_argument("--repeats", type=int, default=1)
+    parser.add_argument(
+        "--execute", action="store_true", help="Run planned rows sequentially"
+    )
+    parser.add_argument(
+        "--out", type=Path, help="Parent directory outside the repository"
+    )
+    args = parser.parse_args()
+    if not (
+        1 <= args.seconds <= 600 and args.repeats >= 1 and min(args.populations) >= 2
+    ):
+        parser.error(
+            "Use N >= 2, repeats >= 1 and a participant limit of 1 to 600 seconds"
+        )
+    if len(set(args.tasks)) != len(args.tasks) or len(set(args.populations)) != len(
+        args.populations
+    ):
+        parser.error("Task names and populations must be unique")
+    if args.names == "physicists" and args.populations != [3]:
+        parser.error("The counterbalanced surname treatment requires N=3")
+    if args.execute and (
+        args.out is None or args.out.resolve().is_relative_to(ROOT.parent)
+    ):
+        parser.error("--execute requires --out outside the repository")
+    from swarmform.__main__ import validate_endpoint
+
+    validate_endpoint(args.base_url)
+    failures = 0
+    source = source_digest()
+    from workstation import IMAGE
+
+    if args.execute and "jq-reconstruction" in args.tasks:
+        from swarmform.program_reference import asset
+        from swarmform.programbench_pilot import specification
+
+        reference = ROOT / "assets/jq-linux-arm64"
+        if not reference.is_file():
+            parser.error(
+                "Run bash rollouts/build-jq once before collecting jq-reconstruction"
+            )
+        asset(reference, expected_sha256=specification()["reference_binary_sha256"])
+        architecture = subprocess.check_output(
+            ["docker", "image", "inspect", IMAGE, "--format", "{{.Architecture}}"],
+            text=True,
+        ).strip()
+        if architecture != "arm64":
+            parser.error(
+                "Use the ARM64 workstation image from the README for jq-reconstruction"
+            )
+
+    for row in cases(args):
+        row.update(source_sha256=source, image=IMAGE)
+        encoded = json.dumps(row, sort_keys=True)
+        if not args.execute:
+            print(encoded)
+            continue
+        cohort_id = hashlib.sha256(encoded.encode()).hexdigest()[:16]
+        slug = re.sub(r"[^\w.-]+", "-", args.model).strip(".-") or "model"
+        directory = (
+            args.out.resolve()
+            / slug
+            / f"n{row['population']}"
+            / (f"{row['task']}-{row['channel']}-r{row['replicate']}-{cohort_id}")
+        )
+        summary = directory / "summary.json"
+        if directory.exists():
+            status = json.loads(summary.read_text()) if summary.is_file() else {}
+            if (
+                status.get("complete")
+                and (directory / "evidence-manifest.json").is_file()
+            ):
+                print("Already completed", directory, flush=True)
+            else:
+                print("Preserved incomplete attempt", directory, file=sys.stderr)
+                failures += 1
+            continue
+        command = [
+            sys.executable,
+            "-m",
+            "swarmform",
+            "run",
+            "--task",
+            row["task"],
+            "--channel",
+            row["channel"],
+            "--population",
+            str(row["population"]),
+            "--names",
+            args.names,
+            "--seconds",
+            str(args.seconds),
+            "--model",
+            args.model,
+            "--base-url",
+            args.base_url,
+            "--out",
+            str(directory),
+        ]
+        if args.revision:
+            command.extend(["--revision", args.revision])
+        print("Starting", directory, flush=True)
+        failures += int(subprocess.run(command, cwd=ROOT).returncode != 0)
+    return int(failures != 0)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
