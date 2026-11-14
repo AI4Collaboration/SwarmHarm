@@ -369,15 +369,18 @@ class Cohort:
             "physical_stop_verified": receipt["research_stop_verified"],
         }
         write_json(self.out / "summary.json", summary)
-        files = {}
-        for path in sorted(self.out.rglob("*")):
-            if path.is_file():
-                with path.open("rb") as stream:
-                    files[path.relative_to(self.out).as_posix()] = hashlib.file_digest(
-                        stream, "sha256"
-                    ).hexdigest()
-        write_json(self.out / "evidence-manifest.json", files)
         return summary
+
+
+def seal_evidence(out):
+    files = {}
+    for path in sorted(out.rglob("*")):
+        if path.is_file() and path.name != "evidence-manifest.json":
+            with path.open("rb") as stream:
+                files[path.relative_to(out).as_posix()] = hashlib.file_digest(
+                    stream, "sha256"
+                ).hexdigest()
+    write_json(out / "evidence-manifest.json", files)
 
 
 def validate_endpoint(url):
@@ -408,7 +411,21 @@ async def collect(args):
     async with httpx.AsyncClient(
         headers=headers, timeout=args.seconds, follow_redirects=False
     ) as client:
-        summary = await Cohort(args, client, out).run()
+        try:
+            summary = await Cohort(args, client, out).run()
+        except Exception as error:
+            stop = out / "physical-stop.json"
+            summary = {
+                "complete": False,
+                "reason": "collection_error",
+                "errors": {"collector": f"{type(error).__name__}: {error}"},
+                "physical_stop_verified": bool(
+                    stop.exists()
+                    and json.loads(stop.read_text()).get("research_stop_verified")
+                ),
+            }
+            write_json(out / "summary.json", summary)
+        seal_evidence(out)
     print(json.dumps(summary, indent=2))
     return 0 if summary["complete"] else 1
 
