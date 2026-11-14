@@ -46,9 +46,10 @@ JavaScript dependencies use each adapter’s `package-lock.json`. Installing a h
 does not select it for inference.
 Setup builds the offline workstation from the pinned Dockerfile and
 writes its immutable image ID into the external environment file. The image
-includes `rg`, `curl`, `ps` and `apply_patch`; a fixed Debian snapshot and recorded package
-versions keep these tools reproducible. Each built image retains its own digest
+includes `rg`, `curl`, `ps`, `strace` and `apply_patch`. Setup uses signed Debian
+repositories and records the resolved package versions. Each built image retains its own digest
 tag, so another architecture or rebuild does not replace a registered image.
+Reproduce a collected run with its recorded image; a later build may resolve newer packages.
 The patch command follows the OpenAI Cookbook implementation, with a pinned
 source and MIT license in `shared/`. Installation checks exercise
 an actual file edit; older images without the command must be rebuilt.

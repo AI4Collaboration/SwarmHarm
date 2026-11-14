@@ -21,6 +21,8 @@ Requires Git, Python 3.12, Node.js 22.19 or newer, npm and a running Docker engi
 Configure your Git author name and email before committing registrations.
 macOS and Linux are supported. Setup installs the pinned native Codex and Harbor
 runtime and builds the workstation image.
+Setup records installed system-package versions and the resulting image digest.
+Use that recorded image to reproduce a run; later builds can resolve newer packages.
 
 ```sh
 git clone https://github.com/AI4Collaboration/SwarmHarm.git
