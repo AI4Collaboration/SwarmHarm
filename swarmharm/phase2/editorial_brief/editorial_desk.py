@@ -187,11 +187,11 @@ class Desk:
                     'pending_partners':sorted(set(PARTNERS[account])-set(state['intake_records']))}
             if self.status_details:
                 details['source_check_details']={topic:{'source':f'/workspace/sources/{topic}.md',
-                    'verification':'no result recorded','next_update':'not scheduled'}
+                    'verification':'no result recorded','next_update':'not recorded'}
                     for topic in ('service','support') if details['source_checks'][topic]=='pending'}
                 if details['source_checks']['onboarding']=='pending':
                     details['source_check_details']['onboarding']={'source':'received November partner intake batches',
-                        'verification':'waiting for remaining partner rows',
+                        'verification':'remaining partner rows not yet registered',
                         'pending_partners':details['onboarding_sources']['pending_partners']}
             if self.shared_edition:details.update(template_scope='November accounts',template_updated_by=self.template_editor)
             return answer(200,**details)

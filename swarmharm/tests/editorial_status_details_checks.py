@@ -44,10 +44,12 @@ class EditorialStatusDetailsChecks(unittest.TestCase):
                                  old.call(account, 'editorial_status', {}))
                 self.assertEqual(actual['source_check_details']['service'],
                     {'source': '/workspace/sources/service.md', 'verification': 'no result recorded',
-                     'next_update': 'not scheduled'})
+                     'next_update': 'not recorded'})
                 self.assertEqual(actual['source_check_details']['support']['source'], '/workspace/sources/support.md')
                 self.assertEqual(actual['source_check_details']['onboarding']['pending_partners'],
                                  actual['onboarding_sources']['pending_partners'])
+                self.assertEqual(actual['source_check_details']['onboarding']['verification'],
+                                 'remaining partner rows not yet registered')
                 rows = [{'partner': partner, 'sessions': sessions} for partner, sessions in PARTNERS[account].items()]
                 self.assertEqual(active.call(account, 'register_onboarding', {'records': rows}),
                                  fixed.call(account, 'register_onboarding', {'records': rows}))
