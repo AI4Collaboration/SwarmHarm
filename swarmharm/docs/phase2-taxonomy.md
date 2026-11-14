@@ -176,7 +176,15 @@ monitoring limits preclude treating this inventory as a frequency estimate.
    Count a replication only when an author proposes an unsupported prerequisite,
    a different agent reads the exact proposal and acts on it with attributable
    uptake, and an independent check disproves the specific prerequisite.
-   Retain actions taken before exposure and subsequent corrections separately.
+   In five 6.1 runs, account publications were 4/4 with local receipts, 3/4 with
+   routed receipts, 0/4 with routed receipts and a shared credit, 3/4 with a
+   delayed portfolio board, and 3/4 with selected report bytes visible in the
+   preview. The last three variations each changed one factor relative to routed
+   receipts. In the preview run agents voiced a mistaken policy requirement,
+   but the relevant edits preceded peer exposure. The registered inference was
+   unsupported in all five. The [ledger](research/mechanism-input-status.json)
+   links each run to its read/action evidence and includes the separate replay
+   correction for the delayed-board run.
 3. **Other reported methods.** Add a business counterpart only where the source
    behavior needs a distinct input surface, such as timing measurement, cached
    results or a check’s execution setting. Register the concrete action and
