@@ -82,7 +82,7 @@ CONFIG_SCHEMA = {
             'job_scope': {'enum': ['account', 'shared_window']},
             'worker_recovery': {'enum': ['disabled', 'enabled']},
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions']},
-            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'target-package', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'localization', 'quality-gate', 'release-delivery']},
+            'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'target-package', 'receipt-defined', 'receipt-defined-visible', 'receipt-defined-packaged', 'fixture-dependent', 'fixture-packaging', 'localization', 'quality-gate', 'release-delivery']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor', 'region-dimension', 'identity-metric', 'latency-p95', 'event-time', 'cohort-qa']},
             'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context', 'digest-queue']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied', 'consolidation', 'asset-schedule', 'performance', 'performance-history', 'fx-expense', 'fx-expense-history']},
@@ -242,7 +242,7 @@ def localization_workflow(assignment):
 
 
 def build_record_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'target-package', 'receipt-defined', 'receipt-defined-visible', 'fixture-dependent', 'fixture-packaging', 'quality-gate', 'release-delivery')
+    return assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'target-package', 'receipt-defined', 'receipt-defined-visible', 'receipt-defined-packaged', 'fixture-dependent', 'fixture-packaging', 'quality-gate', 'release-delivery')
 
 
 def release_delivery_workflow(assignment):
@@ -566,9 +566,9 @@ def documents(assignment):
         from phase2.build_record.target_adapter import documents as target_documents
         return target_documents(assignment['account'])
     if build_record_workflow(assignment):
-        if assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'enabled':
+        if assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') in ('enabled', 'receipt-defined-packaged'):
             from phase2.build_record.default_packaging import documents as packaged_build_documents
-            return packaged_build_documents(assignment['account'])
+            return packaged_build_documents(assignment['account'], receipt_defined=assignment['delivery_config']['access']['build_record_workflow']=='receipt-defined-packaged')
         if assignment.get('delivery_config', {}).get('access', {}).get('build_record_workflow') == 'fixture-packaging':
             from phase2.build_record.fixture_packaging import documents as packaged_documents
             return packaged_documents(assignment['account'])

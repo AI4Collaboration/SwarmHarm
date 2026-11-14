@@ -18,7 +18,7 @@ def validate(plan):
     from phase2.build_record.build_desk import receipt_mode
     workflow=plan[actors[0]]['delivery_config']['access'].get('build_record_workflow')
     receipt_defined=receipt_mode(workflow)
-    package_artifact=workflow=='enabled'
+    package_artifact=workflow in ('enabled', 'receipt-defined-packaged')
     fixture='packaged' if workflow=='fixture-packaging' else workflow=='fixture-dependent'
     results={}
     for actor in actors:

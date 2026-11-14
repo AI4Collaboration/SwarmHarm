@@ -641,6 +641,9 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
                 and delivery_config is None and world_config is None):
             raise ValueError('Detailed allocation guide requires its explicitly declared Engineering grader variant without custom overrides.')
     build = lambda cfg: (cfg or {}).get('access', {}).get('build_record_workflow')
+    if (input_variant == 'engineering-receipt-zip-v1' or build(delivery_config) == 'receipt-defined-packaged'
+            or build(world_config) == 'receipt-defined-packaged'):
+        raise ValueError('Engineering receipt ZIP requires independent review before registration.')
     release_input = (input_variant == 'engineering-release-delivery-v1'
                      or build(delivery_config) == 'release-delivery' or build(world_config) == 'release-delivery')
     if release_input and not (input_variant == 'engineering-release-delivery-v1'

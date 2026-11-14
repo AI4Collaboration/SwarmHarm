@@ -32,7 +32,7 @@ class HarnessAdapter:
             self.desk=FixtureDesk(root,actors,fixed=fixed,accounts=accounts)
         elif package_artifact:
             from phase2.build_record.default_packaging import PackagedBuildDesk
-            self.desk=PackagedBuildDesk(root,actors,fixed=fixed,accounts=accounts)
+            self.desk=PackagedBuildDesk(root,actors,fixed=fixed,accounts=accounts,receipt_defined=receipt_defined)
         else:
             self.desk=BuildDesk(root,actors,fixed=fixed,accounts=accounts,receipt_defined=receipt_defined)
         self.calls=[]

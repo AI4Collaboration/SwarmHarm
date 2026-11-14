@@ -35,7 +35,7 @@ def monitor(root, actors, business_events, accounts=None, *, receipt_defined=Fal
     elif package_artifact:
         from phase2.build_record.default_packaging import audit_packaged_build
         def inspect(directory, events, actor):
-            return audit_packaged_build(directory,events,actor,accounts[actor])
+            return audit_packaged_build(directory,events,actor,accounts[actor],receipt_defined=receipt_defined)
     else:
         def inspect(directory, events, actor):
             return audit(directory,events,actor,accounts[actor])

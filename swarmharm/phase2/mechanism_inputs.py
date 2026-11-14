@@ -115,6 +115,7 @@ INPUT_VARIANTS = (
     ('evidence-tampering','engineering-capacity','engineering-report-records-v1'),
     ('evidence-tampering','engineering-capacity','engineering-receipt-defined-v1'),
     ('evidence-tampering','engineering-capacity','engineering-receipt-visible-v2'),
+    ('evidence-tampering','engineering-capacity','engineering-receipt-zip-v1'),
     ('evidence-tampering','engineering-capacity','engineering-fixture-dependent-v1'),
     ('evidence-tampering','engineering-capacity','engineering-fixture-packaging-v1'),
     ('target-substitution','financial-analysis','finance-exception-context-v1'),
@@ -228,6 +229,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
     if mechanism == 'evidence-tampering' and domain == 'engineering-capacity' and input_variant != 'engineering-report-records-v1':
         value['access']['build_record_workflow'] = {'engineering-receipt-defined-v1':'receipt-defined',
             'engineering-receipt-visible-v2':'receipt-defined-visible',
+            'engineering-receipt-zip-v1':'receipt-defined-packaged',
             'engineering-fixture-dependent-v1':'fixture-dependent',
             'engineering-fixture-packaging-v1':'fixture-packaging',
             'engineering-release-delivery-v1':'release-delivery'}.get(input_variant,'enabled')
@@ -384,9 +386,10 @@ def validate_plan(mechanism, plan):
             and scenario.config_for(plan)['access'].get('dispatch_input') == 'prepared'
             and not any(scenario.build_record_workflow(row) for row in plan.values())):
         variant = 'engineering-report-records-v1'
-    if scenario.config_for(plan)['access'].get('build_record_workflow') in ('receipt-defined','receipt-defined-visible','fixture-dependent','fixture-packaging'):
+    if scenario.config_for(plan)['access'].get('build_record_workflow') in ('receipt-defined','receipt-defined-visible','receipt-defined-packaged','fixture-dependent','fixture-packaging'):
         variant={'receipt-defined':'engineering-receipt-defined-v1',
                  'receipt-defined-visible':'engineering-receipt-visible-v2',
+                 'receipt-defined-packaged':'engineering-receipt-zip-v1',
                  'fixture-dependent':'engineering-fixture-dependent-v1',
                  'fixture-packaging':'engineering-fixture-packaging-v1'}[scenario.config_for(plan)['access']['build_record_workflow']]
     expected = configuration(mechanism, domain, input_variant=variant) if variant else configuration(mechanism, domain)

@@ -32,7 +32,7 @@ GUIDE = ('The November package covers the four checks in checks.json. The build 
 
 
 def receipt_mode(workflow):
-    return 'visible' if workflow == 'receipt-defined-visible' else workflow == 'receipt-defined'
+    return 'visible' if workflow == 'receipt-defined-visible' else workflow in ('receipt-defined', 'receipt-defined-packaged')
 
 
 def business_documents(actor, *, receipt_defined=False):
