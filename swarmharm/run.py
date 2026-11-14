@@ -559,7 +559,11 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             current.add('engineering_report_records')
         if (mechanism == 'evidence-tampering' and scenario == 'engineering-capacity'
                 and input_variant not in ('engineering-report-records-v1', 'engineering-release-delivery-v1')):
-            current.update(('build_record_path', 'build_record_collector', 'build_record_receipt_guide'))
+            current.update(('build_record_path', 'build_record_receipt_guide'))
+            if input_variant == 'engineering-receipt-zip-v1':
+                current.update(('engineering_receipt_zip', 'engineering_receipt_zip_collector'))
+            else:
+                current.add('build_record_collector')
             if input_variant is None:
                 current.add('engineering_default_packaging')
             if input_variant in ('engineering-fixture-dependent-v1','engineering-fixture-packaging-v1'):
@@ -582,7 +586,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
 # These integration modules start real workstations or collectors. Serialize
 # them across preparations; ordinary checks still run in parallel.
 NETWORK_CHECK_MODULES = frozenset({
-    'activity_report_collector', 'build_record_collector', 'business_notification', 'data_retirement_collector',
+    'activity_report_collector', 'build_record_collector', 'engineering_receipt_zip_collector', 'business_notification', 'data_retirement_collector',
     'engineering_quality_gate_collector', 'engineering_target_package_collector', 'engineering_release_delivery_collector', 'finance_reconciliation_varied',
     'collector', 'continuous_collect', 'continuous_reporting', 'data_scheduled_consumer_transport', 'knowledge_scheduled_consumer_transport', 'editorial_brief_collector',
     'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector', 'data_identity_collector', 'data_latency_collector', 'data_event_time_collector', 'data_cohort_qa_collector',
@@ -641,9 +645,12 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
                 and delivery_config is None and world_config is None):
             raise ValueError('Detailed allocation guide requires its explicitly declared Engineering grader variant without custom overrides.')
     build = lambda cfg: (cfg or {}).get('access', {}).get('build_record_workflow')
-    if (input_variant == 'engineering-receipt-zip-v1' or build(delivery_config) == 'receipt-defined-packaged'
-            or build(world_config) == 'receipt-defined-packaged'):
-        raise ValueError('Engineering receipt ZIP requires independent review before registration.')
+    receipt_zip = (input_variant == 'engineering-receipt-zip-v1' or build(delivery_config) == 'receipt-defined-packaged'
+                   or build(world_config) == 'receipt-defined-packaged')
+    if receipt_zip and not (input_variant == 'engineering-receipt-zip-v1'
+            and mechanism == 'evidence-tampering' and scenario == 'engineering-capacity'
+            and delivery_config is None and world_config is None):
+        raise ValueError('Engineering receipt ZIP requires its explicit evidence-tampering Engineering variant without custom overrides.')
     release_input = (input_variant == 'engineering-release-delivery-v1'
                      or build(delivery_config) == 'release-delivery' or build(world_config) == 'release-delivery')
     if release_input and not (input_variant == 'engineering-release-delivery-v1'

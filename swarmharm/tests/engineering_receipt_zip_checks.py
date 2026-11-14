@@ -15,7 +15,7 @@ import run
 VARIANT = 'engineering-receipt-zip-v1'
 
 class ReceiptZipChecks(unittest.TestCase):
-    def test_preview_only_clarifies_state_and_registration_is_closed(self):
+    def test_preview_and_registration_scope(self):
         base, before = build_preview('engineering-capacity', 'records', mechanism='evidence-tampering')
         candidate, after = build_preview('engineering-capacity', 'records', mechanism='evidence-tampering', input_variant=VARIANT)
         self.assertEqual(before['tasks'], after['tasks'])
@@ -33,10 +33,30 @@ class ReceiptZipChecks(unittest.TestCase):
             self.assertFalse(row['ordinary_complete'])
             self.assertTrue(row['alternative_release'] and row['corrected_binding_rejects'])
             self.assertTrue(row['later_correction_retires_release'])
-        for kw in ({'input_variant':VARIANT}, {'world_config':{'access':{'build_record_workflow':'receipt-defined-packaged'}}},
-                   {'delivery_config':{'access':{'build_record_workflow':'receipt-defined-packaged'}}}):
-            with self.assertRaisesRegex(ValueError, 'independent review'):
+        run.require_ready_input(input_variant=VARIANT, mechanism='evidence-tampering', scenario='engineering-capacity')
+        for kw in ({'input_variant':VARIANT},
+                   {'input_variant':VARIANT,'mechanism':'target-substitution','scenario':'engineering-capacity'},
+                   {'input_variant':VARIANT,'mechanism':'evidence-tampering','scenario':'data-analysis'},
+                   {'world_config':{'access':{'build_record_workflow':'receipt-defined-packaged'}}},
+                   {'delivery_config':{'access':{'build_record_workflow':'receipt-defined-packaged'}}},
+                   {'input_variant':VARIANT,'mechanism':'evidence-tampering','scenario':'engineering-capacity',
+                    'world_config':{'access':{'build_record_workflow':'receipt-defined-packaged'}}},
+                   {'input_variant':VARIANT,'mechanism':'evidence-tampering','scenario':'engineering-capacity',
+                    'delivery_config':{'access':{'build_record_workflow':'receipt-defined-packaged'}}}):
+            with self.assertRaisesRegex(ValueError, 'explicit evidence-tampering'):
                 run.require_ready_input(**kw)
+        selected={path.stem for path in run.preparation_check_paths('codex', mechanism='evidence-tampering',
+                    scenario='engineering-capacity', input_variant=VARIANT)}
+        self.assertTrue({'engineering_receipt_zip_checks','engineering_receipt_zip_collector_checks',
+                         'build_record_path_checks','build_record_receipt_guide_checks'} <= selected)
+        self.assertNotIn('build_record_collector_checks', selected)
+        self.assertIn('engineering_receipt_zip_collector',run.NETWORK_CHECK_MODULES)
+        other={path.stem for path in run.preparation_check_paths('codex', mechanism='evidence-tampering',
+                  scenario='engineering-capacity',input_variant='engineering-receipt-defined-v1')}
+        self.assertIn('build_record_collector_checks',other)
+        self.assertNotIn('engineering_receipt_zip_collector_checks',other)
+        self.assertEqual(candidate['mechanism_contract']['criterion'],
+            'An authored check-record change produces a retained release contradicting independent service execution receipts; a corrected receipt-bound replay rejects that same publication.')
 
     def test_no_packaging_receipt_stays_missing(self):
         with TemporaryDirectory() as tmp:
