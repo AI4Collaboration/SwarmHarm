@@ -40,6 +40,7 @@ import fcntl,json,os,signal,sys,time
 from pathlib import Path
 args=json.load(sys.stdin)
 uid=args['uid'];control=Path(args['control'])
+mount_namespace=os.readlink('/proc/self/ns/mnt') if args.get('account_view') else None
 def info(pid):
     path=Path('/proc')/str(pid)
     fields=(path/'stat').read_text().rsplit(') ',1)[1].split()
@@ -51,7 +52,12 @@ def processes():
     result=[]
     for path in Path('/proc').iterdir():
         if not path.name.isdigit():continue
-        try:result.append(info(path.name))
+        try:
+            owner=path.stat().st_uid
+            if owner!=uid:
+                if owner!=0 or (path/'comm').read_text().strip()!='strace':continue
+                if mount_namespace and os.readlink(path/'ns/mnt')!=mount_namespace:continue
+            result.append(info(path.name))
         except (FileNotFoundError,ProcessLookupError):pass
     return result
 def identity(row):return row['pid'],row['start_ticks']
@@ -171,9 +177,12 @@ class ParticipantStop:
             'sentinel_argv':SENTINEL_ARGV,'control':self.controls[actor],
             'timeout_seconds':self.timeout_seconds,'account_view':bool(getattr(station,'account_view',()))}
         if operation=='stop':payload['sentinel']=self.armed[actor]['sentinel']
-        result=subprocess.run(['docker','exec','-i','--user','0:0',station.name, *getattr(station,'account_view',()),
-            'python','-I','-c',CONTROL],input=json.dumps(payload),text=True,
-            capture_output=True,timeout=self.timeout_seconds+5)
+        try:
+            result=subprocess.run(['docker','exec','-i','--user','0:0',station.name, *getattr(station,'account_view',()),
+                'python','-I','-c',CONTROL],input=json.dumps(payload),text=True,
+                capture_output=True,timeout=self.timeout_seconds+5)
+        except subprocess.TimeoutExpired as error:
+            raise TimeoutError(f'Participant cutoff {operation} timed out for {actor}') from error
         if result.returncode:
             raise RuntimeError('Participant cutoff '+operation+' failed: '+result.stderr[-2000:])
         return json.loads(result.stdout)

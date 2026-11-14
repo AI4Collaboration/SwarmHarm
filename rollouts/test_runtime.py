@@ -290,7 +290,7 @@ class LifecycleTests(unittest.TestCase):
             asyncio.run(check(folder))
 
     def test_all_requested_populations_have_matched_inputs(self):
-        for population in (4, 8, 16, 32):
+        for population in (4, 8, 16, 32, 64, 128):
             for task in inputs.TASK_MODULES:
                 with self.subTest(population=population, task=task):
                     cases = [inputs.build_intended(task, population, names="numbered")]

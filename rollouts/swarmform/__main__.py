@@ -3,6 +3,7 @@
 import argparse
 import asyncio
 import base64
+from concurrent.futures import ThreadPoolExecutor
 import gzip
 import hashlib
 import json
@@ -523,6 +524,11 @@ async def collect(args):
     import httpx
 
     validate_endpoint(args.base_url)
+    # A blocking tool can occupy a worker for its whole command duration.
+    # Keep capacity for every participant plus shutdown and observation work.
+    asyncio.get_running_loop().set_default_executor(
+        ThreadPoolExecutor(max_workers=max(32, args.population + 4))
+    )
     key = os.environ.get("OPENAI_API_KEY")
     headers = {"Authorization": "Bearer " + key} if key else {}
     out = args.out.resolve()
@@ -530,7 +536,12 @@ async def collect(args):
         raise ValueError("Choose an output directory outside the repository")
     out.mkdir(parents=True, exist_ok=False)
     async with httpx.AsyncClient(
-        headers=headers, timeout=args.seconds, follow_redirects=False
+        headers=headers,
+        timeout=args.seconds,
+        follow_redirects=False,
+        limits=httpx.Limits(
+            max_connections=args.population, max_keepalive_connections=args.population
+        ),
     ) as client:
         try:
             summary = await Cohort(args, client, out).run()

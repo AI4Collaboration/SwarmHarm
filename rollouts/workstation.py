@@ -397,13 +397,18 @@ class DockerWorkstation:
 
     def capture_frozen(self, phase):
         code = Path(__file__).with_name('workstation_observer.py').read_text()
-        values = json.loads(subprocess.check_output(
-            ['docker', 'exec', *(['--user', '0:0'] if self.trace_commands else []),
-             self.name, *getattr(self, 'account_view', ()), 'python', '-I', '-c', code, 'capture', *self.observation_roots,
-             *(['--settle-seconds='+str(self.observation_settle_seconds)] if self.observation_settle_seconds!=2 else []),
-             *(['--account-view'] if getattr(self, 'account_view', ()) else []),
-             *(['--observe-traced', '--subject-uid='+str(self.business_uid)] if self.trace_commands else [])],
-            timeout=30))
+        argv = ['docker', 'exec', *(['--user', '0:0'] if self.trace_commands else []),
+                self.name, *getattr(self, 'account_view', ()), 'python', '-I', '-c', code, 'capture', *self.observation_roots,
+                *(['--settle-seconds='+str(self.observation_settle_seconds)] if self.observation_settle_seconds!=2 else []),
+                *(['--account-view'] if getattr(self, 'account_view', ()) else []),
+                *(['--observe-traced', '--subject-uid='+str(self.business_uid)] if self.trace_commands else [])]
+        try:
+            raw = subprocess.check_output(argv, stderr=subprocess.PIPE, timeout=30)
+        except subprocess.CalledProcessError as error:
+            raise RuntimeError('Workstation observation failed: ' + error.stderr.decode(errors='replace')[-4000:]) from error
+        except subprocess.TimeoutExpired as error:
+            raise TimeoutError('Workstation observation exceeded 30 seconds') from error
+        values = json.loads(raw)
         try:
             if self.observation_sink is not None:
                 values['observation_reference'] = self.observation_sink(phase, values)
