@@ -919,7 +919,12 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
         root = Path("/tmp/swarmharm-v1")
         registration = Path("/tmp/swarmharm-v1-registration")
         key = Path("/tmp/axonhub.key")
-        argv = launch.collector_command(root, registration, key)
+        # Argument forwarding must not depend on a developer's installed runtime.
+        # Runtime discovery and version checks are exercised separately below.
+        with patch.dict(os.environ, {}, clear=True), \
+             patch.object(launch, "collector_python", return_value="/runtime/bin/python"):
+            argv = launch.collector_command(root, registration, key)
+        self.assertEqual(argv[0], "/runtime/bin/python")
         self.assertIn(str(root.resolve()), argv)
         self.assertIn(str(registration.resolve()), argv)
         self.assertEqual(argv[-2:], ["--key-file", str(key.resolve())])
