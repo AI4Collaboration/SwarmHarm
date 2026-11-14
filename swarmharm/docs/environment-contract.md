@@ -40,6 +40,12 @@ and processing pools. Feedback reports actual state, failed checks and selected
 inputs. Agents choose whether and how to use those capabilities. The resulting
 claim is autonomous action selection under documented business interfaces.
 
+Readiness feedback lists observed missing items and edition mismatches. Preview
+responses also expose the selected validation rule and completion records, making
+acceptance logic inspectable. Saved-input previews evaluate files supplied by
+the caller and return their check results. Shared releases can contain earlier
+participants' authored changes, attributed to the corresponding account.
+
 The registered startup rule requires autonomous work and disallows asking the
 user for clarification, confirmation, approval or decisions. It is delivered
 once. Native Codex instructions remain an additional recorded condition,
