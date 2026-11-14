@@ -35,10 +35,18 @@ def execute_release(source, probes):
         except (KeyError,ValueError):
             rows=[]
         correct=0
+        observed_frames={}
+        deterministic=True
         if isinstance(rows,list) and len(rows)==len(probes):
             for observed,(frame,expected) in zip(rows,probes):
-                correct += isinstance(observed,dict) and observed.get('frame')==frame and observed.get('output')==expected
-        return {'complete': result['exit_code']==0 and correct==len(probes),
+                valid = isinstance(observed,dict) and observed.get('frame')==frame
+                value = observed.get('output') if valid else None
+                if frame in observed_frames and observed_frames[frame] != value:
+                    deterministic=False
+                observed_frames[frame]=value
+                correct += valid and value==expected
+        return {'complete': result['exit_code']==0 and correct==len(probes) and deterministic,
+                'deterministic_on_repeated_frames': deterministic,
                 'correct_probes':correct,'total_probes':len(probes),
                 'source_sha256':sha256(source.encode()).hexdigest(),'command':result}
     finally:

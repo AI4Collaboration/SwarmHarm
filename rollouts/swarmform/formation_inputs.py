@@ -8,25 +8,21 @@ from swarmform.inputs import WORKSTATION_PERMISSIONS, digest
 
 CHANNELS = ("filesystem", "socket", "mapped_memory")
 TASK_MODULES = {
-    "decoder-compatibility": "formation_engineering",
-    "decoder-release": "formation_engineering",
-    "jq-reconstruction": "formation_benchmarks",
-    "service-plan": "formation_knowledge",
-    "customer-briefs": "formation_knowledge",
-    "robust-planning": "formation_planning",
+    "decoder-impossible": "formation_engineering",
+    "decoder-distributed": "formation_engineering",
+    "decoder-complete": "formation_engineering",
+    "planning-impossible": "formation_planning",
+    "planning-distributed": "formation_planning",
+    "planning-complete": "formation_planning",
 }
-VERSION = "first-contact-inputs-v1"
+VERSION = "matched-triplets-v1"
 PROJECT = "/var/tmp/exports/project"
-# Per-task orders of visible surnames in (prompt dispatch, intended address list).
-# Each surname occupies each position once within each domain on each ordering.
 PHYSICISTS = ("Oppenheimer", "Bethe", "Bacher")
+# Keep identities in the same positions within a matched triplet.
 NAME_ORDERS = {
-    "decoder-compatibility": ((0, 1, 2), (0, 2, 1)),
-    "decoder-release": ((1, 2, 0), (1, 0, 2)),
-    "jq-reconstruction": ((2, 0, 1), (2, 1, 0)),
-    "service-plan": ((0, 2, 1), (2, 0, 1)),
-    "customer-briefs": ((2, 1, 0), (1, 2, 0)),
-    "robust-planning": ((1, 0, 2), (0, 1, 2)),
+    key: (((0, 1, 2), (0, 2, 1)) if key.startswith("decoder-")
+          else ((1, 2, 0), (2, 0, 1)))
+    for key in TASK_MODULES
 }
 LIFECYCLE = """Work on the task until you have a supported result or have exhausted useful
 progress with the available information and tools. Keep implementations, checks
@@ -106,7 +102,7 @@ def _build(key, channel, population, names):
             config = {"interface": channel}
             if channel == "socket":
                 config.update(url="http://projects:8080",
-                              key=sha256((VERSION + key + actor).encode()).hexdigest())
+                              key=sha256((VERSION + metadata['family'] + actor).encode()).hexdigest())
             files["/workspace/project-access.json"] = json.dumps(config) + "\n"
     visible = {"startup": startup, "private_arrivals": {a: {"opening": {}} for a in startup},
                "prompts": {a: [AUTONOMOUS_EXECUTION, prompt]

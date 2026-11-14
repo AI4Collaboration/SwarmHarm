@@ -87,22 +87,12 @@ class CommonWorkspace(FileDeployment):
         volume = self.name + '-observations'
         label = ['--label', 'org.swarmharm.managed=true', '--label', f'org.swarmharm.owner-pid={os.getpid()}']
         try:
-            security = json.loads(run(['docker','info','--format','{{json .SecurityOptions}}']))
-            # Docker's default AppArmor profile denies the operator's mount
-            # operations even with SYS_ADMIN. Task processes still drop every
-            # capability and retain no-new-privileges, private homes and no network.
-            self.apparmor_mounts = any(option.split(',')[0] == 'name=apparmor' for option in (security or []))
             run(['docker', 'volume', 'create', *label, volume])
             self.resources.callback(run, ['docker', 'volume', 'rm', volume])
-            options = []
-            if registration.get('reference_program'):
-                from swarmform.program_reference import create_volume
-                ref = create_volume(registration['reference_program'], self.resources)
-                options = ['--mount', f'type=volume,src={ref},dst=/opt/reference,readonly']
             project_volume = self.name + '-project'
             run(['docker', 'volume', 'create', *label, project_volume])
             self.resources.callback(run, ['docker', 'volume', 'rm', project_volume])
-            run(self.container_args(n, label, options, volume))
+            run(self.container_args(n, label, volume))
             self.resources.callback(run, ['docker', 'rm', '-f', self.name])
             ids = account_ids(n)
             root = ['docker', 'exec', self.name]
@@ -111,13 +101,10 @@ class CommonWorkspace(FileDeployment):
             properties = json.loads(run(['docker', 'inspect', self.name]))[0]
             for (actor, files), uid in zip(startup.items(), ids):
                 run([*root, 'mkdir', '-m', '700', f'/var/log/workstation/{uid}'])
-                startup_log = f'/run/formation/setup-{uid}.log'
-                run(['docker', 'exec', '-d', self.name, 'sh', '-c',
-                     'log=$1; shift; exec "$@" >"$log" 2>&1', 'setup', startup_log,
-                     'unshare', '--mount', '--propagation', 'private',
+                run(['docker', 'exec', '-d', self.name, 'unshare', '--mount', '--propagation', 'private',
                      'sh', '-c', START_VIEW, 'setup', str(uid)])
-                pid = run([*root, 'sh', '-ec', 'for i in $(seq 1 200); do if test -s "$1"; then cat "$1"; exit; fi; sleep .02; done; cat "$2" >&2; exit 1',
-                           'wait', f'/run/formation/{uid}/pid', startup_log])
+                pid = run([*root, 'sh', '-ec', 'for i in $(seq 1 200); do if test -s "$1"; then cat "$1"; exit; fi; sleep .02; done; exit 1',
+                           'wait', f'/run/formation/{uid}/pid'])
                 if not pid.isdigit():
                     raise RuntimeError('Missing account namespace owner')
                 sink = (lambda phase, value, actor=actor: observation_sink(actor, phase, value)) if observation_sink else None
@@ -128,31 +115,23 @@ class CommonWorkspace(FileDeployment):
                 self.bindings[actor] = {'container': self.name, 'container_id': properties['Id'],
                     'user': str(uid), 'sentinel_pid': int(pid), 'image': properties['Image'],
                     'network': properties['HostConfig']['NetworkMode'], 'observation_volume': volume,
-                    'apparmor_profile': properties.get('AppArmorProfile'),
-                    'security_options': properties['HostConfig']['SecurityOpt'],
-                    'read_only_rootfs': properties['HostConfig']['ReadonlyRootfs'],
                     'shared_project': PROJECT, 'observer_enabled': True}
             self.verify_access(startup, properties)
-            if registration.get('reference_program'):
-                from swarmform.programbench_pilot import probe_reference
-                for actor in self.stations:
-                    self.bindings[actor]['reference_probe'] = probe_reference(self, actor)
         except BaseException:
             self.resources.close()
             raise
 
-    def container_args(self, n, label, options, volume):
-        apparmor = ['--security-opt=apparmor=unconfined'] if getattr(self, 'apparmor_mounts', False) else []
+    def container_args(self, n, label, volume):
         return ['docker', 'run', '-d', '--rm', '--pull=never', '--name', self.name, *label,
                 '--network=none', '--init', '--read-only', '--cap-drop=ALL', '--cap-add=SYS_ADMIN',
                 '--cap-add=SYS_CHROOT', '--cap-add=SYS_PTRACE', '--cap-add=SETUID', '--cap-add=SETGID', '--cap-add=DAC_READ_SEARCH',
-                '--security-opt=no-new-privileges', *apparmor, '--cpu-period=100000', f'--cpu-quota={100000*n}', f'--memory={512*n}m', f'--pids-limit={64*n}',
+                '--security-opt=no-new-privileges', '--cpu-period=100000', f'--cpu-quota={100000*n}', f'--memory={512*n}m', f'--pids-limit={64*n}',
                 '-e', 'HOME=/workspace', '--mount', f'type=volume,src={volume},dst=/var/log/workstation',
                 '--tmpfs', '/run/formation:rw,nosuid,nodev,size=1m,mode=0700',
                 '--tmpfs', '/workspace:rw,nosuid,nodev,size=1m,mode=0700',
                 '--tmpfs', '/private/tmp:rw,nosuid,nodev,size=1m,mode=0700',
                 '--mount', f'type=volume,src={self.name}-project,dst={EXPORTS}',
-                *options, IMAGE, 'sleep', 'infinity']
+                IMAGE, 'sleep', 'infinity']
 
     def verify_access(self, startup, properties):
         n = len(startup)
@@ -162,7 +141,7 @@ class CommonWorkspace(FileDeployment):
         nonce = secrets.token_hex(12)
         # Probe foreign sources as the participant, including a real intake record when present.
         pids = {actor: b['sentinel_pid'] for actor, b in self.bindings.items()}
-        names = {actor: next((p for p in files if '/intake/' in p), '/workspace/task.md')
+        names = {actor: next((p for p in files if '/calibrations/' in p or '/calendars/' in p), '/workspace/task.md')
                  for actor, files in startup.items()}
         probe = """
 import hashlib,json,os,pathlib,sys

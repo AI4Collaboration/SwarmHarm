@@ -118,7 +118,7 @@ class FileStation(DockerWorkstation):
 class FileDeployment:
     """Own only resources created by this fixture; historical workstations are untouched."""
 
-    def __init__(self, startup, *, shared=True, observation_sink=None, observation_archive=None, profile='content', population=3, observation_settle_seconds=2, reference_program=None, source_corpus=None, ipc_mode=None):
+    def __init__(self, startup, *, shared=True, observation_sink=None, observation_archive=None, profile='content', population=3, observation_settle_seconds=2, ipc_mode=None):
         if profile not in ('content','metadata','state','events','timing'):
             raise ValueError('Unknown file access profile')
         self.profile=profile
@@ -130,18 +130,8 @@ class FileDeployment:
         self.locks = {actor: threading.RLock() for actor in startup}
         self.resources = ExitStack()
         self.closed = False
-        self.reference_volume = None
-        self.reference_program = reference_program
-        self.corpus_volume = None
-        self.source_corpus = source_corpus
         self.ipc_mode = ipc_mode
         try:
-            if reference_program is not None:
-                from swarmform.program_reference import create_volume
-                self.reference_volume = create_volume(reference_program, self.resources)
-            if source_corpus is not None:
-                from swarmform.corpus_asset import create_volume
-                self.corpus_volume = create_volume(source_corpus, self.resources)
             common = self._volume() if shared else None
             for account_index,(actor,files) in enumerate(startup.items()):
                 volume = common if common else self._volume()
@@ -150,10 +140,6 @@ class FileDeployment:
                 station_class, extra = FileStation, {}
                 if ipc_mode is not None:
                     extra['ipc_mode'] = ipc_mode
-                if self.reference_volume is not None:
-                    extra['reference_volume'] = self.reference_volume
-                if self.corpus_volume is not None:
-                    extra['corpus_volume'] = self.corpus_volume
                 if observation_archive is not None:
                     from swarmform.read_observer import ObservedFileStation
                     station_class = ObservedFileStation
@@ -216,23 +202,6 @@ class FileDeployment:
                              'observation_settle_seconds':station.observation_settle_seconds,
                              'container_cap_add': row['HostConfig']['CapAdd'],
                              'container_cap_drop': row['HostConfig']['CapDrop']}
-            references = [m for m in row['Mounts'] if m['Destination'] == '/opt/reference']
-            if self.reference_volume is not None:
-                if (len(references) != 1 or references[0]['Name'] != self.reference_volume
-                        or references[0]['RW']):
-                    raise RuntimeError('Reference program mount is not the declared read-only volume')
-                result[actor]['reference_program'] = {
-                    **self.reference_program, 'volume': self.reference_volume, 'read_only': True}
-            elif references:
-                raise RuntimeError('Undeclared reference program mount')
-            corpora = [m for m in row['Mounts'] if m['Destination'] == '/opt/corpus']
-            if self.corpus_volume is not None:
-                if len(corpora) != 1 or corpora[0]['Name'] != self.corpus_volume or corpora[0]['RW']:
-                    raise RuntimeError('Source corpus mount is not the declared read-only volume')
-                result[actor]['source_corpus'] = {
-                    **self.source_corpus, 'volume': self.corpus_volume, 'read_only': True}
-            elif corpora:
-                raise RuntimeError('Undeclared source corpus mount')
         if len({v['volume'] for v in result.values()}) != (1 if shared else self.population):
             raise RuntimeError('Shared/private volume scope differs')
         return result

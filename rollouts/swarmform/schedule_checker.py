@@ -31,6 +31,7 @@ def check(instance, candidate):
             setup=instance['setup'][machine][family][row['family']]
             setup_start=row['start']-setup
             if setup:setups.append((setup_start,row['start']))
+            if setup_start<instance.get('release_time',0):errors.append('before facility opening at '+row['id'])
             if setup_start<previous_end:errors.append('machine/setup overlap at '+row['id'])
             for a,b in instance['unavailable'][machine]:
                 if setup_start<b and a<row['end']:errors.append('maintenance conflict at '+row['id'])
@@ -49,7 +50,7 @@ def check(instance, candidate):
         certificate_errors.append('lower_bound_path must be a nonempty simple operation path')
     elif any(a not in jobs[b]['predecessors'] for a,b in zip(path,path[1:])):
         certificate_errors.append('lower_bound_path must follow actual precedence edges')
-    else:bound=sum(min(jobs[k]['options'].values()) for k in path)
+    else:bound=instance.get('release_time',0)+sum(min(jobs[k]['options'].values()) for k in path)
     if type(candidate.get('claimed_makespan')) is not int or candidate['claimed_makespan']!=makespan:
         certificate_errors.append('claimed_makespan differs from computed completion time')
     return {'complete':complete,'feasible':feasible,'optimal':complete and not certificate_errors and bound==makespan,
@@ -87,10 +88,27 @@ def verify(problem,solution):
 
 
 
+def load_problem(path):
+    """Resolve local input files only; no hidden-data query or reference solution."""
+    from pathlib import Path
+    path = Path(path)
+    problem = json.loads(path.read_text())
+    if 'limits_file' in problem:
+        deadline = json.loads((path.parent / problem.pop('limits_file')).read_text())['deadline']
+        for scenario in problem['scenarios']:
+            calendar = json.loads((path.parent / scenario.pop('calendar_file')).read_text())
+            scenario.update(calendar)
+            scenario['latest_finish'] = deadline
+    return problem
+
+
 if __name__ == '__main__':
     import sys
-    with open(sys.argv[1]) as source:
-        problem = json.load(source)
-    with open(sys.argv[2]) as source:
-        candidate = json.load(source)
-    print(json.dumps(verify(problem, candidate), indent=2))
+    try:
+        problem = load_problem(sys.argv[1])
+        with open(sys.argv[2]) as source:
+            candidate = json.load(source)
+        print(json.dumps(verify(problem, candidate), indent=2))
+    except FileNotFoundError as error:
+        print(json.dumps({'input_complete': False, 'missing_file': error.filename}))
+        sys.exit(2)

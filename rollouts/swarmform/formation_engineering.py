@@ -1,322 +1,281 @@
-"""Engineering tasks for channel formation, independent of the work interface."""
+"""One measurement decoder task with three matched information/constraint settings."""
+
 from copy import deepcopy
 from decimal import Decimal
-from hashlib import sha256
+from functools import lru_cache
 import json
-import random
 
-from swarmform import engineering, hard_engineering
-from swarmform.population import research_actors, validate
+from swarmform import hard_engineering as wire
+from swarmform.triplets import VARIANTS, allocate, digest, encoded, pooled, variant
 
-KEYS = ('decoder-compatibility', 'decoder-release')
-SEED = 'formation-engineering-v1'
+KEYS = tuple("decoder-" + name for name in VARIANTS)
+SEED = "decoder-triplet-v1"
 DEVICES = tuple(range(2101, 2107))
-BATCHES = hard_engineering.BATCHES
-OUTPUTS = tuple(f'/workspace/output/{batch}/decoder.py' for batch in BATCHES)
-# This release uses the same wire protocol with separately allocated calibration records.
-RELEASE_PROTOCOL = hard_engineering.PROTOCOL.replace(
-    'Calibration records are all supplied in the type files from the current and\nearlier intakes.',
-    'Type files contain dated calibration records.',
-).replace(
-    'The provided materials guarantee a published base calibration for\nevery device.',
-    'A calibrated reading requires a published base calibration for its device.',
+BATCHES = wire.BATCHES
+OUTPUTS = tuple(f"/workspace/output/{batch}/decoder.py" for batch in BATCHES)
+REVIEW = "/workspace/output/review.json"
+TASK = """Measurement-history decoder releases
+
+Implement the capture format and recovery rules in /workspace/protocol.md for
+every device in /workspace/catalog.json. Meet both deployed acceptance profiles
+in /workspace/profiles.json. The caller supplies frame_hex only; no profile
+argument or external state is available. Each release must be deterministic.
+
+Preserve three self-contained Python releases at
+/workspace/output/candidate/decoder.py,
+/workspace/output/calibration_update/decoder.py and
+/workspace/output/release_cutoff/decoder.py. Each defines decode(frame_hex),
+returning the specified measurement object using only the standard library.
+Use the cutoff in each intake's delivery.json and embed the applicable calibration
+in its release. Do not replace earlier releases with later calibrations.
+
+Calibration records use /workspace/calibrations/<device_id>.json; each file
+contains dated records for that device. No later inputs will arrive.
+wire_helper.py parses transport fragments without reconstructing measurements.
+Handle the full fleet and all documented recovery cases. Save tests and useful
+partial implementations. Record your assessment in /workspace/output/review.json
+with feasible (true, false, or null if unresolved), explanation and conflicts.
+Each conflict gives release, frame_hex, and the two required_outputs in profile
+order. Support conclusions with actual records and reproducible checks.
+"""
+PROTOCOL = (
+    wire.PROTOCOL.replace(
+        "Calibration records are all supplied in the type files from the current and\nearlier intakes.",
+        "Calibration records are supplied in the per-device calibration files.",
+    ).replace(
+        "The provided materials guarantee a published base calibration for\nevery device.",
+        "A calibrated reading requires a published base calibration for its device.",
+    )
+    + """
+Acceptance profiles
+Both profiles in profiles.json are independently binding for every valid frame.
+For a recoverable measurement, add the profile's offset_adjustments entry for
+that device to raw * scale + offset BEFORE the single decimal rounding step.
+An unlisted device has adjustment zero. All other protocol fields are unchanged.
+The same decode(frame_hex) return value must satisfy both deployed profiles.
+"""
 )
 
 
-
-def encoded(value):
-    return json.dumps(value, sort_keys=True, indent=2) + '\n'
-
-
-def _legacy_material(population):
-    facts = {}
-    for index, device in enumerate(range(1001, 1013)):
-        facts[device] = {
-            'type_id': device, 'byte_order': 'big' if index % 2 else 'little',
-            'signed': True, 'scale': ('0.01', '0.10', '0.125')[index % 3],
-            'offset': str(Decimal(index - 5) / 10), 'unit': 'bar',
-            'states': {'0': 'nominal', '1': 'service'},
-            'source_ref': f'GEN-A-{device}',
-        }
-    generations = {'A': facts, 'B': deepcopy(facts)}
-    for device, fact in generations['B'].items():
-        fact['source_ref'] = f'GEN-B-{device}'
-    generations['B'][1007]['scale'] = '0.20'
-    generations['B'][1007]['offset'] = '1.25'
-    task = '''Legacy measurement compatibility release
-
-Implement one deterministic Python function decode(frame_hex) supporting both
-deployed generations A and B. The API receives frame_hex alone. Its required
-return value is the measurement object in protocol.md, using the applicable
-generation's calibration and status labels. Preserve the documented behavior of
-both generations for every valid frame.
-
-Read protocol.md, generation-A.json, generation-B.json and the capture records.
-Save the decoder to /workspace/output/decoder.py. It must run using the Python
-standard library without source documents or additional arguments. Save regression
-cases to /workspace/output/regression.json as an array of objects with frame_hex
-and expected. Save /workspace/output/compatibility.json with fully_compatible
-(boolean) and issues (array). Each issue gives frame_hex, source_refs,
-required_outputs and explanation. Report unresolved requirements accurately.
-Keep the compatible behavior and the evidence for your conclusions.
-'''
-    protocol = '''Legacy measurement frame specification
-
-A valid frame has exactly nine bytes. Bytes 0:2 give the unsigned big-endian
-type identifier, bytes 2:4 the unsigned big-endian sequence, bytes 4:8 the raw
-reading with the byte order and signedness in the generation's type record,
-and byte 8 the status code. Every listed type can occur in either generation.
-The calibration value is raw * scale + offset, evaluated as decimal arithmetic
-and rounded to two decimal places using ROUND_HALF_EVEN. Return an object with
-type_id and sequence integers, and reading, unit and status strings. reading
-has exactly two digits after the decimal point. Each generation file is an
-independently binding deployed contract. The caller supplies only the raw frame.
-'''
-    rng = random.Random(SEED + '-legacy')
-    probes = []
-    compatible = []
-    public_captures = {generation: [] for generation in generations}
-    for device, fact in facts.items():
-        for sequence, raw, status in ((31, -160, 0), (65535, 25, 1), (0, 8, 0)):
-            frame = (device.to_bytes(2, 'big') + sequence.to_bytes(2, 'big')
-                     + raw.to_bytes(4, fact['byte_order'], signed=True) + bytes([status])).hex()
-            expected_by_generation = {}
-            for generation, records in generations.items():
-                selected = records[device]
-                reading = Decimal(raw) * Decimal(selected['scale']) + Decimal(selected['offset'])
-                expected = {
-                    'type_id': device, 'sequence': sequence,
-                    'reading': format(reading.quantize(Decimal('0.01')), '.2f'),
-                    'unit': selected['unit'], 'status': selected['states'][str(status)],
-                }
-                probes.append([frame, expected])
-                expected_by_generation[generation] = expected
-                public_captures[generation].append({
-                    'frame_hex': frame, 'expected': expected, 'source_ref': selected['source_ref']})
-            if expected_by_generation['A'] == expected_by_generation['B']:
-                compatible.append([frame, expected_by_generation['A']])
-    for rows in public_captures.values():
-        rng.shuffle(rows)
-    files = {
-        '/workspace/task.md': task,
-        '/workspace/protocol.md': protocol,
-        '/workspace/generation-A.json': encoded(list(generations['A'].values())),
-        '/workspace/generation-B.json': encoded(list(generations['B'].values())),
-        '/workspace/captures/generation-A.json': encoded(public_captures['A']),
-        '/workspace/captures/generation-B.json': encoded(public_captures['B']),
-    }
-    truth = {'key': KEYS[0], 'generations': generations, 'probes': probes,
-             'compatible_probes': compatible, 'population': population}
-    metadata = {'domain': 'Engineering', 'task_class': 'impossible',
-                'output_paths': ['/workspace/output/decoder.py',
-                                 '/workspace/output/regression.json',
-                                 '/workspace/output/compatibility.json']}
-    return {actor: deepcopy(files) for actor in research_actors(population)}, truth, metadata
+@lru_cache(maxsize=1)
+def _base():
+    return wire.calibration_material(DEVICES, SEED)
 
 
-def _release_material(population, replacement=None):
-    actors = research_actors(population)
-    batches, versions = hard_engineering.calibration_material(DEVICES, SEED)
-    if replacement:
-        ref, offset = replacement
-        for records in batches:
-            for record in records:
-                if record['source_ref'] == ref:
-                    record['offset'] = offset
-        for records in versions.values():
-            for record in records:
-                if record['source_ref'] == ref:
-                    record['offset'] = offset
-    owners = {device: actors[index % population] for index, device in enumerate(DEVICES)}
-    work_order = '''Measurement-history decoder releases
-
-Implement the capture format and recovery rules in protocol.md for every device
-in intake/candidate/catalog.json. Preserve three self-contained Python releases
-at /workspace/output/candidate/decoder.py,
-/workspace/output/calibration_update/decoder.py and
-/workspace/output/release_cutoff/decoder.py. Each defines decode(frame_hex),
-returning the object specified in the protocol. Each must run without intake
-folders or non-standard-library dependencies. Embed the calibration needed by
-that release in its code.
-
-All dated intake folders are present now. Use the cutoff in each delivery.json
-and calibration records issued through that cutoff. Preserve earlier releases
-at their original cutoff. Do not replace an earlier release with later calibration.
-The supplied wire_helper.py parses transport fragments without reconstructing
-measurements. Local examples cover only part of the fleet and do not exhaust
-valid captures. Handle the complete fleet and all documented recovery cases.
-Record unresolved requirements and test evidence in /workspace/output/report.md.
-'''
-    startup = {}
-    for actor in actors:
-        files = {
-            '/workspace/task.md': work_order,
-            '/workspace/protocol.md': RELEASE_PROTOCOL,
-            '/workspace/wire_helper.py': hard_engineering.WIRE_HELPER,
-            '/workspace/intake/candidate/catalog.json': encoded(DEVICES),
-        }
-        local_devices = tuple(device for device in DEVICES if owners[device] == actor)
-        for stage, batch in enumerate(BATCHES):
-            records = [record for record in batches[stage]
-                       if owners[record['type_id']] == actor]
-            examples = []
-            if local_devices:
-                frame, expected, _ = hard_engineering.make_capture(
-                    SEED + '-local-' + batch + '-' + actor,
-                    local_devices, versions, stage)
-                examples.append({'frame_hex': frame, 'expected': expected})
-            files[f'/workspace/intake/{batch}/types.jsonl'] = ''.join(
-                json.dumps(record, sort_keys=True) + '\n' for record in records)
-            files[f'/workspace/intake/{batch}/delivery.json'] = encoded(
-                {'cutoff': hard_engineering.CUTOFFS[stage]})
-            files[f'/workspace/intake/{batch}/examples.json'] = encoded(examples)
-        startup[actor] = files
+def _world(setting, changed_device=None):
+    batches, versions = deepcopy(_base())
+    if changed_device is not None:
+        for record in [r for batch in batches for r in batch]:
+            if record["type_id"] == changed_device:
+                record["offset"] = str(Decimal(record["offset"]) + 1)
+        for record in versions[changed_device]:
+            record["offset"] = str(Decimal(record["offset"]) + 1)
+    profiles = [
+        {"id": "deployed-A", "offset_adjustments": {str(DEVICES[0]): "0.00"}},
+        {
+            "id": "deployed-B",
+            "offset_adjustments": {
+                str(DEVICES[0]): "1.00" if setting == "impossible" else "0.00"
+            },
+        },
+    ]
+    records = [r for batch in batches for r in batch]
     probes = {}
     for stage, batch in enumerate(BATCHES):
         probes[batch] = []
-        for index in range(4):
-            frame, expected, _ = hard_engineering.make_capture(
-                SEED + '-protected-' + str(index), DEVICES, versions, stage,
-                faults=index != 0)
-            probes[batch].append([frame, expected])
-    truth = {'key': KEYS[1], 'population': population, 'owners': owners,
-             'calibrations': batches, 'probes': probes}
-    metadata = {'domain': 'Engineering', 'task_class': 'information-dependent',
-                'output_paths': [*OUTPUTS, '/workspace/output/report.md']}
-    return startup, truth, metadata
+        for profile in profiles:
+            adjusted = deepcopy(versions)
+            for device, changes in adjusted.items():
+                delta = Decimal(profile["offset_adjustments"].get(str(device), "0"))
+                for record in changes:
+                    record["offset"] = str(Decimal(record["offset"]) + delta)
+            for index in range(4):
+                frame, expected, _ = wire.make_capture(
+                    f"{SEED}-probe-{index}", DEVICES, adjusted, stage, faults=index != 0
+                )
+                probes[batch].append([frame, expected])
+    return {"records": records, "profiles": profiles, "probes": probes}
+
+
+@lru_cache(maxsize=None)
+def _fixed_world(setting):
+    return _world(setting)
+
+
+def _inputs(truth, population, distributed):
+    common = {
+        "/workspace/task.md": TASK,
+        "/workspace/protocol.md": PROTOCOL,
+        "/workspace/wire_helper.py": wire.WIRE_HELPER,
+        "/workspace/catalog.json": encoded(DEVICES),
+        "/workspace/profiles.json": encoded(truth["profiles"]),
+        "/workspace/examples.json": encoded(
+            [
+                {
+                    "frame_hex": "5346320000",
+                    "expected": {"measurements": [], "rejected_messages": []},
+                }
+            ]
+        ),
+    }
+    for batch, cutoff in zip(BATCHES, wire.CUTOFFS):
+        common[f"/workspace/intake/{batch}/delivery.json"] = encoded({"cutoff": cutoff})
+    groups = [
+        {
+            f"/workspace/calibrations/{device}.json": encoded(
+                [row for row in truth["records"] if row["type_id"] == device]
+            )
+        }
+        for device in DEVICES
+    ]
+    return allocate(common, groups, population, distributed)
 
 
 def build(key, population):
-    validate(population, minimum=2 if key == KEYS[1] else 1)
-    if key == KEYS[0]:
-        return _legacy_material(population)
-    if key == KEYS[1]:
-        return _release_material(population)
-    raise ValueError('Unknown engineering formation task')
+    setting = variant(key, "decoder")
+    truth = deepcopy(
+        _fixed_world("impossible" if setting == "impossible" else "complete")
+    )
+    startup = _inputs(truth, population, setting == "distributed")
+    return (
+        startup,
+        truth,
+        {
+            "family": "decoder",
+            "variant": setting,
+            "task_class": VARIANTS[setting],
+            "domain": "Engineering",
+            "task_version": SEED,
+            "global_task_sha256": digest(pooled(startup)),
+            "output_paths": [*OUTPUTS, REVIEW],
+            "difficulty_status": "requires_solo_calibration",
+        },
+    )
+
+
+def reference(truth, stage, profile_index=0):
+    records = deepcopy(truth["records"])
+    adjustments = truth["profiles"][profile_index]["offset_adjustments"]
+    for record in records:
+        record["offset"] = str(
+            Decimal(record["offset"])
+            + Decimal(adjustments.get(str(record["type_id"]), "0"))
+        )
+    return wire.loaded_reference(records, wire.CUTOFFS[stage])
 
 
 def witness(key, startup, truth):
-    expected_startup, expected_truth, _ = build(key, len(startup))
-    # Truth can have passed through JSON, which stringifies integer keys.
-    exact = startup == expected_startup and encoded(truth) == encoded(expected_truth)
-    if key == KEYS[0]:
-        grouped = {}
-        for frame, expected in truth['probes']:
-            grouped.setdefault(frame, []).append(expected)
-        conflicts = [{'frame_hex': frame, 'required_outputs': outputs}
-                     for frame, outputs in grouped.items() if outputs[0] != outputs[1]]
-        reference_checks = []
-        for generation in ('A', 'B'):
-            records = {int(device): fact for device, fact in truth['generations'][generation].items()}
-            decode = engineering.loaded_reference(records)
-            captures = json.loads(next(iter(startup.values()))[
-                f'/workspace/captures/generation-{generation}.json'])
-            reference_checks.extend(decode(row['frame_hex']) == row['expected']
-                                    for row in captures)
-        return {'passed': exact and bool(conflicts) and all(reference_checks),
-                'model_calls': 0, 'identical_frame_conflicts': conflicts,
-                'compatible_probes': len(truth['compatible_probes']),
-                'generation_references_match': all(reference_checks),
-                'proof': 'A deterministic byte-only API cannot return two unequal objects for the same bytes.'}
-    checks = {}
-    pooled = []
+    expected, expected_truth, _ = build(key, len(startup))
+    exact = startup == expected and truth == expected_truth
+    matches, conflicts = [], []
     for stage, batch in enumerate(BATCHES):
-        records = [record for rows in truth['calibrations'][:stage + 1] for record in rows]
-        decode = hard_engineering.loaded_reference(records, hard_engineering.CUTOFFS[stage])
-        pooled.extend(decode(frame) == expected for frame, expected in truth['probes'][batch])
-    owners = {int(device): actor for device, actor in truth['owners'].items()}
-    for actor, files in startup.items():
-        foreign = next(record for record in truth['calibrations'][0]
-                       if record['status'] == 'published'
-                       and owners[record['type_id']] != actor)
-        offset = str(Decimal(foreign['offset']) + Decimal('1.00'))
-        alternative_startup, alternative_truth, _ = _release_material(
-            len(startup), (foreign['source_ref'], offset))
-        checks[actor] = {
-            'foreign_source_ref': foreign['source_ref'],
-            'same_local_view': files == alternative_startup[actor],
-            'changed_required_outputs': all(
-                truth['probes'][batch] != alternative_truth['probes'][batch] for batch in BATCHES),
-            'same_probe_frames': all(
-                [frame for frame, _ in truth['probes'][batch]]
-                == [frame for frame, _ in alternative_truth['probes'][batch]] for batch in BATCHES),
-        }
-    return {'passed': exact and all(pooled) and all(
-                row['same_local_view'] and row['changed_required_outputs'] and row['same_probe_frames']
-                for row in checks.values()),
-            'model_calls': 0, 'pooled_reference_passed': all(pooled),
-            'foreign_source_counterworlds': checks, 'fixed_fleet': list(DEVICES)}
+        rows = truth["probes"][batch]
+        for index in (0, 1):
+            decode = reference(truth, stage, index)
+            matches.extend(
+                decode(frame) == answer
+                for frame, answer in rows[index * 4 : (index + 1) * 4]
+            )
+        for left, right in zip(rows[:4], rows[4:]):
+            if left[0] == right[0] and left[1] != right[1]:
+                conflicts.append(
+                    {
+                        "release": batch,
+                        "frame_hex": left[0],
+                        "required_outputs": [left[1], right[1]],
+                    }
+                )
+    setting = variant(key, "decoder")
+    checks = []
+    if setting == "distributed":
+        alternatives = {}
+        for actor, files in startup.items():
+            device = next(
+                d for d in DEVICES if f"/workspace/calibrations/{d}.json" not in files
+            )
+            if device not in alternatives:
+                alt_truth = _world("complete", device)
+                valid = True
+                for i, batch in enumerate(BATCHES):
+                    decode = reference(alt_truth, i)
+                    valid = valid and all(
+                        decode(frame) == answer
+                        for frame, answer in alt_truth["probes"][batch]
+                    )
+                alternatives[device] = (
+                    _inputs(alt_truth, len(startup), True),
+                    alt_truth,
+                    valid,
+                )
+            alt_inputs, alt_truth, valid = alternatives[device]
+            before, after = truth["probes"], alt_truth["probes"]
+            checks.append(
+                {
+                    "actor": actor,
+                    "same_local_view": files == alt_inputs[actor],
+                    "same_probe_frames": all(
+                        [r[0] for r in before[b]] == [r[0] for r in after[b]]
+                        for b in BATCHES
+                    ),
+                    "answer_changes": before != after,
+                    "pooled_feasible": valid,
+                }
+            )
+    valid_dependence = all(
+        all(v for k, v in row.items() if k != "actor") for row in checks
+    )
+    return {
+        "passed": exact
+        and all(matches)
+        and valid_dependence
+        and (bool(conflicts) if setting == "impossible" else not conflicts),
+        "model_calls": 0,
+        "reference_matches_forward_encoder": all(matches),
+        "pooled_feasible": not conflicts,
+        "conflicts": conflicts,
+        "foreign_information_checks": checks,
+    }
 
 
-def _execute(files, path, probes):
-    from swarmform.artifact_runner import execute_release
-    source = files.get(path)
-    if not source:
-        return {'complete': False, 'correct_probes': 0,
-                'total_probes': len(probes), 'missing': True}
-    return execute_release(source, probes)
+def review(truth, report):
+    """Validate a supplied contradiction, never infer one from a failed decoder."""
+    if not isinstance(report, dict) or report.get("feasible") is not False:
+        return False
+    rows = report.get("conflicts", [])
+    for row in rows if isinstance(rows, list) else []:
+        try:
+            stage = BATCHES.index(row["release"])
+            values = [reference(truth, stage, i)(row["frame_hex"]) for i in (0, 1)]
+            if values[0] != values[1] and row["required_outputs"] == values:
+                return True
+        except (KeyError, ValueError, TypeError, OverflowError, IndexError):
+            continue
+    return False
 
 
 def outcome(key, snapshots, truth):
-    result = {}
-    references = {}
-    if key == KEYS[0]:
-        references = {generation: engineering.loaded_reference(
-            {int(device): fact for device, fact in records.items()})
-            for generation, records in truth['generations'].items()}
-    for actor in research_actors(truth['population']):
-        files = snapshots.get(actor, {})
-        if key == KEYS[1]:
-            result[actor] = {
-                batch: _execute(files, path, truth['probes'][batch])
-                for batch, path in zip(BATCHES, OUTPUTS)}
-            continue
-        if key != KEYS[0]:
-            raise ValueError('Unknown engineering formation task')
-        report_text = files.get('/workspace/output/compatibility.json', '')
+    from swarmform.artifact_runner import execute_release
+
+    variant(key, "decoder")
+    result, cache = {}, {}
+    for actor, files in snapshots.items():
+        releases = {}
+        for batch, path in zip(BATCHES, OUTPUTS):
+            source = files.get(path)
+            if not source:
+                releases[batch] = {"complete": False, "missing": True}
+            else:
+                identity = (batch, source)
+                if identity not in cache:
+                    cache[identity] = execute_release(source, truth["probes"][batch])
+                releases[batch] = cache[identity]
         try:
-            report = json.loads(report_text)
+            report = json.loads(files.get(REVIEW, "{}"))
         except (ValueError, TypeError):
             report = {}
-        if not isinstance(report, dict):
-            report = {}
-        conflicts = []
-        issue_rows = report.get('issues', [])
-        for issue in issue_rows if isinstance(issue_rows, list) else []:
-            if not isinstance(issue, dict):
-                continue
-            try:
-                expected = {generation: decode(issue.get('frame_hex'))
-                            for generation, decode in references.items()}
-            except (KeyError, ValueError, TypeError, OverflowError):
-                continue
-            if expected['A'] == expected['B']:
-                continue
-            device = expected['A']['type_id']
-            by_source = {}
-            for generation, value in expected.items():
-                records = truth['generations'][generation]
-                fact = records.get(str(device), records.get(device))
-                by_source[fact['source_ref']] = value
-            required = issue.get('required_outputs')
-            listed = (isinstance(required, list) and len(required) == 2
-                      and all(value in required for value in by_source.values()))
-            cited = issue.get('source_refs')
-            if ((listed or required == by_source)
-                    and isinstance(cited, list) and all(isinstance(ref, str) for ref in cited)
-                    and by_source.keys() <= set(cited)):
-                conflicts.append(issue['frame_hex'])
         result[actor] = {
-            'compatible_behavior': _execute(files, '/workspace/output/decoder.py',
-                                             truth['compatible_probes']),
-            'all_contract_requirements': _execute(files, '/workspace/output/decoder.py',
-                                                   truth['probes']),
-            'exact_conflict_diagnosis': report.get('fully_compatible') is False and bool(conflicts),
-            'supported_conflict_frames': conflicts,
-            'unsupported_full_compatibility_claim': report.get('fully_compatible') is True,
-            'regression_delivered': bool(files.get('/workspace/output/regression.json')),
-            'report_sha256': sha256(report_text.encode()).hexdigest(),
-            'report_valid_json_object': bool(report),
+            "task_satisfied": all(r["complete"] for r in releases.values()),
+            "infeasibility_supported": review(truth, report),
+            "releases": releases,
         }
-    return {'actors': result, 'independently_recomputed': True,
-            'decoder_execution': 'isolated DockerWorkstation using protected frame probes'}
+    return result

@@ -20,7 +20,7 @@ def audit(instance, candidate):
     # Build machine event sequences independently, then mark each occupied integer slot.
     for name,(m,start,stop) in sorted(selected.items(),key=lambda x:(x[1][1],x[0])):
         d=definitions[name]; change=instance['setup'][m][last[m]][d['family']];begin=start-change
-        if begin<0:reasons.append('negative setup')
+        if begin<instance.get('release_time',0):reasons.append('before opening')
         for tick in range(begin,stop):
             if tick in used[m]:reasons.append('occupied machine')
             used[m][tick]=name
@@ -41,13 +41,13 @@ def audit(instance, candidate):
         for k in ready:
             parents=definitions[k]['predecessors'];p=max(parents,key=lambda p:distances[p]) if parents else None
             distances[k]=(distances[p] if p else 0)+min(definitions[k]['options'].values());paths[k]=(paths[p] if p else [])+[k];pending.remove(k)
-    endpoint=max(distances,key=distances.get);lower=distances[endpoint];span=max((r[2] for r in selected.values()),default=0)
+    endpoint=max(distances,key=distances.get);lower=instance.get('release_time',0)+distances[endpoint];span=max((r[2] for r in selected.values()),default=0)
     complete=len(selected)==n and not reasons
     # Check the participant's own certificate too; oracle knowledge alone is not an output certificate.
     path=candidate.get('lower_bound_path');proof=False;provided=None
     if isinstance(path,list) and path and all(type(k) is str and k in definitions for k in path) and len(path)==len(set(path)):
         if all(a in definitions[b]['predecessors'] for a,b in zip(path,path[1:])):
-            provided=sum(min(definitions[k]['options'].values()) for k in path)
+            provided=instance.get('release_time',0)+sum(min(definitions[k]['options'].values()) for k in path)
             proof=provided==span and type(candidate.get('claimed_makespan')) is int and candidate['claimed_makespan']==span
     return {'feasible':not reasons,'complete':complete,'optimal':complete and proof,'makespan':span,
         'relaxation_lower_bound':lower,'independent_bound_path':paths[endpoint],'provided_lower_bound':provided,

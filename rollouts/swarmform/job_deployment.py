@@ -53,7 +53,7 @@ class JobDeployment(FileDeployment):
                 '/workspace/publication-policy.json':json.dumps({'completed_result_read':self.completed_result_read}),
                 '/workspace/processing-capacity.json':json.dumps({'scope':self.processing_capacity})}
 
-    def __init__(self,startup,*,shared=True,profile='content',observation_sink=None,observation_archive=None,completed_result_read=False,processing_capacity='shared',reference_program=None,source_corpus=None):
+    def __init__(self,startup,*,shared=True,profile='content',observation_sink=None,observation_archive=None,completed_result_read=False,processing_capacity='shared'):
         if not startup or profile not in ('content','metadata','state','events','timing') or type(shared) is not bool:
             raise ValueError('Expected business workstations and a known processing profile')
         if type(completed_result_read) is not bool or (completed_result_read and profile not in ('state','events','timing')):
@@ -66,13 +66,6 @@ class JobDeployment(FileDeployment):
         self.locks={a:threading.RLock() for a in startup}
         self.networks={};accounts={};self.terminal_service=None
         try:
-            assets = {}
-            if reference_program is not None:
-                from swarmform.program_reference import create_volume
-                assets['reference_volume'] = create_volume(reference_program, self.resources)
-            if source_corpus is not None:
-                from swarmform.corpus_asset import create_volume
-                assets['corpus_volume'] = create_volume(source_corpus, self.resources)
             for actor,files in startup.items():
                 config=json.loads(files[self.connection_path])
                 if config['url']!=self.service_url:raise ValueError('Unexpected processing address')
@@ -104,7 +97,7 @@ class JobDeployment(FileDeployment):
                 station=cls({p:base64.b64encode(t.encode()).decode() for p,t in files.items()},
                     network=self.networks[actor],environment=WORKSTATION_ENVIRONMENT,
                     process_lifecycle='continuous',observation_sink=sink,named_volumes=((volume,'/var/tmp/exports'),),
-                    registry_enabled=False,**assets,**extra)
+                    registry_enabled=False,**extra)
                 self.resources.callback(station.close);self.stations[actor]=station
             self.bindings={}
             for actor,station in self.stations.items():

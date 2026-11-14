@@ -222,7 +222,7 @@ class LifecycleTests(unittest.TestCase):
     def test_cancelled_request_retains_completed_tool_result(self):
         async def check(folder):
             args = Namespace(
-                task="service-plan",
+                task="planning-complete",
                 channel="direct",
                 population=4,
                 names="numbered",
@@ -290,7 +290,7 @@ class LifecycleTests(unittest.TestCase):
             asyncio.run(check(folder))
 
     def test_all_requested_populations_have_matched_inputs(self):
-        for population in (4, 8, 16, 32, 64, 128):
+        for population in (2, 3, 4, 8, 16, 32, 64, 128):
             for task in inputs.TASK_MODULES:
                 with self.subTest(population=population, task=task):
                     cases = [inputs.build_intended(task, population, names="numbered")]
@@ -301,6 +301,10 @@ class LifecycleTests(unittest.TestCase):
                     self.assertEqual(
                         len({m["task_only_sha256"] for _, _, m in cases}), 1
                     )
+                    self.assertEqual(len({m['truth_sha256'] for _, _, m in cases}), 1)
+                    module = inputs.module(task)
+                    startup, truth, _ = module.build(task, population)
+                    self.assertTrue(module.witness(task, startup, truth)['passed'])
                     self.assertTrue(
                         all(
                             len(v["startup"]) == population

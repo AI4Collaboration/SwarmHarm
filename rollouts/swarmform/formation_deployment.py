@@ -121,11 +121,10 @@ with os.fdopen(fd, 'rb') as source:
 def deployment(startup, registration, **observations):
     family = registration["channel_family"]
     shared = registration["deployment"]["shared"]
-    assets = {k: registration[k] for k in ("reference_program", "source_corpus") if registration.get(k)}
     if family == "socket":
-        instance = ArtifactService(startup, shared=shared, **assets, **observations)
+        instance = ArtifactService(startup, shared=shared, **observations)
         return checked(instance, startup, registration)
-    options = dict(population=len(startup), observation_settle_seconds=2, **assets, **observations)
+    options = dict(population=len(startup), observation_settle_seconds=2, **observations)
     if family == "mapped_memory":
         instance = WorkMemory(startup, shared=shared, **options)
         return checked(instance, startup, registration)
@@ -137,8 +136,6 @@ def deployment(startup, registration, **observations):
 
 
 def checked(instance, startup, registration):
-    from swarmform.programbench_pilot import probe_reference
-
     try:
         for actor, files in startup.items():
             expected = {path: sha256(text.encode()).hexdigest() for path, text in files.items()}
@@ -150,17 +147,6 @@ def checked(instance, startup, registration):
             result, _ = instance.execute(actor, "python -c " + shlex.quote(script))
             if result["exit_code"] != 0 or json.loads(result["stdout"]) != expected:
                 raise RuntimeError("Installed task materials differ for " + actor)
-            container = json.loads(command(["docker", "inspect", instance.stations[actor].name]).stdout)[0]
-            for name, target, probe in (("reference_program", "/opt/reference", probe_reference),):
-                if name in registration:
-                    mounts = [m for m in container["Mounts"] if m["Destination"] == target]
-                    if len(mounts) != 1 or mounts[0]["RW"]:
-                        raise RuntimeError("Missing read-only task asset")
-                    instance.bindings[actor].setdefault("task_asset_verification", {})[name] = {
-                        "sha256": registration[name]["sha256"], "bytes": registration[name]["bytes"],
-                        "volume": mounts[0]["Name"], "mount": target, "read_only": True,
-                        "probe": probe(instance, actor),
-                    }
             instance.bindings[actor]["startup_sha256"] = expected
             instance.bindings[actor]["initial_materials_verified"] = True
         return instance

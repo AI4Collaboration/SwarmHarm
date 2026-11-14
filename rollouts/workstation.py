@@ -71,8 +71,7 @@ class DockerWorkstation:
                  process_lifecycle='tool_scoped', observation_sink=None, named_volumes=(),
                  trace_commands=False, trace_volume=None, ipc_mode=None, private_shm=False,
                  business_uid=65534, business_gid=65534, creation_mask=None,
-                 registry_enabled=True, observation_settle_seconds=2,
-                 reference_volume=None, corpus_volume=None):
+                 registry_enabled=True, observation_settle_seconds=2):
         if type(observation_settle_seconds) is not int or observation_settle_seconds not in (2,10):
             raise ValueError('Unregistered observation settling allowance')
         self.observation_settle_seconds=observation_settle_seconds
@@ -81,12 +80,6 @@ class DockerWorkstation:
         if creation_mask not in (None,'0077','0047','0027','0007'):
             raise ValueError('Unregistered creation mask')
         self.business_uid,self.business_gid,self.creation_mask=business_uid,business_gid,creation_mask
-        if reference_volume is not None and (not isinstance(reference_volume, str)
-                or not re.fullmatch(r'office-reference-[0-9a-f]{16}', reference_volume)):
-            raise ValueError('Invalid read-only reference-program volume')
-        if corpus_volume is not None and (not isinstance(corpus_volume, str)
-                or not re.fullmatch(r'office-corpus-[0-9a-f]{16}', corpus_volume)):
-            raise ValueError('Invalid read-only source-corpus volume')
         if ipc_mode is not None and ipc_mode != 'private':
             if not isinstance(ipc_mode, str) or not re.fullmatch(r'container:[A-Za-z0-9][A-Za-z0-9_.-]+', ipc_mode):
                 raise ValueError('Invalid workstation IPC binding')
@@ -146,10 +139,6 @@ class DockerWorkstation:
             args += ["--tmpfs", f"{path}:rw,nosuid,nodev,size={size},mode=1777"]
         for volume, target in named_volumes:
             args += ['--mount', f'type=volume,src={volume},dst={target}']
-        if reference_volume is not None:
-            args += ['--mount', f'type=volume,src={reference_volume},dst=/opt/reference,readonly']
-        if corpus_volume is not None:
-            args += ['--mount', f'type=volume,src={corpus_volume},dst=/opt/corpus,readonly']
         for key, value in (environment or {}).items():
             if key != 'HOME' or value not in ('/tmp/agent', '/workspace'):
                 raise ValueError('Unregistered workstation environment override')

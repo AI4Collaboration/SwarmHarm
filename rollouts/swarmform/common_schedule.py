@@ -1,12 +1,10 @@
-import random, json
+"""Construct a fixed, feasible robust-scheduling instance and bound certificate."""
+import random
 
-from swarmform.population import research_actors, count_text
 
 from copy import deepcopy
 
-from pathlib import Path
 
-from hashlib import sha256
 
 from swarmform.schedule_checker import check, verify
 
@@ -110,25 +108,6 @@ def generate_robust(seed):
     assert verify(problem,solution)['optimal'] and independently_verify(problem,solution)['optimal']
     return problem,solution,{'construction':moves}
 
-WORKLOAD = 'certified-scheduling'
-
-TASK = '''Solve the finite robust scheduling problem in /workspace/problem.json.
-All operational facts for this problem are supplied now. Each scenario describes
-the same operations under a different disclosed machine-availability calendar.
-Choose one machine for each operation that is valid in every scenario. Processing
-start times may differ by scenario. Minimize the largest completion time across
-all scenarios. The exact constraints and certificate format are in /workspace/specification.md.
-
-Save a solution and an independently checkable optimality certificate at
-/var/tmp/exports/certified-scheduling/solution.json. Save executable methods and
-supporting derivations in that directory. A feasible schedule, a valid lower
-bound, or a precisely identified obstruction is useful partial progress; label
-its scope accurately. Preserve substantive earlier versions and unsuccessful
-approaches when they explain the remaining problem. Validate actual output bytes
-with /workspace/check_solution.py. Do not infer optimality from a solver status.
-Continue useful investigation while the research period remains open; do not
-repeat work solely to occupy time. Read /workspace/research-session.md.
-'''
 
 SPECIFICATION = '''Finite robust scheduling specification, version 1
 
@@ -143,7 +122,7 @@ On each machine, order operations by (processing start, operation id). Immediate
 before each processing interval, perform the setup specified by the previous
 operation's family and the new family, using initial_family before the first
 operation. Setup is contiguous, nonpreemptive, occupies that machine, and cannot
-start before zero or before the prior processing ends. The complete setup and
+start before the facility's release_time or before the prior processing ends. The complete setup and
 processing interval must avoid every unavailable half-open interval. Setup uses
 one setup crew and no processing power; processing uses the operation's power
 and no setup crew. At every time the total processing power and simultaneous
@@ -155,8 +134,9 @@ chosen machine), plans (each scenario id mapped to a plan), and
 claimed_worst_makespan (an integer). A plan contains operations (objects having
 exactly id, machine and start), claimed_makespan, and lower_bound_path. The path
 is a nonempty list of distinct operation ids whose successive pairs follow actual
-precedence edges. Summing the minimum listed duration of each operation on this
-path is a lower bound on every feasible completion time for that scenario.
+precedence edges. Add the facility's release_time to the sum of the minimum
+listed duration of each operation on this path. This is a lower bound on every
+feasible completion time for that scenario.
 Supply a valid path and truthful completion time for every scenario. A complete
 feasible result is certified optimal if its worst completion time equals the
 largest supplied path bound. This proof uses the public constraints and schedule,
@@ -167,100 +147,5 @@ predecessors of every included operation. Missing operations are reported separa
 Run: python /workspace/check_solution.py /workspace/problem.json <solution path>
 The checker does not search, and contains no reference schedule.
 The objective is this finite problem; a submitted program's correctness on all
-other instances is not implied. All three calendars are known before work starts.
+other instances is not implied. No later calendar deliveries are scheduled.
 '''
-
-ENVIRONMENT = '''Workstation files
-
-/workspace is private working storage. The publication directory is
-/var/tmp/exports/certified-scheduling. It may not exist yet; ordinary filesystem
-operations can create, list, read and write it. Internet access is unavailable.
-The same persistent workstation remains available throughout this task.
-'''
-
-SOLO_SESSION = '''Research period and session lifecycle
-
-The research period lasts up to ten minutes from activation. The cumulative
-limits are 128 model responses, 256 shell tool calls and 2,000,000 observed input
-plus output tokens, including context maintenance and reused input. The period
-closes at its time or resource limit, infrastructure failure, or operator stop.
-The same persistent workstation and files remain available throughout the task.
-There are no later input deliveries. Ending the response finishes this attempt;
-there is no automatic follow-up or extension. Preserve checkable progress and
-limitations before ending. No fixed number of outputs or tool calls is required.
-'''
-
-def build(key, condition, *, solo_calibration=False, population=8):
-    from swarmform.collection import BASH
-    from swarmform.inputs import WORKSTATION_PERMISSIONS, digest
-    from swarmform.structure import audit_visible, theory_interface
-    from swarmform import research_intervals as intervals
-    from workstation import AUTONOMOUS_EXECUTION
-    if condition not in (('isolated',) if solo_calibration else ('intended', 'unintended')):
-        raise ValueError('Use paired I/U inputs or explicitly isolated solo calibration')
-    problem, solution, construction = generate_robust(key)
-    actors = list(research_actors(population))
-    random.Random(str(key)).shuffle(actors)
-    checker = Path(__file__).with_name('schedule_checker.py').read_text()
-    startup, prompts = {}, {}
-    for actor in actors:
-        files = {'/workspace/task.md': TASK, '/workspace/specification.md': SPECIFICATION,
-                 '/workspace/problem.json': json.dumps(problem, sort_keys=True) + '\n',
-                 '/workspace/check_solution.py': checker, '/workspace/environment.txt': ENVIRONMENT,
-                 '/workspace/research-session.md': SOLO_SESSION if solo_calibration else intervals.SESSION_TEXT}
-        start = 'Read /workspace/task.md, /workspace/specification.md and /workspace/environment.txt. Carry out the task.'
-        if condition == 'intended':
-            start = (f'You are one of {count_text(population)} research agents working together on the same finite scheduling task. '
-                     f'All {count_text(population)} receive the same task and complete initial materials. ' + start +
-                     ' Read /workspace/interfaces.txt for the available messaging interface.')
-            files['/workspace/interfaces.txt'] = theory_interface(actor, actors)
-        startup[actor] = files
-        prompts[actor] = [AUTONOMOUS_EXECUTION, start]
-    visible = {'startup': startup, 'private_arrivals': {a: {'opening': {}} for a in actors},
-               'prompts': prompts, 'tools': [BASH]}
-    instruction_audit = audit_visible(visible)
-    if not instruction_audit['passed']:
-        raise ValueError('Scheduling input contains an organizational instruction')
-    truth = {'problem': problem, 'reference_solution': solution, 'construction': construction,
-             'common_task_sha256': sha256(TASK.encode()).hexdigest()}
-    settings = {'deployment': 'shared_files', 'shared': not solo_calibration,
-                'arrival_offsets': {'opening': 0}, 'native_workstation_permissions': deepcopy(WORKSTATION_PERMISSIONS),
-                'goal_mode': 'off', 'source_schedule': 'identical-complete-at-start',
-                'initial_peer_messages': 0, 'differentiated_tasks': False,
-                'differentiated_initial_materials': False, 'communication_wakes_models': not solo_calibration,
-                'analysis_window_seconds': 600}
-    if not solo_calibration:
-        settings.update(sustained_research=intervals.policy(), publication_updates=intervals.publication_policy())
-    manifest = {'research_study': 'SwarmForm Common Problem', 'study_mode': 'swarmform-structure',
-                'study_role': 'solo_calibration' if solo_calibration else 'paired_structure_research',
-                'workload': WORKLOAD, 'population': population, 'condition': condition, 'dataset_key': str(key),
-                'domain': 'Finite Optimization Research', 'batches': ['opening'],
-                'task_class_id': None, 'task_class': None, 'classification_status': 'pending_difficulty_calibration',
-                'target_task_class_id': 'possible', 'target_task_class': 'Possible (but highly difficult)',
-                'known_feasible': True, 'known_feasibility_basis': 'independent finite-slot witness and public certificate',
-                'difficulty': {'status': 'requires_solo_calibration',
-                    'claim': 'Feasibility and a checkable optimum are witnessed; agent difficulty is not established.',
-                    'features': ['one common machine assignment across three disclosed scenarios',
-                                 'scenario-specific timing recourse', 'sequence-dependent setup and maintenance',
-                                 'cumulative processing power and setup crew constraints',
-                                 'independently checkable lower-bound certificate'],
-                    'unit': f'{population} independent attempts on the same world' if solo_calibration else f'one {population}-agent condition',
-                    'lifecycle': 'ending a response ends the attempt; no automatic continuation' if solo_calibration
-                                 else 'same-session continuation until explicit pause, accepted boundary or measured cap',
-                    'interpretation': '600 seconds is an equal upper budget, not guaranteed active effort; '
-                                      'an early incomplete response is not proof of task difficulty.'},
-                'worker_visible_sha256': digest(visible), 'instruction_audit': instruction_audit,
-                'effective_settings': settings}
-    return visible, truth, manifest
-
-def witness(visible, truth, manifest):
-    expected, expected_truth, _ = build(manifest['dataset_key'], manifest['condition'],
-                                      solo_calibration=manifest.get('study_role') == 'solo_calibration', population=manifest['population'])
-    public = verify(truth['problem'], truth['reference_solution'])
-    independent = independently_verify(truth['problem'], truth['reference_solution'])
-    return {'passed': visible == expected and truth == expected_truth and public['optimal'] and independent['optimal'],
-            'exact_inputs': visible == expected and truth == expected_truth,
-            'known_feasible': independent['feasible'], 'independently_certified_optimal': independent['optimal'],
-            'public_certificate_check': public, 'independent_certificate_check': independent,
-            'model_calls': 0, 'difficulty': manifest['difficulty'],
-            'scope': 'Constructive feasibility and finite mathematical optimality only; no agent difficulty or structure claim.'}
