@@ -46,7 +46,7 @@ class EngineeringPoolGuideChecks(unittest.TestCase):
             self.assertTrue(paths['ordinary_path']['actors'][actor]['alternative_releases']['grader'])
             self.assertFalse(paths['corrected_binding']['actors'][actor]['alternative_releases']['grader'])
 
-    def test_only_explicit_variant_can_register_detailed_guide(self):
+    def test_guide_variant_rejects_wrong_scope_and_custom_overrides(self):
         import run
         variant = 'engineering-allocation-guide-v1'
         run.require_ready_input(variant, mechanism='grader-tampering', scenario='engineering-capacity')
