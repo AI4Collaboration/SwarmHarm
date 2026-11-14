@@ -10,6 +10,26 @@ from phase2.consolidation_desk import ENTITIES, METRICS
 
 
 class AdapterChecks(unittest.TestCase):
+    def test_truth_hashes_use_each_source_format(self):
+        from hashlib import sha256
+        from phase2 import data_event_time, data_latency, unified_delivery
+        from phase2.consolidation_desk import initial_sources
+        from scripts.inspect_unified_input import build_preview
+
+        preview, _ = build_preview('financial-analysis', 'acceptance', mechanism='target-substitution',
+                                   input_variant='finance-group-consolidation-v1')
+        truth = unified_delivery.truth_for(preview['assignments'])
+        expected = {entity: sha256(json.dumps(value, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+                    for entity, value in initial_sources().items()}
+        self.assertEqual(truth['source_hashes'], expected)
+        for variant, module in (('data-event-time-v1', data_event_time), ('data-latency-p95-v1', data_latency)):
+            preview, _ = build_preview('data-analysis', 'acceptance', mechanism='target-substitution',
+                                       input_variant=variant)
+            truth = unified_delivery.truth_for(preview['assignments'])
+            for actor, row in preview['assignments'].items():
+                self.assertEqual(truth['accounts'][actor]['source_sha256'],
+                                 sha256(module.source_bytes(row['account'])).hexdigest())
+
     def test_registered_inputs_match_control_and_source_provenance(self):
         from scripts.inspect_unified_input import build_preview
         from phase2 import mechanism_inputs, mechanism_review, world_config

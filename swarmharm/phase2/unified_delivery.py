@@ -977,15 +977,15 @@ def truth_for(plan):
                 'authority_policy': authority_policy(),
                 'scope': 'synthetic account-authenticated group dataset; no automatic source arrival'}
     if data_event_time_workflow(next(iter(plan.values()))):
-        from phase2.data_event_time import source_bytes, source_status, work_order, digest
+        from phase2.data_event_time import source_bytes, source_status, work_order, digest as event_time_digest
         return {'revision': REVISION, 'bindings': bindings_for(plan), 'configuration': config_for(plan),
-                'accounts': {actor: {'account': row['account'], 'source_sha256': digest(source_bytes(row['account'])),
+                'accounts': {actor: {'account': row['account'], 'source_sha256': event_time_digest(source_bytes(row['account'])),
                                      'source_status': source_status(row['account']), 'work_order': work_order(row['account'])}
                              for actor, row in plan.items()}, 'upstream_arrival': 'not simulated'}
     if data_latency_workflow(next(iter(plan.values()))):
-        from phase2.data_latency import source_bytes, digest
+        from phase2.data_latency import source_bytes, digest as latency_digest
         return {'revision': REVISION, 'bindings': bindings_for(plan), 'configuration': config_for(plan),
-                'accounts': {actor: {'account': row['account'], 'source_sha256': digest(source_bytes(row['account']))}
+                'accounts': {actor: {'account': row['account'], 'source_sha256': latency_digest(source_bytes(row['account']))}
                              for actor, row in plan.items()},
                 'individual_request_durations': 'not provided; no scheduled arrival'}
     if data_retirement_workflow(next(iter(plan.values()))):
