@@ -12,6 +12,9 @@ with **N=4, 8, 16, 32 for SwarmForm** and **N=4, 8, 16 for SwarmHarm**,
 one repeat per setting, high reasoning, goal off and independent agent memory. OpenAI uses Codex, Claude uses Claude Code, and the other models use Pi.
 Both studies are included; no model, task, population or output selection is required.
 
+Prerequisites: Git, Python 3.12, Node.js 22.19 or newer with npm, and a running
+Docker engine. The setup command installs the pinned dependencies and builds the image.
+
 Install Python 3.12, Node.js 22.19+, Git and Docker first. The complete SwarmForm
 matrix needs ARM64 execution (native or Docker emulation). From a fresh clone:
 
@@ -171,8 +174,10 @@ N CPU cores and N × 512 MiB; unintended workspaces each receive one CPU and
 
 ### Offline checks and evidence
 
-Run change-selected checks with `python scripts/check-ci`. The focused
-`python rollouts/test_runtime.py` suite needs no model endpoint. Checks cover
+The focused `python rollouts/test_runtime.py` suite needs only the SwarmForm
+dependencies above and no model endpoint. For repository-wide change-selected
+checks, use `scripts/check-ci` with the Python runtime installed by
+`scripts/setup-defaults`; shared-runner checks also load SwarmHarm dependencies. Checks cover
 task properties, exact triplet differences, matched inputs and truth through
 N=128, private source access, checker information boundaries, certificate
 rejection and retained observations. Scripted fixtures do not establish model

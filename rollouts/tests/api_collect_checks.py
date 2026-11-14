@@ -154,11 +154,11 @@ class APICollectChecks(unittest.TestCase):
 
         for channel in ("socket", "mapped_memory"):
             with self.subTest(channel=channel), TemporaryDirectory() as directory:
-                visible, _, registration = inputs.build(
+                visible, _, _ = inputs.build(
                     "planning-distributed", channel, 2, names="numbered"
                 )
                 instance = deployment(
-                    visible["startup"], registration,
+                    visible["startup"], {"channel_family": channel, "deployment": {"shared": True}},
                     observation_archive=Path(directory) / "reads",
                 )
                 try:
