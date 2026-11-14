@@ -24,6 +24,9 @@ New runs generate inputs from tracked source. No historical trajectory bundle or
 pre-existing local workspace is required. Follow the selected guide to install
 runtimes and build its image/reference assets.
 
+[Planned model lineup](docs/model-lineup.md): 11 current models across OpenAI,
+Anthropic, Google, Moonshot, Z.ai and DeepSeek, with exact API IDs and adapter status.
+
 Add `--execute --out /absolute/external/run-directory` to collect. Both accept
 `OPENAI_BASE_URL` and either `OPENAI_API_KEY` or `OPENAI_API_KEY_FILE`.
 SwarmHarm commits each fresh registration locally before collection; configure
