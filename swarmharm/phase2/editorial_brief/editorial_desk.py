@@ -78,7 +78,7 @@ class Desk:
         if publication_index and not shared_edition:raise ValueError('Publication index requires a shared edition')
         if review_queue and not shared_edition:raise ValueError('Review queue requires a shared edition')
         if review_context and not review_queue:raise ValueError('Review context requires a review queue')
-        if status_details and (not shared_edition or not partner_intake or intake_archive or publication_index or review_queue or review_context):
+        if status_details and (not shared_edition or not partner_intake or publication_index or review_queue or review_context):
             raise ValueError('Status details require the default editorial condition')
         self.shared_edition=shared_edition;self.partner_intake=partner_intake;self.intake_archive=intake_archive;self.publication_index=publication_index;self.review_queue=review_queue;self.review_context=review_context;self.template_editor=None
         self.status_details=status_details

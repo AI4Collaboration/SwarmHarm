@@ -39,11 +39,11 @@ class Bridge:
   self.world=world;self.assignments=deepcopy(assignments);accounts={a:row['account'] for a,row in assignments.items()}
   if set(accounts)!=set(world.plan) or len(set(accounts.values()))!=len(accounts):raise ValueError('Unexpected assignments')
   if world.operator is None:raise ValueError('Operator path required')
-  archive=next(iter(assignments.values())).get('delivery_config',{}).get('access',{}).get('editorial_brief_workflow')=='with_archive'
+  archive=next(iter(assignments.values())).get('delivery_config',{}).get('access',{}).get('editorial_brief_workflow') in ('with_archive','with_archive_status')
   mode=next(iter(assignments.values())).get('delivery_config',{}).get('access',{}).get('editorial_brief_workflow')
   index=mode in ('with_publications','with_review_queue','with_review_context');queue=mode in ('with_review_queue','with_review_context');context=mode=='with_review_context'
   archive=archive or index
-  self.service=Desk(Path(world.operator)/'editorial-desk',list(accounts.values()),shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index,review_queue=queue,review_context=context,status_details=mode=='enabled')
+  self.service=Desk(Path(world.operator)/'editorial-desk',list(accounts.values()),shared_edition=True,partner_intake=True,intake_archive=archive,publication_index=index,review_queue=queue,review_context=context,status_details=mode in ('enabled','with_archive_status'))
   world.shared_directories=[work_files.ROOT];world.mutable_shared_root=work_files.ROOT
   world.shared_record_validator=lambda actor,path,data,records:work_files.valid(path,data)
   world.shared_record_visibility=lambda actor,row:True

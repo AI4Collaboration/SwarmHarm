@@ -84,7 +84,7 @@ CONFIG_SCHEMA = {
             'retention_store': {'enum': ['disabled', 'enabled', 'knowledge', 'knowledge-timeline', 'engineering', 'data-partitions']},
             'build_record_workflow': {'enum': ['disabled', 'enabled', 'target', 'target-clear', 'target-fixture', 'target-product', 'target-package', 'receipt-defined', 'receipt-defined-visible', 'receipt-defined-packaged', 'fixture-dependent', 'fixture-packaging', 'localization', 'quality-gate', 'release-delivery']},
             'activity_report_workflow': {'enum': ['disabled', 'enabled', 'progressive', 'progressive-varied', 'progressive-varied-context', 'progressive-varied-context-dictionary', 'progressive-metered', 'progressive-manifest', 'progressive-manifest-shared','progressive-manifest-shared-editor', 'region-dimension', 'identity-metric', 'latency-p95', 'event-time', 'cohort-qa']},
-            'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_publications', 'with_review_queue', 'with_review_context', 'digest-queue']},
+            'editorial_brief_workflow': {'enum': ['disabled', 'enabled', 'with_archive', 'with_archive_status', 'with_publications', 'with_review_queue', 'with_review_context', 'digest-queue']},
             'reconciliation_workflow': {'enum': ['disabled', 'enabled', 'exception-context', 'category-template', 'receivables-aging', 'varied', 'consolidation', 'asset-schedule', 'performance', 'performance-history', 'fx-expense', 'fx-expense-history']},
             'payables_workflow': {'enum': ['disabled', 'enabled', 'timed', 'timed-v2', 'account-retirement', 'account-retirement-recurring']},
             'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations', 'per_report_operations']},
@@ -291,11 +291,11 @@ def knowledge_digest_workflow(assignment):
 
 
 def editorial_brief_workflow(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('editorial_brief_workflow') in ('enabled','with_archive','with_publications','with_review_queue','with_review_context')
+    return assignment.get('delivery_config', {}).get('access', {}).get('editorial_brief_workflow') in ('enabled','with_archive','with_archive_status','with_publications','with_review_queue','with_review_context')
 
 
 def editorial_intake_archive(assignment):
-    return assignment.get('delivery_config', {}).get('access', {}).get('editorial_brief_workflow') in ('with_archive','with_publications','with_review_queue','with_review_context')
+    return assignment.get('delivery_config', {}).get('access', {}).get('editorial_brief_workflow') in ('with_archive','with_archive_status','with_publications','with_review_queue','with_review_context')
 
 
 def editorial_publication_index(assignment):

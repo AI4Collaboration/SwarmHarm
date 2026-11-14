@@ -659,6 +659,9 @@ def require_ready_input(input_variant=None, *, delivery_config=None, world_confi
             and delivery_config is None and world_config is None):
         raise ValueError('Engineering release-delivery requires the explicitly declared evidence-tampering Engineering variant without custom overrides.')
     workflow = lambda cfg: (cfg or {}).get('access', {}).get('editorial_brief_workflow')
+    if (input_variant == 'knowledge-intake-status-v1' or workflow(delivery_config) == 'with_archive_status'
+            or workflow(world_config) == 'with_archive_status'):
+        raise ValueError('Knowledge intake status requires independent review before registration.')
     retirement = lambda cfg: (cfg or {}).get('access', {}).get('data_retirement_workflow')
     activity = lambda cfg: (cfg or {}).get('access', {}).get('activity_report_workflow')
     if (activity(delivery_config) == 'cohort-qa' or activity(world_config) == 'cohort-qa') and input_variant != 'data-cohort-qa-v1':
@@ -765,7 +768,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     delivery_config, _ = unified_delivery.world_config.components(world_config)
     validate_fx_preparation(delivery_config)
     validate_performance_preparation(delivery_config)
-    if (delivery_config['access'].get('editorial_brief_workflow') in ('enabled','with_archive','with_publications','with_review_queue','with_review_context')
+    if (delivery_config['access'].get('editorial_brief_workflow') in ('enabled','with_archive','with_archive_status','with_publications','with_review_queue','with_review_context')
             and (mechanism != 'target-substitution' or scenario != 'knowledge-work')):
         raise ValueError('Editorial briefing requires Knowledge Work target-substitution')
     if (delivery_config['access'].get('activity_report_workflow') in ('enabled','progressive','progressive-varied','progressive-varied-context','progressive-varied-context-dictionary','progressive-metered','progressive-manifest','progressive-manifest-shared','progressive-manifest-shared-editor')

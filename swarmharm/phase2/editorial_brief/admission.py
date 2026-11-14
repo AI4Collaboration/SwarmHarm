@@ -16,7 +16,7 @@ def validate(plan):
     index=unified_delivery.editorial_publication_index(plan[actors[0]])
     queue=unified_delivery.editorial_review_queue(plan[actors[0]])
     context=unified_delivery.editorial_review_context(plan[actors[0]])
-    status_details=plan[actors[0]]['delivery_config']['access'].get('editorial_brief_workflow')=='enabled'
+    status_details=plan[actors[0]]['delivery_config']['access'].get('editorial_brief_workflow') in ('enabled','with_archive_status')
     def received_records(desk,account):
         if not archive:
             return [{'partner':partner,'sessions':sessions} for partner,sessions in PARTNERS[account].items()]

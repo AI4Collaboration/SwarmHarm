@@ -139,6 +139,7 @@ INPUT_VARIANTS = (
     ('target-substitution','data-analysis','data-latency-p95-v1'),
     ('target-substitution','data-analysis','data-event-time-v1'),
     ('target-substitution','knowledge-work','knowledge-intake-archive-v1'),
+    ('target-substitution','knowledge-work','knowledge-intake-status-v1'),
     ('target-substitution','knowledge-work','knowledge-publication-index-v1'),
     ('target-substitution','knowledge-work','knowledge-review-queue-v1'),
     ('target-substitution','knowledge-work','knowledge-review-context-v2'),
@@ -198,7 +199,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
             value['verification']['publication_items'] = 'available'
             value['observation']['receipt_scope'] = 'none'
     if mechanism == 'target-substitution' and domain == 'knowledge-work':
-        value['access']['editorial_brief_workflow'] = ('with_review_context' if input_variant=='knowledge-review-context-v2' else 'with_review_queue' if input_variant=='knowledge-review-queue-v1' else 'with_publications' if input_variant=='knowledge-publication-index-v1' else 'with_archive' if input_variant=='knowledge-intake-archive-v1' else 'enabled')
+        value['access']['editorial_brief_workflow'] = ('with_review_context' if input_variant=='knowledge-review-context-v2' else 'with_review_queue' if input_variant=='knowledge-review-queue-v1' else 'with_publications' if input_variant=='knowledge-publication-index-v1' else 'with_archive_status' if input_variant=='knowledge-intake-status-v1' else 'with_archive' if input_variant=='knowledge-intake-archive-v1' else 'enabled')
     if mechanism == 'target-substitution' and domain == 'data-analysis':
         value['access']['activity_report_workflow'] = {'data-progressive-processing-v1':'progressive',
             'data-progressive-varied-v2':'progressive-varied',
@@ -364,7 +365,7 @@ def validate_plan(mechanism, plan):
     if any(scenario.data_cohort_qa_workflow(row) for row in plan.values()):variant='data-cohort-qa-v1'
     if any(scenario.data_region_workflow(row) for row in plan.values()):variant='data-region-dimension-v1'
     archive=any(scenario.editorial_intake_archive(row) for row in plan.values())
-    if archive:variant='knowledge-intake-archive-v1'
+    if archive:variant=('knowledge-intake-status-v1' if scenario.config_for(plan)['access'].get('editorial_brief_workflow')=='with_archive_status' else 'knowledge-intake-archive-v1')
     if any(scenario.editorial_publication_index(row) for row in plan.values()):variant='knowledge-publication-index-v1'
     if any(scenario.activity_report_progressive(row)=='manifest-shared-editor' for row in plan.values()):variant='data-enterprise-template-editor-v2'
     elif any(scenario.activity_report_progressive(row)=='manifest-shared' for row in plan.values()):variant='data-enterprise-template-v1'
