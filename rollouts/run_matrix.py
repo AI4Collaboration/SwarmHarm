@@ -43,7 +43,7 @@ def main():
         "--base-url",
         default=os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1"),
     )
-    parser.add_argument("--populations", nargs="+", type=int, default=[3])
+    parser.add_argument("--populations", nargs="+", type=int, default=[4, 8, 16, 32])
     parser.add_argument(
         "--tasks", nargs="+", choices=TASK_MODULES, default=list(TASK_MODULES)
     )

@@ -148,27 +148,21 @@ class JobDeployment(FileDeployment):
         FileDeployment._remove_volume(self,name)
 
     def _close_service(self):
-        try:
-            if not self.service.closed and self.service.initialized:
-                command(['docker','exec',self.service.name,'python','-c',
-                    "from pathlib import Path; Path('/workspace/.close-service').touch()"])
-                deadline=time.monotonic()+10
-                while subprocess.run(['docker','exec',self.service.name,'test','-f',
-                        '/workspace/.service-closed'],capture_output=True).returncode:
-                    if time.monotonic()>deadline:
-                        raise RuntimeError('Processing request handlers did not close')
-                    time.sleep(.05)
-                self.terminal_service=self.service.observe()
-        finally:
-            self.service.close()
+        if not self.service.closed and self.service.initialized:
+            command(['docker','exec',self.service.name,'python','-c',
+                "from pathlib import Path; Path('/workspace/.close-service').touch()"])
+            deadline=time.monotonic()+10
+            while subprocess.run(['docker','exec',self.service.name,'test','-f',
+                    '/workspace/.service-closed'],capture_output=True).returncode:
+                if time.monotonic()>deadline:
+                    raise RuntimeError('Processing request handlers did not close')
+                time.sleep(.05)
+            self.terminal_service=self.service.observe()
+        self.service.close()
 
     def close(self):
         if not self.closed:
-            if getattr(self,'cleanup_failure',None):
-                raise RuntimeError('Previous processing cleanup was not confirmed: '+self.cleanup_failure)
-            try:
-                self.resources.close()
-            except BaseException as error:
-                self.cleanup_failure=repr(error)
-                raise
-            self.closed=True
+            self.capture_terminal()
+            self._close_service()
+            self.resources.close()
+            self.closed = True

@@ -202,7 +202,9 @@ def select_checks(files, full=False):
     for adapter in ('codex', 'claude', 'pi'):
         if adapter + '_collect' in tests:
             harnesses.add(adapter)
-    order = ('syntax', 'inventory', 'inputs', 'catalog', 'wording', 'balanced', 'format', 'installation')
+    if full or any(name.startswith('rollouts/') for name in files):
+        checks.add('swarmform_api')
+    order = ('syntax', 'inventory', 'swarmform_api', 'inputs', 'catalog', 'wording', 'balanced', 'format', 'installation')
     return {'files': sorted(files), 'full': full,
             'checks': [c for c in order if c in checks],
             'tests': ['tests.' + t + '_checks' for t in sorted(tests)],
@@ -245,6 +247,7 @@ def main(argv=None):
         parser.error('Selected code checks need Python 3.12 from the pinned runtime environment.')
     commands = {
         'inventory': ['scripts/check_dataset_admission_contract.py'],
+        'swarmform_api': ['rollouts/test_runtime.py'],
         'inputs': ['scripts/check_swarmform_inputs.py', '--inventory-only'],
         'catalog': ['scripts/check_swarmform_catalog.py'],
         'wording': ['experiments/prompt-contract/checks.py'],

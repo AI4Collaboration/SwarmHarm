@@ -72,16 +72,29 @@ def source_digest():
 
 
 def write_json(path, value):
-    tmp = path.with_suffix(".pending")
-    tmp.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
-    tmp.replace(path)
+    from atomic import atomic_json
+
+    atomic_json(path, value)
 
 
 def emit(path, value):
-    with gzip.open(path, "at", encoding="utf-8") as stream:
-        stream.write(
-            json.dumps(value, ensure_ascii=False, separators=(",", ":")) + "\n"
-        )
+    with path.open("ab") as raw:
+        offset = raw.tell()
+        try:
+            with gzip.GzipFile(
+                fileobj=raw, mode="wb", compresslevel=1, mtime=0
+            ) as stream:
+                stream.write(
+                    (
+                        json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+                        + "\n"
+                    ).encode()
+                )
+            raw.flush()
+            os.fsync(raw.fileno())
+        except BaseException:
+            raw.truncate(offset)
+            raise
 
 
 class Cohort:
@@ -103,7 +116,7 @@ class Cohort:
         self.stopping = asyncio.Event()
         self.reason = "all_finished"
         self.errors = {}
-        self.active_tools = set()
+        self.active_tools = []
 
     def snapshot(self, actor, phase, value):
         with self.lock:
@@ -125,14 +138,22 @@ class Cohort:
             self.stopping.set()
 
     def trace(self, actor, kind, **fields):
-        emit(
-            self.out / (actor + ".jsonl.gz"),
-            {"kind": kind, "s": time.monotonic() - self.start, **fields},
-        )
+        with self.lock:
+            emit(
+                self.out / (actor + ".jsonl.gz"),
+                {"kind": kind, "s": time.monotonic() - self.start, **fields},
+            )
 
     def tool(self, actor, cmd, call_id):
         with command_binding(actor=actor, call_id=call_id):
-            return self.station.execute(actor, cmd)
+            try:
+                result, snapshot = self.station.execute(actor, cmd)
+                self.snapshot(actor, "after_tool", snapshot)
+                self.trace(actor, "tool_result", call_id=call_id, result=result)
+                return result, snapshot
+            except Exception as error:
+                self.trace(actor, "tool_error", call_id=call_id, error=str(error))
+                raise
 
     async def participant(self, actor):
         fn = self.visible["tools"][0]
@@ -215,12 +236,9 @@ class Cohort:
                         task = asyncio.create_task(
                             asyncio.to_thread(self.tool, actor, command, call["id"])
                         )
-                        self.active_tools.add(task)
-                        task.add_done_callback(self.active_tools.discard)
+                        self.active_tools.append(task)
                         result, snapshot = await asyncio.shield(task)
-                        self.snapshot(actor, "after_tool", snapshot)
                     usage["tools"] += 1
-                    self.trace(actor, "tool_result", call_id=call["id"], result=result)
                     messages.append(
                         {
                             "role": "tool",
@@ -293,8 +311,29 @@ class Cohort:
         stopper = ParticipantStop(self.station)
         workers = []
         watch = None
+        horizon = 0
+        receipt = {"research_stop_verified": False}
         try:
             write_json(self.out / "bindings.json", self.station.bindings)
+            recovery = {}
+            for actor, station in self.station.stations.items():
+                recovery[actor] = {
+                    "container": station.name,
+                    "account_view": getattr(station, "account_view", []),
+                    "business_uid": station.business_uid,
+                    "observation_roots": station.observation_roots,
+                    "archive": str(station.archive.relative_to(self.out)),
+                }
+            write_json(
+                self.out / "recovery-bindings.json",
+                {
+                    "participants": recovery,
+                    "service": getattr(
+                        getattr(self.station, "service", None), "name", None
+                    ),
+                    "memory_anchor": getattr(self.station, "anchor", None),
+                },
+            )
             await asyncio.to_thread(stopper.arm)
             self.start = time.monotonic()
             self.deadline = self.start + args.seconds
@@ -328,13 +367,31 @@ class Cohort:
             try:
                 receipt = await asyncio.to_thread(stopper.stop, reason=self.reason)
                 write_json(self.out / "physical-stop.json", receipt)
-                await asyncio.gather(*workers, return_exceptions=True)
-                if self.active_tools:
-                    await asyncio.gather(
-                        *list(self.active_tools), return_exceptions=True
+            except Exception as error:
+                self.errors["shutdown"] = f"{type(error).__name__}: {error}"
+            await asyncio.gather(*workers, return_exceptions=True)
+            results = await asyncio.gather(*self.active_tools, return_exceptions=True)
+            for index, result in enumerate(results):
+                if isinstance(result, BaseException):
+                    self.errors[f"tool_{index}"] = str(result)
+            try:
+                if receipt["research_stop_verified"]:
+                    await asyncio.to_thread(self.station.close)
+                else:
+                    self.errors["shutdown"] = (
+                        "Participant stop unverified; original resources retained"
                     )
-            finally:
-                await asyncio.to_thread(self.station.close)
+            except Exception as error:
+                self.errors["capture"] = f"{type(error).__name__}: {error}"
+            if self.errors:
+                write_json(
+                    self.out / "recovery.json",
+                    {
+                        "resources": self.station.bindings,
+                        "errors": self.errors,
+                        "instructions": "Keep these Docker resources until all terminal observations are exported.",
+                    },
+                )
         if getattr(self.station, "terminal_service", None):
             write_json(self.out / "service.json", self.station.terminal_service)
         outputs = {actor: {} for actor in self.visible["startup"]}

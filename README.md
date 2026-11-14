@@ -65,10 +65,10 @@ The two possible tasks admit a single-agent solution in principle. Difficulty an
 
 ### Install and run
 
-Use Python 3.12, Git and Docker with Linux containers. The full matrix requires ARM64 Linux or ARM64 container emulation for the pinned jq task. Build its reference locally once. Workstations run separately from the model endpoint. Only the operator process receives the API credential.
+Use Python 3.12, Git and Docker with Linux containers. Clone this repository and enter its root before the commands below. The full matrix requires ARM64 Linux or ARM64 container emulation for the pinned jq task. Build its reference locally once. Workstations run separately from the model endpoint. Only the operator process receives the API credential.
 
 ```sh
-# From repository root
+# From a fresh checkout of main
 python3.12 -m venv .venv
 . .venv/bin/activate
 python -m pip install -r rollouts/requirements.txt
@@ -80,29 +80,37 @@ bash rollouts/build-jq
 export OPENAI_BASE_URL=http://localhost:8000/v1
 export MODEL=openai/gpt-oss-20b       # use the exact ID served by your endpoint
 # Set OPENAI_API_KEY in the operator environment if your server requires it.
-python rollouts/run_matrix.py --model "$MODEL" --populations 3
-python rollouts/run_matrix.py --model "$MODEL" --populations 3 --execute --out ../swarmform-runs
+python rollouts/run_matrix.py --model "$MODEL" --populations 4
+python rollouts/run_matrix.py --model "$MODEL" --populations 4 --execute --out ../swarmform-runs
 ```
 
-The first command after API setup prints 24 planned cohorts without contacting the endpoint. The second runs them sequentially. Participants within each cohort work concurrently. The endpoint must support Chat Completions function tools, tool results, and `usage.total_tokens`. Use `--revision` to record the deployed checkpoint. Each group has at most 600 seconds from participant activation, 32 responses, 96 tool calls and 500,000 observed tokens per agent. Tokens include input and output on every response. The token stop is applied when the server reports usage. A final response ends that agent’s work. The cohort stops when all agents finish or on the first exhausted group boundary or participant error. Setup, capture and cleanup occupy additional wall time.
+The first command after API setup prints 24 planned cohorts without contacting the endpoint. The second runs them sequentially. Participants within each cohort work concurrently. The default population list is 4, 8, 16 and 32. Use an explicit --populations value for the small pilot. Each participant has a 512 MiB memory allowance and a one-CPU quota. Use at least N CPU cores and N × 512 MiB of available memory, plus service and observation headroom, for an unoversubscribed cohort. Smaller hosts can run the same population with shared CPU time; record that host capacity when comparing elapsed times. Run `python rollouts/test_runtime.py` for the focused offline checks. The endpoint must support Chat Completions function tools, tool results, and `usage.total_tokens`. Use `--revision` to record the deployed checkpoint. Each group has at most 600 seconds from participant activation, 32 responses, 96 tool calls and 500,000 observed tokens per agent. Tokens include input and output on every response. The token stop is applied when the server reports usage. A final response ends that agent’s work. The cohort stops when all agents finish or on the first exhausted group boundary or participant error. Setup, capture and cleanup occupy additional wall time.
 
 **Suggested collection order.**
 
-1. Run one N=3 cohort per condition on `service-plan` using `--tasks service-plan`. Check endpoint tool calls, physical stop receipts and available disk capacity.
-2. For open-weight deployments, run the full matrix at **N=3, 8 and 16**, three repetitions at each size, separately for `openai/gpt-oss-20b` and `openai/gpt-oss-120b`. This is **216 cohorts per model**. Use `--populations 3 8 16 --repeats 3 --execute` with an output directory. A third serving stack or `Qwen/Qwen3-32B` can repeat the same plan where function calling and usage reporting have passed the pilot. Model availability and compute costs depend on the deployment. [20B model card](https://huggingface.co/openai/gpt-oss-20b) · [120B model card](https://huggingface.co/openai/gpt-oss-120b) · [Qwen model card](https://huggingface.co/Qwen/Qwen3-32B).
-3. For a metered comparison, select one deployed tool-capable model, record its exact ID, and run one full repeat at N=3 before extending to N=8. Keep budgets and checkpoint fixed across conditions. These are proposed experiments.
-4. To replicate the identity treatment, run N=3 with `--names physicists` for all tasks and conditions. Oppenheimer, Bethe and Bacher rotate across launch and roster positions. Use numbered accounts at other sizes. Repeats use the same task instances, so they measure rollout variation conditional on these tasks.
+1. Run one N=4 cohort per condition on `service-plan` using `--tasks service-plan`. Check endpoint tool calls, physical stop receipts and available disk capacity.
+2. For open-weight deployments, run the full matrix at **N=4, 8, 16 and 32**, three repetitions at each size, separately for `openai/gpt-oss-20b` and `openai/gpt-oss-120b`. This is **288 cohorts per model**. Use `--populations 4 8 16 32 --repeats 3 --execute` with an output directory. A third serving stack or `Qwen/Qwen3-32B` can repeat the same plan where function calling and usage reporting have passed the pilot. Model availability and compute costs depend on the deployment. [20B model card](https://huggingface.co/openai/gpt-oss-20b) · [120B model card](https://huggingface.co/openai/gpt-oss-120b) · [Qwen model card](https://huggingface.co/Qwen/Qwen3-32B).
+3. For a metered comparison, select one deployed tool-capable model, record its exact ID, and run one full repeat at N=4 before extending to N=8. Keep budgets and checkpoint fixed across conditions. These are proposed experiments.
+4. To replicate the identity treatment, run N=3 with `--names physicists` for all tasks and conditions. Oppenheimer, Bethe and Bacher rotate across launch and roster positions. The main scaling experiment uses numbered accounts at N=4, 8, 16 and 32. This optional historical three-name treatment is separate. Repeats use the same task instances, so they measure rollout variation conditional on these tasks.
 
 The matrix preserves each attempt in a fresh directory outside Git. Running the same plan again skips completed cohorts and reports incomplete directories. To register a fresh attempt at a failed cell, use a fresh output root. For a **single configuration**, run the following from the repository root.
 
 ```sh
 (cd rollouts && python -m swarmform run --model "$MODEL" --task decoder-release \
-  --population 3 --names physicists --channel direct --out ../../decoder-release-direct)
+  --population 4 --channel direct --out ../../decoder-release-direct)
 ```
 
 ### Evidence and scoring
 
-Read `registration.json` for model, budgets and input hashes. Per-agent compressed event streams contain model requests, responses, shell actions and timings. The observation archive contains workspace snapshots and reads. `physical-stop.json` records shutdown, `summary.json` records the stop reason, and `evidence-manifest.json` binds the output files. Preserve partial and negative cases. A completed collection means that the harness captured the run and verified the stop. Task quality is reported separately in `outcomes.json`.
+Read `registration.json` for model, budgets and input hashes. Per-agent compressed event streams contain model requests, responses, shell actions and timings. The observation archive contains workspace snapshots and reads. System-call traces are stored as lossless, hash-checked gzip chunks. Each capture transfers only new bytes and verifies the previous prefix. Trace size does not impose a stopping condition. All participant captures must succeed before cohort resources are removed. `physical-stop.json` records shutdown, `summary.json` records the stop reason, and `evidence-manifest.json` binds the output files. Preserve partial and negative cases. A completed collection means that the harness captured the run and verified the stop. Task quality is reported separately in `outcomes.json`.
+
+If a real disk or capture error occurs, the attempt is marked incomplete and its Docker resources are retained. After restoring free space, export their post-stop evidence into a fresh recovery directory. Keep the original attempt and recovery output together.
+
+```sh
+python rollouts/recover.py --run ../path-to-incomplete-cohort --out ../recovered-cohort
+```
+
+Recovery requires a verified stop receipt and leaves the original run status intact. Its output records retained resource names. Remove those specific Docker resources only after verifying the recovery output. The collector records completed in-flight tools even when the model request is cancelled at the budget boundary.
 
 For jq, the collector saves candidate archives by content hash. Use the isolated scorer on each candidate of interest. The pinned public development subset has 61 tests.
 
@@ -221,7 +229,7 @@ Findings and dispositions:
 
 - **Plan drift:** root, structure plans and project instructions contained inconsistent active directions and stopping rules. Current decisions are consolidated here; the old common-problem plan is now a pointer, scale-study and balanced-study criteria are marked historical, and instructions/evidence indexes link here. Future structure registrations seal this README rather than a superseded plan; existing registrations retain their original hashes.
 - **Superseded classification:** `unified_delivery.PRESETS` has seven non-control bindings plus control. This arbitrary implementation inventory is not the research taxonomy. The 3×3 now governs new inputs and reviewers; old rules and presets can be replaced. Existing results need grid-specific re-review before coverage credit.
-- **Legacy research duration:** `sustained_research.py` still uses 5,400 seconds, a 1,800-second request timeout and 600-second response-idle timeout. Ten-minute extension and interruption semantics are not implemented by changing a single constant.
+- **SwarmForm runtime:** the portable API collector uses a bounded asynchronous cohort, records tool completion after cancellation, and retains Docker originals if final capture fails. Its current run commands and scale plan are in [SwarmForm](#swarmform).
 - **Evidence limits:** no verified two-level delegation in the reviewed common-problem audit; balanced-v2 does not cover all nine threat models. No submission claim should silently upgrade these results.
 - **Small code duplication:** `_append_event` is copied across four continuation implementations, and `query_target` across three scenario modules. Their domain/fixture loading must be preserved; consolidation is a targeted follow-up with tests, not justification for deleting working domain modules tonight.
 - **Code concentration:** `run.py` is 2,934 lines. Keep its tested entry points; do not introduce a second runner for the nine-env work. Extract shared components only when the new mechanism needs them and regression checks can cover the change.

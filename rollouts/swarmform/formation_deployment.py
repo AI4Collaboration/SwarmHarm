@@ -112,13 +112,10 @@ with os.fdopen(fd, 'rb') as source:
         except BaseException as error:
             self.terminal_service = {"memory_states": states, "capture_error": repr(error)}
             raise
-        finally:
-            if self.terminal_service is None:
-                self.terminal_service = {"memory_states": states}
-            try:
-                super().close()
-            finally:
-                self._remove_anchor()
+        if self.terminal_service is None:
+            self.terminal_service = {"memory_states": states}
+        super().close()
+        self._remove_anchor()
 
 
 def deployment(startup, registration, **observations):
