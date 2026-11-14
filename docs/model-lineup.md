@@ -37,7 +37,8 @@ where supported, recording the provider's actual parameter and effective setting
 the label does not imply equal compute across models.
 
 SwarmForm uses its common Chat Completions runner. Native SwarmHarm uses Codex for
-OpenAI and Claude Code for Claude. Its current automatic native-harness selection
+OpenAI and Claude Code for Claude; the documented SwarmHarm batch command currently
+selects Codex. Its current automatic native-harness selection
 does not support Gemini, Kimi, GLM or DeepSeek yet. Validate those adapters and
 tool-result/trajectory round trips before collecting that part of the lineup.
 Keep harness identity explicit in comparisons rather than attributing its effects
