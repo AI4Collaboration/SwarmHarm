@@ -39,7 +39,7 @@ class BatchPlanChecks(unittest.TestCase):
             (root/'registration-seal.json').write_text('{}')
             (root/'controls.json').write_text(json.dumps(
                 {'passed':True, 'check_modules':['tests/first_checks.py']}))
-            row = {'mechanism':'task-gaming', 'scenario':'knowledge-work'}
+            row = {'mechanism':'task-gaming', 'scenario':'knowledge-work', 'harness':'codex'}
             with patch.object(batch.run, 'preparation_check_paths', return_value=[
                     batch.run.HERE/'tests/first_checks.py']):
                 self.assertEqual(batch.reusable_controls([{'output':str(root)}], row),

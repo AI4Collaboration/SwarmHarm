@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[2]
 class APIHandoffChecks(unittest.TestCase):
     def plan(self, *args):
         result = subprocess.run([sys.executable, str(ROOT/'rollouts/run_matrix.py'),
-                                 '--model', 'local-test-model', *args],
+                                 '--model', 'local-test-model', '--harness', 'chat-completions', *args],
                                 capture_output=True, text=True, check=True, cwd=ROOT)
         return [json.loads(line) for line in result.stdout.splitlines()]
 
@@ -50,7 +50,7 @@ class APIHandoffChecks(unittest.TestCase):
                     (out/'evidence-manifest.json').write_text(json.dumps({
                         file.name: hashlib.sha256(file.read_bytes()).hexdigest() for file in out.iterdir()}))
             result = subprocess.run([sys.executable, str(ROOT/'rollouts/run_matrix.py'),
-                                     '--model', 'local-test-model', *args, '--execute', '--out', directory],
+                                     '--model', 'local-test-model', '--harness', 'chat-completions', *args, '--execute', '--out', directory],
                                     capture_output=True, text=True, cwd=ROOT)
             self.assertEqual(result.returncode, 0, result.stderr)
             index = json.loads((root/'index.json').read_text())
@@ -58,7 +58,7 @@ class APIHandoffChecks(unittest.TestCase):
             self.assertEqual(index['runs'][0]['status'], 'archived')
             self.assertFalse(list(root.rglob('*.log')))
             incompatible = subprocess.run([sys.executable, str(ROOT/'rollouts/run_matrix.py'),
-                '--model', 'changed-model', *args, '--execute', '--out', directory],
+                '--model', 'changed-model', '--harness', 'chat-completions', *args, '--execute', '--out', directory],
                 capture_output=True, text=True, cwd=ROOT)
             self.assertNotEqual(incompatible.returncode, 0)
             self.assertIn('different plan', incompatible.stderr)

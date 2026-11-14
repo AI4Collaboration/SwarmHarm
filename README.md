@@ -12,7 +12,7 @@ Both batch runners default to **4 → 8 → 16**, one repeat. Agents within a co
 | Study | API and runtime | Configurations per N | Full 4/8/16 batch |
 | --- | --- | --- | --- |
 | SwarmForm | OpenAI-compatible Chat Completions, function tools and token usage | 6 tasks × 4 communication conditions = 24 | 72 cohorts / 672 agent trajectories |
-| SwarmHarm | OpenAI-compatible streaming Responses, native Codex | 6 threat models × 2 domains = 12 | 36 cohorts / 336 agent trajectories |
+| SwarmHarm | OpenAI-compatible Chat Completions, native model-family harness | 6 threat models × 2 domains = 12 | 36 cohorts / 336 agent trajectories |
 
 ```sh
 # After the setup in the selected study's guide. These commands only print plans.
@@ -30,8 +30,9 @@ Anthropic, Google, Moonshot, Z.ai and DeepSeek, with exact API IDs and adapter s
 Add `--execute --out /absolute/external/run-directory` to collect. Both accept
 `OPENAI_BASE_URL` and either `OPENAI_API_KEY` or `OPENAI_API_KEY_FILE`.
 SwarmHarm commits each fresh registration locally before collection; configure
-Git author details first. No push is required. API compatibility is specific to
-the endpoint above: a Chat Completions-only server cannot run native Codex.
+Git author details first. No push is required. One API URL and one key cover the lineup. OpenAI uses Codex, Claude uses Claude Code,
+and the other listed models use Pi. The host-side adapter translates native requests
+to Chat Completions. Only our own tests use AxonHub; external users supply their endpoint.
 
 A batch writes `plan.json`, a live `index.json`, per-cohort logs and separate
 trajectory directories. Reusing an identical plan preserves completed and partial

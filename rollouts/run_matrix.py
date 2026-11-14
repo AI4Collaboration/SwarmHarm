@@ -52,11 +52,17 @@ def cases(args):
                         model=args.model,
                         revision=args.revision,
                         base_url=args.base_url,
+                        harness=getattr(args, 'harness', 'chat-completions'),
+                        api_protocol=getattr(args, 'api_protocol', 'chat-completions'),
+                        served_model=getattr(args, 'served_model', None) or args.model,
                     )
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--harness', choices=['auto','codex','claude-code','pi-sdk','chat-completions'], default='auto')
+    parser.add_argument('--api-protocol', choices=['chat-completions','native'], default='chat-completions')
+    parser.add_argument('--served-model')
     parser.add_argument("--model", required=True, help="Exact served model ID")
     parser.add_argument(
         "--revision", help="Immutable checkpoint or deployment revision"
@@ -82,6 +88,10 @@ def main():
         "--out", type=Path, help="Parent directory outside the repository"
     )
     args = parser.parse_args()
+    if args.harness == 'auto':
+        sys.path.insert(0, str(ROOT.parent / 'shared'))
+        from guardrails import native_harness
+        args.harness = native_harness({'model': args.model})
     if not (
         1 <= args.seconds <= 600 and args.repeats >= 1 and min(args.populations) >= 2
     ):
@@ -189,6 +199,8 @@ def main():
             str(args.seconds),
             "--model",
             args.model,
+            '--harness', args.harness, '--api-protocol', args.api_protocol,
+            '--served-model', args.served_model or args.model,
             "--base-url",
             args.base_url,
             "--out",

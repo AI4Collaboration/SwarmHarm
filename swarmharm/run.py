@@ -29,6 +29,7 @@ sys.path.insert(0,str(HERE))
 sys.path.insert(1,str(REPO/'shared'))
 import codex_agent
 import codex_gateway
+import model_session
 from phase1 import lab
 import harbor_input
 from phase1 import schedule
@@ -149,37 +150,20 @@ def catalog(url,model,key_file=None,attempts=3,backoff_seconds=2,
                 json.JSONDecodeError):
             if attempt == attempts:raise
         time.sleep(backoff_seconds*attempt)
-def verify_routes(key_file,reasoning_effort=DEFAULT_REASONING,api_base=AXONHUB_API_BASE):
+def verify_routes(key_file,reasoning_effort=DEFAULT_REASONING,api_base=AXONHUB_API_BASE,served_model=None):
     api_base = guardrails.api_base_url(api_base)
-    if api_base != AXONHUB_API_BASE:
-        model = next(iter(MODELS.values()))
-        try:
-            result = catalog(api_base+'/models', model, key_file)
-        except urllib.error.HTTPError as error:
-            if error.code not in (404, 405, 501):
-                raise
-            result = {'http_status': error.code, 'model_found': None, 'catalog_available': False}
-        if result.get('model_found') is False:
-            raise ValueError('Requested model is absent from the API catalog')
-        return {'checked_at': utc(), 'api_base': api_base, 'model': model,
-                'responses_endpoint': api_base+'/responses', 'catalog': result,
-                'reasoning_effort': reasoning_effort, 'inference_entitlement_verified': False}
-    model=next(iter(MODELS.values()))
-    upstream=next(iter(UPSTREAM_MODELS.values()))
-    routes={'checked_at':utc(),'api_base':AXONHUB_API_BASE,
-        'responses_endpoint':AXONHUB_ENDPOINT,
-        'axonhub_catalog_endpoint':AXONHUB_CATALOG,
-        'openrouter_catalog_endpoint':OPENROUTER_CATALOG,
-        'model':model,'upstream_model':upstream,
-        'reasoning_effort':reasoning_effort,
-        'openrouter':catalog(
-            f'{OPENROUTER_CATALOG}/{upstream}/endpoints',upstream),
-        'axonhub':catalog(AXONHUB_CATALOG,model,key_file)}
-    if not routes['openrouter']['model_found'] or not routes['axonhub']['model_found']:
-        raise RuntimeError(
-            f"AxonHub route {model} or upstream counterpart {upstream} is absent from its current catalog"
-        )
-    return routes
+    model = served_model or next(iter(MODELS.values()))
+    try:
+        result = catalog(api_base+'/models', model, key_file)
+    except urllib.error.HTTPError as error:
+        if error.code not in (404, 405, 501): raise
+        result = {'http_status': error.code, 'model_found': None, 'catalog_available': False}
+    if result.get('model_found') is False:
+        raise ValueError('Requested model is absent from the API catalog')
+    return {'checked_at': utc(), 'api_base': api_base, 'model': model,
+            'catalog': result, 'reasoning_effort': reasoning_effort,
+            'responses_endpoint': api_base+'/responses', 'chat_endpoint': api_base+'/chat/completions',
+            'inference_entitlement_verified': False}
 def validate_response_model(request,response):
     expected=request['model'];returned=response.get('model')
     if returned!=expected:
@@ -333,6 +317,7 @@ def code_paths():
         + sorted((HERE/'configs').glob('*.json'))
         + sorted((HERE/'tests/worlds').glob('*.json'))
         +[REPO/name for name in (
+            'shared/api_transport.py','shared/model_session.py','shared/model_lineup.py',
             'shared/atomic.py','shared/guardrails.py','shared/workstation.py','shared/workspace_paths.py','shared/codex_gateway.py',
             'shared/response_monitor.py','shared/record_surface.py','shared/work_journal.py','shared/launch_capacity.py',
             'shared/workstation_observer.py',
@@ -407,16 +392,14 @@ def normalized_filing_deadline(value=None):
     return normalized
 
 def validate_mechanism_settings(harness_kind, goal_mode, reasoning_effort, models):
-    if harness_kind != 'codex' or goal_mode != 'off' or reasoning_effort != 'high' or len(models) != 1:
-        raise ValueError('Mechanism validation requires one native Codex model, high reasoning and goal off')
-    codex_gateway.validate_model(next(iter(models.values())))
+    if goal_mode != 'off' or reasoning_effort != 'high' or len(models) != 1:
+        raise ValueError('Mechanism validation requires one model, high reasoning and goal off')
+    guardrails.validate_model_harness(models, harness_kind)
 
 
 def validate_harness_policy(harness_kind, offline_adapter_test=False, offline_fixture=False, pi_comparison=False):
     if harness_kind not in HARNESS_KINDS:
         raise ValueError('Unknown agent harness')
-    if harness_kind == 'pi-sdk' and not (offline_adapter_test or offline_fixture or pi_comparison):
-        raise ValueError('Live Pi use requires the explicit Sol 5.6 Pi comparison through AxonHub.')
 
 
 def control_harness_contract(harness):
@@ -546,7 +529,7 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode=None, harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', mechanism=None, input_variant=None, workload=None, api_base=AXONHUB_API_BASE, startup_concurrency=8):
+            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', mechanism=None, input_variant=None, workload=None, api_base=AXONHUB_API_BASE, startup_concurrency=8, api_protocol='native', served_model=None):
     provisioning_workers = startup_workers(population, startup_concurrency)
     scenario = domain_runtime.resolve_workload(scenario, workload)
     require_ready_input(input_variant, delivery_config=delivery_config, world_config=world_config, mechanism=mechanism, scenario=scenario)
@@ -580,8 +563,10 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
     native_gateway = harness_kind in AXONHUB_LIVE_HARNESS_BASES and not offline_adapter_test
     api_base = guardrails.api_base_url(api_base)
     route_options = {} if api_base == AXONHUB_API_BASE else {'api_base': api_base}
-    if route_options and (harness_kind != 'codex' or offline_adapter_test):
-        raise ValueError('Custom OpenAI-compatible endpoints require native Codex')
+    if api_protocol not in ('native', 'chat-completions'):
+        raise ValueError('Unknown API protocol')
+    if served_model and served_model != next(iter(MODELS.values())) and api_protocol != 'chat-completions':
+        raise ValueError('Model mapping requires the Chat Completions transport')
     if harness_kind=='pi-sdk' or native_gateway:
         key_file=guardrails.credential_file(key_file,REPO)
     elif key_file is not None:
@@ -646,10 +631,10 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
         raise ValueError("The current workflow uses local_records")
     if native_gateway:
         model=next(iter(MODELS.values()))
-        routes=verify_routes(key_file,reasoning_effort=reasoning_effort,**route_options)
+        routes=verify_routes(key_file,reasoning_effort=reasoning_effort,api_base=api_base,served_model=served_model)
         if harness_kind=='claude-code':
-            harness=claude_agent.gateway_registration(model, goal_mode)
-            routes['native_catalog']=claude_agent.gateway_catalog(model,reasoning_effort,key_file.read_text().strip())
+            harness=claude_agent.gateway_registration(model, goal_mode, **route_options)
+            routes['native_catalog']=claude_agent.gateway_catalog(model,reasoning_effort,key_file.read_text().strip(), **route_options)
             if goal_mode=='claude_goal' and not routes['native_catalog'].get('native_goal_available'):
                 raise ValueError('The AxonHub Claude CLI does not expose native /goal')
         else:
@@ -672,7 +657,7 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
         if goal_mode=='claude_goal' and not routes['sdk_catalog'].get('native_goal_available'):
             raise ValueError('The subscription CLI does not expose native /goal')
     else:
-        routes=verify_routes(key_file,reasoning_effort=reasoning_effort,**route_options)
+        routes=verify_routes(key_file,reasoning_effort=reasoning_effort,api_base=api_base,served_model=served_model)
         harness=pi_agent.harness_registration(goal_mode)
     harness=guardrails.controller_harness(harness)
     scenario_mechanics=domain_runtime.mechanics(scenario)
@@ -823,19 +808,20 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
         'scenario':domain_runtime.domain_for(scenario), 'workload':scenario,
         'domain':domain_runtime.public_domain(scenario),
         'api_base':api_base if native_gateway or harness_kind=='pi-sdk' else None,
-        'endpoint':(api_base+'/messages' if harness_kind=='claude-code' else api_base+'/responses') if native_gateway else None if harness_kind in ('claude-code','codex') else AXONHUB_ENDPOINT,
+        'api_protocol':api_protocol, 'served_model':served_model or next(iter(MODELS.values())),
+        'endpoint':api_base+'/chat/completions' if api_protocol=='chat-completions' else (api_base+'/messages' if harness_kind=='claude-code' else api_base+'/responses') if native_gateway else None if harness_kind in ('claude-code','codex') else AXONHUB_ENDPOINT,
         'subject_execution_policy':{'user_interaction':'disabled_by_instruction',
             'instructions':lab.INSTRUCTIONS,'delivery':('native system append; task context excludes duplicate rule'
                 if harness_kind=='claude-code' else 'initial context; never repeated as a nudge')},
         'credential_source':('Existing host-only API key; never supplied to subjects.' if native_gateway else 'Operator Claude subscription login; no API key or API fallback.'
             if harness_kind=='claude-code' else 'Operator ChatGPT subscription login; no API key or API fallback.'
-            if harness_kind=='codex' else 'Existing host-only AxonHub key; never supplied to subjects.'
+            if harness_kind=='codex' else 'Existing host-only API key; never supplied to subjects.'
             if AXONHUB_API_BASE=='https://lmportal.iefbr14.xyz/v1'
             else f'Existing host-only key for {AXONHUB_API_BASE}; never supplied to subjects.'),
         'runtime':{'harbor_version':HARBOR_VERSION,'python':sys.version.split()[0]},
-        'inference_gateway':harness['authentication'] if native_gateway else 'axonhub' if harness_kind=='pi-sdk' else None,
-        'inference_protocol':('anthropic/messages' if harness_kind=='claude-code' else 'openai/responses') if native_gateway else 'openai/responses' if harness_kind=='pi-sdk' else None,
-        'live_collection_permitted':bool(run_controls and (native_gateway or (harness_kind=='pi-sdk' and pi_comparison))),
+        'inference_gateway':harness['authentication'] if native_gateway else ('axonhub' if api_base==AXONHUB_API_BASE else 'openai-compatible') if harness_kind=='pi-sdk' else None,
+        'inference_protocol':'openai/chat-completions' if api_protocol=='chat-completions' else ('anthropic/messages' if harness_kind=='claude-code' else 'openai/responses') if native_gateway else 'openai/responses' if harness_kind=='pi-sdk' else None,
+        'live_collection_permitted':bool(run_controls and (native_gateway or harness_kind=='pi-sdk')),
         'pi_comparison':bool(pi_comparison),
         'offline_adapter_test':bool(offline_adapter_test),
         'continuous_rollout':True,
@@ -1718,7 +1704,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         )
     else:
         registered_base=registration_api_base(reg)
-        custom_api = harness_kind == 'codex' and reg.get('inference_gateway') == 'openai-compatible'
+        custom_api = reg.get('inference_gateway') == 'openai-compatible' or (harness_kind == 'pi-sdk' and registered_base != AXONHUB_API_BASE)
         require(custom_api or reg.get('inference_gateway', 'axonhub') == 'axonhub',
             'Unsupported inference gateway')
         if offline_transport_test:
@@ -1726,10 +1712,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             require(target.scheme == 'http' and target.hostname in ('127.0.0.1', 'localhost', '::1')
                     and target.username is None and target.port,
                 'Offline transport tests must use a loopback fixture.')
-        elif custom_api:
+        elif custom_api and harness_kind != 'pi-sdk':
             require(guardrails.api_base_url(registered_base) == reg['harness'].get('gateway'),
                 'API base differs from the registered native harness')
-        else:
+        elif not custom_api:
             require(registered_base == AXONHUB_API_BASE,
                 'All live rollouts must use the registered AxonHub API base.')
     is_claude=harness_kind=='claude-code'
@@ -1793,13 +1779,15 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     harness=reg['harness']
     require(harness['kind'] in HARNESS_KINDS,'Unknown registered agent harness.')
     agent_runtime=codex_agent if is_codex else claude_agent if is_claude else pi_agent
-    agent_class=codex_agent.CodexAgent if is_codex else claude_agent.ClaudeAgent if is_claude else pi_agent.PiAgent
+    def agent_class(*args, **kwargs):
+        return model_session.create(harness_kind, *args,
+            api_protocol=reg.get('api_protocol', 'native'), served_model=reg.get('served_model'), **kwargs)
     harness_folder='codex' if is_codex else 'claude' if is_claude else 'pi'
     if is_codex:
         require(harness['authentication'] in ('chatgpt-subscription','axonhub','openai-compatible'),'Unknown Codex authentication.')
         (codex_gateway if native_gateway else codex_agent).verify_runtime(harness)
     elif is_claude:
-        require(harness['authentication'] in ('claude-subscription','axonhub'),'Unknown Claude authentication.')
+        require(harness['authentication'] in ('claude-subscription','axonhub','openai-compatible'),'Unknown Claude authentication.')
         claude_agent.verify_runtime(harness)
     else:
         pi_agent.verify_runtime(harness)
@@ -2750,6 +2738,9 @@ if __name__=='__main__':
     p.add_argument('--pi-comparison',action='store_true',help='Explicit human-requested Sol 5.6 Pi comparison; never a fallback.')
     p.add_argument('--harness',choices=('claude-code','codex','pi-sdk'),default=None,
         help='Model-family default: Claude Code for Claude; Codex for OpenAI. Adapter admission is checked before preparation.')
+    p.add_argument('--api-protocol', choices=('chat-completions','native'), default='chat-completions',
+        help='Upstream wire protocol; native requires Responses for Codex/Pi and Messages for Claude.')
+    p.add_argument('--served-model', help='Provider model ID when different from the native model identity')
     p.add_argument('--model-id',
         help='Exact provider model ID; custom Responses endpoints use native Codex (default openai/gpt-5.6-sol).')
     p.add_argument('--reasoning-effort',choices=REASONING_EFFORTS,default=DEFAULT_REASONING,
@@ -2824,6 +2815,6 @@ if __name__=='__main__':
             delivery_config=load(a.delivery_config) if a.delivery_config is not None else None,
             world_config=load(a.world_config) if a.world_config is not None else None,
             combined_bindings=a.combined_bindings,comparison_design=a.comparison_design,
-            source_retention=a.source_retention,mechanism=a.mechanism,api_base=a.api_base,
+            source_retention=a.source_retention,mechanism=a.mechanism,api_base=a.api_base,api_protocol=a.api_protocol,served_model=a.served_model,
             input_variant=a.input_variant,workload=a.workload,startup_concurrency=a.startup_concurrency)
     else:collect(root,registration_dir)

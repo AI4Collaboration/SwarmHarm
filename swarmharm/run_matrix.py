@@ -29,7 +29,9 @@ def cases(args, source):
                     yield dict(population=population, replicate=replicate,
                                scenario=scenario, mechanism=mechanism, model=args.model,
                                api_base=args.base_url, source_sha256=source,
-                               harness='codex', reasoning_effort='high', goal_mode='off',
+                               harness=run.guardrails.native_harness({'model':args.model}),
+                               api_protocol=getattr(args, 'api_protocol', 'chat-completions'),
+                               served_model=getattr(args, 'served_model', None) or args.model, reasoning_effort='high', goal_mode='off',
                                startup_concurrency=min(population, args.startup_concurrency))
 
 
@@ -58,7 +60,7 @@ def existing_status(output):
 
 def reusable_controls(records, row):
     required = {str(path.relative_to(run.HERE)) for path in run.preparation_check_paths(
-        'codex', row['mechanism'], row['scenario'])}
+        row['harness'], row['mechanism'], row['scenario'])}
     for record in records:
         output = Path(record['output'])
         if not (output/'controls.json').is_file() or not (output/'registration-seal.json').is_file():
@@ -72,6 +74,8 @@ def reusable_controls(records, row):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--api-protocol', choices=('chat-completions','native'), default='chat-completions')
+    parser.add_argument('--served-model', help='Exact provider ID, if different from native identity')
     parser.add_argument('--model', required=True, help='Exact model ID in the native Codex catalog')
     parser.add_argument('--base-url', default=os.environ.get('OPENAI_BASE_URL', run.AXONHUB_API_BASE))
     parser.add_argument('--key-file', type=Path, default=os.environ.get('OPENAI_API_KEY_FILE'))
@@ -148,7 +152,8 @@ def main():
                     command([sys.executable, str(run.HERE/'run.py'), '--phase', 'prepare',
                              '--source-retention', 'local', '--scenario', row['scenario'],
                              '--mechanism', row['mechanism'], '--model-id', args.model,
-                             '--api-base', args.base_url, '--harness', 'codex', '--goal-mode', 'off',
+                             '--api-base', args.base_url, '--harness', row['harness'],
+                             '--api-protocol', row['api_protocol'], '--served-model', row['served_model'], '--goal-mode', 'off',
                              '--reasoning-effort', 'high', '-N', str(row['population']),
                              '--startup-concurrency', str(row['startup_concurrency']),
                              *reusable_controls(records, row), *common])

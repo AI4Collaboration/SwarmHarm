@@ -32,6 +32,9 @@ def arguments():
     parser = argparse.ArgumentParser(description=__doc__)
     subs = parser.add_subparsers(dest="mode", required=True)
     run = subs.add_parser("run", help="Collect one cohort")
+    run.add_argument("--harness", choices=['auto','codex','claude-code','pi-sdk','chat-completions'], default='auto')
+    run.add_argument("--api-protocol", choices=['chat-completions','native'], default='chat-completions')
+    run.add_argument("--served-model", help='Provider ID when different from the native model identity')
     run.add_argument("--population", "-n", type=int, required=True)
     run.add_argument("--names", choices=("numbered", "physicists"), default="numbered")
     run.add_argument(
@@ -55,6 +58,10 @@ def arguments():
     args = parser.parse_args()
     if args.population < 2 or (args.names == "physicists" and args.population != 3):
         parser.error("Use N >= 2; the surname treatment requires N=3.")
+    if args.harness == 'auto':
+        sys.path.insert(0, str(ROOT.parent / 'shared'))
+        from guardrails import native_harness
+        args.harness = native_harness({'model': args.model})
     return args
 
 
@@ -64,6 +71,9 @@ def source_files():
             *ROOT.glob("*.py"),
             *ROOT.glob("swarmform/*.py"),
             *ROOT.glob("swarmform/fixtures/*"),
+            *sorted((ROOT.parent / 'shared').glob('*.py')),
+            *[p for d in ('codex','claude','pi') for p in (ROOT.parent/'shared'/d).iterdir()
+              if p.is_file() and p.suffix in ('.json','.mjs')],
             ROOT / "requirements.txt",
             ROOT / "build-jq",
             ROOT.parent / "shared/workstation_patch.py",
@@ -234,6 +244,9 @@ class Cohort:
             self.stop("tool_error")
 
     async def participant(self, actor):
+        if getattr(self.args, 'harness', 'chat-completions') != 'chat-completions':
+            from .native_participant import participate
+            return await participate(self, actor, {'tokens': MAX_TOKENS, 'responses': MAX_RESPONSES, 'tools': MAX_TOOLS})
         fn = self.visible["tools"][0]
         tools = [
             {
@@ -369,7 +382,11 @@ class Cohort:
                 "model": args.model,
                 "revision": args.revision,
                 "base_url": args.base_url,
-                "study_version": "chat-completions-v1",
+                "study_version": "native-session-v1" if getattr(args, 'harness', 'chat-completions') != 'chat-completions' else "chat-completions-v1",
+                "harness": getattr(args, 'harness', 'chat-completions'),
+                "api_protocol": getattr(args, 'api_protocol', 'chat-completions'),
+                "served_model": getattr(args, 'served_model', None) or args.model,
+                "native_runtime": getattr(args, '_native_runtime', None),
                 "observation_policy": "post_tool_and_terminal_v1",
                 "source_sha256": source_digest(),
                 "python": platform.python_version(),
@@ -566,6 +583,12 @@ async def collect(args):
     key_file = getattr(args, 'key_file', None)
     key = (Path(key_file).expanduser().read_text().strip() if key_file
            else os.environ.get("OPENAI_API_KEY"))
+    args._api_key = key
+    if getattr(args, 'harness', 'chat-completions') != 'chat-completions':
+        if not key: raise ValueError('Native harnesses require the configured API key')
+        sys.path.insert(0, str(ROOT.parent / 'shared'))
+        import model_session
+        args._native_runtime = model_session.registration(args.harness, args.model, args.base_url)
     headers = {"Authorization": "Bearer " + key} if key else {}
     out = args.out.resolve()
     if out.is_relative_to(ROOT.parent):

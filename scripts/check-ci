@@ -180,6 +180,10 @@ def select_checks(files, full=False):
                 suites('structure_business' if stem=='business_review' else 'structure_timeline', 'swarmform_structure')
         elif name == 'swarmform/scripts/run_swarmform_structure.py':
             suites('swarmform_structure', 'structure_timeline', 'structure_native', 'publication_updates', 'sustained_research', 'research_latency')
+        elif name in {'shared/api_transport.py', 'shared/model_session.py', 'shared/model_lineup.py', 'scripts/check-model-lineup'}:
+            suites('model_transport', 'api_handoff', 'batch_plan')
+        elif name == 'shared/guardrails.py':
+            suites('native_harness', 'local_source', 'batch_plan', 'model_transport')
         elif name.startswith('shared/'):
             adapter = next((a for a in ('codex', 'claude', 'pi')
                             if name.startswith('shared/' + a)), None)

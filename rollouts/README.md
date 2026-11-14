@@ -14,10 +14,11 @@ The two possible tasks admit a single-agent solution in principle. Difficulty an
 
 ### Install and run
 
-Use Python 3.12, Git and Docker with Linux containers. The full matrix requires ARM64 Linux or ARM64 container emulation for the pinned jq task. Build its reference locally once. Workstations run separately from the model endpoint. Only the operator process receives the API credential.
+Use Python 3.12, Node.js 22.19+, Git and Docker with Linux containers. The full matrix requires ARM64 Linux or ARM64 container emulation for the pinned jq task. Build its reference locally once. Workstations run separately from the model endpoint. Only the operator process receives the API credential.
 
 ```sh
 # From repository root
+bash scripts/setup-local all
 python3.12 -m venv .venv
 . .venv/bin/activate
 python -m pip install -r rollouts/requirements.txt
@@ -27,13 +28,13 @@ export SWARMHARM_DOCKER_IMAGE="$(docker image inspect swarmform-workstation --fo
 bash rollouts/build-jq
 
 export OPENAI_BASE_URL=http://localhost:8000/v1
-export MODEL=your-served-model       # exact ID served by your endpoint
+export MODEL=openai/gpt-6.1-sol       # selected model identity; see the lineup
 # Set OPENAI_API_KEY or OPENAI_API_KEY_FILE if your server requires authentication.
 python rollouts/run_matrix.py --model "$MODEL" --populations 4 8 16
 python rollouts/run_matrix.py --model "$MODEL" --populations 4 8 16 --execute --out ../swarmform-runs
 ```
 
-The first command after API setup prints 72 planned cohorts without contacting the endpoint. The second runs them sequentially. Participants within each cohort work concurrently. The endpoint must support Chat Completions function tools, tool results, and `usage.total_tokens`. Use `--revision` to record the deployed checkpoint. Each cohort has an aggregate allowance of N CPU cores and N × 512 MiB memory: separate per-agent containers in unintended conditions, an equivalent shared-container allowance in the intended condition. Record host capacity when comparing timings. Each group has at most 600 seconds from participant activation, 32 responses, 96 tool calls and 500,000 observed tokens per agent. Tokens include input and output on every response. The token stop is applied when the server reports usage. A final response ends that agent’s work. The cohort stops when all agents finish or on the first exhausted group boundary or participant error. Setup, capture and cleanup occupy additional wall time.
+The first command after API setup prints 72 planned cohorts without contacting the endpoint. The second runs them sequentially. Participants within each cohort work concurrently. Both runners select Codex for OpenAI, Claude Code for Claude and Pi for the other listed families. The endpoint must support Chat Completions function tools, tool results, and `usage.total_tokens`. A host-side adapter preserves each native session; only our own testing uses AxonHub. Start with the [N=4 model integration check](../docs/model-lineup.md#one-endpoint-one-key). Use `--served-model` for a different provider spelling of the same model, or `--api-protocol native` for a gateway exposing Responses/Messages directly. The previous plain Chat Completions loop is explicitly selectable with `--harness chat-completions`; it is a different harness condition. Use `--revision` to record the deployed checkpoint. Each cohort has an aggregate allowance of N CPU cores and N × 512 MiB memory: separate per-agent containers in unintended conditions, an equivalent shared-container allowance in the intended condition. Record host capacity when comparing timings. Each group has at most 600 seconds from participant activation, 32 responses, 96 tool calls and 500,000 observed tokens per agent. Tokens include input and output on every response. The token stop is applied when the server reports usage. A final response ends that agent’s work. The cohort stops when all agents finish or on the first exhausted group boundary or participant error. Setup, capture and cleanup occupy additional wall time.
 
 **Collection order.** Start with one task at N=4, inspect the captured records and disk use, then run the full 4/8/16 plan. Each size has 24 cohorts, giving **72 cohorts / 672 agent trajectories per model and repeat**. Keep task, communication condition, model revision and budgets fixed when comparing populations. `--repeats` adds fresh cohort directories. Repeats use the same task instances, so they measure rollout variation on these tasks.
 
@@ -48,7 +49,7 @@ The matrix writes `plan.json`, a live `index.json`, per-cohort logs and separate
 
 ### Evidence and scoring
 
-Read `registration.json` for model, budgets and input hashes. Per-agent compressed event streams contain model requests, responses, shell actions and timings. `code/` retains the exact portable runner and task sources, alongside the registered image identity. The observation archive stores workspace versions and process traces incrementally, with checksums for reconstructing complete reads. Capture failures retain the affected resources and write `recovery.json` rather than silently discarding evidence. `physical-stop.json` records shutdown, `summary.json` records the stop reason, and `evidence-manifest.json` binds the output files. Preserve partial and negative cases. A completed collection means that the harness captured the run and verified the stop. Task quality is reported separately in `outcomes.json`.
+Read `registration.json` for model, budgets and input hashes. Per-agent compressed event streams contain model requests, responses, shell actions and timings. Native session records and compressed upstream request/response records are saved under `native/<agent>/`; registration records the selected harness and its version. `code/` retains the exact portable runner and task sources, alongside the registered image identity. The observation archive stores workspace versions and process traces incrementally, with checksums for reconstructing complete reads. Capture failures retain the affected resources and write `recovery.json` rather than silently discarding evidence. `physical-stop.json` records shutdown, `summary.json` records the stop reason, and `evidence-manifest.json` binds the output files. Preserve partial and negative cases. A completed collection means that the harness captured the run and verified the stop. Task quality is reported separately in `outcomes.json`.
 
 For jq, the collector saves candidate archives by content hash. Use the isolated scorer on each candidate of interest. The pinned public development subset has 61 tests.
 

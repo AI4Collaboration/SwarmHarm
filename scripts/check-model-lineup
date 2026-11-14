@@ -1,0 +1,138 @@
+#!/usr/bin/env python3
+"""N=4 integration check: native startup, tool result reuse and saved session records."""
+import argparse
+from concurrent.futures import ThreadPoolExecutor
+import gzip
+import hashlib
+import json
+import os
+from pathlib import Path
+import queue
+import secrets
+import subprocess
+import sys
+import time
+
+REPO = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO / 'shared'))
+import model_lineup
+import model_session
+from guardrails import api_base_url, credential_file, outside_repository
+
+
+def save(path, data):
+    path.write_text(json.dumps(data, indent=2) + '\n')
+
+
+TOOLS = [
+    {'type': 'function', 'name': 'read_order', 'description': 'Read the current order.',
+     'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}},
+    {'type': 'function', 'name': 'save_receipt', 'description': 'Save the receipt for an order.',
+     'parameters': {'type': 'object', 'properties': {'code': {'type': 'string'}},
+                    'required': ['code'], 'additionalProperties': False}},
+]
+TASK = 'Read the current order, save its receipt using the order code, then confirm completion.'
+
+
+def participant(row, args, key, folder, number):
+    folder.mkdir(); events = queue.Queue(); nonce = secrets.token_hex(12)
+    calls = {}
+    agent = None; read = False; saved = False; settled = False; responses = 0
+    result = {'agent': number, 'passed': False, 'model': row['model'], 'harness': row['harness']}
+    started = time.monotonic()
+    try:
+        agent = model_session.create(row['harness'], str(number), events,
+            folder=folder, model=row['model'], served_model=row['served_model'], api_base=args.base_url,
+            api_key=key, api_protocol=args.api_protocol, thinking_level='high', max_output_tokens=4096,
+            context_window=1_000_000, request_timeout_ms=args.seconds * 1000,
+            tools=TOOLS, active_tools=[x['name'] for x in TOOLS], job_context=None, goal_mode='off')
+        deadline = started + args.seconds
+        with gzip.open(folder / 'events.jsonl.gz', 'wt') as stream:
+            while not settled:
+                _, message = events.get(timeout=max(.01, deadline-time.monotonic()))
+                stream.write(json.dumps(message) + '\n'); stream.flush()
+                kind = message['type']
+                if kind == 'ready': agent.prompt(TASK)
+                elif kind == 'tool_call':
+                    if message['name'] == 'read_order':
+                        read = True; value = {'code': nonce, 'status': 'ready'}
+                    elif message['name'] == 'save_receipt':
+                        arguments = message.get('arguments', calls.get(message['call_id'].split('|')[0], {}).get('arguments', '{}'))
+                        if isinstance(arguments, str): arguments = json.loads(arguments)
+                        if read and arguments.get('code') == nonce:
+                            saved = True; save(folder / 'receipt.json', {'code': nonce}); value = {'saved': True}
+                        else: value = {'error': 'Order code does not match'}
+                    else: value = {'error': 'Unknown tool'}
+                    agent.reply(message['id'], output=json.dumps(value))
+                elif kind == 'provider_response':
+                    responses += 1
+                    for call in message.get('event', {}).get('response', {}).get('output', []):
+                        if call.get('type') == 'function_call': calls[call['call_id']] = call
+                elif kind == 'settled':
+                    if message.get('error_message'): raise RuntimeError(message['error_message'])
+                    settled = True; result['final'] = message.get('text')
+                elif kind in ('fatal', 'exited', 'closed'): raise RuntimeError(str(message))
+                if time.monotonic() >= deadline: raise TimeoutError('Integration check deadline')
+        if not (read and saved and responses and result.get('final')):
+            raise RuntimeError('Missing read, exact tool-result reuse, provider response or final text')
+        result['passed'] = True
+    except Exception as error:
+        result['error'] = f'{type(error).__name__}: {error}'
+    finally:
+        if agent is not None:
+            result['exit_code'] = agent.close()
+        result.update(read_order=read, saved_receipt=saved, seconds=round(time.monotonic()-started, 2))
+        native_files = [p for p in folder.rglob('*') if p.is_file()
+                        and p.name not in ('receipt.json', 'events.jsonl.gz') and 'transport' not in p.parts]
+        result['native_record_files'] = len(native_files)
+        if not native_files: result['passed'] = False; result.setdefault('error', 'No native session records')
+        save(folder / 'summary.json', result)
+    return result
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--models', nargs='+', choices=list(model_lineup.MODELS))
+    parser.add_argument('--model-map', type=Path, help='JSON mapping lineup names to served IDs')
+    parser.add_argument('--base-url', default=os.environ.get('OPENAI_BASE_URL'))
+    parser.add_argument('--key-file', type=Path, default=os.environ.get('OPENAI_API_KEY_FILE'))
+    parser.add_argument('--api-protocol', choices=['chat-completions', 'native'], default='chat-completions')
+    parser.add_argument('--population', '-N', type=int, default=4)
+    parser.add_argument('--seconds', type=int, default=300)
+    parser.add_argument('--out', type=Path, required=True)
+    parser.add_argument('--execute', action='store_true')
+    args = parser.parse_args()
+    rows = model_lineup.selection(args.models, args.model_map)
+    if not args.execute:
+        print(json.dumps(rows, indent=2)); return 0
+    if args.population < 1 or args.seconds < 1: parser.error('Positive population and seconds required')
+    args.base_url = api_base_url(args.base_url)
+    key = credential_file(args.key_file, REPO).read_text().strip() if args.key_file else os.environ.get('OPENAI_API_KEY')
+    if not key: parser.error('Set OPENAI_API_KEY_FILE or OPENAI_API_KEY')
+    root = outside_repository(args.out, REPO, 'Output'); root.mkdir(parents=True, exist_ok=False)
+    source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=REPO, text=True).strip()
+    dirty = bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=REPO, text=True).strip())
+    if dirty: parser.error('Commit the source before a hosted integration check')
+    save(root / 'registration.json', {'purpose': 'API integration only; not behavioral validation',
+        'source': source, 'models': rows, 'population': args.population, 'api_base': args.base_url,
+        'api_protocol': args.api_protocol, 'seconds': args.seconds, 'task': TASK, 'tools': TOOLS,
+        'goal': 'off', 'reasoning': 'high'})
+    results = []
+    for row in rows:
+        folder = root / row['name']; folder.mkdir()
+        save(folder / 'runtime.json', model_session.registration(row['harness'], row['model'], args.base_url))
+        with ThreadPoolExecutor(max_workers=args.population) as pool:
+            futures = [pool.submit(participant, row, args, key, folder / f'agent-{n}', n)
+                       for n in range(1, args.population + 1)]
+            agents = [future.result() for future in futures]
+        result = {**row, 'passed': all(a['passed'] for a in agents), 'agents': agents}
+        results.append(result); save(root / 'summary.json', results)
+        print(json.dumps({'model': row['name'], 'passed': result['passed'],
+                          'agents_passed': sum(a['passed'] for a in agents)}), flush=True)
+    save(root / 'evidence-manifest.json', {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+        for p in sorted(root.rglob('*')) if p.is_file() and p.name != 'evidence-manifest.json'})
+    return 0 if all(r['passed'] for r in results) else 1
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

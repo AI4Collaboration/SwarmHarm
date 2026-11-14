@@ -28,23 +28,49 @@ Optional comparisons are Sol 5.6 for continuity with earlier evidence and
 DeepSeek V4 Pro (`deepseek/deepseek-v4-pro-0813`) for the other DeepSeek tier.
 Keep them separate from the 11-model main comparison.
 
-## Execution contract
+## One endpoint, one key
 
-Use AxonHub with the exact served IDs above, same-model fallback only, and record
-the actual route and returned model identity. Do not use rolling `latest` aliases
-or substitute Flash, Prime, Pro or batch variants. Catalog availability was checked;
-no hosted model requests were made for this shortlist.
+Our runs use AxonHub. Other operators supply **one OpenAI-compatible API URL and
+one key covering all 11 models**; they do not need an AxonHub account or separate
+provider keys. The provider must support Chat Completions with function tools and
+usage counters. Model availability still depends on that key.
+
+Both study runners select **Codex for OpenAI, Claude Code for Claude, and Pi for
+Gemini, Kimi, GLM and DeepSeek**. Install all three once with `bash scripts/setup-local all`.
+The host-side adapter translates the native Responses/Messages formats to Chat
+Completions. Native harnesses retain their own sessions and instructions. Each
+agent's compressed transport records retain both request formats, the upstream
+response, returned model ID and request ID. The adapter never changes models or
+silently retries with another provider.
+
+```sh
+export OPENAI_BASE_URL="https://your-provider.example/v1"
+export OPENAI_API_KEY_FILE="$HOME/.config/swarmharm/provider.key"
+# Or set OPENAI_API_KEY in the host environment. Never commit credentials.
+python3.12 scripts/check-model-lineup --out ../model-check --execute
+```
+
+This starts four independent native sessions **per model**, processing models in
+sequence. Each must read an order, reuse its private code in a second tool call,
+and save a receipt. Inspect `summary.json`, the per-agent native records and
+`evidence-manifest.json` before scaling. This is an integration check, not a study
+result. It preserves failed attempts; repeat into a new output directory after a
+repair. No model calls occur without `--execute`.
+
+Use `--models sol haiku` for a subset. If your provider names models differently,
+pass `--model-map models.json`, a JSON object such as
+`{"sol":"gpt-6.1-sol","haiku":"claude-haiku-5-5"}`. Unspecified names keep
+the exact IDs above. This maps names for the same selected models, not substitutes.
+The study runners use `--model` for the listed identity and `--served-model` for
+its provider ID.
+
+`--api-protocol native` skips translation when the same endpoint supports native
+Responses (Codex/Pi) and Messages (Claude Code). The default is
+`chat-completions`, which only requires the shared OpenAI-compatible interface.
+Current tasks use text and function tools. Unsupported content types fail visibly.
 
 Compare N=4,8,16 with task materials and per-agent budgets held fixed within each
-study. Goal stays off and each agent retains its own session. Use high reasoning
-where supported, recording the provider's actual parameter and effective setting;
-the label does not imply equal compute across models.
-
-SwarmForm uses its common Chat Completions runner. Native SwarmHarm uses Codex for
-OpenAI and Claude Code for Claude; the documented SwarmHarm batch command currently
-selects Codex. Its current automatic native-harness selection
-does not support Gemini, Kimi, GLM or DeepSeek yet. Validate those adapters and
-tool-result/trajectory round trips before collecting that part of the lineup.
-Keep harness identity explicit in comparisons rather than attributing its effects
-to the model alone. [SwarmForm setup](../rollouts/README.md) ·
-[SwarmHarm setup](../swarmharm/README.md).
+study. Goal stays off; each agent retains its own session. High reasoning is
+requested and the actual upstream parameter is recorded; this does not imply
+equal compute across models. Never relabel historical runs with these new adapters.
+[SwarmForm setup](../rollouts/README.md) · [SwarmHarm setup](../swarmharm/README.md).

@@ -69,9 +69,11 @@ def validate_model_harness(models, harness, *, offline_fixture=False, pi_compari
     for model in models.values():
         model = str(model).lower()
         if any(name in model for name in ('claude', 'haiku', 'sonnet', 'opus')) and harness != 'claude-code':
-            raise ValueError('Claude models require Claude Code through AxonHub; Pi is not a fallback.')
+            raise ValueError('Claude models require Claude Code; Pi is not a fallback.')
         if not offline_fixture and (model.startswith('openai/') or model.startswith('gpt-')) and harness != 'codex':
-            raise ValueError('OpenAI models require Codex through AxonHub outside the explicit Sol 5.6 Pi comparison.')
+            raise ValueError('OpenAI models require Codex outside the explicit Sol 5.6 Pi comparison.')
+        if not offline_fixture and harness == 'pi-sdk' and not model.startswith(('google/', 'moonshotai/', 'z-ai/', 'deepseek/')):
+            raise ValueError('Pi is for the selected non-OpenAI/non-Claude families; use the explicit Sol 5.6 Pi comparison for that model')
 
 
 def native_harness(models):
@@ -82,8 +84,10 @@ def native_harness(models):
             kinds.add('claude-code')
         elif model.startswith(('openai/','gpt-')):
             kinds.add('codex')
+        elif model.startswith(('google/', 'moonshotai/', 'z-ai/', 'deepseek/')):
+            kinds.add('pi-sdk')
         else:
-            raise ValueError('No validated native harness for the selected model family')
+            raise ValueError('Unknown model family; select a lineup identity and map its served ID')
     if len(kinds)!=1:
         raise ValueError('A rollout requires one native harness family')
     return kinds.pop()

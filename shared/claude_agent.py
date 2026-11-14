@@ -1,4 +1,4 @@
-"""Claude Code through AxonHub, with legacy authentication only for offline fixtures."""
+"""Claude Code through a configured gateway; personal authentication is fixture-only."""
 
 from hashlib import sha256
 import json
@@ -13,7 +13,7 @@ import tempfile
 import threading
 
 from workstation import AUTONOMOUS_EXECUTION
-from guardrails import require_same_harness
+from guardrails import require_same_harness, api_base_url
 
 HERE = Path(__file__).resolve().parent
 CLAUDE_DIR = HERE / 'claude'
@@ -97,20 +97,21 @@ AXONHUB_BASE = 'https://lmportal.iefbr14.xyz/v1'
 
 def gateway_model_ids(model):
     """Explicit same-model wire/native names; never a family or latest alias."""
-    match = re.fullmatch(r'anthropic/claude-(haiku|sonnet|opus)-(\d+)\.(\d+)', model)
+    match = re.fullmatch(r'(?:anthropic/)?claude-(haiku|sonnet|opus)-(\d+)[.-](\d+)', model)
     if not match:
-        raise ValueError('AxonHub Claude requires an explicit anthropic/claude-family-major.minor ID')
+        raise ValueError('Claude requires an explicit claude-family-major.minor model ID')
     return [model, 'claude-' + '-'.join(match.groups())]
 
 
 def gateway_env(api_base, api_key, model, config_dir):
-    if api_base.rstrip('/') != AXONHUB_BASE or not api_key or not str(config_dir):
-        raise ValueError('Claude gateway requires the registered AxonHub base, host key and private config directory')
+    api_base = api_base_url(api_base)
+    if not api_key or not str(config_dir):
+        raise ValueError('Claude gateway requires a registered API base, host key and private config directory')
     gateway_model_ids(model)
     env = {name: os.environ[name] for name in (
         'PATH', 'HOME', 'USER', 'LOGNAME', 'TMPDIR', 'LANG', 'LC_ALL') if name in os.environ}
     env.update(RUNTIME_ENV)
-    env.update(ANTHROPIC_BASE_URL=AXONHUB_BASE[:-3], ANTHROPIC_AUTH_TOKEN=api_key,
+    env.update(ANTHROPIC_BASE_URL=api_base.removesuffix('/v1'), ANTHROPIC_AUTH_TOKEN=api_key,
                CLAUDE_CONFIG_DIR=str(config_dir), CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1')
     for name in ('ANTHROPIC_MODEL', 'ANTHROPIC_DEFAULT_HAIKU_MODEL',
                  'ANTHROPIC_DEFAULT_SONNET_MODEL', 'ANTHROPIC_DEFAULT_OPUS_MODEL',
@@ -119,18 +120,18 @@ def gateway_env(api_base, api_key, model, config_dir):
     return env
 
 
-def gateway_registration(model, goal_mode='off'):
+def gateway_registration(model, goal_mode='off', *, api_base=AXONHUB_BASE):
     if goal_mode not in GOAL_MODES:
         raise ValueError('Unsupported Claude native goal mode')
     # Reuse the exact SDK/tool contract without consulting personal login.
-    return _registration(goal_mode, model, authentication='axonhub', auth={})
+    return _registration(goal_mode, model, authentication=('axonhub' if api_base == AXONHUB_BASE else 'openai-compatible'), auth={}, api_base=api_base)
 
 
-def gateway_catalog(model, effort, api_key):
+def gateway_catalog(model, effort, api_key, *, api_base=AXONHUB_BASE):
     with tempfile.TemporaryDirectory(prefix='swarmharm-claude-gateway-') as folder:
         result = subprocess.run([node_binary(), str(CLAUDE_DIR/'catalog.mjs'),
             model, effort, claude_binary()], cwd=folder,
-            env=gateway_env(AXONHUB_BASE, api_key, model, Path(folder)/'config'),
+            env=gateway_env(api_base, api_key, model, Path(folder)/'config'),
             capture_output=True, text=True, timeout=60)
     if result.returncode:
         raise RuntimeError('Claude AxonHub SDK catalog initialization failed')
@@ -207,21 +208,22 @@ def harness_registration(goal_mode='off', model=None):
     return _registration(goal_mode, model, authentication='claude-subscription', auth=subscription_auth())
 
 
-def _registration(goal_mode, model, *, authentication, auth):
-    if authentication == 'axonhub': gateway_model_ids(model)
+def _registration(goal_mode, model, *, authentication, auth, api_base=AXONHUB_BASE):
+    api_base = api_base_url(api_base)
+    if authentication in ('axonhub', 'openai-compatible'): gateway_model_ids(model)
     environment = dict(RUNTIME_ENV)
     if model is not None:environment['ANTHROPIC_DEFAULT_HAIKU_MODEL'] = model
-    if authentication == 'axonhub':
-        environment.update(ANTHROPIC_BASE_URL=AXONHUB_BASE[:-3],
+    if authentication in ('axonhub', 'openai-compatible'):
+        environment.update(ANTHROPIC_BASE_URL=api_base.removesuffix('/v1'),
             CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1', ANTHROPIC_MODEL=model,
             ANTHROPIC_DEFAULT_SONNET_MODEL=model, ANTHROPIC_DEFAULT_OPUS_MODEL=model,
             ANTHROPIC_SMALL_FAST_MODEL=model)
         environment['CLAUDE_CONFIG_DIR'] = 'private temporary directory; removed after shutdown'
     return {
         'kind': 'claude-code', 'authentication': authentication,
-        **({'gateway': AXONHUB_BASE, 'accepted_native_model_ids': gateway_model_ids(model),
+        **({'gateway': api_base, 'accepted_native_model_ids': gateway_model_ids(model),
             'native_binding': ('claude-sdk-exact-delivery-v2' if goal_mode == 'off'
-                               else 'claude-sdk-atomic-goal-v1')} if authentication == 'axonhub' else {}),
+                               else 'claude-sdk-atomic-goal-v1')} if authentication in ('axonhub', 'openai-compatible') else {}),
         'auth_status': auth, 'installed': installed_versions(),
         'node_version': node_version(), 'claude_code': cli_identity(),
         'settings': SETTINGS, 'environment': environment, 'system_prompt': SYSTEM_PROMPT,
@@ -235,7 +237,7 @@ def _registration(goal_mode, model, *, authentication, auth):
         'goal_mode': goal_mode, 'extension_tools': [], 'builtin_tools': [],
         'goal_progress_guard': dict(GOAL_PROGRESS_GUARD) if goal_mode=='claude_goal' else None,
         **({'input_delivery': ('atomic-sdk-goal-v1' if goal_mode == 'claude_goal' else 'atomic-sdk-replay-v1')}
-           if authentication == 'axonhub' else {}),
+           if authentication in ('axonhub', 'openai-compatible') else {}),
         'platform_notice_delivery': {
             'native_role': 'user', 'content_source': 'platform_status JSON',
             'developer_role_supported': False,
@@ -256,17 +258,17 @@ def verify_runtime(harness):
     if harness.get('goal_progress_guard') != expected_guard:
         raise RuntimeError('Claude goal guard changed; prepare a fresh registration')
     if harness.get('authentication') == 'claude-subscription': subscription_auth()
-    elif harness.get('authentication') != 'axonhub' or harness.get('gateway') != AXONHUB_BASE:
+    elif harness.get('authentication') not in ('axonhub', 'openai-compatible'):
         raise ValueError('Unregistered Claude authentication route')
     if installed_versions() != harness['installed']:
         raise RuntimeError('Installed Claude Agent SDK differs from registration')
     if node_version() != harness['node_version'] or cli_identity() != harness['claude_code']:
         raise RuntimeError('Node.js or Claude Code differs from registration; prepare a fresh rollout')
     model = (harness.get('environment', {}).get('ANTHROPIC_MODEL')
-             if harness['authentication'] == 'axonhub'
+             if harness['authentication'] in ('axonhub', 'openai-compatible')
              else harness.get('environment', {}).get('ANTHROPIC_DEFAULT_HAIKU_MODEL'))
     require_same_harness(harness, _registration(harness['goal_mode'], model,
-        authentication=harness['authentication'], auth=harness['auth_status']))
+        authentication=harness['authentication'], auth=harness['auth_status'], api_base=harness.get('gateway', AXONHUB_BASE)))
 
 
 class ClaudeAgent:

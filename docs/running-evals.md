@@ -4,7 +4,7 @@ Choose the study first. Both runners use independent workspaces and external
 trajectory directories, but their API protocols differ.
 
 - **SwarmForm:** [Chat Completions setup, six tasks and four communication conditions](../rollouts/README.md).
-- **SwarmHarm:** [native Codex, streaming Responses, six threat models and two domains](../swarmharm/README.md).
+- **SwarmHarm:** [native model-family harnesses, one API, six threat models and two domains](../swarmharm/README.md).
 
 Start with N=4, then 8 and 16. Each cohort runs concurrently; the batch runs cohorts
 sequentially. Keep the same model deployment and budgets when comparing N. Check

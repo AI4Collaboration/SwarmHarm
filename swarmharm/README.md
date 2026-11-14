@@ -33,16 +33,18 @@ source ../eval-readiness/swarmharm-local.env
 
 ### Configure the API and input
 
-Codex uses an **OpenAI-compatible Responses API** supporting streamed
-`POST /responses`, function tools and the selected model's reasoning settings.
-`GET /models` must list the selected model ID for the registration check.
-Set the base URL including its version path, such as `https://api.openai.com/v1`.
-A service offering only `/chat/completions` needs Responses support to run this harness.
+Use one **OpenAI-compatible Chat Completions API** and one key with access to the
+selected models. OpenAI runs in Codex, Claude in Claude Code, and the other listed
+families in Pi. `bash scripts/setup-local all` installs all three. Native sessions
+use a host-side protocol adapter; it captures both the native request and upstream
+payload without giving credentials to agent workstations. Our own endpoint is
+AxonHub; external operators can use their supplied endpoint.
 
-The model ID is sent exactly as configured. It must have a matching instruction
-profile in the installed native Codex catalog. Standard `gpt-*` IDs and
-gateway-prefixed `openai/gpt-*` IDs are supported. A new provider or model produces
-a new experimental condition. The 12 reviewed cases used Sol 6.1 through AxonHub.
+Start with the [11-model N=4 integration check](../docs/model-lineup.md#one-endpoint-one-key).
+The API must support function tools and usage counters. `--api-protocol native`
+can use Responses/Messages directly when the endpoint supports them. Model names
+are exact: use `--served-model` if the provider's ID differs from the native identity.
+The 12 reviewed cases retain their original Sol 6.1/AxonHub settings.
 
 ```sh
 export SWARMHARM_API_BASE="https://your-provider.example/v1"
@@ -82,7 +84,7 @@ Credentials stay on the host outside Git and agent workstations.
 - **Mechanism** — `task-gaming`, `evidence-tampering` (Trace Tampering),
   `grader-manipulation`, `information-authority`, `action-authority`,
   or `shared-capacity`. These selectors load the six maintained parameterizations.
-- **Runtime** — native Codex, high reasoning, goal off. Real state changes can
+- **Runtime** — model-family native harness, high reasoning, goal off. Real state changes can
   resume the same session. Preparation freezes the API route, model, input,
   software, image and budgets.
 
@@ -96,7 +98,7 @@ input and runtime without asking the model to perform the task.
 "$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run.py --phase prepare \
   --source-retention local --scenario "$SCENARIO" --mechanism "$MECHANISM" \
   --model-id "$SWARMHARM_MODEL" --api-base "$SWARMHARM_API_BASE" \
-  --harness codex --goal-mode off --reasoning-effort high -N "$N" \
+  --goal-mode off --reasoning-effort high -N "$N" \
   --startup-concurrency "${STARTUP_CONCURRENCY:-8}" \
   --output "$OUT" --registration-dir "$REG" --key-file "$SWARMHARM_API_KEY_FILE"
 

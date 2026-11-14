@@ -263,8 +263,10 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
     def test_native_harness_admission_replaces_pi_for_live_runs(self):
         for harness in ('claude-code','codex'):
             run.validate_harness_policy(harness)
-        with self.assertRaisesRegex(ValueError,'explicit Sol 5.6 Pi comparison'):
-            run.validate_harness_policy('pi-sdk')
+        run.validate_harness_policy('pi-sdk')
+        run.guardrails.validate_model_harness({'model':'z-ai/glm-5.3'},'pi-sdk')
+        with self.assertRaises(ValueError):
+            run.guardrails.validate_model_harness({'model':'openai/gpt-6.1-sol'},'pi-sdk')
 
     def test_explicit_sol56_pi_comparison_is_narrow_and_not_default(self):
         run.validate_harness_policy('pi-sdk',pi_comparison=True)
@@ -886,19 +888,10 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
         ):
             routes = run.verify_routes(key)
         self.assertEqual(routes["model"], model)
-        self.assertEqual(routes["upstream_model"], model)
         self.assertEqual(routes["api_base"], run.AXONHUB_API_BASE)
         self.assertEqual(routes["responses_endpoint"], run.AXONHUB_ENDPOINT)
         self.assertEqual(routes["reasoning_effort"], run.DEFAULT_REASONING)
-        self.assertEqual(
-            calls[0],
-            (
-                run.OPENROUTER_CATALOG + f"/{model}/endpoints",
-                model,
-                None,
-            ),
-        )
-        self.assertEqual(calls[1], (run.AXONHUB_CATALOG, model, key))
+        self.assertEqual(calls, [(run.AXONHUB_CATALOG, model, key)])
 
     def test_current_registration_defaults_are_engineering_and_frozen_axonhub(self):
         self.assertEqual(run.DEFAULT_SCENARIO, "engineering-capacity")
