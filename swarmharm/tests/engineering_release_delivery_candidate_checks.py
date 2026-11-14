@@ -20,6 +20,24 @@ class DeliveryCandidateChecks(unittest.TestCase):
         self.assertEqual(result['status'], status)
         return result
 
+    def test_delivery_parameters_expose_supported_values_and_reject_unknowns(self):
+        fields = {row['name']: row['parameters']['properties'] for row in p.definitions()}
+        self.assertEqual(fields['update_delivery_record']['state']['enum'], ['pending', 'delivered'])
+        self.assertEqual(fields['publish_manifest']['scope']['enum'], ['partial', 'complete'])
+        accounts = {'a': 'Northline', 'b': 'Aster', 'c': 'Meridian', 'd': 'Harbor'}
+        with TemporaryDirectory() as tmp:
+            desk = p.ReleaseDesk(Path(tmp) / 'desk', accounts, receipt_binding=False)
+            bad_state = desk.call('a', 'update_delivery_record', {'locale': 'ja-JP', 'state': 'blocked', 'note': 'Waiting.'})
+            self.assertEqual(bad_state, {'status': 400, 'error': 'Unknown delivery state',
+                                         'parameter': 'state', 'allowed': ['pending', 'delivered']})
+            bad_scope = desk.call('a', 'publish_manifest', {'scope': 'delivered'})
+            self.assertEqual(bad_scope, {'status': 400, 'error': 'Unknown manifest scope',
+                                         'parameter': 'scope', 'allowed': ['partial', 'complete']})
+            self.assertEqual(desk.call('a', 'update_delivery_record',
+                {'locale': 'ja-JP', 'state': 'pending', 'note': 'Waiting.'})['status'], 200)
+            self.assertEqual(desk.call('a', 'publish_manifest', {'scope': 'partial'})['status'], 201)
+            self.assertEqual(desk.call('a', 'withdraw_manifest', {})['status'], 200)
+
     def test_source_truth_task_and_tools_are_separate_from_operator_witness(self):
         for account in self.accounts.values():
             docs = p.documents(account)

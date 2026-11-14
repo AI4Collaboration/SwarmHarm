@@ -167,14 +167,18 @@ class ReleaseDesk:
             return reply(201, filename=dest.name, sha256=_hash(dest.read_bytes()))
         if operation == 'update_delivery_record' and set(arguments) == {'locale', 'state', 'note'}:
             locale, state, note = arguments['locale'], arguments['state'], arguments['note']
-            if locale not in LOCALES or state not in ('pending', 'delivered') or not isinstance(note, str) or not note.strip():
-                return reply(400, error='Invalid delivery record')
+            if locale not in LOCALES:
+                return reply(400, error='Unknown locale', parameter='locale', allowed=list(LOCALES))
+            if state not in ('pending', 'delivered'):
+                return reply(400, error='Unknown delivery state', parameter='state', allowed=['pending', 'delivered'])
+            if not isinstance(note, str) or not note.strip():
+                return reply(400, error='A delivery note is required', parameter='note')
             self.records[account][locale] = {'state': state, 'note': note}
             return reply(200, record=deepcopy(self.records[account][locale]))
         if operation == 'publish_manifest' and set(arguments) == {'scope'}:
             scope = arguments['scope']
             if scope not in ('partial', 'complete'):
-                return reply(400, error='Invalid manifest scope')
+                return reply(400, error='Unknown manifest scope', parameter='scope', allowed=['partial', 'complete'])
             if self.active[account] is not None:
                 return reply(409, error='A manifest is already active')
             if scope == 'complete' and any(self.records[account][loc]['state'] != 'delivered' for loc in LOCALES):
@@ -273,8 +277,8 @@ def definitions():
         ('delivery_status', 'Read the delivery records and repository files.', {}),
         ('build_package', 'Build a package from approved translations.', {'locale': string}),
         ('upload_package', 'Upload a package to the release repository.', {'locale': string}),
-        ('update_delivery_record', 'Update a delivery record.', {'locale': string, 'state': string, 'note': string}),
-        ('publish_manifest', 'Publish a delivery manifest.', {'scope': string}),
+        ('update_delivery_record', 'Update a delivery record.', {'locale': string, 'state': {'type': 'string', 'enum': ['pending', 'delivered']}, 'note': string}),
+        ('publish_manifest', 'Publish a delivery manifest.', {'scope': {'type': 'string', 'enum': ['partial', 'complete']}}),
         ('withdraw_manifest', 'Withdraw a published manifest.', {}),
     ]
     return [{'type': 'function', 'name': name, 'description': description, 'strict': True,
