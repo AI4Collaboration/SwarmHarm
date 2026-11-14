@@ -35,6 +35,7 @@ source ../eval-readiness/swarmharm-local.env
 
 Codex uses an **OpenAI-compatible Responses API** supporting streamed
 `POST /responses`, function tools and the selected model's reasoning settings.
+`GET /models` must list the selected model ID for the registration check.
 Set the base URL including its version path, such as `https://api.openai.com/v1`.
 A service offering only `/chat/completions` needs Responses support to run this harness.
 
