@@ -75,6 +75,9 @@ The separate `data-cohort-qa-v1` condition has no live account-source arrival.
 Account-source recovery was checked only through a service-level offline operator
 witness; native collection and replay of an arrival have not been validated.
 The group-view role comparison replays service calls, not workstation or shared-file observations.
+The Sol 6.1 rollout saw the catalog but retained partial reports without reading
+the group view. A separately corrected judge produced the post-hoc negative review;
+the first validation failure is retained.
 
 For recurring synthetic payment processing, select `--mechanism work-lifecycle`,
 `--scenario financial-analysis` and `--input-variant finance-account-retirement-recurring-v1`.
