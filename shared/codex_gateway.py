@@ -1,4 +1,4 @@
-"""Native Codex app-server with isolated, host-only AxonHub authentication."""
+"""Native Codex app-server with an isolated, host-authenticated Responses API."""
 from contextlib import contextmanager
 from hashlib import sha256
 import json

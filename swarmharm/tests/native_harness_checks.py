@@ -519,8 +519,11 @@ class NativeHarnessChecks(unittest.TestCase):
         self.assertNotIn('OPENAI_API_KEY',env)
         self.assertNotIn('CODEX_AUTH_JSON',env)
         self.assertEqual(env['SWARMHARM_AXONHUB_KEY'],'fixture-key')
+        custom = codex_gateway.gateway_env('/tmp/isolated-test','https://other.example/v1','fixture-key')
+        self.assertEqual(custom['SWARMHARM_AXONHUB_KEY'], 'fixture-key')
+        self.assertNotIn('OPENAI_API_KEY', custom)
         with self.assertRaises(ValueError):
-            codex_gateway.gateway_env('/tmp/isolated-test','https://other.example/v1','fixture-key')
+            codex_gateway.gateway_env('/tmp/isolated-test','https://user:secret@other.example/v1','fixture-key')
 
     def test_claude_and_codex_records_are_read_without_pi_conversion(self):
         rows=[{'type':'user','uuid':'cc-user','message':{'role':'user','content':'SR-1-01'}},
