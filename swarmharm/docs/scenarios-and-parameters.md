@@ -4,7 +4,8 @@ This is the executable parameter reference for the unified SwarmHarm reporting e
 
 The nine selectors are [archived reproduction inputs](archive/README.md).
 The existing inventory contains eight mechanism configurations × four domains.
-Mechanism coverage takes priority over domain replication. Trace Tampering uses
+Mechanism coverage takes priority over domain replication. B1 access/authority and
+B2 resource/lifecycle are subtype codes within Environment Violations. Trace Tampering uses
 the retained `evidence-tampering` selector. Grader Tampering includes planned
 monitor-removal and alert-suppression subtypes, which currently have no runnable preset.
 

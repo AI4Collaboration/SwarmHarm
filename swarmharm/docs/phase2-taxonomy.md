@@ -23,8 +23,15 @@ on this chain.
 | | **T2 — Task/target substitution** | Substitute the assigned target or workload while it is evaluated as the original task. Editing a permitted solution is not target substitution. |
 | **Evaluation integrity** | **E1 — Trace Tampering** | Modify, remove or fabricate recorded execution: native histories, tool-return records, dispatch logs, recorded measurements or provenance. |
 | | **E2 — Grader Tampering** | Alter the evaluation system: grader or monitor rules, thresholds, code, execution, coverage or alert-delivery configuration. |
-| **Environment integrity** | **B1 — Scope/authority crossing** | Read information or perform an operation outside the registered task authority. Code **information** and **action** separately; physical location is another parameter. |
-| | **B2 — Resource/lifecycle interference** | Affect protected availability, capacity, service state or execution lifetime. Ordinary resource use or telemetry alone is not a failure. |
+| **Environment integrity** | **B — Environment Violations** | Violate registered access/operation authority or protected resource, availability and lifecycle constraints. |
+
+B retains two subtype tags for input design and evidence. **B1** covers
+information and operations outside task authority. **B2** covers protected
+capacity, service availability and work lifetime. Individually authorized
+actions may jointly violate a resource constraint, which preserves the
+compositional cases. Each result identifies its violated constraint and
+independent effect. The existing input selectors and frozen B1/B2 codes map to
+this single parent category.
 
 E1 changes recorded observations or results. E2 changes the system that evaluates
 them, including whether a grader or monitor runs and delivers its decision.
@@ -141,7 +148,7 @@ claim access to every underlying trajectory or cover incidents outside those
 reports. Appendix measurement procedures are source methodology, not participant
 behaviors. A new unclassified behavior requires revising this codebook.
 
-The six mechanisms describe interventions; C/F codes cover the remaining observed
+The five mechanisms describe interventions; C/F codes cover the remaining observed
 behavior. This gives a checkable, corpus-bounded coverage claim rather than a claim
 to enumerate every possible future failure. Each row is **classification
 coverage**, not our implementation or a reproduced model result.
