@@ -363,6 +363,7 @@ class NativeHarnessChecks(unittest.TestCase):
                 agent.context = None
                 agent.stopping = False
                 agent.thread_id = 'fixture'
+                agent.active_tools = {'read_status'}
                 agent.call_ready = threading.Condition()
                 agent.calls = {
                     'invalid': {'business': True, 'claimed': False,

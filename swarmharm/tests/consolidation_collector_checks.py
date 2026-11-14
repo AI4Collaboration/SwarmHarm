@@ -58,7 +58,11 @@ class CollectorChecks(unittest.TestCase):
                 self.assertFalse(result['target_observed'])
                 self.assertEqual(result['effects']['omitted_group_entities'],4)
                 for row in result['template_author_candidates']:
-                    self.assertFalse(row['retained_statuses_match'])
+                    # Concurrent selections can preserve HTTP statuses while
+                    # changing the retained template/version in the response.
+                    self.assertFalse(row['retained_results_match'])
+                    omission = result['actor_omission_replays'][row['actor']]
+                    self.assertEqual(row['retained_statuses_match'], omission['retained_statuses_match'])
                     self.assertIn(row['selection_event'],{binding['event'] for binding in result['native_action_bindings']})
                 from phase2 import claim_evidence
                 value={'review_complete':True,'registered_claim_support':{'status':'not_supported',

@@ -20,6 +20,31 @@ SPEC.loader.exec_module(preview)
 
 
 class UnifiedInputPreviewChecks(unittest.TestCase):
+    def test_knowledge_work_groups_analytical_workloads_without_changing_subjects(self):
+        for workload in ('data-analysis', 'financial-analysis'):
+            with self.subTest(workload=workload), TemporaryDirectory() as folder:
+                manifest, subjects = preview.build_preview('knowledge-work', 'resource', workload=workload)
+                _, original = preview.build_preview(workload, 'resource')
+                self.assertEqual(subjects, original)
+                self.assertEqual(manifest['domain'], 'knowledge-work')
+                self.assertEqual(manifest['workload'], workload)
+                self.assertTrue(all(row['delivery_domain'] == workload for row in manifest['assignments'].values()))
+                output = Path(folder)/'export'
+                preview.main(['--scenario', 'knowledge-work', '--workload', workload,
+                              '--binding-preset', 'resource', '--output', str(output)])
+                self.assertEqual(json.loads((output/'subject-inputs.json').read_text()), subjects)
+                with self.assertRaises(ValueError):
+                    preview.build_preview('engineering-capacity', 'resource', workload=workload)
+
+    def test_current_domain_selector_excludes_separate_analytical_domains(self):
+        for args in (['--scenario', 'data-analysis'], ['--scenario', 'financial-analysis'],
+                     ['--scenario', 'all', '--workload', 'data-analysis', '--mechanism', 'implemented']):
+            with self.subTest(args=args), TemporaryDirectory() as folder, patch('sys.stderr'):
+                output = Path(folder)/'invalid'
+                with self.assertRaises(SystemExit):
+                    preview.main([*args, '--output', str(output)])
+                self.assertFalse(output.exists())
+
     def test_grid_export_covers_exact_cells_without_runtime_or_behavior_cues(self):
         with TemporaryDirectory() as folder, \
                 patch('socket.socket', side_effect=AssertionError('network attempt')), \
@@ -124,7 +149,8 @@ class UnifiedInputPreviewChecks(unittest.TestCase):
     def test_cli_exports_exact_readable_bytes_and_never_overwrites_a_prior_preview(self):
         with TemporaryDirectory() as temporary:
             output = Path(temporary) / 'preview'
-            args = ['--scenario', 'data-analysis', '--binding-preset', 'control', '--output', str(output)]
+            args = ['--scenario', 'knowledge-work', '--workload', 'data-analysis',
+                    '--binding-preset', 'control', '--output', str(output)]
             with patch('socket.socket', side_effect=AssertionError('network attempt')), \
                  patch('subprocess.Popen', side_effect=AssertionError('process attempt')):
                 preview.main(args)

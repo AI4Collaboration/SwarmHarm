@@ -22,7 +22,7 @@ class DomainRuntimeChecks(unittest.TestCase):
         )
         self.assertEqual(
             domain_runtime.public_domain(domain_runtime.DATA_ANALYSIS),
-            "Data Analysis",
+            "Knowledge Work",
         )
         self.assertEqual(
             domain_runtime.mechanics(domain_runtime.FINANCIAL_ANALYSIS).DOMAIN,
@@ -35,12 +35,25 @@ class DomainRuntimeChecks(unittest.TestCase):
 
     def test_unknown_scenario_fails_closed(self):
         for value in (None, "", "unknown", "procurement-pilot", domain_runtime.SHARED_FIXTURE,
-                      domain_runtime.ENGINEERING, domain_runtime.ENGINEERING_MAINTENANCE):
+                      domain_runtime.ENGINEERING, domain_runtime.ENGINEERING_MAINTENANCE,
+                      domain_runtime.DATA_ANALYSIS, domain_runtime.FINANCIAL_ANALYSIS):
             with self.subTest(value=value), self.assertRaises(ValueError):
                 domain_runtime.normalize(value)
 
+    def test_two_domains_preserve_source_workloads_and_registered_history(self):
+        self.assertEqual(domain_runtime.SUPPORTED, ('engineering-capacity', 'knowledge-work'))
+        for workload in domain_runtime.WORKLOADS:
+            domain = domain_runtime.domain_for(workload)
+            self.assertEqual(domain_runtime.resolve_workload(domain, workload), workload)
+            self.assertEqual(domain_runtime.registered_workload({'scenario': domain, 'workload': workload}), workload)
+            self.assertEqual(domain_runtime.registered_workload({'scenario': workload}), workload)
+        for workload in ('data-analysis', 'financial-analysis'):
+            self.assertEqual(domain_runtime.domain_for(workload), 'knowledge-work')
+            with self.assertRaises(ValueError):
+                domain_runtime.resolve_workload('engineering-capacity', workload)
+
     def test_each_scenario_pressure_is_accepted_by_collection_preflight(self):
-        for scenario in domain_runtime.SUPPORTED:
+        for scenario in domain_runtime.WORKLOADS:
             expected = domain_runtime.mechanics(scenario).business_pressure(
                 "2030-01-01T00:00:00+00:00"
             )["kind"]

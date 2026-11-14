@@ -521,7 +521,6 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
                 current.add('scheduled_consumer_final')
         if mechanism == 'work-lifecycle' and scenario == 'knowledge-work':
             if input_variant == 'knowledge-scheduled-consumer-v1':current.update(('knowledge_scheduled_consumer','knowledge_scheduled_consumer_transport','scheduled_notification','engineering_consumer','retention_citation'))
-            if input_variant == 'knowledge-digest-queue-v1':current.update(('knowledge_digest_queue','knowledge_digest_collector'))
             if input_variant not in ('knowledge-commitment-schedule-v1','knowledge-digest-queue-v1'):
                 current.add('knowledge_lifecycle_store')
             if input_variant in (None, 'knowledge-retention-timeline-v1', 'knowledge-retention-timeline-notices-v1', 'knowledge-retention-consumers-v1'):
@@ -686,7 +685,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode=None, harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', threat_cell=None, mechanism=None, input_variant=None):
+            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', threat_cell=None, mechanism=None, input_variant=None, workload=None):
+    scenario = domain_runtime.resolve_workload(scenario, workload)
     require_ready_input(input_variant, delivery_config=delivery_config, world_config=world_config, mechanism=mechanism, scenario=scenario)
     if source_retention not in ('origin', 'local'):
         raise ValueError('Source retention must be origin or local')
@@ -724,7 +724,6 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         raise ValueError('Subscription harnesses do not accept an API key file')
     if root.exists():raise FileExistsError('Use a fresh output directory.')
     if registration_dir.exists():raise FileExistsError('Use a fresh registration directory.')
-    scenario=domain_runtime.normalize(scenario)
     if study_mode != phase2_component.UNIFIED_MODE:
         raise ValueError('Unified reporting is the only supported workflow.')
     if component_family not in (None, unified_delivery.FAMILY):
@@ -1028,7 +1027,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     reg={'family':'swarmharm/swarmharm-v1','created_at':utc(),'models':MODELS,
         'upstream_models':UPSTREAM_MODELS,'reasoning':reasoning_effort,
         'preflight_instructions':lab.INSTRUCTIONS,'harness':harness,'pressure':pressure,'budget':budget,'plan':plan,'image':lab.IMAGE,
-        'scenario':scenario,'domain':domain_runtime.public_domain(scenario),
+        'scenario':domain_runtime.domain_for(scenario), 'workload':scenario,
+        'domain':domain_runtime.public_domain(scenario),
         'api_base':AXONHUB_API_BASE if native_gateway or harness_kind=='pi-sdk' else None,
         'endpoint':(AXONHUB_API_BASE+'/messages' if harness_kind=='claude-code' else AXONHUB_ENDPOINT) if native_gateway else None if harness_kind in ('claude-code','codex') else AXONHUB_ENDPOINT,
         'subject_execution_policy':{'user_interaction':'disabled_by_instruction',
@@ -1954,7 +1954,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     if subscription and AXONHUB_KEY_FILE is not None:
         raise ValueError('The registered subscription harness does not accept an API key file')
     if not subscription:AXONHUB_KEY_FILE=guardrails.credential_file(AXONHUB_KEY_FILE,REPO)
-    scenario=domain_runtime.normalize(reg.get('scenario'))
+    scenario=domain_runtime.registered_workload(reg)
     require(not (root/'started.json').exists(),'Never replace trajectories.')
     require(reg.get('study_mode') == phase2_component.UNIFIED_MODE, 'Unknown study mode')
     require('depends_on_phase1' not in reg.get('phase2', {}),
@@ -2403,7 +2403,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     delivered=delivered,
                     completion_notice_delivered=state.get('completion_notice_delivered',False),
                     unfinished_followup=unfinished_followup,state=state,
-                    cue_condition=reg['cue_condition'],scenario=reg.get('scenario'))
+                    cue_condition=reg['cue_condition'],scenario=scenario)
                 if unfinished_followup and message is None and goal_continuation is None:
                     return False
                 if resume_revision and message is None:
@@ -3143,6 +3143,8 @@ if __name__=='__main__':
     p.add_argument('--scenario',choices=domain_runtime.SUPPORTED,
         default=DEFAULT_SCENARIO,
         help='Business scenario; defaults to the maintained Engineering source.')
+    p.add_argument('--workload', choices=domain_runtime.WORKLOADS,
+        help='Optional source workload. Data and financial analysis belong to Knowledge Work.')
     p.add_argument('--filing-deadline-utc',
         help='Optional shared ISO-8601 deadline to freeze identically across matched rollouts.')
     p.add_argument('--goal-mode',choices=('off','goal_command','codex_goal','claude_goal'),default=None,
@@ -3200,5 +3202,5 @@ if __name__=='__main__':
             world_config=load(a.world_config) if a.world_config is not None else None,
             combined_bindings=a.combined_bindings,comparison_design=a.comparison_design,
             source_retention=a.source_retention,threat_cell=a.threat_cell,mechanism=a.mechanism,
-            input_variant=a.input_variant)
+            input_variant=a.input_variant,workload=a.workload)
     else:collect(root,registration_dir)

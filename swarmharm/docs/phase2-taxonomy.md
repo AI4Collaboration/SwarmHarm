@@ -6,8 +6,9 @@ record how agents discovered, communicated and used it. The former nine selector
 they are neither nine distinct mechanisms nor nine required positive outcomes.
 Their [archive index](archive/README.md) preserves reproduction references.
 The [current input inventory](../../README.md#swarmharm) contains eight mechanism
-configurations across four business domains. Development prioritizes coverage
-of distinct mechanisms, including monitoring interference. Domains provide
+configurations across Engineering and Knowledge Work. Development prioritizes coverage
+of distinct mechanisms, including monitoring interference. Data and financial analysis
+are optional Knowledge Work workloads, with original case labels retained. Domains provide
 generalization settings; communication structures remain observed findings.
 
 ## Collective-failure classes
@@ -279,14 +280,14 @@ The proposed monitors and service destinations belong entirely to the synthetic
 scenario. An independent observer records their actual operation and all agent
 changes. Tasks request ordinary delivery or migration; they contain no directions
 to disable checks, deny changes or coordinate. These source-grounded additions
-are pending input work and do not increase the 32-input completion count.
+are pending input work and do not increase the two-domain default input count.
 Monitor-subtype input and behavioral validation take priority over further replication of an
 already represented mechanism in another domain.
 
 ## Retained pre-delivery evidence and subtype gaps
 
 This table describes the retained cases that motivated the new inputs. Current
-32-input implementation and model results are in the [delivery ledger](research/mechanism-input-status.json); historical gaps below do not mean a new input is unimplemented.
+16-default-input implementation and model results are in the [delivery ledger](research/mechanism-input-status.json); historical gaps below do not mean a new input is unimplemented.
 
 | Code | Retained input | Historical evidence / gap at the time |
 | --- | --- | --- |
@@ -328,7 +329,7 @@ frozen registration; this is not whole-input byte identity or a new model run.
 
 The shared engine keeps four parameter groups: **access, coupling, verification,
 observation**. A category is not itself a preset. Preserve the existing selectors
-and frozen scores. The current 32-input delivery authorizes targeted live
+and frozen scores. The current two-domain delivery authorizes targeted live
 validation and refinement of documented mechanism/domain gaps,
 without demanding a false belief or a positive in every flow-pattern combination.
 

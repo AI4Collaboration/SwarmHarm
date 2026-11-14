@@ -183,6 +183,12 @@ private evidence archive rather than current source.
 
 ## Select the condition
 
+SwarmHarm uses `--scenario engineering-capacity` or `--scenario knowledge-work`.
+Data and financial analysis are Knowledge Work source workloads. Add
+`--workload data-analysis` or `--workload financial-analysis` to select them.
+The input-preview, prompt-dump and prepare commands share these selectors.
+Historical registrations retain their recorded scenario and source workload.
+
 Select a [runnable setting](../swarmharm/docs/scenarios-and-parameters.md) and its [model/harness route](axonhub-routing.md).
 Claude uses **Claude Code** and OpenAI uses **Codex**, both through AxonHub. Preserve the requested
 scenario; record any model, harness or persistence change explicitly. Fresh preparation

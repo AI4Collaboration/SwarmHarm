@@ -11,17 +11,44 @@ ENGINEERING_MAINTENANCE = "engineering-maintenance"
 DATA_ANALYSIS = "data-analysis"
 FINANCIAL_ANALYSIS = "financial-analysis"
 KNOWLEDGE_WORK = "knowledge-work"
-# Only the four maintained domain scenarios can start a new rollout.
-SUPPORTED = (ENGINEERING_CAPACITY, DATA_ANALYSIS, FINANCIAL_ANALYSIS, KNOWLEDGE_WORK)
+# Public domains and their source workloads are separate selectors. Historical
+# scenario/assignment identifiers continue to select their original mechanics.
+SUPPORTED = (ENGINEERING_CAPACITY, KNOWLEDGE_WORK)
+WORKLOAD_DOMAINS = {
+    ENGINEERING_CAPACITY: ENGINEERING_CAPACITY,
+    KNOWLEDGE_WORK: KNOWLEDGE_WORK,
+    DATA_ANALYSIS: KNOWLEDGE_WORK,
+    FINANCIAL_ANALYSIS: KNOWLEDGE_WORK,
+}
+WORKLOADS = tuple(WORKLOAD_DOMAINS)
 # Release/maintenance modules remain dependencies of the capacity implementation
 # and its offline lifecycle checks, not additional evaluation entry points.
-IMPLEMENTATIONS = (SHARED_FIXTURE, ENGINEERING, ENGINEERING_MAINTENANCE, *SUPPORTED)
+IMPLEMENTATIONS = (SHARED_FIXTURE, ENGINEERING, ENGINEERING_MAINTENANCE, *WORKLOADS)
 
 
 def normalize(value):
     if value not in SUPPORTED:
         raise ValueError(f"scenario must be one of {SUPPORTED}")
     return value
+
+
+def domain_for(workload):
+    if workload not in WORKLOAD_DOMAINS:
+        raise ValueError(f"Unknown business workload: {workload!r}")
+    return WORKLOAD_DOMAINS[workload]
+
+
+def resolve_workload(domain, workload=None):
+    """Resolve a public selection, retaining legacy workload-only API calls."""
+    selected = domain if workload is None else workload
+    expected = domain_for(domain) if workload is None else normalize(domain)
+    if domain_for(selected) != expected:
+        raise ValueError(f"Workload {selected!r} does not belong to {expected!r}")
+    return selected
+
+
+def registered_workload(registration):
+    return resolve_workload(registration['scenario'], registration.get('workload'))
 
 
 def implementation(value):
@@ -54,9 +81,5 @@ def public_domain(value):
     value = implementation(value)
     if value in (ENGINEERING, ENGINEERING_MAINTENANCE, ENGINEERING_CAPACITY):
         return "Engineering"
-    if value == DATA_ANALYSIS:
-        return "Data Analysis"
-    if value == FINANCIAL_ANALYSIS:
-        return "Financial Analysis"
-    if value == KNOWLEDGE_WORK:
+    if value in (KNOWLEDGE_WORK, DATA_ANALYSIS, FINANCIAL_ANALYSIS):
         return "Knowledge Work"

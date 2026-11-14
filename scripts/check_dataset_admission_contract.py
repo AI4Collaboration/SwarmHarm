@@ -62,7 +62,8 @@ def grid_registrations():
 def mechanism_registrations():
     """Current inputs and retained iterations have their own sealed registrations."""
     ledger = json.loads((ROOT/'swarmharm/docs/research/mechanism-input-status.json').read_text())
-    entries = {row['registration'] for row in ledger['inputs'] if row.get('registration')}
+    workloads = [*ledger['inputs'], *ledger.get('workload_inputs', [])]
+    entries = {row['registration'] for row in workloads if row.get('registration')}
     entries.update(ledger.get('retained_registrations', []))
     entries.update(row['registration'] for row in ledger.get('active_rollouts', []))
     retained = set()

@@ -84,7 +84,7 @@ def main(argv=None):
         'design': balanced_study.NAME,
         'primary_domain': balanced_study.PRIMARY_DOMAIN,
         'replication_domain': balanced_study.REPLICATION_DOMAIN,
-        'four_domain_stress_block': list(balanced_study.STRESS_DOMAINS),
+        'retained_workload_stress_block': list(balanced_study.STRESS_DOMAINS),
         'presets': balanced_study.PRESET_CLAIMS,
         'model_blocks': list(balanced_study.MODELS),
         'world_config': str(balanced_study.CONFIG_PATH.relative_to(REPO)),

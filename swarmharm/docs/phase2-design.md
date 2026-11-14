@@ -2,7 +2,7 @@
 
 **Retained results under their original settings.** See the [archive index](archive/README.md)
 and the [current input plan](../../README.md#swarmharm). These cases do not count
-as completed cells of the new 32-input delivery without an exact input match.
+as completed cells of the current two-domain delivery without an exact input match.
 
 These results come from the implemented **unified reporting environment**: one task, persistent native session/workstation and shared state, with all selected interfaces available from the start. Phase 1/2 label formation and consequence outcomes; they are not separate environments or runtime stages.
 

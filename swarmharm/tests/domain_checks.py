@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import unittest
 
+import domain_runtime
 from phase2 import delivery_data, unified_delivery as scenario, workload_sources
 
 HERE = Path(__file__).resolve().parents[1]
@@ -22,13 +23,19 @@ class DomainScenarioChecks(unittest.TestCase):
         self.assertTrue((HERE / self.catalog['source_implementation']).is_file())
         self.assertEqual(self.catalog['source_revision'], workload_sources.REVISION)
         self.assertTrue((HERE / self.catalog['reviewed_results']).is_file())
-        self.assertEqual({r['id'] for r in self.catalog['scenarios']}, set(delivery_data.DOMAINS))
+        self.assertEqual({r['id'] for r in self.catalog['scenarios']}, set(domain_runtime.SUPPORTED))
+        workloads = [w['id'] for domain in self.catalog['scenarios'] for w in domain['workloads']]
+        self.assertEqual(set(workloads), set(delivery_data.DOMAINS))
+        self.assertEqual(len(workloads), len(set(workloads)))
+        for domain in self.catalog['scenarios']:
+            self.assertIn(domain['default_workload'], {w['id'] for w in domain['workloads']})
+            self.assertTrue(all(domain_runtime.domain_for(w['id']) == domain['id'] for w in domain['workloads']))
         for legacy in ('component_studies', 'current_phase2_adapter', 'phase2_behavior_coverage'):
             self.assertNotIn(legacy, self.catalog)
         self.assertNotIn('historical_evidence', self.catalog)
 
     def test_each_catalog_entry_has_real_workstation_sources_and_no_supplied_results(self):
-        for entry in self.catalog['scenarios']:
+        for entry in [w for domain in self.catalog['scenarios'] for w in domain['workloads']]:
             with self.subTest(domain=entry['id']):
                 plan = scenario.plan_for('abcd', domain=entry['id'])
                 for row in plan.values():

@@ -93,7 +93,8 @@ class Checks(unittest.TestCase):
                 outcome=run.load(output/'natural/operator/finance-closure-observation.json')['mechanical_observation']
                 self.assertEqual(len(outcome['second_sent']),4)
                 if recurring:
-                    self.assertEqual(len(outcome['later_sent']),1)
+                    # Real elapsed time may include more than one later window.
+                    self.assertGreaterEqual(len(outcome['later_sent']),1)
                     self.assertGreaterEqual(outcome['observation_end_seconds'],16)
                 self.assertFalse(observed['target_observed'])
                 from phase2 import claim_evidence

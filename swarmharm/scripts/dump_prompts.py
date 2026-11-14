@@ -9,6 +9,7 @@ from pathlib import Path
 import subprocess
 
 from inspect_unified_input import ACTORS, REPO, build_preview
+import domain_runtime
 from jsonschema import ValidationError
 from claude_agent import SYSTEM_PROMPT as CLAUDE_PROMPT
 from codex_gateway import SYSTEM_PROMPT as CODEX_PROMPT
@@ -43,7 +44,9 @@ def registered_inputs(folder):
         return json.loads(data)["natural"]
 
     header = {"registration": folder.name, "registration_sha256": digest,
-              "domain": reg["scenario"], "preset": reg["phase2"]["binding_preset"],
+              "domain": domain_runtime.domain_for(domain_runtime.registered_workload(reg)),
+              "workload": domain_runtime.registered_workload(reg),
+              "recorded_scenario": reg["scenario"], "preset": reg["phase2"]["binding_preset"],
               "model": reg["models"], "harness": reg["harness"]["kind"],
               "goal_mode": reg["harness"]["goal_mode"],
               "system_prompt_config": reg["harness"].get("system_prompt"),
@@ -52,16 +55,18 @@ def registered_inputs(folder):
     return header, sealed("initial-input-audit.json"), sealed("initial-file-audit.json")
 
 
-def configured_inputs(domain, preset, world, harness):
-    manifest, subjects = build_preview(domain, preset, world, harness=harness)
+def configured_inputs(domain, preset, world, harness, workload=None):
+    selected = domain_runtime.resolve_workload(domain, workload)
+    manifest, subjects = build_preview(domain, preset, world, harness=harness, workload=workload)
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip()
     dirty = bool(subprocess.check_output(["git", "status", "--porcelain"], cwd=REPO))
     audits = {
         actor: {"instructions": lab.INSTRUCTIONS, "input": [{"role": "user", "content": task}],
-                "tools": phase2_component.base_tools({"scenario": domain}, unified_delivery.FAMILY) + subjects["tools"]}
+                "tools": phase2_component.base_tools({"scenario": selected}, unified_delivery.FAMILY) + subjects["tools"]}
         for actor, task in subjects["tasks"].items()
     }
-    header = {"preview_commit": commit, "working_tree_modified": dirty, "domain": domain,
+    header = {"preview_commit": commit, "working_tree_modified": dirty,
+              "domain": manifest['domain'], "workload": selected,
               "preset": preset, "harness": harness, "goal_mode": "off", "world": manifest["world_config"],
               "system_prompt_config": CLAUDE_PROMPT if harness == "claude-code" else CODEX_PROMPT,
               "input_projection": controller_harness({"kind": harness})["input_projection"],
@@ -91,12 +96,13 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, help="New directory outside the checkout")
     parser.add_argument("--registration-dir", type=Path, help="Read verified, sealed inputs for a collected case")
-    parser.add_argument("--scenario", choices=unified_delivery.delivery_data.DOMAINS)
+    parser.add_argument("--scenario", choices=domain_runtime.SUPPORTED)
+    parser.add_argument("--workload", choices=domain_runtime.WORKLOADS)
     parser.add_argument("--binding-preset", choices=unified_delivery.PRESETS)
     parser.add_argument("--world-config", type=Path)
     parser.add_argument("--harness", choices=("codex", "claude-code"))
     args = parser.parse_args(argv)
-    if args.registration_dir and any((args.scenario, args.binding_preset, args.world_config, args.harness)):
+    if args.registration_dir and any((args.scenario, args.workload, args.binding_preset, args.world_config, args.harness)):
         parser.error("Choose a sealed registration or a current configuration")
     default_dir = REPO.parent/"eval-readiness"/"prompt-dumps"/datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     try:
@@ -109,7 +115,7 @@ def main(argv=None):
         else:
             domain, preset = args.scenario or "knowledge-work", args.binding_preset or "records"
             config_path = args.world_config or REPO/"swarmharm/configs/unified-balanced-envelope.json"
-            header, audits, files = configured_inputs(domain, preset, json.loads(config_path.read_bytes()), args.harness or "codex")
+            header, audits, files = configured_inputs(domain, preset, json.loads(config_path.read_bytes()), args.harness or "codex", args.workload)
         if set(audits) != set(ACTORS) or set(files) != set(audits):
             raise ValueError("Expected inputs for the four reporting workstations")
         pages = {f"{a}.md": render(a, audits[a], files[a]) for a in ACTORS}

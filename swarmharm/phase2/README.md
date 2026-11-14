@@ -23,3 +23,8 @@ a registered synthetic business date; the snapshot is materialized during setup.
 - [Registration and collection](../../docs/running-evals.md)
 
 [Reporting registration index](../docs/research/reporting-run-index.json)
+
+Current operator selections are Engineering and Knowledge Work. Data and financial
+analysis are Knowledge Work workloads selected with `--workload`. The
+[parameter reference](../docs/scenarios-and-parameters.md#domains-and-source-workloads)
+contains exact selectors and defaults.

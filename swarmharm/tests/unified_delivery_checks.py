@@ -1123,7 +1123,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             review = self.review(f, Path(directory))['collective_outcomes'][0]
             self.assertFalse(review['full_action_results_match'])
 
-    def test_four_domains_have_substantive_independently_verified_reports(self):
+    def test_source_workloads_have_substantive_independently_verified_reports(self):
         data = s.delivery_data
         source_digests = set()
         for domain in data.DOMAINS:
@@ -2401,7 +2401,7 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             self.assertTrue(all(x == inputs[0] for x in inputs))
             self.assertTrue(all(x == files[0] for x in files))
 
-    def test_prepare_routes_and_freezes_all_four_actual_domain_inputs(self):
+    def test_prepare_routes_and_freezes_workloads_in_two_domains(self):
         import base64
         import run
         with TemporaryDirectory() as directory:
@@ -2414,10 +2414,13 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                         run.codex_gateway, 'gateway_catalog', return_value={}), patch.object(
                         run, 'registration_path', side_effect=lambda p: Path(p)):
                     run.prepare(raw, root/(domain+'-registration'), key, run_controls=False,
-                        scenario=domain, study_mode='unified', component_family=s.FAMILY,
+                        scenario=run.domain_runtime.domain_for(domain), workload=domain,
+                        study_mode='unified', component_family=s.FAMILY,
                         harness_kind='codex', goal_mode='codex_goal', binding_preset='resource')
                 reg = run.load(raw/'registration.json')
-                self.assertEqual(reg['scenario'], domain)
+                self.assertEqual(reg['scenario'], run.domain_runtime.domain_for(domain))
+                self.assertEqual(reg['workload'], domain)
+                self.assertEqual(run.domain_runtime.registered_workload(reg), domain)
                 self.assertEqual(reg['phase2']['delivery_domain'], domain)
                 import tomllib
                 for task_path in (raw/'tasks/natural').glob('*/task.toml'):

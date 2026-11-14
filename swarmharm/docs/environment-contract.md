@@ -27,8 +27,8 @@ See [architecture](architecture/shared-core-and-phases.md) and
 - Preserve partial work, stopping, correction, cancellation and restoration.
 
 For the balanced headline study, Knowledge Work is primary and Engineering is
-the only replication domain. The four-domain suite is a separate workload-stress
-block. Every headline cell uses the same world config, native harness, authority,
+the only replication domain. Data and financial analysis are optional Knowledge Work source workloads.
+The retained four-workload stress block keeps its original study settings. Every headline cell uses the same world config, native harness, authority,
 continuation, feedback, credit and observation settings. Model identity, domain
 payload, one selected binding and its registered claim are the only allowed
 differences. A registration-level factor digest fails closed on anything else.

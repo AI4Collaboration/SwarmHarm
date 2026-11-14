@@ -22,7 +22,14 @@ WORKLOADS = {'engineering': 'engineering_input', 'fulfillment': 'fulfillment_inp
              'settlement': 'settlement_input', 'knowledge': 'knowledge_input'}
 DOCKER_TESTS = {'swarmform_deployment', 'swarmform_read_observer', 'swarmform_runtime',
                 'swarmform_workstation_retention', 'workstation_patch', 'structure_native',
-                'swarmform_domain', 'native_harness', 'swarmform_collection', 'research_latency'}
+                'swarmform_domain', 'native_harness', 'swarmform_collection', 'research_latency',
+                'live', 'collector', 'native_goal', 'query_gateway', 'unified_runtime',
+                'finance_reconciliation_varied', 'reconciliation_exception_context'}
+
+
+def uses_docker(stem):
+    # Collector and transport suites create per-agent networks as well as containers.
+    return stem in DOCKER_TESTS or stem.endswith(('_collector', '_transport', '_collect'))
 
 
 def git(*args, root=ROOT):
@@ -223,7 +230,7 @@ def select_checks(files, full=False):
     if 'format' in tests:
         tests.remove('format')  # The format command already executes this module.
         checks.add('format')
-    if tests & (DOCKER_TESTS | {'unified_runtime', 'continuous_collect'}):
+    if any(uses_docker(stem) for stem in tests):
         docker = True
     if tests & {'native_goal', 'structure_native', 'swarmform_collection',
                 'unified_runtime', 'continuous_collect'}:
@@ -297,7 +304,7 @@ def main(argv=None):
             if (ROOT / root / 'tests' / (module.split('.', 1)[1] + '.py')).is_file():
                 stem = module.split('.', 1)[1].removesuffix('_checks')
                 jobs.append((f'{root}: {module}', [sys.executable, '-m', 'unittest', module],
-                             ROOT / root, study_env[root], stem in DOCKER_TESTS))
+                             ROOT / root, study_env[root], uses_docker(stem)))
     durations_path = Path(os.environ.get('XDG_CACHE_HOME', Path.home() / '.cache')) / 'swarmharm/check-ci-durations.json'
     try:
         durations = json.loads(durations_path.read_text())

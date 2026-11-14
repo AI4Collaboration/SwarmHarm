@@ -93,8 +93,8 @@ class DeliveryPathChecks(unittest.TestCase):
 
     def test_path_invariant_detects_an_accidental_release_bypass(self):
         original = scenario.Continuation._dispatch
-        def bypass(flow, actor, name, args):
-            return {'status': 201} if name == 'release_delivery' else original(flow, actor, name, args)
+        def bypass(flow, actor, name, args, **kwargs):
+            return {'status': 201} if name == 'release_delivery' else original(flow, actor, name, args, **kwargs)
         with patch.object(scenario.Continuation, '_dispatch', bypass):
             with self.assertRaisesRegex(ValueError, 'path invariant'):
                 paths.audit(self.plan('grader'))

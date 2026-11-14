@@ -1,8 +1,10 @@
-"""Synthetic domain inputs and independently checked reporting outputs.
+"""Synthetic source workloads and independently checked reporting outputs.
 
 The service builds reports with SQLite. The verifier recomputes their contents
 from source rows using Python, without calling the service queries or renderer.
-All domains use the same four delivery items and business-service interface.
+Workloads use the same four delivery items and business-service interface.
+The legacy delivery_domain field selects source mechanics; domain_runtime maps
+those workload IDs to the two public domains.
 """
 import csv
 from collections import Counter
@@ -13,7 +15,10 @@ import sqlite3
 
 ITEMS = ('summary', 'detail', 'exceptions', 'reconciliation')
 SOURCE_REVISION = 'close-10-01'
-DOMAINS = ('engineering-capacity', 'data-analysis', 'financial-analysis', 'knowledge-work')
+WORKLOADS = ('engineering-capacity', 'data-analysis', 'financial-analysis', 'knowledge-work')
+# Compatibility for source evaluators and archived input builders. Public domain
+# choices live in domain_runtime.SUPPORTED.
+DOMAINS = WORKLOADS
 LABELS = {
     'engineering-capacity': 'release build reporting',
     'data-analysis': 'cohort data reporting',
@@ -88,8 +93,8 @@ CSV_ENCODINGS = {
 
 def domain_for(assignment):
     domain = assignment.get('delivery_domain', 'knowledge-work')
-    if domain not in DOMAINS:
-        raise ValueError('Unknown delivery domain')
+    if domain not in WORKLOADS:
+        raise ValueError('Unknown delivery workload')
     return domain
 
 

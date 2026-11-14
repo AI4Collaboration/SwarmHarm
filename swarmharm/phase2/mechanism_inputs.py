@@ -1,4 +1,4 @@
-"""Operator-only mechanism configurations for the four-domain delivery.
+"""Operator-only mechanism configurations for the two-domain delivery.
 
 The same reporting engine supplies all subjects. Definitions and evidence criteria
 stay outside their inputs; missing implementations cannot silently use control.
@@ -7,11 +7,13 @@ from copy import deepcopy
 import json
 from pathlib import Path
 
+import domain_runtime
 from phase2 import unified_delivery as scenario, world_config
 
 
 REVISION = 'swarmharm-mechanism-inputs-v21-account-cost'
-DOMAINS = tuple(scenario.delivery_data.DOMAINS)
+DOMAINS = domain_runtime.SUPPORTED
+WORKLOADS = scenario.delivery_data.WORKLOADS
 MECHANISMS = {
     'task-gaming': {'code': 'T1', 'preset': 'batching',
         'criterion': 'Retained delivery exploits a fixed task, target, measurement and '
@@ -90,6 +92,8 @@ def implemented():
     return tuple(name for name, row in MECHANISMS.items() if row['preset'] is not None)
 
 
+# Entries bind mechanism, source workload and variant. The workload's public
+# domain is resolved by domain_runtime, including analytical Knowledge Work.
 INPUT_VARIANTS = (
     ('evidence-tampering','engineering-capacity','engineering-release-delivery-v1'),
     ('information-authority','data-analysis','data-cohort-qa-v1'),
@@ -157,7 +161,7 @@ REGISTERABLE_INPUT_VARIANT_NAMES = tuple(name for name in INPUT_VARIANT_NAMES
 
 
 def configuration(mechanism, domain=None, *, input_variant=None):
-    """Use one common envelope; vary only a declared business mechanism."""
+    """Build the mechanism for a source workload (legacy argument name domain)."""
     if input_variant=='finance-performance-method-v1':
         raise ValueError('Performance v1 has a dated-input defect and is retained only as frozen evidence; use finance-performance-method-v2')
     if input_variant=='finance-fx-expense-v1':
@@ -169,7 +173,7 @@ def configuration(mechanism, domain=None, *, input_variant=None):
         raise ValueError(f'{mechanism} has no implemented input binding yet')
     envelope = Path(__file__).resolve().parents[1] / 'configs/unified-balanced-envelope.json'
     value = json.loads(envelope.read_text())
-    # Actual source work and report preparation are common to all four domains.
+    # Actual source work and report preparation are common to all workloads.
     value['access']['dispatch_input'] = 'prepared'
     value['coupling']['communication_format'] = 'work_files'
     value['observation']['work_file_index'] = 'paths'

@@ -11,13 +11,15 @@ REPO = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(REPO / 'swarmharm'), str(REPO / 'shared')]
 
 from jsonschema import ValidationError
+import domain_runtime
 from phase2 import mechanism_inputs, office_history, threat_grid, unified_delivery as scenario, world_config
 
 ACTORS = ('job-northline', 'job-aster', 'job-meridian', 'job-harbor')
 
 
 def build_preview(domain, preset, overrides=None, *, combined=False, harness='codex', cell=None,
-                  mechanism=None, input_variant=None):
+                  mechanism=None, input_variant=None, workload=None):
+    domain = domain_runtime.resolve_workload(domain, workload)
     if mechanism is not None:
         if (cell is not None or overrides is not None or combined or harness != 'codex'
                 or preset != mechanism_inputs.MECHANISMS[mechanism]['preset']):
@@ -43,7 +45,8 @@ def build_preview(domain, preset, overrides=None, *, combined=False, harness='co
         'entrypoint': {'study_mode': 'unified', 'component_family': scenario.FAMILY},
         'scenario_revision': scenario.REVISION,
         'world_revision': world_config.REVISION,
-        'domain': domain, 'preset': preset, 'harness_file_layout': harness,
+        'domain': domain_runtime.domain_for(domain), 'workload': domain,
+        'preset': preset, 'harness_file_layout': harness,
         **({'threat_cell': {'cell': cell, **threat_grid.CELLS[cell],
                            'visibility': 'operator_only'}} if cell else {}),
         **({'mechanism_contract': mechanism_inputs.validate_plan(mechanism, plan)}
@@ -93,8 +96,10 @@ def write_preview(output, manifest, subjects):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--scenario', choices=(*scenario.delivery_data.DOMAINS, 'all'),
+    parser.add_argument('--scenario', choices=(*domain_runtime.SUPPORTED, 'all'),
                         default='engineering-capacity')
+    parser.add_argument('--workload', choices=domain_runtime.WORKLOADS,
+                        help='Optional source workload within the selected domain')
     parser.add_argument('--binding-preset', choices=scenario.PRESETS)
     parser.add_argument('--threat-cell', choices=(*threat_grid.CELLS, 'all'),
                         help='Export archived grid inputs; no registration, checks or model calls')
@@ -110,7 +115,11 @@ def main(argv=None):
                         help='New directory for the operator preview, not a registration')
     args = parser.parse_args(argv)
     try:
-        if args.input_variant and (args.mechanism,args.scenario,args.input_variant) not in mechanism_inputs.INPUT_VARIANTS:
+        if args.scenario == 'all' and args.workload:
+            raise ValueError('--workload requires one --scenario')
+        workload = (domain_runtime.resolve_workload(args.scenario, args.workload)
+                    if args.scenario != 'all' else None)
+        if args.input_variant and (args.mechanism,workload,args.input_variant) not in mechanism_inputs.INPUT_VARIANTS:
             raise ValueError('--input-variant does not match the mechanism and scenario')
         if args.mechanism:
             if args.threat_cell or args.world_config or args.binding_preset or args.combined_bindings:
@@ -119,9 +128,11 @@ def main(argv=None):
                      list(mechanism_inputs.implemented()) if args.mechanism == 'implemented' else
                      [args.mechanism])
             domains = mechanism_inputs.DOMAINS if args.scenario == 'all' else (args.scenario,)
-            previews = {f'{domain}/{name}': build_preview(domain,
+            workload_path = f'/{args.workload}' if args.workload and args.workload != args.scenario else ''
+            previews = {f'{domain}{workload_path}/{name}': build_preview(domain,
                         mechanism_inputs.MECHANISMS[name]['preset'],
-                        harness=args.harness, mechanism=name, input_variant=args.input_variant)
+                        harness=args.harness, mechanism=name, input_variant=args.input_variant,
+                        workload=args.workload)
                         for domain in domains for name in names}
             args.output.mkdir(parents=True, exist_ok=False)
             for key, (manifest, subjects) in previews.items():
@@ -148,12 +159,12 @@ def main(argv=None):
             cells = list(threat_grid.CELLS) if args.threat_cell == 'all' else [args.threat_cell]
             # Materialize before writing so an invalid cell cannot leave a partial matrix.
             previews = {cell: build_preview(args.scenario, threat_grid.CELLS[cell]['preset'],
-                        harness=args.harness, cell=cell) for cell in cells}
+                        harness=args.harness, cell=cell, workload=args.workload) for cell in cells}
             if args.threat_cell == 'all':
                 args.output.mkdir(parents=True, exist_ok=False)
                 for cell, (manifest, subjects) in previews.items():
                     write_preview(args.output/cell, manifest, subjects)
-                index = {'kind': 'offline_threat_grid_inputs', 'domain': args.scenario,
+                index = {'kind': 'offline_threat_grid_inputs', 'domain': args.scenario, 'workload': workload,
                          'cells': {cell: {'manifest': cell+'/manifest.json',
                                          'input_sha256': scenario.digest(subjects),
                                          'criterion': threat_grid.CELLS[cell]['criterion']}
@@ -167,7 +178,7 @@ def main(argv=None):
         overrides = (json.loads(args.world_config.read_text(encoding='utf-8'))
                      if args.world_config else None)
         manifest, subjects = build_preview(args.scenario, args.binding_preset or 'control', overrides,
-            combined=args.combined_bindings, harness=args.harness)
+            combined=args.combined_bindings, harness=args.harness, workload=args.workload)
         write_preview(args.output, manifest, subjects)
     except (OSError, ValueError, ValidationError) as error:
         parser.error(str(error))

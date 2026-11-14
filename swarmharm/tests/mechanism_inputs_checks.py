@@ -20,7 +20,7 @@ class MechanismInputChecks(unittest.TestCase):
         from datetime import date
         from phase2 import business_dates
         cutoff = date(2026, 11, 13)
-        for domain in inputs.DOMAINS:
+        for domain in inputs.WORKLOADS:
             preview, _ = build_preview(domain, 'batching', mechanism='task-gaming')
             checked = business_dates.validate_files(scenario.initial_files(preview['assignments']), cutoff)
             if domain != 'engineering-capacity': self.assertGreater(checked, 0)
@@ -72,7 +72,7 @@ class MechanismInputChecks(unittest.TestCase):
     def test_inspect_variant_keeps_combination_validation(self):
         with TemporaryDirectory() as tmp, redirect_stdout(StringIO()), redirect_stderr(StringIO()):
             output = Path(tmp)/'valid'
-            main(['--scenario','data-analysis','--mechanism','target-substitution',
+            main(['--scenario','knowledge-work','--workload','data-analysis','--mechanism','target-substitution',
                   '--input-variant','data-manifest-pending-v1','--output',str(output)])
             self.assertTrue((output/'manifest.json').is_file())
             for mechanism, domain in [('work-lifecycle','data-analysis'),
@@ -100,7 +100,7 @@ class MechanismInputChecks(unittest.TestCase):
 
     def test_lifecycle_criteria_match_domain_business_object(self):
         contracts={}
-        for domain in inputs.DOMAINS:
+        for domain in inputs.WORKLOADS:
             manifest,subjects=build_preview(domain,'availability',mechanism='work-lifecycle')
             contracts[domain]=manifest['mechanism_contract']
             self.assertNotIn(contracts[domain]['semantic_criterion'],json.dumps(subjects))
@@ -155,7 +155,7 @@ class MechanismInputChecks(unittest.TestCase):
     def test_account_cost_is_disclosed_and_matches_independent_work_in_each_domain(self):
         from phase2 import delivery_meter
         from phase2.mechanism_review import corrected_plan
-        for domain in inputs.DOMAINS:
+        for domain in inputs.WORKLOADS:
             with self.subTest(domain=domain):
                 preview, _ = build_preview(domain,'batching',mechanism='task-gaming')
                 plan = preview['assignments']; control = corrected_plan(plan)
@@ -247,7 +247,7 @@ class MechanismInputChecks(unittest.TestCase):
                     self.assertEqual(delivery_data.source_data(plan[actor]), delivery_data.source_data(fixed[actor]))
 
     def test_declared_paths_and_corrected_bindings_in_every_domain(self):
-        for domain in inputs.DOMAINS:
+        for domain in inputs.WORKLOADS:
             for mechanism in inputs.implemented():
                 with self.subTest(domain=domain, mechanism=mechanism):
                     manifest, subjects = build_preview(domain, inputs.MECHANISMS[mechanism]['preset'],
@@ -282,8 +282,8 @@ class MechanismInputChecks(unittest.TestCase):
             output = Path(directory)/'inputs'
             main(['--mechanism', 'implemented', '--scenario', 'all', '--output', str(output)])
             index = json.loads((output/'manifest.json').read_text())
-            self.assertEqual(index['planned_count'], 32)
-            self.assertEqual(index['exported_count'], len(inputs.implemented())*4)
+            self.assertEqual(index['planned_count'], 16)
+            self.assertEqual(index['exported_count'], len(inputs.implemented())*2)
             self.assertEqual(index['model_behavior'], 'not_tested')
             for entry in index['inputs'].values():
                 manifest = json.loads((output/entry['manifest']).read_text())

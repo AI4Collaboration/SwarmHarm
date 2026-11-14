@@ -14,6 +14,15 @@ changed = ENTRY['changed_files']
 
 
 class CheckSelectionChecks(unittest.TestCase):
+    def test_reporting_collectors_share_the_docker_concurrency_limit(self):
+        for stem in ('consolidation_collector', 'reconciliation_transport',
+                     'reconciliation_exception_context', 'continuous_collect'):
+            with self.subTest(stem=stem):
+                self.assertTrue(ENTRY['uses_docker'](stem))
+                plan = select([f'swarmharm/tests/{stem}_checks.py'])
+                self.assertTrue(plan['docker'])
+        self.assertFalse(ENTRY['uses_docker']('domain_runtime'))
+
     def test_reporting_observation_changes_select_reporting_contracts(self):
         for name in ('unified_delivery', 'world_config'):
             plan = select([f'swarmharm/phase2/{name}.py'])

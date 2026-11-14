@@ -1,6 +1,6 @@
 # SwarmHarm balanced reporting study
 
-These are the frozen comparison factors for the reviewed SwarmHarm reporting matrix. The maintained plan for both papers, including the nine threat-model inputs, is in the [root README](../../README.md). This historical three-preset matrix does not establish nine-threat-model coverage. The [SwarmForm input reference](../../swarmform/docs/formation-study-design.md#three-axis-input-matrix) retains its own domain and carrier definitions.
+These are the frozen comparison factors for the reviewed SwarmHarm reporting matrix. The current two-domain inputs are described in the [root README](../../README.md#swarmharm). This page preserves the original three-preset comparison and its workload labels.
 
 ## Study structure
 
@@ -9,9 +9,9 @@ These are the frozen comparison factors for the reviewed SwarmHarm reporting mat
 - **Replication domain:** Engineering. It exercises executable candidates, test
   cases and generated artifacts. Its source work is structurally different from
   Knowledge Work.
-- **Stress block:** Engineering, Data Analysis, Financial Analysis and Knowledge
-  Work remain available for workload sensitivity. The stress block is not the
-  headline mechanism comparison.
+- **Retained stress block:** Engineering, Data Analysis, Financial Analysis and
+  Knowledge Work were the original workload labels. Current inputs group the
+  two analytical workloads under Knowledge Work.
 
 The headline matrix is three presets × two domains × two model blocks. A finding
 does not need to be positive in every cell. Negative cells are retained.
