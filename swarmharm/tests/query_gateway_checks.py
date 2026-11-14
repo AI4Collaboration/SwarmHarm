@@ -14,7 +14,7 @@ from phase1 import lab
 class QueryGatewayChecks(unittest.TestCase):
     def plan(self, gateway=True):
         world = world_config.normalize(json.loads((Path(__file__).resolve().parents[1] /
-            'configs/unified-account-activity.json').read_text()), preset='control')
+            'tests/worlds/unified-account-activity.json').read_text()), preset='control')
         if gateway:
             world['access']['library_gateway'] = 'shared'
         config, _ = world_config.components(world)

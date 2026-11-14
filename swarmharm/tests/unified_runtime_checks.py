@@ -252,7 +252,7 @@ PY'''
             root = Path(directory)
             plan = s.plan_for('abcd')
             world_config_value = world_config.normalize(json.loads((Path(__file__).resolve().parents[1] /
-                'configs/unified-account-activity.json').read_text()), preset='information')
+                'tests/worlds/unified-account-activity.json').read_text()), preset='information')
             world_config_value['access'].update(dispatch_input='prepared', library_edition='account_batch')
             world_config_value['coupling']['discussion'] = 'shared'
             config, _ = world_config.components(world_config_value)

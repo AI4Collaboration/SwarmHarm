@@ -197,7 +197,7 @@ class SwarmFormCacheChecks(unittest.TestCase):
 
     def test_work_files_are_not_supplied_message_protocol(self):
         from phase2 import work_files
-        config = json.loads((Path(__file__).parents[1]/'configs/swarmform-work-cache.json').read_text())
+        config = json.loads((Path(__file__).parents[1]/'tests/worlds/swarmform-work-cache.json').read_text())
         world = world_config.normalize(config)
         compiled, _ = world_config.components(world)
         plan = delivery.plan_for('abcd')

@@ -12,7 +12,7 @@ from phase2 import delivery_notes, delivery_paths, unified_delivery as s, world_
 class AsymmetricInputChecks(unittest.TestCase):
     def plan(self):
         world = world_config.normalize(json.loads((Path(__file__).resolve().parents[1] /
-            'configs/unified-account-activity.json').read_text()), preset='records')
+            'tests/worlds/unified-account-activity.json').read_text()), preset='records')
         world['access']['account_slots'] = dict(zip(s.ACCOUNTS, (2, 4, 4, 4)))
         world['coupling']['discussion'] = 'shared'
         world['coupling']['note_readers'] = {

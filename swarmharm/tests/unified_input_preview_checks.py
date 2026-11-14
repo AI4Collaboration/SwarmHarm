@@ -49,7 +49,7 @@ class UnifiedInputPreviewChecks(unittest.TestCase):
     def test_prior_office_work_adds_only_private_files_to_the_frozen_formation_inputs(self):
         import run
         self.assertIn(office_history.ARCHIVE, run.code_paths())
-        base = json.loads((run.HERE/'configs/unified-cross-account-source-routing.json').read_bytes())
+        base = json.loads((run.HERE/'tests/worlds/unified-cross-account-source-routing.json').read_bytes())
         _, original = preview.build_preview('knowledge-work', 'records', base)
         config = deepcopy(base)
         config['observation'][office_history.FIELD] = office_history.TASK_ONLY
