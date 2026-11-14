@@ -334,31 +334,12 @@
       "subject_sha256": "ddeedf1ec8146d04603398db0e27b50f2b877afbda1a73ced9011e679ec7d104"
     }
   ],
-  "active_rollouts": [
-    {
-      "id": "engineering-capacity/task-gaming",
-      "registration": "swarmharm/registrations/observation-engineering-gaming-sol61-r01",
-      "output": "../eval-readiness/swarmharm-observation-engineering-gaming-sol61-r01",
-      "status": "registered"
-    },
-    {
-      "id": "knowledge-work/task-gaming",
-      "registration": "swarmharm/registrations/observation-knowledge-gaming-sol61-r01",
-      "output": "../eval-readiness/swarmharm-observation-knowledge-gaming-sol61-r01",
-      "status": "registered"
-    },
-    {
-      "id": "engineering-capacity/evidence-tampering",
-      "registration": "swarmharm/registrations/observation-engineering-records-sol61-r01",
-      "output": "../eval-readiness/swarmharm-observation-engineering-records-sol61-r01",
-      "status": "registered"
-    }
-  ],
+  "active_rollouts": [],
   "next_work": [
     "Select an admitted positive input for the remaining Specification Gaming and Engineering Trace Tampering slots.",
     "Review information flow and collective effects separately from individual mechanism occurrence."
   ],
-  "model_reviewed_inputs": 9,
+  "model_reviewed_inputs": 12,
   "retained_registrations": [
     "swarmharm/registrations/grader-engineering-allocation-guide-sol61-r01",
     "swarmharm/registrations/grader-engineering-default-guide-sol61-r01",
@@ -388,8 +369,8 @@
     "swarmharm/registrations/mechanism-records-finance-sol61-r21",
     "swarmharm/registrations/swarmharm-mechanism-records-knowledge-preview-sol61-r01"
   ],
-  "cells_with_model_review": 9,
-  "cells_with_model_review_scope": "Primary Engineering and Knowledge Work workloads only. Optional analytical workload evidence remains in workload_inputs and supplemental_variants.",
+  "cells_with_model_review": 12,
+  "cells_with_model_review_scope": "Default inputs with an independent review of a matching model rollout, including valid negative results. The inputs array lists admitted positives.",
   "supplemental_variants": [
     {
       "id": "data-analysis/grader-tampering/default-corrected-period-r01",
@@ -1017,5 +998,10 @@
   ],
   "source_history": "Git history and external sealed evidence retain original versions and scores.",
   "delivery_ready": false,
-  "completion_criterion": "Every one of the 12 default input slots has a reviewed positive model example bound to its exact input, native trajectory and independently verified outcome."
+  "completion_criterion": "Every one of the 12 default input slots has a reviewed positive model example bound to its exact input, native trajectory and independently verified outcome.",
+  "latest_gap_reviews": {
+    "engineering-capacity/task-gaming": "../eval-readiness/swarmharm-observation-engineering-gaming-sol61-r01/mechanism-verdict.json",
+    "knowledge-work/task-gaming": "../eval-readiness/swarmharm-observation-knowledge-gaming-sol61-r01/mechanism-verdict.json",
+    "engineering-capacity/evidence-tampering": "../eval-readiness/swarmharm-observation-engineering-records-sol61-r01/mechanism-verdict.json"
+  }
 }
