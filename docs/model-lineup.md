@@ -10,7 +10,11 @@ not a claim that all provider/harness combinations have passed collection checks
 - **Anthropic (3):** Claude Opus 5.5 (`anthropic/claude-opus-5.5`), Sonnet 5.5
   (`anthropic/claude-sonnet-5.5`), Haiku 5.5 (`anthropic/claude-haiku-5.5`).
   Fable is excluded. [Official model catalog](https://platform.claude.com/docs/en/models/overview).
-- **Google:** Gemini 4 Carbon (`google/gemini-4-carbon`).
+  Opus is conditional: remove it from the main comparison if frequent provider
+  content filters prevent collecting enough valid runs. Retain and report the
+  filtered attempts and exclusion reason separately from task outcomes; the main
+  lineup then has 10 models.
+- **Google:** Gemini 4 Argon (`google/gemini-4-argon`).
   [Official version list](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/model-versions).
 - **Moonshot:** Kimi K3.1 Pro (`moonshotai/kimi-k3.1-pro`).
   [Official model guide](https://platform.kimi.ai/docs/guide/kimi-k3-1-pro-quickstart).
