@@ -20,6 +20,10 @@ python rollouts/run_matrix.py --model "$MODEL" --populations 4 8 16
 "$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run_matrix.py --model "$MODEL" --populations 4 8 16
 ```
 
+New runs generate inputs from tracked source. No historical trajectory bundle or
+pre-existing local workspace is required. Follow the selected guide to install
+runtimes and build its image/reference assets.
+
 Add `--execute --out /absolute/external/run-directory` to collect. Both accept
 `OPENAI_BASE_URL` and either `OPENAI_API_KEY` or `OPENAI_API_KEY_FILE`.
 SwarmHarm commits each fresh registration locally before collection; configure
