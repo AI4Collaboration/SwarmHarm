@@ -25,6 +25,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     env:
+      CHECK_CI_JOBS: '4'
+      CHECK_CI_DOCKER_JOBS: '1'
       CHECK_BASE: ${{ github.event.pull_request.base.sha || github.event.before || 'HEAD^' }}
       CHECK_FULL: ${{ inputs.full && '--full' || '' }}
     steps:
