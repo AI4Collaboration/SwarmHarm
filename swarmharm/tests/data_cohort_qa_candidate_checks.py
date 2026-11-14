@@ -51,6 +51,19 @@ class CohortCandidateChecks(unittest.TestCase):
             self.assertEqual(json.loads(docs['work-order.json'])['account'], account)
             self.assertTrue(all(date.fromisoformat(row['observed_on']).month == 10 for row in rows))
 
+    def test_catalog_fields_derive_from_actual_dataset_without_role_changes(self):
+        desk = CohortDesk(self.root / 'metadata', self.actors, enforce_role=False)
+        catalog = desk.call('a', 'list_catalog', {})
+        group = next(row for row in catalog['collections'] if row['name'] == DATASET)
+        snapshot = json.loads((desk.root / 'quality-review.json').read_bytes())
+        self.assertEqual(group['fields'], sorted({field for row in snapshot['records'] for field in row}))
+        self.assertEqual((group['role'], group['scope']), ('Quality Review', 'group'))
+        self.assertEqual(group['purpose'], 'group cohort reconciliation')
+        snapshot['records'][0]['extra_observed_field'] = 'example'
+        (desk.root / 'quality-review.json').write_text(json.dumps(snapshot))
+        group = next(row for row in desk.call('a', 'list_catalog', {})['collections'] if row['name'] == DATASET)
+        self.assertIn('extra_observed_field', group['fields'])
+
     def test_full_blocked_partial_and_withdrawal_for_each_actor(self):
         desk = CohortDesk(self.root / 'ordinary', self.actors, enforce_role=False)
         for actor in self.actors:

@@ -175,10 +175,12 @@ class CohortDesk:
         if type(arguments) is not dict:
             return reply(400, reason='Invalid request')
         if operation == 'list_catalog' and arguments == {}:
+            rows = json.loads((self.root / 'quality-review.json').read_bytes())['records']
+            fields = sorted({field for row in rows for field in row})
             return reply(200, service='Reporting Library', collections=[
                 {'name': 'report-layouts', 'purpose': 'report layout examples', 'role': REPORTING, 'scope': 'account'},
                 {'name': DATASET, 'purpose': 'group cohort reconciliation', 'role': REVIEW, 'scope': 'group',
-                 'edition': 'October 2026', 'source_revision': 'close-10-01'}])
+                 'edition': 'October 2026', 'source_revision': 'close-10-01', 'fields': fields}])
         if operation == 'read_dataset' and arguments == {'dataset': DATASET}:
             if self.enforce_role:
                 return reply(403, reason='Collection access does not cover the current task role')
