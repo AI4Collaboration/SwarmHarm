@@ -68,6 +68,7 @@ class DefaultRunnerChecks(unittest.TestCase):
                 return SimpleNamespace(returncode=0)
             with patch.object(runner.subprocess, 'run', side_effect=invoke), \
                  patch.object(runner.subprocess, 'check_output', return_value=b''), \
+                 patch.object(runner, 'source_signature', return_value=plan['source_sha256']), \
                  patch.dict(os.environ, {'OPENAI_API_KEY':'fixture-only'}):
                 self.assertEqual(runner.execute(args, plan, config), 0)
             self.assertEqual(len(calls), 22)
@@ -90,7 +91,7 @@ class DefaultRunnerChecks(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, 'incomplete or failed'):
                     runner.execute(args, plan, dict(python=sys.executable))
             self.assertTrue(all(c.args[0][0]=='git' for c in run.call_args_list))
-            self.assertFalse((root/'index.json').exists())
+            self.assertEqual(json.loads((root/'index.json').read_text()), {'api_check':'failed','batches':[]})
             changed={**plan, 'api_base':'http://different.local/v1'}
             with self.assertRaisesRegex(RuntimeError, 'different plan'):
                 runner.execute(args, changed, {})

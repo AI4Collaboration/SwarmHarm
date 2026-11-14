@@ -119,11 +119,17 @@ def execute(args, expected, config):
             with (root/'api-check.log').open('a') as log:
                 subprocess.run(command, cwd=REPO, env=env, stdout=log, stderr=subprocess.STDOUT)
         if not integration_complete(check, expected):
+            index_path = root/'index.json'
+            index = json.loads(index_path.read_text()) if index_path.exists() else dict(batches=[])
+            index['api_check'] = 'failed'
+            write(index_path, index)
             raise RuntimeError('N=4 API check is incomplete or failed; see api-check.log. Preserved without rerunning.')
         print('N=4 API check passed; starting or resuming the study matrices.', flush=True)
         records = []
         for model in expected['models']:
             for study in ('swarmform', 'swarmharm'):
+                if source_signature() != expected['source_sha256']:
+                    raise RuntimeError('Source changed during the batch; preserve this run and use a fresh output')
                 output = root/study/model['name']
                 log_path = root/f"{study}-{model['name']}.log"
                 record = dict(study=study, model=model['model'], output=str(output), log=str(log_path), status='running')
