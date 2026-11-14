@@ -195,6 +195,8 @@ def select_checks(files, full=False):
             suites('unified_*', 'continuous_*', 'delivery_*', 'domain', 'review',
                    'claim_evidence', 'threat_grid', 'asymmetric_input', 'query_gateway', 'swarmform_runtime', roots=(LAB,))
             checks.update(('wording', 'balanced'))
+        elif name == LAB + '/phase2/terminal_batching/records_link.py':
+            suites('runtime_scaling', 'query_gateway', 'unified_runtime', 'continuous_collect', roots=(LAB,))
         elif name == LAB + '/run.py':
             suites('collector', '*_collect', 'local_source', 'native_harness', 'shutdown',
                    'unified_*', 'continuous_*', 'domain_runtime', 'swarmform_runtime',

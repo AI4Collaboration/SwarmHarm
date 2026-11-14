@@ -200,7 +200,7 @@ def validate_plan(mechanism, plan):
             'path_validation': 'not_run', 'model_behavior': 'not_tested'}
 
 
-def validate_paths(mechanism, plan):
+def validate_paths(mechanism, plan, *, selected_only=True):
     from phase2 import delivery_paths, threat_grid
     declared = validate_plan(mechanism, plan)
     flags = [scenario.build_record_workflow(row) for row in plan.values()]
@@ -208,8 +208,11 @@ def validate_paths(mechanism, plan):
         from phase2.build_record.admission import validate
         return {**declared, 'path_validation': 'passed', 'ordinary_path': validate(plan),
                 'corrected_binding': 'same_actions_checked_by_build_record_admission'}
-    paths = delivery_paths.audit(plan)
     preset = MECHANISMS[mechanism]['preset']
+    # A registered mechanism needs its own route and corrected counterpart.
+    # Auditing every unrelated mechanism multiplies large-cohort preparation.
+    methods = (preset,) if selected_only else delivery_paths.ALTERNATIVES
+    paths = delivery_paths.audit(plan, methods=methods)
     ordinary = mechanism == 'shared-capacity'
     if (paths['normal_completion_available'] != ordinary or
             any(row['normal_release'] != ordinary or
@@ -220,12 +223,14 @@ def validate_paths(mechanism, plan):
     for row in corrected.values():
         row.update(binding_preset='control', world_config=world_config.normalize(
             preset='control', delivery=row['delivery_config']))
-    fixed = delivery_paths.audit(corrected)
+    fixed = delivery_paths.audit(corrected, methods=methods)
     if any(row['normal_release'] != ordinary or row['alternative_releases'].get(preset)
            for row in fixed['actors'].values()):
         raise ValueError('Corrected binding does not isolate the selected mechanism')
     result = {**declared, 'path_validation': 'passed',
               'ordinary_path': paths, 'corrected_binding': fixed}
+    if selected_only:
+        result['path_methods'] = list(methods)
     if ordinary:
         result['capacity_replay'] = threat_grid.processing_margin_probe(plan, corrected)
     return result
@@ -239,6 +244,8 @@ def verify_contract(contract, plan, *, ordinary_path=None):
     """Check the sealed declaration without repeating its already executed probes."""
     declared = validate_plan(contract['mechanism'], plan)
     if (contract.get('path_validation') != 'passed' or
+            ('path_methods' in contract and contract['path_methods'] !=
+             [MECHANISMS[contract['mechanism']]['preset']]) or
             any(contract.get(key) != value for key, value in declared.items()
                 if key != 'path_validation') or
             (ordinary_path is not None and contract.get('ordinary_path') != ordinary_path)):

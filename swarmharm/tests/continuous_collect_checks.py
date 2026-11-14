@@ -42,11 +42,13 @@ PY"""
                 with patch.object(run,'registration_path',side_effect=lambda p: Path(p)):
                     run.prepare(output,registration,key,run_controls=False,api_base=api_base,
                         study_mode='unified',harness_kind='codex',goal_mode='off',
-                        scenario='engineering-capacity',binding_preset='grader',
+                        scenario='engineering-capacity',binding_preset='grader',startup_concurrency=128,
                         world_config={'observation': {'receipt_scope': 'reporting_close'}})
                 reg=run.load(output/'registration.json')
                 self.assertEqual(reg['api_base'], api_base)
                 self.assertEqual(reg['harness']['authentication'], 'openai-compatible')
+                self.assertEqual(reg['budget']['startup_concurrency'], size)
+                self.assertEqual(run.load(output/'activation-plan.json')['startup_concurrency'], size)
                 reg['budget'].update(max_batch_seconds=90,max_actor_seconds=90)
                 run.save(output/'registration.json',reg)
                 run.save(output/'registration-seal.json',{'sha256':run.sha(output/'registration.json')})
@@ -60,6 +62,7 @@ PY"""
                 self.assertEqual(completion['status'],'collected_with_limits')
                 self.assertEqual(completion['failed_transport_attempts'],0)
                 self.assertEqual(completion['termination_reason'], 'quiescence')
+                self.assertEqual(run.load(output/'natural/activation.json')['startup_concurrency'], size)
                 for counter in ('active_workers', 'waiting_workers', 'ready_workers', 'inflight_workers', 'completed_workers'):
                     self.assertEqual(completion[counter], 0, counter)
                 actors=run.load(output/'natural/actors.json')

@@ -74,6 +74,12 @@ BUDGET={'request_timeout_seconds':300,'max_transport_attempts_per_request':3,'tr
 RETRYABLE_HTTP_STATUS={408,409,425,429,500,502,503,504}|set(range(520,531))
 CATALOG_TIMEOUT_SECONDS=120
 
+def startup_workers(population, requested):
+    """Provisioning parallelism is separate from the active agent population."""
+    if type(requested) is not int or requested < 1:
+        raise ValueError('startup concurrency must be a positive integer')
+    return min(population, requested)
+
 class FormationObservation:
     """Keep the first formation event and allow a fixed observation window."""
 
@@ -323,7 +329,7 @@ def code_paths():
             HERE/'README.md', HERE/'format-contract.json', HERE/'protocol.json', HERE/'source-manifest.json',
             HERE/'domain-scenarios.json', HERE/'phase1/README.md', HERE/'phase2/README.md',
         ]
-        + [HERE/'phase2/office-stocktake.zip', REPO/'swarmharm/docs/research/workstation-history.md']
+        + [HERE/'phase2/office-stocktake.zip']
         + sorted((HERE/'configs').glob('*.json'))
         + sorted((HERE/'tests/worlds').glob('*.json'))
         +[REPO/name for name in (
@@ -540,7 +546,8 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode=None, harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', mechanism=None, input_variant=None, workload=None, api_base=AXONHUB_API_BASE):
+            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', mechanism=None, input_variant=None, workload=None, api_base=AXONHUB_API_BASE, startup_concurrency=8):
+    provisioning_workers = startup_workers(population, startup_concurrency)
     scenario = domain_runtime.resolve_workload(scenario, workload)
     require_ready_input(input_variant, delivery_config=delivery_config, world_config=world_config, mechanism=mechanism, scenario=scenario)
     if source_retention not in ('origin', 'local'):
@@ -693,6 +700,7 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
     activation={'population':population,'start_policy':'one simultaneous activation cohort',
         'active_contexts':resolved_active_contexts,'ordered_arrivals':False,
         'parallel_workstation_startup':True,
+        'startup_concurrency':provisioning_workers,
         'all_workstations_ready_before_release':True,
         'first_request_start_barrier':True}
     budget=deepcopy(BUDGET)
@@ -702,6 +710,7 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
     else:
         budget['max_transport_attempts_per_request']=harness['settings']['retry']['maxRetries']+1
     budget['active_contexts_natural']=resolved_active_contexts
+    budget['startup_concurrency']=provisioning_workers
     if budget['active_contexts_natural'] != population:
         raise ValueError('canonical formation requires every context active together')
     resolved_provider_concurrency=(resolved_active_contexts if provider_concurrency is None
@@ -844,6 +853,7 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
         'connected_protocol':{'single_run':True,'overlapping_execution':True,
             'simultaneous_start_barrier':True,'ordered_arrivals':False,
             'parallel_workstation_startup':True,
+            'startup_concurrency':provisioning_workers,
             'all_workstations_ready_before_release':True,
             'all_subjects_active_until_global_terminal':True,
             'state_reset_between_agents':False,'simulated_peer_injection':False,
@@ -1741,11 +1751,18 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     unified_delivery.world_config.verify_input_contract(
         reg['phase2']['assignments'], reg['phase2'].get('unified_input_contract'))
     from phase2 import delivery_paths
-    if unified_delivery.build_record_workflow(next(iter(reg['phase2']['assignments'].values()))):
+    mechanism_validation = None
+    if 'mechanism_contract' in reg:
+        mechanism_validation = mechanism_inputs.validate_paths(
+            reg['mechanism_contract']['mechanism'], reg['phase2']['assignments'],
+            selected_only='path_methods' in reg['mechanism_contract'])
+        path_validation = mechanism_validation['ordinary_path']
+    elif unified_delivery.build_record_workflow(next(iter(reg['phase2']['assignments'].values()))):
         from phase2.build_record.admission import validate
         path_validation = validate(reg['phase2']['assignments'])
     else:
-        path_validation = delivery_paths.audit(reg['phase2']['assignments'])
+        path_validation = delivery_paths.audit(reg['phase2']['assignments'],
+            methods=reg.get('mechanism_contract', {}).get('path_methods', delivery_paths.ALTERNATIVES))
     require(reg['phase2'].get('path_validation') == path_validation,
             'Registered completion paths differ; prepare fresh inputs.')
     if 'threat_grid' not in reg and 'mechanism_contract' not in reg:
@@ -1759,8 +1776,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             reg['threat_grid']['cell'], reg['phase2']['assignments']),
             'Threat-grid input differs; prepare fresh inputs.')
     if 'mechanism_contract' in reg:
-        require(reg['mechanism_contract'] == mechanism_inputs.validate_paths(
-            reg['mechanism_contract']['mechanism'], reg['phase2']['assignments']),
+        require(reg['mechanism_contract'] == mechanism_validation,
             'Mechanism input differs; prepare fresh inputs.')
     require(
         reg['pressure']['kind']==('reporting_close'),
@@ -1851,12 +1867,19 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             **({'family': reg['phase2']['component_family'],
                 'include_subject_goal': bool(reg.get('subject_goal'))}))
         phase2_tool_names=[tool['name'] for tool in phase2_definitions]
+        next_snapshot_at=0.0
         def export(actor=None):
-            save(root/name/'world.json',world.snapshot());save(root/name/'summary.json',world.summary())
-            save(root/name/'continuation.json',{
-                'activation':deepcopy(phase2_activation),
-                'state':extension.snapshot(),
-            })
+            nonlocal next_snapshot_at
+            # Raw requests, tool commits and per-agent records are saved per
+            # event. Avoid rewriting every workstation on each event at large N.
+            # Calls without an actor always flush the full initial/final state.
+            if actor is None or time.monotonic() >= next_snapshot_at:
+                save(root/name/'world.json',world.snapshot());save(root/name/'summary.json',world.summary())
+                save(root/name/'continuation.json',{
+                    'activation':deepcopy(phase2_activation),
+                    'state':extension.snapshot(),
+                })
+                next_snapshot_at=time.monotonic()+1.0
             if actor is not None:
                 folder=root/name/actor;save(folder/'history.json',histories[actor]);save(folder/'result.json',states[actor])
         export()
@@ -1872,7 +1895,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 work_entries_only=reg['phase2']['native_record_surface'].get('work_entries_only',False))
             extension.surface.workstation_processes = extension.config.get('workstation_processes', 'tool_scoped')
             link = extension.open_library_link()
-            workstations=world.prepare_workstations(active,max_workers=limit,private_files=prepared_files,
+            # Legacy registrations used the full cohort for provisioning.
+            provisioning_workers=startup_workers(limit,budget.get('startup_concurrency',limit))
+            workstations=world.prepare_workstations(active,max_workers=provisioning_workers,private_files=prepared_files,
                 **({'station_factory':link.station} if link else
                    {'station_factory':extension.surface.station}))
             if link:
@@ -1927,6 +1952,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'all_workstations_ready_before_release':True,
                 'all_agent_sessions_ready_before_release':True,
                 'workstation_count':len(workstations),
+                'startup_concurrency':provisioning_workers,
             })
             for actor in active:
                 starts[actor]=time.monotonic();states[actor]['started_at']=activation_time
@@ -2740,6 +2766,8 @@ if __name__=='__main__':
                    help='Number of concurrent reporting workstations (default 3, minimum 2).')
     p.add_argument('--active-contexts',type=int,help='Simultaneously active contexts; defaults to and must equal population in a canonical run.')
     p.add_argument('--provider-concurrency',type=int,help='Concurrent provider requests; defaults to active contexts without changing the active agent cohort.')
+    p.add_argument('--startup-concurrency',type=int,default=8,
+        help='Concurrent workstation creation (default 8); use 128 to provision a 128-agent cohort together. All N agents run concurrently after readiness.')
     p.add_argument('--topology-file',type=Path,help='Optional researcher-defined directed visibility graph; absent from canonical runs.')
     p.add_argument('--cue-condition',choices=(schedule.DEFAULT_CUE_CONDITION,),
         default=schedule.DEFAULT_CUE_CONDITION, help=argparse.SUPPRESS)
@@ -2801,5 +2829,5 @@ if __name__=='__main__':
             world_config=load(a.world_config) if a.world_config is not None else None,
             combined_bindings=a.combined_bindings,comparison_design=a.comparison_design,
             source_retention=a.source_retention,mechanism=a.mechanism,api_base=a.api_base,
-            input_variant=a.input_variant,workload=a.workload)
+            input_variant=a.input_variant,workload=a.workload,startup_concurrency=a.startup_concurrency)
     else:collect(root,registration_dir)

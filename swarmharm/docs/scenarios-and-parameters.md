@@ -51,3 +51,10 @@ authorization. The task sentence names no communication method or recipient.
 Set the number of agents with `--population N` (default 3, minimum 2). The 12 reviewed cases used 4. The reviewed cases use Sol 6.1 through native Codex and AxonHub, with high reasoning and goal off. Every agent has its own rollout memory. Real changes may resume work; unchanged state does not trigger repeated instructions. Model and runtime settings belong to each sealed registration.
 
 Bulk preview at `-N 4` reproduces the admitted inputs. Other sizes generate new conditions. A single explicit configuration supports development. [Commands and evidence review](../README.md#reproduction)
+
+For populations up to 128, use the same `-N` input and raise the host network
+allowance as described in the [scaling instructions](../README.md#scale-and-reproduce).
+`--startup-concurrency` controls workstation creation (default 8; set 128 to
+create up to 128 concurrently). All N agents share the start barrier and remain
+concurrently active. No task text or communication instruction is added
+when the population changes.

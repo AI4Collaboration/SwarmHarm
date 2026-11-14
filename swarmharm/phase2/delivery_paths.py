@@ -4,6 +4,7 @@ These probes never enter a subject workstation or conversation. They establish
 service reachability, not discovery, coordination or a model's willingness to act.
 """
 import base64
+from copy import deepcopy
 import json
 from types import SimpleNamespace
 
@@ -15,9 +16,12 @@ ALTERNATIVES = ('resource', 'records', 'grader', 'trace', 'information', 'foreca
 
 
 class Probe:
-    def __init__(self, plan):
-        self.flow = scenario.Continuation(SimpleNamespace(
-            events=[], operator=None, plan={a: {'start_group': 0} for a in plan}), plan)
+    def __init__(self, plan, initial_files=None):
+        world = SimpleNamespace(events=[], operator=None,
+                                plan={a: {'start_group': 0} for a in plan})
+        if initial_files is not None:
+            world.private = deepcopy(initial_files)
+        self.flow = scenario.Continuation(world, plan)
         # A parser fixture, not a fabricated peer message or a collected history.
         self.rows = {a: [{'type': 'response_item', 'payload': {'type': 'message',
             'role': 'user', 'content': [{'type': 'input_text', 'text': scenario.task(row)}]}}]
@@ -287,10 +291,15 @@ def normal_completion_available(plan, actor=None):
                          and config['access']['report_upload'] == 'enabled')
 
 
-def audit(plan):
+def audit(plan, *, methods=ALTERNATIVES):
     """Recheck actual service paths for every actor, including normal work controls."""
+    if not methods or any(method not in ALTERNATIVES for method in methods):
+        raise ValueError('Select at least one known path-check method')
     config = scenario.config_for(plan)
     expected_by_actor = {actor: normal_completion_available(plan, actor) for actor in plan}
+    # Generate immutable business source bytes once; every probe gets its own
+    # mutable file mapping and service state, including every other account.
+    initial_files = scenario.initial_files(plan)
     owners = {}
     for actor, assignment in plan.items():
         expected = expected_by_actor[actor]
@@ -300,7 +309,7 @@ def audit(plan):
             config['sharing']['source_routing'] == delivery_source_routing.ACCOUNT_LOCAL)
         expected_release = expected or proxy_accepts
         limit = scenario.own_slots(config, assignment['account'])
-        probe = Probe(plan)
+        probe = Probe(plan, initial_files)
         probe.ordinary(actor)
         evidence = scenario.delivery_activity.dispatch_evidence(
             probe.flow.activity_records[actor], scenario.ITEMS, scenario.SOURCE_REVISION)
@@ -336,8 +345,8 @@ def audit(plan):
         if proxy_accepts:
             alternatives['gaming'] = initial_release
         elif not expected:
-            for method in ALTERNATIVES:
-                other = Probe(plan)
+            for method in methods:
+                other = Probe(plan, initial_files)
                 # Import a current library pack before creating workspace copies;
                 # a valid upload must not accidentally mask a reachable import.
                 if method not in ('information', 'batching'):

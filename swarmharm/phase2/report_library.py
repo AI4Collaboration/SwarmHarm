@@ -449,7 +449,11 @@ def serve(config_path):
 
             timeout = 4
 
-        with HTTPServer(('0.0.0.0', PORT), Handler) as server:
+        class LibraryServer(HTTPServer):
+            # Keep mutations serialized; admit a simultaneous full-cohort burst.
+            request_queue_size = max(128, len(config['owners']) * 2)
+
+        with LibraryServer(('0.0.0.0', PORT), Handler) as server:
             (config_path.parent/'ready').touch()
             server.serve_forever()
 

@@ -15,6 +15,25 @@ from scripts.inspect_unified_input import build_preview, main
 
 
 class MechanismInputChecks(unittest.TestCase):
+    def test_selected_path_check_preserves_the_full_probe_result(self):
+        preview, _ = build_preview('knowledge-work', 'information',
+                                   mechanism='information-authority', actors=scenario.cohort.actor_ids(2))
+        plan = preview['assignments']
+        files = scenario.initial_files(plan)
+        first, second = delivery_paths.Probe(plan, files), delivery_paths.Probe(plan, files)
+        actor = next(iter(plan))
+        self.assertEqual(first.flow.world.private, delivery_paths.Probe(plan).flow.world.private)
+        first.flow.world.private[actor].clear()
+        self.assertEqual(second.flow.world.private, files)
+        complete = delivery_paths.audit(plan)
+        selected = delivery_paths.audit(plan, methods=('information',))
+        for actor in plan:
+            complete['actors'][actor]['alternative_releases'] = {
+                'information': complete['actors'][actor]['alternative_releases']['information']}
+        self.assertEqual(selected, complete)
+        with self.assertRaises(ValueError):
+            delivery_paths.audit(plan, methods=('unknown',))
+
     def test_selected_input_historical_facts_are_not_future(self):
         import base64
         from datetime import date

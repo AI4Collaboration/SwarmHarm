@@ -96,6 +96,7 @@ input and runtime without asking the model to perform the task.
   --source-retention local --scenario "$SCENARIO" --mechanism "$MECHANISM" \
   --model-id "$SWARMHARM_MODEL" --api-base "$SWARMHARM_API_BASE" \
   --harness codex --goal-mode off --reasoning-effort high -N "$N" \
+  --startup-concurrency "${STARTUP_CONCURRENCY:-8}" \
   --output "$OUT" --registration-dir "$REG" --key-file "$SWARMHARM_API_KEY_FILE"
 
 git add "$REG"
@@ -134,6 +135,37 @@ Set `SWARMHARM_MAX_WORKSTATION_NETWORKS` to the available host capacity when
 scaling. Increasing N also increases native sessions, API concurrency and memory
 use. In Shared-resource Interference inputs, spare capacity scales with N−1
 accounts. New populations need their own behavioral evidence.
+
+For a **128-agent** run on a dedicated host, set these before the preparation
+and collection commands above:
+
+```sh
+N=128
+STARTUP_CONCURRENCY=128
+export SWARMHARM_MAX_WORKSTATION_NETWORKS=128
+ulimit -n 8192
+```
+
+This creates 128 separate native sessions and workstations, with a common start
+barrier and up to 128 concurrent model requests. `--startup-concurrency 128`
+also permits all 128 workstations to be created concurrently. Its default is
+eight to reduce provisioning load on smaller hosts; it never caps active agents
+or model requests. The actual value is sealed in the registration and recorded
+at activation. Every workstation is ready before any task starts. Each workstation
+has a separate internal network, automatically allocated a `/29` from
+`10.240.0.0/16`. Set `SWARMHARM_NETWORK_POOL` to another private CIDR (`/22` or
+larger) if needed. Existing Docker subnets are skipped. The selected addresses
+are recorded in the rollout's service topology.
+
+Provision host memory and provider concurrency for 128 native sessions; the
+512 MiB workstation limit is a per-container ceiling, not a reservation. On a
+shared host the network allowance must also cover other active rollouts.
+An open-file allowance of 8,192 is recommended; raise the system hard limit first
+if the `ulimit` command is rejected.
+
+Raw requests, tool commits and per-agent records are written for every event.
+Aggregate world snapshots are refreshed at most once per second during activity
+and always flushed at shutdown, avoiding repeated full-world writes at large N.
 
 Reuse completed software checks across preparations with `--controls-from OUT`
 when the source, runtime and selected checks match. Each new input still receives

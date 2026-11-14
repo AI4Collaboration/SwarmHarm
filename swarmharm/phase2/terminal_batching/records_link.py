@@ -1,26 +1,59 @@
 """Operator-owned TCP links from individual workstations to one synthetic records server."""
 
 from contextlib import ExitStack
+from ipaddress import ip_network
 import json
 import os
 from pathlib import Path
 import secrets
 import subprocess
+from threading import Lock
 import time
 
 from . import records_server
 
 
-def docker(*args, data=None):
-    cmd = subprocess.run(["docker", *args], input=data, text=True, capture_output=True, timeout=25)
+def docker(*args, data=None, timeout=25):
+    cmd = subprocess.run(["docker", *args], input=data, text=True, capture_output=True, timeout=timeout)
     if cmd.returncode:
-        raise RuntimeError("Docker records service: " + cmd.stderr.strip()[:450])
+        detail = cmd.stderr.strip() or cmd.stdout.strip() or 'no diagnostic output'
+        raise RuntimeError(f"Docker records service ({args[0]}, exit {cmd.returncode}): {detail[:450]}")
     return cmd.stdout
+
+
+def available_subnets():
+    """Use small, disjoint links without exhausting Docker's default bridge pool.
+
+    Docker atomically rejects overlaps, including concurrent collectors. The
+    initial inventory skips occupied ranges; network creation remains decisive.
+    """
+    pool = ip_network(os.environ.get('SWARMHARM_NETWORK_POOL', '10.240.0.0/16'))
+    if pool.version != 4 or not pool.is_private or pool.prefixlen > 22:
+        raise ValueError('SWARMHARM_NETWORK_POOL must be a private IPv4 CIDR of /22 or larger')
+    ids = docker('network', 'ls', '-q').split()
+    occupied = []
+    for network_id in ids:
+        # Another collector can remove a network during inventory.
+        try:
+            rows = json.loads(docker('network', 'inspect', network_id))
+        except RuntimeError as exc:
+            if 'not found' in str(exc):
+                continue
+            raise
+        occupied.extend(ip_network(row['Subnet']) for item in rows
+                        for row in (item.get('IPAM', {}).get('Config') or []) if row.get('Subnet'))
+    count = 1 << (29 - pool.prefixlen)
+    start = secrets.randbelow(count)
+    for offset in range(count):
+        subnet = ip_network((int(pool.network_address) + ((start + offset) % count) * 8, 29))
+        if not any(subnet.overlaps(other) for other in occupied if other.version == 4):
+            yield str(subnet)
 
 
 class RecordsLink:
     def __init__(self, directory, image, truth, *, service_module=records_server, station_factory=None):
         self.directory = Path(directory)
+        self.journal_lock = Lock()
         self.directory.mkdir(parents=True, exist_ok=False)
         self.name = "sh-records-" + secrets.token_hex(7)
         self.networks = {}
@@ -35,19 +68,20 @@ class RecordsLink:
         ]
         try:
             links = []
+            subnets = iter(available_subnets())
             for idx, actor in enumerate(truth["owners"]):
                 net = self.name + "-" + str(idx)
-                docker(
-                    "network",
-                    "create",
-                    "--internal",
-                    "--driver",
-                    "bridge",
-                    "--opt",
-                    "com.docker.network.bridge.gateway_mode_ipv4=isolated",
-                    *label,
-                    net,
-                )
+                for subnet in subnets:
+                    try:
+                        docker('network', 'create', '--internal', '--driver', 'bridge',
+                               '--subnet', subnet, '--opt',
+                               'com.docker.network.bridge.gateway_mode_ipv4=isolated', *label, net)
+                        break
+                    except RuntimeError as exc:
+                        if 'overlap' not in str(exc).lower():
+                            raise
+                else:
+                    raise RuntimeError('SWARMHARM_NETWORK_POOL has no free workstation links')
                 self.networks[actor] = net
                 links += ["--network", f"name={net},alias={service_module.HOSTNAME}"]
             docker(
@@ -73,6 +107,7 @@ class RecordsLink:
                 "-u",
                 "-c",
                 Path(service_module.__file__).read_text(),
+                timeout=max(25, len(self.networks) * 2),
             )
             self.started = True
         except BaseException:
@@ -103,8 +138,10 @@ class RecordsLink:
 
     def activate(self, stations):
         bindings = {}
+        inspected = {n['Name']: n for n in json.loads(
+            docker('network', 'inspect', *self.networks.values()))}
         for actor, net in self.networks.items():
-            n = json.loads(docker("network", "inspect", net))[0]
+            n = inspected[net]
             peers = {v["Name"]: v["IPv4Address"].split("/")[0] for v in n["Containers"].values()}
             if (
                 not n["Internal"]
@@ -156,10 +193,14 @@ class RecordsLink:
         raise RuntimeError("Records server did not start")
 
     def journal(self):
-        return [
-            json.loads(line)
-            for line in docker("exec", self.name, "cat", "/tmp/requests.jsonl").splitlines()
-        ]
+        # Observers must not spawn N concurrent processes inside the one server
+        # container. Only capture is serialized; agent commands and HTTP traffic
+        # remain concurrent, with server-authored request order preserved.
+        with self.journal_lock:
+            return [
+                json.loads(line)
+                for line in docker("exec", self.name, "cat", "/tmp/requests.jsonl").splitlines()
+            ]
 
     def read_evidence(self, actor, receipt):
         return next(

@@ -2513,7 +2513,8 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
         from phase2.build_record.admission import validate
         reg['phase2']['path_validation'] = validate(assignments)
     else:
-        reg['phase2']['path_validation'] = delivery_paths.audit(assignments)
+        reg['phase2']['path_validation'] = delivery_paths.audit(assignments,
+            methods=reg.get('mechanism_contract', {}).get('path_methods', delivery_paths.ALTERNATIVES))
     reg['phase2']['unified_input_contract'] = world_config.input_contract(
         assignments, combined=combined_bindings)
     reg['phase2']['matches_named_preset'] = reg['phase2']['unified_input_contract']['selection']['matches_named_preset']
