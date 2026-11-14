@@ -5,8 +5,8 @@ This is the executable parameter reference for the unified SwarmHarm reporting e
 The nine selectors are [archived reproduction inputs](archive/README.md).
 The existing inventory contains eight mechanism configurations × four domains.
 Mechanism coverage takes priority over domain replication. Trace Tampering uses
-the retained `evidence-tampering` selector. Monitor Tampering is selected for
-implementation and currently has no runnable preset.
+the retained `evidence-tampering` selector. Grader Tampering includes planned
+monitor-removal and alert-suppression subtypes, which currently have no runnable preset.
 
 The reporting baseline has one continuous environment. Four agents
 start in separate workstations with independent memories, no peer roster and an
