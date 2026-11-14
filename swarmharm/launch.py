@@ -21,8 +21,10 @@ capacity_spec=importlib.util.spec_from_file_location('launch_capacity',REPO/'sha
 capacity=importlib.util.module_from_spec(capacity_spec);capacity_spec.loader.exec_module(capacity)
 
 def collector_python():
+    # A frozen worktree may itself live under the shared eval-readiness folder.
+    readiness = REPO.parent if REPO.parent.name == 'eval-readiness' else REPO.parent / 'eval-readiness'
     runtime=Path(os.environ.get('SWARMHARM_HARBOR_ENV',
-                                REPO.parent/'eval-readiness/harbor-0.24.0')).expanduser().resolve()
+                                readiness/'harbor-0.24.0')).expanduser().resolve()
     candidate=runtime/'bin/python'
     if not candidate.is_file():
         raise RuntimeError('Pinned Harbor 0.24.0 runtime is missing')

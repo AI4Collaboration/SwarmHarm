@@ -942,6 +942,46 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                 with self.assertRaisesRegex(RuntimeError, 'runtime is missing'):
                     launch.collector_python()
 
+    def test_launcher_finds_shared_runtime_in_main_and_frozen_worktree_layouts(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            work = Path(temporary) / 'work'
+            readiness = work / 'eval-readiness'
+            python = readiness / 'harbor-0.24.0' / 'bin/python'
+            python.parent.mkdir(parents=True)
+            python.touch()
+            for repo in (work / 'swarmharm', readiness / 'frozen-worktree'):
+                with self.subTest(repo=repo), patch.object(launch, 'REPO', repo), \
+                     patch.dict(os.environ, {}, clear=True), \
+                     patch.object(launch.subprocess, 'run', return_value=SimpleNamespace(returncode=0)) as check:
+                    self.assertEqual(launch.collector_python(), str(python.resolve()))
+                    self.assertEqual(check.call_args.args[0][0], str(python.resolve()))
+                    self.assertIn('version("harbor")=="0.24.0"', check.call_args.args[0][2])
+
+    def test_launcher_does_not_fallback_from_an_invalid_explicit_runtime(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            work = Path(temporary) / 'work'
+            repo = work / 'swarmharm'
+            default = work / 'eval-readiness' / 'harbor-0.24.0' / 'bin/python'
+            default.parent.mkdir(parents=True)
+            default.touch()
+            explicit = work / 'custom' / 'bin/python'
+            explicit.parent.mkdir(parents=True)
+            explicit.touch()
+            with patch.object(launch, 'REPO', repo), \
+                 patch.dict(os.environ, {'SWARMHARM_HARBOR_ENV': str(explicit.parent.parent)}), \
+                 patch.object(launch.subprocess, 'run', return_value=SimpleNamespace(returncode=1)) as check:
+                with self.assertRaisesRegex(RuntimeError, 'exact Harbor 0.24.0'):
+                    launch.collector_python()
+                self.assertEqual(check.call_count, 1)
+                self.assertEqual(check.call_args.args[0][0], str(explicit.resolve()))
+            explicit.unlink()
+            with patch.object(launch, 'REPO', repo), \
+                 patch.dict(os.environ, {'SWARMHARM_HARBOR_ENV': str(explicit.parent.parent)}), \
+                 patch.object(launch.subprocess, 'run') as check:
+                with self.assertRaisesRegex(RuntimeError, 'runtime is missing'):
+                    launch.collector_python()
+                check.assert_not_called()
+
     def test_launcher_confirms_start_or_reports_early_failure(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
