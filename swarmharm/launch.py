@@ -12,7 +12,6 @@ import time
 
 HERE=Path(__file__).resolve().parent;REPO=HERE.parent
 AXONHUB_API_BASE='https://lmportal.iefbr14.xyz/v1'
-AXONHUB_LIVE_HARNESS_BASES={'claude-code':AXONHUB_API_BASE,'codex':AXONHUB_API_BASE}
 spec=importlib.util.spec_from_file_location('launch_atomic_reader',REPO/'shared/atomic.py');infra=importlib.util.module_from_spec(spec);spec.loader.exec_module(infra)
 guardrail_spec=importlib.util.spec_from_file_location(
     'launch_guardrails',REPO/'shared/guardrails.py')
@@ -64,22 +63,18 @@ def launch(output, registration_dir, *, key_file=None, command=None):
     reg=json.loads((root/'registration.json').read_text())
     harness_kind=reg.get('harness',{}).get('kind')
     guardrails.validate_model_harness(reg.get('models', {}), harness_kind, pi_comparison=reg.get('pi_comparison',False))
-    expected_base=(AXONHUB_API_BASE if reg.get('pi_comparison') and harness_kind=='pi-sdk'
-                   else AXONHUB_LIVE_HARNESS_BASES.get(harness_kind))
-    if expected_base is None:
-        raise RuntimeError(
-            f'{harness_kind} does not yet have a registered AxonHub transport; '
-            'direct subscription/provider routes are forbidden.')
+    if harness_kind not in ('codex', 'claude-code', 'pi-sdk'):
+        raise RuntimeError('Unsupported registered harness')
     if reg.get('live_collection_permitted') is not True:
         raise RuntimeError('This registration is not permitted for live collection.')
-    if harness_kind == 'codex' and reg.get('inference_gateway') == 'openai-compatible':
-        expected_base = guardrails.api_base_url(reg['harness'].get('gateway'))
-        if reg['harness'].get('authentication') != 'openai-compatible':
-            raise RuntimeError('API authentication differs from the registered native harness')
-    elif reg.get('inference_gateway','axonhub') != 'axonhub':
+    expected_base = guardrails.api_base_url(reg.get('api_base'))
+    if reg.get('inference_gateway', 'axonhub') not in ('axonhub', 'openai-compatible'):
         raise RuntimeError('Unsupported inference gateway')
-    if str(reg.get('api_base','')).rstrip('/') != expected_base:
-        raise RuntimeError('All live rollouts must use the registered AxonHub API base or custom native API base.')
+    if harness_kind in ('codex', 'claude-code'):
+        if reg['harness'].get('authentication') not in ('axonhub', 'openai-compatible'):
+            raise RuntimeError('API authentication differs from the registered native harness')
+        if expected_base != reg['harness'].get('gateway', AXONHUB_API_BASE):
+            raise RuntimeError('API base differs from the registered native harness')
     guardrails.require_unified_workflow(reg.get('study_mode'), reg.get('phase2', {}).get('component_family'))
     guardrails.require_unified_backend()
     if command is None:

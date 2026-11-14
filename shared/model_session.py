@@ -20,12 +20,12 @@ def registration(kind, model, base, goal='off'):
     return pi_agent.harness_registration(goal)
 
 
-def create(kind, actor, events, *, api_protocol='chat-completions', served_model=None, **kwargs):
+def create(kind, actor, events, *, api_protocol='chat-completions', served_model=None, on_transport_response=None, **kwargs):
     bridge = None
     if api_protocol == 'chat-completions':
         bridge = ChatBridge(kwargs['api_base'], kwargs['api_key'], kwargs['model'],
                             Path(kwargs['folder']) / 'transport', served_model=served_model,
-                            timeout=kwargs['request_timeout_ms'] / 1000)
+                            timeout=kwargs['request_timeout_ms'] / 1000, on_response=on_transport_response)
         kwargs = {**kwargs, 'api_base': bridge.base, 'api_key': bridge.token}
         if kwargs.get('registered_harness'):
             kwargs['registered_harness'] = deepcopy(kwargs['registered_harness'])

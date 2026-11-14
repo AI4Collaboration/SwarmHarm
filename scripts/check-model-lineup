@@ -64,9 +64,10 @@ def participant(row, args, key, folder, number):
                         else: value = {'error': 'Order code does not match'}
                     else: value = {'error': 'Unknown tool'}
                     agent.reply(message['id'], output=json.dumps(value))
-                elif kind == 'provider_response':
-                    responses += 1
-                    for call in message.get('event', {}).get('response', {}).get('output', []):
+                elif kind in ('provider_response', 'response_update'):
+                    if kind == 'provider_response': responses += 1
+                    response = message.get('response', {}) if kind == 'response_update' else message.get('event', {}).get('response', {})
+                    for call in response.get('output', []):
                         if call.get('type') == 'function_call': calls[call['call_id']] = call
                 elif kind == 'settled':
                     if message.get('error_message'): raise RuntimeError(message['error_message'])

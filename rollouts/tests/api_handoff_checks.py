@@ -7,9 +7,13 @@ import subprocess
 import sys
 from tempfile import TemporaryDirectory
 import unittest
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
+import threading
 
 from swarmform import formation_inputs as inputs
 from swarmform.__main__ import CHANNELS
+from swarmform.native_participant import participate
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -62,6 +66,43 @@ class APIHandoffChecks(unittest.TestCase):
                 capture_output=True, text=True, cwd=ROOT)
             self.assertNotEqual(incompatible.returncode, 0)
             self.assertIn('different plan', incompatible.stderr)
+
+
+class NativeEventChecks(unittest.IsolatedAsyncioTestCase):
+    async def test_partial_response_precedes_tool_and_usage_is_counted_once(self):
+        with TemporaryDirectory() as directory:
+            agent = Mock()
+            cohort = SimpleNamespace(
+                args=SimpleNamespace(harness='codex', model='openai/gpt-6.1-sol',
+                    base_url='http://localhost/v1', _api_key='fixture',
+                    api_protocol='chat-completions', served_model=None, seconds=30),
+                out=Path(directory), stopping=threading.Event(), usage={}, errors={}, returns={},
+                active_tools=set(), trace=Mock(), stop=Mock(), tool=Mock(return_value=({'output':'ok'}, None)),
+                tool_completed=Mock(), visible={'tools':[], 'prompts':{'one':('task',)}})
+
+            def create(kind, actor, events, **kwargs):
+                call={'type':'function_call', 'name':'bash', 'call_id':'c1',
+                      'arguments':json.dumps({'command':'pwd'})}
+                kwargs['on_transport_response']({'model':'openai/gpt-6.1-sol',
+                    'usage':{'total_tokens':15}})
+                for message in [
+                    {'type':'ready'},
+                    {'type':'response_update', 'response':{'output':[call]}},
+                    {'type':'tool_call', 'id':'reply', 'call_id':'c1|tool'},
+                    {'type':'provider_response', 'event':{'response':{
+                        'output':[call], 'usage':{'total_tokens':15}}}},
+                    {'type':'settled', 'text':'done'},
+                ]: events.put((actor, message))
+                return agent
+
+            with patch('swarmform.native_participant.model_session.create', side_effect=create):
+                await participate(cohort, 'one', {'tokens':100, 'tools':10, 'responses':10})
+            self.assertEqual(cohort.errors, {})
+            self.assertEqual(cohort.usage['one'], {'responses':1, 'tools':1, 'tokens':15})
+            cohort.tool.assert_called_once_with('one', 'pwd', 'c1')
+            agent.reply.assert_called_once()
+            agent.close.assert_called_once()
+            self.assertEqual(cohort.returns, {'one':'model_finished'})
 
 
 if __name__ == '__main__':

@@ -85,7 +85,7 @@ class UnifiedEntryChecks(unittest.TestCase):
             for mode, family in (('connected', 'unified-delivery'), ('phase2-component', 'trace-integrity'),
                                  ('unified', 'trace-integrity')):
                 run.save(raw/'registration.json', {'study_mode': mode, 'phase2': {'component_family': family},
-                    'harness': {'kind': 'codex'}, 'models': run.MODELS, 'api_base': run.AXONHUB_API_BASE,
+                    'harness': {'kind': 'codex', 'authentication': 'axonhub'}, 'models': run.MODELS, 'api_base': run.AXONHUB_API_BASE,
                     'live_collection_permitted': True})
                 for entry in (run.collect, launch.launch):
                     with self.subTest(mode=mode, family=family, entry=entry.__name__), self.assertRaisesRegex(
@@ -322,16 +322,36 @@ print(json.dumps({actor:{'input':lab.initial(plan,actor),'files':lab.files(item,
                     RuntimeError, 'not permitted for live collection'):
                 launch.launch(root, Path(temporary)/'registration', command=['true'])
 
-    def test_launcher_rejects_a_non_axonhub_native_endpoint(self):
+    def test_launcher_rejects_a_gateway_different_from_registration(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary)/'study';root.mkdir()
             run.save(root/'registration.json',{
-                'harness':{'kind':'claude-code'},
+                'harness':{'kind':'claude-code', 'authentication':'openai-compatible',
+                           'gateway':'https://registered.example/v1'},
                 'api_base':'https://example.invalid/v1',
                 'live_collection_permitted':True,
             })
-            with self.assertRaisesRegex(RuntimeError, 'registered AxonHub API base'):
+            with self.assertRaisesRegex(RuntimeError, 'API base differs from the registered native harness'):
                 launch.launch(root, Path(temporary)/'registration', command=['true'])
+
+    def test_launcher_accepts_same_external_api_for_all_native_harnesses(self):
+        for kind, model in [('codex', 'openai/gpt-6.1-sol'),
+                            ('claude-code', 'anthropic/claude-haiku-5.5'),
+                            ('pi-sdk', 'moonshotai/kimi-k3.1-pro')]:
+            with self.subTest(harness=kind), tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary)/'study'; root.mkdir()
+                reg={'harness':{'kind':kind, 'authentication':'openai-compatible',
+                                'gateway':'https://provider.example/v1'},
+                     'models':{'model':model}, 'api_base':'https://provider.example/v1',
+                     'inference_gateway':'openai-compatible', 'live_collection_permitted':True,
+                     'study_mode':'unified', 'phase2':{'component_family':'unified-delivery'},
+                     'code_hashes':{}}
+                run.save(root/'registration.json', reg)
+                run.save(root/'registration-seal.json', {
+                    'sha256':launch.sha256((root/'registration.json').read_bytes()).hexdigest()})
+                with patch.object(launch.subprocess, 'Popen') as child, patch.object(launch, 'wait_for_start'):
+                    child.return_value.pid=1234
+                    self.assertEqual(launch.launch(root, Path(temporary)/'registration', command=['true']),1234)
 
     def test_unsupported_effort_is_rejected_before_preparation(self):
         with tempfile.TemporaryDirectory() as temporary:

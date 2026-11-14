@@ -1,0 +1,105 @@
+{
+  "date": "2026-11-14",
+  "purpose": "Native harness integration, not benchmark behavioral validation",
+  "source_commit": "37a290427b46a2785d792298c89b02fb6abc98d4",
+  "api_protocol": "chat-completions",
+  "test_gateway": "AxonHub",
+  "population_per_model": 4,
+  "models_passed": 11,
+  "agents_passed": 44,
+  "upstream_requests": 132,
+  "provider_errors": 0,
+  "content_filters": 0,
+  "checks": [
+    "Native session startup",
+    "Read tool result reused correctly in save tool",
+    "Receipt persisted",
+    "Final response",
+    "Native records and transport requests retained",
+    "Evidence file hashes verified"
+  ],
+  "models": [
+    {
+      "name": "astra",
+      "model": "openai/gpt-6-astra",
+      "served_model": "openai/gpt-6-astra",
+      "harness": "codex",
+      "passed": true
+    },
+    {
+      "name": "sol",
+      "model": "openai/gpt-6.1-sol",
+      "served_model": "openai/gpt-6.1-sol",
+      "harness": "codex",
+      "passed": true
+    },
+    {
+      "name": "terra",
+      "model": "openai/gpt-6.1-terra",
+      "served_model": "openai/gpt-6.1-terra",
+      "harness": "codex",
+      "passed": true
+    },
+    {
+      "name": "luna",
+      "model": "openai/gpt-6-luna",
+      "served_model": "openai/gpt-6-luna",
+      "harness": "codex",
+      "passed": true
+    },
+    {
+      "name": "opus",
+      "model": "anthropic/claude-opus-5.5",
+      "served_model": "anthropic/claude-opus-5.5",
+      "harness": "claude-code",
+      "passed": true
+    },
+    {
+      "name": "sonnet",
+      "model": "anthropic/claude-sonnet-5.5",
+      "served_model": "anthropic/claude-sonnet-5.5",
+      "harness": "claude-code",
+      "passed": true
+    },
+    {
+      "name": "haiku",
+      "model": "anthropic/claude-haiku-5.5",
+      "served_model": "anthropic/claude-haiku-5.5",
+      "harness": "claude-code",
+      "passed": true
+    },
+    {
+      "name": "argon",
+      "model": "google/gemini-4-argon",
+      "served_model": "google/gemini-4-argon",
+      "harness": "pi-sdk",
+      "passed": true
+    },
+    {
+      "name": "kimi",
+      "model": "moonshotai/kimi-k3.1-pro",
+      "served_model": "moonshotai/kimi-k3.1-pro",
+      "harness": "pi-sdk",
+      "passed": true
+    },
+    {
+      "name": "glm",
+      "model": "z-ai/glm-5.3",
+      "served_model": "z-ai/glm-5.3",
+      "harness": "pi-sdk",
+      "passed": true
+    },
+    {
+      "name": "deepseek",
+      "model": "deepseek/deepseek-v4.1-flash-1017",
+      "served_model": "deepseek/deepseek-v4.1-flash-1017",
+      "harness": "pi-sdk",
+      "passed": true
+    }
+  ],
+  "evidence_manifest_sha256": "956382c3abd830c501b7cd33a5b78688f5256059c5d498936f20e44050690b31",
+  "archive_sha256": "6548a74c0444eac3157745e7b82ea4fa2b5fdf990cced8e07c9cab5e667d0566",
+  "archive_bytes": 6474315,
+  "evidence_release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/model-lineup-n4-20261114",
+  "full_records": "https://github.com/AI4Collaboration/SwarmHarm/releases/download/model-lineup-n4-20261114/model-lineup-n4-37a290427.tar.gz"
+}

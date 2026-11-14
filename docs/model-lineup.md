@@ -1,8 +1,11 @@
 # Model lineup
 
-Proposed main comparison: **11 models**, checked against official model pages and
-the current AxonHub model catalog on **14 November 2026**. These are model choices,
-not a claim that all provider/harness combinations have passed collection checks.
+**All 11 models passed N=4 native-harness integration on 14 November 2026:**
+44 agents, 132 upstream requests, no provider errors or content filters. Each agent
+called both tools, reused its own order code and saved a receipt and native records.
+[Validation summary](model-lineup-validation.json) ·
+[Full records](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/model-lineup-n4-20261114).
+This verifies connectivity and record capture, not benchmark outcomes or larger-N throughput.
 
 - **OpenAI (4):** GPT-6 Astra (`openai/gpt-6-astra`), GPT-6.1 Sol
   (`openai/gpt-6.1-sol`), GPT-6.1 Terra (`openai/gpt-6.1-terra`), GPT-6 Luna

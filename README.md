@@ -24,8 +24,9 @@ New runs generate inputs from tracked source. No historical trajectory bundle or
 pre-existing local workspace is required. Follow the selected guide to install
 runtimes and build its image/reference assets.
 
-[Planned model lineup](docs/model-lineup.md): 11 current models across OpenAI,
-Anthropic, Google, Moonshot, Z.ai and DeepSeek, with exact API IDs and adapter status.
+[Model lineup and verified setup](docs/model-lineup.md): all 11 models across OpenAI,
+Anthropic, Google, Moonshot, Z.ai and DeepSeek passed N=4 startup, tool use and
+native-record checks. Exact model IDs and full integration records are linked there.
 
 Add `--execute --out /absolute/external/run-directory` to collect. Both accept
 `OPENAI_BASE_URL` and either `OPENAI_API_KEY` or `OPENAI_API_KEY_FILE`.

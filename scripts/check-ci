@@ -182,6 +182,7 @@ def select_checks(files, full=False):
             suites('swarmform_structure', 'structure_timeline', 'structure_native', 'publication_updates', 'sustained_research', 'research_latency')
         elif name in {'shared/api_transport.py', 'shared/model_session.py', 'shared/model_lineup.py', 'scripts/check-model-lineup'}:
             suites('model_transport', 'api_handoff', 'batch_plan')
+            harnesses.update(('codex', 'claude', 'pi'))
         elif name == 'shared/guardrails.py':
             suites('native_harness', 'local_source', 'batch_plan', 'model_transport')
         elif name.startswith('shared/'):

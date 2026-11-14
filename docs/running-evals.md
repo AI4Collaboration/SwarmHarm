@@ -1,7 +1,7 @@
 # Run and retain experiments
 
 Choose the study first. Both runners use independent workspaces and external
-trajectory directories, but their API protocols differ.
+trajectory directories. Both accept one OpenAI-compatible API URL and key.
 
 - **SwarmForm:** [Chat Completions setup, six tasks and four communication conditions](../rollouts/README.md).
 - **SwarmHarm:** [native model-family harnesses, one API, six threat models and two domains](../swarmharm/README.md).
@@ -9,8 +9,9 @@ trajectory directories, but their API protocols differ.
 Start with N=4, then 8 and 16. Each cohort runs concurrently; the batch runs cohorts
 sequentially. Keep the same model deployment and budgets when comparing N. Check
 `plan.json` before launching and watch `index.json` for the active or finished cohort.
-No-key local servers work with SwarmForm; SwarmHarm's native adapter requires a key
-file (a placeholder is sufficient if the local server ignores authorization).
+Native harnesses require a key (a placeholder is sufficient for an unauthenticated
+local server). SwarmForm's explicit `--harness chat-completions` mode also supports
+no-key local servers.
 
 ## Trajectory storage
 

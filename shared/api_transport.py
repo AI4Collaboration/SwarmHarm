@@ -207,12 +207,18 @@ def message_events(message):
 
 
 class ChatBridge:
-    def __init__(self, base, key, model, folder, *, served_model=None, timeout=300):
+    def __init__(self, base, key, model, folder, *, served_model=None, timeout=300, on_response=None):
         self.upstream = api_base_url(base); self.key = key; self.model = model
         self.served_model = served_model or model; self.timeout = timeout
         self.folder = Path(folder); self.folder.mkdir(parents=True, exist_ok=True)
         self.token = secrets.token_urlsafe(32); self.cache = {}; self.lock = threading.Lock(); self.sequence = 0
         bridge = self
+
+        def capture(sequence, record):
+            target = bridge.folder / f'{sequence:06d}.json.gz'
+            temporary = target.with_suffix('.tmp')
+            with gzip.open(temporary, 'wt') as output: json.dump(record, output)
+            temporary.replace(target)
 
         class Handler(BaseHTTPRequestHandler):
             def log_message(self, *args):
@@ -251,6 +257,8 @@ class ChatBridge:
                     protocol = 'responses' if endpoint.endswith('responses') else 'messages'
                     request = chat_request(body, protocol, bridge.served_model, bridge.cache)
                     record['upstream_request'] = request
+                    record['status'] = 'inflight'
+                    capture(sequence, record)
                     req = urllib.request.Request(bridge.upstream + '/chat/completions',
                         data=json.dumps(request).encode(), headers={'Content-Type': 'application/json',
                         'Authorization': 'Bearer ' + bridge.key, 'User-Agent': 'SwarmHarm-API/1.0'})
@@ -262,6 +270,8 @@ class ChatBridge:
                     canonical = lambda name: str(name).split('/')[-1].replace('.', '-')
                     if canonical(data.get('model')) not in {canonical(bridge.model), canonical(bridge.served_model)}:
                         raise ValueError('Provider returned a different model: ' + str(data.get('model')))
+                    if on_response is not None:
+                        on_response(data)
                     choice = data['choices'][0]
                     if choice.get('finish_reason') == 'content_filter':
                         raise ValueError('Provider returned content_filter')
@@ -295,8 +305,9 @@ class ChatBridge:
                     try: self.send_json(422, {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': record['error']['message']}})
                     except OSError: pass
                 finally:
-                    with gzip.open(bridge.folder / f'{sequence:06d}.json.gz', 'wt') as target:
-                        json.dump(record, target)
+                    record['completed_at'] = time.time()
+                    record['status'] = 'error' if record.get('error') else 'completed'
+                    capture(sequence, record)
 
         self.server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
         self.server.daemon_threads = False
