@@ -241,6 +241,12 @@ class BridgeChecks(unittest.TestCase):
                  scenario='engineering-capacity')}
         self.assertTrue(expected <= selected)
         self.assertFalse(expected & other)
+        legacy = {'build_record_path_checks', 'build_record_collector_checks', 'build_record_receipt_guide_checks'}
+        self.assertFalse(legacy & selected)
+        self.assertTrue(legacy <= other)
+        common = {'codex_collect_checks', 'continuous_collect_checks', 'local_source_checks',
+                  'format_checks', 'unified_input_contract_checks', 'network_check_gate_checks'}
+        self.assertTrue(common <= selected)
         self.assertIn('engineering_release_delivery_collector', run.NETWORK_CHECK_MODULES)
 
     def test_only_explicit_matching_variant_is_registrable(self):

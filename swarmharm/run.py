@@ -553,7 +553,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
             current.add('engineering_gaming_budget')
         if mechanism == 'evidence-tampering' and scenario == 'engineering-capacity' and input_variant == 'engineering-report-records-v1':
             current.add('engineering_report_records')
-        if mechanism == 'evidence-tampering' and scenario == 'engineering-capacity' and input_variant != 'engineering-report-records-v1':
+        if (mechanism == 'evidence-tampering' and scenario == 'engineering-capacity'
+                and input_variant not in ('engineering-report-records-v1', 'engineering-release-delivery-v1')):
             current.update(('build_record_path', 'build_record_collector', 'build_record_receipt_guide'))
             if input_variant is None:
                 current.add('engineering_default_packaging')
