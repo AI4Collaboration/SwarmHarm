@@ -12,7 +12,6 @@ import sys
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO/'shared'))
 import model_lineup as defaults
-import model_lineup
 from guardrails import api_base_url, credential_file, outside_repository
 
 
@@ -29,7 +28,7 @@ def source_signature():
 
 
 def plan(base, mapping=None):
-    models = model_lineup.selection(mapping=mapping)
+    models = defaults.selection(mapping=mapping)
     return dict(settings=defaults.settings(), models=models, api_base=base,
                 cohorts=dict(swarmform=len(models)*len(defaults.TASKS)*len(defaults.CHANNELS)*len(defaults.POPULATIONS)*defaults.REPEATS,
                              swarmharm=len(models)*len(defaults.MECHANISMS)*len(defaults.SCENARIOS)*len(defaults.POPULATIONS)*defaults.REPEATS),

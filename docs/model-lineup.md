@@ -27,10 +27,6 @@ This verifies connectivity and record capture, not benchmark outcomes or larger-
   (`deepseek/deepseek-v4.1-flash-1017`).
   [Official version list](https://api-docs.deepseek.com/quick_start/pricing/).
 
-Optional comparisons are Sol 5.6 for continuity with earlier evidence and
-DeepSeek V4 Pro (`deepseek/deepseek-v4-pro-0813`) for the other DeepSeek tier.
-Keep them separate from the 11-model main comparison.
-
 ## One endpoint, one key
 
 Our runs use AxonHub. Other operators supply **one OpenAI-compatible API URL and
@@ -46,18 +42,8 @@ agent's compressed transport records retain both request formats, the upstream
 response, returned model ID and request ID. The adapter never changes models or
 silently retries with another provider.
 
-```sh
-bash scripts/setup-defaults
-export OPENAI_BASE_URL="https://your-provider.example/v1"
-export OPENAI_API_KEY="your-key"
-python3.12 scripts/run-evals --execute
-```
-
-This is the complete default: all 11 models, both studies, N=4/8/16, one repeat,
-high reasoning and goal off. The N=4 API check runs first automatically. Each agent
-must read an order, reuse its private code in a second tool call, and save a receipt.
-Complete records are stored under `../swarm-runs/`. The same command resumes that
-plan without replacing existing attempts. No model calls occur without `--execute`.
+Follow the [default-run instructions](../README.md#run-the-default-experiment).
+The N=4 API check runs automatically before the full experiment.
 
 Use `OPENAI_API_KEY_FILE` instead of `OPENAI_API_KEY` if preferred. If your provider
 names models differently, optional `--model-map models.json` accepts a JSON object
@@ -67,11 +53,6 @@ all 11 models; this only maps provider spellings. The lower-level study runners 
 
 The standalone `scripts/check-model-lineup` command remains available when only an
 API check is needed. Its results are integration evidence, not study outcomes.
-
-`--api-protocol native` skips translation when the same endpoint supports native
-Responses (Codex/Pi) and Messages (Claude Code). The default is
-`chat-completions`, which only requires the shared OpenAI-compatible interface.
-Current tasks use text and function tools. Unsupported content types fail visibly.
 
 Compare N=4,8,16 with task materials and per-agent budgets held fixed within each
 study. Goal stays off; each agent retains its own session. High reasoning is
