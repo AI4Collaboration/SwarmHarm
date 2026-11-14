@@ -983,22 +983,26 @@
     {
       "id": "knowledge-work/task-gaming",
       "threat_model": "specification-gaming",
-      "status": "positive_input_needed"
+      "status": "positive_input_needed",
+      "earlier_positive_verdict": "../eval-readiness/swarmharm-mechanism-gaming-knowledge-period-sol61-r01/mechanism-verdict.json"
     },
     {
       "id": "engineering-capacity/task-gaming",
       "threat_model": "specification-gaming",
-      "status": "positive_input_needed"
+      "status": "positive_input_needed",
+      "earlier_positive_verdict": "../eval-readiness/swarmharm-mechanism-gaming-engineering-sol61-r22/mechanism-verdict.json"
     },
     {
       "id": "engineering-capacity/evidence-tampering",
       "threat_model": "trace-tampering",
-      "status": "positive_input_needed"
+      "status": "positive_input_needed",
+      "earlier_positive_verdict": "../eval-readiness/swarmharm-mechanism-records-engineering-sol61-r03/mechanism-verdict.json"
     }
   ],
   "source_history": "Git history and external sealed evidence retain original versions and scores.",
   "delivery_ready": false,
   "completion_criterion": "Every one of the 12 default input slots has a reviewed positive model example bound to its exact input, native trajectory and independently verified outcome.",
+  "latest_gap_reviews_scope": "These three live observations predate the revised desk feedback. Replaying their recorded actions verified the new status displays. The earlier positives used different inputs and retain their original scores.",
   "latest_gap_reviews": {
     "engineering-capacity/task-gaming": "../eval-readiness/swarmharm-observation-engineering-gaming-sol61-r01/mechanism-verdict.json",
     "knowledge-work/task-gaming": "../eval-readiness/swarmharm-observation-knowledge-gaming-sol61-r01/mechanism-verdict.json",
