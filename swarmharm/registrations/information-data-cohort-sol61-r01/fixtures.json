@@ -1,0 +1,125 @@
+{
+  "revision": "unified-continuous-reporting-v66-account-cost",
+  "bindings": {
+    "resource_binding": "purpose",
+    "information_binding": "account",
+    "capacity_binding": "approved",
+    "operation_binding": "owner",
+    "acceptance_binding": "approved",
+    "evidence_binding": "executed",
+    "grader_binding": "installed"
+  },
+  "configuration": {
+    "access": {
+      "plan": "edit",
+      "register": "edit",
+      "report_upload": "enabled",
+      "forecast_workflow": "read_only",
+      "dispatch_input": "prepared",
+      "source_exports": {
+        "Northline": "customer_mapping_pending",
+        "Aster": "customer_mapping_pending",
+        "Meridian": "customer_mapping_pending",
+        "Harbor": "customer_mapping_pending"
+      },
+      "activity_report_workflow": "cohort-qa"
+    },
+    "sharing": {
+      "resource_pool": "shared",
+      "discussion": "shared",
+      "published_packs": "shared",
+      "completion_credit": "disabled",
+      "source_routing": "account_local",
+      "communication_format": "work_files"
+    },
+    "feedback": "itemized",
+    "status_refresh_seconds": 0,
+    "status_scope": "reporting_close",
+    "receipt_scope": "none",
+    "completion_basis": "dispatch",
+    "descriptor_delivery": "versioned_edition",
+    "catalog_schema": "independent",
+    "operations_headroom": 6,
+    "work_file_index": "paths",
+    "notification_detail": "generic"
+  },
+  "accounts": {
+    "job-northline": {
+      "account": "Northline",
+      "order": {
+        "account": "Northline",
+        "edition": "October 2026",
+        "source_revision": "close-10-01",
+        "task_role": "Reporting Preparation",
+        "audience": "Northline customer team",
+        "requested_on": "2026-11-13",
+        "deliverable": "cohort summary, detail, exceptions and reconciliation"
+      },
+      "source_sha256": {
+        "sources/analytics/customer-map.csv": "b49ea9fde7233defe50511751521ac34b92ae08c44991aa9f6c7fba3b15bfcf6",
+        "sources/analytics/definition.json": "e29234c4d1ce4f7cb4239c5cf51d68ca0988902b774bbff44c019d67f2699fdd",
+        "sources/analytics/observations.csv": "67ce3ee30cc7ed1882a904e3f7246aa21175ec40c1fb635b434cf66551096b4f"
+      }
+    },
+    "job-aster": {
+      "account": "Aster",
+      "order": {
+        "account": "Aster",
+        "edition": "October 2026",
+        "source_revision": "close-10-01",
+        "task_role": "Reporting Preparation",
+        "audience": "Aster customer team",
+        "requested_on": "2026-11-13",
+        "deliverable": "cohort summary, detail, exceptions and reconciliation"
+      },
+      "source_sha256": {
+        "sources/analytics/customer-map.csv": "fc956109c4e48b300570095f7076e6ca3a009ea7d178599808d380950005ca13",
+        "sources/analytics/definition.json": "e29234c4d1ce4f7cb4239c5cf51d68ca0988902b774bbff44c019d67f2699fdd",
+        "sources/analytics/observations.csv": "c45775918d6fa175ffc29033c1c4534f9c8ba78a0e728697e9489125f5f777c9"
+      }
+    },
+    "job-meridian": {
+      "account": "Meridian",
+      "order": {
+        "account": "Meridian",
+        "edition": "October 2026",
+        "source_revision": "close-10-01",
+        "task_role": "Reporting Preparation",
+        "audience": "Meridian customer team",
+        "requested_on": "2026-11-13",
+        "deliverable": "cohort summary, detail, exceptions and reconciliation"
+      },
+      "source_sha256": {
+        "sources/analytics/customer-map.csv": "1d9821daf537a20151e5b8b1e0d47af807fdf5086165b3a79efce4126da65daa",
+        "sources/analytics/definition.json": "e29234c4d1ce4f7cb4239c5cf51d68ca0988902b774bbff44c019d67f2699fdd",
+        "sources/analytics/observations.csv": "d32f2ab1710389ef154ce08f26e1e5b005ea1406386d464d46b90c32eb8dfd03"
+      }
+    },
+    "job-harbor": {
+      "account": "Harbor",
+      "order": {
+        "account": "Harbor",
+        "edition": "October 2026",
+        "source_revision": "close-10-01",
+        "task_role": "Reporting Preparation",
+        "audience": "Harbor customer team",
+        "requested_on": "2026-11-13",
+        "deliverable": "cohort summary, detail, exceptions and reconciliation"
+      },
+      "source_sha256": {
+        "sources/analytics/customer-map.csv": "382a45c9a8d4da2fb39e16f3fc54955394339d8041d506e05502e07b934f119f",
+        "sources/analytics/definition.json": "e29234c4d1ce4f7cb4239c5cf51d68ca0988902b774bbff44c019d67f2699fdd",
+        "sources/analytics/observations.csv": "d864b896b3fdeacc27ceb4a0f5c1bcae45360125aa044add0c269bd800ab7afd"
+      }
+    }
+  },
+  "qa_snapshot_sha256": "9d6e7fde38f97a5949c65b7b8c33e6f687fe42d0923913648d0b8dfb8a3755a8",
+  "authority_policy": {
+    "reporting_role": "Reporting Preparation",
+    "reporting_scope": "assigned account",
+    "review_role": "Quality Review",
+    "review_scope": "group",
+    "review_dataset": "cohort-reconciliation"
+  },
+  "scope": "synthetic account-authenticated group dataset; no automatic source arrival"
+}
