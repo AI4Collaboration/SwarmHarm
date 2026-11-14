@@ -9,7 +9,7 @@ import re
 import subprocess
 import sys
 
-from swarmform.__main__ import CHANNELS, ROOT, source_digest
+from swarmform.__main__ import CHANNELS, ROOT, source_digest, write_json
 from swarmform.formation_inputs import TASK_MODULES
 
 
@@ -43,7 +43,8 @@ def main():
         "--base-url",
         default=os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1"),
     )
-    parser.add_argument("--populations", nargs="+", type=int, default=[3])
+    parser.add_argument("--populations", nargs="+", type=int, default=[4, 8, 16])
+    parser.add_argument("--key-file", type=Path, default=os.environ.get("OPENAI_API_KEY_FILE"))
     parser.add_argument(
         "--tasks", nargs="+", choices=TASK_MODULES, default=list(TASK_MODULES)
     )
@@ -101,8 +102,15 @@ def main():
                 "Use the ARM64 workstation image from the README for jq-reconstruction"
             )
 
-    for row in cases(args):
-        row.update(source_sha256=source, image=IMAGE)
+    rows = [{**row, 'source_sha256': source, 'image': IMAGE} for row in cases(args)]
+    if args.execute:
+        root = args.out.resolve()
+        root.mkdir(parents=True, exist_ok=True)
+        if (root/'plan.json').exists() and json.loads((root/'plan.json').read_text()) != rows:
+            parser.error('This output root contains a different plan; choose a fresh --out')
+        write_json(root/'plan.json', rows)
+    records = []
+    for row in rows:
         encoded = json.dumps(row, sort_keys=True)
         if not args.execute:
             print(encoded)
@@ -116,6 +124,17 @@ def main():
             / (f"{row['task']}-{row['channel']}-r{row['replicate']}-{cohort_id}")
         )
         summary = directory / "summary.json"
+        record = {**row, 'output': str(directory)}
+        archive_index = directory.with_name(directory.name+'.archive.json')
+        if not directory.exists() and archive_index.exists():
+            archive = json.loads(archive_index.read_text())
+            exists = Path(archive['archive']).is_file()
+            record.update(status='archived' if exists else 'archive_missing',
+                          archive=archive['archive'], sha256=archive['sha256'])
+            failures += int(not exists)
+            records.append(record)
+            write_json(root/'index.json', {'study': 'swarmform', 'runs': records})
+            continue
         if directory.exists():
             status = json.loads(summary.read_text()) if summary.is_file() else {}
             if (
@@ -123,9 +142,13 @@ def main():
                 and (directory / "evidence-manifest.json").is_file()
             ):
                 print("Already completed", directory, flush=True)
+                record['status'] = 'complete'
             else:
                 print("Preserved incomplete attempt", directory, file=sys.stderr)
                 failures += 1
+                record['status'] = 'incomplete'
+            records.append(record)
+            write_json(root/'index.json', {'study': 'swarmform', 'runs': records})
             continue
         command = [
             sys.executable,
@@ -151,8 +174,20 @@ def main():
         ]
         if args.revision:
             command.extend(["--revision", args.revision])
+        if args.key_file:
+            command.extend(["--key-file", str(args.key_file.expanduser().resolve())])
         print("Starting", directory, flush=True)
-        failures += int(subprocess.run(command, cwd=ROOT).returncode != 0)
+        directory.parent.mkdir(parents=True, exist_ok=True)
+        log = directory.with_name(directory.name+'.log')
+        write_json(root/'index.json', {'study': 'swarmform', 'runs': [*records, {**record, 'status': 'running'}]})
+        with log.open('a') as stream:
+            code = subprocess.run(command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT).returncode
+        failures += int(code != 0)
+        record.update(status='complete' if code == 0 else 'incomplete', returncode=code, log=str(log))
+        if directory.exists():
+            record['raw_bytes'] = sum(p.stat().st_size for p in directory.rglob('*') if p.is_file())
+        records.append(record)
+        write_json(root/'index.json', {'study': 'swarmform', 'runs': records})
     return int(failures != 0)
 
 

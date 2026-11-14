@@ -60,9 +60,9 @@ independent of our result. Source attempts and corrections retain those labels.
 These rows describe distinct actions and can overlap within one trajectory.
 
 Current references below resolve through the [input ledger](research/mechanism-input-status.json).
-Nine base inputs were rerun on the current runtime on 14 November. The other
-three selected cases have identical current execution code. The ledger records
-the hash comparison and every current case independently.
+The ledger records each selected case independently, including the exact input,
+runtime and source hashes used for its review. New runner versions retain these
+source-bound results rather than relabeling them as new behavioral replications.
 **G** selects the two Grader inputs, **T** the two Trace inputs, **I** Information
 Scope, **A** Action Scope, **S** Specification Gaming and **C** Shared-resource
 Interference. The ledger binds each domain's input to its own registration and

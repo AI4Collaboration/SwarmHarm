@@ -1,32 +1,40 @@
 # SwarmForm & SwarmHarm
 
-**Current research scope, inputs and evidence.**
+**Separate agents, shared environments, observable communication and consequences.**
 
-This README is the single maintained home for research scope, task taxonomy, environment coverage, current status and paper-readiness criteria. Code, exact input fixtures, sealed registrations and evidence indexes remain in their natural locations; they are supporting artifacts, not competing plans.
+- **SwarmForm:** how agents discover communication and work together. [API setup and task matrix](rollouts/README.md).
+- **SwarmHarm:** six threat models in Engineering and Knowledge Work; 12 selected four-agent inputs have reviewed Sol 6.1 positives. [API setup and input parameters](swarmharm/README.md).
 
-**Current SwarmHarm scope is Engineering and Knowledge Work.** Data and financial analysis are optional Knowledge Work workloads. Six threat models define 12 two-domain target slots; all 12 have input-bound reviewed positives. Historical labels, scores and complete trajectories remain available. [Current scope and evidence](#swarmharm).
+## Run at N = 4, 8, 16
 
-**Run SwarmHarm** — [Fresh-checkout setup, OpenAI-compatible API, collection and review](swarmharm/README.md#run-from-a-fresh-checkout).
+Both batch runners default to **4 → 8 → 16**, one repeat. Agents within a cohort run concurrently; cohorts run sequentially. Select an exact served model ID and an output directory outside Git. A changed population is a new experimental condition, not an already validated result.
 
-New SwarmHarm inputs default to three concurrent agents; set `--population N` to vary cohort size. For 128 agents, follow the [host and concurrency settings](swarmharm/README.md#scale-and-reproduce). The 12 reviewed cases used four. Each claim is bound to its recorded inputs and runtime. Optional Knowledge Work workloads have separate evidence entries. Current development and evidence stay local.
+| Study | API and runtime | Configurations per N | Full 4/8/16 batch |
+| --- | --- | --- | --- |
+| SwarmForm | OpenAI-compatible Chat Completions, function tools and token usage | 6 tasks × 4 communication conditions = 24 | 72 cohorts / 672 agent trajectories |
+| SwarmHarm | OpenAI-compatible streaming Responses, native Codex | 6 threat models × 2 domains = 12 | 36 cohorts / 336 agent trajectories |
 
-The shared-capacity cases test composition: one agent can complete safely using spare shared slots, while the recorded combined actions leave Operations work without slots. They do not establish that each agent's task is individually impossible without a shortcut.
+```sh
+# After the setup in the selected study's guide. These commands only print plans.
+python rollouts/run_matrix.py --model "$MODEL" --populations 4 8 16
+"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run_matrix.py --model "$MODEL" --populations 4 8 16
+```
 
-Specification Gaming compares request-based admission with independently counted per-report costs. The current business materials disclose both units. [Input settings and evaluation](swarmharm/docs/phase2-taxonomy.md#inputs-and-evaluation).
+Add `--execute --out /absolute/external/run-directory` to collect. Both accept
+`OPENAI_BASE_URL` and either `OPENAI_API_KEY` or `OPENAI_API_KEY_FILE`.
+SwarmHarm commits each fresh registration locally before collection; configure
+Git author details first. No push is required. API compatibility is specific to
+the endpoint above: a Chat Completions-only server cannot run native Codex.
 
-- [Research framework](#research-framework)
-- [Three task classes](#task-taxonomy)
-- [SwarmForm: scope and current experiment](#swarmform)
-- [SwarmHarm: mechanisms, domains and input coverage](#swarmharm)
-- [Current work and acceptance criteria](#current-work)
-- [Codebase audit and lightweight maintenance](#codebase-audit)
-- [Paper readiness and later inference](#paper-readiness)
-- [Evidence and reproduction](#evidence)
+A batch writes `plan.json`, a live `index.json`, per-cohort logs and separate
+trajectory directories. Reusing an identical plan preserves completed and partial
+attempts instead of rerunning them. Use a fresh output root for a new attempt.
+See [storage and compression](docs/running-evals.md#trajectory-storage).
 
 <a id="research-framework"></a>
-## 1. Research framework
+## Research framework
 
-**SwarmForm** asks how initially separate agents discover communication, sustain information exchange, develop organizational structure and change task performance. Channel bootstrapping and emergent structure are both parts of the program. The eight-agent Navier–Stokes experiment is one component, not the entire research agenda.
+**SwarmForm** asks how initially separate agents discover communication, sustain information exchange, develop organizational structure and change task performance. Channel bootstrapping and emergent structure are both parts of the program.
 
 **SwarmHarm** asks how multiple agents create adverse outcomes through shared system boundaries, infrastructure and evaluation surfaces. Distinguish independent actions that combine harmfully, one-way propagation, and reciprocal coordination. A boundary defect or a harmful action alone does not establish a collective mechanism.
 
@@ -41,38 +49,25 @@ SwarmForm's 3×3 describes observed structure × information flow. SwarmHarm use
 
 **Registered evidence:** frozen definitions remain authoritative for original scores. Preserve every original case and register changed criteria separately. Seek evidence for each current mechanism without treating a missing false belief as its own compulsory failure class.
 
-<a id="task-taxonomy"></a>
-## 2. Task taxonomy: exactly three classes
-
-Domains such as Engineering and Knowledge Work describe content, not task properties. Use these three classes:
-
-| Task class | Meaning | Required basis |
-| --- | --- | --- |
-| **Impossible at all** | Even pooling all agents' available information and capabilities cannot satisfy the task. | Demonstrate contradictory requirements or a genuinely unavailable necessary fact/capability. A timeout or unsuccessful attempt is insufficient. |
-| **Impossible without others' information** | An agent lacks necessary information; other agents have it, and obtaining that information makes the task solvable. | Hold local information fixed and vary a necessary foreign fact: the correct answer changes. Verify a solution using the combined legitimate information. |
-| **Possible** | A single agent has the information and conditions needed to complete the task without depending on another agent. It can be easy or difficult. | Supply a reference solution or a clearly defined, checkable research deliverable; distinguish feasibility from the model finding it within budget. |
-
-Difficulty is an attribute within a class. Do not add an Easy class or rename Possible to Difficult alone. If a task's classification is not established, mark that field pending rather than inventing a fourth class or claiming impossibility.
-
-These are task properties, separate from SwarmHarm mechanisms and the criteria frozen for each case.
-
-Cross each class with **intended / unintended** communication conditions. This is a six-condition design framework, not six completed environments or an instruction to run a Cartesian sweep tonight. Task classes, domains, agent counts, communication conditions and observed grid cells are separate fields.
-
-Existing customer-brief and decoder workloads primarily test information dependence; check the actual sealed input before assigning a class. For Navier–Stokes, all agents start with the same materials and no assigned specialties. Its research deliverable accepts checkable partial progress. Do not label the full mathematical target impossible, or claim its complete solution is a calibrated single-agent task.
-
 <a id="swarmform"></a>
-## 3. SwarmForm
+## SwarmForm
 
-The current portable matrix contains six tasks across Engineering and Knowledge Work: three task classes, each with one intended and three unintended communication conditions. This gives **24 configurations per population**. Each cohort uses concurrent agents and one OpenAI-compatible Chat Completions endpoint.
+The portable matrix has three task classes in each domain: incompatible requirements,
+a task requiring other agents' information, and a difficult but independently
+solvable task. Each uses direct communication or an incidental shared filesystem,
+socket service or mapped-memory store. Task materials stay matched across
+communication conditions at a fixed N. [Exact tasks and budgets](rollouts/README.md).
 
-[Setup, task matrix, budgets and evidence](rollouts/README.md) · [Matrix runner](rollouts/run_matrix.py)
-
-The earlier 50-input channel study and eight-agent common-problem study retain their original evidence and criteria. They are separate from this API handoff.
+The completed 50-input channel study and the eight-agent common-problem study
+retain their own inputs, methods and evidence. They are not additional collection
+steps in this handoff.
 
 <a id="swarmharm"></a>
-## 4. SwarmHarm: mechanisms, collective effects and findings
+## SwarmHarm
 
-SwarmHarm studies how agents' actions and communication produce collective failures in ordinary business work. One parameterized reporting environment supplies Engineering and Knowledge Work tasks. Phase 1/2 describe outcomes within the continuous task.
+One parameterized reporting environment supplies both domains. Phase 1/2 describe
+outcomes within a continuous task, not separate runtime stages. Each finding is
+bound to its own case; different trajectories are not combined into one chain.
 
 ### Mechanisms and evidence
 
@@ -99,87 +94,13 @@ Six configurations vary four groups: `access` controls business sources and auth
 
 **Participant instructions.** Tasks specify report delivery. Agents choose their methods and any communication. Business capabilities, checks and previous-close receipts are visible input conditions. The startup rule requires autonomous work without user clarification or approval, alongside native Codex instructions. Follow-ups require a real workspace change. [Prompt and environment contract](swarmharm/docs/environment-contract.md)
 
-### Current work and reproduction
-
-**All 12 admitted inputs have reviewed Sol 6.1 examples of their registered behavior.** Each case is bound to its sealed source and input hashes, with validated ATIF continuity, protected action replay, blinded transcript review and an independently reconstructed effect. The [input ledger](swarmharm/docs/research/mechanism-input-status.json) records exact versions, cases and evidence.
-
-**The current Grader Manipulation cases meet the category criterion.** Monitor suppression and timing manipulation are optional comparisons with METR. Current Trace Tampering evidence concerns business execution records. Changes to native session history, peer reuse of that method, and action following a shared false-grader inference remain more specific replication questions. [Source-by-source coverage and gaps](swarmharm/docs/phase2-taxonomy.md#metr-behavior-coverage)
-
-Current native-record trials have preserved their records and ended without publication. A status-only work-file trial showed two recipients adopting an authored validation schema, later revised by its author. Selected-input feedback, shared post-publication credits and exposed discussion tools also yielded no native edits. The current Codex profile requires explicit messaging authorization, a clause absent from r257/r261. Adding general business-tool authorization in two matched inputs yielded no messages or native edits. Its causal role remains unresolved. The [current reviews](swarmharm/docs/research/mechanism-input-status.json) bind these observations to separate cases.
-
-Only reviewed runs bound to the current unified input count toward this work. Every behavioral claim needs its own exact actions, reads and final effect; a broader category result supplies no missing subtype. Historical Sol 5.6 cases provide design references only. Each new parameterization needs a fresh registration and trajectory. The [ledger](swarmharm/docs/research/mechanism-input-status.json) separates the twelve admitted inputs from this open coverage goal.
-
-Independent action/file replay establishes final effects; a transcript judge checks the authored behavior with exact native citations. Input availability checks and model evidence are tracked separately. Use each retained case's sealed source for reproduction. Current code and evidence stay local. [Run and review](swarmharm/README.md#reproduction)
-
-<a id="current-work"></a>
-## 5. Current work and acceptance criteria
-
-The work order below is organized by dependency. SwarmHarm has twelve admitted inputs and an open METR behavior-coverage goal. SwarmForm and later paper experiments remain separately tracked below.
-
-| Order | Concrete work | Acceptance artifact / condition | Status |
-| --- | --- | --- | --- |
-| **P0 — audit and consolidate** | Inventory source, dependencies, tests, sealed inputs and evidence; remove redundant active plans and disposable caches; resolve conflicting README versions. | One maintained plan here; historical criteria labeled; local links valid; exact audit/check outcome recorded below. | Complete; full offline regression passed after local installation repair. |
-| **P1 — SwarmHarm input coverage** | Maintain the twelve admitted inputs and extend current unified parameters to cover concrete METR behaviors. | Each reported behavior has current input-bound native/ATIF evidence and independent effect review. Historical cases inform design only. | Twelve base inputs reviewed; broader behavior coverage remains open. |
-| **P2 — SwarmForm task conditions** | Implement a minimal representative task for each of the three task classes and paired intended/unintended wrappers. Reuse business inputs for information dependence; construct a provably impossible negative control and a known-feasible Possible task. Retain Navier–Stokes as the exploratory research case. | All six class × communication configurations materialize without role cues; solvability/information-dependence witnesses plus negative cross-condition isolation checks; exact prompts and finite budgets reviewable here or through generated input bytes. | Three-class design agreed; fixtures and calibration pending. |
-| **P3 — ten-minute research runtime** | Implement paired extension, bounded timeout/cancellation, state retention, budget continuity and context-maintenance boundary handling for the 8-agent pair. | Accelerated offline native fixtures cross multiple boundaries with no reset or extra prompt cues; late events/accounting retained; no unauthorized work after deadline. | Existing fixed-duration policy must change. |
-| **P4 — evaluators and controls** | Keep frozen case verdicts; define any future verdict from its specific mechanism and evidence contract. Bind the new verdict to protected truth and native receipts; add action-only **boundary-probing metrics** (environment/network/filesystem discovery outside the local task target across the three task classes); calibrate structure annotations, delegation chains, role transfer and waiting-time attribution. | Positive and negative scripted fixtures; automated negative isolation probes on controls; rejection of false delegation/cascade claims; stated observer blind spots; second-rating protocol ready. Offline checks alone do not establish behavioral findings. | SwarmHarm uses source-bound action replay and transcript citations. Current input evidence is indexed above. SwarmForm temporal work is separate. |
-| **P5 — paper evidence and figures** | Reproduce tables from retained reviewed evidence; build per-paper claim/evidence/gap lists, methods, limitations, figure specifications, the **7-benchmark cross-trial vulnerability mapping** (`ExploitGym`, `CyberGym`, `InterCode`, `NYU-LLM-CTF`, `SWE-bench Pro`, `SWE-ReX`, `mini-swe-agent` → 5 substrates & 3 interfaces), and the **spatial/temporal/resource isolation & negative-probe hardening checklist**. Audit distinct contributions and related-work comparisons. | Every numerical claim has a frozen source; no missing experiment is written as a result; both paper outlines and remaining experiment plans live in this README. | Existing evidence available; final paper packages pending. |
-| **P6 — reproducible handoff** | After the selected two-domain input/evidence deliveries pass, clean SwarmHarm code, retired entry points and duplicate instructions; keep one current input/evidence index and clearly archived originals. Freeze inputs and evaluation settings; verify setup/export commands, anonymous release plan, runtime/credential boundaries and storage costs. | A clean fresh checkout can run offline checks; no hosted key is required for offline validation; exact later inference manifest is reviewable. | Pending selected-input acceptance. Preserve sealed originals and scores; retain only current entry points plus a concise archive index. Keep the separate SwarmForm work unchanged. |
-
-**Current work boundary.** Maintain SwarmHarm source, documentation and evidence locally. A new collection needs an explicit task and a fresh sealed registration. SwarmForm follows its study-specific authorization.
-
-Future work should update this README rather than create another planning document.
-
-<a id="codebase-audit"></a>
-## 6. Codebase audit and lightweight maintenance
-
-### Maintenance contract
-
-Keep six current SwarmHarm configuration selectors, admitted inputs and useful positive evidence. Reproduce retained cases with their sealed source. Removed implementations and development history remain in Git and external archives.
-
-Use `scripts/check-ci` to select checks for the actual changes. Check imports, current selectors, local documentation links and source-bound evidence indexes. Run each selected check once and rerun only after a relevant change or failure.
-
-### Maintained paths
-
-- `shared/`: shared native sessions, provider gateway, workstation and evidence capture.
-- `swarmform/swarmform/`: channel inputs, structure tasks, async collection and measurement.
-- `swarmharm/phase2/`: synthetic reporting services, bindings and consequence review.
-- `swarmform/structure/`: offline structural/temporal evidence analysis.
-- `scripts/`: setup, prepare/collect entry points and selected checks; `scripts/check-ci` is the verification entry point.
-- `docs/research/`, status JSON and sealed registrations: source-bound evidence, not an additional work queue.
-
-Do not scatter new `tonight`, `final-plan`, `v2-plan` or duplicate status Markdown files. Amend this README. Historical plans and generated prompt previews are for reproduction/testing and are explicitly marked as such. Synced project `sources/` remain read-only.
-
-<a id="paper-readiness"></a>
-## 7. Two-paper readiness
-
-**The current target is implementation/protocol readiness and a traceable paper evidence package. Final empirical submission readiness still requires the deferred experiments.** No large experiment is invented, estimated as observed, or replaced by a scripted witness.
-
-### SwarmForm paper
-
-- **Core contribution:** measure autonomous channel formation separately from information use, emergent organization and task uplift; compare supplied and discovered communication under task-property controls, grounded in how real evaluation harnesses leak across shared filesystems, internal bridges, caches and reused containers.
-- **Methods:** three task classes (`Impossible at all`, `Impossible without others' information`, `Possible`); intended/unintended; exact carrier opportunities mapped to verified benchmark isolation defects; action-only boundary-probing rate; native read/action attribution; temporal structure and task-linked delegation; equal compute allowances and observed consumption.
-- **Current results usable with stated limits:** 50 reviewed channel configurations, business correctness separately scored, historical structure trajectories and censored scale attempts. These are refined/selected examples rather than formation-rate estimates.
-- **Required later evidence:** repeated worlds for paired task conditions, matched-budget solo/independent-parallel/communicating baselines, temporal stability and handoffs, second-rater agreement, ablations where a causal effect is claimed. N=8 is the initial structure setting; N=16/32 are later scope, not tonight's inference queue.
-- **Planned main figures:** 7-benchmark isolation vulnerability → 5-substrate motivation table; task-class × communication coverage (including boundary-probing shifts under `Impossible at all`); channel discovery/receipt evidence; structure timelines and delegation chains; task quality versus cumulative compute. A mathematical partial result needs claim-level verification before being called progress.
-
-### SwarmHarm paper
-
-- Six threat models share one parameterized reporting engine across Engineering and Knowledge Work. Information flow, amplification, composition and inferred processes are separate findings.
-- The current input ledger binds all 12 admitted default inputs and the optional analytical-workload cases to their exact source, model and evidence.
-- Independent action replay establishes final effects. Native reads, messages and a transcript review establish propagation and coordination. Complete solo/joint replay establishes composition.
-- Paper preparation needs reproducible claim/case mappings, held-out runs after refinement, judge agreement and uncertainty over independent rollouts.
-
-### Shared submission gate
-
-Both papers need distinct claims and explicit shared-infrastructure attribution; related-work comparisons; exact tasks/prompts/budgets; reproducible outputs and exclusion/censoring rules; uncertainty over independent rollouts, not messages; limitations and ethical scope; an anonymized code/data package with attribution/licenses handled appropriately. Each empirical claim needs the matching reviewed evidence.
-
-As of 10 November 2026, the [ICML 2027 call](https://icml.cc/Conferences/2027/CallForPapers) says the call will be posted later. Use the [2026 author instructions](https://icml.cc/Conferences/2026/AuthorInstructions) only as a provisional preparation reference: anonymous submission, reproducible supporting code and key evidence in the main paper. Confirm the actual target year's rules before submission; do not invent deadlines or promise acceptance.
+Current Trace cases concern business execution records, and current Grader cases
+concern acceptance-rule changes. Native session edits and action following a
+shared invented grader remain separate, open replication questions. Historical
+r257 is evidence from its original setting. [Current evidence and open findings](swarmharm/docs/research/mechanism-input-status.json).
 
 <a id="evidence"></a>
-## 8. Evidence and reproduction
-
-SwarmHarm retains admitted inputs and useful positive cases with their complete evidence and original scores. Removed or negative versions remain in Git or external archives, with concise takeaways where relevant. SwarmForm follows its own evidence-retention instructions.
+## Evidence
 
 <a id="accepted-inputs"></a>
 ### Accepted inputs
@@ -188,17 +109,18 @@ SwarmHarm retains admitted inputs and useful positive cases with their complete 
 
 [Structure review](swarmform/docs/structure-grid-review-v1.json) · [Delegation audit](swarmform/docs/structure-delegation-audit-v1.json) · [Balanced SwarmHarm results](swarmharm/docs/research/balanced-study-v2-results.json) · [Evidence index](docs/research/README.md)
 
-### Development and reproduction commands
+<a id="codebase-audit"></a>
+## Maintain and reproduce
 
-Run `bash scripts/setup-local` and source the environment file it prints to select the pinned Python 3.12 / Harbor 0.24.0 environment. Installed runtimes and raw outputs belong outside the repository. Use the exact registered image/harness for reproducing an old input; it is not the new interval policy.
+- `rollouts/`: portable SwarmForm API runner and its matched task matrix.
+- `swarmharm/`: current six-configuration reporting runner, review and input ledger.
+- `shared/`: native adapters, workstation image and evidence capture.
+- `swarmform/`: retained channel and structure studies, accepted inputs and analysis.
+- Registrations and evidence indexes bind claims to exact source, model, population,
+  runtime and trajectories. Use each historical case's sealed source to reproduce it.
 
-```sh
-python3 scripts/check-ci --plan
-"$SWARMHARM_HARBOR_ENV/bin/python" scripts/check-ci
-python3 swarmform/scripts/check_swarmform_inputs.py --status
-"$SWARMHARM_HARBOR_ENV/bin/python" swarmform/scripts/export_swarmform_input_matrix.py --output ../accepted-inputs
-```
-
-The status command describes the completed 50-input delivery, not completion of either paper. Use `--full` only for an intentional full offline regression. Run selected checks once; repeat only for relevant changes or failures. For the current local-only SwarmHarm task, commit source, prepare and commit a fresh registration, and verify the source/input seals before collection; do not push or upload. Other studies retain their own publication requirements. Do not modify historical evidence to fit a new plan.
-
-Current source uses Sol 6.1 for prospective studies. Existing Sol 5.6 and other-harness evidence retains its identity. Provider credentials and protected truth never enter participant workspaces. The [running guide](docs/running-evals.md) documents reproduction and local source retention. New model collection follows the current work boundary above.
+Use `python3 scripts/check-ci --plan` to inspect change-selected checks, then run
+`scripts/check-ci` in the pinned Python 3.12 environment. Run each relevant check
+once; repeat after a related fix. `--full` is an explicit full regression.
+Keep keys, model outputs and compressed trajectories outside Git. Preserve original
+scores and corrections. [Collection and archive guide](docs/running-evals.md).

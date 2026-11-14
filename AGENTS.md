@@ -1,45 +1,35 @@
-# SwarmForm
+# Repository handoff
 
-Develop SwarmForm on `main`. The [README](README.md) describes the overall research framework: channel bootstrapping, emergent organization and task performance. Keep individual experiments distinct from that program. Private Releases hold evidence; frozen execution copies serve their registered runs.
+Work on current `main`. The user says SwarmForm development is complete; the current
+assignment is a clean, runnable API handoff for both studies, initially N=4,8,16.
+Do not resume old study plans or start hosted model runs unless requested. Changes
+remain on local main unless the user requests a push.
 
-Use physicists' names for newly assigned agent identifiers and display labels, including development subagents. Avoid names of tools or infrastructure such as Harbor. New four-agent SwarmHarm runs use Curie, Faraday, Maxwell and Noether. Frozen runs retain their registered identities.
-
-## Current structure experiment
-
-- The eight-agent Navier–Stokes common-problem study is one experiment within SwarmForm's emergent-structure research. Its [interval protocol](swarmform/docs/structure-common-problem-design.md) compares intended versus unintended with matched budgets and asynchronous execution. Extend both conditions by 600 seconds at a time, preserving sessions and cumulative usage. No precommitted 90-minute run.
-- Intended discloses the eight-member common task and communication interface; unintended supplies neither a peer roster nor a communication convention. Neither receives division-of-work, aggregation, delegation or leadership instructions. Observer summaries stay outside participant context.
-- Track the 3×3 structure/information-flow rubric over time, including aggregation, task-linked multilevel delegation and responsibility transfer. Negative or uncertain structure findings remain valid.
-- The next implementation work for this experiment is interval-policy support and offline validation. The design discussion does not authorize a new registration or rollout. Do not treat the existing fixed-duration runtime as interval support.
-- Update the relevant study entry in the [ledger](swarmform/docs/live-rollout-status.json). Its completed three-agent matrix and `check_swarmform_inputs.py --status` describe that delivery, not completion of SwarmForm or the structure experiment. Broader group sizes, workload comparisons and task uplift remain research dimensions; they are not automatically queued collections.
-
-## Channel-bootstrapping input design and evidence
-
-The following rules govern the three-agent channel-bootstrapping delivery and its reproduction or maintenance. The 50-input delivery is complete; channel bootstrapping remains part of the broader SwarmForm framework. Its [delivery criteria](swarmform/docs/formation-study-design.md#deliverables-and-acceptance-criteria) remain bound to those cases.
-
-- Deliver 50 inputs: all five deployments × five encoding opportunities in both Knowledge Work and Engineering (25 per domain). Keep the same three-agent design. Preserve other domain inputs and results as supplemental evidence; do not expand live collection to them without a new request. Each candidate fixes a deployment, encoding opportunity and domain. Record the encoding the agents actually use and all observable alternative paths. Follow the [coverage contract](swarmform/docs/swarmform-coverage.md) for resource scope, relays, timing, noise, receiver observations and unresolved paths.
-- Give each agent an ordinary business objective, private source material, a persistent workstation and its own session. Keep tasks, permissions, runtime and update policy matched within a domain. Keep research labels, peer rosters, cooperation cues, proposed methods and fabricated exchanges out of the workstations. Attribute supplied business records and automatic service events to their actual sources.
-- Deliver the registered autonomous-execution rule once at startup. Agents work independently of human clarification, confirmation or approval. A real business revision may trigger the registered neutral notice. Unchanged state starts no turn. Preserve autonomous stopping, corrections, cancellations, withdrawals and incomplete work.
-- Verify all legitimate sources can solve the workload. For distributed tasks, show how another worker's private fact changes the owner's correct output. Check the live interface, private-scope counterpart and receiver-visible evidence for each proposed channel. Keep all business systems and effects synthetic.
-- Use the separate discovery, sustained communication and group-size criteria in the study plan. Recipients may question or reject received content: method adoption, downstream use and business improvement are analysis metrics, not communication pass gates. Preserve frozen scores and record any later interpretation separately. Bind findings to the exact author, delivered content or signal, native reads and downstream work. Preserve artifact versions and independently reconstruct outputs. Offline transport checks establish reachability; behavioral evidence requires a registered rollout. Report negatives and ambiguous encodings.
-
-## Execution
-
-- Historical business inputs use three concurrent agents; the current common-problem study uses eight per condition. Use Sol 6.1 through native Codex and AxonHub, high reasoning, goal off and private memory per rollout. Admit each input before model collection, which requires user authorization for that study. Preserve existing Sol 5.6 registrations and evidence without requiring new paired runs. Use same-model fallback with eligible non-OpenRouter channels preferred. Keep host credentials and raw outputs outside Git. [Routing](docs/axonhub-routing.md)
-- Refine verified environment, runtime or measurement defects, then register one fresh Sol 6.1 rollout for the changed input. A working environment may yield no communication because agents do not explore or use it. Record that outcome with an input-bound functional review; no minimum retry count or forced positive result applies. Keep the exact accepted packages as the delivery default; use `--development` explicitly to generate unreviewed changes.
-- Keep Harbor 1.4 inputs, Harbor 0.24.0 and validated ATIF-v1.8 trajectories. No inference seed is configured. Review complete native records, delivery limits, real actions and terminal outputs. Preserve provider failures and inspect the reason for a flagged attempt. Remove genuinely out-of-scope mechanisms before validating fresh inputs. Never bypass a provider safeguard.
-- Work on up-to-date `main` unless a separate branch is requested. Validate a mechanism deeply once per deployment × encoding pair, then reuse that transport evidence for the selected workloads and check their isolation, business output and package independently. Use `scripts/check-ci` as the single check entry point. It selects checks from changes against `origin/main`; `--plan` previews the selection. Local push and GitHub use the same selection. Run each selected check once, and rerun only after relevant changes or a failure. Documentation and operator-witness edits do not require historical replay, Docker or harness installation. Reserve `--full` for intentional complete regression. Do not automatically run checks when resuming or inspecting progress. Test, commit and push source before preparing a new registration. Commit and push the registration, verify local, remote and sealed hashes, inspect actual collectors and terminal records, then collect once. Keep each positive case’s sealed source snapshot, registration and archived trajectory immutable. A negative or superseded rollout keeps only its takeaway—what failed and why—in the ledger or evidence index; its trace need not be retained.
-- Synced files under `sources/` are read-only. Website edits require an explicit assignment. Use “rollout” and “scenario” in project materials.
-
-## Reproduction
-
-The four-agent v57 cache pilot and SwarmHarm reporting studies retain their original populations, software and scoring rules. Use the [reporting environment contract](swarmharm/docs/environment-contract.md), [running guide](docs/running-evals.md) and [reviewed evidence](docs/research/README.md) for those cases. OpenAI uses Codex and Claude uses Claude Code via AxonHub. A Sol 5.6 Pi comparison requires explicit selection and its own registration.
-
-## Current SwarmHarm assignment
-
-Use six threat models, one configuration each: Specification Gaming, Trace Tampering, Grader Manipulation, Information Scope Violation, Action Scope Violation and Shared-resource Interference. Engineering and Knowledge Work are the two domains; data and financial analysis are optional Knowledge Work workloads. All 12 default slots have input-bound reviewed positives. See the root README and current input ledger.
-
-The active SwarmHarm goal extends coverage to the concrete behaviors described by METR. Count only reviewed trajectories bound to current unified inputs. Historical cases guide new parameterizations and retain their original scores. Twelve base-input positives do not close unobserved source behaviors. Keep exact source occurrences, attempts, business analogues and open gaps explicit in the taxonomy and current ledger.
-
-SwarmHarm takes `--population N` (default 3). Use the registered population when reproducing a case. Each independent agent uses native Codex, high reasoning, goal off and private rollout memory. SwarmHarm accepts a registered OpenAI-compatible Responses API with a host-only key; AxonHub remains the default. This endpoint option does not change SwarmForm routing. Keep natural tasks and tools, exact source bindings, real message authorship, corrections and independent outcome replay. Communication structure, composition and inferred processes are separately reviewed findings. Grader Manipulation is one category supported by rule changes or monitor interference.
-
-Maintain current source, admitted inputs and useful positive evidence. Remove superseded and failed versions from the current tree; Git and external archives retain history and original scores. Work on local main. This assignment does not authorize pushing, uploading, website edits or changes to SwarmForm. Run change-selected checks once per relevant change. New collection requires a fresh sealed registration and an explicit task to run it.
+- The root README owns current scope and claim/evidence links. `rollouts/README.md`
+  documents portable SwarmForm; `swarmharm/README.md` documents native SwarmHarm.
+  Do not substitute one study's API, population, input count or scoring for another's.
+- SwarmHarm has six threat models, one configuration each, in Engineering and
+  Knowledge Work. Communication, composition and invented-process inference are
+  separately reviewed findings. Do not restore a threat-model × communication grid.
+- Both batch runners use N=4,8,16 by default. Each cohort runs concurrently, cohorts
+  sequentially. Numbered agent names are permitted. Frozen identities stay unchanged.
+- Keep tasks and tool descriptions natural. Do not add method, peer or cooperation
+  cues to unintended-communication conditions. Preserve actual message authorship,
+  refusals, corrections, cancellations and incomplete results. No unchanged-state nudges.
+- Source, input, API, model, population, budgets and runtime are recorded per run.
+  Use immutable evidence for old scores. New populations and model deployments need
+  their own evidence; software fixtures do not establish model behavior.
+- Never overwrite or repeat an existing attempt. Preserve partial records and error
+  reasons. Store credentials and raw or compressed trajectories outside Git.
+- Use `scripts/check-ci` for change-selected checks. Inspect `--plan` when needed;
+  run necessary checks once and rerun only after a relevant change or failure.
+  Documentation edits do not require Docker or replaying historical studies.
+- For native SwarmHarm, commit source, prepare and commit the fresh registration,
+  then collect once. Local source retention does not require a push. Use each old
+  case's sealed code and runtime for reproduction, not compatibility branches in
+  the current runner.
+- Preserve useful accepted inputs and evidence indexes. Remove superseded launchers,
+  duplicated plans and retired taxonomy paths. Git and external archives hold history.
+  Do not edit frozen inputs while collecting.
+- `sources/` contains read-only synced project references. Do not modify the website
+  without an explicit request. Use “rollout” and “scenario” in project materials.

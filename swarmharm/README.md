@@ -123,6 +123,35 @@ Native records and validated ATIF trajectories are under `natural/<agent>/`.
 A settled session or successful publication alone does not establish a research claim.
 All corrections, withdrawals and partial work remain in the review.
 
+### Batch N = 4, 8, 16
+
+The batch runner uses all 12 maintained inputs at each requested N: **36 cohorts /
+336 agent trajectories per model and repeat**. It records a plan, commits each
+registration locally, collects sequentially, exports ATIF and runs independent
+review. It does not run the separately billed transcript judge automatically.
+Passed software checks are reused only when their source, runtime and required
+coverage match; each input still receives its own path validation.
+Agents within each cohort remain concurrent. Start with `--populations 4` and
+one `--scenarios` / `--mechanisms` selection to verify your endpoint first.
+
+```sh
+export OPENAI_BASE_URL="$SWARMHARM_API_BASE"
+export OPENAI_API_KEY_FILE="$SWARMHARM_API_KEY_FILE"
+# Print the complete plan without calling the model.
+"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run_matrix.py \
+  --model "$SWARMHARM_MODEL" --populations 4 8 16
+# Execute that plan. Registrations are committed locally; no push is needed.
+"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run_matrix.py \
+  --model "$SWARMHARM_MODEL" --populations 4 8 16 \
+  --execute --out ../swarmharm-runs
+```
+
+`OPENAI_API_KEY` is also accepted; it is placed in a temporary host-only key file
+for native collection. Existing completed, partial or archived attempts are
+preserved. A different plan requires a fresh output root. Use the transcript judge
+shown above on completed cohorts when a semantic claim review is needed.
+[Trace indexes, verified compression and restoration](../docs/running-evals.md#trajectory-storage).
+
 ### Scale and reproduce
 
 Create a distinct `RUN`, `OUT` and `REG` for every rollout. To detach collection,

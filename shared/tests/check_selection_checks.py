@@ -14,6 +14,14 @@ changed = ENTRY['changed_files']
 
 
 class CheckSelectionChecks(unittest.TestCase):
+    def test_portable_handoff_does_not_select_historical_suite(self):
+        plan = select(['rollouts/run_matrix.py', 'rollouts/tests/__init__.py',
+                       'scripts/archive-trajectories', 'swarmharm/run_matrix.py'])
+        self.assertEqual(plan['tests'], ['tests.api_handoff_checks',
+            'tests.batch_plan_checks', 'tests.trajectory_archive_checks'])
+        self.assertFalse(plan['docker'])
+        self.assertEqual(plan['harnesses'], [])
+
     def test_reporting_collectors_share_the_docker_concurrency_limit(self):
         for stem in ('build_record_collector', 'codex_notice_collector', 'continuous_collect'):
             with self.subTest(stem=stem):

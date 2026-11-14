@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
 import sys
 import threading
 import time
@@ -40,6 +41,7 @@ def arguments():
     run.add_argument("--task", choices=inputs.TASK_MODULES, required=True)
     run.add_argument("--channel", choices=CHANNELS, required=True)
     run.add_argument("--out", type=Path, required=True)
+    run.add_argument("--key-file", type=Path, default=os.environ.get("OPENAI_API_KEY_FILE"))
     run.add_argument(
         "--base-url",
         default=os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1"),
@@ -54,20 +56,27 @@ def arguments():
     return args
 
 
-def source_digest():
-    files = sorted(
+def source_files():
+    return sorted(
         [
             *ROOT.glob("*.py"),
             *ROOT.glob("swarmform/*.py"),
             *ROOT.glob("swarmform/fixtures/*"),
             ROOT / "requirements.txt",
             ROOT / "build-jq",
+            ROOT.parent / "shared/workstation_patch.py",
+            ROOT.parent / "shared/workstation-patch.LICENSE",
+            ROOT.parent / "shared/Dockerfile.workstation",
         ]
     )
+
+
+def source_digest(base=None):
     digest = hashlib.sha256()
-    for path in files:
-        digest.update(path.relative_to(ROOT).as_posix().encode() + b"\0")
-        digest.update(hashlib.sha256(path.read_bytes()).digest())
+    for path in source_files():
+        relative = path.relative_to(ROOT.parent)
+        digest.update(relative.as_posix().encode() + b"\0")
+        digest.update(hashlib.sha256((Path(base)/relative if base else path).read_bytes()).digest())
     return digest.hexdigest()
 
 
@@ -282,6 +291,17 @@ class Cohort:
         )
         write_json(self.out / "inputs.json", self.visible)
         write_json(self.out / "truth.json", self.truth)
+        for path in source_files():
+            target = self.out/'code'/path.relative_to(ROOT.parent)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(path, target)
+        if args.task == 'jq-reconstruction':
+            target = self.out/'code/rollouts/assets/jq-linux-arm64'
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(args.reference, target)
+        registered = json.loads((self.out/'registration.json').read_text())
+        if source_digest(self.out/'code') != registered['source_sha256']:
+            raise RuntimeError('Source changed during preparation; no participants started')
         constructor = CommonWorkspace if args.channel == "direct" else deployment
         self.station = await asyncio.to_thread(
             constructor,
@@ -402,7 +422,9 @@ async def collect(args):
     import httpx
 
     validate_endpoint(args.base_url)
-    key = os.environ.get("OPENAI_API_KEY")
+    key_file = getattr(args, 'key_file', None)
+    key = (Path(key_file).expanduser().read_text().strip() if key_file
+           else os.environ.get("OPENAI_API_KEY"))
     headers = {"Authorization": "Bearer " + key} if key else {}
     out = args.out.resolve()
     if out.is_relative_to(ROOT.parent):

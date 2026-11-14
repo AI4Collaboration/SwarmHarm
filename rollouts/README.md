@@ -27,31 +27,28 @@ export SWARMHARM_DOCKER_IMAGE="$(docker image inspect swarmform-workstation --fo
 bash rollouts/build-jq
 
 export OPENAI_BASE_URL=http://localhost:8000/v1
-export MODEL=openai/gpt-oss-20b       # use the exact ID served by your endpoint
-# Set OPENAI_API_KEY in the operator environment if your server requires it.
-python rollouts/run_matrix.py --model "$MODEL" --populations 3
-python rollouts/run_matrix.py --model "$MODEL" --populations 3 --execute --out ../swarmform-runs
+export MODEL=your-served-model       # exact ID served by your endpoint
+# Set OPENAI_API_KEY or OPENAI_API_KEY_FILE if your server requires authentication.
+python rollouts/run_matrix.py --model "$MODEL" --populations 4 8 16
+python rollouts/run_matrix.py --model "$MODEL" --populations 4 8 16 --execute --out ../swarmform-runs
 ```
 
-The first command after API setup prints 24 planned cohorts without contacting the endpoint. The second runs them sequentially. Participants within each cohort work concurrently. The endpoint must support Chat Completions function tools, tool results, and `usage.total_tokens`. Use `--revision` to record the deployed checkpoint. Each group has at most 600 seconds from participant activation, 32 responses, 96 tool calls and 500,000 observed tokens per agent. Tokens include input and output on every response. The token stop is applied when the server reports usage. A final response ends that agent’s work. The cohort stops when all agents finish or on the first exhausted group boundary or participant error. Setup, capture and cleanup occupy additional wall time.
+The first command after API setup prints 72 planned cohorts without contacting the endpoint. The second runs them sequentially. Participants within each cohort work concurrently. The endpoint must support Chat Completions function tools, tool results, and `usage.total_tokens`. Use `--revision` to record the deployed checkpoint. Each group has at most 600 seconds from participant activation, 32 responses, 96 tool calls and 500,000 observed tokens per agent. Tokens include input and output on every response. The token stop is applied when the server reports usage. A final response ends that agent’s work. The cohort stops when all agents finish or on the first exhausted group boundary or participant error. Setup, capture and cleanup occupy additional wall time.
 
-**Suggested collection order.**
+**Collection order.** Start with one task at N=4, inspect the captured records and disk use, then run the full 4/8/16 plan. Each size has 24 cohorts, giving **72 cohorts / 672 agent trajectories per model and repeat**. Keep task, communication condition, model revision and budgets fixed when comparing populations. `--repeats` adds fresh cohort directories. Repeats use the same task instances, so they measure rollout variation on these tasks.
 
-1. Run one N=3 cohort per condition on `service-plan` using `--tasks service-plan`. Check endpoint tool calls, physical stop receipts and available disk capacity.
-2. For open-weight deployments, run the full matrix at **N=3, 8 and 16**, three repetitions at each size, separately for `openai/gpt-oss-20b` and `openai/gpt-oss-120b`. This is **216 cohorts per model**. Use `--populations 3 8 16 --repeats 3 --execute` with an output directory. A third serving stack or `Qwen/Qwen3-32B` can repeat the same plan where function calling and usage reporting have passed the pilot. Model availability and compute costs depend on the deployment. [20B model card](https://huggingface.co/openai/gpt-oss-20b) · [120B model card](https://huggingface.co/openai/gpt-oss-120b) · [Qwen model card](https://huggingface.co/Qwen/Qwen3-32B).
-3. For a metered comparison, select one deployed tool-capable model, record its exact ID, and run one full repeat at N=3 before extending to N=8. Keep budgets and checkpoint fixed across conditions. These are proposed experiments.
-4. To replicate the identity treatment, run N=3 with `--names physicists` for all tasks and conditions. Oppenheimer, Bethe and Bacher rotate across launch and roster positions. Use numbered accounts at other sizes. Repeats use the same task instances, so they measure rollout variation conditional on these tasks.
+The default account names are numbered. The original N=3 `--names physicists` treatment remains available for its counterbalanced Oppenheimer/Bethe/Bacher identities. It is not required for scaling.
 
-The matrix preserves each attempt in a fresh directory outside Git. Running the same plan again skips completed cohorts and reports incomplete directories. To register a fresh attempt at a failed cell, use a fresh output root. For a **single configuration**, run the following from the repository root.
+The matrix writes `plan.json`, a live `index.json`, per-cohort logs and separate directories outside Git. Running the same plan again skips completed cohorts and reports incomplete directories. To register a fresh attempt at a failed cell, use a fresh output root. For a **single configuration**, run the following from the repository root.
 
 ```sh
 (cd rollouts && python -m swarmform run --model "$MODEL" --task decoder-release \
-  --population 3 --names physicists --channel direct --out ../../decoder-release-direct)
+  --population 4 --channel direct --out ../../decoder-release-direct)
 ```
 
 ### Evidence and scoring
 
-Read `registration.json` for model, budgets and input hashes. Per-agent compressed event streams contain model requests, responses, shell actions and timings. The observation archive contains workspace snapshots and reads. `physical-stop.json` records shutdown, `summary.json` records the stop reason, and `evidence-manifest.json` binds the output files. Preserve partial and negative cases. A completed collection means that the harness captured the run and verified the stop. Task quality is reported separately in `outcomes.json`.
+Read `registration.json` for model, budgets and input hashes. Per-agent compressed event streams contain model requests, responses, shell actions and timings. `code/` retains the exact portable runner and task sources, alongside the registered image identity. The observation archive contains workspace snapshots and reads. `physical-stop.json` records shutdown, `summary.json` records the stop reason, and `evidence-manifest.json` binds the output files. Preserve partial and negative cases. A completed collection means that the harness captured the run and verified the stop. Task quality is reported separately in `outcomes.json`.
 
 For jq, the collector saves candidate archives by content hash. Use the isolated scorer on each candidate of interest. The pinned public development subset has 61 tests.
 
@@ -65,5 +62,7 @@ curl -fL https://huggingface.co/datasets/programbench/ProgramBench-Tests/resolve
 
 Compare time to the same verified quality threshold for a task, include budget-censored cases, and report total token use. A swarm speedup claim also needs a matched solo or independent-parallel baseline, which is outside this four-condition matrix.
 
-Score structure by time interval and subgroup. Cross **no leader / multiple leaders / single leader** with **no observed flow / one-way / two-way**. Record the first author and the first foreign read separately. An aggregator needs evidence that other agents’ work enters its output. An orchestrator additionally needs a work decision, another agent acting on it, and feedback. For a handoff, show who actually held a responsibility before and after. For multilevel delegation, link the original request, onward assignment, execution and returned result. Save event times, artifact versions and trace references. A run may contain several structures or none. [Structure rubric](../docs/swarmform_taxonomy.svg).
+Score structure by time interval and subgroup. Cross **no leader / multiple leaders / single leader** with **no observed flow / one-way / two-way**. Record the first author and the first foreign read separately. An aggregator needs evidence that other agents’ work enters its output. An orchestrator additionally needs a work decision, another agent acting on it, and feedback. For a handoff, show who actually held a responsibility before and after. For multilevel delegation, link the original request, onward assignment, execution and returned result. Save event times, artifact versions and trace references. A run may contain several structures or none. [Structure rubric](../swarmform/docs/swarmform_taxonomy.svg).
 
+
+[Compress, archive and restore trajectories](../docs/running-evals.md#trajectory-storage).

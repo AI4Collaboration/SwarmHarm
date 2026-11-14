@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+"""Compress finished trajectories outside Git, verify every file, then optionally remove raw copies."""
+import argparse
+import gzip
+import hashlib
+import json
+import os
+from pathlib import Path
+import shutil
+import tarfile
+
+REPO = Path(__file__).resolve().parents[1]
+
+
+def digest(path):
+    with path.open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
+def inventory(root):
+    files = {}
+    for path in sorted(root.rglob('*')):
+        if path.is_symlink():
+            raise ValueError(f'Archive requires regular files: {path}')
+        if path.is_file():
+            files[path.relative_to(root).as_posix()] = digest(path)
+    return files
+
+
+def archive_run(source, destination=None, *, remove_source=False):
+    source = Path(source).resolve()
+    destination = Path(destination or source.parent).resolve()
+    if source.is_relative_to(REPO) or destination.is_relative_to(REPO):
+        raise ValueError('Trajectories and archives must remain outside the repository')
+    if destination.is_relative_to(source):
+        raise ValueError('Place the archive outside its source directory')
+    terminal = next((source/name for name in ('completion.json', 'summary.json')
+                     if (source/name).is_file()), None)
+    manifest_path = source/'evidence-manifest.json'
+    if terminal is None or not manifest_path.is_file():
+        raise ValueError('A finished run and its evidence manifest are required')
+    status = json.loads(terminal.read_text())
+    if status.get('status') == 'running':
+        raise ValueError('Collection is still running')
+    expected = json.loads(manifest_path.read_text())
+    expected = expected.get('files', expected)
+    files = inventory(source)
+    if any(files.get(name) != value for name, value in expected.items()):
+        raise ValueError('Run files differ from their evidence manifest')
+    destination.mkdir(parents=True, exist_ok=True)
+    archive = destination/(source.name+'.tar.gz')
+    index = destination/(source.name+'.archive.json')
+    if archive.exists() or index.exists():
+        raise FileExistsError(f'Archive already exists: {archive}')
+    temporary = archive.with_suffix('.partial')
+    # Only the creator may remove this staging file if another invocation races.
+    output = temporary.open('xb')
+    try:
+        with output:
+            with gzip.GzipFile(filename='', fileobj=output, mode='wb', compresslevel=1, mtime=0) as compressed:
+                with tarfile.open(fileobj=compressed, mode='w|') as bundle:
+                    for name in files:
+                        bundle.add(source/name, arcname=name, recursive=False)
+        # Verify decompressed bytes; a successful write alone is insufficient
+        # when the operator asks to delete the much larger raw directory.
+        actual = {}
+        with tarfile.open(temporary, 'r:gz') as bundle:
+            for member in bundle:
+                if not member.isfile() or member.name in actual:
+                    raise ValueError('Unexpected archive member')
+                with bundle.extractfile(member) as stream:
+                    actual[member.name] = hashlib.file_digest(stream, 'sha256').hexdigest()
+        if actual != files or inventory(source) != files:
+            raise ValueError('Trajectory changed during archival; raw data retained')
+        registration = json.loads((source/'registration.json').read_text())
+        row = {
+            'run': source.name, 'archive': str(archive), 'sha256': digest(temporary),
+            'raw_bytes': sum((source/name).stat().st_size for name in files),
+            'archive_bytes': temporary.stat().st_size, 'file_count': len(files),
+            'models': registration.get('models', registration.get('model')),
+            'population': registration.get('population') or
+                len(registration.get('plan', {}).get('natural', {})),
+            'status': status.get('status', status.get('reason')),
+            'files': files, 'raw_removed': False,
+        }
+        os.link(temporary, archive)  # Atomic, and never replaces an existing bundle.
+        with index.open('x') as stream:
+            stream.write(json.dumps(row, indent=2)+'\n')
+        if remove_source:
+            shutil.rmtree(source)
+            row['raw_removed'] = True
+            index.write_text(json.dumps(row, indent=2)+'\n')
+        return {key: value for key, value in row.items() if key != 'files'}
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('runs', nargs='+', type=Path)
+    parser.add_argument('--out', type=Path, help='Archive directory; defaults to each run\'s parent')
+    parser.add_argument('--remove-source', action='store_true',
+                        help='Remove raw directories only after full archive verification')
+    args = parser.parse_args()
+    for run in args.runs:
+        print(json.dumps(archive_run(run, args.out, remove_source=args.remove_source)))
+
+
+if __name__ == '__main__':
+    main()
