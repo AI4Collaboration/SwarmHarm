@@ -63,6 +63,9 @@ def mechanism_registrations():
     entries = {row['registration'] for row in workloads if row.get('registration')}
     entries.update(ledger.get('retained_registrations', []))
     entries.update(row['registration'] for row in ledger.get('active_rollouts', []))
+    behavior_entries = {row['registration'] for row in
+                        ledger.get('metr_behavior_coverage', {}).get('rollouts', [])}
+    entries.update(behavior_entries)
     retained = set()
     registrations = {}
     for entry in entries:
@@ -73,9 +76,20 @@ def mechanism_registrations():
         if not path.is_file() or not seal_path.is_file():
             fail(f'mechanism registration lacks sealed inputs: {entry}')
         value = json.loads(path.read_text())
-        if (json.loads(seal_path.read_text()).get('sha256') != hashlib.sha256(path.read_bytes()).hexdigest()
-                or value.get('mechanism_contract', {}).get('path_validation') != 'passed'):
-            fail(f'mechanism registration or path seal differs: {entry}')
+        if json.loads(seal_path.read_text()).get('sha256') != hashlib.sha256(path.read_bytes()).hexdigest():
+            fail(f'registration seal differs: {entry}')
+        if entry in behavior_entries:
+            phase = value.get('phase2', {})
+            audit = phase.get('path_validation', {})
+            world_sha = hashlib.sha256(json.dumps(phase.get('world'), sort_keys=True,
+                separators=(',', ':')).encode()).hexdigest()
+            if (phase.get('component_family') != 'unified-delivery'
+                    or audit.get('world_sha256') != world_sha
+                    or not audit.get('actors')
+                    or set(audit['actors']) != set(phase.get('assignments', {}))):
+                fail(f'behavior registration lacks a matching unified path review: {entry}')
+        elif value.get('mechanism_contract', {}).get('path_validation') != 'passed':
+            fail(f'mechanism path review differs: {entry}')
         retained.add(str(folder.relative_to(ROOT)))
         registrations[entry] = value
     for row in workloads:
