@@ -230,6 +230,19 @@ class BridgeChecks(unittest.TestCase):
             with self.subTest(kw=kw), self.assertRaisesRegex(ValueError, 'requires the explicitly declared'):
                 run.require_ready_input(**kw)
 
+    def test_preparation_selects_only_this_variants_checks(self):
+        import run
+        expected = {'engineering_release_delivery_candidate_checks',
+                    'engineering_release_delivery_bridge_checks',
+                    'engineering_release_delivery_collector_checks'}
+        selected = {path.stem for path in run.preparation_check_paths('codex', mechanism='evidence-tampering',
+                    scenario='engineering-capacity', input_variant='engineering-release-delivery-v1')}
+        other = {path.stem for path in run.preparation_check_paths('codex', mechanism='evidence-tampering',
+                 scenario='engineering-capacity')}
+        self.assertTrue(expected <= selected)
+        self.assertFalse(expected & other)
+        self.assertIn('engineering_release_delivery_collector', run.NETWORK_CHECK_MODULES)
+
     def test_only_explicit_matching_variant_is_registrable(self):
         import run
         variant = 'engineering-release-delivery-v1'

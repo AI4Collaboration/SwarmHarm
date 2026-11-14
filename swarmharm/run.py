@@ -439,6 +439,8 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
         current = {'mechanism_inputs', 'mechanism_review', 'unified_input_contract',
                    'unified_notification', 'short_notification_reads', 'unified_runtime', 'continuous_collect',
                    'local_source', 'workload_source', 'format', 'codex_collect', 'network_check_gate'}
+        if input_variant == 'engineering-release-delivery-v1':
+            current.update(('engineering_release_delivery_candidate', 'engineering_release_delivery_bridge', 'engineering_release_delivery_collector'))
         if input_variant == 'engineering-quality-gate-v1':
             current.update(('engineering_quality_gate', 'engineering_quality_gate_collector'))
         if input_variant == 'engineering-target-package-v1':
@@ -576,7 +578,7 @@ def preparation_check_paths(harness_kind, threat_cell=None, mechanism=None, scen
 # them across preparations; ordinary checks still run in parallel.
 NETWORK_CHECK_MODULES = frozenset({
     'activity_report_collector', 'build_record_collector', 'business_notification', 'data_retirement_collector',
-    'engineering_quality_gate_collector', 'engineering_target_package_collector', 'finance_reconciliation_varied',
+    'engineering_quality_gate_collector', 'engineering_target_package_collector', 'engineering_release_delivery_collector', 'finance_reconciliation_varied',
     'collector', 'continuous_collect', 'continuous_reporting', 'data_scheduled_consumer_transport', 'knowledge_scheduled_consumer_transport', 'editorial_brief_collector',
     'engineering_single_store_transport', 'engineering_target_collector', 'engineering_localization_collector', 'data_identity_collector', 'data_latency_collector', 'data_event_time_collector', 'data_cohort_qa_collector',
     'finance_payables_transport', 'finance_fx_history_collector', 'finance_fx_collector', 'finance_performance_history_collector', 'finance_performance_collector', 'native_harness', 'pi_collect', 'query_gateway',
