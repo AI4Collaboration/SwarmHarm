@@ -465,6 +465,39 @@ class NativeEventChecks(unittest.IsolatedAsyncioTestCase):
             agent.close.assert_called_once()
             self.assertEqual(cohort.returns, {"one": "model_finished"})
 
+            # Closing the native session is part of successful evidence capture.
+            agent.close.side_effect = OSError("native transcript not saved")
+            cohort.errors.clear()
+            cohort.stop.reset_mock()
+            with patch(
+                "swarmform.native_participant.model_session.create", side_effect=create
+            ):
+                await participate(
+                    cohort, "one", {"tokens": 100, "tools": 10, "responses": 10}
+                )
+            self.assertIn("native transcript not saved", cohort.errors["close_one"])
+            cohort.stop.assert_called_with("participant_cleanup_error")
+
+            # Missing usage must not be counted as free work under a matched budget.
+            agent.close.side_effect = None
+            cohort.errors.clear()
+            cohort.stop.reset_mock()
+
+            def missing_usage(kind, actor, events, **kwargs):
+                kwargs["on_transport_response"]({"model": "fixture", "usage": {}})
+                events.put((actor, {"type": "settled", "text": "done"}))
+                return agent
+
+            with patch(
+                "swarmform.native_participant.model_session.create",
+                side_effect=missing_usage,
+            ):
+                await participate(
+                    cohort, "one", {"tokens": 100, "tools": 10, "responses": 10}
+                )
+            self.assertIn("positive token usage", cohort.errors["one"])
+            cohort.stop.assert_called_with("participant_error")
+
 
 if __name__ == "__main__":
     unittest.main()

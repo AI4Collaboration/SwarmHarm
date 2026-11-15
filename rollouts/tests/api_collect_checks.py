@@ -1,6 +1,7 @@
 """Four real workstations against a local scripted Chat Completions server."""
 
 import asyncio
+import base64
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import gzip
 import hashlib
@@ -14,6 +15,7 @@ import threading
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 
 from swarmform.__main__ import collect, source_digest
 
@@ -125,6 +127,26 @@ class APICollectChecks(unittest.TestCase):
                     self.assertEqual(
                         hashlib.sha256((out / name).read_bytes()).hexdigest(), expected
                     )
+
+                async def escaped_failure(self, actor):
+                    raise OSError("uncaught participant exit")
+
+                args.out = Path(directory) / "failed-participants"
+                args.population = 2
+                with patch(
+                    "swarmform.__main__.Cohort.participant", new=escaped_failure
+                ):
+                    self.assertEqual(asyncio.run(collect(args)), 1)
+                failed = json.loads((args.out / "summary.json").read_text())
+                self.assertFalse(failed["complete"])
+                self.assertTrue(failed["physical_stop_verified"])
+                self.assertEqual(len(failed["errors"]), 2)
+                self.assertTrue(
+                    all(
+                        "uncaught participant exit" in error
+                        for error in failed["errors"].values()
+                    )
+                )
         finally:
             server.shutdown()
             server.server_close()
@@ -319,10 +341,123 @@ class APICollectChecks(unittest.TestCase):
                     self.assertEqual(
                         json.loads(result["stdout"])["text"], "fixture payload"
                     )
+                    if channel == "mapped_memory":
+                        with patch(
+                            "swarmform.formation_deployment.atomic_json",
+                            side_effect=OSError("simulated full disk"),
+                        ):
+                            with self.assertRaisesRegex(OSError, "simulated full disk"):
+                                instance.close()
+                        self.assertFalse(instance.closed)
+                        self.assertTrue(
+                            all(not s.closed for s in instance.stations.values())
+                        )
+                        subprocess.run(
+                            ["docker", "inspect", instance.anchor],
+                            check=True,
+                            capture_output=True,
+                        )
+                        self.assertIsNone(instance.terminal_service)
+                        from swarmform.participant_stop import ParticipantStop
+
+                        stopper = ParticipantStop(instance)
+                        stopper.arm()
+                        stop = stopper.stop(reason="offline_recovery_test")
+                        self.assertTrue(stop["research_stop_verified"])
+                        original = Path(directory).resolve()
+                        (original / "physical-stop.json").write_text(json.dumps(stop))
+                        bindings = {
+                            "memory_anchor": instance.anchor,
+                            "participants": {
+                                a: {
+                                    "container": station.name,
+                                    "account_view": getattr(
+                                        station, "account_view", []
+                                    ),
+                                    "business_uid": station.business_uid,
+                                    "observation_roots": station.observation_roots,
+                                    "archive": str(
+                                        station.archive.relative_to(original)
+                                    ),
+                                }
+                                for a, station in instance.stations.items()
+                            },
+                        }
+                        (original / "recovery-bindings.json").write_text(
+                            json.dumps(bindings)
+                        )
+                        with TemporaryDirectory() as restored:
+                            recovered = Path(restored) / "result"
+                            recovery = subprocess.run(
+                                [
+                                    sys.executable,
+                                    str(
+                                        Path(__file__).resolve().parents[1]
+                                        / "recover.py"
+                                    ),
+                                    "--run",
+                                    str(original),
+                                    "--out",
+                                    str(recovered),
+                                ],
+                                capture_output=True,
+                                text=True,
+                            )
+                            self.assertEqual(recovery.returncode, 0, recovery.stderr)
+                            self.assertTrue(
+                                json.loads((recovered / "summary.json").read_text())[
+                                    "complete"
+                                ]
+                            )
+                            record = json.loads(
+                                (recovered / "memory/index.json").read_text()
+                            )
+                            raw = gzip.decompress(
+                                (recovered / "memory" / record["blob"]).read_bytes()
+                            )
+                            self.assertEqual(
+                                hashlib.sha256(raw).hexdigest(), record["sha256"]
+                            )
+
+                        # A retry after partial teardown must keep both actors' index entries.
+                        def partial_release(deployment):
+                            deployment.stations[first].close()
+                            raise OSError("simulated teardown failure")
+
+                        with patch(
+                            "swarmform.formation_deployment.FileDeployment.close",
+                            new=partial_release,
+                        ):
+                            with self.assertRaisesRegex(
+                                OSError, "simulated teardown failure"
+                            ):
+                                instance.close()
+                        self.assertTrue(instance.stations[first].closed)
                 finally:
                     instance.close()
                 self.assertTrue(instance.closed)
                 self.assertIsNotNone(instance.terminal_service)
+                if channel == "mapped_memory":
+                    from swarmform.formation_store import mapped_request
+
+                    archive = Path(directory) / "reads" / "_memory"
+                    index = json.loads((archive / "index.json").read_text())
+                    records = list(index["memory_states"].values())
+                    self.assertEqual(len(records), 2)
+                    self.assertEqual(records[0], records[1])
+                    self.assertEqual(len(list(archive.glob("*.gz"))), 1)
+                    data = gzip.decompress((archive / records[0]["blob"]).read_bytes())
+                    self.assertEqual(
+                        hashlib.sha256(data).hexdigest(), records[0]["sha256"]
+                    )
+                    cache = Path(directory) / "restored-cache"
+                    cache.write_bytes(data)
+                    recovered = mapped_request(
+                        {"operation": "read", "name": "probe"}, path=cache
+                    )
+                    self.assertEqual(
+                        base64.b64decode(recovered["data"]), b"fixture payload"
+                    )
 
     def test_decoder_grading_uses_protected_answers_and_determinism(self):
         from swarmform import formation_engineering as decoder

@@ -193,9 +193,14 @@ call links to one post-command snapshot, followed by a terminal snapshot.
 Read/write traces are incremental, lossless and hash checked, without a fixed
 observation-size cap. All captures must succeed before original resources are
 removed. Capture failures mark the attempt incomplete and retain originals.
+Shared-memory state is frozen, compressed once per namespace, read-back verified,
+and indexed in `reads/_memory/index.json` before resources are removed. Agents
+sharing that namespace reference the same blob. Missing token usage and native
+session-close failures make an attempt incomplete.
 After restoring storage, use
 `python rollouts/recover.py --run /path/to/attempt --out /path/to/recovery`
-and keep both directories. The matrix verifies sealed files before skipping
+and keep both directories. Recovered memory blobs are indexed in `memory/index.json`.
+The matrix verifies sealed files before skipping
 completed work; archives are checksum verified and incomplete archives stay incomplete.
 A moved archive is found beside its index. Use a fresh output root for a new attempt.
 

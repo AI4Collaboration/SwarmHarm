@@ -514,7 +514,14 @@ class Cohort:
                 write_json(self.out / "physical-stop.json", receipt)
             except Exception as error:
                 self.errors["shutdown"] = repr(error)
-            await asyncio.gather(*workers, return_exceptions=True)
+            results = await asyncio.gather(*workers, return_exceptions=True)
+            for actor, result in zip(self.visible["startup"], results):
+                if isinstance(result, BaseException) and not isinstance(
+                    result, asyncio.CancelledError
+                ):
+                    self.errors["participant_" + actor] = repr(result)
+                    if self.reason == "all_finished":
+                        self.reason = "participant_error"
             results = await asyncio.gather(
                 *tuple(self.active_tools), return_exceptions=True
             )

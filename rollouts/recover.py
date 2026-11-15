@@ -1,11 +1,9 @@
 """Export retained Docker evidence after correcting a host storage/capture failure."""
 
 import argparse
-import gzip
 import hashlib
 import json
 from pathlib import Path
-import subprocess
 from types import SimpleNamespace
 
 from atomic import atomic_json
@@ -13,6 +11,7 @@ from swarmform.__main__ import ROOT, seal_evidence
 from swarmform.read_observer import ObservedFileStation, trace_blocks
 from swarmform.service_workstation import ServiceWorkstation
 from swarmform.participant_stop import ParticipantStop
+from swarmform.memory_capture import capture_memory
 
 
 def main():
@@ -107,24 +106,13 @@ def main():
                 failures["service"] = repr(error)
         if bindings.get("memory_anchor"):
             try:
-                reply = subprocess.run(
-                    [
-                        "docker",
-                        "exec",
-                        bindings["memory_anchor"],
-                        "cat",
-                        "/dev/shm/project-work-cache",
-                    ],
-                    capture_output=True,
-                    check=True,
-                )
-                (out / "memory-cache.gz").write_bytes(
-                    gzip.compress(reply.stdout, mtime=0)
-                )
-            except subprocess.CalledProcessError as error:
-                # An unused cache has no backing file.
-                if b"No such file" not in error.stderr:
-                    failures["memory"] = str(error)
+                # Retained observed workstations can read owner-private cache files.
+                participant = next(iter(bindings["participants"].values()), {})
+                container = participant.get("container", bindings["memory_anchor"])
+                record = capture_memory(container, out / "memory")
+                atomic_json(out / "memory" / "index.json", record)
+            except Exception as error:
+                failures["memory"] = repr(error)
     finally:
         atomic_json(
             out / "summary.json",
