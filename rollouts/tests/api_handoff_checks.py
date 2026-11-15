@@ -498,6 +498,19 @@ class NativeEventChecks(unittest.IsolatedAsyncioTestCase):
             self.assertIn("positive token usage", cohort.errors["one"])
             cohort.stop.assert_called_with("participant_error")
 
+            # Reaching a per-actor budget stops only that actor, leaving peers active.
+            cohort.errors.clear()
+            cohort.returns.clear()
+            cohort.stop.reset_mock()
+            with patch(
+                "swarmform.native_participant.model_session.create", side_effect=create
+            ):
+                await participate(
+                    cohort, "one", {"tokens": 15, "tools": 10, "responses": 10}
+                )
+            self.assertEqual(cohort.returns, {"one": "observed_token_budget"})
+            cohort.stop.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()

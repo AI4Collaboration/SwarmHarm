@@ -190,10 +190,64 @@ def provider_http_diagnostic(exc, secret=''):
             'request_id_present':value is not None,'request_id_sha256':request_id_sha256}
 
 
-def post(request_value, key, stream_capture, api_base=None):
+def chat_completions_request(request_value):
+    messages = [
+        {"role": item["role"], "content": "\n".join(c["text"] for c in item["content"])}
+        for item in request_value["input"]
+    ]
+    fmt = request_value["text"]["format"]
+    payload = {
+        "model": request_value["model"],
+        "messages": messages,
+        "response_format": {
+            "type": "json_schema",
+            "json_schema": {k: fmt[k] for k in ("name", "strict", "schema")},
+        },
+        "stream": False,
+    }
+    effort = (request_value.get("reasoning") or {}).get("effort")
+    if effort:
+        payload["reasoning_effort"] = effort
+    return payload
+
+
+def normalize_chat_completion(value):
+    if not isinstance(value, dict):
+        return value
+    choices = value.get("choices")
+    if not isinstance(choices, list) or len(choices) != 1 or not isinstance(choices[0], dict):
+        return {"status": "failed", "error": value.get("error")}
+    choice = choices[0]
+    msg = choice.get("message") if isinstance(choice.get("message"), dict) else {}
+    finish = choice.get("finish_reason")
+    if finish == "content_filter":
+        return {"type": "response.incomplete", "status": "incomplete", "response": {"incomplete_details": {"reason": "content_filter"}}}
+    if isinstance(msg.get("refusal"), str) and msg["refusal"]:
+        parts = [{"type": "refusal", "refusal": msg["refusal"]}]
+    elif finish == "stop" and isinstance(msg.get("content"), str):
+        parts = [{"type": "output_text", "text": msg["content"]}]
+    else:
+        return {"status": "failed", "finish_reason": finish}
+    return {
+        "id": value.get("id"),
+        "model": value.get("model"),
+        "status": "completed",
+        "usage": value.get("usage"),
+        "output": [{"type": "message", "role": "assistant", "content": parts}],
+    }
+
+
+def post(request_value, key, stream_capture, api_base=None, protocol="responses"):
+    if protocol == "chat-completions":
+        base = guardrails.api_base_url(api_base) if api_base else AXONHUB_RESPONSES.removesuffix("/responses")
+        url = base + "/chat/completions"
+        payload = chat_completions_request(request_value)
+    else:
+        url = guardrails.api_base_url(api_base)+'/responses' if api_base else AXONHUB_RESPONSES
+        payload = request_value
     request = urllib.request.Request(
-        guardrails.api_base_url(api_base)+'/responses' if api_base else AXONHUB_RESPONSES,
-        data=json.dumps(request_value).encode(),
+        url,
+        data=json.dumps(payload).encode(),
         headers={
             "Authorization": "Bearer " + key,
             "Content-Type": "application/json",
@@ -202,9 +256,11 @@ def post(request_value, key, stream_capture, api_base=None):
         method="POST",
     )
     with guardrails.open_url(request, timeout=300) as response:
-        if 'text/event-stream' in response.headers.get('Content-Type', ''):
+        if protocol != "chat-completions" and 'text/event-stream' in response.headers.get('Content-Type', ''):
             return read_stream(response, stream_capture, key)
         value=json.load(response)
+        if protocol == "chat-completions":
+            value = normalize_chat_completion(value)
         if not isinstance(value,dict) or value.get('status')!='completed':
             raise StreamFailure('nonstream_incomplete',json.dumps(value,ensure_ascii=False).encode(),provider_error_facts(value,key)[1])
         return value
@@ -250,7 +306,13 @@ def main(argv=None):
     )
     parser.add_argument("--key-file", type=Path)
     parser.add_argument("--model", default=claim_evidence.DEFAULT_JUDGE_MODEL)
-    parser.add_argument("--api-base", help="Judge Responses API base; defaults to the rollout's recorded endpoint")
+    parser.add_argument("--api-base", help="Judge API base; defaults to the rollout's recorded endpoint")
+    parser.add_argument(
+        "--api-protocol",
+        choices=("responses", "chat-completions"),
+        default="responses",
+        help="Transport protocol for the judge request (default: responses)",
+    )
     parser.add_argument(
         "--response-file",
         type=Path,
@@ -286,9 +348,14 @@ def main(argv=None):
             api_base = args.api_base or json.loads((root/'registration.json').read_text()).get(
                 'api_base', AXONHUB_RESPONSES.removesuffix('/responses'))
             write_new(attempts / f"{attempt}-route.json",
-                      {'api_base': guardrails.api_base_url(api_base), 'model': args.model})
-            response = post(request_value, secret, stream_capture,
-                            **({'api_base': api_base} if api_base != AXONHUB_RESPONSES.removesuffix('/responses') else {}))
+                      {'api_base': guardrails.api_base_url(api_base), 'model': args.model,
+                       'api_protocol': args.api_protocol})
+            post_kwargs = {}
+            if api_base != AXONHUB_RESPONSES.removesuffix('/responses'):
+                post_kwargs['api_base'] = api_base
+            if args.api_protocol != 'responses':
+                post_kwargs['protocol'] = args.api_protocol
+            response = post(request_value, secret, stream_capture, **post_kwargs)
         if completed_response_refusal(response):
             data=stream_capture.getvalue() or json.dumps(response,ensure_ascii=False).encode()
             raise StreamFailure('refusal',data,'provider_stated_refusal')

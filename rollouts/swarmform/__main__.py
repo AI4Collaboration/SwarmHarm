@@ -319,7 +319,7 @@ class Cohort:
                 usage["responses"] += 1
                 usage["tokens"] += counter
                 if usage["tokens"] >= MAX_TOKENS:
-                    self.stop("observed_token_budget")
+                    self.returns[actor] = "observed_token_budget"
                     return
                 calls = msg.get("tool_calls") or []
                 if not calls:
@@ -336,7 +336,7 @@ class Cohort:
                     if self.stopping.is_set():
                         return
                     if usage["tools"] >= MAX_TOOLS:
-                        self.stop("tool_budget")
+                        self.returns[actor] = "tool_budget"
                         return
                     usage["tools"] += 1
                     invocation = call["function"]
@@ -370,7 +370,11 @@ class Cohort:
                         }
                     )
                 if usage["responses"] >= MAX_RESPONSES or usage["tools"] >= MAX_TOOLS:
-                    self.stop("response_or_tool_budget")
+                    self.returns[actor] = (
+                        "response_budget"
+                        if usage["responses"] >= MAX_RESPONSES
+                        else "tool_budget"
+                    )
                     return
         except asyncio.CancelledError:
             self.trace(actor, "cancelled", reason=self.reason)

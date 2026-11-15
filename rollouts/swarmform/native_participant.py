@@ -92,11 +92,11 @@ async def participate(cohort, actor, limits):
                         )
                     usage["tokens"] += count
                     if usage["tokens"] >= limits["tokens"]:
-                        cohort.stop("observed_token_budget")
+                        cohort.returns[actor] = "observed_token_budget"
                         return
             elif kind == "tool_call":
                 if usage["tools"] >= limits["tools"]:
-                    cohort.stop("tool_budget")
+                    cohort.returns[actor] = "tool_budget"
                     return
                 usage["tools"] += 1
                 call_id = message["call_id"].split("|")[0]
@@ -127,7 +127,7 @@ async def participate(cohort, actor, limits):
                     result, _ = await asyncio.shield(task)
                 agent.reply(message["id"], output=json.dumps(result))
                 if usage["responses"] >= limits["responses"]:
-                    cohort.stop("response_or_tool_budget")
+                    cohort.returns[actor] = "response_budget"
                     return
             elif kind == "settled":
                 if message.get("error_message"):

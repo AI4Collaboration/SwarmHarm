@@ -273,4 +273,35 @@ class Checks(unittest.TestCase):
             self.assertEqual(saved['stream_prefix_sha256'],sha256(token.encode()).hexdigest())
             self.assertNotIn(token,json.dumps(saved))
 
+    def test_chat_completions_protocol_normalizes_content_and_refusals(self):
+        request_value = {
+            'model': 'offline-judge',
+            'reasoning': {'effort': 'high'},
+            'input': [
+                {'role': 'system', 'content': [{'type': 'input_text', 'text': 'sys'}]},
+                {'role': 'user', 'content': [{'type': 'input_text', 'text': 'usr'}]},
+            ],
+            'text': {'format': {'type': 'json_schema', 'name': 'test', 'strict': True, 'schema': {'type': 'object'}}},
+        }
+        payload = judge.chat_completions_request(request_value)
+        self.assertEqual(payload['messages'], [{'role': 'system', 'content': 'sys'}, {'role': 'user', 'content': 'usr'}])
+        self.assertEqual(payload['reasoning_effort'], 'high')
+        body = json.dumps({'id': 'cc-1', 'model': 'offline-judge', 'choices': [
+            {'finish_reason': 'stop', 'message': {'role': 'assistant', 'content': '{"ok":true}'}}]}).encode()
+        class Response(BytesIO):
+            def __init__(self, raw):
+                super().__init__(raw); self.headers = {'Content-Type': 'application/json'}
+        with patch.object(judge.guardrails, 'open_url', return_value=Response(body)) as opened:
+            normalized = judge.post(request_value, 'caller.key', BytesIO(),
+                                    api_base='https://example.invalid/v1', protocol='chat-completions')
+            self.assertEqual(opened.call_args.args[0].full_url, 'https://example.invalid/v1/chat/completions')
+            self.assertEqual(judge.claim_evidence.response_text(normalized), '{"ok":true}')
+        filtered = json.dumps({'model': 'offline-judge', 'choices': [
+            {'finish_reason': 'content_filter', 'message': {'role': 'assistant', 'content': None}}]}).encode()
+        with patch.object(judge.guardrails, 'open_url', return_value=Response(filtered)):
+            with self.assertRaises(judge.StreamFailure) as caught:
+                judge.post(request_value, 'caller.key', BytesIO(),
+                           api_base='https://example.invalid/v1', protocol='chat-completions')
+            self.assertEqual(caught.exception.policy_status, 'provider_stated_refusal')
+
 if __name__=='__main__':unittest.main()

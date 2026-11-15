@@ -14,9 +14,7 @@ Both studies are included; no model, task, population or output selection is req
 
 Prerequisites: Git, Python 3.12, Node.js 22.19 or newer with npm, and a running
 Docker engine. The setup command installs the pinned dependencies and builds the image.
-
-Install Python 3.12, Node.js 22.19+, Git and Docker first. The complete SwarmForm
-matrix needs ARM64 execution (native or Docker emulation). From a fresh clone:
+From a fresh clone:
 
 ```sh
 bash scripts/setup-defaults
@@ -113,7 +111,6 @@ keep an agent's local files fixed while changing a necessary foreign fact and th
 correct answer; both worlds remain solvable. The scheduling witness changes a
 foreign opening time and proves a different optimum. The local checker reads only
 local files and reports missing calendars; it cannot query hidden truth.
-**Difficulty still requires solo calibration at the chosen model and budget.**
 
 **Communication conditions.** Each variant has one intended setting and three
 unintended settings: filesystem, socket service and mapped-memory store. This is
@@ -169,8 +166,8 @@ fixed instances.
 The endpoint needs Chat Completions function tools, tool results and
 `usage.total_tokens`. `--revision` records the deployed checkpoint. Each agent
 has 32 responses, 96 tool calls and 500,000 observed tokens. A cohort has at most
-600 seconds from activation and ends earlier when all agents finish, a budget
-boundary is reached, or a participant errors. Setup and capture add wall time.
+600 seconds from activation and ends earlier when all agents finish or reach their
+per-agent limits, or when a participant errors. Setup and capture add wall time.
 There are no follow-up prompts to create structure. Intended workspaces share
 N CPU cores and N × 512 MiB; unintended workspaces each receive one CPU and
 512 MiB. Report host capacity and resource borrowing in timing comparisons.
@@ -217,7 +214,6 @@ both the public checker and an independent verifier against protected input,
 not an agent's edited calendar. Contradictions need a valid conflicting
 frame/output pair or a precedence-path bound above the actual deadline.
 Partial quality, elapsed time and token use remain separate measures.
-A speedup claim also needs a matched solo or independent-parallel baseline.
 
 Score structure over time using no leader / multiple leaders / single leader ×
 no observed flow / one-way / two-way. Aggregation requires actual uptake of
