@@ -1,5 +1,34 @@
 # Navier–Stokes long-v3 with physicist names
 
+Both rollouts closed naturally on 16 November 2026. All 16 native sessions and
+ATIF trajectories passed coverage and continuity checks. All eight terminal
+views of the shared report agreed within each rollout.
+
+| Condition | Active time | Native responses | Recognized JSON message writes | Observed organization |
+| --- | --- | ---: | ---: | --- |
+| Shared folder only | 26m 23s | 176 | 0 | Several agents integrated each other's drafts. Faraday performed the terminal synthesis. |
+| Team prompt and messaging | 17m 43s | 267 | 211 | Oppenheimer proposed a division of work. Peers adopted it, with Faraday taking lead editing and Feynman auditing. |
+
+In the shared-folder run, Maxwell read and consolidated a Noether manuscript.
+Noether then read Maxwell's consolidation and published a revision. Curie also
+reviewed and updated the shared report. Faraday incorporated earlier material
+from Noether, Maxwell and Rabi and wrote the terminal version. The final writer
+alone does not establish an accepted coordinating role.
+
+In the team run, Oppenheimer proposed Faraday as lead editor (messages m0005
+and m0009). Rabi, Feynman and Noether explicitly accepted changes in coverage
+(m0012, m0014 and m0015). Faraday accepted lead editing (m0016), requested an
+audit from Feynman (m0049), and wrote the integrated draft. Feynman read it and
+asked Faraday to specify the support and center of a cutoff function (m0181).
+Faraday received that correction and applied it, preserving an earlier version
+and reporting the revision (m0194). The final report credits the whole group and
+identifies Faraday as lead editor. Rabi occupied Research01's former slot.
+
+Both reports describe partial mathematical results and explicitly leave the
+arbitrary-data regularity problem open. The operator review verified the
+coordination and terminal files. It did not independently adjudicate the
+mathematical proofs or all potential delegation chains.
+
 The new pair follows Terry's historical long-v3 registration at 1912501f4.
 Use GPT-6.1 Sol high through native Codex and AxonHub, goal off, eight isolated
 sessions in parallel, and the original 90-minute active limit. Run shared-folder
@@ -28,3 +57,5 @@ require further comparisons with varied mappings and repeated conditions.
 The workstation image is rebuilt from the frozen recipe and the native Codex
 version is pinned to 0.166.0. The registration records actual local image,
 binary and host identities.
+
+[Private evidence archives and checksums](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/aman-long-v3-physicist-names-20261116).
