@@ -317,12 +317,12 @@ def code_paths():
         + sorted((HERE/'configs').glob('*.json'))
         + sorted((HERE/'tests/worlds').glob('*.json'))
         +[REPO/name for name in (
-            'shared/api_transport.py','shared/model_session.py','shared/model_lineup.py',
+            'shared/api_transport.py','shared/model_session.py','shared/model_lineup.py','shared/batch_resume.py',
             'shared/atomic.py','shared/guardrails.py','shared/workstation.py','shared/workspace_paths.py','shared/codex_gateway.py',
             'shared/response_monitor.py','shared/record_surface.py','shared/work_journal.py','shared/launch_capacity.py',
             'shared/workstation_observer.py',
             'shared/workstation_patch.py','shared/workstation-patch.LICENSE',
-            'shared/codex/package.json','shared/codex/package-lock.json','shared/python-requirements.txt',
+            'shared/python-requirements.txt',
             'shared/pi_agent.py','shared/pi/agent.mjs','shared/pi/package.json',
             'shared/pi/package-lock.json','shared/prompt-contract/checks.py')]
         +[REPO/name for name in (
@@ -529,7 +529,7 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode=None, harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', mechanism=None, input_variant=None, workload=None, api_base=AXONHUB_API_BASE, startup_concurrency=8, api_protocol='native', served_model=None):
+            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', mechanism=None, input_variant=None, workload=None, api_base=AXONHUB_API_BASE, startup_concurrency=8, api_protocol='native', served_model=None, codex_auth='api'):
     provisioning_workers = startup_workers(population, startup_concurrency)
     scenario = domain_runtime.resolve_workload(scenario, workload)
     require_ready_input(input_variant, delivery_config=delivery_config, world_config=world_config, mechanism=mechanism, scenario=scenario)
@@ -560,12 +560,15 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
     validate_harness_policy(harness_kind, offline_adapter_test, offline_fixture=not run_controls, pi_comparison=pi_comparison)
     if reasoning_effort not in REASONING_EFFORTS:
         raise ValueError('Unsupported reasoning effort')
-    native_gateway = harness_kind in API_NATIVE_HARNESSES and not offline_adapter_test
-    api_base = guardrails.api_base_url(api_base)
+    subscription_codex=harness_kind=='codex' and codex_auth=='chatgpt'
+    native_gateway = harness_kind in API_NATIVE_HARNESSES and not offline_adapter_test and not subscription_codex
+    if subscription_codex:
+        api_protocol='native';served_model=next(iter(MODELS.values())).removeprefix('openai/');key_file=None
+    api_base = None if subscription_codex else guardrails.api_base_url(api_base)
     route_options = {} if api_base == AXONHUB_API_BASE else {'api_base': api_base}
     if api_protocol not in ('native', 'chat-completions'):
         raise ValueError('Unknown API protocol')
-    if served_model and served_model != next(iter(MODELS.values())) and api_protocol != 'chat-completions':
+    if served_model and served_model != next(iter(MODELS.values())) and api_protocol != 'chat-completions' and not subscription_codex:
         raise ValueError('Model mapping requires the Chat Completions transport')
     if harness_kind=='pi-sdk' or native_gateway:
         key_file=guardrails.credential_file(key_file,REPO)
@@ -641,10 +644,10 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
             harness=codex_gateway.harness_registration(goal_mode,model,**route_options)
             routes['native_catalog']=codex_gateway.gateway_catalog(model,reasoning_effort)
     elif harness_kind=='codex':
-        harness=codex_agent.harness_registration(goal_mode,next(iter(MODELS.values())))
+        harness=codex_agent.harness_registration(goal_mode,next(iter(MODELS.values())).removeprefix('openai/'))
         routes={'checked_at':utc(),'provider':'chatgpt-subscription','models':MODELS,
             'api_key_billing':False,'catalog':codex_agent.subscription_catalog(
-                next(iter(MODELS.values())),reasoning_effort),
+                next(iter(MODELS.values())).removeprefix('openai/'),reasoning_effort),
             'evidence_limit':codex_agent.EVIDENCE_LIMIT}
     elif harness_kind=='claude-code':
         for model in MODELS.values():claude_agent.validate_model(model)
@@ -808,7 +811,7 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
         'scenario':domain_runtime.domain_for(scenario), 'workload':scenario,
         'domain':domain_runtime.public_domain(scenario),
         'api_base':api_base if native_gateway or harness_kind=='pi-sdk' else None,
-        'api_protocol':api_protocol, 'served_model':served_model or next(iter(MODELS.values())),
+        'api_protocol':api_protocol, 'served_model':served_model or next(iter(MODELS.values())), 'codex_auth':codex_auth,
         'endpoint':api_base+'/chat/completions' if api_protocol=='chat-completions' else (api_base+'/messages' if harness_kind=='claude-code' else api_base+'/responses') if native_gateway else None if harness_kind in ('claude-code','codex') else api_base+'/responses',
         'subject_execution_policy':{'user_interaction':'disabled_by_instruction',
             'instructions':lab.INSTRUCTIONS,'delivery':('native system append; task context excludes duplicate rule'
@@ -819,9 +822,9 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
             if AXONHUB_API_BASE=='https://lmportal.iefbr14.xyz/v1'
             else f'Existing host-only key for {AXONHUB_API_BASE}; never supplied to subjects.'),
         'runtime':{'harbor_version':HARBOR_VERSION,'python':sys.version.split()[0]},
-        'inference_gateway':harness['authentication'] if native_gateway else ('axonhub' if api_base==AXONHUB_API_BASE else 'openai-compatible') if harness_kind=='pi-sdk' else None,
-        'inference_protocol':'openai/chat-completions' if api_protocol=='chat-completions' else ('anthropic/messages' if harness_kind=='claude-code' else 'openai/responses') if native_gateway else 'openai/responses' if harness_kind=='pi-sdk' else None,
-        'live_collection_permitted':bool(run_controls and (native_gateway or harness_kind=='pi-sdk')),
+        'inference_gateway':harness['authentication'] if native_gateway or subscription_codex else ('axonhub' if api_base==AXONHUB_API_BASE else 'openai-compatible') if harness_kind=='pi-sdk' else None,
+        'inference_protocol':'codex/app-server' if subscription_codex else 'openai/chat-completions' if api_protocol=='chat-completions' else ('anthropic/messages' if harness_kind=='claude-code' else 'openai/responses') if native_gateway else 'openai/responses' if harness_kind=='pi-sdk' else None,
+        'live_collection_permitted':bool(run_controls and (native_gateway or harness_kind=='pi-sdk' or subscription_codex)),
         'pi_comparison':bool(pi_comparison),
         'offline_adapter_test':bool(offline_adapter_test),
         'continuous_rollout':True,
@@ -1697,12 +1700,13 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         require(not native_gateway and harness_kind in NATIVE_HARNESSES
                 and reg.get('offline_adapter_test') is True and reg.get('live_collection_permitted') is False,
                 'Offline adapter collection requires an offline-only adapter fixture.')
-    if harness_kind != PI_HARNESS and not native_gateway:
+    subscription_codex=harness_kind=='codex' and reg.get('codex_auth')=='chatgpt' and reg['harness'].get('authentication')=='chatgpt-subscription'
+    if harness_kind != PI_HARNESS and not native_gateway and not subscription_codex:
         require(
             offline_adapter_test,
             f'{harness_kind} does not have a registered live API transport.',
         )
-    else:
+    elif not subscription_codex:
         registered_base=registration_api_base(reg)
         custom_api = reg.get('inference_gateway') == 'openai-compatible' or (harness_kind == 'pi-sdk' and registered_base != AXONHUB_API_BASE)
         require(custom_api or reg.get('inference_gateway', 'axonhub') == 'axonhub',
@@ -1781,7 +1785,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     agent_runtime=codex_agent if is_codex else claude_agent if is_claude else pi_agent
     def agent_class(*args, **kwargs):
         return model_session.create(harness_kind, *args,
-            api_protocol=reg.get('api_protocol', 'native'), served_model=reg.get('served_model'), **kwargs)
+            api_protocol=reg.get('api_protocol', 'native'), served_model=reg.get('served_model'),
+            codex_auth='chatgpt' if subscription_codex else 'api', **kwargs)
     harness_folder='codex' if is_codex else 'claude' if is_claude else 'pi'
     if is_codex:
         require(harness['authentication'] in ('chatgpt-subscription','axonhub','openai-compatible'),'Unknown Codex authentication.')
@@ -2741,6 +2746,7 @@ if __name__=='__main__':
     p.add_argument('--api-protocol', choices=('chat-completions','native'), default='chat-completions',
         help='Upstream wire protocol; native requires Responses for Codex/Pi and Messages for Claude.')
     p.add_argument('--served-model', help='Provider model ID when different from the native model identity')
+    p.add_argument('--codex-auth',choices=('chatgpt','api'),default='chatgpt')
     p.add_argument('--model-id',
         help='Exact provider model ID; custom Responses endpoints use native Codex (default openai/gpt-5.6-sol).')
     p.add_argument('--reasoning-effort',choices=REASONING_EFFORTS,default=DEFAULT_REASONING,
@@ -2816,5 +2822,5 @@ if __name__=='__main__':
             world_config=load(a.world_config) if a.world_config is not None else None,
             combined_bindings=a.combined_bindings,comparison_design=a.comparison_design,
             source_retention=a.source_retention,mechanism=a.mechanism,api_base=a.api_base,api_protocol=a.api_protocol,served_model=a.served_model,
-            input_variant=a.input_variant,workload=a.workload,startup_concurrency=a.startup_concurrency)
+            input_variant=a.input_variant,workload=a.workload,startup_concurrency=a.startup_concurrency,codex_auth=a.codex_auth)
     else:collect(root,registration_dir)

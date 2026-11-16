@@ -69,9 +69,12 @@ jobs:
           HARNESSES: ${{ steps.plan.outputs.harnesses }}
         run: |
           for harness in $HARNESSES; do
-            npm ci --prefix "shared/$harness" --no-fund --no-audit
+            if [ "$harness" = codex ]; then
+              command -v codex >/dev/null || npm install --global @openai/codex@0.169.0 --no-fund --no-audit
+            else
+              npm ci --prefix "shared/$harness" --no-fund --no-audit
+            fi
           done
-          echo "SWARMHARM_NATIVE_CODEX=$GITHUB_WORKSPACE/shared/codex/node_modules/.bin/codex" >> "$GITHUB_ENV"
 
       - name: Build the workstation only for Docker checks
         if: steps.plan.outputs.docker == 'true'

@@ -1,4 +1,4 @@
-"""Offline compatibility adapter for historical Codex app-server evidence."""
+"""Native PATH Codex with isolated ChatGPT subscription authentication."""
 
 from contextlib import contextmanager
 import base64
@@ -9,7 +9,6 @@ import json
 import os
 from pathlib import Path
 import re
-import shutil
 import subprocess
 import tempfile
 import time
@@ -17,7 +16,6 @@ import sys
 
 from codex_rpc import CodexRpc
 
-CLI_VERSION = '0.141.0'
 HERE = Path(__file__).resolve().parent
 SYSTEM_PROMPT = {'type': 'native', 'source': 'Codex CLI model catalog',
                  'replacement': False, 'append': False}
@@ -40,29 +38,17 @@ EVIDENCE_LIMIT = (
 
 
 def codex_binary():
-    # Keep the experiment pin alongside a user's normal Codex installation.
-    # The desktop app may update its bundled CLI independently, so a generic
-    # `codex` lookup is only the final fallback.
-    path = (os.environ.get('SWARMHARM_CODEX')
-            or shutil.which(f'codex-{CLI_VERSION}')
-            or shutil.which('codex'))
-    if not path or not Path(path).is_file():
-        raise RuntimeError('Historical offline Codex fixture requires its pinned CLI; live runs use codex_gateway')
-    return str(Path(path).resolve())
+    import codex_gateway
+    return codex_gateway.codex_binary()
 
 
 def cli_identity():
     binary = codex_binary()
     version = subprocess.check_output([binary, '--version'], text=True).strip()
-    if version != f'codex-cli {CLI_VERSION}':
-        raise RuntimeError(f'Codex CLI must match the pin {CLI_VERSION}; found {version}')
-    return {'version': version, 'sha256': sha256(Path(binary).read_bytes()).hexdigest()}
+    return {'executable':binary,'version': version, 'sha256': sha256(Path(binary).read_bytes()).hexdigest()}
 
 
 def subscription_env(home):
-    conflicts = sorted(key for key in CONFLICTING_ENV if os.environ.get(key))
-    if conflicts:
-        raise RuntimeError('Codex subscription harness requires unsetting: ' + ', '.join(conflicts))
     env = {key: os.environ[key] for key in (
         'PATH', 'HOME', 'USER', 'LOGNAME', 'TMPDIR', 'LANG', 'LC_ALL',
     ) if key in os.environ}
@@ -122,8 +108,8 @@ def initialize(connection):
 
 
 def command():
-    return [codex_binary(), *[arg for feature in DISABLED_FEATURES
-            for arg in ('--disable', feature)], 'app-server', '--listen', 'stdio://']
+    import codex_gateway
+    return codex_gateway.command('off')
 
 
 def native_catalog(home):
@@ -145,19 +131,15 @@ def digest(value):
     return sha256(json.dumps(value, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
 
 
-def write_config(home, workspace, definitions, endpoint, model, effort, catalog):
-    (home / 'catalog.json').write_text(json.dumps(catalog_profile(catalog)))
-    # No inherited host config, project instructions, custom provider or prompt override.
-    config = [f'model={json.dumps(model)}', 'model_provider="openai"',
-        f'model_reasoning_effort={json.dumps(effort)}', 'forced_login_method="chatgpt"',
-        'cli_auth_credentials_store="file"', 'project_doc_max_bytes=0',
-        'web_search="disabled"', 'model_auto_compact_token_limit=2147483647',
-        'model_catalog_json=' + json.dumps(str(home / 'catalog.json')),
-        '[mcp_servers.work]', 'required=true', 'tool_timeout_sec=300',
-        'command=' + json.dumps(sys.executable),
-        'args=' + json.dumps([str(HERE / 'codex_mcp.py'), str(definitions), str(endpoint)]),
-        '[tools.experimental_request_user_input]', 'enabled=false']
-    (home / 'config.toml').write_text('\n'.join(config) + '\n')
+def write_config(home, workspace, definitions, endpoint, model, effort, catalog, *, context_policy=None):
+    import codex_gateway
+    return codex_gateway.write_config(home,workspace,definitions,endpoint,model,effort,catalog,
+        context_policy=context_policy,api_base=None)
+
+
+def native_tools(goal_mode='off'):
+    import codex_gateway
+    return codex_gateway.native_tools(goal_mode)
 
 
 def check_subscription(connection):
@@ -170,6 +152,7 @@ def check_subscription(connection):
 
 
 def harness_registration(goal_mode='off', model=None):
+    import codex_gateway
     if goal_mode != 'off':
         raise ValueError('Codex harness currently supports goal mode off only')
     validate_model(model or '')
@@ -177,13 +160,16 @@ def harness_registration(goal_mode='off', model=None):
     with isolated_home() as home:
         catalog = native_catalog(home)
     return {'kind': 'codex', 'authentication': 'chatgpt-subscription',
-        'installed': {'codex-cli': CLI_VERSION}, 'codex_cli': identity,
+        'installed': {'codex-cli': identity['version']}, 'codex_cli': identity,
         'native_catalog_sha256': digest(catalog),
         'tool_profile': {'input_modalities': ['text'], 'apply_patch_tool_type': None,
-                         'supports_parallel_tool_calls': False},
-        'disabled_features': list(DISABLED_FEATURES), 'goal_mode': 'off',
-        'system_prompt': SYSTEM_PROMPT, 'extension_tools': NATIVE_TOOLS,
-        'builtin_tools': NATIVE_TOOLS, 'context_window': None,
+                         'supports_parallel_tool_calls': False, **codex_gateway.TOOL_CAPABILITIES},
+        'parallel_tool_calls_control':'Native CLI managed; catalog capability is requested, not an observed upstream parameter',
+        'tool_surface':'fixed for the registered session',
+        'tool_output_token_limit': codex_gateway.TOOL_OUTPUT_TOKEN_LIMIT,
+        'disabled_features': codex_gateway.disabled_features('off'), 'goal_mode': 'off',
+        'system_prompt': SYSTEM_PROMPT, 'extension_tools': native_tools(),
+        'builtin_tools': native_tools(), 'context_window': None,
         'output_token_limit': 'Codex CLI managed; no per-response override',
         'request_timeout_scope': 'native response completion, including workstation execution',
         'tool_execution': 'controller MCP tools in offline workstations; native auxiliary tools retained',

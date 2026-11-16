@@ -132,7 +132,7 @@ def evaluate(candidate_archive, archive, output):
         raise ValueError('Use the pinned Python 3.12, pytest 8.3.5 and pytest-timeout 2.3.1 evaluator')
     sources = [Path(__file__).resolve(), Path(programbench_pilot.__file__).resolve(),
                *Path(workstation.__file__).resolve().parent.glob('*.py'),
-               Path(programbench_pilot.__file__).with_name('fixtures') / 'programbench-jq.json']
+               *Path(programbench_pilot.__file__).with_name('fixtures').glob('programbench-jq*.json')]
     code_hashes = {p.relative_to(repository).as_posix(): file_hash(p) for p in sources}
     output = Path(output).expanduser().resolve()
     if output.is_relative_to(repository):
@@ -231,7 +231,7 @@ print(json.dumps(out))
         'test_files':test_hashes,'archive_sha256':file_hash(archive),'reports':reports,'calls':len(calls),
         'image':IMAGE,'source_sha256':file_hash(__file__),'code_hashes':code_hashes,
         'runtime':runtime,'resources_closed':station.closed,'model_calls':0,
-        'scope':'Prespecified 61-item jq development subset, native ARM adaptation; not an official ProgramBench score.',
+        'scope':'Prespecified 61-item jq development subset, native '+programbench_pilot.specification()['reference_architecture']+' adaptation; not an official ProgramBench score.',
         'isolation':'Read-only candidate copy; no original oracle, tests, expected answers or network in the candidate workstation. Only explicit CLI inputs transferred.',
         'execution_limits':{'seconds_per_invocation':10,'candidate_read_only':True,'files':256,'bytes':24_000_000}}
     result['source_unchanged'] = all(file_hash(repository/name)==digest for name,digest in code_hashes.items())

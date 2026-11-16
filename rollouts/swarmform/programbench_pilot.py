@@ -1,8 +1,9 @@
 import json
+from hashlib import sha256
+import os
+import platform
 
 from pathlib import Path
-
-KEY = 'jq-b33a763-native-arm-v1'
 
 OUTPUT_ROOT = '/var/tmp/exports/jq'
 
@@ -35,7 +36,22 @@ to occupy time. Read /workspace/research-session.md for lifecycle and limits.
 '''
 
 def specification():
-    return json.loads((FIXTURES / 'programbench-jq.json').read_text())
+    base = FIXTURES/'programbench-jq.json'
+    value = json.loads(base.read_text())
+    architecture = os.environ.get('SWARMFORM_REFERENCE_ARCHITECTURE', platform.machine())
+    architecture = {'x86_64':'amd64','aarch64':'arm64'}.get(architecture,architecture)
+    if architecture == 'amd64':
+        native = json.loads((FIXTURES/'programbench-jq-amd64.json').read_text())
+        if native.pop('base_spec_sha256') != sha256(base.read_bytes()).hexdigest():
+            raise ValueError('The native jq profile has a different base specification')
+        value.update(native)
+    elif architecture != 'arm64':
+        raise ValueError('Use a native amd64 or ARM64 workstation')
+    return value
+
+
+def reference_path():
+    return FIXTURES.parent.parent/'assets'/('jq-linux-'+specification()['reference_architecture'])
 
 def probe_reference(deployment, actor):
     """Operator-only real execution and denied access on the mounted reference."""
@@ -54,15 +70,18 @@ reject('write',lambda:p.write_bytes(b'tamper'))
 reject('chmod',lambda:p.chmod(0o755))
 reject('unlink',p.unlink)
 reject('replace',lambda:Path('/opt/reference/new').write_bytes(b'tamper'))
-child=subprocess.Popen([str(p),'-c','.marker'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+debug=Path('/tmp/reference-debug-'+marker)
+child=subprocess.Popen([str(p),'-c','.marker'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,
+ env={**os.environ,'QEMU_LOG':'in_asm','QEMU_LOG_FILENAME':str(debug)})
 try:
  reject('proc_exe_read',lambda:Path(f'/proc/{child.pid}/exe').read_bytes())
  reject('proc_mem_read',lambda:open(f'/proc/{child.pid}/mem','rb'))
  out,err=child.communicate(json.dumps({'marker':marker}).encode(),timeout=5)
  assert child.returncode==0 and json.loads(out)==marker and not err
+ assert not debug.exists(),'Reference debug settings exposed its implementation'
 finally:
  if child.poll() is None:child.kill();child.wait()
-print(json.dumps({'executed':True,'denied':denied,'uid':os.getuid(),'owner':p.stat().st_uid,'mode':oct(p.stat().st_mode&0o777)}))
+print(json.dumps({'executed':True,'emulator_debug_denied':True,'denied':denied,'uid':os.getuid(),'owner':p.stat().st_uid,'mode':oct(p.stat().st_mode&0o777)}))
 '''
     result, _ = deployment.execute(actor, 'python -I -c ' + shlex.quote(code) + ' ' + shlex.quote(marker))
     if result['exit_code'] != 0:
@@ -72,7 +91,8 @@ print(json.dumps({'executed':True,'denied':denied,'uid':os.getuid(),'owner':p.st
     return value
 
 def validate_reference_probe(value):
-    if (value.get('executed') is not True or type(value.get('uid')) is not int or value['uid'] == 0
+    if (value.get('executed') is not True or value.get('emulator_debug_denied') is not True
+            or type(value.get('uid')) is not int or value['uid'] == 0
             or value.get('owner') != 0 or value.get('mode') != '0o111'
             or set(value.get('denied', {})) != {'read','write','chmod','unlink','replace','proc_exe_read','proc_mem_read'}
             or any(type(v) is not int or v not in (1,13,30) for v in value['denied'].values())):

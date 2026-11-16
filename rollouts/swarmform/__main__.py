@@ -21,6 +21,7 @@ from .formation_common import CommonWorkspace
 from .formation_deployment import deployment
 from .participant_stop import ParticipantStop
 from .program_reference import asset
+from .programbench_pilot import reference_path
 from .strace_timing import command_binding
 
 CHANNELS = ("direct", *inputs.CHANNELS)
@@ -35,6 +36,7 @@ def arguments():
     run.add_argument("--harness", choices=['auto','codex','claude-code','pi-sdk','chat-completions'], default='auto')
     run.add_argument("--api-protocol", choices=['chat-completions','native'], default='chat-completions')
     run.add_argument("--served-model", help='Provider ID when different from the native model identity')
+    run.add_argument('--codex-auth',choices=('chatgpt','api'),default='chatgpt')
     run.add_argument("--population", "-n", type=int, required=True)
     run.add_argument("--names", choices=("numbered", "physicists"), default="numbered")
     run.add_argument(
@@ -54,7 +56,7 @@ def arguments():
     run.add_argument(
         "--revision", help="Operator-reported deployment or checkpoint revision"
     )
-    run.add_argument("--reference", type=Path, default=ROOT / "assets/jq-linux-arm64")
+    run.add_argument("--reference", type=Path, default=reference_path())
     args = parser.parse_args()
     if args.population < 2 or (args.names == "physicists" and args.population != 3):
         parser.error("Use N >= 2; the surname treatment requires N=3.")
@@ -72,7 +74,7 @@ def source_files():
             *ROOT.glob("swarmform/*.py"),
             *ROOT.glob("swarmform/fixtures/*"),
             *sorted((ROOT.parent / 'shared').glob('*.py')),
-            *[p for d in ('codex','claude','pi') for p in (ROOT.parent/'shared'/d).iterdir()
+            *[p for d in ('claude','pi') for p in (ROOT.parent/'shared'/d).iterdir()
               if p.is_file() and p.suffix in ('.json','.mjs')],
             ROOT / "requirements.txt",
             ROOT / "build-jq",
@@ -92,7 +94,7 @@ def source_digest(base=None):
     return digest.hexdigest()
 
 
-def runtime_info(image):
+def runtime_info(image, reference=None):
     details = json.loads(
         subprocess.check_output(
             ["docker", "image", "inspect", image], text=True, timeout=30
@@ -104,7 +106,9 @@ def runtime_info(image):
                 "docker",
                 "info",
                 "--format",
-                '{"cpus":{{.NCPU}},"memory_bytes":{{.MemTotal}},"server_version":"{{.ServerVersion}}"}',
+                '{"cpus":{{.NCPU}},"memory_bytes":{{.MemTotal}},"server_version":"{{.ServerVersion}}",'
+                '"architecture":"{{.Architecture}}","kernel_version":"{{.KernelVersion}}",'
+                '"security_options":{{json .SecurityOptions}}}',
             ],
             text=True,
             timeout=30,
@@ -128,12 +132,16 @@ def runtime_info(image):
         text=True,
         timeout=30,
     )
-    return {
+    info = {
         "image_id": details["Id"],
         "architecture": details["Architecture"],
         "host": host,
         "packages": dict(line.split("\t", 1) for line in packages.splitlines()),
     }
+    if reference is not None:
+        from .program_reference import verify_runtime
+        info['reference_execution'] = verify_runtime(reference)
+    return info
 
 
 def write_json(path, value):
@@ -369,7 +377,7 @@ class Cohort:
         from .inputs import digest
 
         write_json(
-            self.out / "runtime.json", await asyncio.to_thread(runtime_info, IMAGE)
+            self.out / "runtime.json", await asyncio.to_thread(runtime_info, IMAGE, reg.get('reference_program'))
         )
         write_json(
             self.out / "registration.json",
@@ -387,11 +395,13 @@ class Cohort:
                 "api_protocol": getattr(args, 'api_protocol', 'chat-completions'),
                 "served_model": getattr(args, 'served_model', None) or args.model,
                 "native_runtime": getattr(args, '_native_runtime', None),
+                "authentication": 'chatgpt-subscription' if getattr(args,'codex_auth','api')=='chatgpt' and args.harness=='codex' else 'api',
                 "observation_policy": "post_tool_and_terminal_v1",
                 "source_sha256": source_digest(),
                 "python": platform.python_version(),
                 "httpx": httpx.__version__,
                 "image": IMAGE,
+                "reference_program": reg.get('reference_program'),
                 "input_sha256": digest(self.visible),
                 "manifest": self.manifest,
                 "per_actor_limits": {
@@ -409,7 +419,7 @@ class Cohort:
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(path, target)
         if args.task == 'jq-reconstruction':
-            target = self.out/'code/rollouts/assets/jq-linux-arm64'
+            target = self.out/('code/rollouts/assets/jq-linux-'+reg['reference_program']['architecture'])
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(args.reference, target)
         registered = json.loads((self.out/'registration.json').read_text())
@@ -576,19 +586,23 @@ def validate_endpoint(url):
 async def collect(args):
     import httpx
 
-    validate_endpoint(args.base_url)
+    subscription = getattr(args,'harness',None)=='codex' and getattr(args,'codex_auth','api')=='chatgpt'
+    if subscription:
+        args.base_url=None;args.api_protocol='native';args.served_model=args.model.removeprefix('openai/')
+    else:validate_endpoint(args.base_url)
     asyncio.get_running_loop().set_default_executor(
         ThreadPoolExecutor(max_workers=max(32, args.population + 4))
     )
     key_file = getattr(args, 'key_file', None)
-    key = (Path(key_file).expanduser().read_text().strip() if key_file
+    key = None if subscription else (Path(key_file).expanduser().read_text().strip() if key_file
            else os.environ.get("OPENAI_API_KEY"))
     args._api_key = key
     if getattr(args, 'harness', 'chat-completions') != 'chat-completions':
-        if not key: raise ValueError('Native harnesses require the configured API key')
+        if not key and not subscription: raise ValueError('API harnesses require the configured API key')
         sys.path.insert(0, str(ROOT.parent / 'shared'))
         import model_session
-        args._native_runtime = model_session.registration(args.harness, args.model, args.base_url)
+        args._native_runtime = model_session.registration(args.harness, args.model, args.base_url,
+            codex_auth=getattr(args,'codex_auth','api'))
     headers = {"Authorization": "Bearer " + key} if key else {}
     out = args.out.resolve()
     if out.is_relative_to(ROOT.parent):

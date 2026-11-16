@@ -15,6 +15,12 @@ from swarmform.__main__ import collect, source_digest
 
 class APICollectChecks(unittest.TestCase):
     def test_four_workstations_capture_tools_and_stop(self):
+        self.collect_with_harness('chat-completions')
+
+    def test_four_pi_sessions_capture_tools_and_stop(self):
+        self.collect_with_harness('pi-sdk')
+
+    def collect_with_harness(self, harness):
         observed = []
         class Handler(BaseHTTPRequestHandler):
             def log_message(self, *args):
@@ -43,9 +49,12 @@ class APICollectChecks(unittest.TestCase):
         try:
             with TemporaryDirectory() as directory:
                 out = Path(directory)/'cohort'
+                key = Path(directory)/'fixture.key'
+                key.write_text('offline-fixture')
                 args = SimpleNamespace(population=4, names='numbered', task='service-plan',
-                    channel='filesystem', seconds=60, model='scripted-software-fixture', revision='fixture',
-                    base_url=f'http://127.0.0.1:{server.server_port}/v1', key_file=None,
+                    channel='filesystem', seconds=60, model='moonshotai/kimi-k3', revision='fixture',
+                    harness=harness, api_protocol='chat-completions', served_model='scripted-software-fixture',
+                    base_url=f'http://127.0.0.1:{server.server_port}/v1', key_file=key,
                     reference=Path(directory)/'unused', out=out)
                 self.assertEqual(asyncio.run(collect(args)), 0)
                 summary = json.loads((out/'summary.json').read_text())
@@ -58,8 +67,13 @@ class APICollectChecks(unittest.TestCase):
                 for actor in summary['finished']:
                     with gzip.open(out/(actor+'.jsonl.gz'), 'rt') as stream:
                         events = [json.loads(line) for line in stream]
-                    self.assertEqual(sum(e['kind']=='tool_result' for e in events),1)
-                    self.assertEqual(sum(e['kind']=='response' for e in events),2)
+                    self.assertEqual(summary['usage'][actor], {'responses':2, 'tools':1, 'tokens':40})
+                    if harness == 'pi-sdk':
+                        self.assertEqual(sum(e['kind']=='tool_start' for e in events),1)
+                        self.assertTrue((out/'native'/actor/'session').is_dir())
+                    else:
+                        self.assertEqual(sum(e['kind']=='tool_result' for e in events),1)
+                        self.assertEqual(sum(e['kind']=='response' for e in events),2)
                 manifest = json.loads((out/'evidence-manifest.json').read_text())
                 for name, expected in manifest.items():
                     self.assertEqual(hashlib.sha256((out/name).read_bytes()).hexdigest(), expected)

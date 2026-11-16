@@ -11,6 +11,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'shared'))
 import model_lineup as defaults
+import batch_resume
 
 from swarmform.__main__ import CHANNELS, ROOT, source_digest, write_json
 from swarmform.formation_inputs import TASK_MODULES
@@ -58,6 +59,7 @@ def cases(args):
                         harness=getattr(args, 'harness', 'chat-completions'),
                         api_protocol=getattr(args, 'api_protocol', 'chat-completions'),
                         served_model=getattr(args, 'served_model', None) or args.model,
+                        codex_auth=getattr(args,'codex_auth','api') if getattr(args,'harness',None)=='codex' else 'api',
                     )
 
 
@@ -66,6 +68,8 @@ def main():
     parser.add_argument('--harness', choices=['auto','codex','claude-code','pi-sdk','chat-completions'], default='auto')
     parser.add_argument('--api-protocol', choices=['chat-completions','native'], default='chat-completions')
     parser.add_argument('--served-model')
+    parser.add_argument('--codex-auth',choices=('chatgpt','api'),default='chatgpt')
+    parser.add_argument('--resume', action='store_true', help='Retain existing attempts while selecting populations')
     parser.add_argument("--model", required=True, help="Exact served model ID")
     parser.add_argument(
         "--revision", help="Immutable checkpoint or deployment revision"
@@ -95,6 +99,9 @@ def main():
         sys.path.insert(0, str(ROOT.parent / 'shared'))
         from guardrails import native_harness
         args.harness = native_harness({'model': args.model})
+    if args.harness == 'codex' and args.codex_auth == 'chatgpt':
+        args.api_protocol='native';args.served_model=args.model.removeprefix('openai/')
+        args.base_url=None;args.key_file=None
     if not (
         1 <= args.seconds <= 600 and args.repeats >= 1 and min(args.populations) >= 2
     ):
@@ -113,16 +120,16 @@ def main():
         parser.error("--execute requires --out outside the repository")
     from swarmform.__main__ import validate_endpoint
 
-    validate_endpoint(args.base_url)
+    if args.base_url:validate_endpoint(args.base_url)
     failures = 0
     source = source_digest()
     from workstation import IMAGE
 
     if args.execute and "jq-reconstruction" in args.tasks:
         from swarmform.program_reference import asset
-        from swarmform.programbench_pilot import specification
+        from swarmform.programbench_pilot import specification, reference_path
 
-        reference = ROOT / "assets/jq-linux-arm64"
+        reference = reference_path()
         if not reference.is_file():
             parser.error(
                 "Run bash rollouts/build-jq once before collecting jq-reconstruction"
@@ -132,18 +139,17 @@ def main():
             ["docker", "image", "inspect", IMAGE, "--format", "{{.Architecture}}"],
             text=True,
         ).strip()
-        if architecture != "arm64":
+        if architecture != specification()['reference_architecture']:
             parser.error(
-                "Use the ARM64 workstation image from the README for jq-reconstruction"
+                "Use a native workstation image and matching jq reference"
             )
 
     rows = [{**row, 'source_sha256': source, 'image': IMAGE} for row in cases(args)]
     if args.execute:
         root = args.out.resolve()
         root.mkdir(parents=True, exist_ok=True)
-        if (root/'plan.json').exists() and json.loads((root/'plan.json').read_text()) != rows:
-            parser.error('This output root contains a different plan; choose a fresh --out')
-        write_json(root/'plan.json', rows)
+        try: rows = batch_resume.prepare(root, rows, args.resume)
+        except ValueError as error: parser.error(str(error))
     records = []
     for row in rows:
         encoded = json.dumps(row, sort_keys=True)
@@ -168,7 +174,7 @@ def main():
                           archive=archive['archive'], sha256=archive['sha256'])
             failures += int(not exists)
             records.append(record)
-            write_json(root/'index.json', {'study': 'swarmform', 'runs': records})
+            batch_resume.save_index(root, 'swarmform', records)
             continue
         if directory.exists():
             if completed_evidence(directory):
@@ -183,7 +189,7 @@ def main():
                 failures += 1
                 record['status'] = 'incomplete'
             records.append(record)
-            write_json(root/'index.json', {'study': 'swarmform', 'runs': records})
+            batch_resume.save_index(root, 'swarmform', records)
             continue
         command = [
             sys.executable,
@@ -204,8 +210,8 @@ def main():
             args.model,
             '--harness', args.harness, '--api-protocol', args.api_protocol,
             '--served-model', args.served_model or args.model,
-            "--base-url",
-            args.base_url,
+            '--codex-auth',args.codex_auth,
+            *(['--base-url',args.base_url] if args.base_url else []),
             "--out",
             str(directory),
         ]
@@ -216,7 +222,7 @@ def main():
         print("Starting", directory, flush=True)
         directory.parent.mkdir(parents=True, exist_ok=True)
         log = directory.with_name(directory.name+'.log')
-        write_json(root/'index.json', {'study': 'swarmform', 'runs': [*records, {**record, 'status': 'running'}]})
+        batch_resume.save_index(root, 'swarmform', [*records, {**record, 'status': 'running'}])
         with log.open('a') as stream:
             code = subprocess.run(command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT).returncode
         failures += int(code != 0)
@@ -224,7 +230,7 @@ def main():
         if directory.exists():
             record['raw_bytes'] = sum(p.stat().st_size for p in directory.rglob('*') if p.is_file())
         records.append(record)
-        write_json(root/'index.json', {'study': 'swarmform', 'runs': records})
+        batch_resume.save_index(root, 'swarmform', records)
     return int(failures != 0)
 
 

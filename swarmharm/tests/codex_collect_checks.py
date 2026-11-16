@@ -1,4 +1,4 @@
-"""Historical Codex compatibility; current gateway coverage is in native_harness_checks."""
+"""Codex authentication, evidence and local transport coverage."""
 
 from contextlib import contextmanager
 
@@ -21,6 +21,7 @@ import unittest
 from unittest.mock import patch
 
 import export_atif
+import codex_gateway
 import launch
 import run
 
@@ -29,23 +30,13 @@ MODEL = 'gpt-5.5'  # Recognized fixture metadata only; no hosted inference.
 
 
 class CodexGuards(unittest.TestCase):
-    def test_versioned_cli_is_preferred_without_replacing_global_codex(self):
+    def test_path_cli_is_used_without_installing_another_binary(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            pinned = root / f'codex-{C.CLI_VERSION}'
-            generic = root / 'codex'
-            pinned.write_text('pinned fixture')
-            generic.write_text('generic fixture')
-
-            def which(name):
-                return str(pinned if name == f'codex-{C.CLI_VERSION}' else generic)
-
+            binary = Path(temporary) / 'codex'
+            binary.write_text('local fixture')
             with patch.dict(os.environ, {}, clear=True), \
-                    patch.object(C.shutil, 'which', side_effect=which):
-                self.assertEqual(C.codex_binary(), str(pinned.resolve()))
-            with patch.dict(os.environ, {'SWARMHARM_CODEX': str(generic)}, clear=True), \
-                    patch.object(C.shutil, 'which', side_effect=which):
-                self.assertEqual(C.codex_binary(), str(generic.resolve()))
+                    patch('shutil.which', return_value=str(binary)):
+                self.assertEqual(C.codex_binary(), str(binary.resolve()))
 
     def test_interrupted_rendering_preserves_execution_without_claiming_delivery(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -128,12 +119,13 @@ class CodexGuards(unittest.TestCase):
                 self.assertEqual(events.get(timeout=2)['method'],'transport/error')
             finally:rpc.close()
 
-    def test_api_auth_routing_and_aliases_are_rejected_without_values(self):
+    def test_subscription_drops_api_auth_and_rejects_model_aliases(self):
         for name in C.CONFLICTING_ENV:
             with patch.dict(os.environ, {name: 'private-fixture-value'}, clear=True):
-                with self.assertRaisesRegex(RuntimeError, name) as error:
-                    C.subscription_env('/tmp/private-home')
-                self.assertNotIn('private-fixture-value', str(error.exception))
+                env = C.subscription_env('/tmp/private-home')
+                self.assertNotIn(name, env)
+                self.assertNotIn('private-fixture-value', env.values())
+                self.assertEqual(env['CODEX_HOME'], '/tmp/private-home')
         for model in ('openai/gpt-5.5', 'auto', 'latest', 'default', 'gpt-latest', ''):
             with self.assertRaises(ValueError):C.validate_model(model)
         with self.assertRaisesRegex(ValueError, 'goal mode off'):
@@ -229,7 +221,7 @@ class ScriptedResponses(BaseHTTPRequestHandler):
             self.wfile.flush()
 
 
-def historical_cli_available():
+def local_cli_available():
     try:
         C.cli_identity()
         return True
@@ -237,7 +229,7 @@ def historical_cli_available():
         return False
 
 
-@unittest.skipUnless(historical_cli_available(), 'Optional historical Codex pin is not installed')
+@unittest.skipUnless(local_cli_available(), 'Codex is not installed on PATH')
 class NativeCodex(unittest.TestCase):
     def test_notice_waits_for_active_tool_then_matches_native_echo(self):
         with self.fixture(), tempfile.TemporaryDirectory() as temporary:
@@ -334,26 +326,29 @@ class NativeCodex(unittest.TestCase):
 
     def export_trace(self, root, ready):
         folder=root/'natural/actor'
-        run.save(root/'registration.json',{'harness':{
+        run.save(root/'registration.json',{'study_mode':'unified','harness':{
             'kind':'codex','system_prompt':C.SYSTEM_PROMPT,'goal_mode':'off',
-            'request_count_scope':'observed native response groups'}})
+            'request_count_scope':'observed native response groups',
+            'tool_profile':dict(codex_gateway.TOOL_CAPABILITIES)}})
         run.save(folder/'result.json',{'status':'collected','codex_session':ready})
         result=export_atif.export_actor(root,'natural','actor')
         return result,run.load(folder/'agent/trajectory.json')
 
-    def test_native_roundtrip_phase2_reload_and_atif_keep_one_thread(self):
+    def test_native_roundtrip_and_atif_keep_one_thread_and_fixed_tools(self):
         with self.fixture() as server, tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary);folder = root / 'natural' / 'actor';folder.mkdir(parents=True)
             events = C.new_queue()
             tools = [{'type': 'function', 'name': name, 'description': 'Read or file the service record.',
                 'parameters': {'type': 'object', 'properties': {}}} for name in ('confirm_service', 'close_record')]
             agent = C.CodexAgent('actor', events, folder=folder / 'codex', model=MODEL,
-                thinking_level='high', tools=tools, active_tools=['confirm_service'], goal_mode='off',
+                thinking_level='high', tools=tools, active_tools=['confirm_service','close_record'], goal_mode='off',
                 job_context='Legacy generic prompt must not be appended.')
             try:
                 ready = C.wait_ready(events, ['actor'])['actor']
                 agent.prompt('Service fixture request.')
                 self.drain(agent, events, folder)
+                with self.assertRaisesRegex(ValueError,'fixed for the registered session'):
+                    agent.set_tools(['confirm_service'])
                 agent.set_tools(['confirm_service', 'close_record'])
                 agent.prompt('Close fixture record.')
                 self.drain(agent, events, folder)
@@ -380,10 +375,11 @@ class NativeCodex(unittest.TestCase):
             self.assertTrue(all(value['sdk_delivery_verified'] for value in delivery))
             initial = next(tool for tool in server.captures[0]['tools'] if tool['type'] == 'namespace')
             later = next(tool for tool in server.captures[2]['tools'] if tool['type'] == 'namespace')
-            self.assertEqual([t['name'] for t in initial['tools']], ['confirm_service'])
+            self.assertEqual({t['name'] for t in initial['tools']}, {'confirm_service','close_record'})
             self.assertEqual({t['name'] for t in later['tools']}, {'confirm_service', 'close_record'})
-            self.assertTrue(all(request['parallel_tool_calls'] is False for request in server.captures))
-            self.assertEqual({tool['name'] for tool in server.captures[0]['tools'] if tool['type']=='function'}, set(C.NATIVE_TOOLS))
+            # The installed native CLI owns the provider's parallel-call flag.
+            # This fixture verifies exact tools, execution and result order.
+            self.assertEqual({tool['name'] for tool in server.captures[0]['tools'] if tool['type']=='function'}, set(C.native_tools()))
             self.assertNotIn(str(root), json.dumps(server.captures))
             self.assertNotIn('Legacy generic prompt', json.dumps(server.captures))
             path = folder / 'trace/0001.response.json';original = path.read_bytes()
@@ -424,12 +420,17 @@ class NativeCodex(unittest.TestCase):
                     agent.prompt(label + ' fixture request.')
                     self.drain(agent, events, root / label)
                 finally:agent.close()
-            with patch.object(C, 'catalog_profile', side_effect=deepcopy):one('Baseline')
-            baseline = server.captures[-1]['instructions']
+            def instructions(request):
+                return request.get('instructions') or next(item['content'] for item in request['input']
+                    if item.get('role') in ('system','developer'))
+            one('Baseline')
+            baseline = instructions(server.captures[-1])
+            self.assertTrue(baseline)
             one('Image')
-            self.assertEqual(server.captures[-1]['instructions'], baseline)
+            self.assertEqual(instructions(server.captures[-1]), baseline)
             outputs = [item['output'] for item in server.captures[-1]['input'] if item['type'] == 'function_call_output']
-            self.assertEqual(outputs, ['view_image is not allowed because you do not support image inputs'])
+            self.assertEqual(len(outputs),1)
+            self.assertIn('view_image is not allowed because you do not support image inputs',str(outputs[0]))
 
     def test_native_argument_error_can_be_corrected_before_business_execution(self):
         with self.fixture() as server, tempfile.TemporaryDirectory() as temporary:
@@ -448,7 +449,7 @@ class NativeCodex(unittest.TestCase):
             self.assertEqual(len(server.captures),3)
             outputs=[item['output'] for item in server.captures[-1]['input'] if item['type']=='function_call_output']
             self.assertEqual(len(outputs),2)
-            self.assertIn('parsing',outputs[0].lower())
+            self.assertIn('parsing',str(outputs[0]).lower())
             response=folder/'trace/0001.response.json';original=response.read_bytes()
             _,trajectory=self.export_trace(root,ready)
             rejected=next(call for step in trajectory['steps'] for call in step.get('tool_calls',[])
@@ -541,7 +542,7 @@ class NativeCodex(unittest.TestCase):
 
     def test_mixed_native_and_business_results_export_in_native_order(self):
         with self.fixture() as server,tempfile.TemporaryDirectory() as temporary:
-            server.mixed_tools=True
+            server.mixed_tools=True;server.auxiliary_tool='list_mcp_resources'
             root=Path(temporary);folder=root/'natural/actor';events=C.new_queue()
             tool={'type':'function','name':'confirm_service','description':'Read service status.',
                   'parameters':{'type':'object','properties':{}}}

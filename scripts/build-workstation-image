@@ -14,7 +14,8 @@ PATCH_FILES=('workstation_patch.py','workstation-patch.LICENSE')
 def build(output,platform):
     output=Path(output).expanduser().resolve()
     if output==REPO or REPO in output.parents:
-        raise ValueError('Image provenance must be outside the repository')
+        if subprocess.run(['git','check-ignore','-q','--',str(output)],cwd=REPO).returncode:
+            raise ValueError('Image provenance inside the repository must be ignored by Git')
     output.parent.mkdir(parents=True,exist_ok=True)
     if output.exists():raise FileExistsError('Preserve existing image provenance; choose a fresh output file')
     recipe_sha=sha256(RECIPE.read_bytes()).hexdigest()

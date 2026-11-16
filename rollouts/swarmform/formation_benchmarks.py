@@ -42,8 +42,8 @@ def build(key, population):
         'task_version': 'formation-benchmarks-v1', 'domain': 'Engineering',
         'task_class': 'possible', 'output_paths': [destination], 'assets': assets,
         'reference_questions': {}, 'difficulty_status': 'uncalibrated_for_current_model_and_budget',
-        'source_task': programbench_pilot.KEY,
-        'evaluation_scope': 'Fixed 61-item development subset, native ARM adaptation',
+        'source_task': truth['task_key'],
+        'evaluation_scope': 'Fixed 61-item development subset, native '+truth['reference_architecture']+' adaptation',
     }
     return startup, truth, metadata
 

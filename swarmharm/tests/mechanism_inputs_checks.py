@@ -15,6 +15,32 @@ from scripts.inspect_unified_input import build_preview, main
 
 
 class MechanismInputChecks(unittest.TestCase):
+    def test_all_native_harnesses_keep_the_twelve_registered_mechanism_paths(self):
+        for domain in ('engineering-capacity', 'knowledge-work'):
+            for mechanism in inputs.CURRENT_CONFIGURATIONS:
+                preview, _ = build_preview(domain, inputs.MECHANISMS[mechanism]['preset'],
+                                           mechanism=mechanism)
+                original = preview['assignments']
+                for harness in ('codex', 'claude-code', 'pi-sdk'):
+                    with self.subTest(domain=domain, mechanism=mechanism, harness=harness):
+                        plan = deepcopy(original)
+                        for row in plan.values(): row['native_record_harness'] = harness
+                        result = inputs.validate_paths(mechanism, plan)
+                        self.assertEqual(result['path_validation'], 'passed')
+                        self.assertEqual(result['world_sha256'], preview['mechanism_contract']['world_sha256'])
+                        self.assertEqual(result['criterion'], preview['mechanism_contract']['criterion'])
+                        inputs.verify_contract(result, plan)
+
+    def test_mechanisms_still_reject_noncontinuous_unknown_and_mixed_harnesses(self):
+        preview, _ = build_preview('knowledge-work', 'records', mechanism='evidence-tampering')
+        for change in ({'continuous_workflow': False}, {'native_record_harness': None},
+                       {'native_record_harness': 'chat-completions'}, {'native_record_harness': 'pi-sdk'}):
+            with self.subTest(change=change):
+                plan = deepcopy(preview['assignments'])
+                next(iter(plan.values())).update(change)
+                with self.assertRaisesRegex(ValueError, 'one supported native harness'):
+                    inputs.validate_plan('evidence-tampering', plan)
+
     def test_selected_path_check_preserves_the_full_probe_result(self):
         preview, _ = build_preview('knowledge-work', 'information',
                                    mechanism='information-authority', actors=scenario.cohort.actor_ids(2))

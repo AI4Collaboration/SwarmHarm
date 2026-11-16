@@ -14,7 +14,7 @@ import threading
 import time
 
 from codex_rpc import CodexRpc
-from codex_evidence import mcp_output_text
+from codex_evidence import goal_objective_input, mcp_output_text
 
 
 NETWORK_ERROR_CODES = ('httpConnectionFailed', 'responseStreamDisconnected',
@@ -43,7 +43,7 @@ class CodexAgent:
     def __init__(self, actor, events, *, folder, model, thinking_level, tools,
                  active_tools, goal_mode, job_context=None, api_key=None,
                  api_base=None, registered_harness=None, request_timeout_ms=300000,
-                 workstation_permissions=None, response_idle_timeout_ms=None, **unused):
+                 workstation_permissions=None, response_idle_timeout_ms=None, registered_model=None, **unused):
         import codex_agent as runtime
         self.gateway = api_base is not None or api_key is not None
         if self.gateway:
@@ -65,11 +65,11 @@ class CodexAgent:
         self.first_native_turn = None
         self.pending_user_echo = None
         self.goal = None
-        self.native_tools = runtime.native_tools(goal_mode) if self.gateway else runtime.NATIVE_TOOLS
+        self.native_tools = runtime.native_tools(goal_mode)
         self.api_base, self.api_key = api_base, api_key
         self.workstation_permissions = deepcopy(workstation_permissions)
         if workstation_permissions is not None:
-            if (not self.gateway or set(workstation_permissions) != {'type', 'networkAccess', 'writableRoots'}
+            if (set(workstation_permissions) != {'type', 'networkAccess', 'writableRoots'}
                     or workstation_permissions.get('type') != 'workspaceWrite'
                     or not isinstance(workstation_permissions.get('networkAccess'), bool)
                     or tuple(workstation_permissions.get('writableRoots', ())) not in REGISTERED_WORKSTATION_ROOTS):
@@ -78,13 +78,14 @@ class CodexAgent:
         self.folder = Path(folder).resolve()
         self.folder.mkdir(parents=True, exist_ok=True)
         self.model, self.effort = model, thinking_level
+        self.registered_model = registered_model or model
         self.definitions = {tool['name']: tool for tool in tools}
         self.base_tools = list(active_tools)
         self.active_tools = list(active_tools)
         self.registered = registered_harness
         from codex_context import ContextLifecycle, policy
         self.context_policy = policy((registered_harness or {}).get('context_policy'))
-        if self.context_policy and (not self.gateway or goal_mode != 'off'):
+        if self.context_policy and goal_mode != 'off':
             raise ValueError('Context maintenance requires the registered gateway and goal off')
         self.context = ContextLifecycle() if self.context_policy else None
         self.history = [{'role': 'system', 'content': json.dumps(runtime.SYSTEM_PROMPT)}]
@@ -215,13 +216,11 @@ class CodexAgent:
                 self._verify_tools()
                 threading.Thread(target=self._accept, daemon=True).start()
                 session_file=started['thread'].get('path')
-                if self.gateway:
-                    path=Path(session_file).resolve() if session_file else None
-                    if (path is None or (self.home/'sessions').resolve() not in path.parents
-                            or path.suffix!='.jsonl' or self.thread_id not in path.name):
-                        raise RuntimeError('Codex returned an invalid native session path')
-                    # Codex creates this registered path when the first turn begins.
-                    session_file=str(path)
+                path=Path(session_file).resolve() if session_file else None
+                if (path is None or (self.home/'sessions').resolve() not in path.parents
+                        or path.suffix!='.jsonl' or self.thread_id not in path.name):
+                    raise RuntimeError('Codex returned an invalid native session path')
+                session_file=str(path)
                 self.emit('ready', session_file=session_file, cwd=str(workspace), active_tools=self.active_tools + self.native_tools,
                     system_prompt=self.runtime.SYSTEM_PROMPT, commands=[], session_id=self.thread_id)
                 while True:
@@ -251,14 +250,7 @@ class CodexAgent:
                         continue
                     if self.active:
                         raise RuntimeError('Cannot change tools or submit another input during a Codex turn')
-                    if command == 'tools':
-                        if not set(value) <= self.definitions.keys():
-                            raise ValueError('Unregistered Codex tool')
-                        self.active_tools = value
-                        self._write_tools()
-                        self.rpc.request('config/mcpServer/reload', None)
-                        self._verify_tools()
-                    elif command == 'prompt':
+                    if command == 'prompt':
                         text = '\n\n'.join(value)
                         resume_guard = self.goal_guard_parked
                         if resume_guard:
@@ -367,7 +359,7 @@ class CodexAgent:
         self.output, self.outputs, self.sources = [], [], []
         self.emit('request', turn=self.turn, attempt=1, payload={
             'record_kind': 'controller_projection', 'projection_source': 'codex-app-server',
-            'count_scope': 'observed native response group', 'model': self.model,
+            'count_scope': 'observed native response group', 'model': self.registered_model,'native_model':self.model,
             'reasoning': {'effort': self.effort}, 'input': self.history,
             'tools': self._tools(), 'system_prompt_config': self.runtime.SYSTEM_PROMPT,
             'session_id': self.thread_id, 'native_turn_id': self.native_turn,
@@ -377,7 +369,7 @@ class CodexAgent:
 
     def _response(self, source, completed=False, usage=None):
         value = {'record_kind': 'controller_projection', 'projection_source': 'codex-app-server',
-            'id': f'{self.thread_id}:{self.turn}', 'model': self.model,
+            'id': f'{self.thread_id}:{self.turn}', 'model': self.registered_model,'native_model':self.model,
             'status': 'completed' if completed else 'in_progress', 'output': self.output,
             'native_record': source, 'native_output_records': self.sources,
             'session_id': self.thread_id, 'native_turn_id': self.native_turn}
@@ -466,6 +458,10 @@ class CodexAgent:
                                 self.history.append({'role':'user','content':text})
                         return
                     if kind == 'function_call_output':
+                        if goal_objective_input(item) and self.goal_mode == 'codex_goal' and not self.response_open:
+                            self.inputs.append(source)
+                            self.emit('native_goal_input', item=item, native_record=source)
+                            return
                         if not self.response_open:
                             raise RuntimeError('Codex result arrived after its response boundary')
                         call = self.calls.get(item['call_id'])
@@ -637,7 +633,10 @@ class CodexAgent:
         self.commands.put(('prompt', list(texts)))
 
     def set_tools(self, tools):
-        self.commands.put(('tools', list(tools)))
+        # Current cohorts expose their complete registered surface at startup.
+        # Modern Codex keeps a thread's MCP tools fixed even after global reload.
+        if list(tools) != self.active_tools:
+            raise ValueError('Codex tools are fixed for the registered session; prepare a fresh cohort')
 
     def reply(self, request_id, **values):
         self.replies[request_id].put(values)

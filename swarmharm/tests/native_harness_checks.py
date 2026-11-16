@@ -310,16 +310,16 @@ class NativeHarnessChecks(unittest.TestCase):
                 self.assertEqual(len(list((folder/'trace').glob('*-tool-*.json'))),1)
         finally: server.shutdown(); server.server_close()
 
-    def test_codex_default_uses_repository_pin_without_implicit_fallback(self):
+    def test_codex_default_uses_path_and_reports_a_missing_installation(self):
         with tempfile.TemporaryDirectory() as directory:
             binary = Path(directory) / 'codex'
             binary.write_text('fixture executable')
             with patch.dict('os.environ', {}, clear=True), \
-                    patch.object(codex_gateway, 'PINNED_CODEX', binary), \
-                    patch('shutil.which', side_effect=AssertionError('No PATH fallback')):
+                    patch('shutil.which', return_value=str(binary)) as which:
                 self.assertEqual(codex_gateway.codex_binary(), str(binary.resolve()))
+                which.assert_called_once_with('codex')
                 binary.unlink()
-                with self.assertRaisesRegex(RuntimeError, 'scripts/setup-local'):
+                with self.assertRaisesRegex(RuntimeError, 'install codex on PATH'):
                     codex_gateway.codex_binary()
 
     def test_explicit_codex_override_does_not_silently_fall_back(self):

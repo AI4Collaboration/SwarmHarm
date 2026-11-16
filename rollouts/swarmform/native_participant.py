@@ -18,6 +18,8 @@ async def participate(cohort, actor, limits):
         agent = model_session.create(args.harness, actor, events,
             folder=cohort.out / 'native' / actor, model=args.model, api_base=args.base_url,
             api_key=args._api_key, api_protocol=args.api_protocol, served_model=args.served_model,
+            codex_auth=getattr(args,'codex_auth','api'),
+            **({'registered_harness': getattr(args,'_native_runtime',None)} if args.harness == 'codex' else {}),
             thinking_level='high', max_output_tokens=16384, context_window=1_000_000,
             request_timeout_ms=args.seconds*1000, tools=tools,
             active_tools=[t['name'] for t in tools], job_context=None, goal_mode='off',

@@ -14,6 +14,13 @@ def project(item):
     return value
 
 
+def goal_objective_input(item):
+    """Codex 0.169 exposes its goal objective as an input without a call ID."""
+    return (item.get('type') == 'function_call_output'
+            and item.get('namespace') == 'agent' and item.get('name') == 'goal_objective'
+            and 'call_id' not in item and isinstance(item.get('output'), str))
+
+
 def mcp_output_text(output):
     """Require the complete rendered MCP body; reject truncation or extra content."""
     if isinstance(output, list):
@@ -26,6 +33,7 @@ def mcp_output_text(output):
 
 
 def native_evidence(folder, requests):
+    harness = json.loads((folder.parents[1] / 'registration.json').read_text())['harness']
     native = folder / 'codex' / 'native'
     paths = sorted(native.glob('*.json'))
     assert paths, 'Missing Codex native evidence'
@@ -41,6 +49,9 @@ def native_evidence(folder, requests):
     for source,record in records.items():
         message=record['message'];item=(message.get('params') or {}).get('item') or {}
         if message.get('method')!='rawResponseItem/completed' or item.get('type')!='function_call_output':
+            continue
+        if goal_objective_input(item):
+            assert harness.get('goal_mode') == 'codex_goal', 'Unexpected Codex goal input'
             continue
         item=deepcopy(item)
         if item['call_id'] in executions:
@@ -77,7 +88,6 @@ def native_evidence(folder, requests):
                 assert item['output']==json.dumps(executions[identity]['result'],ensure_ascii=False),'Codex controller result changed'
         assert observed==(expected[:len(observed)] if controller_snapshot else expected),'Codex projection changed native tool result order'
     session = json.loads((folder / 'result.json').read_text())['codex_session']['session_id']
-    harness = json.loads((folder.parents[1] / 'registration.json').read_text())['harness']
     catalog_path = folder / 'codex/catalog.json'
     catalog = json.loads(catalog_path.read_text())
     if harness.get('native_catalog_sha256'):
@@ -86,13 +96,14 @@ def native_evidence(folder, requests):
     expected = deepcopy(catalog)
     for model in expected['models']:
         model.update(apply_patch_tool_type=None, input_modalities=['text'], supports_parallel_tool_calls=False)
+    capabilities=harness.get('tool_profile',{})
+    for row in expected['models']:
+        for field in ('tool_mode','use_responses_lite','supports_search_tool',
+                      'experimental_supported_tools','multi_agent_version'):
+            if field in capabilities:row[field]=capabilities[field]
     if harness.get('authentication') in ('axonhub', 'openai-compatible'):
-        capabilities=harness.get('tool_profile',{})
-        for row in expected['models']:
-            for field in ('tool_mode','use_responses_lite','supports_search_tool',
-                          'experimental_supported_tools','multi_agent_version'):
-                if field in capabilities:row[field]=capabilities[field]
-        requested=requests and json.loads(requests[0].read_text())['model']
+        first=json.loads(requests[0].read_text()) if requests else {}
+        requested=first.get('native_model',first.get('model'))
         for row in expected['models']:
             if row['slug']==requested.removeprefix('openai/'):
                 row['slug']=requested
@@ -184,7 +195,7 @@ def native_evidence(folder, requests):
                     echoes.append(source)
                 else:
                     assert params.get('turnId') in interrupted_turns,'Codex native MCP delivery differs'
-            if message.get('method') == 'rawResponseItem/completed' and item.get('type') == 'function_call_output' and item['call_id'] == identity:
+            if message.get('method') == 'rawResponseItem/completed' and item.get('type') == 'function_call_output' and item.get('call_id') == identity:
                 rendered.append(source)
                 if source in verified_results:outputs.append(source)
         delivery[identity] = {'sdk_delivery_verified': bool(echoes and outputs),

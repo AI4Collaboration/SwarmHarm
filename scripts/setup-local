@@ -5,8 +5,12 @@ repo=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 state=${SWARMHARM_READINESS:-"$repo/../eval-readiness"}
 mkdir -p "$state"
 state=$(CDPATH= cd -- "$state" && pwd)
-case "$state/" in "$repo/"*) echo 'Runtime state must be outside the repository' >&2; exit 1;; esac
-for cmd in python3.12 node npm docker; do command -v "$cmd" >/dev/null || { echo "Install $cmd first" >&2; exit 1; }; done
+case "$state/" in "$repo/"*)
+  git -C "$repo" check-ignore -q -- "$state/" || {
+    echo 'Runtime state inside the repository must be ignored by Git' >&2; exit 1;
+  };;
+esac
+for cmd in python3.12 node npm docker codex; do command -v "$cmd" >/dev/null || { echo "Install $cmd first" >&2; exit 1; }; done
 node -e 'const [a,b]=process.versions.node.split(".").map(Number); if(a<22||(a===22&&b<19))process.exit(1)' || { echo 'Node >=22.19 required' >&2; exit 1; }
 docker info >/dev/null
 runtime=${SWARMHARM_HARBOR_ENV:-"$state/harbor-0.24.0"}
@@ -19,7 +23,7 @@ fi
 "$runtime/bin/python" -m pip install -r "$repo/shared/python-requirements.txt"
 harnesses=" codex ${SWARMHARM_HARNESSES:-} $* "
 case "$harnesses" in *" all "*) harnesses=" codex claude pi ";; esac
-for adapter in codex claude pi; do
+for adapter in claude pi; do
   case "$harnesses" in *" $adapter "*) npm ci --prefix "$repo/shared/$adapter" --no-fund --no-audit;; esac
 done
 for adapter in $harnesses; do
@@ -31,7 +35,7 @@ provenance="$state/workstation-$(date +%Y%m%dT%H%M%S)-$$.json"
 image=$("$runtime/bin/python" -c 'import json,sys;print(json.load(open(sys.argv[1]))["image"])' "$provenance")
 {
   printf 'export SWARMHARM_HARBOR_ENV=%q\n' "$runtime"
-  printf 'export SWARMHARM_NATIVE_CODEX=%q\n' "$repo/shared/codex/node_modules/.bin/codex"
+  printf 'unset SWARMHARM_NATIVE_CODEX\n'
   printf 'export SWARMHARM_DOCKER_IMAGE=%q\n' "$image"
   printf 'export SWARMHARM_SANDBOX=docker\n'
 } > "$state/swarmharm-local.env"

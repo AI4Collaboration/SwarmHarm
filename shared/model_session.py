@@ -12,16 +12,22 @@ def runtime(kind):
     return {'codex': codex_agent, 'claude-code': claude_agent, 'pi-sdk': pi_agent}[kind]
 
 
-def registration(kind, model, base, goal='off'):
+def registration(kind, model, base, goal='off', *, codex_auth='api'):
     if kind == 'codex':
+        if codex_auth == 'chatgpt':
+            return codex_agent.harness_registration(goal,model.removeprefix('openai/'))
         return codex_gateway.harness_registration(goal, model, api_base=base)
     if kind == 'claude-code':
         return claude_agent.gateway_registration(model, goal, api_base=base)
     return pi_agent.harness_registration(goal)
 
 
-def create(kind, actor, events, *, api_protocol='chat-completions', served_model=None, on_transport_response=None, **kwargs):
+def create(kind, actor, events, *, api_protocol='chat-completions', served_model=None, on_transport_response=None, codex_auth='api', **kwargs):
     bridge = None
+    if kind == 'codex' and codex_auth == 'chatgpt':
+        kwargs={**kwargs,'api_base':None,'api_key':None,'registered_model':kwargs['model'],
+                'model':kwargs['model'].removeprefix('openai/')}
+        return codex_agent.CodexAgent(actor,events,**kwargs)
     if api_protocol == 'chat-completions':
         bridge = ChatBridge(kwargs['api_base'], kwargs['api_key'], kwargs['model'],
                             Path(kwargs['folder']) / 'transport', served_model=served_model,

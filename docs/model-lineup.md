@@ -19,7 +19,7 @@ This verifies connectivity and record capture, not benchmark outcomes or larger-
   lineup then has 10 models.
 - **Google:** Gemini 4 Argon (`google/gemini-4-argon`).
   [Official version list](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/model-versions).
-- **Moonshot:** Kimi K3.1 Pro (`moonshotai/kimi-k3.1-pro`).
+- **Moonshot:** Kimi K3 (`moonshotai/kimi-k3`).
   [Official model guide](https://platform.kimi.ai/docs/guide/kimi-k3-1-pro-quickstart).
 - **Z.ai:** full GLM-5.3 (`z-ai/glm-5.3`).
   [Official model guide](https://docs.z.ai/guides/llm/glm-5.3).

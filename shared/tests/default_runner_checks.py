@@ -96,6 +96,31 @@ class DefaultRunnerChecks(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'different plan'):
                 runner.execute(args, changed, {})
 
+    def test_six_selections_keep_gate_tracking_and_all_study_settings(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);plan=runner.plan('http://localhost:8000/v1')
+            self.make_api_evidence(root/'api-check',plan)
+            config=dict(python=sys.executable,images=dict(swarmform='form-image',swarmharm='harm-image'))
+            for study in ('swarmform','swarmharm'):
+                for population in (4,8,16):
+                    calls=[]
+                    def invoke(command,**kwargs):
+                        if command[0]!='git':calls.append(command)
+                        return SimpleNamespace(returncode=0)
+                    args=SimpleNamespace(out=root,key_file=None,model_map=None,
+                                         study=study,populations=[population])
+                    with patch.object(runner.subprocess,'run',side_effect=invoke), \
+                            patch.object(runner.subprocess,'check_output',return_value=b''), \
+                            patch.object(runner,'source_signature',return_value=plan['source_sha256']):
+                        self.assertEqual(runner.execute(args,plan,config),0)
+                    self.assertEqual(len(calls),11)
+                    for command in calls:
+                        self.assertEqual(command[command.index('--populations')+1],str(population))
+                        self.assertIn('--resume',command)
+                        self.assertIn('rollouts/run_matrix.py' if study=='swarmform' else 'swarmharm/run_matrix.py',command[1])
+            self.assertEqual(len(json.loads((root/'index.json').read_text())['batches']),66)
+            self.assertEqual(json.loads((root/'plan.json').read_text()),plan)
+
 
 if __name__ == '__main__':
     unittest.main()

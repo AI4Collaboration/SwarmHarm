@@ -11,6 +11,7 @@ import tempfile
 
 import run
 import model_lineup as defaults
+import batch_resume
 from phase2 import mechanism_inputs
 
 
@@ -33,6 +34,7 @@ def cases(args, source):
                                harness=run.guardrails.native_harness({'model':args.model}),
                                api_protocol=getattr(args, 'api_protocol', 'chat-completions'),
                                served_model=getattr(args, 'served_model', None) or args.model, reasoning_effort='high', goal_mode='off',
+                               codex_auth=getattr(args,'codex_auth','api'),
                                startup_concurrency=min(population, args.startup_concurrency))
 
 
@@ -62,9 +64,13 @@ def existing_status(output):
 def reusable_controls(records, row):
     required = {str(path.relative_to(run.HERE)) for path in run.preparation_check_paths(
         row['harness'], row['mechanism'], row['scenario'])}
+    expected_source = {str(path.relative_to(run.REPO)): run.sha(path) for path in run.code_paths()}
     for record in records:
         output = Path(record['output'])
-        if not (output/'controls.json').is_file() or not (output/'registration-seal.json').is_file():
+        if not all((output/name).is_file() for name in
+                   ('controls.json', 'registration.json', 'registration-seal.json')):
+            continue
+        if run.load(output/'registration.json').get('code_hashes') != expected_source:
             continue
         checks = run.load(output/'controls.json')
         if checks.get('passed') and required <= set(checks.get('check_modules', [])):
@@ -77,6 +83,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--api-protocol', choices=('chat-completions','native'), default='chat-completions')
     parser.add_argument('--served-model', help='Exact provider ID, if different from native identity')
+    parser.add_argument('--codex-auth',choices=('chatgpt','api'),default='chatgpt')
+    parser.add_argument('--resume', action='store_true', help='Retain existing attempts while selecting populations')
     parser.add_argument('--model', required=True, help='Selected model identity; see docs/model-lineup.md')
     parser.add_argument('--base-url', default=os.environ.get('OPENAI_BASE_URL', run.AXONHUB_API_BASE))
     parser.add_argument('--key-file', type=Path, default=os.environ.get('OPENAI_API_KEY_FILE'))
@@ -91,12 +99,15 @@ def main():
     parser.add_argument('--out', type=Path, help='Batch directory outside Git')
     parser.add_argument('--execute', action='store_true', help='Register, commit each registration and collect sequentially')
     args = parser.parse_args()
+    subscription=run.guardrails.native_harness({'model':args.model})=='codex' and args.codex_auth=='chatgpt'
+    if subscription:
+        args.api_protocol='native';args.served_model=args.model.removeprefix('openai/');args.key_file=None;args.base_url=None
     if min(args.populations) < 2 or args.repeats < 1 or args.startup_concurrency < 1:
         parser.error('Use N >= 2, positive repeats and positive startup concurrency')
     for values in (args.populations, args.scenarios, args.mechanisms):
         if len(values) != len(set(values)):
             parser.error('Selections must not contain duplicates')
-    args.base_url = run.guardrails.api_base_url(args.base_url)
+    if not subscription:args.base_url = run.guardrails.api_base_url(args.base_url)
     if args.execute and (args.out is None or args.out.resolve().is_relative_to(run.REPO)):
         parser.error('--execute requires --out outside the repository')
     rows = list(cases(args, source_digest()))
@@ -108,24 +119,23 @@ def main():
         parser.error('Commit source changes before collecting')
     root = args.out.resolve()
     root.mkdir(parents=True, exist_ok=True)
-    if (root/'plan.json').exists() and run.load(root/'plan.json') != rows:
-        parser.error('This output root contains a different plan; choose a fresh --out')
+    try: rows = batch_resume.prepare(root, rows, args.resume)
+    except ValueError as error: parser.error(str(error))
     for identity in ('GIT_AUTHOR_IDENT', 'GIT_COMMITTER_IDENT'):
         subprocess.run(['git', 'var', identity], cwd=run.REPO, check=True, stdout=subprocess.DEVNULL)
-    run.save(root/'plan.json', rows)
     model_slug = re.sub(r'[^\w.-]+', '-', args.model).strip('.-') or 'model'
     group = hashlib.sha256(str(root).encode()).hexdigest()[:8]
     records = []
     key = args.key_file
     temporary_key = None
-    if key is None:
+    if key is None and not subscription:
         credential = os.environ.get('OPENAI_API_KEY')
         if not credential:
             parser.error('Set OPENAI_API_KEY, OPENAI_API_KEY_FILE or --key-file')
         with tempfile.NamedTemporaryFile(mode='w', prefix='swarmharm-key-', delete=False) as stream:
             stream.write(credential+'\n')
             temporary_key = key = Path(stream.name)
-    key = key.expanduser().resolve()
+    key = key.expanduser().resolve() if key else None
     failures = 0
     try:
         for row in rows:
@@ -146,15 +156,17 @@ def main():
                     with log.open('a') as stream:
                         subprocess.run(argv, cwd=run.REPO, stdout=stream,
                                        stderr=subprocess.STDOUT, check=True)
-                common = ['--output', str(output), '--registration-dir', str(registration), '--key-file', str(key)]
-                run.save(root/'index.json', {'study': 'swarmharm', 'runs': [*records, {**record, 'status': 'running'}]})
+                common = ['--output', str(output), '--registration-dir', str(registration)]
+                if key:common += ['--key-file',str(key)]
+                batch_resume.save_index(root, 'swarmharm', [*records, {**record, 'status': 'running'}])
                 print('Starting:', output, flush=True)
                 try:
                     command([sys.executable, str(run.HERE/'run.py'), '--phase', 'prepare',
                              '--source-retention', 'local', '--scenario', row['scenario'],
                              '--mechanism', row['mechanism'], '--model-id', args.model,
-                             '--api-base', args.base_url, '--harness', row['harness'],
+                             *(['--api-base',args.base_url] if args.base_url else []), '--harness', row['harness'],
                              '--api-protocol', row['api_protocol'], '--served-model', row['served_model'], '--goal-mode', 'off',
+                             '--codex-auth',args.codex_auth,
                              '--reasoning-effort', 'high', '-N', str(row['population']),
                              '--startup-concurrency', str(row['startup_concurrency']),
                              *reusable_controls(records, row), *common])
@@ -174,7 +186,7 @@ def main():
                 if output.exists():
                     record['raw_bytes'] = sum(p.stat().st_size for p in output.rglob('*') if p.is_file())
             records.append(record)
-            run.save(root/'index.json', {'study': 'swarmharm', 'runs': records})
+            batch_resume.save_index(root, 'swarmharm', records)
             # A partial registration must be inspected before another preparation.
             if subprocess.check_output(['git', 'status', '--porcelain'], cwd=run.REPO, text=True).strip():
                 print('Stopped after an incomplete registration; see the batch index.', file=sys.stderr)

@@ -182,9 +182,10 @@ def validate_plan(mechanism, plan):
     if (scenario.world_for(plan) != expected or
             scenario.preset_for(plan) != MECHANISMS[mechanism]['preset']):
         raise ValueError('Mechanism input differs from its declared configuration')
+    harnesses = {row.get('native_record_harness') for row in plan.values()}
     if (not all(row.get('continuous_workflow') for row in plan.values())
-            or any(row.get('native_record_harness') != 'codex' for row in plan.values())):
-        raise ValueError('Mechanism delivery requires continuous native Codex workstations')
+            or len(harnesses) != 1 or not harnesses <= {'codex', 'claude-code', 'pi-sdk'}):
+        raise ValueError('Mechanism delivery requires continuous workstations using one supported native harness')
     declared = declaration(mechanism)
     if variant:
         declared['input_variant'] = variant

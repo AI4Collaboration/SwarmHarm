@@ -37,6 +37,9 @@ class BatchPlanChecks(unittest.TestCase):
         with TemporaryDirectory() as directory:
             root = Path(directory)
             (root/'registration-seal.json').write_text('{}')
+            (root/'registration.json').write_text(json.dumps({'code_hashes':{
+                str(path.relative_to(batch.run.REPO)): batch.run.sha(path)
+                for path in batch.run.code_paths()}}))
             (root/'controls.json').write_text(json.dumps(
                 {'passed':True, 'check_modules':['tests/first_checks.py']}))
             row = {'mechanism':'task-gaming', 'scenario':'knowledge-work', 'harness':'codex'}
@@ -47,6 +50,27 @@ class BatchPlanChecks(unittest.TestCase):
             with patch.object(batch.run, 'preparation_check_paths', return_value=[
                     batch.run.HERE/'tests/another_checks.py']):
                 self.assertEqual(batch.reusable_controls([{'output':str(root)}], row), [])
+
+    def test_old_controls_are_skipped_before_selecting_current_source(self):
+        with TemporaryDirectory() as directory:
+            source = batch.run.HERE/'run_matrix.py'
+            expected = {str(source.relative_to(batch.run.REPO)): batch.run.sha(source)}
+            records = []
+            for name, hashes in [('old', {'old.py':'old-hash'}), ('current', expected)]:
+                root = Path(directory)/name
+                root.mkdir()
+                (root/'registration-seal.json').write_text('{}')
+                (root/'registration.json').write_text(json.dumps({'code_hashes':hashes}))
+                (root/'controls.json').write_text(json.dumps(
+                    {'passed':True, 'check_modules':['tests/first_checks.py']}))
+                records.append({'output':str(root), 'source_sha256':'same-batch-label'})
+            row = {'mechanism':'task-gaming', 'scenario':'knowledge-work', 'harness':'codex'}
+            with patch.object(batch.run, 'code_paths', return_value=[source]), \
+                    patch.object(batch.run, 'preparation_check_paths', return_value=[
+                        batch.run.HERE/'tests/first_checks.py']):
+                self.assertEqual(batch.reusable_controls(records[:1], row), [])
+                self.assertEqual(batch.reusable_controls(records, row),
+                                 ['--controls-from', records[1]['output']])
 
     def test_missing_archive_never_restarts_collection(self):
         with TemporaryDirectory() as directory:

@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import shutil
 import subprocess
 import tempfile
 
@@ -12,7 +13,6 @@ from guardrails import require_same_harness, api_base_url
 import codex_agent as legacy
 
 AXONHUB_BASE = 'https://lmportal.iefbr14.xyz/v1'
-PINNED_CODEX = Path(__file__).resolve().parent / 'codex/node_modules/.bin/codex'
 SYSTEM_PROMPT = legacy.SYSTEM_PROMPT
 NATIVE_TOOLS = [name for name in legacy.NATIVE_TOOLS if name != 'update_plan']
 DISABLED_FEATURES = (*legacy.DISABLED_FEATURES, 'code_mode', 'code_mode_host',
@@ -40,9 +40,10 @@ initialize = legacy.initialize
 
 def codex_binary():
     configured = os.environ.get('SWARMHARM_NATIVE_CODEX')
-    candidate = Path(configured).expanduser() if configured else PINNED_CODEX
-    if not candidate.is_file():
-        raise RuntimeError('Native Codex executable is missing; run scripts/setup-local or set SWARMHARM_NATIVE_CODEX explicitly')
+    found = configured or shutil.which('codex')
+    candidate = Path(found).expanduser() if found else None
+    if candidate is None or not candidate.is_file():
+        raise RuntimeError('Native Codex executable is missing; install codex on PATH')
     executable = candidate.resolve()
     if executable.name == 'codex.js' and executable.parent.name == 'bin' and executable.parent.parent.name == 'codex':
         # npm's JS launcher spawns a child. Record capture must pause and hash the
@@ -55,13 +56,13 @@ def codex_binary():
             '-apple-darwin' if system == 'darwin' else '-unknown-linux-musl')
         executable = executable.parents[2] / f'codex-{system}-{arch}' / 'vendor' / triple / 'bin/codex'
         if not executable.is_file():
-            raise RuntimeError('Pinned native Codex package is missing; rerun setup-local')
+            raise RuntimeError('Native Codex package is missing; repair the Codex installation on PATH')
     return str(executable)
 
 
 def cli_identity():
     binary = codex_binary()
-    return {'version': subprocess.check_output([binary, '--version'], text=True).strip(),
+    return {'executable':binary,'version': subprocess.check_output([binary, '--version'], text=True).strip(),
             'sha256': sha256(Path(binary).read_bytes()).hexdigest()}
 
 
@@ -139,6 +140,8 @@ def runtime_registration(goal_mode, *, context_policy=None, api_base=AXONHUB_BAS
         'tool_profile':{'input_modalities':['text'],'apply_patch_tool_type':None,'supports_parallel_tool_calls':False, **TOOL_CAPABILITIES},
         'disabled_features':disabled_features(goal_mode), 'context_window':None,
         'output_token_limit':'Codex CLI managed; no per-response override',
+        'parallel_tool_calls_control':'Native CLI managed; catalog capability is requested, not an observed upstream parameter',
+        'tool_surface':'fixed for the registered session',
         'tool_output_token_limit':TOOL_OUTPUT_TOKEN_LIMIT,
         'tool_execution':'controller MCP tools in isolated workstations',
         'tool_approval':'preauthorized registered synthetic work service only',
@@ -182,7 +185,7 @@ def command(goal_mode='off'):
 
 
 def write_config(home, workspace, definitions, endpoint, model, effort, catalog, *, context_policy=None, api_base=AXONHUB_BASE):
-    api_base = api_base_url(api_base)
+    if api_base is not None:api_base = api_base_url(api_base)
     from codex_context import policy
     context_policy = policy(context_policy)
     validate_model(model)
@@ -208,7 +211,13 @@ def write_config(home, workspace, definitions, endpoint, model, effort, catalog,
         'command='+json.dumps(sys.executable),
         'args='+json.dumps([str(Path(__file__).parent/'codex_mcp.py'),str(definitions),str(endpoint)]),
         '[tools.experimental_request_user_input]','enabled=false']
-    if api_base != AXONHUB_BASE:
+    if api_base is None:
+        config[1] = 'model_provider="openai"'
+        start=config.index('[model_providers.axonhub]')
+        end=config.index('[mcp_servers.work]')
+        config[start:end]=[]
+        config[1:1]=['forced_login_method="chatgpt"','cli_auth_credentials_store="file"']
+    elif api_base != AXONHUB_BASE:
         config[1] = 'model_provider="openai_compatible"'
         config[config.index('[model_providers.axonhub]')] = '[model_providers.openai_compatible]'
         config[config.index('name="AxonHub"')] = 'name="OpenAI-compatible API"'
@@ -216,5 +225,6 @@ def write_config(home, workspace, definitions, endpoint, model, effort, catalog,
     if context_policy:
         config[config.index('model_auto_compact_token_limit=2147483647')] = 'model_auto_compact_token_limit='+str(context_policy['auto_compact_token_limit'])
         config.insert(0, 'features.async_compaction=false')
-        config.insert(config.index('requires_openai_auth=false')+1, 'capabilities.remote_compaction="v2"')
+        if api_base is not None:
+            config.insert(config.index('requires_openai_auth=false')+1, 'capabilities.remote_compaction="v2"')
     (home/'config.toml').write_text('\n'.join(config)+'\n')
