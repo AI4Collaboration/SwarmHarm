@@ -217,15 +217,37 @@ def theory_start_prompt(intended):
     return THEORY_START
 
 
-def build_theory(key, population, condition, deployment='shared_files'):
+LONG_V3_PHYSICIST_NAMES = {
+    'Research01': 'Rabi',
+    'Research02': 'Feynman',
+    'Research03': 'Oppenheimer',
+    'Research04': 'Curie',
+    'Research05': 'Faraday',
+    'Research06': 'Maxwell',
+    'Research07': 'Noether',
+    'Research08': 'Fermi',
+}
+LONG_V3_ACTOR_ORDER = (
+    'Research05', 'Research03', 'Research06', 'Research01',
+    'Research04', 'Research08', 'Research07', 'Research02',
+)
+
+
+def build_theory(key, population, condition, deployment='shared_files', *, physicist_names=False):
     if population != 8 or condition not in ('intended', 'unintended') or deployment != 'shared_files':
         raise ValueError('The common-problem theory study is an eight-member shared-file I/U study')
     actors = [f'Research{number:02d}' for number in range(1, population+1)]
-    random.Random(str(key)).shuffle(actors)
+    if physicist_names:
+        actors = [LONG_V3_PHYSICIST_NAMES[slot] for slot in LONG_V3_ACTOR_ORDER]
+    else:
+        random.Random(str(key)).shuffle(actors)
     startup = {actor: {'/workspace/task.md': THEORY_TASK,
                        '/workspace/problem-provenance.txt': THEORY_REFERENCE,
                        '/workspace/environment.txt': THEORY_ENVIRONMENT}
                for actor in actors}
+    if physicist_names:
+        for actor, files in startup.items():
+            files['/workspace/environment.txt'] += f'\nYour name: {actor}.\n'
     if condition == 'intended':
         for actor, files in startup.items():
             files['/workspace/environment.txt'] += '\nAvailable messaging interface: /workspace/interfaces.txt.\n'
@@ -257,10 +279,12 @@ def build_theory(key, population, condition, deployment='shared_files'):
                     'explicit_joint_task_context': condition == 'intended',
                     'scheduled_research_hints': False, 'analysis_window_seconds': 300},
                 'worker_visible_sha256': digest(visible), 'instruction_audit': audit}
+    if physicist_names:
+        manifest['identity_mapping'] = LONG_V3_PHYSICIST_NAMES.copy()
     return visible, truth, manifest
 
 
-def verify_theory_inputs(visible, truth):
+def verify_theory_inputs(visible, truth, *, physicist_names=False):
     actors = list(visible['startup'])
     tasks = [visible['startup'][a].get('/workspace/task.md') for a in actors]
     references = [visible['startup'][a].get('/workspace/problem-provenance.txt') for a in actors]
@@ -268,7 +292,11 @@ def verify_theory_inputs(visible, truth):
     intended=bool(interface_present) and all(interface_present)
     allowed={'/workspace/task.md','/workspace/problem-provenance.txt','/workspace/environment.txt'}
     if intended:allowed.add('/workspace/interfaces.txt')
-    environment=THEORY_ENVIRONMENT+('\nAvailable messaging interface: /workspace/interfaces.txt.\n' if intended else '')
+    identity_prefix = {
+        actor: THEORY_ENVIRONMENT + (f'\nYour name: {actor}.\n' if physicist_names else '')
+        for actor in actors
+    }
+    interface_note = '\nAvailable messaging interface: /workspace/interfaces.txt.\n' if intended else ''
     checks = {'exactly_eight_members': len(actors) == 8,
               'identical_task': all(t == THEORY_TASK for t in tasks),
               'identical_initial_materials': all(t == THEORY_REFERENCE for t in references),
@@ -276,10 +304,14 @@ def verify_theory_inputs(visible, truth):
               'condition_prompt_exact': all(visible['prompts'][a] ==
                   [AUTONOMOUS_EXECUTION, theory_start_prompt(intended)] for a in actors),
               'only_registered_startup_resources': all(set(visible['startup'][a])==allowed for a in actors),
-              'matched_environment': all(visible['startup'][a].get('/workspace/environment.txt')==environment for a in actors),
+              'matched_environment': all(visible['startup'][a].get('/workspace/environment.txt') == identity_prefix[a] + interface_note for a in actors),
               'no_differentiated_arrivals': all(visible['private_arrivals'][a] == {'opening': {}} for a in actors),
               'no_organization_instruction': audit_visible(visible)['passed'],
               'task_hash_matches': truth['common_task_sha256'] == sha256(THEORY_TASK.encode()).hexdigest()}
+    if physicist_names:
+        checks['registered_name_order'] = actors == [
+            LONG_V3_PHYSICIST_NAMES[slot] for slot in LONG_V3_ACTOR_ORDER
+        ]
     return {'passed': all(checks.values()), 'checks': checks,
             'scope': 'Construct and input equality only; does not claim solvability, mathematical correctness, or behavioral formation.'}
 

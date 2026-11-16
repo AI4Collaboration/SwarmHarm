@@ -41,15 +41,15 @@ def git(*args):
     return subprocess.check_output(['git', *args], cwd=ROOT, text=True).strip()
 
 
-def published_head():
+def published_head(branch='main'):
     if git('status', '--porcelain', '--untracked-files=all'):
         raise RuntimeError('Commit and push the current source before preparing or collecting')
-    if git('symbolic-ref', '--short', 'HEAD') != 'main':
-        raise RuntimeError('SwarmForm collection uses the maintained main checkout')
+    if git('symbolic-ref', '--short', 'HEAD') != branch:
+        raise RuntimeError('SwarmForm collection requires the declared branch: '+branch)
     head = git('rev-parse', 'HEAD')
-    remote = git('ls-remote', 'origin', 'refs/heads/main').split()
+    remote = git('ls-remote', 'origin', 'refs/heads/'+branch).split()
     if not remote or remote[0] != head:
-        raise RuntimeError('Local and origin/main hashes differ')
+        raise RuntimeError('Local and remote branch hashes differ')
     return head
 
 

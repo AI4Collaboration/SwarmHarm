@@ -38,7 +38,7 @@ def write_tasks(output,visible,manifest,duration,deployment):
 
 
 def register(args, *, source=None, runtime=None):
-    source=source or base.published_head()
+    source=source or base.published_head(getattr(args,'published_branch','main'))
     runtime=runtime or base.check_runtime()
     output=outside_repository(args.output,ROOT,'Structure output')
     if not base.re.fullmatch(r'[a-z0-9][a-z0-9-]{2,100}',args.identifier):
@@ -46,9 +46,13 @@ def register(args, *, source=None, runtime=None):
     folder=REGISTRATIONS/args.identifier
     if output.exists() or folder.exists():raise FileExistsError('Use fresh registration and output paths')
     workload=getattr(args,'workload','knowledge-work');theory=workload=='navier-stokes-theory'
+    physicist_names = getattr(args, 'physicist_names', False)
+    if physicist_names and not theory:
+        raise ValueError('The physicist names apply only to the Navier–Stokes workload')
     if theory:
-        visible,truth,manifest=build_theory(args.dataset_key,args.population,args.condition,args.deployment)
-        verification=verify_theory_inputs(visible,truth)
+        visible,truth,manifest=build_theory(args.dataset_key,args.population,args.condition,args.deployment,
+            physicist_names=physicist_names)
+        verification=verify_theory_inputs(visible,truth,physicist_names=physicist_names)
     else:
         visible,truth,manifest=build(args.dataset_key,args.population,args.condition,args.deployment,
             spacing=args.spacing,customers_per_actor=args.customers,source_schedule=args.source_schedule)
@@ -126,6 +130,8 @@ def register(args, *, source=None, runtime=None):
         reg['criteria'].update(common_problem=True,identical_initial_materials=True,
             supplied_decomposition=False,mathematical_claims_require_review=True,
             passive_time_windows=True,temporal_minimum_span_seconds=300)
+    if physicist_names:
+        reg['identity_mapping'] = manifest['identity_mapping']
     save(output/'registration.json',reg);save(output/'registration-seal.json',{'sha256':base.sha(output/'registration.json')})
     folder.mkdir(parents=True)
     for name in ('registration.json','registration-seal.json'):shutil.copy2(output/name,folder/name)
@@ -138,8 +144,8 @@ def register(args, *, source=None, runtime=None):
     return {'prepared':args.identifier,'output':str(output),'model_calls':0}
 
 
-def verify_registration(folder,output):
-    head=base.published_head()
+def verify_registration(folder,output,branch='main'):
+    head=base.published_head(branch)
     reg=json.loads((folder/'registration.json').read_text())
     seal=json.loads((folder/'registration-seal.json').read_text())['sha256']
     if base.sha(folder/'registration.json')!=seal:raise ValueError('Registration seal differs')
@@ -173,7 +179,7 @@ def collect(args):
     with (output/'.collector.lock').open('a+') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         if (output/'started.json').exists():raise FileExistsError('Preserve the original attempt; do not reuse it')
-        reg=verify_registration(REGISTRATIONS/args.identifier,output)
+        reg=verify_registration(REGISTRATIONS/args.identifier,output,getattr(args,'published_branch','main'))
         if reg['study_mode']!='swarmform-structure':raise ValueError('Wrong study')
         # Continue from the sealed copy so unrelated main updates cannot change
         # lazy imports or finalization during a long-lived model collection.
@@ -246,6 +252,9 @@ def main():
     worker=sub.add_parser('execute-frozen',help='Internal sealed execution after committed preflight')
     for command in (prepare,collect_parser,worker):
         command.add_argument('--identifier',required=True);command.add_argument('--output',type=Path,required=True)
+    prepare.add_argument('--published-branch', default='main')
+    collect_parser.add_argument('--published-branch', default='main')
+    prepare.add_argument('--physicist-names', action='store_true')
     prepare.add_argument('--population',type=int,choices=POPULATIONS,required=True)
     prepare.add_argument('--workload',choices=WORKLOADS,default='knowledge-work')
     prepare.add_argument('--condition',choices=CONDITIONS,required=True)
