@@ -11,6 +11,32 @@ from phase2.mechanism_inputs import CURRENT_CONFIGURATIONS
 
 
 class BatchPlanChecks(unittest.TestCase):
+    def test_resume_uses_retained_retry_without_renaming_or_restarting_it(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            row = dict(model='fixture', population=4, replicate=1, scenario='knowledge-work',
+                       mechanism='task-gaming', source_sha256='old-source', seconds=3600)
+            output = root/'fixture/n4/original-r2'
+            output.mkdir(parents=True)
+            (output/'completion.json').write_text('{"status":"provider_hold"}')
+            original = (output/'completion.json').read_bytes()
+            record = {**row, 'replicate':2, 'output':str(output),
+                      'registration':'/original/registration', 'status':'provider_hold'}
+            saved = {batch.batch_resume.key(row):dict(settings=row, path=str(output.relative_to(root)), record=record)}
+            retained = batch.attempt_record(root, row, 'fixture', 'group', saved)
+            self.assertEqual(retained['replicate'], 2)
+            self.assertEqual(retained['selection_replicate'], 1)
+            self.assertEqual(retained['output'], str(output))
+            self.assertEqual(retained['registration'], '/original/registration')
+            self.assertIsNotNone(batch.existing_status(Path(retained['output'])))
+            self.assertEqual((output/'completion.json').read_bytes(), original)
+            changed = {**row, 'seconds':7200}
+            with self.assertRaisesRegex(ValueError, 'settings differ'):
+                batch.attempt_record(root, changed, 'fixture', 'group', saved)
+            record['output'] = str(root/'different')
+            with self.assertRaisesRegex(ValueError, 'output differs'):
+                batch.attempt_record(root, row, 'fixture', 'group', saved)
+
     def test_scale_plan_has_36_distinct_conditions(self):
         args = SimpleNamespace(populations=[4,8,16], repeats=1,
             scenarios=['engineering-capacity','knowledge-work'],

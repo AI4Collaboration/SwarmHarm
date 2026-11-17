@@ -43,6 +43,24 @@ def run_id(row):
     return f"{row['scenario']}-{row['mechanism']}-r{row['replicate']}-{suffix}"
 
 
+def attempt_record(root, row, model_slug, group, saved):
+    previous = saved.get(batch_resume.key(row))
+    if previous:
+        record = previous['record'].copy()
+        actual = {name: record[name] for name in row}
+        actual['replicate'] = row['replicate']
+        if batch_resume.settings(actual) != batch_resume.settings(row):
+            raise ValueError('Retained attempt settings differ from the requested condition')
+        output = (root/previous['path']).resolve()
+        if Path(record['output']).resolve() != output:
+            raise ValueError('Retained attempt output differs from its index record')
+        return {**record, 'output': str(output), 'retained_attempt': True,
+                'selection_replicate': row['replicate']}
+    name = run_id(row)
+    return {**row, 'output': str(root/model_slug/f"n{row['population']}"/name),
+            'registration': str(run.REGISTRATIONS/f"batch-{group}-{name}")}
+
+
 def existing_status(output):
     """Never restart an existing directory, including an incomplete attempt."""
     archived = output.with_name(output.name+'.archive.json')
@@ -121,6 +139,10 @@ def main():
     root.mkdir(parents=True, exist_ok=True)
     try: rows = batch_resume.prepare(root, rows, args.resume)
     except ValueError as error: parser.error(str(error))
+    saved = batch_resume.retained(root) if args.resume else {}
+    if args.repeats > 1 and any(item['settings']['replicate'] != item['record']['replicate']
+                               for item in saved.values()):
+        parser.error('This batch retains retries for a single replicate; use a fresh --out for additional replicates')
     for identity in ('GIT_AUTHOR_IDENT', 'GIT_COMMITTER_IDENT'):
         subprocess.run(['git', 'var', identity], cwd=run.REPO, check=True, stdout=subprocess.DEVNULL)
     model_slug = re.sub(r'[^\w.-]+', '-', args.model).strip('.-') or 'model'
@@ -139,10 +161,10 @@ def main():
     failures = 0
     try:
         for row in rows:
-            name = run_id(row)
-            output = root/model_slug/f"n{row['population']}"/name
-            registration = run.REGISTRATIONS/f"batch-{group}-{name}"
-            record = {**row, 'output': str(output), 'registration': str(registration)}
+            record = attempt_record(root, row, model_slug, group, saved)
+            output = Path(record['output'])
+            registration = Path(record['registration'])
+            name = output.name
             completion = output/'completion.json'
             existing = existing_status(output)
             if existing is not None:

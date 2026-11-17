@@ -5,6 +5,8 @@ from pathlib import Path
 from harbor.models.trajectories import Trajectory
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 from codex_evidence import native_evidence as codex_native_evidence
+from pi_evidence import incomplete_response as pi_incomplete_response
+from pi_evidence import rejected_outputs as pi_rejected_outputs
 
 def read(p):return json.loads(Path(p).read_text())
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
@@ -130,6 +132,7 @@ def claude_native_evidence(folder,requests,accepted_models=None):
 def export_actor(root,phase,actor):
     folder=root/phase/actor;history=read(folder/'history.json');requests=sorted((folder/'trace').glob('[0-9][0-9][0-9][0-9].request.json'))
     assert requests,'No model requests';first=read(requests[0]);steps=[];hashes={};missing=[];uncommitted=[];tools=0
+    state=read(folder/'result.json');pi_cache={};incomplete_records=[]
     registration=read(root/'registration.json');study_mode=registration.get('study_mode','connected')
     is_claude=registration.get('harness',{}).get('kind')=='claude-code'
     is_codex=registration.get('harness',{}).get('kind')=='codex'
@@ -176,8 +179,17 @@ def export_actor(root,phase,actor):
         if len(req.get('tools',[]))>len(all_tool_definitions):
             phase2_tools_seen=True;all_tool_definitions=req['tools']
         hashes[str(reqpath.relative_to(folder))]=sha(reqpath);respath=reqpath.with_name(label+'.response.json')
-        if not respath.exists():missing.append(str(respath.relative_to(folder)));break
-        response=read(respath);hashes[str(respath.relative_to(folder))]=sha(respath)
+        recovered=None
+        if not respath.exists():
+            missing.append(str(respath.relative_to(folder)))
+            if not is_sdk and request_index+1<len(requests):
+                recovered=pi_incomplete_response(folder,label,req,state,pi_cache)
+            if recovered is None:break
+            response=recovered['response'];respath=recovered['response_path']
+            for path in (recovered['session_path'],recovered['request_path'],folder/'result.json'):
+                hashes[str(path.relative_to(folder))]=sha(path)
+        else:response=read(respath)
+        hashes[str(respath.relative_to(folder))]=sha(respath)
         if [canonical(item) for item in history]==[canonical(item) for item in expected]:
             uncommitted.append(str(respath.relative_to(folder)))
             break
@@ -189,6 +201,11 @@ def export_actor(root,phase,actor):
         expected.extend(output);observations=[]
         if calls:
             step['tool_calls']=[atif_tool_call(call) for call in calls]
+            rejected=(pi_rejected_outputs(folder,label,response,state,pi_cache)
+                      if not is_sdk and recovered is None else None)
+            if rejected:
+                for path in (rejected['session_path'],folder/'result.json'):
+                    hashes[str(path.relative_to(folder))]=sha(path)
             records={}
             for tp in sorted(reqpath.parent.glob(label+'-tool-*.json')):
                 if not re.fullmatch(r'\d+-tool-\d+\.json', tp.name):continue
@@ -198,6 +215,15 @@ def export_actor(root,phase,actor):
             executed_order=(sorted(calls,key=lambda c:records[c['call_id']][1]['event_id']
                 if c['call_id'] in records else float('inf')) if is_sdk else calls)
             for c in executed_order:
+                if rejected and c['call_id'] in rejected['outputs']:
+                    assert c['call_id'] not in records,'Rejected Pi call has a controller execution'
+                    out=rejected['outputs'][c['call_id']]
+                    expected.append({'type':'function_call_output','call_id':c['call_id'],'output':out})
+                    observations.append({'source_call_id':c['call_id'],'content':out,
+                        'extra':{'content_source':'pi_session','is_error':True}})
+                    converted=next(call for call in step['tool_calls'] if call['tool_call_id']==c['call_id'])
+                    converted.setdefault('extra',{})['execution_status']='rejected_by_harness'
+                    continue
                 if c['call_id'] not in records:continue
                 tp,record=records[c['call_id']];assert record['name']==c['name'] and record['arguments']==c['arguments']
                 hashes[str(tp.relative_to(folder))]=sha(tp);out=json.dumps(record['result'],ensure_ascii=False)
@@ -227,6 +253,23 @@ def export_actor(root,phase,actor):
                         observation['extra']={'content_source':'controller_execution','rendered_result_verified':False}
                     observations.append(observation)
             if observations:step['observation']={'results':observations}
+        if recovered is not None:
+            # These are SDK rejections, not executed workstation tools. The next
+            # request must contain the exact projected calls and error observations.
+            expected.extend(recovered['tool_outputs'])
+            appended_input(expected,read(requests[request_index+1])['input'])
+            incomplete_records.append(str(respath.relative_to(folder)))
+            step['extra'].update(native_response_container='response',
+                incomplete_details=response['incomplete_details'],
+                pi_session_record=recovered['session_record'],
+                arguments_source='Pi session; raw provider arguments retained on each rejected call')
+            for call,raw in zip(step.get('tool_calls',[]),recovered['raw_calls']):
+                call.setdefault('extra',{}).update(raw_provider_arguments=raw['arguments'],
+                    execution_status='rejected_by_harness')
+            if recovered['tool_outputs']:
+                step['observation']={'results':[{'source_call_id':item['call_id'],
+                    'content':item['output'],'extra':{'content_source':'pi_session','is_error':True}}
+                    for item in recovered['tool_outputs']]}
         add('agent',text,**step);last_agent=len(steps)-1
         completion_path=reqpath.with_name(label+'-completion-state.json')
         if completion_path.exists():hashes[str(completion_path.relative_to(folder))]=sha(completion_path)
@@ -234,6 +277,9 @@ def export_actor(root,phase,actor):
     hashes['history.json']=sha(folder/'history.json')
     model=first['model'];state=read(folder/'result.json')
     value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,'trajectory_id':phase+':'+actor+':primary','agent':{'name':'SwarmHarm rollout collector (Pi SDK)','version':'2.0','model_name':model,'tool_definitions':all_tool_definitions},'steps':steps,'extra':{'phase':phase,'study_mode':study_mode,'actor':actor,'phase2_tools_seen':phase2_tools_seen,'native_status':state['status'],'completion_attempts':len(state.get('completion_attempts',[])),'extension_continuations':len(state.get('extension_continuations',[])),'harness_rejected_tool_calls':len(state.get('harness_rejected_tool_calls',[])),'pi_session_file':(state.get('pi_session') or {}).get('session_file'),'conversion':'Native records are the exact provider request payloads and completed Responses objects. Pi rebuilds prior items on each request, so continuity is checked on the model-visible meaning of each item. The Pi system prompt is the first input item. Controller platform updates and harness or extension inputs are retained as separate input steps. Observations of tools run inside Pi extensions come from the next native request. Pi re-renders its system prompt when the active tools change; each new version is retained as a system step. Opaque reasoning remains only in raw records.','source_sha256':hashes,'missing_response_records':missing,'uncommitted_response_records':uncommitted,'independent_review':'../../../independent-review.json'}}
+    if incomplete_records:
+        value['extra']['incomplete_response_records']=incomplete_records
+        value['extra']['conversion']+=' Output-token cutoffs are retained from provider error events. Pi session records establish parsed partial arguments and rejected tool observations, checked against subsequent provider inputs. These calls were not executed; raw provider arguments and incomplete status are preserved.'
     if is_claude:
         route='AxonHub' if harness.get('authentication')=='axonhub' else 'subscription'
         value['agent']['name']='SwarmHarm rollout collector (Claude Agent SDK / '+route+')'
@@ -305,7 +351,11 @@ def export(root):
     for phase,plan in reg['plan'].items():
         for actor in plan:
             if (root/phase/actor/'history.json').exists():results.append(export_actor(root,phase,actor))
-    dest=root/'atif-validation.json';assert not dest.exists(),'Do not replace an export';dest.write_text(json.dumps({'harbor_version':'0.24.0','schema':'ATIF-v1.8','trajectories':results},indent=2)+'\n');return results
+    dest=root/'atif-validation.json';assert not dest.exists(),'Do not replace an export'
+    exporter={str(Path('shared')/name):sha(Path(__file__).parent/name)
+              for name in ('export_atif.py','pi_evidence.py','codex_evidence.py')}
+    dest.write_text(json.dumps({'harbor_version':'0.24.0','schema':'ATIF-v1.8',
+        'exporter_source_sha256':exporter,'trajectories':results},indent=2)+'\n');return results
 
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('output',type=Path);a=p.parse_args();print(json.dumps(export(a.output),indent=2))

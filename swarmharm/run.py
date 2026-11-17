@@ -331,7 +331,7 @@ def code_paths():
             'shared/claude/catalog.mjs')]
         +[REPO/'shared'/name for name in (
             'codex_agent.py','codex_rpc.py','codex_mcp.py','codex_session.py','codex_evidence.py',
-            'codex_context.py','export_atif.py')]
+            'codex_context.py','export_atif.py','pi_evidence.py')]
         +[p for p in (HERE/'phase2/terminal_batching/upstream').iterdir()
           if p.is_file() and p.suffix != '.py']
         +[REPO/'shared/Dockerfile.workstation',REPO/'scripts/build-workstation-image',
