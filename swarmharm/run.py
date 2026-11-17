@@ -322,7 +322,7 @@ def code_paths():
             'shared/response_monitor.py','shared/record_surface.py','shared/work_journal.py','shared/launch_capacity.py',
             'shared/workstation_observer.py',
             'shared/workstation_patch.py','shared/workstation-patch.LICENSE',
-            'shared/codex/package.json','shared/codex/package-lock.json','shared/python-requirements.txt',
+            'shared/python-requirements.txt',
             'shared/pi_agent.py','shared/pi/agent.mjs','shared/pi/package.json',
             'shared/pi/package-lock.json','shared/prompt-contract/checks.py')]
         +[REPO/name for name in (

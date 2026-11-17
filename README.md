@@ -8,7 +8,7 @@
 ## Run the default experiment
 
 **Only supply your API URL and key.** The default runs all [11 models](docs/model-lineup.md)
-with **N=4, 8, 16, 32 for SwarmForm** and **N=4, 8, 16 for SwarmHarm**,
+with **N=4, 8, 16 for SwarmForm** and **N=4, 8, 16 for SwarmHarm**,
 one repeat per setting, high reasoning, goal off and independent agent memory. OpenAI uses Codex, Claude uses Claude Code, and the other models use Pi.
 Both studies are included; no model, task, population or output selection is required.
 
@@ -33,10 +33,10 @@ provider supporting Chat Completions, function tools and token usage.
 
 | Study | Settings per model | Cohorts per model | All 11 models |
 | --- | --- | --- | --- |
-| SwarmForm | 6 tasks × 4 communication conditions × N=4/8/16/32 | 96 | 1,056 |
+| SwarmForm | 6 tasks × 4 communication conditions × N=4/8/16 | 72 | 792 |
 | SwarmHarm | 6 threat models × 2 domains × N=4/8/16 | 36 | 396 |
 
-**Total: 1,452 study cohorts / 19,536 agent trajectories**, plus the initial 44-agent
+**Total: 1,188 study cohorts / 11,088 agent trajectories**, plus the initial 44-agent
 API check. Results go automatically to `../swarm-runs/`, outside Git:
 `api-check/`, `swarmform/<model>/` and `swarmharm/<model>/`, with plans, progress
 indexes, logs and complete per-cohort records. Re-running the command resumes the
@@ -146,7 +146,7 @@ export MODEL=your-served-model
 # Set OPENAI_API_KEY or OPENAI_API_KEY_FILE if authentication is required.
 # Planning only: no endpoint calls.
 python rollouts/run_matrix.py --harness chat-completions --model "$MODEL" --populations 4 --tasks decoder-possible
-python rollouts/run_matrix.py --harness chat-completions --model "$MODEL" --populations 4 8 16 32
+python rollouts/run_matrix.py --harness chat-completions --model "$MODEL" --populations 4 8 16
 ```
 
 These standalone commands use the lightweight Chat Completions runner, which needs
@@ -157,9 +157,8 @@ Planning needs no installed image. Execution requires the exported immutable ima
 there is no machine-specific fallback. Use `--served-model` when the API expects a
 different model name. Installation selects the Docker engine's architecture.
 **This revision is validated offline; no new model rollout is claimed.**
-A full 4/8/16/32 batch is 96 cohorts per repeat, or 288 with `--repeats 3`.
-Extensions at `--populations 64 128` add 48 cohorts per repeat, giving 432 total
-with three repeats across all six sizes. Start with one task at N=4. Keep model
+A full 4/8/16 batch is 72 cohorts per repeat, or 288 with `--repeats 3`.
+Larger populations can be requested explicitly when the host has capacity; they are not part of the default handoff. Start with one task at N=4. Keep model
 revision and budgets fixed across variants and channels; repeats use the same
 fixed instances.
 

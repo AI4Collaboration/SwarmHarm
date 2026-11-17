@@ -32,7 +32,7 @@ def selection(names=None, mapping=None):
 
 
 POPULATIONS = (4, 8, 16)  # SwarmHarm
-SWARMFORM_POPULATIONS = (4, 8, 16, 32)
+SWARMFORM_POPULATIONS = (4, 8, 16)
 REPEATS = 1
 GOAL = 'off'
 REASONING = 'high'

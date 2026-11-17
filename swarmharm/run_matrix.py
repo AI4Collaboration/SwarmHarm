@@ -66,6 +66,17 @@ def reusable_controls(records, row):
         output = Path(record['output'])
         if not (output/'controls.json').is_file() or not (output/'registration-seal.json').is_file():
             continue
+        # A passing controls file is reusable only when the sealed registration
+        # was prepared from this exact source tree.  Older attempts can still
+        # be retained for audit, but must never supply controls to a new run.
+        try:
+            registration = run.load(output/'registration.json')
+            expected_hashes = {str(path.relative_to(run.REPO)): run.sha(path)
+                               for path in run.code_paths()}
+        except (OSError, KeyError, TypeError, ValueError):
+            continue
+        if registration.get('code_hashes') != expected_hashes:
+            continue
         checks = run.load(output/'controls.json')
         if checks.get('passed') and required <= set(checks.get('check_modules', [])):
             # Preparation also verifies source, image, runtime and every sealed hash.
