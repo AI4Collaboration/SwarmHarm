@@ -18,6 +18,27 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class CodexLoginChecks(unittest.TestCase):
+    def test_npm_launcher_resolves_nested_hoisted_and_bundled_native_packages(self):
+        for layout in ('nested', 'hoisted', 'bundled'):
+            with self.subTest(layout=layout), tempfile.TemporaryDirectory() as directory:
+                package = Path(directory)/'node_modules/@openai/codex'
+                launcher = package/'bin/codex.js'
+                launcher.parent.mkdir(parents=True)
+                launcher.write_text('// npm launcher')
+                vendor = {'nested': package/'node_modules/@openai/codex-linux-x64/vendor',
+                          'hoisted': package.parent/'codex-linux-x64/vendor',
+                          'bundled': package/'vendor'}[layout]
+                binary = vendor/'x86_64-unknown-linux-musl/bin/codex'
+                binary.parent.mkdir(parents=True)
+                binary.write_bytes(b'native executable fixture')
+                with patch.dict(os.environ, {'SWARMHARM_NATIVE_CODEX': str(launcher)}), \
+                        patch.object(codex_gateway.platform, 'machine', return_value='x86_64'), \
+                        patch.object(codex_gateway.platform, 'system', return_value='Linux'):
+                    self.assertEqual(codex_gateway.codex_binary(), str(binary.resolve()))
+                    binary.unlink()
+                    with self.assertRaisesRegex(RuntimeError, 'Native Codex package is missing'):
+                        codex_gateway.codex_binary()
+
     def test_local_login_bypasses_the_api_bridge_and_provider_mapping(self):
         with patch.object(model_session, 'ChatBridge', side_effect=AssertionError('API bridge used')), \
                 patch.object(codex_agent, 'CodexAgent') as agent:

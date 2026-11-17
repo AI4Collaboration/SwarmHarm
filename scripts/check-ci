@@ -86,6 +86,7 @@ def select_checks(files, full=False):
                 checks.add('inputs')
         elif name == 'scripts/check_dataset_admission_contract.py':
             checks.add('inventory')
+            suites('dataset_admission', roots=('shared',))
         elif name == 'scripts/archive-trajectories':
             suites('trajectory_archive')
         elif name in {'scripts/run-evals', 'scripts/setup-defaults', 'shared/model_lineup.py', 'shared/batch_resume.py'}:

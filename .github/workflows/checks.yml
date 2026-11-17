@@ -49,6 +49,7 @@ jobs:
               for key in ('dependencies', 'docker'):
                   print(f'{key}={str(plan[key]).lower()}', file=output)
               print('harnesses=' + ' '.join(plan['harnesses']), file=output)
+              print('jq_reference=' + str('tests.reference_runtime_checks' in plan['tests']).lower(), file=output)
           print(json.dumps(plan, indent=2))
           PY
 
@@ -87,6 +88,10 @@ jobs:
               print('SWARMHARM_DOCKER_IMAGE=' + image, file=output)
               print('SWARMHARM_SANDBOX=docker', file=output)
           PY
+
+      - name: Build jq for the selected reference runtime check
+        if: steps.plan.outputs.jq_reference == 'true'
+        run: bash rollouts/build-jq amd64
 
       - name: Run selected checks once
         run: python scripts/check-ci --base "$CHECK_BASE" --committed $CHECK_FULL

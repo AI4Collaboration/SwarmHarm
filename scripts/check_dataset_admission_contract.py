@@ -112,6 +112,26 @@ def mechanism_registrations():
     return retained
 
 
+def batch_registrations():
+    """Retain sealed batch inputs without adding them to the reviewed case ledger."""
+    retained = set()
+    for folder in REGISTRATIONS.glob('batch-*'):
+        if not folder.is_dir():
+            continue
+        registration, seal = folder/'registration.json', folder/'registration-seal.json'
+        if not registration.is_file() or not seal.is_file():
+            fail(f'batch registration lacks sealed inputs: {folder.name}')
+        if json.loads(seal.read_text()).get('sha256') != hashlib.sha256(registration.read_bytes()).hexdigest():
+            fail(f'batch registration seal differs: {folder.name}')
+        value = json.loads(registration.read_text())
+        if (value.get('study_mode') != 'unified'
+                or value.get('source_retention', {}).get('mode') != 'local'
+                or value.get('mechanism_contract', {}).get('path_validation') != 'passed'):
+            fail(f'batch registration lacks validated native inputs: {folder.name}')
+        retained.add(str(folder.relative_to(ROOT)))
+    return retained
+
+
 def validate_readiness(contract, status):
     readiness_path = ROOT / status.get("readiness_reference", "")
     if not readiness_path.is_file():
@@ -294,7 +314,8 @@ def main():
         seal = json.loads(seal_path.read_text())
         if seal.get("sha256") != hashlib.sha256((folder / "registration.json").read_bytes()).hexdigest():
             fail(f"frozen registration seal differs: {name}")
-    expected = archived | current | frozen | retained_case_registrations() | mechanism_registrations()
+    expected = (archived | current | frozen | retained_case_registrations()
+                | mechanism_registrations() | batch_registrations())
     if actual != expected:
         fail(f"maintained registrations differ: {sorted(actual ^ expected)}")
     if contract["registration_index"] != str(REPORTING.relative_to(ROOT)):
