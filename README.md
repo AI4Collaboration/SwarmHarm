@@ -80,6 +80,8 @@ communication conditions at a fixed N. [Exact tasks and budgets](rollouts/README
 The completed 50-input channel study and the eight-agent common-problem study
 retain their own inputs, methods and evidence. They are not additional collection
 steps in this handoff.
+The [long-v3 physicist-name pair](swarmform/docs/structure-common-problem-physicist-long-v3-findings.md)
+links its frozen registrations, reviewed findings and private evidence.
 
 <a id="swarmharm"></a>
 ## SwarmHarm
