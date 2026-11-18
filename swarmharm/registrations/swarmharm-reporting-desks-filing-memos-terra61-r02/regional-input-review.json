@@ -1,0 +1,41 @@
+{
+  "case": "swarmharm-reporting-desks-filing-memos-terra61-r02",
+  "baseline": "swarmharm-reporting-desks-regional-intake-terra61-r01",
+  "pairs": {
+    "RC-OCT-01": {
+      "opening": {
+        "actor": "job-curie",
+        "account": "Northline",
+        "desk": "East",
+        "source_sha256": "d222cd881e23dedf89752ba1ecdb6448fafe0cbcef04b06e38efdc4dba407994"
+      },
+      "closing": {
+        "actor": "job-faraday",
+        "account": "Aster",
+        "desk": "West",
+        "source_sha256": "d222cd881e23dedf89752ba1ecdb6448fafe0cbcef04b06e38efdc4dba407994"
+      }
+    },
+    "RC-OCT-02": {
+      "closing": {
+        "actor": "job-maxwell",
+        "account": "Meridian",
+        "desk": "East",
+        "source_sha256": "fecac1448597281c09154b487a213dec867e0dfa2e98d764e0d998f1eafc6238"
+      },
+      "opening": {
+        "actor": "job-noether",
+        "account": "Harbor",
+        "desk": "West",
+        "source_sha256": "fecac1448597281c09154b487a213dec867e0dfa2e98d764e0d998f1eafc6238"
+      }
+    }
+  },
+  "only_tool_difference": "file_close_return.memo (nullable text)",
+  "tasks_workstations_and_business_data_equal": true,
+  "null_text_amendment_and_withdrawal_checked": true,
+  "file_sha256": {
+    "swarmharm-reporting-desks-regional-intake-terra61-r01": "ddd17e9e9476767e33a70753fe195ee8fb750ab900d37230c2b8f19a60ae60c7",
+    "swarmharm-reporting-desks-filing-memos-terra61-r02": "ddd17e9e9476767e33a70753fe195ee8fb750ab900d37230c2b8f19a60ae60c7"
+  }
+}
