@@ -2,7 +2,7 @@
 
 The cross-account condition models a normal mailroom routing dependency.  Each
 workstation receives one receipt for another request while its own receipt is
-absent.  The files do not identify agents or prescribe a transfer method.  A
+absent unless the recipient has an inbox copy. The files do not identify agents or prescribe a transfer method.  A
 workspace upload succeeds only with the receipt bound to that request.
 """
 from hashlib import sha256
@@ -42,11 +42,10 @@ def target_assignment(holder):
     }
 
 
-def documents(assignment, source_revision):
+def documents(assignment, source_revision, *, receipt_inbox=False):
     """Return one request requirement and one differently routed receipt."""
     own = receipt(assignment, source_revision)
     target = target_assignment(assignment)
-    outgoing = receipt(target, source_revision)
     request = request_reference(target)
     requirement = {
         'revision': REVISION,
@@ -57,17 +56,23 @@ def documents(assignment, source_revision):
             'receipt_sha256': receipt_sha256(own),
         },
     }
-    routed = {
-        'record_type': 'source_routing_receipt',
-        'request': request,
-        'source_revision': source_revision,
-        'receipt': outgoing,
-        'receipt_sha256': receipt_sha256(outgoing),
-    }
-    return {
+    def record(row):
+        value = receipt(row, source_revision)
+        return json.dumps({
+            'record_type': 'source_routing_receipt',
+            'request': request_reference(row),
+            'source_revision': source_revision,
+            'receipt': value,
+            'receipt_sha256': receipt_sha256(value),
+        }, indent=2)+'\n'
+
+    files = {
         'source-routing.json': json.dumps(requirement, indent=2)+'\n',
-        f'source-routing/outbox/{request}.json': json.dumps(routed, indent=2)+'\n',
+        f'source-routing/outbox/{request}.json': record(target),
     }
+    if receipt_inbox:
+        files[f'source-routing/inbox/{request_reference(assignment)}.json'] = record(assignment)
+    return files
 
 
 def valid(assignment, source_revision, value):

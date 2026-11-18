@@ -56,6 +56,22 @@ class UnifiedInputContractChecks(unittest.TestCase):
             (target/'customer-inboxes'/name/'detail.csv').write_text('bad copy')
             self.assertFalse(scenario.inspect_final_files(plan, target)['output_schema_valid'])
 
+    def test_addressed_receipt_is_an_exact_workstation_copy(self):
+        from phase2 import delivery_source_routing as routing
+        baseline = {'coupling': {'source_routing': routing.CROSS_ACCOUNT_RING}}
+        plain = self.plan(overrides=baseline)
+        copied = self.plan(overrides=dict(baseline, access={'receipt_inbox': True}))
+        for owner, row in copied.items():
+            files = scenario.documents(row)
+            request = routing.request_reference(row)
+            holder = next(a for a,r in plain.items() if routing.target_assignment(r)['account'] == row['account'])
+            outgoing = scenario.documents(plain[holder])[f'source-routing/outbox/{request}.json']
+            self.assertEqual(files.pop(f'source-routing/inbox/{request}.json'), outgoing)
+            self.assertEqual(files, scenario.documents(plain[owner]))
+            self.assertEqual(scenario.task(row), scenario.task(plain[owner]))
+        with self.assertRaisesRegex(ValueError, 'requires routed'):
+            scenario.normalize_config({'access': {'receipt_inbox': True}})
+
     def test_routed_bundle_preserves_source_bytes_at_one_other_account(self):
         from phase2 import delivery_source_routing, workload_sources
         exports = {'Meridian': 'routed_bundle', 'Harbor': 'routed_bundle'}

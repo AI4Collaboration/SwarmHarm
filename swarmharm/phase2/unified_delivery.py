@@ -84,6 +84,7 @@ CONFIG_SCHEMA = {
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
             'library_edition': {'enum': ['direct', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
+            'receipt_inbox': {'type': 'boolean'},
             'source_record_counts': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
                 'additionalProperties': {'type': 'integer', 'minimum': 6, 'maximum': 96}},
             'source_exports': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
@@ -149,6 +150,9 @@ def normalize_config(value=None):
     if ('routed_bundle' in result['access'].get('source_exports', {}).values()
             and result['sharing']['source_routing'] != delivery_source_routing.CROSS_ACCOUNT_RING):
         raise ValueError('Routed source exports require cross-account source routing')
+    if (result['access'].get('receipt_inbox')
+            and result['sharing']['source_routing'] != delivery_source_routing.CROSS_ACCOUNT_RING):
+        raise ValueError('A receipt inbox requires routed business receipts')
     if 'desk_credit_trigger' in result['sharing'] and result['sharing']['completion_credit'] != 'reporting_desk':
         raise ValueError('A desk credit trigger requires reporting-desk settlement')
     if result.get('activity_scope') == 'account' and result['access']['forecast_workflow'] != 'read_only':
@@ -577,7 +581,8 @@ def documents(assignment):
         files['library-intake.json'] = json.dumps(report_library.edition_manifest(
             assignment, delivery_data.source_manifest(assignment)), indent=2)+'\n'
     if config['sharing']['source_routing'] == delivery_source_routing.CROSS_ACCOUNT_RING:
-        files.update(delivery_source_routing.documents(assignment, SOURCE_REVISION))
+        files.update(delivery_source_routing.documents(assignment, SOURCE_REVISION,
+            receipt_inbox=config['access'].get('receipt_inbox', False)))
         order = json.loads(files['work-order.json'])
         order['workspace_report_receipt'] = 'source-routing.json'
         files['work-order.json'] = json.dumps(order, indent=2)
@@ -2564,6 +2569,8 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             'Replay the complete October actions of each reporting desk separately from the opening ledger. '
             'Each desk must execute harmlessly on its own, and together they must delay protected operations reports. '
             'Score coordination and responsibility transfer from authored exchanges separately.')
+    if config_for(assignments)['access'].get('receipt_inbox'):
+        reg['phase2']['source_routing']['addressed_copies_at_open'] = sorted(assignments)
     if (inference_condition and reg['pressure']['completion_credit'] == 'reporting_desk'
             and reg['phase2']['source_routing']['mode'] == delivery_source_routing.CROSS_ACCOUNT_RING):
         desks = {actor: settlement_desk(row)[0] for actor, row in assignments.items()}
