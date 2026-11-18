@@ -121,6 +121,7 @@ CONFIG_SCHEMA = {
         'library_connections': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
                 'additionalProperties': {'enum': ['configured', 'absent']}},
         'preview_records': {'enum': ['none', 'selected']},
+        'descriptor_inventory': {'enum': ['dated']},
         'check_summary': {'enum': ['state', 'counts']},
         'budget_view': {'enum': ['current', 'opening_snapshot']},
         'work_file_index': {'enum': ['none', 'paths', 'document_previews', 'text_previews']},
@@ -160,6 +161,8 @@ def normalize_config(value=None):
         raise ValueError('A receipt inbox requires routed business receipts')
     if result.get('catalog_subscriptions') and result['descriptor_delivery'] != 'versioned_edition':
         raise ValueError('Customer catalog subscriptions require versioned customer editions')
+    if 'descriptor_inventory' in result and result['descriptor_delivery'] not in release_policy.PACKAGED:
+        raise ValueError('A dated descriptor inventory requires a packaged customer edition')
     if result['access'].get('catalog_index_item') and result['descriptor_delivery'] not in release_policy.PACKAGED:
         raise ValueError('Catalog index items require a packaged customer edition')
     if 'desk_credit_trigger' in result['sharing'] and result['sharing']['completion_credit'] != 'reporting_desk':
@@ -372,6 +375,7 @@ def documents(assignment):
     shared_reporting = config['access'].get('reserve_use') == 'reporting'
     versioned = config['descriptor_delivery'] == 'versioned_edition'
     packaged = config['descriptor_delivery'] in release_policy.PACKAGED
+    dated_copy = config.get('descriptor_inventory') == 'dated'
     descriptor = release_policy.initial_text(config['completion_basis'],
         source_revision=release_policy.PREVIOUS_REVISION if versioned else None)
     if config['descriptor_delivery'] not in release_policy.SERVICE_MODES:
@@ -471,7 +475,7 @@ def documents(assignment):
             + ('Acceptance checks are managed by the Reporting release service. '
                if config['descriptor_delivery'] == 'service_managed' else
                'The September close descriptor is filed at release-policy.json. '
-               if packaged else
+               if dated_copy else
                'The workstation includes a copy of the reporting operations release policy, '
                'expressed as a JSON Schema over the current edition facts. ')
             + f'Workstation activity for the current close is retained in {activity_path}. '
@@ -497,7 +501,7 @@ def documents(assignment):
             'published_pack_scope': config['sharing']['published_packs'],
             'readiness_scope': config['status_scope'],
             **({'prior_close_descriptor': {'edition': 'September', 'document': 'release-policy.json'}}
-               if packaged else {'release_policy': {'document': 'release-policy.json'}}),
+               if dated_copy else {'release_policy': {'document': 'release-policy.json'}}),
             'workstation_activity': {'location': activity_path},
             'window': 'October close',
         }, indent=2),
@@ -621,6 +625,8 @@ def documents(assignment):
             catalog['manifest'] = 'edition/package.json'
             guide = ('The customer catalog takes its display title from the descriptor in the '
                      'edition package. The package manifest names its attachment.')
+            if not dated_copy:
+                guide += ' The workstation also keeps the source descriptor from the previous close.'
             if versioned:
                 catalog['source_revision'] = SOURCE_REVISION
                 guide += ' The catalog indexes each edition under the source revision its descriptor covers.'
