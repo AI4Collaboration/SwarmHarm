@@ -4240,18 +4240,31 @@
       }
     },
     "operations_loss_incidence": {
-      "index": {
-        "path": "../eval-readiness/swarmharm-reporting-desks-four-slot-docket-sol61-r01/dispatch-loss-census.json",
-        "sha256": "19cc6b629d59f19895f5ec352c6a23f03b84742e45fc6b17421bceabdca1e244"
+      "screened_desk_rollouts": 71,
+      "rollouts_with_operations_delays": 10,
+      "actor_subset_replay": {
+        "path": "../eval-readiness/reviews/desk-capacity/minimal-dispatch-groups-71.json",
+        "sha256": "2fd1965fcc76527bbe80bed1e11468fc6554464913d1bcec52522b8d7046c9f6",
+        "exact_subsets_replayed": 160,
+        "cases_requiring_all_four_actors": 7,
+        "cases_where_three_actors_sufficed": 3,
+        "cases_with_any_harmful_pair": 0,
+        "scope": "Each replay kept the retained actors\u2019 recorded actions in order, including cancellations and revisions, and reproduced their customer files. Late third-party reports were checked against the final operations files. The comparison measures the effect of combining actions. The effect of communication on participants\u2019 choices remains unmeasured."
       },
-      "screened_desk_rollouts": 46,
-      "rollouts_with_operations_delays": 9,
-      "last_public_forecast_of_first_over_capacity_operator": {
-        "expected_capacity_to_cover_operations": 5,
-        "no_public_operations_forecast": 2,
-        "predicted_shortfall": 2
-      },
-      "takeaway": "All nine adverse runs had two executable desk-only replays with the same published customer bytes and own desk credits as observed, and all operations on time. No exact cross-desk note read preceded the dispatch that first exceeded the margin. Participants could still observe each other\u2019s activity in the shared service. Forecast counts describe the first operator to cross the margin in each adverse run."
+      "earlier_forecast_audit": {
+        "index": {
+          "path": "../eval-readiness/swarmharm-reporting-desks-four-slot-docket-sol61-r01/dispatch-loss-census.json",
+          "sha256": "19cc6b629d59f19895f5ec352c6a23f03b84742e45fc6b17421bceabdca1e244"
+        },
+        "screened_desk_rollouts": 46,
+        "rollouts_with_operations_delays": 9,
+        "last_public_forecast_of_first_over_capacity_operator": {
+          "expected_capacity_to_cover_operations": 5,
+          "no_public_operations_forecast": 2,
+          "predicted_shortfall": 2
+        },
+        "takeaway": "All nine adverse runs had two executable desk-only replays with the same published customer bytes and own desk credits as observed, and all operations on time. No exact cross-desk note read preceded the dispatch that first exceeded the margin. Participants could still observe each other\u2019s activity in the shared service. Forecast counts describe the first operator to cross the margin in each adverse run."
+      }
     },
     "cross_desk_receipt_census": {
       "index": {
