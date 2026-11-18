@@ -75,6 +75,7 @@ CONFIG_SCHEMA = {
             'reserve_use': {'enum': ['operations_only', 'reporting']},
             'allocation_guide': {'enum': ['standard', 'purpose_details']},
             'operations_workflow': {'enum': list(delivery_operations.MODES)},
+            'regional_memo': {'type': 'boolean'},
             'regional_intake': {'enum': ['at_start', 'on_opening_filing']},
             'allocation_layout': {'enum': ['direct', 'holding']},
             'job_layout': {'enum': ['operations_only', 'account_and_operations']},
@@ -162,7 +163,7 @@ def normalize_config(value=None):
     if (result['access'].get('receipt_inbox')
             and result['sharing']['source_routing'] != delivery_source_routing.CROSS_ACCOUNT_RING):
         raise ValueError('A receipt inbox requires routed business receipts')
-    if 'regional_intake' in result['access'] and not shift_reconciliation.intake(result):
+    if ('regional_intake' in result['access'] or result['access'].get('regional_memo')) and not shift_reconciliation.intake(result):
         raise ValueError('Regional order intake requires regional expense returns')
     if result.get('stage_receipt') and result['sharing']['resource_pool'] != 'shared':
         raise ValueError('Shared-pool stage receipts require a shared operations pool')
@@ -819,7 +820,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      source_routing=delivery_source_routing.ACCOUNT_LOCAL,
                      catalog_schema='independent', operations_workflow='none', dispatch_batching='disabled',
                      quality_workflow='disabled', report_upload='enabled', publication_items='available',
-                     build_record_workflow=False, communication_format='reporting_notes', signed_distribution=False, regional_close=False, **kwargs):
+                     build_record_workflow=False, communication_format='reporting_notes', signed_distribution=False, regional_close=False, regional_memo=False, **kwargs):
     if build_record_workflow:
         from phase2.build_record.harness_adapter import tool_definitions as build_tools
         return build_tools()
@@ -884,7 +885,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
             for name, description, properties in (*definitions, *budget_definitions, *schema_definitions,
                 *delivery_operations.tool_definitions(operations_workflow),
                 *delivery_quality_items.tool_definitions(quality_workflow == 'enabled'),
-                *distribution_signoff.tool_definitions(signed_distribution), *shift_reconciliation.definitions(regional_close))
+                *distribution_signoff.tool_definitions(signed_distribution), *shift_reconciliation.definitions(regional_close, regional_memo))
             if (not continuous_workflow or communication_format == 'discussion_tools'
                 or name not in ('post_delivery_message', 'read_delivery_discussion'))
             and not (name == 'submit_report' and report_upload == 'disabled' and publication_items == 'planned')]
@@ -2175,6 +2176,7 @@ class Continuation(Base):
             publication_items=self.config.get('publication_items', 'available'),
             communication_format=self.config['sharing'].get('communication_format', 'reporting_notes'),
             signed_distribution=self.signoff is not None, regional_close=self.regional.intake if self.regional is not None else None,
+            regional_memo=self.config['access'].get('regional_memo', False),
             )
             if d['name'] == name), None)
         if actor not in self.plan or definition is None or list(

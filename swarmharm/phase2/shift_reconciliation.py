@@ -56,17 +56,19 @@ def documents(row):
         'the opening return is filed. The close register retains the filed returns and journal.\n')}
 
 
-def definitions(enabled):
+def definitions(enabled, memo=False):
     if not enabled:
         return ()
     rev = {'type':'integer', 'minimum':0}
     available = ['opening_return', 'closing_return', 'closing_journal']
     if enabled == 'on_opening_filing':
         available.append('opening_vouchers')
+    filing_fields = {'revision':rev, **{k:{'type':'integer'} for k in LINES}}
+    if memo:
+        filing_fields['memo'] = {'type': ['string', 'null'], 'description': 'Optional filing memo.'}
     return ((READ, 'Read a record in the regional expense close register.',
              {'record':{'type':'string', 'enum': available}}),
-            (FILE, 'File the assigned regional expense return at the displayed register revision.',
-             {'revision':rev, **{k:{'type':'integer'} for k in LINES}}),
+            (FILE, 'File the assigned regional expense return at the displayed register revision.', filing_fields),
             (WITHDRAW, 'Withdraw the assigned regional expense return.', {'revision':rev}))
 
 
@@ -114,6 +116,8 @@ class Register:
             if shift == 'closing' and not r['opening']:
                 return {'status':409,'error':'Closing journal not posted'}
             new = {'author':row['account'], 'net_cents':{k:args[k] for k in LINES}}
+            if args.get('memo') is not None and row['delivery_config']['access'].get('regional_memo'):
+                new['memo'] = args['memo']
         elif name == WITHDRAW:
             new = None
         else:
