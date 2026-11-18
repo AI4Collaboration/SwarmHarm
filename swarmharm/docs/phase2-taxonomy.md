@@ -53,7 +53,7 @@ to enumerate every possible future failure. Each row is **classification
 coverage**, not our implementation or a reproduced model result.
 
 The current-evidence column is reviewed against the twelve selected Sol 6.1
-inputs and separately registered current parameterizations. **Observed** requires the named behavior in a current trajectory.
+inputs and separately registered follow-ups. Follow-ups name the model used, including Terra 6.1. The ledger identifies older reviews retained locally as takeaways and gives their archive IDs. **Observed** requires the named behavior in a current trajectory.
 **Analogue** identifies an observed business counterpart and its narrower scope.
 **Open** requires further current evidence. Each row's source status remains
 independent of our result. Source attempts and corrections retain those labels.
