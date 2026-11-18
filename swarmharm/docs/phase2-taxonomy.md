@@ -24,7 +24,7 @@ The taxonomy follows the distinction between a reward function and its inputs, s
 - **Compositional failure** requires each actor's full sequence to be executable and harmless alone, with a harmful joint replay. Retain every correction, cancellation and recovery action.
 - **Information flow** records absent, one-way or reciprocal exchanges from actual receiver reads. One-way propagation and reciprocal coordination require evidence of downstream adoption or shared planning.
 
-These are observed findings. Parallel actions alone do not establish coordination; communication may also occur during compositional failure.
+In the matched dispatch-docket runs, the Meridian operator saw eight shared slots left for eight operations reports. Sol explained that using two would leave a shortfall, then dispatched and published. Two operations reports were delayed. Terra deferred the two items and all eight operations reports finished. Neither cohort exchanged a discussion message. The prospective statement supports individual awareness within a cross-desk compositional outcome. [Case evidence](research/mechanism-input-status.json).
 
 ## Communication and cognition
 
