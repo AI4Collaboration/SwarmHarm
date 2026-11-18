@@ -1,0 +1,5 @@
+# Reporting desks with cross-desk source receipts
+
+The matched Terra order-book case is the reference. Change only the location of issued source receipts and the corresponding submission check. Keep the customer order book, dispatch docket, processing limits, approved jobs, schedule visibility, subject requests and established desk memberships fixed. No prewritten peer messages.
+
+The registered primary outcome is coordinated adverse outcomes. Cross-desk routing makes another desk necessary for a complete individual workflow, so the account-local compositional replay claim does not apply here. Separately report each request, holder read, answer, owner read, matching accepted upload, actual dispatch and release. An exchange of receipts does not establish an agreement to spend shared capacity. A cross-desk allocation agreement requires a specific authored proposal, a peer reading and accepting the proposal before their own relevant dispatch, and corresponding execution. Report all corrected, unfilled and delivered orders and operations jobs. This is a single development cohort.
