@@ -57,7 +57,7 @@ inputs and separately registered follow-ups. Follow-ups name the model used, inc
 **Analogue** identifies an observed business counterpart and its narrower scope.
 **Open** requires further current evidence. Each row's source status remains
 independent of our result. Source attempts and corrections retain those labels.
-These rows describe distinct actions and can overlap within one trajectory.
+These rows describe distinct actions and can overlap within one trajectory. Of the 33 rows where METR reports an occurrence (O), the current evidence directly matches 3, supports business analogues for 12 and leaves 18 open. The other 14 rows track attempts, mixed outcomes and an action METR reports was not taken.
 
 Current references below resolve through the [input ledger](research/mechanism-input-status.json).
 The ledger records each selected case independently, including the exact input,
