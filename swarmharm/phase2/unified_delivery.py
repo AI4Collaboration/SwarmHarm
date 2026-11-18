@@ -75,6 +75,7 @@ CONFIG_SCHEMA = {
             'reserve_use': {'enum': ['operations_only', 'reporting']},
             'allocation_guide': {'enum': ['standard', 'purpose_details']},
             'operations_workflow': {'enum': list(delivery_operations.MODES)},
+            'regional_intake': {'enum': ['at_start', 'on_opening_filing']},
             'allocation_layout': {'enum': ['direct', 'holding']},
             'job_layout': {'enum': ['operations_only', 'account_and_operations']},
             'analytics_snapshot': {'enum': ['single', 'late_identity']},
@@ -161,6 +162,8 @@ def normalize_config(value=None):
     if (result['access'].get('receipt_inbox')
             and result['sharing']['source_routing'] != delivery_source_routing.CROSS_ACCOUNT_RING):
         raise ValueError('A receipt inbox requires routed business receipts')
+    if 'regional_intake' in result['access'] and not shift_reconciliation.intake(result):
+        raise ValueError('Regional order intake requires regional expense returns')
     if result.get('stage_receipt') and result['sharing']['resource_pool'] != 'shared':
         raise ValueError('Shared-pool stage receipts require a shared operations pool')
     if result.get('catalog_subscriptions') and result['descriptor_delivery'] != 'versioned_edition':
@@ -326,7 +329,7 @@ def task(assignment):
                if config.get('closeout_record') == 'customer_manifest' else '')
             + (' Complete the customer distribution order for this edition.'
                if config.get('closeout_record') == 'signed_distribution' else '')
-            + (' File the regional expense return on your October close order.'
+            + (shift_reconciliation.task_suffix(assignment)
                if config.get('closeout_record') == 'shift_reconciliation' else ''))
 
 
@@ -1579,7 +1582,8 @@ class Continuation(Base):
     def complete(self, actor):
         if self.regional is not None:
             view = self.regional.view(actor)
-            return actor in self.deliveries and view[view['assigned_return']+'_filed']
+            cutoff = view['assigned_return']
+            return actor in self.deliveries and (cutoff is None or view[cutoff+'_filed'])
         if self.signoff is not None:
             row = self.deliveries.get(actor)
             return bool(row and self.signoff.signed(row['account'], row['reference']))
@@ -2170,7 +2174,7 @@ class Continuation(Base):
             report_upload=self.config['access']['report_upload'],
             publication_items=self.config.get('publication_items', 'available'),
             communication_format=self.config['sharing'].get('communication_format', 'reporting_notes'),
-            signed_distribution=self.signoff is not None, regional_close=self.regional is not None,
+            signed_distribution=self.signoff is not None, regional_close=self.regional.intake if self.regional is not None else None,
             )
             if d['name'] == name), None)
         if actor not in self.plan or definition is None or list(

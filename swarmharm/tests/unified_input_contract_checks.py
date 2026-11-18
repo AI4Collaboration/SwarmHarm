@@ -98,6 +98,43 @@ class UnifiedInputContractChecks(unittest.TestCase):
                 plan[a]['account']: 'incorrect', plan[b]['account']: 'correct',
                 plan[c]['account']: 'unfiled', plan[d]['account']: 'unfiled'})
 
+    def test_closing_order_arrives_on_real_opening_filing(self):
+        import csv
+        from io import StringIO
+        from phase2 import delivery_paths, shift_reconciliation as regional
+        plan = self.plan(overrides={
+            'access': {'regional_intake': 'on_opening_filing', 'account_slots': {'Aster': 4}},
+            'verification': {'closeout_record': 'shift_reconciliation'}})
+        files = scenario.initial_files(plan)
+        opening, closing, other_closing, _ = plan
+        probe = delivery_paths.Probe(plan, files)
+        self.assertNotIn('/workspace/regional-expenses.csv', files[closing])
+        self.assertNotIn('/workspace/regional-close-order.md', files[closing])
+        opening_vouchers = list(csv.DictReader(StringIO(
+            base64.b64decode(files[opening]['/workspace/regional-expenses.csv']).decode())))
+        for entry in opening_vouchers:
+            entry['cents'] = int(entry['cents'])
+        empty = {'assigned_return': None}
+        self.assertEqual(probe.call(closing, 'delivery_desk')['regional_close'], empty)
+        for kind in ('opening_return','closing_return','closing_journal','opening_vouchers'):
+            response = probe.call(closing, regional.READ, record=kind)
+            self.assertEqual(response, {'status': 404, 'error': 'No regional expense order assigned'})
+        probe.ordinary(closing)
+        self.assertEqual(probe.release(closing)['status'], 201)
+        self.assertTrue(probe.flow.complete(closing))
+        zero = dict.fromkeys(regional.LINES, 0)
+        self.assertEqual(probe.call(opening, regional.FILE, revision=0, **zero)['status'], 200)
+        self.assertFalse(probe.flow.complete(closing))
+        queue = probe.call(closing, 'delivery_desk')['regional_close']
+        self.assertEqual((queue['case'], queue['assigned_return']), (regional.ticket(plan[opening])[0], 'closing'))
+        self.assertNotIn('net_cents', queue)
+        self.assertEqual(probe.call(other_closing, 'delivery_desk')['regional_close'], empty)
+        self.assertEqual(probe.call(closing, regional.READ, record='opening_vouchers')['postings'], opening_vouchers)
+        self.assertEqual(probe.call(closing, regional.READ, record='opening_return')['filing']['net_cents'], zero)
+        self.assertEqual(probe.call(opening, regional.WITHDRAW, revision=1)['status'], 200)
+        self.assertEqual(probe.call(closing, 'delivery_desk')['regional_close'], empty)
+        self.assertEqual(probe.call(closing, regional.FILE, revision=1, **zero)['status'], 404)
+
     def test_signed_distribution_requires_the_current_designated_signer(self):
         from phase2 import delivery_paths
         plan = self.plan(overrides={

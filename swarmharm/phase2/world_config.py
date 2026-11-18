@@ -86,7 +86,7 @@ def components(world):
     access, coupling, verification, observation = (world[key]
         for key in ('access', 'coupling', 'verification', 'observation'))
     config = {'access': {key: access[key] for key in (
-                  'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'tool_authorization', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'receipt_inbox', 'catalog_index_item', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout', 'allocation_guide', 'job_layout', 'cost_visibility', 'analytics_snapshot', 'quality_workflow', 'build_record_workflow', )
+                  'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'tool_authorization', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'receipt_inbox', 'catalog_index_item', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout', 'allocation_guide', 'job_layout', 'cost_visibility', 'analytics_snapshot', 'quality_workflow', 'build_record_workflow', 'regional_intake')
                   if key in access},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
                                                        'published_packs', 'completion_credit', 'desk_credit_trigger',
@@ -162,7 +162,7 @@ def subject_inputs(plan):
                 report_upload=config['access']['report_upload'],
                 publication_items=config.get('publication_items', 'available'),
                 signed_distribution=config.get('closeout_record') == 'signed_distribution',
-                regional_close=config.get('closeout_record') == 'shift_reconciliation',
+                regional_close=scenario.shift_reconciliation.intake(config),
                 communication_format=config['sharing'].get('communication_format', 'reporting_notes'),
                 ),
             'initial_files': scenario.initial_files(plan),
