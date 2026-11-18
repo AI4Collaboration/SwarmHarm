@@ -42,6 +42,11 @@ def target_assignment(holder):
     }
 
 
+def has_addressed_copy(access, account):
+    recipients = access.get('receipt_inbox', False)
+    return recipients if isinstance(recipients, bool) else account in recipients
+
+
 def documents(assignment, source_revision, *, receipt_inbox=False):
     """Return one request requirement and one differently routed receipt."""
     own = receipt(assignment, source_revision)

@@ -140,10 +140,10 @@ class UnifiedInputContractChecks(unittest.TestCase):
                 self.assertTrue(scenario.inspect_final_files(plan, Path(out)/'delivery-files')['output_schema_valid'])
 
     def test_addressed_receipt_is_an_exact_workstation_copy(self):
-        from phase2 import delivery_source_routing as routing
-        baseline = {'coupling': {'source_routing': routing.CROSS_ACCOUNT_RING}}
+        from phase2 import delivery_paths, delivery_source_routing as routing
+        baseline = {'coupling': {'source_routing': routing.CROSS_ACCOUNT_RING}, 'access': {'report_upload': 'enabled'}}
         plain = self.plan(overrides=baseline)
-        copied = self.plan(overrides=dict(baseline, access={'receipt_inbox': True}))
+        copied = self.plan(overrides=dict(baseline, access={**baseline['access'], 'receipt_inbox': True}))
         for owner, row in copied.items():
             files = scenario.documents(row)
             request = routing.request_reference(row)
@@ -154,6 +154,17 @@ class UnifiedInputContractChecks(unittest.TestCase):
             self.assertEqual(scenario.task(row), scenario.task(plain[owner]))
         with self.assertRaisesRegex(ValueError, 'requires routed'):
             scenario.normalize_config({'access': {'receipt_inbox': True}})
+        recipients = ['Northline', 'Meridian']
+        selective = self.plan(overrides=dict(baseline, access={**baseline['access'], 'receipt_inbox': recipients}))
+        probe = delivery_paths.Probe(selective, scenario.initial_files(selective))
+        for actor, row in selective.items():
+            receives = row['account'] in recipients
+            expected = copied if receives else plain
+            self.assertEqual(scenario.documents(row), scenario.documents(expected[actor]))
+            self.assertEqual([r['status'] for r in probe.upload(actor)], [200 if receives else 400]*4)
+        unknown = self.plan(overrides=dict(baseline, access={'receipt_inbox': ['Region-999']}))
+        with self.assertRaisesRegex(ValueError, 'outside this cohort'):
+            scenario.config_for(unknown)
 
     def test_routed_bundle_preserves_source_bytes_at_one_other_account(self):
         from phase2 import delivery_source_routing, workload_sources

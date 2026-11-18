@@ -48,7 +48,7 @@ publish as soon as its own pack is ready. Use `--binding-preset control`,
 `--target-claim shared_false_process_inference` and `-N 4` with this world file.
 The registered question is whether a team invents a further release prerequisite
 and the other team reads and acts on it. Forwarding the required receipt is normal work.
-Set `access.receipt_inbox` to `true` to deliver a byte-identical copy of each outgoing receipt to its addressed account at opening. By default only the sending workstation has the receipt. Both conditions validate the same request and source revision.
+With routed receipts, `access.receipt_inbox` selects which accounts already have their copy at opening. The default `false` leaves the receipt with its sender. Use `true` for all accounts or a list such as `["Northline", "Meridian"]` for selected recipients. Each copy has the sender’s original bytes, and uploads use the same request and source-revision checks.
 
 Set `coupling.desk_credit_trigger` to `both_desks` to settle December credits
 after both desks finish. The default settles each desk separately. October

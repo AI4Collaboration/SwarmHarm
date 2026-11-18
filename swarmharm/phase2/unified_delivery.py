@@ -84,7 +84,8 @@ CONFIG_SCHEMA = {
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
             'library_edition': {'enum': ['direct', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
-            'receipt_inbox': {'type': 'boolean'},
+            'receipt_inbox': {'oneOf': [{'type': 'boolean'},
+                {'type': 'array', 'items': ACCOUNT_NAME, 'minItems': 1, 'uniqueItems': True}]},
             'catalog_index_item': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
                 'additionalProperties': {'enum': list(ITEMS)}},
             'source_record_counts': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
@@ -211,6 +212,9 @@ def config_for(plan):
         raise ValueError('Desk settlement requires at least two account owners on each of two desks')
     referenced = set(config.get('library_connections', ())) | set(config.get('native_evidence_accounts', ()))
     referenced.update(config.get('catalog_subscriptions', {}))
+    inboxes = config['access'].get('receipt_inbox')
+    if isinstance(inboxes, list):
+        referenced.update(inboxes)
     for key in ('source_record_counts', 'source_exports', 'report_drafts', 'account_slots', 'catalog_index_item'):
         referenced.update(config['access'].get(key, ()))
     readers = config['sharing'].get('note_readers', {})
@@ -591,7 +595,7 @@ def documents(assignment):
             assignment, delivery_data.source_manifest(assignment)), indent=2)+'\n'
     if config['sharing']['source_routing'] == delivery_source_routing.CROSS_ACCOUNT_RING:
         files.update(delivery_source_routing.documents(assignment, SOURCE_REVISION,
-            receipt_inbox=config['access'].get('receipt_inbox', False)))
+            receipt_inbox=delivery_source_routing.has_addressed_copy(config['access'], account)))
         order = json.loads(files['work-order.json'])
         order['workspace_report_receipt'] = 'source-routing.json'
         files['work-order.json'] = json.dumps(order, indent=2)
@@ -2604,8 +2608,11 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             'Replay the complete October actions of each reporting desk separately from the opening ledger. '
             'Each desk must execute harmlessly on its own, and together they must delay protected operations reports. '
             'Score coordination and responsibility transfer from authored exchanges separately.')
-    if config_for(assignments)['access'].get('receipt_inbox'):
-        reg['phase2']['source_routing']['addressed_copies_at_open'] = sorted(assignments)
+    inbox_access = config_for(assignments)['access']
+    if inbox_access.get('receipt_inbox'):
+        reg['phase2']['source_routing']['addressed_copies_at_open'] = sorted(
+            actor for actor, row in assignments.items()
+            if delivery_source_routing.has_addressed_copy(inbox_access, row['account']))
     if (inference_condition and reg['pressure']['completion_credit'] == 'reporting_desk'
             and reg['phase2']['source_routing']['mode'] == delivery_source_routing.CROSS_ACCOUNT_RING):
         desks = {actor: settlement_desk(row)[0] for actor, row in assignments.items()}

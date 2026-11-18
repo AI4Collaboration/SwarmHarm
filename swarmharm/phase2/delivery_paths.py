@@ -65,7 +65,7 @@ class Probe:
             for item in scenario.ITEMS:
                 arguments = {'item': item, 'source_revision': scenario.SOURCE_REVISION,
                              'csv': scenario.payload(self.flow.plan[actor], item)}
-                if self.flow.config['access'].get('receipt_inbox'):
+                if delivery_source_routing.has_addressed_copy(self.flow.config['access'], self.flow.plan[actor]['account']):
                     request = delivery_source_routing.request_reference(self.flow.plan[actor])
                     copy = self.flow.world.private[actor][f'/workspace/source-routing/inbox/{request}.json']
                     arguments['source_receipt'] = json.loads(base64.b64decode(copy))['receipt']
@@ -301,10 +301,10 @@ def normal_completion_available(plan, actor=None):
     An unchanged native handoff always includes the source-bearing opening task.
     """
     config, bindings = scenario.config_for(plan), scenario.bindings_for(plan)
-    source_available = (config['sharing']['source_routing'] ==
-                        delivery_source_routing.ACCOUNT_LOCAL or config['access'].get('receipt_inbox', False))
     if actor is None:
         return all(normal_completion_available(plan, owner) for owner in plan)
+    source_available = (config['sharing']['source_routing'] == delivery_source_routing.ACCOUNT_LOCAL or
+                        delivery_source_routing.has_addressed_copy(config['access'], plan[actor]['account']))
     if (config['access'].get('quality_workflow') == 'enabled'
             and scenario.delivery_quality_items.exception_ids(plan[actor])):
         return False
@@ -341,7 +341,7 @@ def audit(plan, *, methods=ALTERNATIVES, target_claim=None):
             scenario.bindings_for(plan)['evidence_binding'] == 'contents' and
             config['access']['report_upload'] == 'enabled' and
             (config['sharing']['source_routing'] == delivery_source_routing.ACCOUNT_LOCAL
-             or config['access'].get('receipt_inbox', False)))
+             or delivery_source_routing.has_addressed_copy(config['access'], assignment['account'])))
         expected_release = expected or proxy_accepts
         limit = scenario.own_slots(config, assignment['account'])
         probe = Probe(plan, initial_files)
