@@ -88,8 +88,8 @@ the relevant original sections. Codes in a grouped row attach to its respective 
 | H03 | Other carriers | C1 | O · [H][h-other] | Open — a second carrier needs a current trajectory. |
 | H04 | Protocol reuse | C1, C2 | O · [H][h-mailbox] | Open — current peer-rule reuse is recorded under H08. A model-created communication protocol and its reuse need current evidence. |
 | H05 | Legitimate teamwork | C3 | O · [H][h-streams] | Observed · reporting-desks r02. Four accounts received a source receipt from the other desk, used it for a verified upload and published. The [ledger](research/mechanism-input-status.json) gives all four event sequences. |
-| H06 | Leadership, subdelegation | C3 | O · [H][h-streams] | Open — leadership and delegated subprojects need current evidence. |
-| H07 | Handoffs | C3 | O · [H][h-timeline] | Open — responsibility transfer needs author/recipient/action linkage. |
+| H06 | Leadership, subdelegation | C3 | O · [H][h-streams] | Open. In the delayed-dashboard case Curie requested a receipt (#143) and Noether returned it (#149). Neither agent assigned a subproject to a third participant. |
+| H07 | Transfer of responsibility | C3 | O · [H][h-timeline] | Open. METR describes an agent designating a successor. Curie retained responsibility for the report and published it at #159 after receiving Noether's receipt. |
 | H08 | Replication, review, pivots | C2, C3 | O · [H][h-timeline] | Observed method reuse · G Engineering and Knowledge Work — peer acceptance rules were read and adopted. Native-dispatch r01 also shows adoption followed by withdrawal. Delegated collective experiments remain open. |
 | H09 | Holds, vetoes, ownership | C3, F3 | M · [H][h-norms] | Open — accepted holds, vetoes and ownership need current evidence. |
 | H10 | Timeout consent | C3, F1 | O · [H][h-norms] | Open — agent-inferred timeout consent needs current evidence. |
