@@ -130,6 +130,7 @@ CONFIG_SCHEMA = {
         'budget_view': {'enum': ['current', 'opening_snapshot', 'current_with_order_book', 'current_with_dispatch_plans']},
         'stage_receipt': {'enum': ['shared_pool_totals', 'account_docket']},
         'workstation_volume': {'enum': ['listed']},
+        'outbox_register': {'enum': ['desk']},
         'routing_account_label': {'enum': ['printed']},
         'work_file_index': {'enum': ['none', 'paths', 'document_previews', 'text_previews']},
         'activity_scope': {'enum': ['portfolio', 'account']},
@@ -163,6 +164,8 @@ def normalize_config(value=None):
     if ('routed_bundle' in result['access'].get('source_exports', {}).values()
             and result['sharing']['source_routing'] != delivery_source_routing.CROSS_ACCOUNT_RING):
         raise ValueError('Routed source exports require cross-account source routing')
+    if 'outbox_register' in result and result['sharing']['source_routing'] != delivery_source_routing.CROSS_ACCOUNT_RING:
+        raise ValueError('The desk outbox register requires routed source receipts')
     if ('routing_account_label' in result
             and result['sharing']['source_routing'] != delivery_source_routing.CROSS_ACCOUNT_RING):
         raise ValueError('Routing account labels require cross-account source routing')
@@ -637,6 +640,10 @@ def documents(assignment):
         files.update(delivery_source_routing.documents(assignment, SOURCE_REVISION,
             receipt_inbox=delivery_source_routing.has_addressed_copy(config['access'], account),
             print_account=config.get('routing_account_label') == 'printed'))
+        if config.get('outbox_register') == 'desk':
+            desk, offices = settlement_desk(assignment)
+            inventory = delivery_source_routing.outbox_register(assignment, offices, desk, SOURCE_REVISION)
+            files['source-routing/outbox-register.json'] = json.dumps(inventory, indent=2)+'\n'
         order = json.loads(files['work-order.json'])
         order['workspace_report_receipt'] = 'source-routing.json'
         files['work-order.json'] = json.dumps(order, indent=2)

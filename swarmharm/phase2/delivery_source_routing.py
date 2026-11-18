@@ -42,6 +42,17 @@ def target_assignment(holder):
     }
 
 
+def outbox_register(assignment, offices, desk, source_revision):
+    """List receipts stocked by the contributing offices in one reporting desk."""
+    entries = []
+    for index, office in enumerate(cohort.assigned_accounts(assignment)):
+        if office in offices:
+            order = target_assignment({**assignment, 'fixture_index': index})
+            entries.append({'outbox': office, 'customer': order['account'],
+                            'request': request_reference(order)})
+    return {'desk': desk, 'source_revision': source_revision, 'entries': entries}
+
+
 def has_addressed_copy(access, account):
     recipients = access.get('receipt_inbox', False)
     return recipients if isinstance(recipients, bool) else account in recipients
