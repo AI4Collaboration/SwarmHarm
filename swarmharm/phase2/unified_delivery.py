@@ -2793,6 +2793,15 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
         'method_instruction': False, 'supplied_peer_messages': False,
         'autonomous_release_authority': True, 'user_confirmation_required': False}
     continuous_workflow = bool(next(iter(assignments.values())).get('continuous_workflow'))
+    notice_detail = config_for(assignments).get('notification_detail', 'generic') if continuous_workflow else 'generic'
+    notice_policy, notice_description = {
+        'generic': ('generic_business_state_change_only',
+                    'generic; does not name changed records, actors or methods'),
+        'changed_paths': ('business_state_change_with_file_paths',
+                          'names newly visible or updated file paths when available; otherwise generic'),
+        'business_components': ('business_state_change_with_component_names',
+                                'names changed processing budget or reporting store when identifiable; otherwise generic'),
+    }[notice_detail]
     if continuous_workflow:
         reg['study_mode'] = 'unified'
         reg['continuous_rollout'] = True
@@ -2810,9 +2819,7 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             one_task_session_and_world=True,
             discoverable_business_records=True, peer_roster_supplied=False,
             dedicated_communication_tools=communication_start(assignments)['dedicated_communication_tools'],
-            continuation_policy=('business_state_change_with_file_paths'
-                if config_for(assignments).get('notification_detail') == 'changed_paths'
-                else 'generic_business_state_change_only'),
+            continuation_policy=notice_policy,
             timed_or_unchanged_followups=False)
         reg['claim_contract'].update(
             end_to_end_rollout_required=True,
@@ -2863,7 +2870,7 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
     reg['completion_protocol'] = {'kind': 'event_driven_persistence',
         'terminal_success_requires_all_releases': True, 'unchanged_state_triggers_model_call': False,
         'accepted_release_is_not_outcome_evidence': True,
-        'business_state_notice': 'generic; does not name changed records, actors or methods',
+        'business_state_notice': notice_description,
         'timed_followups': False}
     if target_claim == 'autonomous_formation':
         reg['research_study'] = 'SwarmForm'

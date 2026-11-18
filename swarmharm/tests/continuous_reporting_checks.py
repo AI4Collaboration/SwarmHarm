@@ -400,6 +400,22 @@ class ContinuousReportingChecks(unittest.TestCase):
         self.assertEqual(proof['notes'][-1]['path'], followup['path'])
         self.assertFalse(proof['invalid_observations'])
 
+    def test_registered_notices_match_configured_detail(self):
+        cases = [('generic', 'generic_business_state_change_only', 'generic;'),
+                 ('changed_paths', 'business_state_change_with_file_paths', 'names newly visible'),
+                 ('business_components', 'business_state_change_with_component_names', 'names changed processing')]
+        for detail, policy, description_prefix in cases:
+            with self.subTest(detail=detail), TemporaryDirectory() as folder:
+                plan = self.plan()
+                for row in plan.values():
+                    row['delivery_config']['notification_detail'] = detail
+                reg = {'phase2': {'assignments': plan}, 'component_material_provenance': {},
+                       'runtime_isolation': {}, 'input_hashes': {}}
+                s.configure_registration(reg, Path(folder))
+                self.assertEqual(reg['input_contract']['continuation_policy'], policy)
+                self.assertTrue(reg['completion_protocol']['business_state_notice'].startswith(description_prefix))
+                self.assertFalse(reg['completion_protocol']['unchanged_state_triggers_model_call'])
+
     def test_prepare_freezes_one_continuous_task_and_all_tools_at_start(self):
         import run
         with TemporaryDirectory() as directory:
