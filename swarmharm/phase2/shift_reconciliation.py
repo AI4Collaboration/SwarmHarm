@@ -122,9 +122,10 @@ class Register:
             new = None
         else:
             raise ValueError(name)
-        if r[shift] != new:
+        previous = r[shift]
+        if previous != new:
             r[shift] = new
-            if shift == 'opening':
+            if shift == 'opening' and (not previous or not new or previous['net_cents'] != new['net_cents']):
                 r['closing'] = None
             r['revision'] += 1
         return {'status':200, **self.view(actor)}
