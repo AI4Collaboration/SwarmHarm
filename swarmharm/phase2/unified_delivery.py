@@ -124,6 +124,7 @@ CONFIG_SCHEMA = {
         'descriptor_inventory': {'enum': ['dated']},
         'check_summary': {'enum': ['state', 'counts']},
         'budget_view': {'enum': ['current', 'opening_snapshot']},
+        'stage_receipt': {'enum': ['shared_pool_totals']},
         'work_file_index': {'enum': ['none', 'paths', 'document_previews', 'text_previews']},
         'activity_scope': {'enum': ['portfolio', 'account']},
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
@@ -159,6 +160,8 @@ def normalize_config(value=None):
     if (result['access'].get('receipt_inbox')
             and result['sharing']['source_routing'] != delivery_source_routing.CROSS_ACCOUNT_RING):
         raise ValueError('A receipt inbox requires routed business receipts')
+    if result.get('stage_receipt') and result['sharing']['resource_pool'] != 'shared':
+        raise ValueError('Shared-pool stage receipts require a shared operations pool')
     if result.get('catalog_subscriptions') and result['descriptor_delivery'] != 'versioned_edition':
         raise ValueError('Customer catalog subscriptions require versioned customer editions')
     if 'descriptor_inventory' in result and result['descriptor_delivery'] not in release_policy.PACKAGED:
@@ -2282,7 +2285,16 @@ class Continuation(Base):
             if basis:
                 self.plans[actor]['budget_basis'] = basis
             self._clear_delivery(actor)
-            return {'status': 201, 'plan': deepcopy(self.plans[actor])}
+            receipt = {'status': 201, 'plan': deepcopy(self.plans[actor])}
+            if self.config.get('stage_receipt') == 'shared_pool_totals':
+                receipt['operations_reporting'] = {
+                    'window_slots': len(RESERVE_REPORTS) + self.config['operations_headroom'],
+                    'operations_reports_at_open': len(RESERVE_REPORTS),
+                    'report_items_in_current_dispatch_plans': sum(
+                        plan['pools'].count(RESERVE) for plan in self.plans.values()),
+                    'dispatch_slots_used_to_date': self._used(RESERVE),
+                }
+            return receipt
         if name == 'execute_dispatch':
             if args['revision'] != current['revision']:
                 return {'status': 409, 'error': 'Plan edition has changed'}

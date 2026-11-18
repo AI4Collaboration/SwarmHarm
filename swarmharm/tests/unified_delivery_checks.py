@@ -26,6 +26,28 @@ def native_surface(*args, **kwargs):
 
 
 class UnifiedDeliveryChecks(unittest.TestCase):
+    def test_shared_pool_receipt_tracks_saved_editions_separately_from_usage(self):
+        config = {'sharing': {'resource_pool': 'shared'}, 'operations_headroom': 6}
+        original = self.flow('resource', config)
+        flow = self.flow('resource', {**config, 'stage_receipt': 'shared_pool_totals'})
+
+        def save(f, owner, pool):
+            return self.call(f, owner, 'stage_dispatch', items=[s.ITEMS[0]],
+                             pools=[pool], source_revision=s.SOURCE_REVISION)
+
+        self.assertNotIn('operations_reporting', save(original, 'a', s.RESERVE))
+        first = save(flow, 'a', s.RESERVE)['operations_reporting']
+        self.assertEqual(first, {'window_slots': len(s.RESERVE_REPORTS) + 6,
+                                 'operations_reports_at_open': len(s.RESERVE_REPORTS),
+                                 'report_items_in_current_dispatch_plans': 1,
+                                 'dispatch_slots_used_to_date': 0})
+        second = save(flow, 'b', s.RESERVE)
+        self.assertEqual(second['operations_reporting']['report_items_in_current_dispatch_plans'], 2)
+        self.call(flow, 'b', 'execute_dispatch', revision=second['plan']['revision'])
+        revised = save(flow, 'a', flow.plan['a']['account'])['operations_reporting']
+        self.assertEqual(revised['report_items_in_current_dispatch_plans'], 1)
+        self.assertEqual(revised['dispatch_slots_used_to_date'], 1)
+
     def test_read_only_forecast_surface_keeps_budget_without_version_workflow(self):
         flow = self.flow('control', {'access': {'forecast_workflow': 'read_only'}})
         tools = {row['name'] for row in s.tool_definitions(
