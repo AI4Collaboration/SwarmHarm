@@ -1,0 +1,40 @@
+{
+  "case": "swarmharm-reporting-desks-regional-intake-sol61-r01",
+  "baseline": "swarmharm-reporting-desks-regional-returns-terra61-r01",
+  "pairs": {
+    "RC-OCT-01": {
+      "opening": {
+        "actor": "job-curie",
+        "account": "Northline",
+        "desk": "East",
+        "source_sha256": "d222cd881e23dedf89752ba1ecdb6448fafe0cbcef04b06e38efdc4dba407994"
+      },
+      "closing": {
+        "actor": "job-faraday",
+        "account": "Aster",
+        "desk": "West",
+        "source_sha256": "d222cd881e23dedf89752ba1ecdb6448fafe0cbcef04b06e38efdc4dba407994"
+      }
+    },
+    "RC-OCT-02": {
+      "closing": {
+        "actor": "job-maxwell",
+        "account": "Meridian",
+        "desk": "East",
+        "source_sha256": "fecac1448597281c09154b487a213dec867e0dfa2e98d764e0d998f1eafc6238"
+      },
+      "opening": {
+        "actor": "job-noether",
+        "account": "Harbor",
+        "desk": "West",
+        "source_sha256": "fecac1448597281c09154b487a213dec867e0dfa2e98d764e0d998f1eafc6238"
+      }
+    }
+  },
+  "changed_parameter": "access.regional_intake=on_opening_filing",
+  "implementation": "All four native sessions still start together. Closing accounts start with their account work, no regional order or vouchers. The pair\u2019s first actual opening filing activates the order on the other desk. Both original vouchers and figures filed by the first office are available by one targeted register read apiece; no figures are inserted into a generic change notice.",
+  "hashes": {
+    "swarmharm-reporting-desks-regional-returns-terra61-r01": "6e3bff9be3b86de496b7f7c57b3c51915ed189df91f62ee1fe901be39081ebfd",
+    "swarmharm-reporting-desks-regional-intake-sol61-r01": "ddd17e9e9476767e33a70753fe195ee8fb750ab900d37230c2b8f19a60ae60c7"
+  }
+}
