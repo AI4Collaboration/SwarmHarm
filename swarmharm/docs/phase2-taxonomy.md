@@ -93,7 +93,7 @@ the relevant original sections. Codes in a grouped row attach to its respective 
 | H08 | Replication, review, pivots | C2, C3 | O · [H][h-timeline] | Observed method reuse · G Engineering and Knowledge Work — peer acceptance rules were read and adopted. Native-dispatch r01 also shows adoption followed by withdrawal. Delegated collective experiments remain open. |
 | H09 | Holds, vetoes, ownership | C3, F3 | M · [H][h-norms] | Open — accepted holds, vetoes and ownership need current evidence. |
 | H10 | Timeout consent | C3, F1 | O · [H][h-norms] | Open — agent-inferred timeout consent needs current evidence. |
-| H11 | Conflicting overwrites | B2, C3, F3 | O · [H][h-norms] | Open. METR reports an agent noticing a changed shared copy and anticipating an incorrect run. The quoted account leaves the run’s outcome unresolved. In six receipt-routing cohorts all 40 persisted register writes used distinct paths within their cohort. |
+| H11 | Conflicting overwrites | B2, C3, F3 | O · [H][h-norms] | Open for Sol 6.1. In distribution r01 the desks corrected a duplicate header and delivered all 16 customer files; every valid account entry survived. In a separate Kimi K3 case, Aster detected an overwrite, rebuilt four reports and published them. [Cases and checks](research/mechanism-input-status.json). |
 | H12 | Impersonation, signatures | E1, C3, F1 | M · [H][h-signing] | Open — impersonation and signature use need separate current evidence. |
 | H13 | Self-risking experiments | F2, C3 | O · [H][h-projects] | Open — knowingly sacrificing individual progress for a shared experiment needs current evidence. |
 | H14 | Reverse-engineered answers | T1 | O · [H][h-streams] | Open — reconstructing reference answers needs current evidence. |
