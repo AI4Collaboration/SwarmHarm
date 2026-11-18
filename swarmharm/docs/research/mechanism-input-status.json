@@ -1292,7 +1292,7 @@
       "registration": "swarmharm/registrations/swarmharm-reporting-desks-unstaged-close-terra61-r01",
       "review": "../eval-readiness/swarmharm-reporting-desks-unstaged-close-terra61-r01/completion.json",
       "review_sha256": "5c5009df6d740493590aaf4cab5330f76ef73cb8ae5ef82374ed3ff61f60b29c",
-      "takeaway": "Native preflight received HTTP 520, then reached its 300-second response deadline. No customer workstation was created and no participant action was collected. Model behavior is unmeasured. Separate stdlib health requests returned HTTP 403; they used a different client.",
+      "takeaway": "Native preflight received HTTP 520, then reached its 300-second response deadline. No customer workstation was created and no participant action was collected. Model behavior is unmeasured. A later standalone check on the same native model and harness received no tool call or final text within 65 seconds. Independent stdlib health requests returned HTTP 403.",
       "supporting_files": [
         {
           "path": "../eval-readiness/swarmharm-reporting-desks-unstaged-close-terra61-r01/unstaged-input-review.json",
@@ -1317,6 +1317,10 @@
         {
           "path": "../eval-readiness/reviews/desk-receipt-dependencies/route-diagnostic-swarmharm-reporting-desks-unstaged-close-terra61-r01.json",
           "sha256": "0b6d4cff2e369b2570deaa382c89f2f1c152b56c8595b6c97956c6e482638005"
+        },
+        {
+          "path": "../eval-readiness/reviews/desk-receipt-dependencies/terra-native-service-t99oe2y1/diagnostic.json",
+          "sha256": "974ee3b2a4237dc33feca5fec39acfe1010e8ac886a76d13a16bd175856b77b2"
         }
       ]
     },
@@ -3851,7 +3855,7 @@
         "registration": "swarmharm/registrations/swarmharm-reporting-desks-unstaged-close-terra61-r01",
         "review": "../eval-readiness/swarmharm-reporting-desks-unstaged-close-terra61-r01/completion.json",
         "review_sha256": "5c5009df6d740493590aaf4cab5330f76ef73cb8ae5ef82374ed3ff61f60b29c",
-        "takeaway": "Native preflight received HTTP 520, then reached its 300-second response deadline. No customer workstation was created and no participant action was collected. Model behavior is unmeasured. Separate stdlib health requests returned HTTP 403; they used a different client.",
+        "takeaway": "Native preflight received HTTP 520, then reached its 300-second response deadline. No customer workstation was created and no participant action was collected. Model behavior is unmeasured. A later standalone check on the same native model and harness received no tool call or final text within 65 seconds. Independent stdlib health requests returned HTTP 403.",
         "supporting_files": [
           {
             "path": "../eval-readiness/swarmharm-reporting-desks-unstaged-close-terra61-r01/unstaged-input-review.json",
@@ -3876,6 +3880,10 @@
           {
             "path": "../eval-readiness/reviews/desk-receipt-dependencies/route-diagnostic-swarmharm-reporting-desks-unstaged-close-terra61-r01.json",
             "sha256": "0b6d4cff2e369b2570deaa382c89f2f1c152b56c8595b6c97956c6e482638005"
+          },
+          {
+            "path": "../eval-readiness/reviews/desk-receipt-dependencies/terra-native-service-t99oe2y1/diagnostic.json",
+            "sha256": "974ee3b2a4237dc33feca5fec39acfe1010e8ac886a76d13a16bd175856b77b2"
           }
         ]
       }
