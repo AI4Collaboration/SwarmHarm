@@ -12,6 +12,39 @@ from tests import delivery_path_checks as fixtures
 class UnifiedInputContractChecks(unittest.TestCase):
     plan = fixtures.DeliveryPathChecks.plan
 
+    def test_routed_bundle_preserves_source_bytes_at_one_other_account(self):
+        from phase2 import delivery_source_routing, workload_sources
+        exports = {'Meridian': 'routed_bundle', 'Harbor': 'routed_bundle'}
+        config = {'coupling': {'source_routing': delivery_source_routing.CROSS_ACCOUNT_RING},
+                  'access': {'source_record_counts': {'Meridian': 12}}}
+        plain = self.plan(overrides=config)
+        config['access']['source_exports'] = exports
+        routed = self.plan(overrides=config)
+        baseline = {a: scenario.documents(row) for a, row in plain.items()}
+        files = {a: scenario.documents(row) for a, row in routed.items()}
+        for owner, row in routed.items():
+            self.assertEqual(scenario.task(row), scenario.task(plain[owner]))
+            if row['account'] not in exports:
+                continue
+            request = delivery_source_routing.request_reference(row)
+            prefix = f'source-routing/outbox/{request}/'
+            holders = [a for a in files if prefix + 'source-data.json' in files[a]]
+            self.assertEqual(len(holders), 1)
+            holder, = holders
+            self.assertNotEqual(owner, holder)
+            self.assertEqual(files[holder][prefix + 'source-data.json'], baseline[owner]['source-data.json'])
+            raw = scenario.delivery_data.source_bundle(row)
+            self.assertTrue(raw.keys().isdisjoint(files[owner]))
+            self.assertEqual(json.loads(files[owner]['source-export.json'])['included_objects'], [])
+            received = {k[len(prefix):]: v for k, v in files[holder].items()
+                        if k.startswith(prefix) and k != prefix + 'source-data.json'}
+            self.assertEqual(received, raw)
+            domain = scenario.delivery_data.domain_for(row)
+            self.assertEqual(sorted(workload_sources.reduce_sources(domain, received)),
+                             sorted(scenario.delivery_data.reference_data(row)['rows']))
+        with self.assertRaisesRegex(ValueError, 'require cross-account'):
+            scenario.normalize_config({'access': {'source_exports': exports}})
+
     def test_staged_drafts_only_add_the_build_files(self):
         plain = self.plan()
         staged = self.plan(overrides={'access': {'report_drafts': {

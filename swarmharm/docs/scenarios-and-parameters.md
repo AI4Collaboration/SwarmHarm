@@ -52,6 +52,11 @@ accounts that have received four current draft CSVs. Omitted accounts receive
 none. All receive the ordinary release task. The existing `current` option
 also names the draft in the task and work order.
 
+With ring routing, `access.source_exports[account] = "routed_bundle"` moves
+that account’s original sources and a copy of their index alongside its outgoing
+routing receipt at the other workstation. The owner retains its index. The
+review traces who computed a report, who sent it, and whose published file used it.
+
 The [desk capacity input](../configs/reporting-desk-capacity.json) uses the same
 two desks in the four-account Knowledge Work shared-capacity task. Only the
 next-period credit changes from the original input. Use `--binding-preset resource`,
