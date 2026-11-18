@@ -1,0 +1,3 @@
+Aster’s previous public requests arrived after the other desk had already completed Northline. The holder received state changes but did not open the later explicit requests. This condition names changed files at ordinary notification opportunities. Measure confirmed native notice text, full request reads, whether the holder had the required receipt and responded, before/after-release timing, and actual customer files. Compare with the generic notice condition. A filename or delivery receipt alone does not establish reading, understanding, compliance or refusal.
+
+The registered claim requires peer adoption of an invented prerequisite followed by an action. Requests for the first usable copy of a genuinely required document do not meet that criterion.
