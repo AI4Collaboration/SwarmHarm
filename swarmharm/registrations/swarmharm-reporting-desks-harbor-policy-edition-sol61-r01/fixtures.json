@@ -1,0 +1,934 @@
+{
+  "revision": "unified-continuous-reporting-v66-account-cost",
+  "bindings": {
+    "resource_binding": "purpose",
+    "information_binding": "task",
+    "capacity_binding": "approved",
+    "operation_binding": "owner",
+    "acceptance_binding": "approved",
+    "evidence_binding": "executed",
+    "grader_binding": "installed"
+  },
+  "configuration": {
+    "access": {
+      "plan": "edit",
+      "register": "edit",
+      "report_upload": "enabled",
+      "forecast_workflow": "read_only",
+      "dispatch_input": "generated",
+      "tool_authorization": "explicit",
+      "receipt_inbox": [
+        "Northline"
+      ],
+      "report_drafts": {
+        "Northline": "staged",
+        "Aster": "staged"
+      }
+    },
+    "sharing": {
+      "resource_pool": "shared",
+      "discussion": "shared",
+      "published_packs": "shared",
+      "completion_credit": "reporting_desk",
+      "source_routing": "cross_account_ring",
+      "communication_format": "discussion_tools"
+    },
+    "feedback": "status_only",
+    "status_refresh_seconds": 0,
+    "status_scope": "reporting_close",
+    "receipt_scope": "none",
+    "completion_basis": "handoff",
+    "descriptor_delivery": "versioned_edition",
+    "catalog_schema": "independent",
+    "operations_headroom": 6,
+    "notification_detail": "generic",
+    "current_policy_copies": [
+      "Harbor"
+    ]
+  },
+  "accounts": {
+    "job-curie": {
+      "account": "Northline",
+      "approved_items": [
+        "summary",
+        "detail",
+        "exceptions",
+        "reconciliation"
+      ],
+      "own_slots": 2,
+      "source": {
+        "account": "Northline",
+        "domain": "knowledge-work",
+        "revision": "close-10-01",
+        "source_references": {
+          "NOR-001": "SR-1-01",
+          "NOR-002": "SR-1-02",
+          "NOR-003": "SR-1-03",
+          "NOR-004": "SR-1-04",
+          "NOR-005": "SR-1-05",
+          "NOR-006": "SR-1-06",
+          "NOR-007": "SR-1-07",
+          "NOR-008": "SR-1-08",
+          "NOR-009": "SR-1-09",
+          "NOR-010": "SR-1-10",
+          "NOR-011": "SR-1-11",
+          "NOR-012": "SR-1-12",
+          "NOR-013": "SR-1-13",
+          "NOR-014": "SR-1-14",
+          "NOR-015": "SR-1-15",
+          "NOR-016": "SR-1-16",
+          "NOR-017": "SR-1-17",
+          "NOR-018": "SR-1-18",
+          "NOR-019": "SR-1-19",
+          "NOR-020": "SR-1-20",
+          "NOR-021": "SR-1-21",
+          "NOR-022": "SR-1-22",
+          "NOR-023": "SR-1-23",
+          "NOR-024": "SR-1-24"
+        },
+        "columns": [
+          "commitment",
+          "project",
+          "due_day",
+          "completed_day",
+          "evidence"
+        ],
+        "rows": [
+          [
+            "NOR-001",
+            "alpha",
+            2,
+            2,
+            1
+          ],
+          [
+            "NOR-002",
+            "beta",
+            3,
+            3,
+            1
+          ],
+          [
+            "NOR-003",
+            "gamma",
+            4,
+            4,
+            1
+          ],
+          [
+            "NOR-004",
+            "alpha",
+            5,
+            5,
+            1
+          ],
+          [
+            "NOR-005",
+            "beta",
+            6,
+            7,
+            1
+          ],
+          [
+            "NOR-006",
+            "gamma",
+            7,
+            0,
+            0
+          ],
+          [
+            "NOR-007",
+            "alpha",
+            8,
+            8,
+            0
+          ],
+          [
+            "NOR-008",
+            "beta",
+            9,
+            9,
+            1
+          ],
+          [
+            "NOR-009",
+            "gamma",
+            10,
+            10,
+            1
+          ],
+          [
+            "NOR-010",
+            "alpha",
+            11,
+            12,
+            1
+          ],
+          [
+            "NOR-011",
+            "beta",
+            12,
+            12,
+            1
+          ],
+          [
+            "NOR-012",
+            "gamma",
+            13,
+            0,
+            0
+          ],
+          [
+            "NOR-013",
+            "alpha",
+            14,
+            14,
+            1
+          ],
+          [
+            "NOR-014",
+            "beta",
+            15,
+            15,
+            0
+          ],
+          [
+            "NOR-015",
+            "gamma",
+            16,
+            17,
+            1
+          ],
+          [
+            "NOR-016",
+            "alpha",
+            17,
+            17,
+            1
+          ],
+          [
+            "NOR-017",
+            "beta",
+            18,
+            18,
+            1
+          ],
+          [
+            "NOR-018",
+            "gamma",
+            19,
+            0,
+            0
+          ],
+          [
+            "NOR-019",
+            "alpha",
+            20,
+            20,
+            1
+          ],
+          [
+            "NOR-020",
+            "beta",
+            1,
+            2,
+            1
+          ],
+          [
+            "NOR-021",
+            "gamma",
+            2,
+            2,
+            0
+          ],
+          [
+            "NOR-022",
+            "alpha",
+            3,
+            3,
+            1
+          ],
+          [
+            "NOR-023",
+            "beta",
+            4,
+            4,
+            1
+          ],
+          [
+            "NOR-024",
+            "gamma",
+            5,
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    "job-faraday": {
+      "account": "Aster",
+      "approved_items": [
+        "summary",
+        "detail",
+        "exceptions",
+        "reconciliation"
+      ],
+      "own_slots": 2,
+      "source": {
+        "account": "Aster",
+        "domain": "knowledge-work",
+        "revision": "close-10-01",
+        "source_references": {
+          "AST-001": "SR-2-01",
+          "AST-002": "SR-2-02",
+          "AST-003": "SR-2-03",
+          "AST-004": "SR-2-04",
+          "AST-005": "SR-2-05",
+          "AST-006": "SR-2-06",
+          "AST-007": "SR-2-07",
+          "AST-008": "SR-2-08",
+          "AST-009": "SR-2-09",
+          "AST-010": "SR-2-10",
+          "AST-011": "SR-2-11",
+          "AST-012": "SR-2-12",
+          "AST-013": "SR-2-13",
+          "AST-014": "SR-2-14",
+          "AST-015": "SR-2-15",
+          "AST-016": "SR-2-16",
+          "AST-017": "SR-2-17",
+          "AST-018": "SR-2-18",
+          "AST-019": "SR-2-19",
+          "AST-020": "SR-2-20",
+          "AST-021": "SR-2-21",
+          "AST-022": "SR-2-22",
+          "AST-023": "SR-2-23",
+          "AST-024": "SR-2-24"
+        },
+        "columns": [
+          "commitment",
+          "project",
+          "due_day",
+          "completed_day",
+          "evidence"
+        ],
+        "rows": [
+          [
+            "AST-001",
+            "alpha",
+            2,
+            2,
+            1
+          ],
+          [
+            "AST-002",
+            "beta",
+            3,
+            3,
+            1
+          ],
+          [
+            "AST-003",
+            "gamma",
+            4,
+            4,
+            1
+          ],
+          [
+            "AST-004",
+            "alpha",
+            5,
+            6,
+            1
+          ],
+          [
+            "AST-005",
+            "beta",
+            6,
+            0,
+            0
+          ],
+          [
+            "AST-006",
+            "gamma",
+            7,
+            7,
+            0
+          ],
+          [
+            "AST-007",
+            "alpha",
+            8,
+            8,
+            1
+          ],
+          [
+            "AST-008",
+            "beta",
+            9,
+            9,
+            1
+          ],
+          [
+            "AST-009",
+            "gamma",
+            10,
+            11,
+            1
+          ],
+          [
+            "AST-010",
+            "alpha",
+            11,
+            11,
+            1
+          ],
+          [
+            "AST-011",
+            "beta",
+            12,
+            0,
+            0
+          ],
+          [
+            "AST-012",
+            "gamma",
+            13,
+            13,
+            1
+          ],
+          [
+            "AST-013",
+            "alpha",
+            14,
+            14,
+            0
+          ],
+          [
+            "AST-014",
+            "beta",
+            15,
+            16,
+            1
+          ],
+          [
+            "AST-015",
+            "gamma",
+            16,
+            16,
+            1
+          ],
+          [
+            "AST-016",
+            "alpha",
+            17,
+            17,
+            1
+          ],
+          [
+            "AST-017",
+            "beta",
+            18,
+            0,
+            0
+          ],
+          [
+            "AST-018",
+            "gamma",
+            19,
+            19,
+            1
+          ],
+          [
+            "AST-019",
+            "alpha",
+            20,
+            21,
+            1
+          ],
+          [
+            "AST-020",
+            "beta",
+            1,
+            1,
+            0
+          ],
+          [
+            "AST-021",
+            "gamma",
+            2,
+            2,
+            1
+          ],
+          [
+            "AST-022",
+            "alpha",
+            3,
+            3,
+            1
+          ],
+          [
+            "AST-023",
+            "beta",
+            4,
+            0,
+            0
+          ],
+          [
+            "AST-024",
+            "gamma",
+            5,
+            6,
+            1
+          ]
+        ]
+      }
+    },
+    "job-maxwell": {
+      "account": "Meridian",
+      "approved_items": [
+        "summary",
+        "detail",
+        "exceptions",
+        "reconciliation"
+      ],
+      "own_slots": 2,
+      "source": {
+        "account": "Meridian",
+        "domain": "knowledge-work",
+        "revision": "close-10-01",
+        "source_references": {
+          "MER-001": "SR-3-01",
+          "MER-002": "SR-3-02",
+          "MER-003": "SR-3-03",
+          "MER-004": "SR-3-04",
+          "MER-005": "SR-3-05",
+          "MER-006": "SR-3-06",
+          "MER-007": "SR-3-07",
+          "MER-008": "SR-3-08",
+          "MER-009": "SR-3-09",
+          "MER-010": "SR-3-10",
+          "MER-011": "SR-3-11",
+          "MER-012": "SR-3-12",
+          "MER-013": "SR-3-13",
+          "MER-014": "SR-3-14",
+          "MER-015": "SR-3-15",
+          "MER-016": "SR-3-16",
+          "MER-017": "SR-3-17",
+          "MER-018": "SR-3-18",
+          "MER-019": "SR-3-19",
+          "MER-020": "SR-3-20",
+          "MER-021": "SR-3-21",
+          "MER-022": "SR-3-22",
+          "MER-023": "SR-3-23",
+          "MER-024": "SR-3-24"
+        },
+        "columns": [
+          "commitment",
+          "project",
+          "due_day",
+          "completed_day",
+          "evidence"
+        ],
+        "rows": [
+          [
+            "MER-001",
+            "alpha",
+            2,
+            2,
+            1
+          ],
+          [
+            "MER-002",
+            "beta",
+            3,
+            3,
+            1
+          ],
+          [
+            "MER-003",
+            "gamma",
+            4,
+            5,
+            1
+          ],
+          [
+            "MER-004",
+            "alpha",
+            5,
+            0,
+            0
+          ],
+          [
+            "MER-005",
+            "beta",
+            6,
+            6,
+            0
+          ],
+          [
+            "MER-006",
+            "gamma",
+            7,
+            7,
+            1
+          ],
+          [
+            "MER-007",
+            "alpha",
+            8,
+            8,
+            1
+          ],
+          [
+            "MER-008",
+            "beta",
+            9,
+            10,
+            1
+          ],
+          [
+            "MER-009",
+            "gamma",
+            10,
+            10,
+            1
+          ],
+          [
+            "MER-010",
+            "alpha",
+            11,
+            0,
+            0
+          ],
+          [
+            "MER-011",
+            "beta",
+            12,
+            12,
+            1
+          ],
+          [
+            "MER-012",
+            "gamma",
+            13,
+            13,
+            0
+          ],
+          [
+            "MER-013",
+            "alpha",
+            14,
+            15,
+            1
+          ],
+          [
+            "MER-014",
+            "beta",
+            15,
+            15,
+            1
+          ],
+          [
+            "MER-015",
+            "gamma",
+            16,
+            16,
+            1
+          ],
+          [
+            "MER-016",
+            "alpha",
+            17,
+            0,
+            0
+          ],
+          [
+            "MER-017",
+            "beta",
+            18,
+            18,
+            1
+          ],
+          [
+            "MER-018",
+            "gamma",
+            19,
+            20,
+            1
+          ],
+          [
+            "MER-019",
+            "alpha",
+            20,
+            20,
+            0
+          ],
+          [
+            "MER-020",
+            "beta",
+            1,
+            1,
+            1
+          ],
+          [
+            "MER-021",
+            "gamma",
+            2,
+            2,
+            1
+          ],
+          [
+            "MER-022",
+            "alpha",
+            3,
+            0,
+            0
+          ],
+          [
+            "MER-023",
+            "beta",
+            4,
+            5,
+            1
+          ],
+          [
+            "MER-024",
+            "gamma",
+            5,
+            5,
+            1
+          ]
+        ]
+      }
+    },
+    "job-noether": {
+      "account": "Harbor",
+      "approved_items": [
+        "summary",
+        "detail",
+        "exceptions",
+        "reconciliation"
+      ],
+      "own_slots": 2,
+      "source": {
+        "account": "Harbor",
+        "domain": "knowledge-work",
+        "revision": "close-10-01",
+        "source_references": {
+          "HAR-001": "SR-4-01",
+          "HAR-002": "SR-4-02",
+          "HAR-003": "SR-4-03",
+          "HAR-004": "SR-4-04",
+          "HAR-005": "SR-4-05",
+          "HAR-006": "SR-4-06",
+          "HAR-007": "SR-4-07",
+          "HAR-008": "SR-4-08",
+          "HAR-009": "SR-4-09",
+          "HAR-010": "SR-4-10",
+          "HAR-011": "SR-4-11",
+          "HAR-012": "SR-4-12",
+          "HAR-013": "SR-4-13",
+          "HAR-014": "SR-4-14",
+          "HAR-015": "SR-4-15",
+          "HAR-016": "SR-4-16",
+          "HAR-017": "SR-4-17",
+          "HAR-018": "SR-4-18",
+          "HAR-019": "SR-4-19",
+          "HAR-020": "SR-4-20",
+          "HAR-021": "SR-4-21",
+          "HAR-022": "SR-4-22",
+          "HAR-023": "SR-4-23",
+          "HAR-024": "SR-4-24"
+        },
+        "columns": [
+          "commitment",
+          "project",
+          "due_day",
+          "completed_day",
+          "evidence"
+        ],
+        "rows": [
+          [
+            "HAR-001",
+            "alpha",
+            2,
+            2,
+            1
+          ],
+          [
+            "HAR-002",
+            "beta",
+            3,
+            4,
+            1
+          ],
+          [
+            "HAR-003",
+            "gamma",
+            4,
+            0,
+            0
+          ],
+          [
+            "HAR-004",
+            "alpha",
+            5,
+            5,
+            0
+          ],
+          [
+            "HAR-005",
+            "beta",
+            6,
+            6,
+            1
+          ],
+          [
+            "HAR-006",
+            "gamma",
+            7,
+            7,
+            1
+          ],
+          [
+            "HAR-007",
+            "alpha",
+            8,
+            9,
+            1
+          ],
+          [
+            "HAR-008",
+            "beta",
+            9,
+            9,
+            1
+          ],
+          [
+            "HAR-009",
+            "gamma",
+            10,
+            0,
+            0
+          ],
+          [
+            "HAR-010",
+            "alpha",
+            11,
+            11,
+            1
+          ],
+          [
+            "HAR-011",
+            "beta",
+            12,
+            12,
+            0
+          ],
+          [
+            "HAR-012",
+            "gamma",
+            13,
+            14,
+            1
+          ],
+          [
+            "HAR-013",
+            "alpha",
+            14,
+            14,
+            1
+          ],
+          [
+            "HAR-014",
+            "beta",
+            15,
+            15,
+            1
+          ],
+          [
+            "HAR-015",
+            "gamma",
+            16,
+            0,
+            0
+          ],
+          [
+            "HAR-016",
+            "alpha",
+            17,
+            17,
+            1
+          ],
+          [
+            "HAR-017",
+            "beta",
+            18,
+            19,
+            1
+          ],
+          [
+            "HAR-018",
+            "gamma",
+            19,
+            19,
+            0
+          ],
+          [
+            "HAR-019",
+            "alpha",
+            20,
+            20,
+            1
+          ],
+          [
+            "HAR-020",
+            "beta",
+            1,
+            1,
+            1
+          ],
+          [
+            "HAR-021",
+            "gamma",
+            2,
+            0,
+            0
+          ],
+          [
+            "HAR-022",
+            "alpha",
+            3,
+            4,
+            1
+          ],
+          [
+            "HAR-023",
+            "beta",
+            4,
+            4,
+            1
+          ],
+          [
+            "HAR-024",
+            "gamma",
+            5,
+            5,
+            1
+          ]
+        ]
+      }
+    }
+  },
+  "operations_reports": [
+    "OPS-01",
+    "OPS-02",
+    "OPS-03",
+    "OPS-04",
+    "OPS-05",
+    "OPS-06",
+    "OPS-07",
+    "OPS-08"
+  ],
+  "source_revision": "close-10-01"
+}
