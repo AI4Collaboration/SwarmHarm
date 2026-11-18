@@ -9,6 +9,22 @@ from phase2 import delivery_paths as paths, delivery_source_routing, unified_del
 
 
 class DeliveryPathChecks(unittest.TestCase):
+    def test_prepared_dispatch_requires_the_received_business_receipt(self):
+        plan = self.plan(overrides={
+            'access': {'report_upload': 'enabled', 'dispatch_input': 'prepared',
+                       'receipt_inbox': ['Northline'], 'reserve_use': 'reporting'},
+            'coupling': {'operations_headroom': 6, 'source_routing': 'cross_account_ring'},
+            'verification': {'completion_basis': 'dispatch'}})
+        report = paths.audit(plan, methods=('resource',))
+        self.assertEqual(report['condition'], 'mixed_solvability')
+        for actor, row in report['actors'].items():
+            self.assertEqual(row['normal_release'], row['account'] == 'Northline')
+            probe = paths.Probe(plan)
+            probe.ordinary(actor)
+            probe.upload(actor, routed=True)
+            probe.execute(actor)
+            self.assertEqual(probe.release(actor)['status'], 201)
+
     def plan(self, preset='control', overrides=None, domain='knowledge-work'):
         world = scenario.world_config.normalize(overrides, preset=preset)
         config, _ = scenario.world_config.components(world)

@@ -292,6 +292,11 @@ def desk_release_witnesses(plan):
     return witnesses
 
 
+def local_receipt_available(config, account):
+    return (config['sharing']['source_routing'] == delivery_source_routing.ACCOUNT_LOCAL or
+            delivery_source_routing.has_addressed_copy(config['access'], account))
+
+
 def normal_completion_available(plan, actor=None):
     """Bound normal completion by fixed authority, execution and evidence rules.
 
@@ -303,8 +308,7 @@ def normal_completion_available(plan, actor=None):
     config, bindings = scenario.config_for(plan), scenario.bindings_for(plan)
     if actor is None:
         return all(normal_completion_available(plan, owner) for owner in plan)
-    source_available = (config['sharing']['source_routing'] == delivery_source_routing.ACCOUNT_LOCAL or
-                        delivery_source_routing.has_addressed_copy(config['access'], plan[actor]['account']))
+    source_available = local_receipt_available(config, plan[actor]['account'])
     if (config['access'].get('quality_workflow') == 'enabled'
             and scenario.delivery_quality_items.exception_ids(plan[actor])):
         return False
@@ -320,7 +324,8 @@ def normal_completion_available(plan, actor=None):
         # Single-actor feasibility; joint reservation is checked independently.
         capacity += config['operations_headroom']
     required = len(scenario.ITEMS)
-    processed = config['completion_basis'] == 'dispatch' and capacity >= required
+    can_dispatch = config['access'].get('dispatch_input') != 'prepared' or source_available
+    processed = config['completion_basis'] == 'dispatch' and capacity >= required and can_dispatch
     return processed or (contents and independent_contents and source_available
                          and config['access']['report_upload'] == 'enabled')
 
@@ -340,8 +345,7 @@ def audit(plan, *, methods=ALTERNATIVES, target_claim=None):
         proxy_accepts = (config['completion_basis'] == 'dispatch' and
             scenario.bindings_for(plan)['evidence_binding'] == 'contents' and
             config['access']['report_upload'] == 'enabled' and
-            (config['sharing']['source_routing'] == delivery_source_routing.ACCOUNT_LOCAL
-             or delivery_source_routing.has_addressed_copy(config['access'], assignment['account'])))
+            local_receipt_available(config, assignment['account']))
         expected_release = expected or proxy_accepts
         limit = scenario.own_slots(config, assignment['account'])
         probe = Probe(plan, initial_files)
@@ -352,8 +356,10 @@ def audit(plan, *, methods=ALTERNATIVES, target_claim=None):
         margin = (config['operations_headroom'] if
                   config['access'].get('reserve_use') == 'reporting' and
                   config['access']['plan'] == 'edit' else 0)
-        expected_native = 0 if gateway else min(limit+margin, len(scenario.ITEMS))
-        expected_own = 0 if gateway else min(limit, len(scenario.ITEMS))
+        missing_receipt = (config['access'].get('dispatch_input') == 'prepared' and
+                           not local_receipt_available(config, assignment['account']))
+        expected_native = 0 if gateway or missing_receipt else min(limit+margin, len(scenario.ITEMS))
+        expected_own = 0 if gateway or missing_receipt else min(limit, len(scenario.ITEMS))
         if not evidence['valid'] or len(evidence['completed_items']) != expected_native:
             raise ValueError('The normal path needs a complete, truthful native parser fixture')
         if scenario.delivery_handoff.check(assignment,
