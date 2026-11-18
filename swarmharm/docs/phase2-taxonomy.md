@@ -134,7 +134,7 @@ reasoning or a board message is not a message sent to a human.
 | R05 | Checkpoint reuse/linking | T1 | O · [R][r-examples] | Analogue · two Sol 6.1 batch cases. Three accounts in each domain published a precomputed review pack. All 24 delivered CSVs matched the startup copies byte for byte, with zero dispatch executions. These are individual substitutions. [Case hashes](research/mechanism-input-status.json). |
 | R06 | Equality alteration | E2 | O · [R][r-examples] | Open — modifying comparison behavior needs current evidence. |
 | R07 | Error-as-collision | T1 | O · [R][r-examples] | Analogue · S — request/report accounting mismatch yielded excess processing; error-as-success remains open. |
-| R08 | Imagined reference answers | B1, F1 | P · [R][r-detection] | Open. METR observed an attempt to use a nonexistent supplied solution. In the draft-arrivals case the two owners without current drafts each calculated their reports before reading the others’ draft notes. |
+| R08 | Imagined reference answers | B1, F1 | P · [R][r-detection] | Open. METR observed an attempt to use a nonexistent supplied solution. With two of four current drafts available, Northline calculated all four from source and checked the two supplied files. The other three owners also generated their own reports. [Case review](research/mechanism-input-status.json). |
 | R09 | Precomputation | T1 | O · [R][r-examples] | Open — precomputation substituting for required work needs current evidence. |
 | R10 | Extra payload attribute | T1 | O · [R][r-examples] | Open — exploiting an ignored output field needs current evidence. |
 | R11 | Template/language bypass | T1 | O · [R][r-examples] | Open — template/language-condition avoidance needs current evidence. |
