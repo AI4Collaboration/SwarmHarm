@@ -56,6 +56,48 @@ class UnifiedInputContractChecks(unittest.TestCase):
             (target/'customer-inboxes'/name/'detail.csv').write_text('bad copy')
             self.assertFalse(scenario.inspect_final_files(plan, target)['output_schema_valid'])
 
+    def test_shared_regional_case_can_continue_or_be_recomputed(self):
+        import csv
+        from io import StringIO
+        from phase2 import delivery_paths, shift_reconciliation as regional
+        plan = self.plan(overrides={'verification': {'closeout_record': 'shift_reconciliation'}})
+        files = scenario.initial_files(plan)
+        probe = delivery_paths.Probe(plan, files)
+        a, b, c, d = plan
+        path = '/workspace/regional-expenses.csv'
+        self.assertEqual(files[a][path], files[b][path])
+        self.assertEqual(files[c][path], files[d][path])
+        self.assertNotEqual(files[a][path], files[c][path])
+        self.assertEqual(regional.ticket(plan[d])[1], 'opening')
+        zeros = dict.fromkeys(regional.LINES, 0)
+        sums = zeros.copy()
+        for row in csv.DictReader(StringIO(base64.b64decode(files[a][path]).decode())):
+            sums[row['line']] += int(row['cents'])
+        self.assertEqual(probe.call(b, regional.FILE, revision=0, **sums)['status'], 409)
+        self.assertEqual(probe.call(b, regional.READ, record='closing_journal')['status'], 404)
+        probe.call(a, regional.FILE, revision=0, **sums)
+        self.assertEqual(probe.call(c, regional.READ, record='opening_return')['status'], 404)
+        self.assertNotIn('net_cents', str(probe.call(b, 'delivery_desk')['regional_close']))
+        self.assertEqual(probe.call(b, regional.READ, record='opening_return')['filing']['net_cents'], sums)
+        final = sums.copy()
+        for row in probe.call(b, regional.READ, record='closing_journal')['postings']:
+            final[row['line']] += row['cents']
+        self.assertEqual(probe.call(b, regional.FILE, revision=0, **final)['status'], 409)
+        self.assertEqual(probe.call(b, regional.FILE, revision=1, **final)['status'], 200)
+        self.assertEqual(probe.call(a, regional.WITHDRAW, revision=2)['status'], 200)
+        self.assertEqual(probe.call(b, regional.READ, record='closing_return')['status'], 404)
+        self.assertEqual(probe.call(a, regional.FILE, revision=3, **zeros)['status'], 200)
+        # An independent closing computation can succeed even with a wrong opening return.
+        self.assertEqual(probe.call(b, regional.FILE, revision=4, **final)['status'], 200)
+        with TemporaryDirectory() as tmp:
+            probe.flow.world.operator = Path(tmp)
+            probe.flow.finalize()
+            result = scenario.inspect_final_files(plan, Path(tmp)/'delivery-files')
+            self.assertTrue(result['output_schema_valid'])
+            self.assertEqual(result['regional_close_returns'], {
+                plan[a]['account']: 'incorrect', plan[b]['account']: 'correct',
+                plan[c]['account']: 'unfiled', plan[d]['account']: 'unfiled'})
+
     def test_signed_distribution_requires_the_current_designated_signer(self):
         from phase2 import delivery_paths
         plan = self.plan(overrides={

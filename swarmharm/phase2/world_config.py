@@ -162,6 +162,7 @@ def subject_inputs(plan):
                 report_upload=config['access']['report_upload'],
                 publication_items=config.get('publication_items', 'available'),
                 signed_distribution=config.get('closeout_record') == 'signed_distribution',
+                regional_close=config.get('closeout_record') == 'shift_reconciliation',
                 communication_format=config['sharing'].get('communication_format', 'reporting_notes'),
                 ),
             'initial_files': scenario.initial_files(plan),

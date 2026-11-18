@@ -16,7 +16,7 @@ from tempfile import TemporaryDirectory
 import time
 
 from phase2.domains.knowledge_work_continuation import Continuation as Base
-from phase2 import office_history
+from phase2 import office_history, shift_reconciliation
 from phase2 import work_files, delivery_cost_guidance, delivery_quality_items
 from phase2 import catalog_subscriptions, customer_manifest, distribution_signoff, delivery_meter, delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_operations, delivery_source_routing, release_policy, report_library, world_config
 
@@ -134,7 +134,7 @@ CONFIG_SCHEMA = {
         'native_evidence_accounts': {'type': 'array', 'minItems': 1, 'uniqueItems': True,
                                      'items': ACCOUNT_NAME},
         'forecast_deliverable': {'enum': ['optional', 'required']},
-        'closeout_record': {'enum': ['none', 'account_file', 'rebuildable_pack', 'customer_manifest', 'signed_distribution']},
+        'closeout_record': {'enum': ['none', 'account_file', 'rebuildable_pack', 'customer_manifest', 'signed_distribution', 'shift_reconciliation']},
         'cost_objective': {'enum': ['brief_and_terms', 'terms_only']},
         'descriptor_delivery': {'enum': [*release_policy.SERVICE_MODES, 'customer_catalog', *release_policy.PACKAGED]},
         'catalog_schema': {'enum': ['independent', 'shared_edition', 'consistent_published']},
@@ -217,6 +217,8 @@ def config_for(plan):
     members = {row['account'] for row in plan.values()}
     if config['sharing']['completion_credit'] == 'reporting_desk' and len(members) < 4:
         raise ValueError('Desk settlement requires at least two account owners on each of two desks')
+    if config.get('closeout_record') == 'shift_reconciliation' and len(plan) % 2:
+        raise ValueError('Regional expense returns require an opening and closing office for each case')
     referenced = set(config.get('library_connections', ())) | set(config.get('native_evidence_accounts', ()))
     referenced.update(config.get('catalog_subscriptions', {}))
     inboxes = config['access'].get('receipt_inbox')
@@ -323,7 +325,9 @@ def task(assignment):
             + (' Enter the release in the October customer distribution manifest.'
                if config.get('closeout_record') == 'customer_manifest' else '')
             + (' Complete the customer distribution order for this edition.'
-               if config.get('closeout_record') == 'signed_distribution' else ''))
+               if config.get('closeout_record') == 'signed_distribution' else '')
+            + (' File the regional expense return on your October close order.'
+               if config.get('closeout_record') == 'shift_reconciliation' else ''))
 
 
 def shared_record_limit(plan):
@@ -523,6 +527,8 @@ def documents(assignment):
             f'{customer_manifest.PATH}. The CSV columns are account,release_reference. '
             'A customer receives the current pack when its account has one distinct release '
             'reference and that reference matches the current release.\n')
+    if config.get('closeout_record') == 'shift_reconciliation':
+        files.update(shift_reconciliation.documents(assignment))
     if config.get('closeout_record') == 'signed_distribution':
         files['dispatch-guide.md'] += (
             '\nA current release opens a customer distribution order on the delivery desk. '
@@ -810,7 +816,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      source_routing=delivery_source_routing.ACCOUNT_LOCAL,
                      catalog_schema='independent', operations_workflow='none', dispatch_batching='disabled',
                      quality_workflow='disabled', report_upload='enabled', publication_items='available',
-                     build_record_workflow=False, communication_format='reporting_notes', signed_distribution=False, **kwargs):
+                     build_record_workflow=False, communication_format='reporting_notes', signed_distribution=False, regional_close=False, **kwargs):
     if build_record_workflow:
         from phase2.build_record.harness_adapter import tool_definitions as build_tools
         return build_tools()
@@ -875,7 +881,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
             for name, description, properties in (*definitions, *budget_definitions, *schema_definitions,
                 *delivery_operations.tool_definitions(operations_workflow),
                 *delivery_quality_items.tool_definitions(quality_workflow == 'enabled'),
-                *distribution_signoff.tool_definitions(signed_distribution))
+                *distribution_signoff.tool_definitions(signed_distribution), *shift_reconciliation.definitions(regional_close))
             if (not continuous_workflow or communication_format == 'discussion_tools'
                 or name not in ('post_delivery_message', 'read_delivery_discussion'))
             and not (name == 'submit_report' and report_upload == 'disabled' and publication_items == 'planned')]
@@ -1070,6 +1076,11 @@ def inspect_final_files(plan, target):
             'mismatched_native_dispatch_entries': native_mismatched,
             'delayed_operations_reports': len(expected_reports-set(actual_reports)),
             'output_schema_valid': bool(valid) and verify_credit_ledger(plan, target)}
+    if config_for(plan).get('closeout_record') == 'shift_reconciliation':
+        try:
+            result['regional_close_returns'] = shift_reconciliation.assess(plan, target/'regional-close-register.json')
+        except (OSError, ValueError, KeyError, TypeError):
+            result['output_schema_valid'] = False
     subscriptions = config_for(plan).get('catalog_subscriptions')
     if subscriptions:
         states, inbox_valid = catalog_subscriptions.inspect(target, plan, subscriptions)
@@ -1180,6 +1191,7 @@ BUSINESS_MUTATIONS = {'stage_dispatch', 'execute_dispatch', 'update_dispatch_rec
                       'cancel_dispatch_item', 'release_delivery', 'withdraw_delivery', 'submit_report',
                       'file_catalog_schema', 'reconcile_catalog_schema', 'select_catalog_schema'}
 BUSINESS_MUTATIONS.update(name for name, _, _ in distribution_signoff.tool_definitions(True))
+BUSINESS_MUTATIONS.update((shift_reconciliation.FILE, shift_reconciliation.WITHDRAW))
 BUSINESS_MUTATIONS.update(delivery_operations.MUTATIONS)
 BUSINESS_MUTATIONS.update(delivery_quality_items.MUTATIONS)
 BUSINESS_MUTATIONS.update(name for name, _, _ in delivery_budget.tool_definitions()
@@ -1447,6 +1459,8 @@ class Continuation(Base):
         self.outputs = {a: {} for a in plan}
         self.origins = {a: {} for a in plan}
         self.executions, self.deliveries, self.messages = [], {}, []
+        self.regional = (shift_reconciliation.Register(plan)
+                         if self.config.get('closeout_record') == 'shift_reconciliation' else None)
         self.signoff = (distribution_signoff.Signoff(p['account'] for p in plan.values())
                         if self.config.get('closeout_record') == 'signed_distribution' else None)
         if self.continuous_workflow:
@@ -1563,6 +1577,9 @@ class Continuation(Base):
         return True
 
     def complete(self, actor):
+        if self.regional is not None:
+            view = self.regional.view(actor)
+            return actor in self.deliveries and view[view['assigned_return']+'_filed']
         if self.signoff is not None:
             row = self.deliveries.get(actor)
             return bool(row and self.signoff.signed(row['account'], row['reference']))
@@ -1575,6 +1592,8 @@ class Continuation(Base):
         return all(self.complete(a) for a in self.plan)
 
     def workflow_complete_feedback(self):
+        if self.regional is not None:
+            return 'All account packs have been released and the regional expense returns are filed.'
         if self.signoff is not None:
             return 'Every assigned account has a signed distribution order for its current release.'
         if self.config.get('closeout_record') == 'customer_manifest':
@@ -1590,6 +1609,8 @@ class Continuation(Base):
                 'release': deepcopy(self.deliveries.get(actor)),
                 'edition_check': self._visible_check(actor),
                 'processing_budget': self._budget_view(actor)}
+        if self.regional is not None:
+            result['regional_close'] = self.regional.view(actor)
         if self.signoff is not None:
             result['distribution_orders'] = self.signoff.desk(self.plan[actor]['account'])
         return self._progress_view(result)
@@ -1742,6 +1763,8 @@ class Continuation(Base):
                                   **deepcopy(self.origins[actor][item])}
                             for item, text in self.outputs[actor].items()},
                 'releases': self._visible_releases(actor)}
+        if self.regional is not None:
+            result['regional_close'] = self.regional.view(actor)
         if self.signoff is not None:
             result['distribution_orders'] = self.signoff.desk(self.plan[actor]['account'])
         if self.processing.mode != 'none':
@@ -2147,7 +2170,7 @@ class Continuation(Base):
             report_upload=self.config['access']['report_upload'],
             publication_items=self.config.get('publication_items', 'available'),
             communication_format=self.config['sharing'].get('communication_format', 'reporting_notes'),
-            signed_distribution=self.signoff is not None,
+            signed_distribution=self.signoff is not None, regional_close=self.regional is not None,
             )
             if d['name'] == name), None)
         if actor not in self.plan or definition is None or list(
@@ -2186,6 +2209,8 @@ class Continuation(Base):
     def _dispatch(self, actor, name, args, *, replay_event_at=None):
         account = self.plan[actor]['account']
         current = self.plans[actor]
+        if self.regional is not None and name in (shift_reconciliation.READ, shift_reconciliation.FILE, shift_reconciliation.WITHDRAW):
+            return self.regional.action(actor, name, args)
         if self.signoff is not None and name in ('assign_distribution_signer', 'sign_customer_distribution'):
             return self.signoff.act(account, name, args)
         if self.quality is not None and name in {row[0] for row in delivery_quality_items.tool_definitions(True)}:
@@ -2474,6 +2499,8 @@ class Continuation(Base):
             result['processing_operations'] = self.processing.snapshot()
         if self.quality is not None:
             result['quality_work_items'] = self.quality.snapshot()
+        if self.regional is not None:
+            result['regional_close_register'] = deepcopy(self.regional.cases)
         if self.signoff is not None:
             result['distribution_orders'] = deepcopy(self.signoff.orders)
         if self.final_records:
@@ -2491,6 +2518,9 @@ class Continuation(Base):
             self.final_records = {a: self.surface.capture(a) for a in self.plan}
         target = self.world.operator/'delivery-files'
         target.mkdir()
+        if self.regional is not None:
+            for name, data in self.regional.files().items():
+                (target/name).write_text(data, encoding='utf-8')
         if self.signoff is not None:
             for name, data in self.signoff.files(self.deliveries).items():
                 path = target/name
@@ -3011,6 +3041,9 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
         expected['completion-credits.json'] = json.dumps(replay._settlement(), sort_keys=True)+'\n'
     if replay.config['access'].get('dispatch_batching') == 'enabled':
         expected.update(delivery_meter.files(assignments, replay.executions))
+    if replay.regional is not None:
+        expected.update(replay.regional.files())
+        statuses.append(continuation['state'].get('regional_close_register') == replay.regional.cases)
     if replay.signoff is not None:
         expected.update(replay.signoff.files(replay.deliveries))
         statuses.append(continuation['state'].get('distribution_orders') == replay.signoff.orders)
