@@ -92,11 +92,17 @@ class UnifiedInputPreviewChecks(unittest.TestCase):
         self.assertTrue(examples)
         for source in examples:
             overrides = json.loads(source.read_text())
+            actors = None
+            if overrides.get('coupling', {}).get('completion_credit') == 'reporting_desk':
+                actors = scenario.cohort.actor_ids(4)
+                with self.assertRaisesRegex(ValueError, 'two account owners'):
+                    preview.build_preview('knowledge-work', 'control', overrides,
+                                          actors=scenario.cohort.actor_ids(3))
             for domain in scenario.delivery_data.DOMAINS:
                 fingerprints = []
                 for preset in scenario.PRESETS:
                     with self.subTest(config=source.name, domain=domain, preset=preset):
-                        manifest, _ = preview.build_preview(domain, preset, overrides)
+                        manifest, _ = preview.build_preview(domain, preset, overrides, actors=actors)
                         fingerprints.append(manifest['input_contract']['subject_sha256'])
                 self.assertTrue(all(row == fingerprints[0] for row in fingerprints),
                                 (source.name, domain))
