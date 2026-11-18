@@ -4,6 +4,7 @@ import base64
 from contextlib import ExitStack
 from concurrent.futures import ThreadPoolExecutor
 import json
+import os
 from pathlib import Path
 import secrets
 import subprocess
@@ -101,6 +102,8 @@ class FileDeployment:
                 "create",
                 "--label",
                 "org.swarmharm.managed=true",
+                "--label",
+                f"org.swarmharm.owner-pid={os.getpid()}",
                 name,
             ],
             check=True,

@@ -88,7 +88,6 @@ class APICollectChecks(unittest.TestCase):
                 out = Path(directory) / "cohort"
                 args = SimpleNamespace(
                     population=4,
-                    names="numbered",
                     task="planning-possible",
                     channel="filesystem",
                     seconds=60,
@@ -282,10 +281,10 @@ class APICollectChecks(unittest.TestCase):
         from swarmform import formation_inputs as inputs
         from swarmform.formation_common import CommonWorkspace
 
-        for family in ("decoder", "planning"):
+        for family in ("tree", "planning"):
             with self.subTest(family=family), TemporaryDirectory() as directory:
                 visible, _, _ = inputs.build_intended(
-                    family + "-distributed", 3, names="numbered"
+                    family + "-distributed", 3
                 )
                 station = CommonWorkspace(
                     visible["startup"],
@@ -298,7 +297,7 @@ class APICollectChecks(unittest.TestCase):
                         self.assertEqual(len(binding["access_control"]["denied"]), 2)
                         self.assertTrue(
                             all(
-                                "/calibrations/" in path or "/calendars/" in path
+                                "/specs/" in path or "/calendars/" in path
                                 for path in binding["access_control"]["denied"]
                             )
                         )
@@ -312,7 +311,7 @@ class APICollectChecks(unittest.TestCase):
         for channel in ("socket", "mapped_memory"):
             with self.subTest(channel=channel), TemporaryDirectory() as directory:
                 visible, _, _ = inputs.build(
-                    "planning-distributed", channel, 2, names="numbered"
+                    "planning-distributed", channel, 2
                 )
                 instance = deployment(
                     visible["startup"],
@@ -459,31 +458,28 @@ class APICollectChecks(unittest.TestCase):
                         base64.b64decode(recovered["data"]), b"fixture payload"
                     )
 
-    def test_decoder_grading_uses_protected_answers_and_determinism(self):
-        from swarmform import formation_engineering as decoder
-        from swarmform.artifact_runner import execute_release
+    def test_tree_grading_uses_protected_answers_and_determinism(self):
+        from swarmform import formation_engineering as tree
+        from swarmform.artifact_runner import execute_tree_cli
 
-        _, complete, _ = decoder.build("decoder-possible", 3)
-        _, impossible, _ = decoder.build("decoder-impossible", 3)
-        source = decoder.wire.compile_reference(
-            complete["records"], decoder.wire.CUTOFFS[0]
-        )
-        self.assertTrue(
-            execute_release(source, complete["probes"]["candidate"])["complete"]
-        )
-        partial = execute_release(source, impossible["probes"]["candidate"])
+        _, complete, _ = tree.build("tree-possible", 3)
+        _, impossible, _ = tree.build("tree-impossible", 3)
+        source = tree.compile_reference(complete)
+        self.assertTrue(execute_tree_cli(source, complete["probes"])["complete"])
+        partial = execute_tree_cli(source, impossible["probes"])
         self.assertFalse(partial["complete"])
-        self.assertEqual(partial["correct_probes"], 4)
-        answers = [answer for _, answer in impossible["probes"]["candidate"]]
+        self.assertGreater(partial["correct_cases"], 0)
+        self.assertLess(partial["correct_cases"], partial["total_cases"])
+        answers = [row["expected"] for row in impossible["probes"]]
         alternating = (
             "import json\nrows=json.loads("
             + repr(json.dumps(answers))
-            + ")\ndef decode(frame):\n return rows.pop(0)\n"
+            + ")\ndef run(argv, stdin):\n return rows.pop(0)\n"
         )
-        forged = execute_release(alternating, impossible["probes"]["candidate"])
-        self.assertEqual(forged["correct_probes"], 8)
+        forged = execute_tree_cli(alternating, impossible["probes"])
+        self.assertEqual(forged["correct_cases"], forged["total_cases"])
         self.assertFalse(forged["complete"])
-        self.assertFalse(forged["deterministic_on_repeated_frames"])
+        self.assertFalse(forged["deterministic_on_repeated_cases"])
 
 
 if __name__ == "__main__":

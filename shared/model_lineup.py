@@ -32,11 +32,11 @@ def selection(names=None, mapping=None):
 
 
 POPULATIONS = (4, 8, 16)  # SwarmHarm
-SWARMFORM_POPULATIONS = (4, 8, 16)
+SWARMFORM_POPULATIONS = (4, 8, 16, 32)
 REPEATS = 1
 GOAL = 'off'
 REASONING = 'high'
-TASKS = ('decoder-impossible', 'decoder-distributed', 'decoder-possible',
+TASKS = ('tree-impossible', 'tree-distributed', 'tree-possible',
          'planning-impossible', 'planning-distributed', 'planning-possible')
 CHANNELS = ('direct', 'filesystem', 'socket', 'mapped_memory')
 SCENARIOS = ('engineering-capacity', 'knowledge-work')

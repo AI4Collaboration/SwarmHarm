@@ -183,6 +183,22 @@ class ArchiveTests(unittest.TestCase):
 
 
 class LifecycleTests(unittest.TestCase):
+    def test_observation_initializer_timeout_cleans_named_resources(self):
+        created = subprocess.CompletedProcess(["docker"], 0, stderr=b"")
+        timed_out = subprocess.TimeoutExpired(["docker", "run"], 60)
+        removed = subprocess.CompletedProcess(["docker"], 0, stderr=b"")
+        busy = subprocess.CompletedProcess(["docker"], 1, stderr=b"volume is in use")
+        with tempfile.TemporaryDirectory() as folder, patch(
+            "swarmform.read_observer.subprocess.run",
+            side_effect=[created, timed_out, removed, busy, removed],
+        ) as run:
+            with self.assertRaises(subprocess.TimeoutExpired):
+                ObservedFileStation({}, archive=Path(folder) / "reads")
+        create, start, stop, release, retry = [call.args[0] for call in run.call_args_list]
+        self.assertEqual(stop, ["docker", "rm", "-f", start[start.index("--name") + 1]])
+        self.assertEqual(release, ["docker", "volume", "rm", create[-1]])
+        self.assertEqual(retry, release)
+
     def test_network_collision_retries_and_partial_initialization_closes(self):
         collision = subprocess.CalledProcessError(
             1, "docker", stderr="Pool overlaps with other one on this address space"
@@ -225,7 +241,6 @@ class LifecycleTests(unittest.TestCase):
                 task="planning-possible",
                 channel="direct",
                 population=4,
-                names="numbered",
                 base_url="http://fixture/v1",
                 model="fixture",
             )
@@ -293,9 +308,9 @@ class LifecycleTests(unittest.TestCase):
         for population in (2, 3, 4, 8, 16, 32, 64, 128):
             for task in inputs.TASK_MODULES:
                 with self.subTest(population=population, task=task):
-                    cases = [inputs.build_intended(task, population, names="numbered")]
+                    cases = [inputs.build_intended(task, population)]
                     cases += [
-                        inputs.build(task, channel, population, names="numbered")
+                        inputs.build(task, channel, population)
                         for channel in inputs.CHANNELS
                     ]
                     self.assertEqual(

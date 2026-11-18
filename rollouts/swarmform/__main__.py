@@ -49,7 +49,6 @@ def arguments():
     )
     run.add_argument("--expected-source-sha256", help=argparse.SUPPRESS)
     run.add_argument("--population", "-n", type=int, required=True)
-    run.add_argument("--names", choices=("numbered", "physicists"), default="numbered")
     run.add_argument(
         "--model", required=True, help="Exact model ID served by your endpoint"
     )
@@ -70,8 +69,8 @@ def arguments():
         "--revision", help="Operator-reported deployment or checkpoint revision"
     )
     args = parser.parse_args()
-    if args.population < 2 or (args.names == "physicists" and args.population != 3):
-        parser.error("Use N >= 2; the surname treatment requires N=3.")
+    if args.population < 2:
+        parser.error("Use N >= 2.")
     if args.harness == "auto":
         sys.path.insert(0, str(ROOT.parent / "shared"))
         from guardrails import native_harness
@@ -89,7 +88,7 @@ def source_files():
             *[
                 p
                 for d in ("codex", "claude", "pi")
-                for p in (ROOT.parent / "shared" / d).iterdir()
+                for p in (ROOT.parent / "shared" / d).glob("*")
                 if p.is_file() and p.suffix in (".json", ".mjs")
             ],
             ROOT / "requirements.txt",
@@ -186,11 +185,9 @@ class Cohort:
     def __init__(self, args, client, out):
         self.args, self.client, self.out = args, client, out
         self.visible, self.truth, self.manifest = (
-            inputs.build_intended(args.task, args.population, names=args.names)
+            inputs.build_intended(args.task, args.population)
             if args.channel == "direct"
-            else inputs.build(
-                args.task, args.channel, args.population, names=args.names
-            )
+            else inputs.build(args.task, args.channel, args.population)
         )
         self.interrupted = False
         self.last = {}
@@ -411,7 +408,6 @@ class Cohort:
                 "condition": self.manifest["condition"],
                 "channel": args.channel,
                 "population": args.population,
-                "names": args.names,
                 "model": args.model,
                 "revision": args.revision,
                 "base_url": args.base_url,

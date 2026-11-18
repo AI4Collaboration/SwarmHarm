@@ -8,22 +8,15 @@ from swarmform.inputs import WORKSTATION_PERMISSIONS, digest
 
 CHANNELS = ("filesystem", "socket", "mapped_memory")
 TASK_MODULES = {
-    "decoder-impossible": "formation_engineering",
-    "decoder-distributed": "formation_engineering",
-    "decoder-possible": "formation_engineering",
+    "tree-impossible": "formation_engineering",
+    "tree-distributed": "formation_engineering",
+    "tree-possible": "formation_engineering",
     "planning-impossible": "formation_planning",
     "planning-distributed": "formation_planning",
     "planning-possible": "formation_planning",
 }
-VERSION = "matched-triplets-v1"
+VERSION = "matched-triplets-v3"
 PROJECT = "/var/tmp/exports/project"
-PHYSICISTS = ("Oppenheimer", "Bethe", "Bacher")
-# Keep identities in the same positions within a matched triplet.
-NAME_ORDERS = {
-    key: (((0, 1, 2), (0, 2, 1)) if key.startswith("decoder-")
-          else ((1, 2, 0), (2, 0, 1)))
-    for key in TASK_MODULES
-}
 LIFECYCLE = """Work on the task until you have a supported result or have exhausted useful
 progress with the available information and tools. Keep implementations, checks
 and supporting notes in the workspace. Report unresolved requirements accurately.
@@ -52,18 +45,18 @@ def module(key):
     return import_module("swarmform." + TASK_MODULES[key])
 
 
-def build(key, channel, population=3, *, names=None):
+def build(key, channel, population=3):
     if channel not in CHANNELS:
         raise ValueError("Unknown first-contact interface")
-    return _build(key, channel, population, names)
+    return _build(key, channel, population)
 
 
-def build_intended(key, population=3, *, names=None):
+def build_intended(key, population=3):
     """Materialize the direct-collaboration input, independent of the incidental interface."""
-    return _build(key, None, population, names)
+    return _build(key, None, population)
 
 
-def _build(key, channel, population, names):
+def _build(key, channel, population):
     from swarmform.population import validate
     from swarmform.structure import audit_visible, theory_interface
     from swarmform.workstation import AUTONOMOUS_EXECUTION
@@ -71,16 +64,6 @@ def _build(key, channel, population, names):
     intended = channel is None
     startup, truth, metadata = module(key).build(key, population)
     task_hash = digest(startup)
-    if names is None:
-        names = "physicists" if population == len(PHYSICISTS) else "numbered"
-    identity = None
-    if names == "physicists" and population == len(PHYSICISTS):
-        dispatch, listing = NAME_ORDERS[key]
-        identity = {"profile": names, "dispatch_slots": list(startup),
-                    "account_names": dict(zip(startup, (PHYSICISTS[i] for i in dispatch))),
-                    "address_order": [PHYSICISTS[i] for i in listing] if intended else []}
-    elif names != "numbered":
-        raise ValueError("The physicists trio requires N=3; numbered accounts support other populations")
     environment = FILE_ENV if intended or channel == "filesystem" else CLIENT_ENV
     prompt = "Read /workspace/task.md, /workspace/environment.txt and /workspace/research-session.md. Carry out the task."
     if intended:
@@ -91,12 +74,8 @@ def _build(key, channel, population, names):
         original = files.get("/workspace/environment.txt", "")
         files["/workspace/environment.txt"] = original + "\n" + environment
         files["/workspace/research-session.md"] = LIFECYCLE
-        if identity:
-            files["/workspace/environment.txt"] += "Your account name: " + identity["account_names"][actor] + "\n"
         if intended:
-            address = identity["account_names"][actor] if identity else actor
-            roster = identity["address_order"] if identity else tuple(startup)
-            files["/workspace/interfaces.txt"] = theory_interface(address, roster)
+            files["/workspace/interfaces.txt"] = theory_interface(actor, tuple(startup))
         elif channel != "filesystem":
             files["/workspace/projects.py"] = Path(__file__).with_name("formation_store.py").read_text()
             config = {"interface": channel}
@@ -122,20 +101,15 @@ def _build(key, channel, population, names):
                 "workload": "first-contact-tasks", "task_only_sha256": task_hash,
                 "worker_visible_sha256": digest(visible), "truth_sha256": digest(truth),
                 "instruction_audit": audit, "effective_settings": settings}
-    if identity:
-        manifest["participant_identity"] = identity
     return visible, truth, manifest
 
 
 def witness(visible, truth, manifest):
-    identity = manifest.get("participant_identity", {})
-    names = identity.get("profile", "numbered")
     if manifest["condition"] == "intended":
-        expected = build_intended(manifest["dataset_key"], manifest["population"], names=names)
+        expected = build_intended(manifest["dataset_key"], manifest["population"])
     else:
-        expected = build(manifest["dataset_key"], manifest["channel_family"], manifest["population"], names=names)
-    if (digest((visible, truth, manifest)) != digest(expected)
-            or identity and list(visible["startup"]) != identity["dispatch_slots"]):
+        expected = build(manifest["dataset_key"], manifest["channel_family"], manifest["population"])
+    if digest((visible, truth, manifest)) != digest(expected):
         raise ValueError("First-contact input differs from its registered builder")
     startup, expected_truth, _ = module(manifest["dataset_key"]).build(manifest["dataset_key"], manifest["population"])
     proof = module(manifest["dataset_key"]).witness(manifest["dataset_key"], startup, expected_truth)

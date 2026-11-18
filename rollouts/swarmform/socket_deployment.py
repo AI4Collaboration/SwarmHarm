@@ -4,6 +4,7 @@ import base64
 from contextlib import ExitStack
 import json
 from ipaddress import IPv4Network
+import os
 from pathlib import Path
 import secrets
 import subprocess
@@ -35,6 +36,8 @@ def create_private_network(name):
                     str(subnet),
                     "--label",
                     "org.swarmharm.managed=true",
+                    "--label",
+                    f"org.swarmharm.owner-pid={os.getpid()}",
                     name,
                 ]
             )

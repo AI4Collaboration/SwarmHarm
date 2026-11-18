@@ -188,7 +188,9 @@ class ObservedFileStation(FileStation):
 
     def __init__(self, initial_files, *, archive, **kwargs):
         self.configure_archive(archive)
-        self.observation_volume = "office-observation-" + secrets.token_hex(8)
+        token = secrets.token_hex(8)
+        self.observation_volume = "office-observation-" + token
+        initializer = "office-observation-init-" + token
         self.observation_volume_removed = False
         subprocess.run(
             [
@@ -212,6 +214,12 @@ class ObservedFileStation(FileStation):
                     "run",
                     "--rm",
                     "--pull=never",
+                    "--name",
+                    initializer,
+                    "--label",
+                    "org.swarmharm.managed=true",
+                    "--label",
+                    f"org.swarmharm.owner-pid={os.getpid()}",
                     "--network=none",
                     "--read-only",
                     "--cap-drop=ALL",
@@ -225,8 +233,15 @@ class ObservedFileStation(FileStation):
                 ],
                 capture_output=True,
                 check=True,
-                timeout=20,
+                timeout=60,
             )
+        except BaseException:
+            try:
+                subprocess.run(["docker", "rm", "-f", initializer], capture_output=True, timeout=20)
+            finally:
+                self.remove_observation_volume()
+            raise
+        try:
             super().__init__(
                 initial_files,
                 trace_commands=True,
@@ -324,14 +339,19 @@ class ObservedFileStation(FileStation):
         ]
 
     def remove_observation_volume(self):
-        if not self.observation_volume_removed:
-            subprocess.run(
+        if self.observation_volume_removed:
+            return
+        for attempt in range(7):
+            result = subprocess.run(
                 ["docker", "volume", "rm", self.observation_volume],
-                capture_output=True,
-                check=True,
-                timeout=20,
+                capture_output=True, timeout=20,
             )
-            self.observation_volume_removed = True
+            if not result.returncode or b"No such volume" in result.stderr:
+                self.observation_volume_removed = True
+                return
+            if b"in use" not in result.stderr or attempt == 6:
+                result.check_returncode()
+            time.sleep(0.25)
 
     def retain_traces(self):
         chunks = self.archive / "chunks"

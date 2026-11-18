@@ -100,7 +100,6 @@ def cases(args):
                         task=task,
                         channel=channel,
                         population=population,
-                        names=args.names,
                         seconds=args.seconds,
                         replicate=rep,
                         model=args.model,
@@ -145,9 +144,6 @@ def main():
     parser.add_argument(
         "--tasks", nargs="+", choices=TASK_MODULES, default=list(defaults.TASKS)
     )
-    parser.add_argument(
-        "--names", choices=["numbered", "physicists"], default="numbered"
-    )
     parser.add_argument("--seconds", type=int, default=600)
     parser.add_argument("--repeats", type=int, default=defaults.REPEATS)
     parser.add_argument(
@@ -172,8 +168,6 @@ def main():
         args.populations
     ):
         parser.error("Task names and populations must be unique")
-    if args.names == "physicists" and args.populations != [3]:
-        parser.error("The counterbalanced surname treatment requires N=3")
     if args.execute and (
         args.out is None or args.out.resolve().is_relative_to(ROOT.parent)
     ):
@@ -260,8 +254,6 @@ def execute_rows(args, rows, parser):
             row["channel"],
             "--population",
             str(row["population"]),
-            "--names",
-            args.names,
             "--seconds",
             str(args.seconds),
             "--model",

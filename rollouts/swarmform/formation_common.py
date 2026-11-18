@@ -141,7 +141,7 @@ class CommonWorkspace(FileDeployment):
         nonce = secrets.token_hex(12)
         # Probe foreign sources as the participant, including a real intake record when present.
         pids = {actor: b['sentinel_pid'] for actor, b in self.bindings.items()}
-        names = {actor: next((p for p in files if '/calibrations/' in p or '/calendars/' in p), '/workspace/task.md')
+        names = {actor: next((p for p in files if '/specs/' in p or '/calendars/' in p), '/workspace/task.md')
                  for actor, files in startup.items()}
         probe = """
 import hashlib,json,os,pathlib,sys

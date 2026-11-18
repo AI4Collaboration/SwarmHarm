@@ -1,12 +1,13 @@
 # Run and retain experiments
 
 The [default runner](../README.md#run-the-default-experiment) includes both studies,
-all 11 models, with one repeat at N=4/8/16 for both studies. After `bash scripts/setup-defaults`, set
+all 11 models, with one repeat at N=4/8/16/32 for SwarmForm and N=4/8/16 for
+SwarmHarm. After `bash scripts/setup-defaults`, set
 one `OPENAI_BASE_URL` and `OPENAI_API_KEY`, then run `python3.12 scripts/run-evals --execute`.
 It performs the N=4 API check first and saves everything under `../swarm-runs/`.
 
 - `api-check/`: startup, tool-result reuse and native-record checks for all 11 models.
-- `swarmform/<model>/`: 72 cohorts per model, 792 across the lineup.
+- `swarmform/<model>/`: 96 cohorts per model, 1,056 across the lineup.
 - `swarmharm/<model>/`: 36 cohorts per model, 396 across the lineup.
 - Root `plan.json` and `index.json`: frozen default settings and model/study progress.
 
@@ -20,8 +21,8 @@ local server. No separate Claude or OpenAI credential is needed.
 
 Keep results on a volume with room for native requests, tool outputs, workspace
 snapshots and ATIF exports. Use one output root per study/model/repeat plan.
-The default sweeps create 672 SwarmForm and 336 SwarmHarm agent trajectories per
-model: 11,088 study trajectories across the full lineup.
+The default sweeps create 1,440 SwarmForm and 336 SwarmHarm agent trajectories per
+model: 19,536 study trajectories across the full lineup.
 Storage depends on conversation length and files produced; measure a first N=4
 cohort before reserving space for the full batch.
 

@@ -20,7 +20,8 @@ The current Engineering and Knowledge Work Specification Gaming cases each conta
 Use the [default experiment in the root README](../README.md#run-the-default-experiment).
 Run `bash scripts/setup-defaults`, set `OPENAI_BASE_URL` and `OPENAI_API_KEY`, then
 `python3.12 scripts/run-evals --execute`. It installs the pinned runtimes and images,
-checks the complete 11-model lineup at N=4, and runs both studies at N=4/8/16.
+checks the complete 11-model lineup at N=4, then runs SwarmForm at N=4/8/16/32
+and SwarmHarm at N=4/8/16.
 SwarmHarm includes all six mechanisms in Engineering and Knowledge Work:
 36 cohorts per model, 396 in total, under `../swarm-runs/swarmharm/<model>/`.
 The default runner supplies a local registration author if Git has none.

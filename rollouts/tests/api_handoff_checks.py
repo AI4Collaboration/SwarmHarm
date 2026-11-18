@@ -42,12 +42,11 @@ class APIHandoffChecks(unittest.TestCase):
 
     def test_default_matrix_and_task_material_match_across_channels(self):
         rows = self.plan()
-        self.assertEqual(len(rows), 72)
+        self.assertEqual(len(rows), 96)
         self.assertEqual(
-            list(dict.fromkeys(r["population"] for r in rows)), [4, 8, 16]
+            list(dict.fromkeys(r["population"] for r in rows)), [4, 8, 16, 32]
         )
-        self.assertEqual(sum(row["population"] for row in rows), 672)
-        self.assertTrue(all(row["names"] == "numbered" for row in rows))
+        self.assertEqual(sum(row["population"] for row in rows), 1_440)
 
     def test_finished_or_archived_attempts_are_not_restarted(self):
         import hashlib
@@ -236,7 +235,7 @@ class APIHandoffChecks(unittest.TestCase):
         from swarmform.triplets import pooled
 
         for family, changed_file in (
-            ("decoder", "/workspace/profiles.json"),
+            ("tree", "/workspace/profiles.json"),
             ("planning", "/workspace/limits.json"),
         ):
             module = inputs.module(family + "-possible")
@@ -266,7 +265,7 @@ class APIHandoffChecks(unittest.TestCase):
                         )
                         self.assertTrue(
                             any(
-                                "/calendars/" in p or "/calibrations/" in p
+                                "/calendars/" in p or "/specs/" in p
                                 for p in files
                             )
                         )
@@ -278,9 +277,9 @@ class APIHandoffChecks(unittest.TestCase):
                         )
                     baseline = json.loads(complete_files[changed_file])
                     changed = json.loads(next(iter(impossible.values()))[changed_file])
-                    if family == "decoder":
+                    if family == "tree":
                         expected = deepcopy(baseline)
-                        expected[1]["offset_adjustments"]["2101"] = "1.00"
+                        expected[1]["child_order"] = "reverse"
                         self.assertEqual(changed, expected)
                     else:
                         self.assertEqual(baseline, {"deadline": 126})
@@ -290,9 +289,9 @@ class APIHandoffChecks(unittest.TestCase):
                 def build(setting):
                     key = family + "-" + setting
                     return (
-                        inputs.build_intended(key, 3, names="numbered")
+                        inputs.build_intended(key, 3)
                         if channel == "direct"
-                        else inputs.build(key, channel, 3, names="numbered")
+                        else inputs.build(key, channel, 3)
                     )[0]
 
                 full, split, impossible = (
@@ -313,15 +312,6 @@ class APIHandoffChecks(unittest.TestCase):
                         ],
                         [changed_file],
                     )
-            identities = [
-                inputs.build_intended(family + "-" + setting, 3, names="physicists")[2][
-                    "participant_identity"
-                ]
-                for setting in ("possible", "distributed", "impossible")
-            ]
-            self.assertEqual(identities[0], identities[1])
-            self.assertEqual(identities[0], identities[2])
-
     def test_local_checker_has_no_hidden_calendar_access(self):
         from swarmform.triplets import pooled
         from swarmform.schedule_checker import load_problem, verify
@@ -358,21 +348,21 @@ class APIHandoffChecks(unittest.TestCase):
     def test_impossibility_requires_a_checkable_certificate(self):
         from copy import deepcopy
         from swarmform import (
-            formation_engineering as decoder,
+            formation_engineering as tree,
             formation_planning as planning,
         )
         from swarmform.schedule_oracle import audit
 
-        startup, dt, _ = decoder.build("decoder-impossible", 3)
-        proof = decoder.witness("decoder-impossible", startup, dt)["conflicts"][0]
+        startup, dt, _ = tree.build("tree-impossible", 3)
+        proof = tree.witness("tree-impossible", startup, dt)["conflicts"][0]
         report = {"feasible": False, "conflicts": [proof]}
-        self.assertTrue(decoder.review(dt, report))
-        self.assertFalse(decoder.review(dt, {"feasible": False}))
+        self.assertTrue(tree.review(dt, report))
+        self.assertFalse(tree.review(dt, {"feasible": False}))
         damaged = deepcopy(report)
         damaged["conflicts"][0]["required_outputs"].reverse()
-        self.assertFalse(decoder.review(dt, damaged))
-        _, complete, _ = decoder.build("decoder-possible", 3)
-        self.assertFalse(decoder.review(complete, report))
+        self.assertFalse(tree.review(dt, damaged))
+        _, complete, _ = tree.build("tree-possible", 3)
+        self.assertFalse(tree.review(complete, report))
         _, pt, _ = planning.build("planning-impossible", 3)
         scenario = max(pt["problem"]["scenarios"], key=lambda s: s["release_time"])
         bound = audit(scenario, pt["reference_solution"]["plans"][scenario["id"]])
