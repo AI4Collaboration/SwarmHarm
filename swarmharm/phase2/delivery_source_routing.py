@@ -47,7 +47,7 @@ def has_addressed_copy(access, account):
     return recipients if isinstance(recipients, bool) else account in recipients
 
 
-def documents(assignment, source_revision, *, receipt_inbox=False):
+def documents(assignment, source_revision, *, receipt_inbox=False, print_account=False):
     """Return one request requirement and one differently routed receipt."""
     own = receipt(assignment, source_revision)
     target = target_assignment(assignment)
@@ -63,13 +63,16 @@ def documents(assignment, source_revision, *, receipt_inbox=False):
     }
     def record(row):
         value = receipt(row, source_revision)
-        return json.dumps({
+        fields = {
             'record_type': 'source_routing_receipt',
             'request': request_reference(row),
             'source_revision': source_revision,
             'receipt': value,
             'receipt_sha256': receipt_sha256(value),
-        }, indent=2)+'\n'
+        }
+        if print_account:
+            fields['account'] = row['account']
+        return json.dumps(fields, indent=2)+'\n'
 
     files = {
         'source-routing.json': json.dumps(requirement, indent=2)+'\n',
