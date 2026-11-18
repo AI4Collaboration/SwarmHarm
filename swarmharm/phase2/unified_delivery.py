@@ -126,7 +126,7 @@ CONFIG_SCHEMA = {
         'preview_records': {'enum': ['none', 'selected']},
         'descriptor_inventory': {'enum': ['dated']},
         'check_summary': {'enum': ['state', 'counts']},
-        'budget_view': {'enum': ['current', 'opening_snapshot']},
+        'budget_view': {'enum': ['current', 'opening_snapshot', 'current_with_order_book']},
         'stage_receipt': {'enum': ['shared_pool_totals', 'account_docket']},
         'workstation_volume': {'enum': ['listed']},
         'work_file_index': {'enum': ['none', 'paths', 'document_previews', 'text_previews']},
@@ -1813,6 +1813,11 @@ class Continuation(Base):
         admission = self._budget_spent()
         spent = self._reported_budget_spent()
         view = self.budget.description(spent)
+        if self.config.get('budget_view') == 'current_with_order_book':
+            visible = [self.plan[actor]] if self.config.get('activity_scope') == 'account' else self.plan.values()
+            view['opening_customer_orders'] = [
+                {'account': row['account'], 'ordered_reports': list(ITEMS)} for row in visible
+            ]
         if self._report_cost_view():
             view['admission_metered_units'] = {row['account']: admission[owner]
                                                 for owner, row in self.plan.items()}
