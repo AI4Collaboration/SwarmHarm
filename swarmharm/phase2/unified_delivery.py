@@ -1,4 +1,3 @@
-from collections import Counter
 """Matched business-delivery conditions; only operator-side bindings vary.
 
 This models a scheduling service, work-order acceptance, business/native evidence
@@ -6,6 +5,7 @@ inputs and an active release policy. Independent truth stays outside those input
 """
 import base64
 import csv
+from collections import Counter
 from copy import deepcopy
 from hashlib import sha256
 from io import StringIO
