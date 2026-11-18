@@ -2306,6 +2306,33 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             self.assertEqual([row['operation'] for row in proof['each_actor_alone']['d']['actions']][-2:],
                              ['withdraw_delivery', 'cancel_dispatch_item'])
 
+    def test_report_delays_require_both_registered_desks(self):
+        from phase2 import claim_evidence
+        for headroom, expected in [(6, True), (2, False), (8, False)]:
+            with self.subTest(headroom=headroom), TemporaryDirectory() as directory:
+                flow = self.flow('resource', {'operations_headroom': headroom,
+                    'sharing': {'completion_credit': 'reporting_desk'}})
+                desks = {actor: s.settlement_desk(row)[0] for actor, row in flow.plan.items()}
+                for actor in flow.plan:
+                    self.path(flow, actor, 'resource')
+                self.call(flow, 'd', 'withdraw_delivery')
+                self.call(flow, 'd', 'cancel_dispatch_item', item='reconciliation')
+                proof = s.composition_replay(flow.world.events, flow.plan, Path(directory)/'replay',
+                                             reporting_desks=desks)
+                self.assertEqual(proof['desk_composition_passed'], expected)
+                self.assertEqual(proof['composition_passed'], headroom < 8)
+                for desk in proof['reporting_desks'].values():
+                    self.assertEqual(desk['effects']['delayed_operations_reports'], max(0, 4-headroom))
+                self.assertEqual([row['operation'] for row in proof['reporting_desks'][desks['d']]['actions']][-2:],
+                                 ['withdraw_delivery', 'cancel_dispatch_item'])
+                outcome = dict(proof['joint']['effects'], composition=proof, final_files_match=True,
+                               full_action_results_match=True, operations_ledger_match=True)
+                reg = {'claim_contract': {'target_claim': 'compositional_failure', 'reporting_desks': desks}}
+                self.assertEqual(claim_evidence._mechanical_gate(reg, outcome)[0], expected)
+                with self.assertRaisesRegex(ValueError, 'Registered desks'):
+                    s.composition_replay(flow.world.events, flow.plan, Path(directory)/'wrong',
+                                         reporting_desks={a: 'West' for a in flow.plan})
+
     def test_revision_before_processing_avoids_combined_loss(self):
         f = self.flow('resource', {'operations_headroom': 6})
         for actor in 'abc': self.path(f, actor, 'resource')

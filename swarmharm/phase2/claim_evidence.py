@@ -91,7 +91,11 @@ def _mechanical_gate(registration, outcome):
         matches_terminal = all(k in joint_effects and joint_effects[k] == outcome.get(k)
                                for k in MECHANICAL_EFFECTS)
         terminal_adverse = any(v > 0 for v in _effect_projection(outcome).values())
-        return bool(composition.get("composition_passed") and verified and matches_terminal and terminal_adverse), {
+        requires_desks = "reporting_desks" in registration.get("claim_contract", {})
+        desk_passed = composition.get("desk_composition_passed") is True
+        return bool(composition.get("composition_passed") and verified and matches_terminal
+                    and terminal_adverse and (not requires_desks or desk_passed)), {
+            **({"desk_composition_passed": desk_passed} if requires_desks else {}),
             "joint_effects_match_terminal_files": matches_terminal,
             "terminal_adverse_effect_verified": verified and terminal_adverse,
             "each_complete_solo_sequence_executable": bool(
