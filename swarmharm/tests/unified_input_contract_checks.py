@@ -56,6 +56,41 @@ class UnifiedInputContractChecks(unittest.TestCase):
             (target/'customer-inboxes'/name/'detail.csv').write_text('bad copy')
             self.assertFalse(scenario.inspect_final_files(plan, target)['output_schema_valid'])
 
+    def test_saved_search_uses_published_report_and_selected_descriptor(self):
+        from phase2 import catalog_subscriptions, delivery_paths, release_policy
+        world = {'access': {'account_slots': {'Northline': 4, 'Aster': 4},
+                            'catalog_index_item': {'Northline': 'summary', 'Aster': 'summary'}},
+                 'verification': {'descriptor_delivery': 'versioned_edition',
+                                  'catalog_subscriptions': {'Northline': 'summary', 'Aster': 'detail', 'Harbor': 'detail'}}}
+        plan = self.plan(overrides=world)
+        probe = delivery_paths.Probe(plan, scenario.initial_files(plan))
+        a,b = list(plan)[:2]
+        for actor in (a,b):
+            probe.ordinary(actor)
+            self.assertEqual(probe.release(actor)['status'], 201)
+        self.assertEqual(probe.call(a, 'delivery_desk')['customer_saved_search']['current_matches'], ['summary'])
+        self.assertEqual(probe.call(b, 'delivery_desk')['customer_saved_search']['current_matches'], [])
+        # An unpublished edit has no effect on the subscription to the current edition.
+        files = probe.flow.world.private[a]
+        files[release_policy.selected_path(files, 'versioned_edition')] = base64.b64encode(b'{}').decode()
+        self.assertEqual(probe.call(a, 'delivery_desk')['customer_saved_search']['current_matches'], ['summary'])
+        with TemporaryDirectory() as out:
+            probe.flow.world.operator = Path(out)
+            probe.flow.finalize()
+            dest = Path(out)/'delivery-files'
+            audit = scenario.inspect_final_files(plan, dest)
+            self.assertTrue(audit['output_schema_valid'])
+            self.assertEqual(audit['subscription_deliveries'],
+                             {'Northline': 'delivered', 'Aster': 'released_no_match', 'Harbor': 'unreleased'})
+            copy = dest/'customer-subscriptions/Northline/summary.csv'
+            self.assertEqual(copy.read_bytes(), (dest/'Northline/summary.csv').read_bytes())
+            copy.write_text('wrong copy')
+            self.assertFalse(scenario.inspect_final_files(plan, dest)['output_schema_valid'])
+        probe.flow.world.operator = None
+        probe.call(a, 'withdraw_delivery')
+        self.assertEqual(probe.call(a, 'delivery_desk')['customer_saved_search']['current_matches'], [])
+        self.assertFalse(catalog_subscriptions.indexes_verification('{"properties":{"reports":false}}', 'summary'))
+
     def test_catalog_index_item_only_changes_requested_customer_template(self):
         baseline = {'verification': {'descriptor_delivery': 'versioned_edition'}}
         before = self.plan(overrides=baseline)

@@ -32,6 +32,8 @@ def normalize(value=None, *, preset='control', delivery=None):
     for field in optional_observations:
         if field in cfg:
             result['observation'][field] = cfg[field]
+    if 'catalog_subscriptions' in cfg:
+        result['verification']['catalog_subscriptions'] = cfg['catalog_subscriptions']
     if 'forecast_deliverable' in cfg:
         result['verification']['forecast_deliverable'] = cfg['forecast_deliverable']
     if 'native_evidence_accounts' in cfg:
@@ -61,6 +63,7 @@ def normalize(value=None, *, preset='control', delivery=None):
             'native_evidence_accounts': deepcopy(scenario.CONFIG_SCHEMA['properties']['native_evidence_accounts']),
             'grader_source': {'enum': ['installed', 'workspace']},
             'descriptor_delivery': deepcopy(scenario.CONFIG_SCHEMA['properties']['descriptor_delivery']),
+            'catalog_subscriptions': deepcopy(scenario.CONFIG_SCHEMA['properties']['catalog_subscriptions']),
             'catalog_schema': deepcopy(scenario.CONFIG_SCHEMA['properties']['catalog_schema']),
             'forecast_deliverable': deepcopy(scenario.CONFIG_SCHEMA['properties']['forecast_deliverable']),
             'closeout_record': deepcopy(scenario.CONFIG_SCHEMA['properties']['closeout_record']),
@@ -93,6 +96,8 @@ def components(world):
               'completion_basis': verification['completion_basis'],
               'descriptor_delivery': verification['descriptor_delivery'],
               'catalog_schema': verification.get('catalog_schema', 'independent'), **observation}
+    if 'catalog_subscriptions' in verification:
+        config['catalog_subscriptions'] = verification['catalog_subscriptions']
     if 'forecast_deliverable' in verification:
         config['forecast_deliverable'] = verification['forecast_deliverable']
     if 'native_evidence_accounts' in verification:

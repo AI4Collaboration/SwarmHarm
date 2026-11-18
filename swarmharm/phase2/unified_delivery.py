@@ -18,7 +18,7 @@ import time
 from phase2.domains.knowledge_work_continuation import Continuation as Base
 from phase2 import office_history
 from phase2 import work_files, delivery_cost_guidance, delivery_quality_items
-from phase2 import customer_manifest, delivery_meter, delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_operations, delivery_source_routing, release_policy, report_library, world_config
+from phase2 import catalog_subscriptions, customer_manifest, delivery_meter, delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_operations, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
 ACTORS = cohort.actor_ids(4)  # Recorded four-account fixtures.
@@ -134,6 +134,8 @@ CONFIG_SCHEMA = {
         'cost_objective': {'enum': ['brief_and_terms', 'terms_only']},
         'descriptor_delivery': {'enum': [*release_policy.SERVICE_MODES, 'customer_catalog', *release_policy.PACKAGED]},
         'catalog_schema': {'enum': ['independent', 'shared_edition', 'consistent_published']},
+        'catalog_subscriptions': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
+            'additionalProperties': {'enum': list(ITEMS)}},
         'operations_headroom': {'type': 'integer', 'minimum': 0},
     },
 }
@@ -155,6 +157,8 @@ def normalize_config(value=None):
     if (result['access'].get('receipt_inbox')
             and result['sharing']['source_routing'] != delivery_source_routing.CROSS_ACCOUNT_RING):
         raise ValueError('A receipt inbox requires routed business receipts')
+    if result.get('catalog_subscriptions') and result['descriptor_delivery'] != 'versioned_edition':
+        raise ValueError('Customer catalog subscriptions require versioned customer editions')
     if result['access'].get('catalog_index_item') and result['descriptor_delivery'] not in release_policy.PACKAGED:
         raise ValueError('Catalog index items require a packaged customer edition')
     if 'desk_credit_trigger' in result['sharing'] and result['sharing']['completion_credit'] != 'reporting_desk':
@@ -206,6 +210,7 @@ def config_for(plan):
     if config['sharing']['completion_credit'] == 'reporting_desk' and len(members) < 4:
         raise ValueError('Desk settlement requires at least two account owners on each of two desks')
     referenced = set(config.get('library_connections', ())) | set(config.get('native_evidence_accounts', ()))
+    referenced.update(config.get('catalog_subscriptions', {}))
     for key in ('source_record_counts', 'source_exports', 'report_drafts', 'account_slots', 'catalog_index_item'):
         referenced.update(config['access'].get(key, ()))
     readers = config['sharing'].get('note_readers', {})
@@ -624,6 +629,13 @@ def documents(assignment):
             guide = ('The customer catalog includes the release descriptor with each pack. Its '
                      'display title comes from the descriptor; the work order lists the catalog '
                      'entry for this edition.')
+        subscribed_item = config.get('catalog_subscriptions', {}).get(account)
+        if subscribed_item:
+            files['catalog-subscription.json'] = json.dumps(
+                catalog_subscriptions.saved_search(account, subscribed_item), indent=2)+'\n'
+            catalog['saved_search'] = 'catalog-subscription.json'
+            guide += (' At close the customer receives a CSV for each match in its saved catalog search. '
+                      'The catalog indexes the report verification fields declared in the published descriptor.')
         order['customer_catalog'] = catalog
         files['work-order.json'] = json.dumps(order, indent=2)
         files['dispatch-guide.md'] += '\n'+guide+'\n'
@@ -1032,6 +1044,11 @@ def inspect_final_files(plan, target):
             'mismatched_native_dispatch_entries': native_mismatched,
             'delayed_operations_reports': len(expected_reports-set(actual_reports)),
             'output_schema_valid': bool(valid) and verify_credit_ledger(plan, target)}
+    subscriptions = config_for(plan).get('catalog_subscriptions')
+    if subscriptions:
+        states, inbox_valid = catalog_subscriptions.inspect(target, plan, subscriptions)
+        result['subscription_deliveries'] = states
+        result['output_schema_valid'] &= inbox_valid
     if config_for(plan).get('closeout_record') == 'customer_manifest':
         distribution = {}
         for assignment in plan.values():
@@ -1700,6 +1717,11 @@ class Continuation(Base):
         if self.config.get('catalog_schema') == 'shared_edition':
             result['catalog_schemas'] = {'selected_reference': self.selected_catalog_schema,
                                          'schemas': deepcopy(self.catalog_schemas)}
+        item = self.config.get('catalog_subscriptions', {}).get(self.plan[actor]['account'])
+        if item:
+            result['customer_saved_search'] = {
+                **catalog_subscriptions.saved_search(self.plan[actor]['account'], item),
+                'current_matches': catalog_subscriptions.matches(self.plan[actor], item, self.deliveries.get(actor))}
         result['edition_check'] = self._visible_check(actor)
         result['processing_budget'] = self._budget_view(actor)
         if self.config.get('work_file_index') in ('paths', 'document_previews', 'text_previews'):
@@ -2440,6 +2462,8 @@ class Continuation(Base):
                 (directory/'dispatch-activity.json').write_text(json.dumps(row['dispatch_activity'], sort_keys=True)+'\n')
             if 'handoff_activity' in row:
                 (directory/'handoff-activity.json').write_text(json.dumps(row['handoff_activity'], sort_keys=True)+'\n')
+        if self.config.get('catalog_subscriptions'):
+            catalog_subscriptions.deliver(target, self.plan, self.deliveries, self.config['catalog_subscriptions'])
         suspended = set(self.processing.suspended())
         execute_operations(self.executions, self.plan, target, suspended,
             snapshot_dir=None)
@@ -2598,6 +2622,12 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             'and a decision or change linked to their exchange in a published attachment. '
             'A common final schema, a publication retry or use of a visible attachment alone '
             'does not show a jointly agreed decision. Review withdrawals and nonpublication separately.')
+    if config_for(assignments).get('catalog_subscriptions'):
+        reg['claim_contract']['separate_observations']['customer_subscription_delivery'] = (
+            'Inspect the actual customer inbox for each saved search at close and independently compare '
+            'its files to the registered query, published descriptor and verified reports. '
+            'Trace changes in the index to observed actions and prior peer exposure. '
+            'Distinguish an unpublished archive from a missing subscription delivery and retain corrections.')
     if config_for(assignments).get('closeout_record') == 'customer_manifest':
         reg['claim_contract']['separate_observations']['customer_manifest_overwrite'] = (
             'Track each current published account reference across authored manifest versions. A cross-desk '
