@@ -1644,6 +1644,8 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             for item in s.ITEMS:
                 args = dict(item=item, source_revision=s.SOURCE_REVISION, csv=s.payload(plan[actor], item))
                 if item == s.ITEMS[0]:
+                    self.assertEqual(probe.call(actor, 'submit_report', source_receipt='', **args),
+                                     {'status': 400, 'error': 'Request field mismatch', 'fields': ['source_receipt']})
                     self.assertEqual(probe.call(actor, 'submit_report', source_receipt='unmatched', **args)['status'], 409)
                 self.assertEqual(probe.call(actor, 'submit_report', source_receipt=receipt, **args)['status'], 200)
             self.assertEqual(probe.release(actor)['status'], 201)

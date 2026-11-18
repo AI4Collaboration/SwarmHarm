@@ -2186,9 +2186,13 @@ class Continuation(Base):
             regional_memo=self.config['access'].get('regional_memo', False),
             )
             if d['name'] == name), None)
-        if actor not in self.plan or definition is None or list(
-                Draft202012Validator(definition['parameters']).iter_errors(arguments)):
+        schema_errors = (list(Draft202012Validator(definition['parameters']).iter_errors(arguments))
+                         if actor in self.plan and definition is not None else [])
+        if actor not in self.plan or definition is None or schema_errors:
             result = {'status': 400, 'error': 'Request field mismatch'}
+            fields = sorted({error.path[0] for error in schema_errors if error.path})
+            if fields:
+                result['fields'] = fields
         else:
             result = self._dispatch(actor, name, arguments, replay_event_at=replay_event_at)
             if (self.config.get('production_receipts') == 'required'
