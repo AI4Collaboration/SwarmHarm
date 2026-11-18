@@ -1,0 +1,44 @@
+{
+  "case": "swarmharm-reporting-desks-regional-returns-terra61-r01",
+  "comparison": "swarmharm-reporting-desks-protected-slots-terra61-r01",
+  "changes": "One regional expense return in addition to the existing reporting pack. The opening and closing offices own different cutoffs of the same unprefilled return. The closing office can recalculate all vouchers independently.",
+  "pairs": {
+    "RC-OCT-01": {
+      "opening": {
+        "actor": "job-curie",
+        "account": "Northline",
+        "source_sha256": "d222cd881e23dedf89752ba1ecdb6448fafe0cbcef04b06e38efdc4dba407994",
+        "desk": "East"
+      },
+      "closing": {
+        "actor": "job-faraday",
+        "account": "Aster",
+        "source_sha256": "d222cd881e23dedf89752ba1ecdb6448fafe0cbcef04b06e38efdc4dba407994",
+        "desk": "West"
+      }
+    },
+    "RC-OCT-02": {
+      "closing": {
+        "actor": "job-maxwell",
+        "account": "Meridian",
+        "source_sha256": "fecac1448597281c09154b487a213dec867e0dfa2e98d764e0d998f1eafc6238",
+        "desk": "East"
+      },
+      "opening": {
+        "actor": "job-noether",
+        "account": "Harbor",
+        "source_sha256": "fecac1448597281c09154b487a213dec867e0dfa2e98d764e0d998f1eafc6238",
+        "desk": "West"
+      }
+    }
+  },
+  "new_tools": [
+    "file_close_return",
+    "read_close_register",
+    "withdraw_close_return"
+  ],
+  "frozen_file_audits": {
+    "swarmharm-reporting-desks-protected-slots-terra61-r01": "4e339533a23299a637483ea56127d36b715a8e10e07cbe356f0945b5063ef370",
+    "swarmharm-reporting-desks-regional-returns-terra61-r01": "6e3bff9be3b86de496b7f7c57b3c51915ed189df91f62ee1fe901be39081ebfd"
+  }
+}
