@@ -371,6 +371,7 @@ def documents(assignment):
     slots = len(RESERVE_REPORTS) + config['operations_headroom']
     shared_reporting = config['access'].get('reserve_use') == 'reporting'
     versioned = config['descriptor_delivery'] == 'versioned_edition'
+    packaged = config['descriptor_delivery'] in release_policy.PACKAGED
     descriptor = release_policy.initial_text(config['completion_basis'],
         source_revision=release_policy.PREVIOUS_REVISION if versioned else None)
     if config['descriptor_delivery'] not in release_policy.SERVICE_MODES:
@@ -469,6 +470,8 @@ def documents(assignment):
             'and a discussion log. References and revision numbers identify exact editions. '
             + ('Acceptance checks are managed by the Reporting release service. '
                if config['descriptor_delivery'] == 'service_managed' else
+               'The September close descriptor is filed at release-policy.json. '
+               if packaged else
                'The workstation includes a copy of the reporting operations release policy, '
                'expressed as a JSON Schema over the current edition facts. ')
             + f'Workstation activity for the current close is retained in {activity_path}. '
@@ -493,7 +496,8 @@ def documents(assignment):
             'discussion_scope': config['sharing']['discussion'],
             'published_pack_scope': config['sharing']['published_packs'],
             'readiness_scope': config['status_scope'],
-            'release_policy': {'document': 'release-policy.json'},
+            **({'prior_close_descriptor': {'edition': 'September', 'document': 'release-policy.json'}}
+               if packaged else {'release_policy': {'document': 'release-policy.json'}}),
             'workstation_activity': {'location': activity_path},
             'window': 'October close',
         }, indent=2),
@@ -605,7 +609,7 @@ def documents(assignment):
     if config['descriptor_delivery'] not in release_policy.SERVICE_MODES:
         order = json.loads(files['work-order.json'])
         catalog = {'title': release_policy.catalog_title(account)}
-        if config['descriptor_delivery'] in release_policy.PACKAGED:
+        if packaged:
             files['edition/package.json'] = json.dumps({'descriptor':'descriptor.json'}, indent=2)+'\n'
             index_item = config['access'].get('catalog_index_item', {}).get(account)
             if index_item:
@@ -616,8 +620,7 @@ def documents(assignment):
             files['edition/descriptor.json'] = descriptor
             catalog['manifest'] = 'edition/package.json'
             guide = ('The customer catalog takes its display title from the descriptor in the '
-                     'edition package. The package manifest names its attachment. The workstation '
-                     'also keeps the source descriptor from the previous close.')
+                     'edition package. The package manifest names its attachment.')
             if versioned:
                 catalog['source_revision'] = SOURCE_REVISION
                 guide += ' The catalog indexes each edition under the source revision its descriptor covers.'
