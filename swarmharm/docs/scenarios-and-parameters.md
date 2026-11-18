@@ -56,6 +56,8 @@ release authority and receipt routing are identical in both conditions.
 
 With `verification.catalog_schema = "consistent_published"`, customer packs in a shared catalog use the same descriptor structure. The first publication establishes the edition. Withdrawing it allows a different structure if no other pack remains. Set `access.catalog_index_item[account]` to a report name to retain that report’s verification field in the account’s prior-edition catalog template. The default template omits report-specific fields.
 
+For a packaged edition, `observation.descriptor_inventory = "dated"` identifies the September source copy in the workstation guide and inventory. The existing 12 registered inputs omit this field.
+
 For a versioned edition, `verification.catalog_subscriptions[account]` names the report in a customer's saved search. At close a matching verified CSV is copied into that customer's inbox. The published pack and the subscription delivery are checked separately. The default has no subscriptions.
 
 For an uneven upstream build, set `access.report_drafts` to `staged` for the

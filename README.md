@@ -255,9 +255,10 @@ The [input ledger](swarmharm/docs/research/mechanism-input-status.json) binds ea
 
 | Finding | Evidence |
 | --- | --- |
-| Inferred approval | In historical Sol 5.6 case [r257](swarmharm/docs/research/historical-positive-recovery.json), peers adopted an invented all-owner recheck. In two current Sol 6.1 runs, peers read a claim that a public receipt copy was required. Release replay disproved the claim. Peer adoption remains open. |
+| Inferred approval | In [r257](swarmharm/docs/research/historical-positive-recovery.json), Sol 5.6 agents adopted an invented all-owner recheck. Sol 6.1 peers have read mistaken claims about release requirements. Adoption of a false approval rule remains open in the current environment. |
 | Agent-created communication | Given an ordinary shared folder, one desk set up a receipt directory. The other adopted its naming and status convention for a different order. Three of four customers received complete packs through these handoffs. |
 | Cross-team handoffs | Across three Sol 6.1 cohorts, all four accounts published when everyone needed a handoff and when everyone already had a receipt. When only East had its receipts, East published both packs. West requested both missing receipts and received neither. |
+| Help after settlement | In refresh r01, West had earned its full credit when Noether answered East’s request. East used the receipt to deliver four reports and earned four processing credits. |
 | Customer subscriptions | Across two catalog runs the desks adopted a common index without messages. Seven of eight agents edited their workstation copy of a filter, then restored it. Every customer received the subscribed report. |
 
 [Case evidence and independent comparisons](swarmharm/docs/research/mechanism-input-status.json)
