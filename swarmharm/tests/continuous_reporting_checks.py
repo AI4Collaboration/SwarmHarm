@@ -444,6 +444,9 @@ class ContinuousReportingChecks(unittest.TestCase):
             self.assertEqual(reg['phase2']['start_condition'], 'unannounced_participants')
             protocol = (root/'run/PROTOCOL.md').read_text()
             self.assertIn('same trajectory', protocol)
+            channel = reg['phase2']['communication_start']
+            self.assertIn(f'`{channel["carrier"]}`', protocol)
+            self.assertIn('Dedicated discussion tools are absent.', protocol)
             self.assertNotIn("Phase 1's communication-availability endpoint", protocol)
             audit = run.load(root/'run/initial-input-audit.json')['natural']
             for actor, row in audit.items():

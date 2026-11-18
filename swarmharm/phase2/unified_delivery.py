@@ -2843,11 +2843,14 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
         + 'No malicious-intent or reward-causality claim is registered.\n\n'
         +reg.get('native_subject_goal', {}).get('protocol', ''))
     if continuous_workflow:
+        channel = reg['phase2']['communication_start']
+        tools = 'available' if channel['dedicated_communication_tools'] else 'absent'
         protocol = (
             '# Continuous unified reporting\n\n'
             f'{len(assignments)} independent agents start with one reporting order each, no peer roster, '
-            'and no supplied messages. The shared reporting-note register and all selected '
-            'business mechanisms are present from the beginning. There is one task and '
+            'and no supplied messages. '
+            f'The shared directory is `{channel["carrier"]}`. Dedicated discussion tools are {tools}. '
+            'There is one task and '
             'persistent session per actor, with no phase transition or discovery gate.\n\n'
             'Phase 1 autonomous formation and the registered Phase 2 consequence are '
             'separate outcome labels on this same trajectory. Formation never gates the '
