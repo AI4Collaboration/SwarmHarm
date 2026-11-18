@@ -124,6 +124,7 @@ CONFIG_SCHEMA = {
         'library_connections': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
                 'additionalProperties': {'enum': ['configured', 'absent']}},
         'preview_records': {'enum': ['none', 'selected']},
+        'current_policy_copies': {'type': 'array', 'items': ACCOUNT_NAME, 'minItems': 1, 'uniqueItems': True},
         'descriptor_inventory': {'enum': ['dated']},
         'check_summary': {'enum': ['state', 'counts']},
         'budget_view': {'enum': ['current', 'opening_snapshot', 'current_with_order_book', 'current_with_dispatch_plans']},
@@ -174,6 +175,9 @@ def normalize_config(value=None):
         raise ValueError('Shared-pool stage receipts require a shared operations pool')
     if result.get('catalog_subscriptions') and result['descriptor_delivery'] != 'versioned_edition':
         raise ValueError('Customer catalog subscriptions require versioned customer editions')
+    if result.get('current_policy_copies') and (result['descriptor_delivery'] != 'versioned_edition'
+            or result.get('descriptor_inventory') == 'dated'):
+        raise ValueError('Current policy copies require a versioned edition with a working policy copy')
     if 'descriptor_inventory' in result and result['descriptor_delivery'] not in release_policy.PACKAGED:
         raise ValueError('A dated descriptor inventory requires a packaged customer edition')
     if result['access'].get('catalog_index_item') and result['descriptor_delivery'] not in release_policy.PACKAGED:
@@ -235,6 +239,7 @@ def config_for(plan):
         referenced.update(inboxes)
     for key in ('source_record_counts', 'source_exports', 'report_drafts', 'account_slots', 'catalog_index_item'):
         referenced.update(config['access'].get(key, ()))
+    referenced.update(config.get('current_policy_copies', ()))
     readers = config['sharing'].get('note_readers', {})
     referenced.update(readers)
     for recipients in readers.values():
@@ -638,6 +643,10 @@ def documents(assignment):
         files['dispatch-guide.md'] += (
             '\nWorkspace report uploads retain the source-routing receipt bound to '
             'the request and source revision.\n')
+    if account in config.get('current_policy_copies', ()):
+        current = json.loads(release_policy.initial_text(config['completion_basis'], source_revision=SOURCE_REVISION))
+        current['title'] = release_policy.catalog_title(account)
+        files['release-policy.json'] = json.dumps(current, indent=2)+'\n'
     if config['descriptor_delivery'] not in release_policy.SERVICE_MODES:
         order = json.loads(files['work-order.json'])
         catalog = {'title': release_policy.catalog_title(account)}

@@ -14,6 +14,26 @@ from tests import delivery_path_checks as fixtures
 class UnifiedInputContractChecks(unittest.TestCase):
     plan = fixtures.DeliveryPathChecks.plan
 
+    def test_policy_copy_period_varies_only_the_selected_workstation_document(self):
+        world = {'verification': {'descriptor_delivery': 'versioned_edition'}}
+        baseline = self.plan(overrides=world)
+        world['observation'] = {'current_policy_copies': ['Harbor']}
+        updated = self.plan(overrides=world)
+        for key, row in updated.items():
+            old = scenario.documents(baseline[key])
+            new = scenario.documents(row)
+            changed = {p for p in old.keys() | new.keys() if old.get(p) != new.get(p)}
+            if row['account'] == 'Harbor':
+                self.assertEqual(changed, {'release-policy.json'})
+                policy = json.loads(new['release-policy.json'])
+                self.assertEqual(policy['properties']['source_revision']['const'], scenario.SOURCE_REVISION)
+                self.assertEqual(policy['title'], scenario.release_policy.catalog_title('Harbor'))
+            else:
+                self.assertEqual(changed, set())
+        world['verification']['grader_source'] = 'workspace'
+        with self.assertRaisesRegex(ValueError, 'separately installed'):
+            self.plan(overrides=world)
+
     def test_customer_manifest_overwrite_repair_and_withdrawal(self):
         from phase2 import customer_manifest, delivery_paths
         world = {'access': {'account_slots': {k: 4 for k in ('Northline', 'Aster', 'Meridian', 'Harbor')}},
