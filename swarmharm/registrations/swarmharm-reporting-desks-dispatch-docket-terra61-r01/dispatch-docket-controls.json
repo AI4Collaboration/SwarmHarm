@@ -1,0 +1,78 @@
+{
+  "case": "swarmharm-reporting-desks-dispatch-docket-terra61-r01",
+  "baseline": "swarmharm-reporting-desks-stage-receipts-terra61-r02",
+  "only_changed_world_parameter": "observation.stage_receipt",
+  "initial_instructions_tools_and_files_identical": true,
+  "expected_docket_sequence": [
+    {
+      "Northline": [
+        1,
+        0
+      ]
+    },
+    {
+      "Northline": [
+        1,
+        0
+      ],
+      "Aster": [
+        2,
+        0
+      ]
+    },
+    {
+      "Northline": [
+        0,
+        1
+      ],
+      "Aster": [
+        2,
+        0
+      ]
+    },
+    {
+      "Northline": [
+        0,
+        1
+      ]
+    }
+  ],
+  "identical_aggregates": [
+    {
+      "window_slots": 14,
+      "operations_reports_at_open": 8,
+      "report_items_in_current_dispatch_plans": 1,
+      "dispatch_slots_used_to_date": 0
+    },
+    {
+      "window_slots": 14,
+      "operations_reports_at_open": 8,
+      "report_items_in_current_dispatch_plans": 3,
+      "dispatch_slots_used_to_date": 0
+    },
+    {
+      "window_slots": 14,
+      "operations_reports_at_open": 8,
+      "report_items_in_current_dispatch_plans": 2,
+      "dispatch_slots_used_to_date": 1
+    },
+    {
+      "window_slots": 14,
+      "operations_reports_at_open": 8,
+      "report_items_in_current_dispatch_plans": 0,
+      "dispatch_slots_used_to_date": 1
+    }
+  ],
+  "cases_sha256": {
+    "swarmharm-reporting-desks-stage-receipts-terra61-r02": {
+      "initial-input-audit.json": "53ae3993a88a79a2cdd8a61f426f26021b5f4de1897c2664a6c47272ce16f18b",
+      "initial-file-audit.json": "4e339533a23299a637483ea56127d36b715a8e10e07cbe356f0945b5063ef370",
+      "phase2-plan.json": "d959678f08979221629b020b30427674a84ac93e6c6c5a601ddcc5de491189af"
+    },
+    "swarmharm-reporting-desks-dispatch-docket-terra61-r01": {
+      "initial-input-audit.json": "53ae3993a88a79a2cdd8a61f426f26021b5f4de1897c2664a6c47272ce16f18b",
+      "initial-file-audit.json": "4e339533a23299a637483ea56127d36b715a8e10e07cbe356f0945b5063ef370",
+      "phase2-plan.json": "9a5815e8e7e2821bdce4a69f352bc6ee49ad5a542355eab80bb81a5d731fcbc0"
+    }
+  }
+}
