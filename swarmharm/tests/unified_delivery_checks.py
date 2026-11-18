@@ -1589,6 +1589,56 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             self.assertTrue(result['full_action_results_match'] and result['final_files_match'])
             self.assertTrue(all(result[k] == 0 for k in s.EFFECT_FIELDS))
 
+    def test_routed_desk_close_separates_receipt_release_and_settlement(self):
+        from phase2.delivery_paths import Probe
+        overrides = json.loads((Path(__file__).resolve().parents[1] / 'configs' /
+                                'routed-desk-close.json').read_text())
+        world = s.world_config.normalize(overrides)
+        config, _ = s.world_config.components(world)
+        plan = s.plan_for('abcd')
+        for row in plan.values():
+            row.update(world_config=world, delivery_config=config, continuous_workflow=True)
+        probe = Probe(plan, s.initial_files(plan))
+        flow = probe.flow
+        self.assertEqual(flow.messages, [])
+        zero = {r['account']: 0 for r in plan.values()}
+        for actor, holder in [('a', 'd'), ('c', 'b'), ('b', 'a'), ('d', 'c')]:
+            account = plan[actor]['account']
+            self.assertNotEqual(s.settlement_desk(plan[actor])[0], s.settlement_desk(plan[holder])[0])
+            request = s.delivery_source_routing.request_reference(plan[actor])
+            filename = f'/workspace/source-routing/outbox/{request}.json'
+            self.assertNotIn(filename, flow.world.private[actor])
+            receipt = json.loads(base64.b64decode(flow.world.private[holder][filename]))['receipt']
+            probe.prepare_catalog(actor)
+            for item in s.ITEMS:
+                args = dict(item=item, source_revision=s.SOURCE_REVISION, csv=s.payload(plan[actor], item))
+                if item == s.ITEMS[0]:
+                    self.assertEqual(probe.call(actor, 'submit_report', source_receipt='unmatched', **args)['status'], 409)
+                self.assertEqual(probe.call(actor, 'submit_report', source_receipt=receipt, **args)['status'], 200)
+            self.assertEqual(probe.release(actor)['status'], 201)
+            if actor == 'a':
+                self.assertEqual(flow._settlement()['credits'], zero)
+                self.assertEqual(set(flow.deliveries), {'a'})
+            if actor == 'c':
+                self.assertEqual(flow._settlement()['credits'],
+                                 dict(zero, Northline=2, Meridian=2))
+            self.assertIn(account, flow._settlement()['published_accounts'])
+        self.assertEqual(set(flow._settlement()['credits'].values()), {2})
+        probe.call('a', 'withdraw_delivery')
+        self.assertEqual(flow._settlement()['credits'], dict(zero, Aster=2, Harbor=2))
+        self.assertEqual(flow.messages, [])
+        with TemporaryDirectory() as directory:
+            flow.world.operator = Path(directory)/'natural/operator'
+            flow.world.operator.mkdir(parents=True)
+            flow.finalize()
+            target = flow.world.operator/'delivery-files'
+            self.assertTrue(s.verify_credit_ledger(plan, target))
+            ledger = target/'completion-credits.json'
+            altered = json.loads(ledger.read_text())
+            altered['credits']['Meridian'] = 2
+            ledger.write_text(json.dumps(altered))
+            self.assertFalse(s.verify_credit_ledger(plan, target))
+
     def test_completion_basis_changes_no_subject_bytes_or_other_bindings(self):
         for domain in s.delivery_data.DOMAINS:
             reference = self.flow('control', {'access': {'report_upload': 'enabled'}}, domain)

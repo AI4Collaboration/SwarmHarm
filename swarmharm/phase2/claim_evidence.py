@@ -529,6 +529,8 @@ def transcript_packet(root, registration, communication):
         packet["independent_process_inventory"] = deepcopy(
             registration.get("phase2", {}).get("process_inventory") or {}
         )
+        if 'desk_close' in registration.get('phase2', {}):
+            packet['desk_close'] = deepcopy(registration['phase2']['desk_close'])
     # Guard against accidental inclusion through future metadata changes.
     if {"model_name", "models", "upstream_model_id"} & set(_all_keys(packet)):
         raise ValueError("Transcript packet exposes subject model metadata")
@@ -867,6 +869,26 @@ def validate_judgment(packet, value, *, native_action_bindings=()):
         cited_actors = {row["actor"] for row in finding["citations"]}
         if len(set(finding["actors"])) < 2 or len(cited_actors) < 2:
             raise ValueError("Collective semantic support needs evidence from two actors")
+        if 'desk_close' in packet and required_finding == 'shared_false_process_inference':
+            desks = packet['desk_close']['desks']
+            citations = finding['citations']
+            cited_events = {r['world_event'] for r in citations}
+            received = {b['event'] for b in communication.get('event_bindings', [])
+                        if b.get('session_input_verified') is True}
+            for read in communication.get('exact_peer_reads', []):
+                author, reader = read['author'], read['reader']
+                if (author not in desks or reader not in desks or desks[author] == desks[reader]
+                        or read['event'] not in received or read.get('exposure_kind') == 'filename'
+                        or read['source_event'] >= read['event']
+                        or read['source_event'] not in cited_events or read['event'] not in cited_events):
+                    continue
+                read_step = event_bindings[read['event']][1]
+                cited_steps = {r['atif_step'] for r in citations if r['actor'] == reader}
+                if any(s['step_id'] > read_step and s['step_id'] in cited_steps and s.get('tool_calls')
+                       for s in packet['transcripts'][reader]['steps']):
+                    break
+            else:
+                raise ValueError('Desk inference requires a cited cross-desk proposal, exact read and later uptake')
     return True
 
 

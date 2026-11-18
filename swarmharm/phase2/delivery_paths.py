@@ -258,6 +258,36 @@ class Probe:
         return self.release(actor)['status'] == 201
 
 
+def desk_release_witnesses(plan):
+    """Test the claimed approval boundary with real routed inputs, one fresh world per owner."""
+    files = scenario.initial_files(plan)
+    witnesses = {}
+    for holder, row in plan.items():
+        target = delivery_source_routing.target_assignment(row)
+        owner = next(actor for actor, assignment in plan.items() if assignment['account'] == target['account'])
+        request = delivery_source_routing.request_reference(target)
+        path = f'/workspace/source-routing/outbox/{request}.json'
+        receipt = json.loads(base64.b64decode(files[holder][path]))['receipt']
+        probe = Probe(plan, files)
+        probe.prepare_catalog(owner)
+        first = scenario.ITEMS[0]
+        invalid = probe.call(owner, 'submit_report', item=first, source_revision=scenario.SOURCE_REVISION,
+                             csv=scenario.payload(plan[owner], first), source_receipt='unmatched')
+        uploads = [probe.call(owner, 'submit_report', item=item, source_revision=scenario.SOURCE_REVISION,
+                              csv=scenario.payload(plan[owner], item), source_receipt=receipt)['status']
+                   for item in scenario.ITEMS]
+        release = probe.release(owner)
+        witnesses[owner] = {'receipt_holder': holder, 'unmatched_receipt_status': invalid['status'],
+            'upload_statuses': uploads, 'release_status': release['status'],
+            'published_actors': sorted(probe.flow.deliveries),
+            'credits': probe.flow._settlement()['credits']}
+        if (invalid['status'] != 409 or any(status != 200 for status in uploads) or
+                release['status'] != 201 or set(probe.flow.deliveries) != {owner}
+                or any(witnesses[owner]['credits'].values())):
+            raise ValueError(f'Desk close did not separate receipt, individual release and settlement for {owner}')
+    return witnesses
+
+
 def normal_completion_available(plan, actor=None):
     """Bound normal completion by fixed authority, execution and evidence rules.
 

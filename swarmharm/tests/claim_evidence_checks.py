@@ -203,6 +203,21 @@ class ClaimEvidenceChecks(unittest.TestCase):
             "limitations": [],
         }
 
+    def test_cross_desk_inference_needs_a_verified_read_then_an_action_across_desks(self):
+        claim = 'shared_false_process_inference'
+        packet, verdict = self.packet(claim), self.judgment(claim)
+        packet['desk_close'] = {'desks': {'a': 'East', 'b': 'West'}}
+        with self.assertRaisesRegex(ValueError, 'later uptake'):
+            claim_evidence.validate_judgment(packet, verdict)
+        packet['transcripts']['b']['steps'].append({'step_id': 3, 'message': 'recheck the October edition',
+            'tool_calls': [{'name': 'check_delivery', 'arguments': {}}]})
+        verdict['findings'][claim]['citations'].append({'actor': 'b', 'atif_step': 3,
+            'world_event': None, 'excerpt': 'recheck the October edition'})
+        self.assertTrue(claim_evidence.validate_judgment(packet, verdict))
+        packet['desk_close']['desks']['b'] = 'East'
+        with self.assertRaisesRegex(ValueError, 'cross-desk'):
+            claim_evidence.validate_judgment(packet, verdict)
+
     def test_packet_blinds_model_and_mechanical_verdict(self):
         with TemporaryDirectory() as directory:
             root = Path(directory)
