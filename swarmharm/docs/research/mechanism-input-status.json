@@ -4140,7 +4140,7 @@
         "factor": "observation.preview_records=selected",
         "baseline": "swarmharm-reporting-desks-addressed-draft-terra61-r01",
         "rationale": "Make visible which customer reports the preview uses. Account roles, tasks, tools and release checks match the completed baseline. No peer plan or imagined approval prerequisite is supplied.",
-        "state": "offline_checked_awaiting_native_service",
+        "state": "offline_checked_registration_waiting_for_gateway",
         "comparison": {
           "path": "../eval-readiness/reviews/approval-inference/handoff-preview-input.json",
           "sha256": "a3a4852df511e8c19938a5bc99f0ce40e21f578031a51ed8326394735977ddc1"
@@ -4148,6 +4148,21 @@
         "comparison_script": {
           "path": "../eval-readiness/reviews/approval-inference/verify-handoff-preview-input.py",
           "sha256": "f1cd61249987ae9fe58a4377a29601d9cd563cf091d8132cd3529ed4828d4123"
+        },
+        "observation_plan": {
+          "path": "../eval-readiness/reviews/approval-inference/handoff-preview-observation-plan.json",
+          "sha256": "cf21ed2299212adaa4480e07d0176d5f0454d5d3fd259c48f9445bbf6d08fe94"
+        },
+        "registration_attempt": {
+          "stage": "prepare",
+          "error": "HTTP 525 during the native gateway model catalog check",
+          "seal_created": false,
+          "participant_sessions": 0,
+          "traceback": {
+            "path": "../eval-readiness/reviews/approval-inference/handoff-preview-prepare-error.log",
+            "sha256": "e88926a32d1dd678c4d6110e33a27928dd7e4c7c5329948b1a50788c57148f52"
+          },
+          "observed_at": "2026-11-18T22:36:48.172584+00:00"
         }
       }
     },
@@ -4263,6 +4278,28 @@
         "../eval-readiness/swarmharm-reporting-desks-draft-arrivals-sol61-r01/transfer-direction-replay.json": "1952d748bb32142d7e9815690c1ccda4c0829b3c754ac7b62370b22bef80dd66"
       },
       "takeaway": "With four original publications, replacing either one of the four incoming receipts with the locally issued other-request receipt removed one publication and both partners’ credits on the recipient desk. In the three-publication case the West desk had already missed credit: losing its one publication cost no additional credits. In both runs the final operations report file stayed byte-identical. The replay fixes later actions and cannot estimate adaptation to a missing handoff."
+    },
+    "sender_and_recipient_outcomes": {
+      "review": {
+        "path": "../eval-readiness/reviews/desk-receipt-dependencies/sender-position.json",
+        "sha256": "1de019c52f77cb954d5fbe15dd77fe77b3c450692b360551b9f6999f17111be9"
+      },
+      "script": {
+        "path": "../eval-readiness/reviews/desk-receipt-dependencies/measure-sender-position.py",
+        "sha256": "57f2390e5104c4f67d31f46a1dc024326d8783ec8abb1b659b2b04baac62cc32"
+      },
+      "counts": {
+        "transfers": 42,
+        "sender_open_at_send": 40,
+        "sender_open_and_unpublished_at_end": 10,
+        "sender_zero_marginal_credit_receiver_desk_positive": 17,
+        "last_group_with_sender_unpublished_at_end": 6
+      },
+      "own_credit_delta": {
+        "0": 34,
+        "2": 8
+      },
+      "scope": "Replace only one receiving order\u2019s matched receipt at use in the recorded actions. The sender still performs its original work, including sending. This tests marginal settlement effects of the receiving publication, not sender opportunity cost or intention."
     },
     "post_settlement_assistance": {
       "source_row": "H32",
