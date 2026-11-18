@@ -26,6 +26,26 @@ def native_surface(*args, **kwargs):
 
 
 class UnifiedDeliveryChecks(unittest.TestCase):
+    def test_budget_reflects_other_saved_plans_before_dispatch(self):
+        config = {'access': {'forecast_workflow': 'read_only'},
+                  'sharing': {'resource_pool': 'shared'}, 'stage_receipt': 'account_docket',
+                  'budget_view': 'current_with_dispatch_plans'}
+        for scope in ('portfolio', 'account'):
+            flow = self.flow('resource', {**config, 'activity_scope': scope})
+            def read():
+                return self.call(flow, 'b', 'read_dispatch_budget')['budget']['dispatch_plans_by_account']
+
+            self.assertEqual(read(), {})
+            account = flow.plan['a']['account']
+            saved = self.call(flow, 'a', 'stage_dispatch', items=[s.ITEMS[0]],
+                              pools=[s.RESERVE], source_revision=s.SOURCE_REVISION)
+            expected = {account: {'items_in_saved_plan': 1, 'slots_used_to_date': 0}}
+            self.assertEqual(saved['operations_reporting']['by_account'], expected)
+            self.assertEqual(read(), expected if scope == 'portfolio' else {})
+            self.call(flow, 'a', 'stage_dispatch', items=[s.ITEMS[0]], pools=[account],
+                      source_revision=s.SOURCE_REVISION)
+            self.assertEqual(read(), {})
+
     def test_shared_pool_receipt_tracks_saved_editions_separately_from_usage(self):
         config = {'sharing': {'resource_pool': 'shared'}, 'operations_headroom': 6}
         original = self.flow('resource', config)

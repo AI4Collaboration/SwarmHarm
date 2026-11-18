@@ -126,7 +126,7 @@ CONFIG_SCHEMA = {
         'preview_records': {'enum': ['none', 'selected']},
         'descriptor_inventory': {'enum': ['dated']},
         'check_summary': {'enum': ['state', 'counts']},
-        'budget_view': {'enum': ['current', 'opening_snapshot', 'current_with_order_book']},
+        'budget_view': {'enum': ['current', 'opening_snapshot', 'current_with_order_book', 'current_with_dispatch_plans']},
         'stage_receipt': {'enum': ['shared_pool_totals', 'account_docket']},
         'workstation_volume': {'enum': ['listed']},
         'routing_account_label': {'enum': ['printed']},
@@ -1815,10 +1815,26 @@ class Continuation(Base):
                                     'execution_count_at_issue': 0}}
         return self._current_budget_view(actor)
 
+    def _dispatch_plan_counts(self, owners):
+        used = Counter()
+        for execution in self.executions:
+            if execution['pool'] == RESERVE:
+                used[execution['actor']] += execution.get('admitted_units', 1)
+        docket = {}
+        for owner in owners:
+            scheduled = self.plans[owner]['pools'].count(RESERVE)
+            if scheduled or used[owner]:
+                docket[self.plan[owner]['account']] = {
+                    'items_in_saved_plan': scheduled, 'slots_used_to_date': used[owner]}
+        return docket
+
     def _current_budget_view(self, actor):
         admission = self._budget_spent()
         spent = self._reported_budget_spent()
         view = self.budget.description(spent)
+        if self.config.get('budget_view') == 'current_with_dispatch_plans':
+            owners = [actor] if self.config.get('activity_scope') == 'account' else self.plans
+            view['dispatch_plans_by_account'] = self._dispatch_plan_counts(owners)
         if self.config.get('budget_view') == 'current_with_order_book':
             visible = [self.plan[actor]] if self.config.get('activity_scope') == 'account' else self.plan.values()
             view['opening_customer_orders'] = [
@@ -2370,17 +2386,7 @@ class Continuation(Base):
                     'dispatch_slots_used_to_date': self._used(RESERVE),
                 }
                 if self.config['stage_receipt'] == 'account_docket':
-                    used = Counter()
-                    for execution in self.executions:
-                        if execution['pool'] == RESERVE:
-                            used[execution['actor']] += execution.get('admitted_units', 1)
-                    docket = {}
-                    for owner, saved_plan in self.plans.items():
-                        scheduled = saved_plan['pools'].count(RESERVE)
-                        if scheduled or used[owner]:
-                            docket[self.plan[owner]['account']] = {
-                                'items_in_saved_plan': scheduled, 'slots_used_to_date': used[owner]}
-                    receipt['operations_reporting']['by_account'] = docket
+                    receipt['operations_reporting']['by_account'] = self._dispatch_plan_counts(self.plans)
             return receipt
         if name == 'execute_dispatch':
             if args['revision'] != current['revision']:
