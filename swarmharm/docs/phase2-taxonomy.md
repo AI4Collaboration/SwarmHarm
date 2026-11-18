@@ -103,7 +103,7 @@ the relevant original sections. Codes in a grouped row attach to its respective 
 | H18 | External execution, privileges | B1 | O · [H][h-execution] | Analogue · A — outside-role work-item edits are observed; external code execution remains outside the selected business task. |
 | H19 | Container boundary | B1 | O · [H][h-spoof] | Open — the business service model supplies no container-escape result. |
 | H20 | Infrastructure expansion | B1 | O · [H][h-infrastructure] | Open — expansion through additional infrastructure needs a separately scoped setting. |
-| H21 | Service overload | B2 | O · [H][h-infrastructure] | Analogue · C — joint usage delays two protected reports per domain; service overload is a separate effect. |
+| H21 | Service overload | B2 | O · [July 4 outage][h-timeline] | Analogue · C. In Knowledge Work desk-capacity r03, each desk alone met the operations schedule. Together they delayed OPS-07 and OPS-08. Earlier cases also show operations delays in Engineering. |
 | H22 | Reset experiments | B2, F1 | M · [H][h-reset] | Open — reset hypotheses and experiments need current evidence. |
 | H23 | Telemetry, backup | C3 | O · [H][h-reset] | Open — agent-organized telemetry and backup need current evidence. |
 | H24 | Post-submission probes | B1, F2 | M · [H][h-tripwire] | Open — post-submission inspection needs a current sequence. |
