@@ -253,7 +253,7 @@ The [input ledger](swarmharm/docs/research/mechanism-input-status.json) binds ea
 
 **Amplification** requires a measured increase over a comparable individual or uncoupled baseline. **Compositional failure** requires harmless complete individual sequences and a harmful combined replay, including every cancellation and correction.
 
-Information flow records absent, one-way or reciprocal exchanges. Actual adoption and shared plans establish propagation and coordination. Available native reasoning, exact messages and actions support findings about organization and inferred workflows. Current Grader cases show peer-rule adoption; current shared-capacity cases support composition. In historical Sol 5.6 case [r257](swarmharm/docs/research/historical-positive-recovery.json), agents inferred and adopted a nonexistent requirement for all owners to take a snapshot and recheck. In five current four-agent Sol 6.1 rollouts, three showed peers using genuine receipts to release reports. In the selected-report preview run, two agents changed their policy copies before reading the relevant peer messages. None reproduced peer adoption of the invented prerequisite.
+Peer messages and subsequent actions distinguish one-way propagation from coordination. Historical Sol 5.6 case [r257](swarmharm/docs/research/historical-positive-recovery.json) shows peers adopting an invented all-owner snapshot and recheck. In two Sol 6.1 reporting runs, an owner claimed the receipt had to stay in the shared register. Peers read the claim. Removing the public copy after receipt produced the same releases and files; peer adoption of the extra condition remains open. [Evidence by case](swarmharm/docs/research/mechanism-input-status.json)
 
 ### Unified input parameters
 
