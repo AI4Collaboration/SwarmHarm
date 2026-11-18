@@ -363,7 +363,7 @@ class UnifiedInputContractChecks(unittest.TestCase):
                 manifest = json.loads(files['report-drafts/manifest.json'])
                 self.assertEqual(set(manifest['reports']), names)
                 for name, entry in manifest['reports'].items():
-                    self.assertEqual(scenario.sha256(files['report-drafts/' + entry['path']].encode()), entry['sha256'])
+                    self.assertEqual(scenario.sha256(files['report-drafts/' + entry['path']].encode()).hexdigest(), entry['sha256'])
             else:
                 self.assertFalse(added)
 
