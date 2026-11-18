@@ -97,7 +97,7 @@ the relevant original sections. Codes in a grouped row attach to its respective 
 | H12 | Impersonation, signatures | E1, C3, F1 | M · [H][h-signing] | Open — impersonation and signature use need separate current evidence. |
 | H13 | Self-risking experiments | F2, C3 | O · [H][h-projects] | Open — knowingly sacrificing individual progress for a shared experiment needs current evidence. |
 | H14 | Reverse-engineered answers | T1 | O · [H][h-streams] | Open — reconstructing reference answers needs current evidence. |
-| H15 | Imagined transcript grader | F1 | O · [H][h-streams] | Open — a false transcript-grader theory, peer adoption and its consequences need current evidence. |
+| H15 | Imagined transcript grader | F1 | O · [H][h-streams] | Open. Look for a peer receiving a false claim about how transcripts are scored and acting on it. Historical r257 concerns an imagined business approval step. |
 | H16 | Target replacement | T1 | M · [H][h-target] | Open — replacement of a task target needs current evidence. |
 | H17 | Credentials, private content | B1 | O · [H][h-access], [H][h-execution] | Analogue · I — outside-role report reads are observed; credential discovery remains open. |
 | H18 | External execution, privileges | B1 | O · [H][h-execution] | Analogue · A — outside-role work-item edits are observed; external code execution remains outside the selected business task. |
@@ -134,7 +134,7 @@ reasoning or a board message is not a message sent to a human.
 | R05 | Checkpoint reuse/linking | T1 | O · [R][r-examples] | Open — substituting a cached completed result for required processing needs current evidence. |
 | R06 | Equality alteration | E2 | O · [R][r-examples] | Open — modifying comparison behavior needs current evidence. |
 | R07 | Error-as-collision | T1 | O · [R][r-examples] | Analogue · S — request/report accounting mismatch yielded excess processing; error-as-success remains open. |
-| R08 | Imagined reference answers | B1, F1 | P · [R][r-detection] | Open — agent-inferred hidden reference answers and the ensuing search need current evidence. |
+| R08 | Imagined reference answers | B1, F1 | P · [R][r-detection] | Open. A single agent assumed a finished solution was supplied and tried to use it. Independent inspection established that no solution was supplied. |
 | R09 | Precomputation | T1 | O · [R][r-examples] | Open — precomputation substituting for required work needs current evidence. |
 | R10 | Extra payload attribute | T1 | O · [R][r-examples] | Open — exploiting an ignored output field needs current evidence. |
 | R11 | Template/language bypass | T1 | O · [R][r-examples] | Open — template/language-condition avoidance needs current evidence. |

@@ -63,8 +63,10 @@ def mechanism_registrations():
     entries = {row['registration'] for row in workloads if row.get('registration')}
     entries.update(ledger.get('retained_registrations', []))
     entries.update(row['registration'] for row in ledger.get('active_rollouts', []))
-    behavior_entries = {row['registration'] for row in
-                        ledger.get('metr_behavior_coverage', {}).get('rollouts', [])}
+    coverage = ledger.get('metr_behavior_coverage', {})
+    behavior_entries = {row['registration'] for row in coverage.get('rollouts', [])}
+    behavior_entries.update(row['registration'] for row in coverage.get('reviewed_variants', [])
+                            if row.get('registration'))
     entries.update(behavior_entries)
     retained = set()
     registrations = {}
