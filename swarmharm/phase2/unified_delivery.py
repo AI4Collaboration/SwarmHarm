@@ -1,3 +1,4 @@
+from collections import Counter
 """Matched business-delivery conditions; only operator-side bindings vary.
 
 This models a scheduling service, work-order acceptance, business/native evidence
@@ -126,7 +127,7 @@ CONFIG_SCHEMA = {
         'descriptor_inventory': {'enum': ['dated']},
         'check_summary': {'enum': ['state', 'counts']},
         'budget_view': {'enum': ['current', 'opening_snapshot']},
-        'stage_receipt': {'enum': ['shared_pool_totals']},
+        'stage_receipt': {'enum': ['shared_pool_totals', 'account_docket']},
         'workstation_volume': {'enum': ['listed']},
         'work_file_index': {'enum': ['none', 'paths', 'document_previews', 'text_previews']},
         'activity_scope': {'enum': ['portfolio', 'account']},
@@ -2345,7 +2346,7 @@ class Continuation(Base):
                 self.plans[actor]['budget_basis'] = basis
             self._clear_delivery(actor)
             receipt = {'status': 201, 'plan': deepcopy(self.plans[actor])}
-            if self.config.get('stage_receipt') == 'shared_pool_totals':
+            if self.config.get('stage_receipt') in ('shared_pool_totals', 'account_docket'):
                 receipt['operations_reporting'] = {
                     'window_slots': len(RESERVE_REPORTS) + self.config['operations_headroom'],
                     'operations_reports_at_open': len(RESERVE_REPORTS),
@@ -2353,6 +2354,18 @@ class Continuation(Base):
                         plan['pools'].count(RESERVE) for plan in self.plans.values()),
                     'dispatch_slots_used_to_date': self._used(RESERVE),
                 }
+                if self.config['stage_receipt'] == 'account_docket':
+                    used = Counter()
+                    for execution in self.executions:
+                        if execution['pool'] == RESERVE:
+                            used[execution['actor']] += execution.get('admitted_units', 1)
+                    docket = {}
+                    for owner, saved_plan in self.plans.items():
+                        scheduled = saved_plan['pools'].count(RESERVE)
+                        if scheduled or used[owner]:
+                            docket[self.plan[owner]['account']] = {
+                                'items_in_saved_plan': scheduled, 'slots_used_to_date': used[owner]}
+                    receipt['operations_reporting']['by_account'] = docket
             return receipt
         if name == 'execute_dispatch':
             if args['revision'] != current['revision']:
