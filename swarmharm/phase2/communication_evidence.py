@@ -91,14 +91,14 @@ def bind_events(root, world, actors, wanted, *, refresh_atif=True):
     return bindings
 
 
-def build(root, world, communication, actors):
+def build(root, world, communication, actors, *, refresh_atif=True):
     root = Path(root)
     harness = json.loads((root/'registration.json').read_text())['harness']['kind']
     wanted = {row['event'] for key in ('notes', 'exact_peer_reads')
               for row in communication[key]}
     receipts = communication.get('service_receipts', {})
     wanted.update(row['event'] for key in ('issuance', 'exact_reads') for row in receipts.get(key, []))
-    bindings = bind_events(root, world, actors, wanted)
+    bindings = bind_events(root, world, actors, wanted, refresh_atif=refresh_atif)
     delivered = [r for r in communication['exact_peer_reads'] if bindings[r['event']]['session_input_verified']]
     verified_reads = {r['event'] for r in delivered}
     first = {}
@@ -107,14 +107,19 @@ def build(root, world, communication, actors):
         first.setdefault(row['reader'], row)
         exposures.setdefault((row['reader'], row['path']), []).append(row)
 
-    def received_before(reader, path, action, content_sha256=None):
-        turn = int(Path(bindings[action]['tool_record']).name.split('-')[0])
+    def delivered_before(read_event, action):
+        receipt = bindings[read_event]
+        if read_event >= action or not receipt['session_input_verified']:
+            return None
+        request_turn = int(Path(receipt['following_session_input']).name.split('.')[0])
+        action_turn = int(Path(bindings[action]['tool_record']).name.split('-')[0])
+        return read_event if request_turn <= action_turn else None
+
+    def received_before(reader, path, action):
         for exposure in exposures.get((reader, path), []):
-            if content_sha256 is not None and exposure['sha256'] != content_sha256:
-                continue
-            request = Path(bindings[exposure['event']]['following_session_input'])
-            if exposure['event'] < action and int(request.name.split('.')[0]) <= turn:
-                return exposure['event']
+            confirmed = delivered_before(exposure['event'], action)
+            if confirmed is not None:
+                return confirmed
         return None
 
     chains = []
@@ -126,7 +131,7 @@ def build(root, world, communication, actors):
             'delivered_source_read_event': source_read, 'reply_source_read_delivered': source_read is not None,
             'delivered_readback_event': readback, 'reply_readback_delivered': readback is not None})
     unthreaded = [{**row, 'prior_reads': [{**r, 'native_result_verified': bindings[r['event']]['native_result_verified'],
-                    'delivered_before_write_event': received_before(row['author'], r['path'], row['event'], r['sha256'])}
+                    'delivered_before_write_event': delivered_before(r['event'], row['event'])}
                     for r in row['prior_reads']]} for row in communication['unthreaded_read_then_write']]
     return {'schema': 'swarmharm-communication-evidence-v4',
         'carrier': communication['carrier'],
@@ -183,7 +188,8 @@ def markdown(evidence):
             if read['path'] != note['path'] or read['sha256'] != note['sha256']:
                 continue
             bound = bindings[read['event']]
-            receipt = f"- [{read['reader']} read · event {read['event']}]({bound['tool_record']})"
+            action = 'saw filename' if read.get('exposure_kind') == 'filename' else 'read'
+            receipt = f"- [{read['reader']} {action} · event {read['event']}]({bound['tool_record']})"
             if bound.get('following_session_input'):
                 receipt += f" · [following session input]({bound['following_session_input']})"
             if read.get('exposure_kind'):

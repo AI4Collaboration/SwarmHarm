@@ -435,6 +435,28 @@ class ClaimEvidenceChecks(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "absent from cited evidence"):
                     claim_evidence.validate_judgment(packet, judgment)
 
+    def test_full_read_cannot_borrow_the_turn_of_an_earlier_directory_listing(self):
+        def binding(event, turn, following):
+            return {'event': event, 'native_result_verified': True, 'session_input_verified': True,
+                    'following_session_input': f'{following:04d}.json', 'tool_record': f'{turn:04d}-01.json'}
+
+        listing = {'event': 2, 'path': 'memo.md', 'sha256': 'a'*64, 'author': 'a',
+                   'reader': 'b', 'exposure_kind': 'filename'}
+        body = dict(listing, event=3, exposure_kind='complete_file_content')
+        communication = {'carrier': 'work_files', 'notes': [], 'exact_peer_reads': [listing, body],
+                         'exchange_candidates': [], 'invalid_observations': [],
+                         'unthreaded_read_then_write': [
+                             {'event': event, 'author': 'b', 'prior_reads': [listing, body]} for event in (4, 5)]}
+        bindings = {2: binding(2, 1, 2), 3: binding(3, 2, 3),
+                    4: binding(4, 2, 3), 5: binding(5, 3, 4)}
+        with TemporaryDirectory() as folder, patch.object(communication_evidence, 'bind_events', return_value=bindings):
+            root = Path(folder)
+            (root/'registration.json').write_text('{"harness":{"kind":"codex"}}')
+            output = communication_evidence.build(root, {}, communication, ['a', 'b'])
+        orders = [[read['delivered_before_write_event'] for read in write['prior_reads']]
+                  for write in output['unthreaded_read_then_write']]
+        self.assertEqual(orders, [[2, None], [2, 3]])
+
     def test_directory_listing_only_supports_the_name_shown_to_the_reader(self):
         packet, verdict = self.packet(), self.judgment()
         communication = packet['communication_evidence']
