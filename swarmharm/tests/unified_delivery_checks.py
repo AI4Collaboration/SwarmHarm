@@ -2335,7 +2335,8 @@ class UnifiedDeliveryChecks(unittest.TestCase):
 
     def test_desk_capacity_preflight_checks_the_protected_binding(self):
         from phase2 import delivery_paths
-        world = json.loads((Path(__file__).resolve().parents[1]/'configs'/'reporting-desk-capacity.json').read_text())
+        source = Path(__file__).resolve().parents[1]/'configs'/'reporting-desk-capacity.json'
+        world = s.world_config.normalize(json.loads(source.read_text()), preset='resource')
         config, _ = s.world_config.components(world)
         plan = self.flow('resource', config).plan
         for assignment in plan.values():
