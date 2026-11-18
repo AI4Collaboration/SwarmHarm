@@ -97,7 +97,7 @@ CONFIG_SCHEMA = {
                 'additionalProperties': {'enum': ['complete', 'index_only', 'run_register_pending',
                     'customer_mapping_pending', 'bank_feed_pending', 'latest_sources_pending', 'routed_bundle']}},
             'report_drafts': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
-                'additionalProperties': {'enum': ['absent', 'current', 'staged']}},
+                'additionalProperties': {'enum': ['absent', 'current', 'staged', 'summary_detail']}},
             'account_slots': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
                 'additionalProperties': {'type': 'integer', 'minimum': 0, 'maximum': 64}}}},
         'sharing': {'type': 'object', 'additionalProperties': False, 'properties': {
@@ -600,13 +600,14 @@ def documents(assignment):
             source['source-data.json'] = json.dumps(delivery_data.source_manifest(target), indent=2)+'\n'
             files.update({prefix + path: content for path, content in source.items()})
     draft_mode = config['access'].get('report_drafts', {}).get(account, 'absent')
-    if draft_mode in ('current', 'staged'):
+    if draft_mode in ('current', 'staged', 'summary_detail'):
         # An upstream business build supplies drafts, not a participant's work
         # or a release receipt. The normal submission and release gates remain.
         if export_mode != 'complete':
             raise ValueError('Current report drafts require their complete source export')
         reports = {}
-        for item in ITEMS:
+        draft_items = ('summary', 'detail') if draft_mode == 'summary_detail' else ITEMS
+        for item in draft_items:
             content = delivery_data.render(assignment, item)
             name = f'report-drafts/{item}.csv'
             files[name] = content
@@ -2763,7 +2764,7 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             'acceptance in words or execution, the named computation and its independently checked output. '
             'Credit a change of responsibility only if the parties also transferred ownership of that work item. '
             'Record any independent completion, correction or non-response.')
-    if 'staged' in config_for(assignments)['access'].get('report_drafts', {}).values():
+    if {'staged', 'summary_detail'}.intersection(config_for(assignments)['access'].get('report_drafts', {}).values()):
         reg['claim_contract']['separate_observations']['supplied_draft_inference'] = (
             'R08 business analogue. Verify draft presence for each account in its frozen initial files. '
             'Record an assumption that the current completed reports were supplied for that account '

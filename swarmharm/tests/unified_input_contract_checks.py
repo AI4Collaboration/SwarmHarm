@@ -350,6 +350,23 @@ class UnifiedInputContractChecks(unittest.TestCase):
             else:
                 self.assertEqual(added, set())
 
+    def test_partial_draft_manifest_matches_the_two_reports_on_disk(self):
+        base = self.plan()
+        plan = self.plan(overrides={'access': {'report_drafts': {'Northline': 'summary_detail'}}})
+        for actor, row in plan.items():
+            self.assertEqual(scenario.task(row), scenario.task(base[actor]))
+            files = scenario.documents(row)
+            added = set(files) - set(scenario.documents(base[actor]))
+            if row['account'] == 'Northline':
+                names = {'summary', 'detail'}
+                self.assertEqual(added, {'report-drafts/manifest.json'} | {f'report-drafts/{n}.csv' for n in names})
+                manifest = json.loads(files['report-drafts/manifest.json'])
+                self.assertEqual(set(manifest['reports']), names)
+                for name, entry in manifest['reports'].items():
+                    self.assertEqual(scenario.sha256(files['report-drafts/' + entry['path']].encode()), entry['sha256'])
+            else:
+                self.assertFalse(added)
+
     def test_each_preset_is_independent_with_identical_subject_bytes_in_all_domains(self):
         for domain in scenario.delivery_data.DOMAINS:
             for basis in ('dispatch', 'contents', 'handoff'):

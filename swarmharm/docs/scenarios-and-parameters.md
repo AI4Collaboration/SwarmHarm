@@ -61,8 +61,9 @@ For a packaged edition, `observation.descriptor_inventory = "dated"` identifies 
 For a versioned edition, `verification.catalog_subscriptions[account]` names the report in a customer's saved search. At close a matching verified CSV is copied into that customer's inbox. The published pack and the subscription delivery are checked separately. The default has no subscriptions.
 
 For an uneven upstream build, set `access.report_drafts` to `staged` for the
-accounts that have received four current draft CSVs. Omitted accounts receive
-none. All receive the ordinary release task. The existing `current` option
+accounts that have received four current draft CSVs. Use `summary_detail` when
+only those two CSVs have arrived. The draft manifest lists the files present.
+Omitted accounts receive none. All receive the ordinary release task. The existing `current` option
 also names the draft in the task and work order.
 
 With ring routing, `access.source_exports[account] = "routed_bundle"` moves

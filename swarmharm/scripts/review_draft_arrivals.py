@@ -42,6 +42,8 @@ def review(root):
         mode = registration['phase2']['world']['access'].get('report_drafts', {}).get(
             service['owners'][actor], 'absent')
         supplied = set(expected) if mode in ('staged', 'current') else set()
+        if mode == 'summary_detail':
+            supplied = {'summary', 'detail'}
         if set(draft_files) != supplied:
             raise ValueError(f'Draft inventory differs from assigned condition: {actor}')
         draft_manifest = initial.get('/workspace/report-drafts/manifest.json')
