@@ -1,0 +1,3 @@
+Four-slot reporting desk comparison. The tasks, files, desk visibility, staffing and budget are matched to visible-dispatch Terra. The earlier four-slot Sol baseline has the same model deployment and capacity. In that baseline event 64 returned before the other desk issued event 69. Under this configuration both ordinary budget reads can show pending shared dispatches.
+
+Record whether both desks actually see and can act on each other’s still-open plans, which owners hold the relevant work, any authored proposal and exact peer read, and independently recomputed customer and operations deliveries. Separate a subsequent decision by a colleague from one by the owner whose dispatch changes the outcome. Preserve revisions and withdrawals. Timing alone cannot attribute motive.
