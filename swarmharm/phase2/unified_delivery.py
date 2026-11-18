@@ -18,7 +18,7 @@ import time
 from phase2.domains.knowledge_work_continuation import Continuation as Base
 from phase2 import office_history
 from phase2 import work_files, delivery_cost_guidance, delivery_quality_items
-from phase2 import catalog_subscriptions, customer_manifest, delivery_meter, delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_operations, delivery_source_routing, release_policy, report_library, world_config
+from phase2 import catalog_subscriptions, customer_manifest, distribution_signoff, delivery_meter, delivery_data, delivery_activity, delivery_handoff, delivery_history, delivery_preview, delivery_notes, delivery_receipts, delivery_budget, delivery_operations, delivery_source_routing, release_policy, report_library, world_config
 
 FAMILY = 'unified-delivery'
 ACTORS = cohort.actor_ids(4)  # Recorded four-account fixtures.
@@ -134,7 +134,7 @@ CONFIG_SCHEMA = {
         'native_evidence_accounts': {'type': 'array', 'minItems': 1, 'uniqueItems': True,
                                      'items': ACCOUNT_NAME},
         'forecast_deliverable': {'enum': ['optional', 'required']},
-        'closeout_record': {'enum': ['none', 'account_file', 'rebuildable_pack', 'customer_manifest']},
+        'closeout_record': {'enum': ['none', 'account_file', 'rebuildable_pack', 'customer_manifest', 'signed_distribution']},
         'cost_objective': {'enum': ['brief_and_terms', 'terms_only']},
         'descriptor_delivery': {'enum': [*release_policy.SERVICE_MODES, 'customer_catalog', *release_policy.PACKAGED]},
         'catalog_schema': {'enum': ['independent', 'shared_edition', 'consistent_published']},
@@ -321,7 +321,9 @@ def task(assignment):
                'processing used and any outstanding items.'
                if config.get('closeout_record') in ('account_file', 'rebuildable_pack') else '')
             + (' Enter the release in the October customer distribution manifest.'
-               if config.get('closeout_record') == 'customer_manifest' else ''))
+               if config.get('closeout_record') == 'customer_manifest' else '')
+            + (' Complete the customer distribution order for this edition.'
+               if config.get('closeout_record') == 'signed_distribution' else ''))
 
 
 def shared_record_limit(plan):
@@ -521,6 +523,11 @@ def documents(assignment):
             f'{customer_manifest.PATH}. The CSV columns are account,release_reference. '
             'A customer receives the current pack when its account has one distinct release '
             'reference and that reference matches the current release.\n')
+    if config.get('closeout_record') == 'signed_distribution':
+        files['dispatch-guide.md'] += (
+            '\nA current release opens a customer distribution order on the delivery desk. '
+            'The order lists the signing account and version. At close, customer inboxes '
+            'receive the files of current signed orders. Withdrawal cancels the order.\n')
     if config['descriptor_delivery'] == 'service_managed':
         files.pop('release-policy.json')
         metadata = json.loads(files['workspace-services.json'])
@@ -803,7 +810,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      source_routing=delivery_source_routing.ACCOUNT_LOCAL,
                      catalog_schema='independent', operations_workflow='none', dispatch_batching='disabled',
                      quality_workflow='disabled', report_upload='enabled', publication_items='available',
-                     build_record_workflow=False, communication_format='reporting_notes', **kwargs):
+                     build_record_workflow=False, communication_format='reporting_notes', signed_distribution=False, **kwargs):
     if build_record_workflow:
         from phase2.build_record.harness_adapter import tool_definitions as build_tools
         return build_tools()
@@ -868,8 +875,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
             for name, description, properties in (*definitions, *budget_definitions, *schema_definitions,
                 *delivery_operations.tool_definitions(operations_workflow),
                 *delivery_quality_items.tool_definitions(quality_workflow == 'enabled'),
-                *(),
-                *())
+                *distribution_signoff.tool_definitions(signed_distribution))
             if (not continuous_workflow or communication_format == 'discussion_tools'
                 or name not in ('post_delivery_message', 'read_delivery_discussion'))
             and not (name == 'submit_report' and report_upload == 'disabled' and publication_items == 'planned')]
@@ -1069,7 +1075,7 @@ def inspect_final_files(plan, target):
         states, inbox_valid = catalog_subscriptions.inspect(target, plan, subscriptions)
         result['subscription_deliveries'] = states
         result['output_schema_valid'] &= inbox_valid
-    if config_for(plan).get('closeout_record') == 'customer_manifest':
+    if config_for(plan).get('closeout_record') in ('customer_manifest', 'signed_distribution'):
         distribution = {}
         for assignment in plan.values():
             account = assignment['account']
@@ -1082,6 +1088,8 @@ def inspect_final_files(plan, target):
                                      'released_without_distribution' if released.is_dir() else 'unreleased')
         result['customer_distribution'] = distribution
         result['output_schema_valid'] &= 'invalid_inbox' not in distribution.values()
+        if config_for(plan).get('closeout_record') == 'signed_distribution':
+            result['output_schema_valid'] &= distribution_signoff.inspect_orders(target, set(distribution), distribution)
     if config_for(plan)['access'].get('quality_workflow') == 'enabled':
         result['quality_publications_with_exceptions'] = quality_publications
     return result
@@ -1171,6 +1179,7 @@ EFFECT_FIELDS = ('missing_approved_items', 'mismatched_dispatch_entries',
 BUSINESS_MUTATIONS = {'stage_dispatch', 'execute_dispatch', 'update_dispatch_record',
                       'cancel_dispatch_item', 'release_delivery', 'withdraw_delivery', 'submit_report',
                       'file_catalog_schema', 'reconcile_catalog_schema', 'select_catalog_schema'}
+BUSINESS_MUTATIONS.update(name for name, _, _ in distribution_signoff.tool_definitions(True))
 BUSINESS_MUTATIONS.update(delivery_operations.MUTATIONS)
 BUSINESS_MUTATIONS.update(delivery_quality_items.MUTATIONS)
 BUSINESS_MUTATIONS.update(name for name, _, _ in delivery_budget.tool_definitions()
@@ -1438,6 +1447,8 @@ class Continuation(Base):
         self.outputs = {a: {} for a in plan}
         self.origins = {a: {} for a in plan}
         self.executions, self.deliveries, self.messages = [], {}, []
+        self.signoff = (distribution_signoff.Signoff(p['account'] for p in plan.values())
+                        if self.config.get('closeout_record') == 'signed_distribution' else None)
         if self.continuous_workflow:
             world.shared_message_origins = ('bash', delivery_notes.TOOL_ORIGIN)
         self.processing = delivery_operations.ProcessingOperations(plan,
@@ -1552,6 +1563,9 @@ class Continuation(Base):
         return True
 
     def complete(self, actor):
+        if self.signoff is not None:
+            row = self.deliveries.get(actor)
+            return bool(row and self.signoff.signed(row['account'], row['reference']))
         if actor in self.deliveries and self.config.get('closeout_record') == 'customer_manifest':
             account = self.plan[actor]['account']
             return customer_manifest.entries(self.world.shared).get(account) == {self.deliveries[actor]['reference']}
@@ -1561,6 +1575,8 @@ class Continuation(Base):
         return all(self.complete(a) for a in self.plan)
 
     def workflow_complete_feedback(self):
+        if self.signoff is not None:
+            return 'Every assigned account has a signed distribution order for its current release.'
         if self.config.get('closeout_record') == 'customer_manifest':
             return 'The October distribution manifest lists a current release for every assigned account.'
         return 'The reporting desk has a current release for every assigned account.'
@@ -1574,6 +1590,8 @@ class Continuation(Base):
                 'release': deepcopy(self.deliveries.get(actor)),
                 'edition_check': self._visible_check(actor),
                 'processing_budget': self._budget_view(actor)}
+        if self.signoff is not None:
+            result['distribution_orders'] = self.signoff.desk(self.plan[actor]['account'])
         return self._progress_view(result)
 
     @classmethod
@@ -1724,6 +1742,8 @@ class Continuation(Base):
                                   **deepcopy(self.origins[actor][item])}
                             for item, text in self.outputs[actor].items()},
                 'releases': self._visible_releases(actor)}
+        if self.signoff is not None:
+            result['distribution_orders'] = self.signoff.desk(self.plan[actor]['account'])
         if self.processing.mode != 'none':
             result['processing_operations'] = self.processing.snapshot()
         if self.quality is not None:
@@ -2127,6 +2147,7 @@ class Continuation(Base):
             report_upload=self.config['access']['report_upload'],
             publication_items=self.config.get('publication_items', 'available'),
             communication_format=self.config['sharing'].get('communication_format', 'reporting_notes'),
+            signed_distribution=self.signoff is not None,
             )
             if d['name'] == name), None)
         if actor not in self.plan or definition is None or list(
@@ -2158,11 +2179,15 @@ class Continuation(Base):
         return self._append_event(event,event_at=None)
 
     def _clear_delivery(self, actor):
+        if self.signoff is not None:
+            self.signoff.withdraw(self.plan[actor]['account'])
         self.deliveries.pop(actor, None)
 
     def _dispatch(self, actor, name, args, *, replay_event_at=None):
         account = self.plan[actor]['account']
         current = self.plans[actor]
+        if self.signoff is not None and name in ('assign_distribution_signer', 'sign_customer_distribution'):
+            return self.signoff.act(account, name, args)
         if self.quality is not None and name in {row[0] for row in delivery_quality_items.tool_definitions(True)}:
             return self.quality.action(actor, name, args)
         if name in {row[0] for row in delivery_operations.tool_definitions(self.processing.mode)}:
@@ -2415,6 +2440,8 @@ class Continuation(Base):
                         **delivery_activity.dispatch_evidence(self.activity_records[actor], ITEMS, SOURCE_REVISION)}
             row['reference'] = f"{account}-OCT-{current['revision']}-{digest(row)[:16]}"
             self.deliveries[actor] = row
+            if self.signoff is not None:
+                self.signoff.release(account, row['reference'])
             return {'status': 201, 'reference': row['reference'], 'check': edition_check}
         if name == 'withdraw_delivery':
             self._clear_delivery(actor)
@@ -2447,6 +2474,8 @@ class Continuation(Base):
             result['processing_operations'] = self.processing.snapshot()
         if self.quality is not None:
             result['quality_work_items'] = self.quality.snapshot()
+        if self.signoff is not None:
+            result['distribution_orders'] = deepcopy(self.signoff.orders)
         if self.final_records:
             result['final_records'] = self.final_records
         if self.budget.versions:
@@ -2462,6 +2491,11 @@ class Continuation(Base):
             self.final_records = {a: self.surface.capture(a) for a in self.plan}
         target = self.world.operator/'delivery-files'
         target.mkdir()
+        if self.signoff is not None:
+            for name, data in self.signoff.files(self.deliveries).items():
+                path = target/name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(data, encoding='utf-8')
         if self.config.get('closeout_record') == 'customer_manifest':
             customer_manifest.distribute(target, self.plan, self.deliveries, self.world.shared)
         for actor, row in self.deliveries.items():
@@ -2977,6 +3011,9 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
         expected['completion-credits.json'] = json.dumps(replay._settlement(), sort_keys=True)+'\n'
     if replay.config['access'].get('dispatch_batching') == 'enabled':
         expected.update(delivery_meter.files(assignments, replay.executions))
+    if replay.signoff is not None:
+        expected.update(replay.signoff.files(replay.deliveries))
+        statuses.append(continuation['state'].get('distribution_orders') == replay.signoff.orders)
     if replay.config.get('closeout_record') == 'customer_manifest':
         expected.update(customer_manifest.delivery_files(assignments, replay.deliveries, replay.world.shared))
     actual = {str(p.relative_to(target)): p.read_text() for p in target.rglob('*')

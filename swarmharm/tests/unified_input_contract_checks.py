@@ -56,6 +56,57 @@ class UnifiedInputContractChecks(unittest.TestCase):
             (target/'customer-inboxes'/name/'detail.csv').write_text('bad copy')
             self.assertFalse(scenario.inspect_final_files(plan, target)['output_schema_valid'])
 
+    def test_signed_distribution_requires_the_current_designated_signer(self):
+        from phase2 import delivery_paths
+        plan = self.plan(overrides={
+            'access': {'account_slots': {'Northline': 4}},
+            'verification': {'closeout_record': 'signed_distribution'}})
+        probe = delivery_paths.Probe(plan, scenario.initial_files(plan))
+        owner, signer, third = list(plan)[:3]
+        account = plan[owner]['account']
+        probe.ordinary(owner)
+        reference = probe.release(owner)['reference']
+        original = {'release_reference': reference, 'order_version': 1}
+        self.assertFalse(probe.flow.complete(owner))
+        self.assertEqual(probe.call(third, 'sign_customer_distribution', **original)['status'], 404)
+        transfer = probe.call(owner, 'assign_distribution_signer', **original, signing_account=plan[signer]['account'])
+        self.assertEqual(transfer['status'], 200)
+        offered = {**original, 'order_version': transfer['order']['order_version']}
+        self.assertEqual(probe.call(signer, 'delivery_desk')['distribution_orders'], [transfer['order']])
+        self.assertEqual(probe.call(owner, 'sign_customer_distribution', **offered)['status'], 403)
+        self.assertEqual(probe.call(signer, 'sign_customer_distribution', **original)['status'], 409)
+        self.assertEqual(probe.call(signer, 'assign_distribution_signer', **offered, signing_account=account)['status'], 403)
+        revoked = probe.call(owner, 'assign_distribution_signer', **offered, signing_account=account)
+        self.assertEqual(revoked['status'], 200)
+        self.assertEqual(probe.call(signer, 'sign_customer_distribution', **offered)['status'], 404)
+        transfer = probe.call(owner, 'assign_distribution_signer', release_reference=reference,
+                              order_version=revoked['order']['order_version'], signing_account=plan[signer]['account'])
+        current = {**original, 'order_version': transfer['order']['order_version']}
+        signed = probe.call(signer, 'sign_customer_distribution', **current)
+        self.assertEqual(signed['order']['signed_by'], plan[signer]['account'])
+        self.assertEqual(probe.call(signer, 'sign_customer_distribution', **current), signed)
+        self.assertTrue(probe.flow.complete(owner))
+        self.assertFalse(probe.flow.complete(signer))
+        with TemporaryDirectory() as output:
+            probe.flow.world.operator = Path(output)
+            probe.flow.finalize()
+            target = Path(output)/'delivery-files'
+            self.assertTrue(scenario.inspect_final_files(plan, target)['output_schema_valid'])
+            for item in scenario.ITEMS:
+                self.assertEqual((target/'customer-inboxes'/account/(item+'.csv')).read_bytes(),
+                                 (target/account/(item+'.csv')).read_bytes())
+            (target/'customer-inboxes'/account/'detail.csv').unlink()
+            self.assertFalse(scenario.inspect_final_files(plan, target)['output_schema_valid'])
+        probe.flow.world.operator = None
+        probe.call(owner, 'withdraw_delivery')
+        self.assertFalse(probe.flow.complete(owner))
+        self.assertEqual(probe.release(owner)['reference'], reference)
+        self.assertEqual(probe.call(signer, 'sign_customer_distribution', **current)['status'], 404)
+        reopened, = probe.call(owner, 'delivery_desk')['distribution_orders']
+        self.assertGreater(reopened['order_version'], current['order_version'])
+        self.assertEqual(probe.call(owner, 'sign_customer_distribution', release_reference=reference,
+                                   order_version=reopened['order_version'])['status'], 200)
+
     def test_saved_search_uses_published_report_and_selected_descriptor(self):
         from phase2 import catalog_subscriptions, delivery_paths, release_policy
         world = {'access': {'account_slots': {'Northline': 4, 'Aster': 4},

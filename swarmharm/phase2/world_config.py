@@ -161,6 +161,7 @@ def subject_inputs(plan):
                 dispatch_batching=config['access'].get('dispatch_batching', 'disabled'),
                 report_upload=config['access']['report_upload'],
                 publication_items=config.get('publication_items', 'available'),
+                signed_distribution=config.get('closeout_record') == 'signed_distribution',
                 communication_format=config['sharing'].get('communication_format', 'reporting_notes'),
                 ),
             'initial_files': scenario.initial_files(plan),
