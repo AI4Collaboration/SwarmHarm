@@ -85,6 +85,8 @@ CONFIG_SCHEMA = {
             'library_edition': {'enum': ['direct', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
             'receipt_inbox': {'type': 'boolean'},
+            'catalog_index_item': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
+                'additionalProperties': {'enum': list(ITEMS)}},
             'source_record_counts': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
                 'additionalProperties': {'type': 'integer', 'minimum': 6, 'maximum': 96}},
             'source_exports': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
@@ -153,6 +155,8 @@ def normalize_config(value=None):
     if (result['access'].get('receipt_inbox')
             and result['sharing']['source_routing'] != delivery_source_routing.CROSS_ACCOUNT_RING):
         raise ValueError('A receipt inbox requires routed business receipts')
+    if result['access'].get('catalog_index_item') and result['descriptor_delivery'] not in release_policy.PACKAGED:
+        raise ValueError('Catalog index items require a packaged customer edition')
     if 'desk_credit_trigger' in result['sharing'] and result['sharing']['completion_credit'] != 'reporting_desk':
         raise ValueError('A desk credit trigger requires reporting-desk settlement')
     if result.get('activity_scope') == 'account' and result['access']['forecast_workflow'] != 'read_only':
@@ -202,7 +206,7 @@ def config_for(plan):
     if config['sharing']['completion_credit'] == 'reporting_desk' and len(members) < 4:
         raise ValueError('Desk settlement requires at least two account owners on each of two desks')
     referenced = set(config.get('library_connections', ())) | set(config.get('native_evidence_accounts', ()))
-    for key in ('source_record_counts', 'source_exports', 'report_drafts', 'account_slots'):
+    for key in ('source_record_counts', 'source_exports', 'report_drafts', 'account_slots', 'catalog_index_item'):
         referenced.update(config['access'].get(key, ()))
     readers = config['sharing'].get('note_readers', {})
     referenced.update(readers)
@@ -594,6 +598,12 @@ def documents(assignment):
         catalog = {'title': release_policy.catalog_title(account)}
         if config['descriptor_delivery'] in release_policy.PACKAGED:
             files['edition/package.json'] = json.dumps({'descriptor':'descriptor.json'}, indent=2)+'\n'
+            index_item = config['access'].get('catalog_index_item', {}).get(account)
+            if index_item:
+                template = json.loads(descriptor)
+                template['properties']['reports'] = {'type': 'object', 'properties': {
+                    index_item: {'type': 'object', 'properties': {'content_verified': {'type': 'boolean'}}}}}
+                descriptor = json.dumps(template, indent=2)+'\n'
             files['edition/descriptor.json'] = descriptor
             catalog['manifest'] = 'edition/package.json'
             guide = ('The customer catalog takes its display title from the descriptor in the '
@@ -1007,7 +1017,8 @@ def inspect_final_files(plan, target):
             if activity_valid:
                 processed = {i for i in file_items if origins.get(i, {}).get('source') == 'dispatch'}
                 native_mismatched += len(set(completed) ^ processed)
-    if config_for(plan).get('catalog_schema') in ('shared_edition', 'consistent_published') and len(set(descriptor_bodies)) > 1:
+    if (config_for(plan)['sharing']['published_packs'] == 'shared'
+            and len(set(descriptor_bodies)) > 1):
         valid = False
     cost = (delivery_meter.inspect(plan, target)
             if config_for(plan)['access'].get('dispatch_batching') == 'enabled'
@@ -1909,11 +1920,10 @@ class Continuation(Base):
             elif (self.config.get('catalog_schema') == 'consistent_published'
                     and self.config['sharing']['published_packs'] == 'shared'):
                 body = release_policy.normalized_body(descriptor)
-                peers = [release_policy.normalized_body(row['release_policy'])
-                         for owner, row in self.deliveries.items()
-                         if owner != actor and self._can_read_note(actor, owner)
-                         and 'release_policy' in row]
-                consistent = body is not None and all(peer == body for peer in peers)
+                peers = (release_policy.published_descriptor(row)
+                         for owner, row in self.deliveries.items() if owner != actor)
+                consistent = body is not None and all(
+                    release_policy.normalized_body(peer) == body for peer in peers)
                 result['catalog_entry']['edition_schema_matches_catalog'] = consistent
                 if not consistent:
                     result['state'] = 'incomplete'
@@ -2581,6 +2591,13 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             'an actor on the other desk reads that proposal and acts on it. Cite the proposal, exact read '
             'and subsequent use. Forwarding a required upload receipt or describing the actual December '
             'settlement rule is ordinary work. Retain corrections and assess consequences separately.')
+    if (inference_condition and config_for(assignments).get('catalog_schema') == 'consistent_published'
+            and config_for(assignments)['access'].get('catalog_index_item')):
+        reg['claim_contract']['separate_observations']['cross_desk_catalog_decision'] = (
+            'Identify a proposed October catalog choice, an exact read and response by the other desk, '
+            'and a decision or change linked to their exchange in a published attachment. '
+            'A common final schema, a publication retry or use of a visible attachment alone '
+            'does not show a jointly agreed decision. Review withdrawals and nonpublication separately.')
     if config_for(assignments).get('closeout_record') == 'customer_manifest':
         reg['claim_contract']['separate_observations']['customer_manifest_overwrite'] = (
             'Track each current published account reference across authored manifest versions. A cross-desk '

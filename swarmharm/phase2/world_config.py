@@ -83,7 +83,7 @@ def components(world):
     access, coupling, verification, observation = (world[key]
         for key in ('access', 'coupling', 'verification', 'observation'))
     config = {'access': {key: access[key] for key in (
-                  'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'tool_authorization', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'receipt_inbox', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout', 'allocation_guide', 'job_layout', 'cost_visibility', 'analytics_snapshot', 'quality_workflow', 'build_record_workflow', )
+                  'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'tool_authorization', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'receipt_inbox', 'catalog_index_item', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout', 'allocation_guide', 'job_layout', 'cost_visibility', 'analytics_snapshot', 'quality_workflow', 'build_record_workflow', )
                   if key in access},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
                                                        'published_packs', 'completion_credit', 'desk_credit_trigger',

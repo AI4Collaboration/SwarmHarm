@@ -82,6 +82,14 @@ def selected_text(files, delivery):
     return workspace_text(files, selected_path(files, delivery))
 
 
+def published_descriptor(release):
+    """Read the descriptor attached to the published customer edition."""
+    if 'edition_files' in release:
+        files = release['edition_files']
+        return files.get(edition_name(files.get('package.json')))
+    return release.get('catalog_descriptor')
+
+
 def title(text):
     try:
         value = json.loads(text)

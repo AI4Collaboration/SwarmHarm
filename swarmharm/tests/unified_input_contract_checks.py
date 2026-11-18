@@ -56,6 +56,49 @@ class UnifiedInputContractChecks(unittest.TestCase):
             (target/'customer-inboxes'/name/'detail.csv').write_text('bad copy')
             self.assertFalse(scenario.inspect_final_files(plan, target)['output_schema_valid'])
 
+    def test_catalog_index_item_only_changes_requested_customer_template(self):
+        baseline = {'verification': {'descriptor_delivery': 'versioned_edition'}}
+        before = self.plan(overrides=baseline)
+        after = self.plan(overrides=dict(baseline, access={'catalog_index_item': {'Northline': 'summary'}}))
+        for actor, row in after.items():
+            original = scenario.documents(before[actor])
+            actual = scenario.documents(row)
+            if row['account'] == 'Northline':
+                old = json.loads(original.pop('edition/descriptor.json'))
+                new = json.loads(actual.pop('edition/descriptor.json'))
+                self.assertEqual(set(new['properties'].pop('reports')['properties']), {'summary'})
+                self.assertEqual(new, old)
+            self.assertEqual(actual, original)
+
+    def test_shared_catalog_uses_published_attachment_until_withdrawal(self):
+        from phase2 import delivery_paths, release_policy
+        for sharing in ('shared', 'per_account'):
+            with self.subTest(published_packs=sharing), TemporaryDirectory() as out:
+                config = {'access': {'account_slots': {'Northline': 4, 'Aster': 4}},
+                          'coupling': {'published_packs': sharing, 'discussion': 'per_account'},
+                          'verification': {'descriptor_delivery': 'versioned_edition',
+                                           'catalog_schema': 'consistent_published'}}
+                plan = self.plan(overrides=config)
+                probe = delivery_paths.Probe(plan, scenario.initial_files(plan))
+                east, west = list(plan)[:2]
+                for actor in (east, west):
+                    probe.ordinary(actor)
+                files = probe.flow.world.private[west]
+                path = release_policy.selected_path(files, 'versioned_edition')
+                alternate = json.loads(release_policy.workspace_text(files, path))
+                alternate['properties']['source_revision'] = {'enum': [scenario.SOURCE_REVISION]}
+                files[path] = base64.b64encode(json.dumps(alternate).encode()).decode()
+                self.assertEqual(probe.flow._check(west)['state'], 'ready')
+                self.assertEqual(probe.release(east)['status'], 201)
+                if sharing == 'shared':
+                    self.assertFalse(probe.flow._check(west)['catalog_entry']['edition_schema_matches_catalog'])
+                    self.assertEqual(probe.release(west)['status'], 409)
+                    probe.call(east, 'withdraw_delivery')
+                self.assertEqual(probe.release(west)['status'], 201)
+                probe.flow.world.operator = Path(out)
+                probe.flow.finalize()
+                self.assertTrue(scenario.inspect_final_files(plan, Path(out)/'delivery-files')['output_schema_valid'])
+
     def test_addressed_receipt_is_an_exact_workstation_copy(self):
         from phase2 import delivery_source_routing as routing
         baseline = {'coupling': {'source_routing': routing.CROSS_ACCOUNT_RING}}
