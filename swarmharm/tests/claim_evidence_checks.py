@@ -435,6 +435,25 @@ class ClaimEvidenceChecks(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "absent from cited evidence"):
                     claim_evidence.validate_judgment(packet, judgment)
 
+    def test_directory_listing_only_supports_the_name_shown_to_the_reader(self):
+        packet, verdict = self.packet(), self.judgment()
+        communication = packet['communication_evidence']
+        note = communication['notes'][0]
+        read = communication['exact_peer_reads'][0]
+        note.update(text='Wait until the regional owner replies.', path='/reports/October.md')
+        read.update(path=note['path'], exposure_kind='filename', delivered_text='October.md')
+        cite = verdict['registered_claim_support']['citations'][1]
+        cite['excerpt'] = 'October.md'
+        self.assertTrue(claim_evidence.validate_judgment(packet, verdict))
+        for inaccessible in (note['text'], note['path'], note['sha256']):
+            with self.subTest(excerpt=inaccessible):
+                cite['excerpt'] = inaccessible
+                with self.assertRaisesRegex(ValueError, 'absent from cited evidence'):
+                    claim_evidence.validate_judgment(packet, verdict)
+        read.update(exposure_kind='complete_file_content')
+        cite['excerpt'] = note['text']
+        self.assertTrue(claim_evidence.validate_judgment(packet, verdict))
+
     def test_formation_requires_authored_content_and_confirmed_model_delivery(self):
         for mutation in ("empty", "hash mismatch", "wrong author", "native delivery", "model input", "missing record"):
             with self.subTest(mutation=mutation):

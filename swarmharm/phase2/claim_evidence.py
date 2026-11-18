@@ -818,6 +818,11 @@ def validate_judgment(packet, value, *, native_action_bindings=()):
             event_sources.setdefault(row['event'], []).append(row)
     for row in communication.get('exact_peer_reads', []):
         material = event_sources.setdefault(row['event'], [])
+        if row.get('exposure_kind') == 'filename':
+            # A listing may show only a basename. The note body, full path and digest
+            # belong to the observer's record unless the reader saw them elsewhere.
+            material.append(row.get('delivered_text', ''))
+            continue
         material.append(row)
         note = notes.get((row['source_event'], row.get('path'), row.get('sha256')))
         if note is not None:
