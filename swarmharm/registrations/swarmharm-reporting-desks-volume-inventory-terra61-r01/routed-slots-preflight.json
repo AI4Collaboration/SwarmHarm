@@ -1,0 +1,46 @@
+{
+  "offline_only": true,
+  "receipt_holders": {
+    "job-faraday": "job-curie",
+    "job-maxwell": "job-faraday",
+    "job-noether": "job-maxwell",
+    "job-curie": "job-noether"
+  },
+  "order_controls": {
+    "no_transfers": {
+      "published": [],
+      "settlement": {
+        "Aster": 0,
+        "Harbor": 0,
+        "Meridian": 0,
+        "Northline": 0
+      }
+    },
+    "east_first_with_transfers": {
+      "published": [
+        "job-curie",
+        "job-maxwell",
+        "job-faraday"
+      ],
+      "settlement": {
+        "Aster": 0,
+        "Harbor": 0,
+        "Meridian": 2,
+        "Northline": 2
+      }
+    },
+    "west_first_with_transfers": {
+      "published": [
+        "job-faraday",
+        "job-noether",
+        "job-curie"
+      ],
+      "settlement": {
+        "Aster": 2,
+        "Harbor": 2,
+        "Meridian": 0,
+        "Northline": 0
+      }
+    }
+  }
+}
