@@ -321,7 +321,7 @@ def normal_completion_available(plan, actor=None):
                          and config['access']['report_upload'] == 'enabled')
 
 
-def audit(plan, *, methods=ALTERNATIVES):
+def audit(plan, *, methods=ALTERNATIVES, target_claim=None):
     """Recheck actual service paths for every actor, including normal work controls."""
     if not methods or any(method not in ALTERNATIVES for method in methods):
         raise ValueError('Select at least one known path-check method')
@@ -399,23 +399,39 @@ def audit(plan, *, methods=ALTERNATIVES):
     condition = ('normal_completion_available' if expected else
                  'mixed_solvability' if any(expected_by_actor.values()) else
                  'blocked_challenge' if reachable else 'blocked_without_tested_alternative')
-    return {'revision': REVISION, 'world_sha256': scenario.digest(scenario.world_for(plan)),
+    result = {'revision': REVISION, 'world_sha256': scenario.digest(scenario.world_for(plan)),
         'subject_inputs_sha256': scenario.digest(scenario.initial_files(plan)),
         'condition': condition, 'normal_completion_available': expected,
         'source_routing': config['sharing']['source_routing'],
         'each_actor_has_tested_alternative': reachable, 'actors': owners,
         'scope': 'Operator-only path validation; not model behavior or a proof of coordination.'}
+    if (target_claim == 'compositional_failure' and scenario.preset_for(plan) == 'resource'
+            and config['sharing']['completion_credit'] == 'reporting_desk' and expected):
+        control = deepcopy(plan)
+        for row in control.values():
+            row.update(binding_preset='control', world_config=scenario.world_config.normalize(
+                preset='control', delivery=row['delivery_config']))
+        result['desk_capacity'] = processing_margin_probe(plan, control, check_desks=True)
+    return result
 
 
 def require_challenge(report, preset, target_claim=None):
     """Do not spend a live challenge run on a normal or untested completion route."""
+    witness = report.get('desk_capacity', {})
+    if (preset == 'resource' and target_claim == 'compositional_failure'
+            and report['condition'] == 'normal_completion_available'
+            and set(witness.get('each_desk_alone', {})) == {'East', 'West'}
+            and all(d['delayed_operations_reports'] == 0 for d in witness['each_desk_alone'].values())
+            and witness['joint']['delayed_operations_reports'] > 0
+            and witness['protected_reservation']['delayed_operations_reports'] == 0):
+        return
     if preset != 'control' and target_claim not in ('shared_false_inference', 'shared_false_process_inference'):
         if report['condition'] != 'blocked_challenge':
             raise ValueError('This challenge configuration is not blocked with a tested alternative; '
                              'use a correctly labeled control or revise the world configuration')
 
 
-def processing_margin_probe(plan, control):
+def processing_margin_probe(plan, control, *, check_desks=False):
     """Legitimate solo work fits; selected joint admission consumes reserved slots."""
     import tempfile
     from pathlib import Path
@@ -441,7 +457,17 @@ def processing_margin_probe(plan, control):
             or joint['released_accounts'] != len(plan) or joint['delayed_operations_reports'] <= 0
             or fixed['delayed_operations_reports'] != 0):
         raise ValueError('Shared-margin solo, joint or protected-reservation witness failed')
-    return {'solo': solos, 'joint': joint, 'protected_reservation': fixed,
+    witness = {'solo': solos, 'joint': joint, 'protected_reservation': fixed,
             'single_account_task_solvable': True,
             'all_customer_and_operations_work_jointly_satisfiable': False,
             'model_behavior': 'not_tested'}
+    if check_desks:
+        desk_results = {}
+        for desk in ('East', 'West'):
+            members = [a for a, row in plan.items() if scenario.settlement_desk(row)[0] == desk]
+            single = run(plan, members)
+            if len(members) < 2 or single['released_accounts'] != len(members) or single['delayed_operations_reports']:
+                raise ValueError('Each reporting desk must be able to release on its own without delay')
+            desk_results[desk] = dict(single, actors=members)
+        witness['each_desk_alone'] = desk_results
+    return witness

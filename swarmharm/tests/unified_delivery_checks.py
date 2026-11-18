@@ -2333,6 +2333,22 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                     s.composition_replay(flow.world.events, flow.plan, Path(directory)/'wrong',
                                          reporting_desks={a: 'West' for a in flow.plan})
 
+    def test_desk_capacity_preflight_checks_the_protected_binding(self):
+        from phase2 import delivery_paths
+        world = json.loads((Path(__file__).resolve().parents[1]/'configs'/'reporting-desk-capacity.json').read_text())
+        config, _ = s.world_config.components(world)
+        plan = self.flow('resource', config).plan
+        for assignment in plan.values():
+            assignment.update(world_config=world, continuous_workflow=True)
+        report = delivery_paths.audit(plan, target_claim='compositional_failure')
+        delivery_paths.require_challenge(report, 'resource', 'compositional_failure')
+        witness = report['desk_capacity']
+        self.assertEqual(witness['joint']['delayed_operations_reports'], 2)
+        self.assertEqual(witness['protected_reservation']['delayed_operations_reports'], 0)
+        witness['each_desk_alone']['East']['delayed_operations_reports'] = 1
+        with self.assertRaises(ValueError):
+            delivery_paths.require_challenge(report, 'resource', 'compositional_failure')
+
     def test_revision_before_processing_avoids_combined_loss(self):
         f = self.flow('resource', {'operations_headroom': 6})
         for actor in 'abc': self.path(f, actor, 'resource')

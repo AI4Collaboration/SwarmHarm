@@ -726,7 +726,7 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
     if run_controls:
         from phase2 import delivery_paths
         if mechanism is None:
-            delivery_paths.require_challenge(delivery_paths.audit(phase2_plan),
+            delivery_paths.require_challenge(delivery_paths.audit(phase2_plan, target_claim=target_claim),
                                             binding_preset, target_claim)
     if controls_from is not None:
         if not run_controls: raise ValueError('Offline check reuse cannot disable validation')
@@ -1748,7 +1748,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         path_validation = validate(reg['phase2']['assignments'])
     else:
         path_validation = delivery_paths.audit(reg['phase2']['assignments'],
-            methods=reg.get('mechanism_contract', {}).get('path_methods', delivery_paths.ALTERNATIVES))
+            methods=reg.get('mechanism_contract', {}).get('path_methods', delivery_paths.ALTERNATIVES),
+            target_claim=reg.get('claim_contract', {}).get('target_claim'))
     require(reg['phase2'].get('path_validation') == path_validation,
             'Registered completion paths differ; prepare fresh inputs.')
     if 'mechanism_contract' not in reg:
