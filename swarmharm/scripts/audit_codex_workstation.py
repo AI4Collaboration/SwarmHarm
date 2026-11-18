@@ -18,6 +18,23 @@ MARKERS = {
 }
 
 
+def permission_mentions(journal):
+    """Locate native permission notices and literal mentions in public final answers."""
+    notices, answers = [], []
+    wording = re.compile(r'read[- ‑–]only|not writable|permission denied', re.I)
+    for line_number, line in enumerate(journal.splitlines(), 1):
+        event = json.loads(line)
+        item = event.get('payload', {})
+        if event['type'] != 'response_item' or item.get('type') != 'message':
+            continue
+        text = ' '.join(part.get('text', '') for part in item.get('content', []))
+        if item.get('role') == 'developer' and 'The sandbox only permits reading files' in text:
+            notices.append(line_number)
+        if item.get('role') == 'assistant' and item.get('phase') == 'final_answer' and wording.search(text):
+            answers.append(line_number)
+    return {'developer_read_only_notice_lines': notices, 'final_answer_mention_lines': answers}
+
+
 def audit(root):
     root = Path(root)
     manifest = json.loads((root/'evidence-manifest.json').read_bytes())['files']
@@ -99,7 +116,11 @@ def audit(root):
                     inspect('authored', '\n'.join(p.get('text', '') for p in item['content']), request.name)
                 elif item.get('type') == 'function_call':
                     inspect('authored', item.get('arguments', ''), request.name + '#' + item['call_id'])
+        journal = folder/'codex/session.jsonl'
+        permissions = (permission_mentions(verified_bytes(journal))
+                       if str(journal.relative_to(root)) in manifest else None)
         actors[actor] = {'responses': len(requests), 'distinct_delivered_tool_results': len(results),
+                         'native_permission_mentions': permissions,
                          'available_files': len(initial_files[actor]), 'tool_catalogs': len(catalogs),
                          'base_instruction_records': base_prompts,
                          'journal_name_in_tool_output': saw_journal, 'matches': dict(hits)}
