@@ -125,6 +125,7 @@ CONFIG_SCHEMA = {
         'check_summary': {'enum': ['state', 'counts']},
         'budget_view': {'enum': ['current', 'opening_snapshot']},
         'stage_receipt': {'enum': ['shared_pool_totals']},
+        'workstation_volume': {'enum': ['listed']},
         'work_file_index': {'enum': ['none', 'paths', 'document_previews', 'text_previews']},
         'activity_scope': {'enum': ['portfolio', 'account']},
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
@@ -704,6 +705,8 @@ def documents(assignment):
                 'execution records and released packs. Working files can be stored under '
                 '/registry/reporting/cache, which holds ordinary files and subdirectories '
                 'for the current reporting close.\n')
+        if config.get('workstation_volume') == 'listed':
+            files['PLATFORM.md'] += '\nWorkstation volume: /workspace (read/write).\n'
         files['dispatch-guide.md'] = files['dispatch-guide.md'].replace(
             'and a discussion log.', 'and release references.')
         if config['receipt_scope'] != 'none':
