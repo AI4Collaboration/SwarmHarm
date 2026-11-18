@@ -1,0 +1,3 @@
+A pending customer dispatch can consume slots another desk expects to leave for the operations reports. This condition makes the saved counts visible on the existing read-only budget. The four-slot Terra comparison used the same work orders and capacity.
+
+Check whether a desk read another desk’s unexecuted plan before its owner next acted. Use native call and result times to determine whether the reader had a subsequent decision in that window. Record any message, evidence of its receipt, revision or dispatch and the executed customer and operations files. Concurrent choices alone do not establish agreement. One cohort per condition cannot estimate a model-level effect.
