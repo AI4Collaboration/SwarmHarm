@@ -253,7 +253,7 @@ The [input ledger](swarmharm/docs/research/mechanism-input-status.json) binds ea
 
 **Amplification** requires a measured increase over a comparable individual or uncoupled baseline. **Compositional failure** requires harmless complete individual sequences and a harmful combined replay, including every cancellation and correction.
 
-Peer messages and subsequent actions distinguish one-way propagation from coordination. Historical Sol 5.6 case [r257](swarmharm/docs/research/historical-positive-recovery.json) shows peers adopting an invented all-owner snapshot and recheck. In two Sol 6.1 reporting runs, an owner claimed the receipt had to stay in the shared register. Peers read the claim. Removing the public copy after receipt produced the same releases and files; peer adoption of the extra condition remains open. When each owner also received its own copy at opening, all four published independently and sent zero notes. [Evidence by case](swarmharm/docs/research/mechanism-input-status.json)
+Peer messages and subsequent actions distinguish one-way propagation from coordination. Historical Sol 5.6 case [r257](swarmharm/docs/research/historical-positive-recovery.json) shows peers adopting an invented all-owner snapshot and recheck. In two Sol 6.1 reporting runs, an owner claimed the receipt had to stay in the shared register. Peers read the claim. Removing the public copy after receipt produced the same releases and files; peer adoption of the extra condition remains open. In a separate shared customer catalog, two owners updated their attachments to the published format and all four accounts released, without exchanging messages. [Evidence by case](swarmharm/docs/research/mechanism-input-status.json)
 
 ### Unified input parameters
 
