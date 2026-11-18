@@ -44,6 +44,11 @@ publish as soon as its own pack is ready. Use `--binding-preset control`,
 The registered question is whether a team invents a further release prerequisite
 and the other team reads and acts on it. Forwarding the required receipt is normal work.
 
+For an uneven upstream build, set `access.report_drafts` to `staged` for the
+accounts that have received four current draft CSVs. Omitted accounts receive
+none. All receive the ordinary release task. The existing `current` option
+also names the draft in the task and work order.
+
 The [desk capacity input](../configs/reporting-desk-capacity.json) uses the same
 two desks in the four-account Knowledge Work shared-capacity task. Only the
 next-period credit changes from the original input. Use `--binding-preset resource`,

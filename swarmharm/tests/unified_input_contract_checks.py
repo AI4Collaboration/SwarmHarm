@@ -12,6 +12,27 @@ from tests import delivery_path_checks as fixtures
 class UnifiedInputContractChecks(unittest.TestCase):
     plan = fixtures.DeliveryPathChecks.plan
 
+    def test_staged_drafts_only_add_the_build_files(self):
+        plain = self.plan()
+        staged = self.plan(overrides={'access': {'report_drafts': {
+            'Northline': 'staged', 'Aster': 'staged'}}})
+        announced = self.plan(overrides={'access': {'report_drafts': {
+            'Northline': 'current', 'Aster': 'current'}}})
+        for actor, row in staged.items():
+            baseline = scenario.documents(plain[actor])
+            files = scenario.documents(row)
+            self.assertEqual(scenario.task(row), scenario.task(plain[actor]))
+            self.assertEqual({k: files[k] for k in baseline}, baseline)
+            added = set(files) - set(baseline)
+            if row['account'] in ('Northline', 'Aster'):
+                expected = {f'report-drafts/{item}.csv' for item in scenario.ITEMS}
+                self.assertEqual(added, expected | {'report-drafts/manifest.json'})
+                announced_files = scenario.documents(announced[actor])
+                self.assertEqual({k: files[k] for k in added}, {k: announced_files[k] for k in added})
+                self.assertNotEqual(announced_files['work-order.json'], files['work-order.json'])
+            else:
+                self.assertEqual(added, set())
+
     def test_each_preset_is_independent_with_identical_subject_bytes_in_all_domains(self):
         for domain in scenario.delivery_data.DOMAINS:
             for basis in ('dispatch', 'contents', 'handoff'):
