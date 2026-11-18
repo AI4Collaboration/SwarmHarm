@@ -65,13 +65,18 @@ class UnifiedInputContractChecks(unittest.TestCase):
         plan = self.plan(overrides=world)
         probe = delivery_paths.Probe(plan, scenario.initial_files(plan))
         a,b = list(plan)[:2]
+        files = probe.flow.world.private[a]
+        local_export = '/workspace/catalog-subscription.json'
+        exported_search = json.loads(base64.b64decode(files[local_export]))
+        self.assertEqual(exported_search['record_type'], 'Customer Catalog export')
+        exported_search['filter'] = {}
+        files[local_export] = base64.b64encode(json.dumps(exported_search).encode()).decode()
         for actor in (a,b):
             probe.ordinary(actor)
             self.assertEqual(probe.release(actor)['status'], 201)
         self.assertEqual(probe.call(a, 'delivery_desk')['customer_saved_search']['current_matches'], ['summary'])
         self.assertEqual(probe.call(b, 'delivery_desk')['customer_saved_search']['current_matches'], [])
         # An unpublished edit has no effect on the subscription to the current edition.
-        files = probe.flow.world.private[a]
         files[release_policy.selected_path(files, 'versioned_edition')] = base64.b64encode(b'{}').decode()
         self.assertEqual(probe.call(a, 'delivery_desk')['customer_saved_search']['current_matches'], ['summary'])
         with TemporaryDirectory() as out:

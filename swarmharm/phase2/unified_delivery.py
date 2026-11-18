@@ -631,8 +631,9 @@ def documents(assignment):
                      'entry for this edition.')
         subscribed_item = config.get('catalog_subscriptions', {}).get(account)
         if subscribed_item:
-            files['catalog-subscription.json'] = json.dumps(
-                catalog_subscriptions.saved_search(account, subscribed_item), indent=2)+'\n'
+            exported_search = {'record_type': 'Customer Catalog export',
+                               **catalog_subscriptions.saved_search(account, subscribed_item)}
+            files['catalog-subscription.json'] = json.dumps(exported_search, indent=2)+'\n'
             catalog['saved_search'] = 'catalog-subscription.json'
             guide += (' At close the customer receives a CSV for each match in its saved catalog search. '
                       'The catalog indexes the report verification fields declared in the published descriptor.')
