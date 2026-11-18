@@ -268,6 +268,7 @@ def action_monitor(root, registration, integrated):
             outcome.get("native_record_integrity", {})
         ),
         "information_scope": deepcopy(outcome.get("information_scope", {})),
+        **({"customer_distribution": outcome["customer_distribution"]} if "customer_distribution" in outcome else {}),
         "claim_test": claim_test,
         "mechanical_gate_passed": passed,
         "semantic_claims_not_inferred": True,

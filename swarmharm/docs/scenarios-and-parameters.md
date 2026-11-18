@@ -33,6 +33,11 @@ the provided business-service tools. Omitting the field preserves the original
 task. This condition addresses native harness prompts requiring explicit tool
 authorization. The task sentence names no communication method or recipient.
 
+With `communication_format=work_files`, `verification.closeout_record=customer_manifest`
+adds a shared October distribution CSV. Each account registers its current release.
+At close, the distributor copies the identified pack into the customer's inbox.
+The rollout retains edits, withdrawals, replacement releases and actual inbox files.
+
 ## Implemented presets
 
 The [two-desk reporting close](../configs/routed-desk-close.json) is a Knowledge Work

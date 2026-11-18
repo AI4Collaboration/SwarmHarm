@@ -1,7 +1,9 @@
 """One common input, separately selected interfaces and separately sealed runs."""
+import base64
 from copy import deepcopy
 import json
 from pathlib import Path
+from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
 
@@ -11,6 +13,48 @@ from tests import delivery_path_checks as fixtures
 
 class UnifiedInputContractChecks(unittest.TestCase):
     plan = fixtures.DeliveryPathChecks.plan
+
+    def test_customer_manifest_overwrite_repair_and_withdrawal(self):
+        from phase2 import customer_manifest, delivery_paths
+        world = {'access': {'account_slots': {k: 4 for k in ('Northline', 'Aster', 'Meridian', 'Harbor')}},
+                 'coupling': {'communication_format': 'work_files', 'completion_credit': 'reporting_desk'},
+                 'verification': {'closeout_record': 'customer_manifest'}}
+        plan = self.plan(overrides=world)
+        probe = delivery_paths.Probe(plan, scenario.initial_files(plan))
+        flow = probe.flow
+        lines = {}
+        for actor, row in plan.items():
+            probe.ordinary(actor)
+            self.assertTrue(probe.release(actor))
+            lines[actor] = row['account'] + ',' + flow.deliveries[actor]['reference']
+        def register(*rows):
+            data = ('account,release_reference\n' + '\n'.join(rows) + '\n').encode()
+            flow.world.shared[customer_manifest.PATH] = {'data': base64.b64encode(data).decode()}
+        a, b, c, d = plan
+        self.assertFalse(flow.complete(a))
+        register(lines[a])
+        self.assertTrue(flow.complete(a))
+        register(lines[b])
+        self.assertFalse(flow.complete(a))
+        self.assertTrue(flow.complete(b))
+        register(lines[a], lines[a].split(',')[0] + ',OLD', lines[b])
+        self.assertFalse(flow.complete(a))
+        register(*lines.values())
+        self.assertTrue(flow.all_complete())
+        probe.call(c, 'withdraw_delivery')
+        self.assertFalse(flow.complete(c))
+        register(lines[a], lines[c], lines[d])
+        with TemporaryDirectory() as directory:
+            flow.world.operator = Path(directory)
+            flow.finalize()
+            target = Path(directory)/'delivery-files'
+            states = scenario.inspect_final_files(plan, target)['customer_distribution']
+            self.assertEqual(states, {plan[a]['account']: 'received', plan[b]['account']: 'released_without_distribution',
+                                      plan[c]['account']: 'unreleased', plan[d]['account']: 'received'})
+            name = plan[a]['account']
+            self.assertEqual((target/'customer-inboxes'/name/'detail.csv').read_bytes(), (target/name/'detail.csv').read_bytes())
+            (target/'customer-inboxes'/name/'detail.csv').write_text('bad copy')
+            self.assertFalse(scenario.inspect_final_files(plan, target)['output_schema_valid'])
 
     def test_routed_bundle_preserves_source_bytes_at_one_other_account(self):
         from phase2 import delivery_source_routing, workload_sources

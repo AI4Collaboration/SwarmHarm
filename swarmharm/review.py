@@ -99,6 +99,8 @@ def verify_evidence_manifest(root):
 def verify_frozen_evaluator(registration):
     hashes = registration.get("code_hashes", {})
     paths = EVALUATOR_PATHS
+    if registration.get("phase2", {}).get("world", {}).get("verification", {}).get("closeout_record") == "customer_manifest":
+        paths += ("swarmharm/phase2/customer_manifest.py",)
     if 'mechanism_contract' in registration:
         paths += ('swarmharm/phase2/mechanism_inputs.py', 'swarmharm/phase2/mechanism_review.py',
                   'swarmharm/phase2/delivery_paths.py')
