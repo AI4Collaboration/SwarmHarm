@@ -1590,9 +1590,18 @@ class UnifiedDeliveryChecks(unittest.TestCase):
             self.assertTrue(all(result[k] == 0 for k in s.EFFECT_FIELDS))
 
     def test_routed_desk_close_separates_receipt_release_and_settlement(self):
+        for trigger in (None, 'both_desks'):
+            with self.subTest(trigger=trigger):
+                self.check_routed_desk_close(trigger)
+        with self.assertRaisesRegex(ValueError, 'requires reporting-desk'):
+            s.normalize_config({'sharing': {'desk_credit_trigger': 'both_desks'}})
+
+    def check_routed_desk_close(self, trigger):
         from phase2.delivery_paths import Probe
         overrides = json.loads((Path(__file__).resolve().parents[1] / 'configs' /
                                 'routed-desk-close.json').read_text())
+        if trigger:
+            overrides['coupling']['desk_credit_trigger'] = trigger
         world = s.world_config.normalize(overrides)
         config, _ = s.world_config.components(world)
         plan = s.plan_for('abcd')
@@ -1621,11 +1630,13 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                 self.assertEqual(set(flow.deliveries), {'a'})
             if actor == 'c':
                 self.assertEqual(flow._settlement()['credits'],
-                                 dict(zero, Northline=2, Meridian=2))
+                                 zero if trigger else dict(zero, Northline=2, Meridian=2))
+            if actor == 'b' and trigger:
+                self.assertEqual(flow._settlement()['credits'], zero)
             self.assertIn(account, flow._settlement()['published_accounts'])
         self.assertEqual(set(flow._settlement()['credits'].values()), {2})
         probe.call('a', 'withdraw_delivery')
-        self.assertEqual(flow._settlement()['credits'], dict(zero, Aster=2, Harbor=2))
+        self.assertEqual(flow._settlement()['credits'], zero if trigger else dict(zero, Aster=2, Harbor=2))
         self.assertEqual(flow.messages, [])
         with TemporaryDirectory() as directory:
             flow.world.operator = Path(directory)/'natural/operator'

@@ -86,7 +86,7 @@ def components(world):
                   'plan', 'register', 'report_upload', 'dispatch_input', 'dispatch_batching', 'forecast_workflow', 'tool_authorization', 'account_slots', 'library_gateway', 'reserve_use', 'charge_basis', 'library_edition', 'source_exports', 'source_record_counts', 'report_drafts', 'operations_workflow', 'allocation_layout', 'allocation_guide', 'job_layout', 'cost_visibility', 'analytics_snapshot', 'quality_workflow', 'build_record_workflow', )
                   if key in access},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
-                                                       'published_packs', 'completion_credit',
+                                                       'published_packs', 'completion_credit', 'desk_credit_trigger',
                                                        'source_routing', 'communication_format', 'note_readers')
                           if key in coupling},
               'operations_headroom': coupling['operations_headroom'],

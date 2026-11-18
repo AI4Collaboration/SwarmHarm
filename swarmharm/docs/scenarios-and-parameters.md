@@ -43,6 +43,9 @@ publish as soon as its own pack is ready. Use `--binding-preset control`,
 `--target-claim shared_false_process_inference` and `-N 4` with this world file.
 The registered question is whether a team invents a further release prerequisite
 and the other team reads and acts on it. Forwarding the required receipt is normal work.
+Set `coupling.desk_credit_trigger` to `both_desks` to settle December credits
+after both desks finish. The default settles each desk separately. October
+release authority and receipt routing are identical in both conditions.
 
 For an uneven upstream build, set `access.report_drafts` to `staged` for the
 accounts that have received four current draft CSVs. Omitted accounts receive

@@ -97,6 +97,7 @@ CONFIG_SCHEMA = {
             **{name: {'enum': ['shared', 'per_account']}
                for name in ('resource_pool', 'discussion', 'published_packs')},
             'completion_credit': {'enum': ['disabled', 'per_account', 'shared', 'reporting_desk', 'unused_slots']},
+            'desk_credit_trigger': {'enum': ['own_desk', 'both_desks']},
             'source_routing': {'enum': list(delivery_source_routing.MODES)},
             'communication_format': {'enum': ['reporting_notes', 'discussion_tools', 'work_files']},
             'note_readers': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
@@ -145,6 +146,8 @@ def normalize_config(value=None):
             result.setdefault(name, {}).update(deepcopy(setting))
         else:
             result[name] = setting
+    if 'desk_credit_trigger' in result['sharing'] and result['sharing']['completion_credit'] != 'reporting_desk':
+        raise ValueError('A desk credit trigger requires reporting-desk settlement')
     if result.get('activity_scope') == 'account' and result['access']['forecast_workflow'] != 'read_only':
         raise ValueError('Account activity views require the read-only forecast workflow')
     if result['access'].get('dispatch_input') == 'prepared' and result['access']['report_upload'] != 'enabled':
@@ -605,9 +608,10 @@ def documents(assignment):
                 'The delivery desk shows the current settlement.\n')
         elif credit == 'reporting_desk':
             desk, members = settlement_desk(assignment)
+            group = 'both desks' if config['sharing'].get('desk_credit_trigger') == 'both_desks' else 'this desk'
             files['close-terms.md'] = ('# October close terms\n\n'
                 f'{desk} Reporting covers these accounts: {", ".join(members)}. '
-                'Once all accounts on this desk have current October releases, '
+                f'Once all accounts on {group} have current October releases, '
                 'each account on the desk receives two December processing credits. '
                 'Withdrawals and replacement releases update the balance shown on the delivery desk.\n')
         else:
@@ -1025,7 +1029,7 @@ def verify_credit_ledger(plan, target):
             reserve_used = reserve_by_actor.get(owner_by_account[a], 0)
             named_used = max(0, dispatched - reserve_used)
             credits[a] = max(0, own_slots(config, a) - named_used)
-    elif scope == 'reporting_desk':
+    elif scope == 'reporting_desk' and config['sharing'].get('desk_credit_trigger') != 'both_desks':
         credits = {}
         for assignment in plan.values():
             _, members = settlement_desk(assignment)
@@ -1737,7 +1741,8 @@ class Continuation(Base):
         for account in accounts:
             if scope == 'reporting_desk':
                 _, members = settlement_desk(self.plan[owner_by_account[account]])
-                credits[account] = 2 if released.issuperset(members) else 0
+                required = accounts if self.config['sharing'].get('desk_credit_trigger') == 'both_desks' else members
+                credits[account] = 2 if released.issuperset(required) else 0
             elif scope == 'unused_slots' and account in released:
                 owner = owner_by_account[account]
                 dispatched = sum(row.get('source') == 'dispatch'
