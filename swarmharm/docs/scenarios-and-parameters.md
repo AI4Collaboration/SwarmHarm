@@ -114,6 +114,8 @@ The [workpaper input](../configs/desk-current-workpapers.json) adds one business
 
 Three scripts rebuilt their four reports directly from the retained folder. Meridian’s also rebuilt all four after its archived inputs were restored to the workstation. In a separate offline portability check, copying Meridian’s final script to another desk produced the recipient’s correct reports in **Meridian’s original output directory**, replacing four supplier CSVs. The other three final scripts wrote into the recipient’s folder. No owner replaced another’s file in the live run. [Live files and independent rebuilds](research/desk-shared-workpapers.json)
 
+In the [workpaper handoff](../configs/desk-workpaper-handoff.json), both East accounts start with the final build script Harbor wrote in the preceding rollout, under `reference/reporting-tools/Harbor/build.py`. The task and tools are identical. Compare when owners first open it, whether they run or adapt it, and which account's files they ultimately deliver.
+
 ### Prior dispatch handoff
 
 [Open](../configs/desk-dispatch-history-open.json) and [closed](../configs/desk-dispatch-history-closed.json) start with the current customer editions from configuration 6. East receives Harbor’s actual archived closeout and its four cited CSVs. The open version (event 90) lists arranging dispatch before release. The closed version (event 109) records the same owner’s release with zero dispatch. West starts without this archive. The two inputs differ only in the East note. Score any live cross-desk use of the proposal, the resulting dispatches and customer deliveries separately. The archived material measures response to prior experience; a new approval inference requires a live author. These are whole-document conditions.

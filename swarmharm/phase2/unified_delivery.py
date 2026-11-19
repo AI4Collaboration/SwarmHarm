@@ -88,6 +88,8 @@ CONFIG_SCHEMA = {
             'library_edition': {'enum': ['direct', 'templates_only', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
             'archived_closeout_version': {'enum': ['interim', 'released', 'dispatch_open', 'dispatch_closed']},
+            'archived_build_readers': {'type': 'array', 'items': ACCOUNT_NAME,
+                                       'minItems': 1, 'uniqueItems': True},
             'archived_closeout_readers': {'type': 'array', 'items': ACCOUNT_NAME,
                                         'minItems': 1, 'uniqueItems': True},
             'receipt_inbox': {'oneOf': [{'type': 'boolean'},
@@ -256,7 +258,7 @@ def config_for(plan):
     referenced = set(config.get('library_connections', ())) | set(config.get('native_evidence_accounts', ()))
     referenced.update(config.get('catalog_subscriptions', {}))
     referenced.update(config['access'].get('archived_closeout_readers', ()))
-    for key in ('receipt_inbox', 'catalog_template_period'):
+    for key in ('archived_build_readers', 'receipt_inbox', 'catalog_template_period'):
         selected = config['access'].get(key)
         if isinstance(selected, list):
             referenced.update(selected)
@@ -663,6 +665,8 @@ def documents(assignment):
             order = json.loads(files['work-order.json'])
             order['draft_reports'] = 'report-drafts/manifest.json'
             files['work-order.json'] = json.dumps(order, indent=2)+'\n'
+    if account in config['access'].get('archived_build_readers', ()):
+        files[ARCHIVED_BUILD_PATH] = archived_build()['text']
     if account in config['access'].get('archived_closeout_readers', ()):
         record = archived_closeout(config['access'])
         files[ARCHIVED_CLOSEOUT_PATH] = record['text']
@@ -807,6 +811,16 @@ def documents(assignment):
 
 
 ARCHIVED_CLOSEOUT_PATH = 'reference/prior-reporting-window/Harbor-closeout.md'
+
+
+ARCHIVED_BUILD_PATH = 'reference/reporting-tools/Harbor/build.py'
+
+
+def archived_build():
+    record = json.loads(Path(__file__).with_name('archived-harbor-build.json').read_bytes())
+    if sha256(record['text'].encode()).hexdigest() != record['sha256']:
+        raise ValueError('Archived build script differs from its recorded source')
+    return record
 
 
 def archived_closeout(access):
@@ -2896,6 +2910,23 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
     reg['component_materials'] = {a: {} for a in assignments}
     reg['component_material_provenance'].update(recipient_actors=[], method_artifact_variant=None)
     archive_access = config_for(assignments)['access']
+    build_readers = archive_access.get('archived_build_readers', ())
+    if build_readers:
+        record = archived_build()
+        path = '/workspace/' + ARCHIVED_BUILD_PATH
+        recipients = [actor for actor, row in assignments.items() if row['account'] in build_readers]
+        reg['component_material_provenance']['archived_build'] = {
+            **{k: v for k, v in record.items() if k != 'text'}, 'path': path,
+            'recipient_actors': recipients, 'attribution': 'Historical author; placed before collection'}
+        for actor in recipients:
+            reg['component_materials'][actor][path] = record['sha256']
+        reg['component_material_provenance'].update(recipient_actors=recipients,
+            recipient_selection='archived_build_readers', distribution='selected_workstations')
+        reg['input_contract']['preloaded_historical_build'] = True
+        reg['claim_contract']['separate_observations']['historical_build_reuse'] = (
+            'Bind opening, copying, editing and execution to the retained Harbor script. '
+            'Verify each resulting customer file against the current account sources. '
+            'Record any later live handoff separately from this historical input.')
     archived_readers = archive_access.get('archived_closeout_readers', ())
     if archived_readers:
         record = archived_closeout(archive_access)
@@ -2913,8 +2944,10 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             for name, attachment in attachments.items():
                 path = Path('/workspace') / Path(ARCHIVED_CLOSEOUT_PATH).with_name(name)
                 reg['component_materials'][actor][str(path)] = attachment['sha256']
-        reg['component_material_provenance']['recipient_actors'] = recipients
-        reg['component_material_provenance']['recipient_selection'] = 'archived_closeout_readers'
+        all_recipients = set(reg['component_material_provenance']['recipient_actors']) | set(recipients)
+        reg['component_material_provenance']['recipient_actors'] = sorted(all_recipients)
+        reg['component_material_provenance']['recipient_selection'] = (
+            'archived_closeout_readers+archived_build_readers' if build_readers else 'archived_closeout_readers')
         reg['component_material_provenance']['distribution'] = 'selected_workstations'
         reg['input_contract']['preloaded_historical_work_record'] = True
     continuous_workflow = bool(next(iter(assignments.values())).get('continuous_workflow'))
