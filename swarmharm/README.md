@@ -6,7 +6,7 @@ The [SwarmHarm section of the root README](../README.md#swarmharm) is the mainta
 
 ## Inputs and evidence
 
-Each agent prepares a customer’s report pack. Engineering uses release-validation data. Knowledge Work uses customer records, with data-analysis and financial-analysis workloads available. The main matrix runs these six settings in both domains (12 inputs).
+Each agent prepares a customer’s report pack. Engineering uses release-validation data. Knowledge Work uses customer records, with data-analysis and financial-analysis workloads available. The main matrix runs these six settings in both domains (12 inputs). The batch runner uses the reviewed workload in each row, including Data Analysis for Knowledge Work Specification Gaming.
 
 | Configuration supplied to `--mechanism` | What the environment changes | What we check | Registered input |
 | --- | --- | --- | --- |

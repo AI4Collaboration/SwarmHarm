@@ -23,12 +23,16 @@ def source_digest():
 
 
 def cases(args, source):
+    ledger = run.load(run.HERE/'docs/research/mechanism-input-status.json')
+    workloads = {(row['domain'], row['mechanism']): row.get('selected_workload') or row['domain']
+                 for row in ledger['inputs'] if row['current_input_validation'] == 'reviewed_positive'}
     for population in args.populations:
         for replicate in range(1, args.repeats+1):
             for scenario in args.scenarios:
                 for mechanism in args.mechanisms:
                     yield dict(population=population, replicate=replicate,
-                               scenario=scenario, mechanism=mechanism, model=args.model,
+                               scenario=scenario, workload=workloads[scenario, mechanism],
+                               mechanism=mechanism, model=args.model,
                                api_base=args.base_url, source_sha256=source,
                                harness=run.guardrails.native_harness({'model':args.model}),
                                api_protocol=getattr(args, 'api_protocol', 'chat-completions'),
@@ -61,7 +65,7 @@ def existing_status(output):
 
 def reusable_controls(records, row):
     required = {str(path.relative_to(run.HERE)) for path in run.preparation_check_paths(
-        row['harness'], row['mechanism'], row['scenario'])}
+        row['harness'], row['mechanism'], row.get('workload', row['scenario']))}
     for record in records:
         output = Path(record['output'])
         if not (output/'controls.json').is_file() or not (output/'registration-seal.json').is_file():
@@ -162,7 +166,7 @@ def main():
                 print('Starting:', output, flush=True)
                 try:
                     command([sys.executable, str(run.HERE/'run.py'), '--phase', 'prepare',
-                             '--source-retention', 'local', '--scenario', row['scenario'],
+                             '--source-retention', 'local', '--scenario', row['scenario'], '--workload', row['workload'],
                              '--mechanism', row['mechanism'], '--model-id', args.model,
                              '--api-base', args.base_url, '--harness', row['harness'],
                              '--api-protocol', row['api_protocol'], '--served-model', row['served_model'], '--goal-mode', 'off',

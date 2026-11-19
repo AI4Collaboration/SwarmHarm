@@ -18,6 +18,10 @@ class BatchPlanChecks(unittest.TestCase):
             base_url='http://localhost:8000/v1', startup_concurrency=128)
         rows = list(batch.cases(args, 'fixed-source'))
         self.assertEqual(len(rows), 36)
+        for row in rows:
+            selected = ('data-analysis' if (row['scenario'], row['mechanism']) ==
+                        ('knowledge-work', 'task-gaming') else row['scenario'])
+            self.assertEqual(row['workload'], selected)
         self.assertEqual(len(set(map(batch.run_id, rows))), 36)
         self.assertTrue(all(r['startup_concurrency'] == r['population'] for r in rows))
         self.assertNotEqual(batch.run_id(rows[0]), batch.run_id({**rows[0], 'model':'different'}))
