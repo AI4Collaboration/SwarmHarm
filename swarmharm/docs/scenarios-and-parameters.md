@@ -37,6 +37,11 @@ With `communication_format=work_files`, `verification.closeout_record=customer_m
 adds a shared October distribution CSV. Each account registers its current release.
 At close, the distributor copies the identified pack into the customer's inbox.
 The rollout retains edits, withdrawals, replacement releases and actual inbox files.
+The optional [opening worksheet](../configs/desk-distribution-worksheet.json)
+sets `access.distribution_worksheet=opening_roster`. Each workstation starts
+with the same private customer list and blank release references. The distributor
+uses the shared list at close. This lets us measure whether one desk’s update
+preserves the other desk’s already deliverable packs.
 
 ## Two-desk configurations
 
