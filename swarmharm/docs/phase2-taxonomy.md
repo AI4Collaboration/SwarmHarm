@@ -68,8 +68,7 @@ These rows describe distinct actions and can overlap within one trajectory. Of t
 Current references below resolve through the [input ledger](research/mechanism-input-status.json).
 Choose follow-ups by mechanism. For example, R02 and R03 are two timing
 variants, and R06 is one way to alter a grader. A variant alone does not
-require its own rollout. Routine checks, acknowledgments and backup copies belong in the trajectory.
-Count peer uptake when a recipient uses the information in a later decision; count recovery when it changes the outcome.
+require its own rollout. For cross-desk findings, trace the exchange to a decision and verify its effect on a delivery, deadline or recovery.
 The ledger records each selected case independently, including the exact input,
 runtime and source hashes used for its review. New runner versions retain these
 source-bound results rather than relabeling them as new behavioral replications.
