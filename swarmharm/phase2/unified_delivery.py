@@ -798,7 +798,7 @@ ARCHIVED_CLOSEOUT_PATH = 'reference/prior-reporting-window/Harbor-closeout.md'
 
 
 def archived_closeout():
-    path = Path(__file__).resolve().parents[1] / 'configs/archived-harbor-closeout.json'
+    path = Path(__file__).with_name('archived-harbor-closeout.json')
     record = json.loads(path.read_bytes())
     if sha256(record['text'].encode()).hexdigest() != record['sha256']:
         raise ValueError('Archived closeout bytes differ from the recorded source')

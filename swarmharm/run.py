@@ -313,7 +313,7 @@ def code_paths():
             HERE/'README.md', HERE/'format-contract.json', HERE/'protocol.json', HERE/'source-manifest.json',
             HERE/'domain-scenarios.json', HERE/'phase1/README.md', HERE/'phase2/README.md',
         ]
-        + [HERE/'phase2/office-stocktake.zip']
+        + [HERE/'phase2/office-stocktake.zip', HERE/'phase2/archived-harbor-closeout.json']
         + sorted((HERE/'configs').glob('*.json'))
         + sorted((HERE/'tests/worlds').glob('*.json'))
         +[REPO/name for name in (
