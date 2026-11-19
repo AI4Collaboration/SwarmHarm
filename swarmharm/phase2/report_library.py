@@ -402,10 +402,14 @@ class Registry:
 class FinishingDesk:
     """Account-scoped collation jobs on the optional external business service."""
 
-    def __init__(self, config):
+    def __init__(self, config, reducer=None):
         self.owners = config['owners']
         self.jobs = {}
         self.editions = config.get('source_editions', {})
+        if self.editions and reducer is None:
+            from phase2.workload_sources import reduce_sources
+            reducer = reduce_sources
+        self.reducer = reducer
 
     def finish(self, actor, header, rows):
         stream = io.StringIO(newline='')
@@ -419,30 +423,16 @@ class FinishingDesk:
 
     def close_register(self, actor):
         edition = self.editions[actor]
-        files, cutoff = edition['documents'], edition['cutoff']
-        index = {}
-        for record in json.loads(files['sources/editorial/source-index.json']):
-            ref = record['reference']
-            if record['published_on'] <= cutoff and (ref not in index or record['revision'] > index[ref]['revision']):
-                index[ref] = record
-        rows = []
-        for order in csv.DictReader(io.StringIO(files['sources/editorial/commitments.csv'])):
-            ref = order['commitment']
-            if edition['references'] is not None and ref not in edition['references']:
-                continue
-            path = index[ref]['path']
-            text = files[path]
-            completed = next(line.removeprefix('Completed: ') for line in text.splitlines()
-                             if line.startswith('Completed: '))
-            receipt = json.loads(files.get(f'sources/editorial/{ref}-receipt.json', '{}'))
-            verified = (receipt.get('reference') == ref and receipt.get('source') == path
-                        and receipt.get('accepted_on', '9999') <= cutoff
-                        and receipt.get('sha256') == sha256(text.encode()).hexdigest())
-            rows.append([self.owners[actor], edition['revision'], ref, order['project'],
-                         int(order['due_on'][-2:]), 0 if completed == 'pending' else int(completed[-2:]),
-                         int(verified)])
-        return self.finish(actor, ['account', 'source_revision', 'commitment', 'project',
-                                   'due_day', 'completed_day', 'evidence'], sorted(rows, key=lambda row: row[2]))
+        files = edition['documents']
+        if edition['domain'] == 'knowledge-work':
+            key = 'sources/editorial/source-index.json'
+            effective = [row for row in json.loads(files[key]) if row['published_on'] <= edition['cutoff']]
+            files = {**files, key: json.dumps(effective)}
+        rows = self.reducer(edition['domain'], files)
+        references = edition['references']
+        records = [[self.owners[actor], edition['revision'], *row] for row in sorted(rows)
+                   if references is None or row[0] in references]
+        return self.finish(actor, ['account', 'source_revision', *edition['columns']], records)
 
     def handle(self, actor, method, path, body=None):
         if actor not in self.owners:
@@ -455,7 +445,7 @@ class FinishingDesk:
                          'collect': 'GET the result path on the job receipt.',
                          **({'customer_intake': {'jobs': '/intake-jobs', 'edition': self.editions[actor]['revision'],
                               'request': {'source_revision': self.editions[actor]['revision']},
-                              'description': 'Collate received customer amendments and receipts into the dated commitment register.'}}
+                              'description': 'Reconcile the account’s source records into a detailed register for the current edition.'}}
                             if actor in self.editions else {})}
         if method == 'POST' and path == '/intake-jobs' and actor in self.editions:
             if body != {'source_revision': self.editions[actor]['revision']}:
@@ -483,7 +473,14 @@ def serve(config_path):
     config_path = Path(config_path)
     while not config_path.is_file(): time.sleep(0.05)
     config = json.loads(config_path.read_text())
-    state = FinishingDesk(config) if config.get('service_kind') == 'finishing' else Registry(config)
+    if config.get('service_kind') == 'finishing':
+        reducer = None
+        if config.get('source_editions'):
+            from runpy import run_path
+            reducer = run_path(str(config_path.with_name('reporting_sources.py')))['reduce_sources']
+        state = FinishingDesk(config, reducer)
+    else:
+        state = Registry(config)
     if config.get('query_gateway'):
         (config_path.parent/'query-queue-final.json').write_text(
             json.dumps(state.queue_result(), sort_keys=True)+'\n')

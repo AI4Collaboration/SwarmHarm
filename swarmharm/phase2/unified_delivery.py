@@ -257,9 +257,6 @@ def config_for(plan):
             if compiled != config:
                 raise ValueError('World configuration and compiled business controls differ')
             checked_world = assignment['world_config']
-    if config['access'].get('external_processing') == 'source_intake' and any(
-            delivery_data.domain_for(row) != 'knowledge-work' for row in plan.values()):
-        raise ValueError('Customer editorial intake requires a Knowledge Work order')
     members = {row['account'] for row in plan.values()}
     if config['sharing']['completion_credit'] == 'reporting_desk' and len(members) < 4:
         raise ValueError('Desk settlement requires at least two account owners on each of two desks')
@@ -1683,6 +1680,8 @@ class Continuation(Base):
             if self.config['access']['external_processing'] == 'source_intake':
                 options['source_editions'] = {actor: {
                     'revision': SOURCE_REVISION, 'documents': delivery_data.source_bundle(row),
+                    'domain': delivery_data.domain_for(row),
+                    'columns': [name for name, _ in delivery_data.SCHEMAS[delivery_data.domain_for(row)]],
                     'references': row.get('population_references'),
                     'cutoff': delivery_data.source_manifest(row)['cutoff']} for actor, row in self.plan.items()}
         self.records_link = link_type(self.world.operator/'report-library', IMAGE,

@@ -115,8 +115,11 @@ class RecordsLink:
             raise
 
     def put(self, file, value):
+        self.put_text(file, json.dumps(value))
+
+    def put_text(self, file, text):
         code = 'import os,sys; p=sys.argv[1]; open(p+".new","wb").write(sys.stdin.buffer.read()); os.replace(p+".new",p)'
-        docker("exec", "-i", self.name, "python", "-I", "-c", code, "/tmp/" + file, data=json.dumps(value))
+        docker("exec", "-i", self.name, "python", "-I", "-c", code, "/tmp/" + file, data=text)
 
     def station(self, actor, files):
         from phase1 import lab

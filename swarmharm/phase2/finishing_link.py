@@ -15,6 +15,9 @@ class FinishingLink(RecordsLink):
                 {'owners': truth['owners'], 'service_kind': 'finishing',
                  **({'source_editions': source_editions} if source_editions is not None else {})},
                 service_module=report_library, hostname=report_library.BATCH_HOST)
+            if source_editions is not None:
+                from phase2 import workload_sources
+                self.finishing.put_text('reporting_sources.py', Path(workload_sources.__file__).read_text())
         except BaseException:
             self.close()
             raise
