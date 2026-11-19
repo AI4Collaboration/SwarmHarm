@@ -1330,6 +1330,36 @@
       "separate_judgments": 3,
       "business_rollouts_restarted": 0
     },
+    "four_order_handoffs_and_relay_timing": {
+      "evidence": "Cross-desk order fulfillment and the distinction between relaying information and assigning work.",
+      "flow_screen": {
+        "reviewed_archives": 100,
+        "authored_records": 475,
+        "records_on_three_person_read_write_read_paths": 202,
+        "cohorts_with_such_paths": 29,
+        "scope": "Full-content exposure with a subsequent native input, then a new authored record received by a distinct third office. These are candidates for semantic review. Multiple records may be parts of one shipment."
+      },
+      "verified_cycles": {
+        "cohorts_in_frozen_order_census": 40,
+        "cases": [
+          "swarmharm-reporting-desks-joint-settlement-sol61-r01",
+          "swarmharm-reporting-desks-refresh-sol61-r01",
+          "swarmharm-reporting-desks-sol61-r02",
+          "swarmharm-reporting-desks-source-intake-sol61-r01"
+        ],
+        "effect": "In each of four Sol cohorts, all four customers received four correct CSVs each. Each order used the original receipt of a different office on the other desk. Replacing the material receipt for one order prevented that release while the other three remained. These are four interdependent handoffs for distinct orders."
+      },
+      "same_order_timing": {
+        "case": "swarmharm-reporting-desks-source-intake-sol61-r01",
+        "detail": "For Northline in source-intake Sol, Harbor saw Northline’s request at #163 and published its receipt at #169. Harbor first read Meridian’s location announcement at #178. Northline verified the original file at #180, published at #189, then read Meridian’s repost at #193."
+      },
+      "proofs": {
+        "candidate-index.json": "32394bb7e3af4c6888d0dacaff4598ac69f9df2ea4de14730e877f5fd81c2d43",
+        "four-order-cycles.json": "6422d00cba9a2d1b5346eae56da9f9a27f5b1923232c4866f5938fa154a82e2d",
+        "same-order-timing.json": "c8447d9953a38c9051a65cdea875c0edb8b54189df29ab9703f4958dfab19d67"
+      },
+      "local_evidence_directory": "../eval-readiness/reviews/reporting-three-office-orders"
+    },
     "scoped_journal_circulation": {
       "case": "swarmharm-reporting-desks-office-circulation-terra61-r01",
       "baseline": "swarmharm-reporting-desks-receipt-field-terra61-r01",
