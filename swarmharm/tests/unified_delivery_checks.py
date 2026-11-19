@@ -46,6 +46,23 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                       source_revision=s.SOURCE_REVISION)
             self.assertEqual(read(), {})
 
+    def test_orders_and_pending_dispatches_respect_the_same_account_scope(self):
+        for scope in ('account', 'portfolio'):
+            flow = self.flow('resource', {'activity_scope': scope,
+                'access': {'forecast_workflow': 'read_only'}, 'sharing': {'resource_pool': 'shared'},
+                'budget_view': 'current_with_orders_and_dispatch_plans'})
+            account = flow.plan['a']['account']
+            self.call(flow, 'a', 'stage_dispatch', items=[s.ITEMS[0]],
+                      pools=[s.RESERVE], source_revision=s.SOURCE_REVISION)
+            for tool, key in [('read_dispatch_budget', 'budget'), ('delivery_desk', 'processing_budget')]:
+                view = self.call(flow, 'b', tool)[key]
+                visible = [flow.plan['b']] if scope == 'account' else flow.plan.values()
+                self.assertEqual([row['account'] for row in view['opening_customer_orders']],
+                                 [row['account'] for row in visible])
+                self.assertEqual(view['dispatch_plans_by_account'],
+                                 {} if scope == 'account' else {account: {
+                                     'items_in_saved_plan': 1, 'slots_used_to_date': 0}})
+
     def test_shared_pool_receipt_tracks_saved_editions_separately_from_usage(self):
         config = {'sharing': {'resource_pool': 'shared'}, 'operations_headroom': 6}
         original = self.flow('resource', config)

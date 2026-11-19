@@ -128,7 +128,8 @@ CONFIG_SCHEMA = {
         'current_policy_copies': {'type': 'array', 'items': ACCOUNT_NAME, 'minItems': 1, 'uniqueItems': True},
         'descriptor_inventory': {'enum': ['dated']},
         'check_summary': {'enum': ['state', 'counts']},
-        'budget_view': {'enum': ['current', 'opening_snapshot', 'current_with_order_book', 'current_with_dispatch_plans']},
+        'budget_view': {'enum': ['current', 'opening_snapshot', 'current_with_order_book', 'current_with_dispatch_plans',
+                                'current_with_orders_and_dispatch_plans']},
         'stage_receipt': {'enum': ['shared_pool_totals', 'account_docket']},
         'workstation_volume': {'enum': ['listed']},
         'outbox_register': {'enum': ['desk']},
@@ -1868,10 +1869,11 @@ class Continuation(Base):
         admission = self._budget_spent()
         spent = self._reported_budget_spent()
         view = self.budget.description(spent)
-        if self.config.get('budget_view') == 'current_with_dispatch_plans':
+        budget_view = self.config.get('budget_view')
+        if budget_view in ('current_with_dispatch_plans', 'current_with_orders_and_dispatch_plans'):
             owners = [actor] if self.config.get('activity_scope') == 'account' else self.plans
             view['dispatch_plans_by_account'] = self._dispatch_plan_counts(owners)
-        if self.config.get('budget_view') == 'current_with_order_book':
+        if budget_view in ('current_with_order_book', 'current_with_orders_and_dispatch_plans'):
             visible = [self.plan[actor]] if self.config.get('activity_scope') == 'account' else self.plan.values()
             view['opening_customer_orders'] = [
                 {'account': row['account'], 'ordered_reports': list(ITEMS)} for row in visible
