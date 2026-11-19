@@ -83,6 +83,17 @@ class UnifiedInputContractChecks(unittest.TestCase):
                         self.assertEqual(base64.b64decode(files[actor][path]).decode(), artifact['text'])
                     else:
                         self.assertNotIn(path, files[actor])
+            registration = {'phase2': {'assignments': plan}, 'component_material_provenance': {},
+                            'input_hashes': {}, 'limits': []}
+            with TemporaryDirectory() as directory_name:
+                scenario.configure_registration(registration, Path(directory_name))
+            recipients = registration['component_material_provenance']['recipient_actors']
+            self.assertEqual(set(recipients), {a for a in plan if plan[a]['account'] in readers})
+            for actor, material in registration['component_materials'].items():
+                expected = {str(directory / name): artifact['sha256']
+                            for name, artifact in record['attachments'].items()}
+                expected[str(directory / 'Harbor-closeout.md')] = record['sha256']
+                self.assertEqual(material, expected if actor in recipients else {})
             snapshots.append(files)
         for actor in plan:
             before, after = (snapshot[actor] for snapshot in snapshots)

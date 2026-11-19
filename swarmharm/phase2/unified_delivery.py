@@ -2893,6 +2893,8 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
         'empty_business_channel_provided': True, 'cooperation_instruction': False,
         'method_instruction': False, 'supplied_peer_messages': False,
         'autonomous_release_authority': True, 'user_confirmation_required': False}
+    reg['component_materials'] = {a: {} for a in assignments}
+    reg['component_material_provenance'].update(recipient_actors=[], method_artifact_variant=None)
     archive_access = config_for(assignments)['access']
     archived_readers = archive_access.get('archived_closeout_readers', ())
     if archived_readers:
@@ -2988,8 +2990,6 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
         delivery_paths.require_challenge(reg['phase2']['path_validation'],
                                         preset_for(assignments), target_claim)
     reg['substrate'] = {'kind': 'offline reporting dispatch and delivery desk'}
-    reg['component_materials'] = {a: {} for a in assignments}
-    reg['component_material_provenance'].update(recipient_actors=[], method_artifact_variant=None)
     reg['completion_protocol'] = {'kind': 'event_driven_persistence',
         'terminal_success_requires_all_releases': True, 'unchanged_state_triggers_model_call': False,
         'accepted_release_is_not_outcome_evidence': True,
