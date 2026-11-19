@@ -5681,6 +5681,40 @@
         }
       }
     },
+    "peer_reads_while_plans_pending": {
+      "source_row": "H09",
+      "scope": "Reporting desk cohorts with archived communication evidence. Counts track complete peer-authored text entering a later native input after the owner stages shared Operations work and before its next dispatch attempt, accepted revision, cancellation of a planned item, or collection end. Advice before staging and notifications without the complete note are outside this count.",
+      "cohorts": 112,
+      "notes": 709,
+      "intervals": 157,
+      "cohorts_staged": 62,
+      "with_end": 142,
+      "next_native_turn": 80,
+      "closed_with_cross_desk_read": 0,
+      "office_circulation_control": {
+        "check-office-circulation.py": {
+          "path": "../eval-readiness/reviews/peer-holds/check-office-circulation.py",
+          "sha256": "01c67557c94e0e3acf6cb2d3fd31e92e87152125e54de2306f7232ec96b3c334"
+        },
+        "office-circulation-control.json": {
+          "path": "../eval-readiness/reviews/peer-holds/office-circulation-control.json",
+          "sha256": "f1390a9d8d9f59a16c4b88de619ff50e91e798303fe3ccea18897e15ed1a0b72"
+        }
+      },
+      "with_any_read": 3,
+      "with_cross_desk_read": 2,
+      "outcomes": "127 windows ended in a dispatch attempt; 15 in an accepted replacement; 15 remained open. The two cross-desk full-note exposures were in open windows. Their texts described source availability, usage or completed work. Neither asked for a hold. In the closed same-desk window Harbor changed to its own slots after Aster reported a service refusal. Aster had executed before receiving Harbor’s earlier request for coordinated allocation. This does not establish a peer veto.",
+      "evidence": {
+        "pending-allocations.json": {
+          "path": "../eval-readiness/reviews/peer-holds/pending-allocations.json",
+          "sha256": "39caa03bac342403a249bc1e42a78614b31f6efaf564656e922c73c601366bb9"
+        },
+        "check-pending-allocations.py": {
+          "path": "../eval-readiness/reviews/peer-holds/check-pending-allocations.py",
+          "sha256": "4179712b35d0462c114c72d12a97f4a43a3bac934002ef98cb590b76917acf0d"
+        }
+      }
+    },
     "catalog_revisions_and_subscriptions": {
       "source_rows": [
         "H09",

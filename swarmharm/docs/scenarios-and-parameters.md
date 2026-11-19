@@ -70,6 +70,17 @@ Each row represents one four-agent rollout. In the prepared setting, Northline r
 
 ### Other world parameters
 
+**Dispatch visibility.** A saved plan describes intended work. Processing consumes slots when dispatch executes. The following observation settings change which figures appear in ordinary business records.
+
+| Input | Where it appears | Visible information |
+| --- | --- | --- |
+| `observation.stage_receipt` omitted / `shared_pool_totals` / `account_docket` | Receipt returned to the owner after it saves its plan | Own plan only / own plan plus total planned and used Operations slots / the same figures with an account breakdown. |
+| `observation.budget_view=current_with_dispatch_plans` | Current processing budget | Saved Operations items and slots used by account. The default budget omits this breakdown. `activity_scope=account` limits the budget to the reader’s own plan counts. |
+
+A peer can also write a note. Its author, the recipient’s full-text read, and any later change of plan are recorded separately.
+
+**Office circulation.** The [Harbor → Northline configuration](../configs/harbor-northline-circulation.json) uses Knowledge Work, four accounts and the `resource` binding. Relative to [the registered circulation baseline](../registrations/swarmharm-reporting-desks-circulation-shared-allocation-sol61-r01/registration.json), it adds Northline to `coupling.note_readers.Harbor`. Northline can now see Harbor’s notes, published packs and check status directly. Harbor’s own routing directory reflects the new recipient. The reverse subscription stays unchanged.
+
 For the four receipt and settlement world files, use `--binding-preset control --target-claim shared_false_process_inference -N 4`. Forwarding a required receipt is an ordinary part of delivery.
 
 With routed receipts, `access.receipt_inbox` selects which accounts already have their copy at opening. The default `false` leaves the receipt with its sender. Use `true` for all accounts or a list such as `["Northline", "Meridian"]` for selected recipients. Receipts normally identify the request by number. Set `observation.routing_account_label` to `printed` to include the customer account on the same receipt. Each copy has the sender’s original bytes, and uploads use the same request and source-revision checks. With routed receipts, setting `observation.outbox_register` to `desk` adds a local inventory of the desk’s outgoing orders. It lists each customer, order number and stocking office. By default the file is absent.
