@@ -7348,6 +7348,15 @@
       "takeaway": "With four original publications, replacing either one of the four incoming receipts with the locally issued other-request receipt removed one publication and both partners’ credits on the recipient desk. In the three-publication case the West desk had already missed credit: losing its one publication cost no additional credits. In both runs the final operations report file stayed byte-identical. The replay fixes later actions and cannot estimate adaptation to a missing handoff."
     },
     "sender_and_recipient_outcomes": {
+      "receipt_exchange_order": {
+        "sample": "42 verified outgoing transfers leading to publication in 14 Sol 6.1 cohorts from the original 40-cohort census. All 42 senders lacked their own receipt at opening.",
+        "timing": "In 33 sends no tool output supplied to the sender through its sending decision contained its own receipt. Of these, 23 subsequently used a peer receipt to publish; 10 had no verified incoming receipt-to-publication sequence. Nine sent after already reading their own receipt from another account.",
+        "routing": "For all 42, the account helped was distinct from the original holder of the sender’s incoming receipt. In joint-settlement Sol, Northline sent to Aster at 62 and received from Harbor at 84. Aster read Northline at 86 and later sent to Meridian at 116. Packet order alone does not establish a negotiated exchange.",
+        "artifacts_sha256": {
+          "reviews/desk-receipt-dependencies/receipt-exchange-order.py": "74959674a564da907b1dedc87dcb5c3551767e2b4488bd31619ff7269f4a41ca",
+          "reviews/desk-receipt-dependencies/receipt-exchange-order.json": "d77da99a642952b21e2c27292f71ee89ec05537e69352534e7206c652c54c10d"
+        }
+      },
       "before_outgoing_handoff": {
         "unit": "Six outgoing transfers with positive credits for the receiving desk, no marginal credits for the sender, and no terminal sender release.",
         "before_send": "At the sender decision in all six, an immediate release failed. Its own incoming receipt was absent from its captured model inputs, private files and all current shared files. The receipt was held by the helped account’s desk mate, distinct from the account that the sender helped.",
