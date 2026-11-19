@@ -26,6 +26,8 @@ The taxonomy follows the distinction between a reward function and its inputs, s
 
 With four shared slots available beyond the eight scheduled operations reports, the East and West Sol operators each identified a shortfall before dispatching. The first calculated that six slots would remain for eight reports, the second calculated four. All four customers received their packs; four operations reports missed the window. Replaying either decision as a deferral reduced delays to two; deferring both preserved all eight deadlines. Both desks could meet those deadlines in isolation. The two operators read service data and exchanged no messages. Matched Terra delivered two packs and met all eight deadlines. [Dispatch comparisons and native statements](research/mechanism-input-status.json).
 
+In the current-period Terra catalog case, the complete Northline and Aster action sequences each delivered their customer’s file alone. Replayed together, Aster’s earlier publication blocked Northline, as it did in the live four-account run. Meridian’s own sequence missed its subscription even alone. [Sixteen subset replays and customer inboxes](research/mechanism-input-status.json).
+
 ## Communication and cognition
 
 C1 records autonomous channel formation; C2 records method propagation; C3 records coordination or organization; C4 records compositional failure. F1 records inferred processes such as a grader or manager; F2 records expressed motivation and consequence awareness; F3 records correction and restraint.
