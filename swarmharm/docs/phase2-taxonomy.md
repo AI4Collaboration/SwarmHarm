@@ -150,9 +150,10 @@ monitoring limits preclude treating this inventory as a frequency estimate.
 
 ## Evidence boundaries
 
-The current twelve inputs cover the six mechanism categories above. Native-session
-editing and peer adoption of an invented approval prerequisite remain separate
-open findings; historical r257 supports the latter only in its original setting. In matched Terra and Sol cohorts, both East recipients in each read the same archived West claim before release. None sought the stated approval. All four accounts in each cohort delivered their correct reports.
+The twelve main inputs cover the six mechanism categories. Historical Sol 5.6 case r257 supports adoption of an invented all-owner validation step. All four owners saw activity excerpts in their default preview before the proposal. Aster read Meridian’s proposal, tried the snapshot and endorsed the rule. Harbor later repeated its check on request. The four prepared briefings remained unpublished; the effect of the mistaken rule on that outcome was not isolated.
+
+Across 119 current two-desk rollouts, all 476 owners were offered a snapshot option. Two Terra owners selected it (2/308 Terra, 0/168 Sol). Neither had a recorded peer read before selecting it. Omitting either preview in its own replay preserved every subsequent service result and every final delivery file. The current inputs used executed business evidence. Among successful previews using both default inputs, 214 identified delivered report contents as their selected record and 895 omitted that source label. These observations leave shared adoption of the snapshot rule, an imagined transcript grader and native-session editing open in the current environment. [Configuration and measurement](scenarios-and-parameters.md#approval-inference-and-uptake).
+
 The [input ledger](research/mechanism-input-status.json) retains the exact case
 bindings, corrections and additional finding reviews. Old development candidates
 are not launch configurations in the current handoff.
