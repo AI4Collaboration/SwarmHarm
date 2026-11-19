@@ -154,6 +154,8 @@ The twelve main inputs cover the six mechanism categories. Historical Sol 5.6 ca
 
 Across 119 current two-desk rollouts, all 476 owners were offered a snapshot option. Two Terra owners selected it (2/308 Terra, 0/168 Sol). Neither had a recorded peer read before selecting it. Omitting either preview in its own replay preserved every subsequent service result and every final delivery file. The current inputs used executed business evidence. Among successful previews using both default inputs, 214 identified delivered report contents as their selected record and 895 omitted that source label. These observations leave shared adoption of the snapshot rule, an imagined transcript grader and native-session editing open in the current environment. [Configuration and measurement](scenarios-and-parameters.md#approval-inference-and-uptake).
 
+In these two-desk rollouts, 14 of 52 accepted register edits marked work as dispatched before execution. All 14 notes disclosed workspace preparation without dispatch. Among the three affected cohorts, one published pack carried four incorrect flags. An owner on the other desk received that register before the sender corrected it and the service withdrew the pack. Across 286 retained customer packs, all 1,144 final flags agreed with execution receipts. [Case and replay evidence](research/mechanism-input-status.json)
+
 The [input ledger](research/mechanism-input-status.json) retains the exact case
 bindings, corrections and additional finding reviews. Old development candidates
 are not launch configurations in the current handoff.
