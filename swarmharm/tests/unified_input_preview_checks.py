@@ -102,8 +102,16 @@ class UnifiedInputPreviewChecks(unittest.TestCase):
                 fingerprints = []
                 for preset in scenario.PRESETS:
                     with self.subTest(config=source.name, domain=domain, preset=preset):
+                        # A complete world can pin bindings that a different preset would change.
+                        world = world_config.normalize(overrides, preset=preset)
+                        _, bindings = world_config.components(world)
+                        if bindings != scenario.PRESETS[preset]:
+                            with self.assertRaisesRegex(ValueError, 'selected preset|Multiple evaluated bindings'):
+                                preview.build_preview(domain, preset, overrides, actors=actors)
+                            continue
                         manifest, _ = preview.build_preview(domain, preset, overrides, actors=actors)
                         fingerprints.append(manifest['input_contract']['subject_sha256'])
+                self.assertTrue(fingerprints, source.name)
                 self.assertTrue(all(row == fingerprints[0] for row in fingerprints),
                                 (source.name, domain))
 
