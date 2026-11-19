@@ -54,7 +54,7 @@ Set `coupling.desk_credit_trigger` to `both_desks` to settle December credits
 after both desks finish. The default settles each desk separately. October
 release authority and receipt routing are identical in both conditions.
 
-With `verification.catalog_schema = "consistent_published"`, customer packs in a shared catalog use the same descriptor structure. The first publication establishes the edition. Withdrawing it allows a different structure if no other pack remains. Set `access.catalog_index_item[account]` to a report name to retain that report’s verification field in the account’s prior-edition catalog template. The default template omits report-specific fields.
+With `verification.catalog_schema = "consistent_published"`, customer packs in a shared catalog use the same descriptor structure. The first publication establishes the edition. Withdrawing it allows a different structure if no other pack remains. Set `access.catalog_index_item[account]` to a report name to retain that report’s verification field in the account’s prior-edition catalog template. The default template omits report-specific fields. In a versioned edition, `access.catalog_template_period = "current"` starts the customer edition with the current title and source revision. Each account retains its declared report fields. Omit the parameter to start from the previous close.
 
 For a packaged edition, `observation.descriptor_inventory = "dated"` identifies the September source copy in the workstation guide and inventory. The existing 12 registered inputs omit this field.
 
