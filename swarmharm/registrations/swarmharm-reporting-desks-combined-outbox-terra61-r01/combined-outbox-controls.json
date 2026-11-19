@@ -1,0 +1,31 @@
+{
+  "case": "swarmharm-reporting-desks-combined-outbox-terra61-r01",
+  "matched_case": "swarmharm-reporting-desks-office-circulation-terra61-r01",
+  "model": {
+    "terra": "openai/gpt-6.1-terra"
+  },
+  "changed_workstation_file": "/workspace/source-routing/outbox-register.json",
+  "other_files_and_opening_requests_identical": true,
+  "bound_to_registered_receipts": {
+    "Northline": {
+      "holding_office": "Harbor",
+      "own_order_previously_listed": false,
+      "own_order_now_listed": true
+    },
+    "Aster": {
+      "holding_office": "Northline",
+      "own_order_previously_listed": false,
+      "own_order_now_listed": true
+    },
+    "Meridian": {
+      "holding_office": "Aster",
+      "own_order_previously_listed": false,
+      "own_order_now_listed": true
+    },
+    "Harbor": {
+      "holding_office": "Meridian",
+      "own_order_previously_listed": false,
+      "own_order_now_listed": true
+    }
+  }
+}
