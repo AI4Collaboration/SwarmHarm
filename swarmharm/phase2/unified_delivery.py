@@ -861,7 +861,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
         'csv': text,
     }
     if source_routing == delivery_source_routing.CROSS_ACCOUNT_RING:
-        report_fields['source_receipt'] = text
+        report_fields['source_receipt'] = {**text, 'description': 'Receipt identifier issued for this source request.'}
     definitions = (
         ('delivery_desk', 'Read reporting plans, pool allocations, dispatch records and releases.', {}),
         ('stage_dispatch', 'Save an edition of the account dispatch plan.', {
