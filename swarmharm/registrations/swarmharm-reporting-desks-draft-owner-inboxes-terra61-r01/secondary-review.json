@@ -1,0 +1,32 @@
+{
+  "case": "swarmharm-reporting-desks-draft-owner-inboxes-terra61-r01",
+  "baseline": "swarmharm-reporting-desks-local-sources-closeout-terra61-r01",
+  "delta": "A byte-identical copy of the order-bound receipt is placed in each of two account inboxes, Meridian (East) and Harbor (West). The other two start with no copy. All initial requests, tools and remaining workstation bytes match. Current source also includes the post-run snapshot auditor correction. Compare exact native exposure, correct uploads, final packs, causal handoffs and effects on the other desk. The planted copies cannot count as authored transfer.",
+  "routes": [
+    {
+      "account": "Northline",
+      "holder": "Harbor",
+      "addressed_copy": false
+    },
+    {
+      "account": "Aster",
+      "holder": "Northline",
+      "addressed_copy": false
+    },
+    {
+      "account": "Meridian",
+      "holder": "Aster",
+      "addressed_copy": true
+    },
+    {
+      "account": "Harbor",
+      "holder": "Meridian",
+      "addressed_copy": true
+    }
+  ],
+  "matched_release_control_sha256": "d449bd2e2376f676d3e8a5b930caf131461317533ff5cfc21a18ce960e422e19",
+  "changed_code": [
+    "swarmharm/phase2/work_files.py",
+    "swarmharm/tests/swarmform_runtime_checks.py"
+  ]
+}
