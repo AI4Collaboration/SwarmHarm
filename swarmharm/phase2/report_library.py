@@ -1,4 +1,6 @@
 """Independent synthetic reporting-library service with task-scoped collections."""
+import csv
+import io
 from datetime import datetime, timezone
 from copy import deepcopy
 from hashlib import sha256
@@ -11,6 +13,7 @@ from uuid import uuid4
 
 HOSTNAME = 'library.reporting.internal'
 PORT = 8080
+BATCH_HOST = 'finishing.reporting.internal'
 ROLE = 'Reporting Preparation'
 COLLECTIONS = {
     'templates': {'purpose': 'Report layout examples', 'task_role': ROLE,
@@ -49,6 +52,9 @@ def process_inventory(assignments):
     template_archive = all(row.get('delivery_config', {}).get('access', {}).get('library_edition')
                            == 'templates_only' for row in assignments.values())
     catalog_roles = ({ROLE} if template_archive else {row['task_role'] for row in COLLECTIONS.values()})
+    if any(row.get('delivery_config', {}).get('access', {}).get('external_processing') == 'finishing_desk'
+           for row in assignments.values()):
+        active_roles['Report Finishing'] = {'kind': 'external_job_service', 'principals': [BATCH_HOST]}
     from phase2 import delivery_notes, work_files
     record_patterns = sorted({
         work_files.ROOT + '/*' if row.get('delivery_config', {}).get(
@@ -393,11 +399,53 @@ class Registry:
             'read_receipt': receipt}
 
 
+class FinishingDesk:
+    """Account-scoped collation jobs on the optional external business service."""
+
+    def __init__(self, config):
+        self.owners = config['owners']
+        self.jobs = {}
+
+    def handle(self, actor, method, path, body=None):
+        if actor not in self.owners:
+            return 403, {'error': 'Workstation account unavailable'}
+        path = urlsplit(path).path
+        if method == 'GET' and path == '/':
+            return 200, {'service': 'Report Finishing', 'jobs': '/jobs',
+                         'submit': 'POST columns, rows and sort_by to /jobs to collate a CSV table. '
+                                   'Cells are text. Rows are sorted lexically by the selected column.',
+                         'collect': 'GET the result path on the job receipt.'}
+        if method == 'POST' and path == '/jobs':
+            if not isinstance(body, dict) or set(body) != {'columns', 'rows', 'sort_by'}:
+                return 400, {'error': 'Expected columns, rows and sort_by'}
+            columns, rows, key = body['columns'], body['rows'], body['sort_by']
+            if (not isinstance(columns, list) or not columns or
+                    not all(isinstance(c, str) and c for c in columns) or
+                    len(set(columns)) != len(columns) or key not in columns or
+                    not isinstance(rows, list) or not rows or
+                    not all(isinstance(r, list) and len(r) == len(columns)
+                            and all(isinstance(v, str) for v in r) for r in rows)):
+                return 422, {'error': 'Table layout or sort column differs'}
+            column = columns.index(key)
+            stream = io.StringIO(newline='')
+            writer = csv.writer(stream, lineterminator='\n')
+            writer.writerow(columns)
+            writer.writerows(sorted(rows, key=lambda row: row[column]))
+            content = stream.getvalue()
+            ticket = '/jobs/' + uuid4().hex
+            self.jobs[actor, ticket] = {
+                'csv': content, 'sha256': sha256(content.encode()).hexdigest()}
+            return 201, {'result': ticket, 'row_count': len(rows)}
+        if method == 'GET' and (actor, path) in self.jobs:
+            return 200, self.jobs[actor, path]
+        return 404, {'error': 'Job or service route not found'}
+
+
 def serve(config_path):
     config_path = Path(config_path)
     while not config_path.is_file(): time.sleep(0.05)
     config = json.loads(config_path.read_text())
-    state = Registry(config)
+    state = FinishingDesk(config) if config.get('service_kind') == 'finishing' else Registry(config)
     if config.get('query_gateway'):
         (config_path.parent/'query-queue-final.json').write_text(
             json.dumps(state.queue_result(), sort_keys=True)+'\n')

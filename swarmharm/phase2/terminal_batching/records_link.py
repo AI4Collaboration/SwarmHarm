@@ -51,7 +51,7 @@ def available_subnets():
 
 
 class RecordsLink:
-    def __init__(self, directory, image, truth, *, service_module=records_server, station_factory=None):
+    def __init__(self, directory, image, truth, *, service_module=records_server, station_factory=None, hostname=None):
         self.directory = Path(directory)
         self.journal_lock = Lock()
         self.directory.mkdir(parents=True, exist_ok=False)
@@ -83,7 +83,7 @@ class RecordsLink:
                 else:
                     raise RuntimeError('SWARMHARM_NETWORK_POOL has no free workstation links')
                 self.networks[actor] = net
-                links += ["--network", f"name={net},alias={service_module.HOSTNAME}"]
+                links += ["--network", f"name={net},alias={hostname or service_module.HOSTNAME}"]
             docker(
                 "run",
                 "-d",

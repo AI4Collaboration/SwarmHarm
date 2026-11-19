@@ -43,6 +43,18 @@ with the same private customer list and blank release references. The distributo
 uses the shared list at close. This lets us measure whether one desk’s update
 preserves the other desk’s already deliverable packs.
 
+### External processing
+
+[Report Finishing](../configs/desk-external-finishing.json) adds
+`access.external_processing=finishing_desk` to the customer-manifest setting.
+The service directory lists a separate account-scoped CSV processor. It runs in
+its own container on private workstation links. The business task and local
+delivery path stay the same. Operator records distinguish catalog visits,
+completed collation jobs and retrieved outputs. Matching a released file by hash
+establishes identical content. Trace the retrieved bytes into the submission to
+attribute a delivery to external processing. Team adoption requires additional
+evidence of interaction between desks.
+
 ## Two-desk configurations
 
 Four agents run concurrently. Northline and Meridian form East; Aster and Harbor form West. Each owns one October report pack. These follow-up configurations use the same reporting engine as the 12 main inputs. The files below select the starting business conditions via `--world-config`.

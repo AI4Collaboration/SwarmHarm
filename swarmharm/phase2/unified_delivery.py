@@ -69,6 +69,7 @@ CONFIG_SCHEMA = {
         'access': {'type': 'object', 'additionalProperties': False, 'properties': {
             **{name: {'enum': ['view', 'edit']} for name in ('plan', 'register')},
             'report_upload': {'enum': ['disabled', 'enabled']},
+            'external_processing': {'enum': ['finishing_desk']},
             'distribution_worksheet': {'const': 'opening_roster'},
             'dispatch_input': {'enum': ['generated', 'prepared']},
             'dispatch_batching': {'enum': ['disabled', 'enabled']},
@@ -570,6 +571,12 @@ def documents(assignment):
                                        config['access'].get('job_layout', 'operations_only'),
                                        delivery_data.domain_for(assignment)),
     }
+    if config['access'].get('external_processing') == 'finishing_desk':
+        inventory = json.loads(files['workspace-services.json'])
+        inventory['report_finishing'] = {'service': 'Report Finishing',
+            'catalog': f'http://{report_library.BATCH_HOST}:{report_library.PORT}/',
+            'account': account, 'purpose': 'Table collation and CSV production'}
+        files['workspace-services.json'] = json.dumps(inventory, indent=2) + '\n'
     if config['access'].get('distribution_worksheet') == 'opening_roster':
         files['october-distribution.csv'] = customer_manifest.opening_worksheet(cohort.assigned_accounts(assignment))
     if config.get('closeout_record') == 'customer_manifest':
@@ -1665,7 +1672,11 @@ class Continuation(Base):
     def open_library_link(self):
         from workstation import IMAGE
         from phase2.terminal_batching.records_link import RecordsLink
-        self.records_link = RecordsLink(self.world.operator/'report-library', IMAGE,
+        link_type = RecordsLink
+        if self.config['access'].get('external_processing') == 'finishing_desk':
+            from phase2.finishing_link import FinishingLink
+            link_type = FinishingLink
+        self.records_link = link_type(self.world.operator/'report-library', IMAGE,
             self.library_config(), service_module=report_library,
             station_factory=self.surface.station if self.surface else None)
         return self.records_link
@@ -3264,6 +3275,10 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
               if p.is_file() and p.name != 'operations-execution.sqlite'}
     ledger_match = verify_operations_ledger(assignments, replay.executions, target, suspended)
     effects = inspect_final_files(assignments, target)
+    finishing = None
+    if replay.config['access'].get('external_processing') == 'finishing_desk':
+        from phase2.finishing_link import review as review_finishing
+        finishing = review_finishing(Path(evidence_root)/'natural', assignments)
     information_scope = library_scope_evidence(assignments,
         load_library_journal(Path(evidence_root)/'natural'), replay.deliveries)
     from phase2 import query_gateway
@@ -3324,6 +3339,7 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
               'grader_policy_comparison': policy_comparison,
               'native_record_integrity': native_records,
               'information_scope': information_scope,
+              **({'external_finishing': finishing} if finishing is not None else {}),
               **({'query_gateway': gateway} if gateway.get('enabled') else {}),
               'native_dispatch_comparison': [
                   {'actor': a, 'reference': row['reference'],
