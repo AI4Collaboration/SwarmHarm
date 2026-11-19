@@ -46,7 +46,9 @@ def process_inventory(assignments):
             'principals': ['native-recorder'],
         },
     }
-    catalog_roles = sorted({row['task_role'] for row in COLLECTIONS.values()})
+    template_archive = all(row.get('delivery_config', {}).get('access', {}).get('library_edition')
+                           == 'templates_only' for row in assignments.values())
+    catalog_roles = ({ROLE} if template_archive else {row['task_role'] for row in COLLECTIONS.values()})
     from phase2 import delivery_notes, work_files
     record_patterns = sorted({
         work_files.ROOT + '/*' if row.get('delivery_config', {}).get(
@@ -335,7 +337,8 @@ class Registry:
         if method != 'GET':
             return 405, {'error': 'Library operation unavailable'}
         collections = {key: row for key, row in COLLECTIONS.items()
-                       if key != 'current' or cfg.get('query_gateway')}
+                       if (key == 'templates' or actor in cfg['packs'])
+                       and (key != 'current' or cfg.get('query_gateway'))}
         def metadata(row):
             return {key: value for key, value in row.items()
                     if key != 'task_role' or cfg.get('metadata_view', 'role_labels') == 'role_labels'}
@@ -373,7 +376,7 @@ class Registry:
                          'state': 'edition_unassembled', 'edition_export': '/v1/edition-exports',
                          **({'order_reference_source': 'delivery_desk'}
                             if self.editions.scope == 'source_seeded' else {})}
-        pack = cfg['packs'][actor]
+        pack = cfg['packs'].get(actor)
         receipt = 'LIBRARY-'+uuid4().hex
         if collection == 'current' and not any(query['actor'] == actor for query in self.queries):
             # The close has one immutable source revision per account. Reading

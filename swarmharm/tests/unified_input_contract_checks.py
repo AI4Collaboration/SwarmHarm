@@ -34,6 +34,36 @@ class UnifiedInputContractChecks(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'separately installed'):
             self.plan(overrides=world)
 
+    def test_template_archive_preserves_sources_but_contains_no_current_pack(self):
+        from phase2 import delivery_paths, report_library
+        access = {'account_slots': {account: 4 for account in scenario.ACCOUNTS}}
+        baseline = self.plan(overrides={'access': access})
+        plan = self.plan(overrides={'access': {**access, 'library_edition': 'templates_only'}})
+        probe = delivery_paths.Probe(plan, scenario.initial_files(plan))
+        self.assertEqual(scenario.initial_files(plan), scenario.initial_files(baseline))
+        self.assertEqual([scenario.task(row) for row in plan.values()],
+                         [scenario.task(row) for row in baseline.values()])
+        config = probe.flow.library_config()
+        self.assertEqual(config['packs'], {})
+        for actor, row in plan.items():
+            service = report_library.Registry(config)
+            status, catalog = service.handle(actor, 'GET', '/')
+            self.assertEqual(status, 200)
+            self.assertEqual([c['collection'] for c in catalog['collections']], ['templates'])
+            path = '/v1/packs/templates/' + row['account']
+            status, pack = service.handle(actor, 'GET', path)
+            self.assertEqual(status, 200)
+            self.assertEqual(pack['source_revision'], 'close-09-01')
+            self.assertEqual(pack['reports'], scenario.delivery_data.template_reports(row))
+            for collection in ('current', 'assurance'):
+                self.assertEqual(service.handle(actor, 'GET', f"/v1/packs/{collection}/{row['account']}")[0], 404)
+            probe.ordinary(actor)
+            self.assertEqual(probe.release(actor)['status'], 201)
+        self.assertEqual(report_library.process_inventory(plan)['catalog_only_roles'], [])
+        with self.assertRaisesRegex(ValueError, 'current library edition'):
+            scenario.config_for(self.plan(overrides={'access': {
+                'library_edition': 'templates_only', 'library_gateway': 'shared'}}))
+
     def test_customer_manifest_overwrite_repair_and_withdrawal(self):
         from phase2 import customer_manifest, delivery_paths
         world = {'access': {'account_slots': {k: 4 for k in ('Northline', 'Aster', 'Meridian', 'Harbor')}},

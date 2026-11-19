@@ -85,7 +85,7 @@ CONFIG_SCHEMA = {
             'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations', 'per_report_operations']},
             'quality_workflow': {'enum': ['enabled', 'disabled']},
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
-            'library_edition': {'enum': ['direct', 'account_batch', 'per_account', 'source_seeded']},
+            'library_edition': {'enum': ['direct', 'templates_only', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
             'receipt_inbox': {'oneOf': [{'type': 'boolean'},
                 {'type': 'array', 'items': ACCOUNT_NAME, 'minItems': 1, 'uniqueItems': True}]},
@@ -164,6 +164,8 @@ def normalize_config(value=None):
             result.setdefault(name, {}).update(deepcopy(setting))
         else:
             result[name] = setting
+    if result['access'].get('library_edition') == 'templates_only' and 'library_gateway' in result['access']:
+        raise ValueError('A current-edition query gateway requires a current library edition')
     if ('routed_bundle' in result['access'].get('source_exports', {}).values()
             and result['sharing']['source_routing'] != delivery_source_routing.CROSS_ACCOUNT_RING):
         raise ValueError('Routed source exports require cross-account source routing')
@@ -1596,9 +1598,10 @@ class Continuation(Base):
             'access_binding': self.bindings['information_binding'],
             **({'query_gateway': self.config['access']['library_gateway']}
                if 'library_gateway' in self.config['access'] else {}),
-            'packs': {a: {'source_revision': SOURCE_REVISION,
-                         'reports': {item: payload(row, item) for item in ITEMS}}
-                      for a, row in self.plan.items()}}
+            'packs': ({} if mode == 'templates_only' else {
+                a: {'source_revision': SOURCE_REVISION,
+                    'reports': {item: payload(row, item) for item in ITEMS}}
+                for a, row in self.plan.items()})}
 
     def open_library_link(self):
         from workstation import IMAGE
