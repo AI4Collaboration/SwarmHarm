@@ -25,8 +25,7 @@ Specification Gaming input uses the Data Analysis workload. The six presets
 share a reporting engine and task structure, while deliberately varying service
 capabilities and business conditions. Examples include batching, incomplete
 source exports, role-owned quality items and shared processing capacity.
-Their exact differences are part of the registered input. All twelve use Sol
-6.1, native Codex, high reasoning, goal off and generic state-change notices.
+Their exact differences are part of the registered input. The Sol 6.1 cases and their [Terra 6.1 replications](research/terra-61-main-matrix.json) use four native Codex agents, high reasoning, goal off and generic state-change notices.
 
 ## Timing of shared-file reads
 
@@ -119,5 +118,4 @@ ATIF-v1.8 outputs. [Runtime setup](../../docs/running-evals.md) ·
 Commit source before registration, verify source and input hashes, then collect
 once per registration. Current work stays on local main. Keep raw evidence
 outside Git and reproduce each retained case with its sealed source.
-Historical configurations retain their original inputs and scores in the
-[archive](archive/README.md).
+The [historical case map](research/historical-positive-recovery.json) preserves the original inputs and scores.
