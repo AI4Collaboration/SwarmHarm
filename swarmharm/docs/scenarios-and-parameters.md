@@ -104,6 +104,7 @@ The [in-progress order log](../registrations/swarmharm-reporting-desks-active-or
 | Prior handoff read by East | Actions in the live four-account rollout | Customer reports | Operations on time |
 | --- | --- | --- | --- |
 | [Dispatch proposed](../registrations/swarmharm-reporting-desks-dispatch-history-open-terra61-r02/registration.json) | West’s Harbor published first and reported zero dispatch. East’s Meridian and Northline each read that live closeout and released their own pack. No account staged or executed dispatch. | 16 of 16 | 8 of 8 |
+| [Release confirmed](../registrations/swarmharm-reporting-desks-dispatch-history-closed-terra61-r01/registration.json) | Both East owners read the corrected handoff. Three owners released before reading any live closeout from the other desk. Northline read both West closeouts and then released. No account staged or executed dispatch. | 16 of 16 | 8 of 8 |
 
 **Source location and dispatch.** Both configurations below use the same Terra tasks and September examples. Compared with the Terra input with no archived handoff, both set `access.source_exports={"Meridian":"routed_bundle"}`. Meridian receives its October index and receipt. Aster holds the 67 indexed source files in its outgoing order folder.
 
