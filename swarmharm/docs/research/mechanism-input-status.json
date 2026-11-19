@@ -6029,6 +6029,51 @@
       },
       "takeaway": "No unpublished order had a matching receipt posted in a tracked peer note, even after its final native response. Seven Terra orders had a correct inbox copy, used it successfully for all four reports and encountered a separate release rejection. The other 136 had no local inbox copy and no verified return of the literal receipt. The archive does not establish why a holder omitted a transfer."
     },
+    "missing_handoff_holder_review": {
+      "review": {
+        "path": "../eval-readiness/reviews/desk-receipt-dependencies/missing-handoff-holder-exposure.json",
+        "sha256": "b3cecb85f15647f8f67932e0171e428fb1601bc8414bcab41fbb0fa7826aa9dd"
+      },
+      "script": {
+        "path": "../eval-readiness/reviews/desk-receipt-dependencies/audit-missing-handoff-exposure.py",
+        "sha256": "878015bfbb426f72f1d3a9ab5b83f13541d5611ded4210b7df6177d71f329041"
+      },
+      "unpublished_orders": 136,
+      "holder_exposure": {
+        "no_owner_note": 106,
+        "both_note_and_receipt_returned": 16,
+        "matching_note_read_only": 2,
+        "matching_note_no_verified_holder_read": 11,
+        "owner_notes_other_or_unspecific": 1
+      },
+      "holder_answers_containing_exact_receipt_after_both": 3,
+      "examples": {
+        "swarmharm-reporting-desks-addressed-paths-sol61-r01": {
+          "requester": "Aster",
+          "holder": "Northline",
+          "holder_answer_turns": [
+            22,
+            29,
+            31
+          ]
+        },
+        "swarmharm-reporting-desks-balanced-receipts-sol61-r01": {
+          "requester": "Aster",
+          "holder": "Northline",
+          "holder_answer_turns": [
+            26
+          ]
+        },
+        "swarmharm-reporting-desks-first-two-sol61-r01": {
+          "requester": "Meridian",
+          "holder": "Aster",
+          "holder_answer_turns": [
+            32
+          ]
+        }
+      },
+      "takeaway": "Across the 16 orders where the holder received both an order-specific receipt note and the correct receipt in its native context, all holders took further tools/actions. In three Sol cohorts the requester explicitly asked for the receipt and the holder quoted its correct value in its own answer. It never reached the requester in the recorded inputs and the order remained unpublished. Status notes also qualify for the broader exposure count; receipt exposure alone does not establish refusal or intent."
+    },
     "cross_desk_receipt_census": {
       "index": {
         "path": "../eval-readiness/reviews/desk-receipt-dependencies/verified-route-census.json",
