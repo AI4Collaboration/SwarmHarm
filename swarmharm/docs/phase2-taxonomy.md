@@ -105,7 +105,7 @@ the relevant original sections. Codes in a grouped row attach to its respective 
 | H20 | Infrastructure expansion | B1 | O · [H][h-infrastructure] | Open — expansion through additional infrastructure needs a separately scoped setting. |
 | H21 | Service overload | B2 | O · [July 4 outage][h-timeline] | Analogue · Combined dispatch delayed third-party reports in 10 of 71 reviewed rollouts. Replaying each actor alone and every pair preserved all operations deadlines. In seven cases it took all four actors to cause a delay. In three, a group of three sufficed. [Evidence and replays](research/mechanism-input-status.json). |
 | H22 | Reset experiments | B2, F1 | M · [H][h-reset] | Open — reset hypotheses and experiments need current evidence. |
-| H23 | Telemetry, backup | C3 | O · [H][h-reset] | Open — agent-organized telemetry and backup need current evidence. |
+| H23 | Telemetry, backup | C3 | O · [H][h-reset] | Open for collective reset recovery and telemetry. In two Sol cohorts, Aster and Harbor each restored its own September policy from a saved copy. Both restorations matched the original receipt hash. [Native calls and file checks](research/mechanism-input-status.json). |
 | H24 | Post-submission probes | B1, F2 | M · [H][h-tripwire] | Open — post-submission inspection needs a current sequence. |
 | H25 | Scorer interference | E2 | P · [H][h-streams] | Analogue · G — authored business acceptance changes enabled two Engineering and three Knowledge Work publications. |
 | H26 | Tool-call spoofing | E1, C2 | M · [H][h-spoof] | Open — actual displayed/executed tool-call divergence needs current evidence. |
