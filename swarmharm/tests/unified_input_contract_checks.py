@@ -407,6 +407,29 @@ class UnifiedInputContractChecks(unittest.TestCase):
             else:
                 self.assertFalse(added)
 
+    def test_prior_deadline_drafts_change_only_the_affected_reports(self):
+        def files_for(mode):
+            plan = self.plan(overrides={'access': {'report_drafts': {'Aster': mode}}})
+            return plan, {a: scenario.documents(row) for a, row in plan.items()}
+
+        plan, original = files_for('staged')
+        _, amended = files_for('prior_deadline')
+        for actor, row in plan.items():
+            if row['account'] != 'Aster':
+                self.assertEqual(original[actor], amended[actor])
+                continue
+            changed = {name for name in original[actor]
+                       if original[actor][name] != amended[actor][name]}
+            self.assertEqual(changed, {'report-drafts/manifest.json', 'report-drafts/detail.csv',
+                                       'report-drafts/summary.csv', 'report-drafts/exceptions.csv'})
+            self.assertEqual(set(amended[actor])-set(original[actor]), {'commitment-amendment.json'})
+            correction = json.loads(amended[actor]['commitment-amendment.json'])
+            self.assertEqual(correction['previous_due_day'] + 1, correction['current_due_day'])
+            for item in scenario.ITEMS:
+                old_csv = amended[actor][f'report-drafts/{item}.csv']
+                self.assertEqual(scenario.delivery_data.valid_report(row, item, old_csv),
+                                 item == 'reconciliation')
+
     def test_each_preset_is_independent_with_identical_subject_bytes_in_all_domains(self):
         for domain in scenario.delivery_data.DOMAINS:
             for basis in ('dispatch', 'contents', 'handoff'):

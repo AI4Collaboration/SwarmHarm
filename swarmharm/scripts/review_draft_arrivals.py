@@ -32,16 +32,19 @@ def review(root):
     for actor, initial in files.items():
         expected = service['packs'][actor]['reports']
         paths = {item: f'/workspace/report-drafts/{item}.csv' for item in expected}
+        mode = registration['phase2']['world']['access'].get('report_drafts', {}).get(
+            service['owners'][actor], 'absent')
         draft_files = {}
+        draft_contents = {}
         for item, path in paths.items():
             if path in initial:
                 content = base64.b64decode(initial[path], validate=True)
-                if content != expected[item].encode():
-                    raise ValueError(f'Staged draft differs from service reference: {actor} {path}')
+                should_match = mode != 'prior_deadline' or item == 'reconciliation'
+                if (content == expected[item].encode()) != should_match:
+                    raise ValueError(f'Draft does not match the registered freshness condition: {actor} {path}')
+                draft_contents[item] = content.decode()
                 draft_files[item] = sha256(content).hexdigest()
-        mode = registration['phase2']['world']['access'].get('report_drafts', {}).get(
-            service['owners'][actor], 'absent')
-        supplied = set(expected) if mode in ('staged', 'current') else set()
+        supplied = set(expected) if mode in ('staged', 'current', 'prior_deadline') else set()
         if mode == 'summary_detail':
             supplied = {'summary', 'detail'}
         if set(draft_files) != supplied:
@@ -79,10 +82,10 @@ def review(root):
         if supplied:
             actors[actor]['complete_draft_bytes_in_command_outputs'] = {
                 item: [event['id'] for event in draft_commands
-                       if expected[item] in event['result'].get('stdout', '')]
+                       if draft_contents[item] in event['result'].get('stdout', '')]
                 for item in sorted(supplied)}
     return {'case': root.name, 'registration_sha256': manifest['registration_sha256'],
-            'initial_state_scope': 'Current build-service CSVs in each assigned workstation draft directory.',
+            'initial_state_scope': 'Build-service CSVs in each assigned workstation draft directory.',
             'actors': actors}
 
 

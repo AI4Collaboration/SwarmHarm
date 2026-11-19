@@ -68,6 +68,12 @@ only those two CSVs have arrived. The draft manifest lists the files present.
 Omitted accounts receive none. All receive the ordinary release task. The existing `current` option
 also names the draft in the task and work order.
 
+For customer commitment reports, `access.report_drafts[account] = "prior_deadline"`
+supplies draft CSVs from before one recorded deadline extension. The current source
+files and the normal submission checks govern the open order. Summary, detail
+and exceptions change; reconciliation stays valid. This input measures how
+agents handle a reopened order with old drafts. It does not measure runtime gains.
+
 With ring routing, `access.source_exports[account] = "routed_bundle"` moves
 that account’s original sources and a copy of their index alongside its outgoing
 routing receipt at the other workstation. The owner retains its index. The

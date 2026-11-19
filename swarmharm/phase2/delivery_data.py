@@ -194,6 +194,24 @@ def render(assignment, item):
     return _render_source(source_data(assignment), item)
 
 
+def prior_deadline_drafts(assignment):
+    """Reconstruct the prior schedule for a single amended customer commitment."""
+    if domain_for(assignment) != 'knowledge-work':
+        raise ValueError('Deadline corrections require customer commitment reports')
+    source = source_data(assignment)
+    rows = [list(record) for record in source['rows']]
+    record = next((r for r in rows if r[2] > 1 and r[2] == r[3] and r[4]), None)
+    if record is None:
+        raise ValueError('The order has no on-time documented commitment to amend')
+    current_due = record[2]
+    record[2] -= 1
+    correction = {'account': source['account'], 'commitment': record[0],
+                  'previous_due_day': record[2], 'current_due_day': current_due,
+                  'period': 'October'}
+    before = dict(source, rows=rows)
+    return {item: _render_source(before, item) for item in ITEMS}, correction
+
+
 def _render_source(source, item):
     domain = source['domain']
     with sqlite3.connect(':memory:') as db:

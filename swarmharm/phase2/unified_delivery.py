@@ -97,7 +97,7 @@ CONFIG_SCHEMA = {
                 'additionalProperties': {'enum': ['complete', 'index_only', 'run_register_pending',
                     'customer_mapping_pending', 'bank_feed_pending', 'latest_sources_pending', 'routed_bundle']}},
             'report_drafts': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
-                'additionalProperties': {'enum': ['absent', 'current', 'staged', 'summary_detail']}},
+                'additionalProperties': {'enum': ['absent', 'current', 'staged', 'summary_detail', 'prior_deadline']}},
             'account_slots': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
                 'additionalProperties': {'type': 'integer', 'minimum': 0, 'maximum': 64}}}},
         'sharing': {'type': 'object', 'additionalProperties': False, 'properties': {
@@ -612,21 +612,27 @@ def documents(assignment):
             source['source-data.json'] = json.dumps(delivery_data.source_manifest(target), indent=2)+'\n'
             files.update({prefix + path: content for path, content in source.items()})
     draft_mode = config['access'].get('report_drafts', {}).get(account, 'absent')
-    if draft_mode in ('current', 'staged', 'summary_detail'):
+    if draft_mode in ('current', 'staged', 'summary_detail', 'prior_deadline'):
         # An upstream business build supplies drafts, not a participant's work
         # or a release receipt. The normal submission and release gates remain.
         if export_mode != 'complete':
             raise ValueError('Current report drafts require their complete source export')
         reports = {}
         draft_items = ('summary', 'detail') if draft_mode == 'summary_detail' else ITEMS
-        for item in draft_items:
-            content = delivery_data.render(assignment, item)
+        draft_origin = {'source_index': '../source-data.json'}
+        if draft_mode == 'prior_deadline':
+            contents, correction = delivery_data.prior_deadline_drafts(assignment)
+            files['commitment-amendment.json'] = json.dumps(correction, indent=2)+'\n'
+            draft_origin = {'schedule': 'prior to amendment', 'amendment': '../commitment-amendment.json'}
+        else:
+            contents = {item: delivery_data.render(assignment, item) for item in draft_items}
+        for item, content in contents.items():
             name = f'report-drafts/{item}.csv'
             files[name] = content
             reports[item] = {'path': f'{item}.csv', 'sha256': sha256(content.encode()).hexdigest()}
         files['report-drafts/manifest.json'] = json.dumps({
             'producer': 'Reporting build service', 'account': account,
-            'source_revision': SOURCE_REVISION, 'source_index': '../source-data.json',
+            'source_revision': SOURCE_REVISION, **draft_origin,
             'state': 'draft', 'reports': reports,
         }, indent=2)+'\n'
         if draft_mode == 'current':
