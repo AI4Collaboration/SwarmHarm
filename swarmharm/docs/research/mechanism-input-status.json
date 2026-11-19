@@ -5990,6 +5990,25 @@
         "takeaway": "All nine adverse runs had two executable desk-only replays with the same published customer bytes and own desk credits as observed, and all operations on time. No exact cross-desk note read preceded the dispatch that first exceeded the margin. Participants could still observe each other\u2019s activity in the shared service. Forecast counts describe the first operator to cross the margin in each adverse run."
       }
     },
+    "poll_snapshot_review": {
+      "review": {
+        "path": "../eval-readiness/reviews/desk-receipt-dependencies/cross-desk-poll-windows.json",
+        "sha256": "5add9e397b20e47de6f7b266f07f33aa3bdd1e47b696210aeb7d0443f84144f1"
+      },
+      "script": {
+        "path": "../eval-readiness/reviews/desk-receipt-dependencies/audit-note-poll-windows.py",
+        "sha256": "608f2eb734bda53a9eef5a502031082f63c0f04874eec42a39a36c419029b544"
+      },
+      "scope": "Timing audit through the matched Sol no-archive baseline. A shell uses the shared-file snapshot at command start. Identify an authored record from the other desk committed during a poll and subsequently returned in full to the poller.",
+      "counts": {
+        "cohorts": 108,
+        "cohorts_with_sleep_commands": 17,
+        "sleep_commands_reading_registry": 95,
+        "verified_windows": 5,
+        "receipt_bound_publications": 2
+      },
+      "takeaway": "In draft-arrivals and refresh Sol, Northline\u2019s poll printed that nothing new had arrived. Harbor had posted the requested receipt during that command. A new call delivered it. Northline used it for two verified uploads and published in both cohorts; substituting a different receipt blocked each release."
+    },
     "cross_desk_receipt_census": {
       "index": {
         "path": "../eval-readiness/reviews/desk-receipt-dependencies/verified-route-census.json",

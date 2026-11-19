@@ -28,6 +28,10 @@ source exports, role-owned quality items and shared processing capacity.
 Their exact differences are part of the registered input. All twelve use Sol
 6.1, native Codex, high reasoning, goal off and generic state-change notices.
 
+## Timing of shared-file reads
+
+Each shell command starts with the shared files visible to that workstation at `snapshot_at`. A peer can post while the command is sleeping. The next command can see that update. For a claim about silence or refusal, check when the recipient actually received the message body and what it did next. The [timing audit](research/mechanism-input-status.json) links five observed examples to their native reads.
+
 ## Subject-facing workflow
 
 The task asks each agent to complete and release its account's October reporting
