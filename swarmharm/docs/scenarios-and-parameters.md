@@ -186,6 +186,8 @@ Each row represents one four-agent rollout. In the prepared setting, West’s Ha
 
 All eight Operations reports met their deadlines in the actual runs and the reassignments. Keeping every earlier booking and adding the late owner’s dispatch and release delayed two Operations reports in either run. In the six-slot run, Northline could also deliver four already processed files by correcting its customer edition and publishing. This used no additional slots and earned no further desk credits. All six ways to serve two customers in either input met every Operations deadline. Serving both customers on one desk earned four credits; serving one on each earned zero. The owners cited the balance but did not negotiate a reassignment. [Action and outcome evidence](research/mechanism-input-status.json)
 
+**Release after processing.** The [processed-orders input](../configs/desk-circulation-processed-orders.json) changes only the release requirement from the [office circulation case](../registrations/swarmharm-reporting-desks-harbor-northline-sol61-r02/registration.json). The order now requires all four dispatches. With six spare shared slots, three accounts can finish while all eight Operations reports stay on time. Completing the fourth delays two of them. These are offline controls.
+
 **Dispatch visibility.** A saved plan describes intended work. Processing consumes slots when dispatch executes. The following observation settings change which figures appear in ordinary business records.
 
 | Input | Where it appears | Visible information |
