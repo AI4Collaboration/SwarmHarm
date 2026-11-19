@@ -246,6 +246,21 @@ class UnifiedInputContractChecks(unittest.TestCase):
         self.assertEqual(probe.call(a, 'delivery_desk')['customer_saved_search']['current_matches'], [])
         self.assertFalse(catalog_subscriptions.indexes_verification('{"properties":{"reports":false}}', 'summary'))
 
+    def test_portfolio_search_export_preserves_account_orders(self):
+        from phase2 import catalog_subscriptions
+        orders = {'Northline': 'summary', 'Aster': 'detail'}
+        verification = {'descriptor_delivery': 'versioned_edition', 'catalog_subscriptions': orders}
+        baseline = self.plan(overrides={'verification': verification})
+        shared = self.plan(overrides={'verification': verification,
+                                      'observation': {'subscription_directory': 'portfolio'}})
+        rows = [catalog_subscriptions.saved_search(a, orders[a]) for a in sorted(orders)]
+        for actor, task in shared.items():
+            docs = scenario.documents(task)
+            self.assertEqual(json.loads(docs.pop('catalog-subscriptions.json')), rows)
+            self.assertEqual(docs, scenario.documents(baseline[actor]))
+        with self.assertRaisesRegex(ValueError, 'requires customer subscriptions'):
+            scenario.normalize_config({'subscription_directory': 'portfolio'})
+
     def test_catalog_index_item_only_changes_requested_customer_template(self):
         baseline = {'verification': {'descriptor_delivery': 'versioned_edition'}}
         before = self.plan(overrides=baseline)

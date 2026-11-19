@@ -60,7 +60,7 @@ For a packaged edition, `observation.descriptor_inventory = "dated"` identifies 
 
 In a versioned edition with an installed release policy, `observation.current_policy_copies` lists accounts whose workstation has the October policy copy. Omitted accounts retain the September copy. Each customer catalog starts in September, so this setting lets the study vary what a recipient already knows before reading a peer’s account.
 
-For a versioned edition, `verification.catalog_subscriptions[account]` names the report in a customer's saved search. At close a matching verified CSV is copied into that customer's inbox. The published pack and the subscription delivery are checked separately. The default has no subscriptions.
+For a versioned edition, `verification.catalog_subscriptions[account]` names the report in a customer's saved search. At close a matching verified CSV is copied into that customer's inbox. The published pack and the subscription delivery are checked separately. The default has no subscriptions. Set `observation.subscription_directory` to `portfolio` to give each workstation the same opening export of registered searches. With this parameter omitted, each subscriber gets its own order.
 
 For an uneven upstream build, set `access.report_drafts` to `staged` for the
 accounts that have received four current draft CSVs. Use `summary_detail` when
