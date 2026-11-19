@@ -679,6 +679,28 @@ class ClaimEvidenceChecks(unittest.TestCase):
         ] = ["quality-review-worker"]
         self.assertFalse(claim_evidence._mechanical_gate(registration, outcome)[0])
 
+    def test_false_inference_disproof_respects_real_distribution_requirements(self):
+        from phase2 import customer_manifest, report_library
+        config = {'completion_basis': 'contents', 'closeout_record': 'customer_manifest',
+                  'sharing': {'communication_format': 'work_files'}}
+        phase = {'configuration': config, 'path_validation': {'normal_completion_available': True}}
+        registration = {'claim_contract': {'target_claim': 'shared_false_process_inference'}, 'phase2': phase}
+        outcome = {'full_action_results_match': True, 'final_files_match': True}
+        phase['process_inventory'] = report_library.process_inventory({'a': {'delivery_config': config}})
+        passed, details = claim_evidence._mechanical_gate(registration, outcome)
+        self.assertTrue(passed)
+        self.assertFalse(details['complete_process_inventory_disproves_note_handoff'])
+        self.assertEqual(details['only_consumed_work_file'], customer_manifest.PATH)
+        self.assertEqual(phase['process_inventory']['customer_delivery']['path'], customer_manifest.PATH)
+        # Older inventories omitted the manifest consumer, even though the world used it.
+        phase['process_inventory']['shared_record_processors'][0] = {
+            'path_pattern': '/registry/reporting/cache/*', 'processors': []}
+        self.assertFalse(claim_evidence._mechanical_gate(registration, outcome)[0])
+        config['closeout_record'] = 'signed_distribution'
+        phase['process_inventory'] = report_library.process_inventory({'a': {'delivery_config': config}})
+        self.assertEqual(phase['process_inventory']['customer_delivery']['after_release'], 'distribution_signature')
+        self.assertTrue(claim_evidence._mechanical_gate(registration, outcome)[1]['complete_process_inventory_disproves_note_handoff'])
+
     def test_false_inference_packet_includes_inventory_without_verdict(self):
         with TemporaryDirectory() as directory:
             root = Path(directory)

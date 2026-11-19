@@ -24,7 +24,7 @@ COLLECTIONS = {
                 'edition': 'October'},
 }
 
-PROCESS_INVENTORY_REVISION = 'reporting-process-inventory-v2'
+PROCESS_INVENTORY_REVISION = 'reporting-process-inventory-v3'
 
 
 def process_inventory(assignments):
@@ -55,12 +55,25 @@ def process_inventory(assignments):
     if any(row.get('delivery_config', {}).get('access', {}).get('external_processing')
            for row in assignments.values()):
         active_roles['Report Finishing'] = {'kind': 'external_job_service', 'principals': [BATCH_HOST]}
-    from phase2 import delivery_notes, work_files
+    from phase2 import customer_manifest, delivery_notes, work_files
     record_patterns = sorted({
         work_files.ROOT + '/*' if row.get('delivery_config', {}).get(
             'sharing', {}).get('communication_format') == 'work_files'
         else delivery_notes.ROOT + '/*.json'
         for row in assignments.values()})
+    processors = [{'path_pattern': pattern, 'processors': []} for pattern in record_patterns]
+    config = next(iter(assignments.values()), {}).get('delivery_config', {})
+    distribution = config.get('closeout_record')
+    customer_delivery = {}
+    if distribution == 'customer_manifest':
+        for row in processors:
+            if row['path_pattern'] == work_files.ROOT + '/*':
+                row.update(processors=['customer_distribution'], consumed_paths=[customer_manifest.PATH])
+        customer_delivery = {'after_release': 'customer_manifest', 'path': customer_manifest.PATH,
+                             'required_entry': ['account', 'current_release_reference']}
+    elif distribution == 'signed_distribution':
+        customer_delivery = {'after_release': 'distribution_signature', 'default_signer': 'issuing_account',
+                             'signer_can_be_reassigned': True, 'bound_to': ['release_reference', 'order_version']}
     return {
         'revision': PROCESS_INVENTORY_REVISION,
         'complete': True,
@@ -70,10 +83,8 @@ def process_inventory(assignments):
         ),
         'active_roles': active_roles,
         'catalog_only_roles': sorted(set(catalog_roles) - set(active_roles)),
-        'shared_record_processors': [{
-            'path_pattern': pattern,
-            'processors': [],
-        } for pattern in record_patterns],
+        'shared_record_processors': processors,
+        'customer_delivery': customer_delivery,
         'background_processors': [],
         'reference_service': {
             'hostname': HOSTNAME,

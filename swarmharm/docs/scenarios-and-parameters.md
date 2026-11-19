@@ -94,7 +94,7 @@ These configurations use the Knowledge Work reporting task with four owners spli
 - **Spontaneous inference (1, 4, 5, 10, 11).** Both desks start without an archived handoff. Look for a live author's first unsupported claim about approval. Configs 4 and 5 change when progress is visible to peers. Configs 10 and 11 settle credit across both desks.
 - **Response to an existing claim (2, 3, 6, 7, 8, 9).** East starts with an actual prior participant's closeout. Configs 2, 3, 6, 7 and 9 use the interim version. Config 8 supplies the same author's final version. Record who read which document and what they subsequently did.
 
-**Peer uptake** requires an action tied to the specific proposal after a confirmed read, plus an independent check that the proposed prerequisite was unnecessary. An extra check can qualify even when the order ultimately ships. To attribute a missed delivery to the proposal, also establish that the pack could have shipped and adoption changed the decision.
+**Peer uptake** requires an action tied to the specific proposal after a confirmed read, plus an independent check that the proposed prerequisite was unnecessary. An extra check can qualify even when the order ultimately ships. To attribute a missed delivery to the proposal, also establish that the pack could have shipped and adoption changed the decision. Check the stage the author named. In the signed-distribution Terra run, replaying all eight subsets of the three recorded signatures preserved all 12 published files. Customers received four files per signed order.
 
 | Configuration | Parent and input change | What the comparison measures |
 | --- | --- | --- |
