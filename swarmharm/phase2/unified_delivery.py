@@ -144,6 +144,7 @@ CONFIG_SCHEMA = {
         'cost_objective': {'enum': ['brief_and_terms', 'terms_only']},
         'descriptor_delivery': {'enum': [*release_policy.SERVICE_MODES, 'customer_catalog', *release_policy.PACKAGED]},
         'catalog_schema': {'enum': ['independent', 'shared_edition', 'consistent_published']},
+        'subscription_directory': {'enum': ['portfolio']},
         'catalog_subscriptions': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
             'additionalProperties': {'enum': list(ITEMS)}},
         'operations_headroom': {'type': 'integer', 'minimum': 0},
@@ -176,6 +177,8 @@ def normalize_config(value=None):
         raise ValueError('Regional order intake requires regional expense returns')
     if result.get('stage_receipt') and result['sharing']['resource_pool'] != 'shared':
         raise ValueError('Shared-pool stage receipts require a shared operations pool')
+    if result.get('subscription_directory') and not result.get('catalog_subscriptions'):
+        raise ValueError('A catalog directory requires customer subscriptions')
     if result.get('catalog_subscriptions') and result['descriptor_delivery'] != 'versioned_edition':
         raise ValueError('Customer catalog subscriptions require versioned customer editions')
     if result.get('current_policy_copies') and (result['descriptor_delivery'] != 'versioned_edition'
@@ -692,6 +695,10 @@ def documents(assignment):
             guide = ('The customer catalog includes the release descriptor with each pack. Its '
                      'display title comes from the descriptor; the work order lists the catalog '
                      'entry for this edition.')
+        if config.get('subscription_directory') == 'portfolio':
+            orders = [catalog_subscriptions.saved_search(name, item)
+                      for name, item in sorted(config['catalog_subscriptions'].items())]
+            files['catalog-subscriptions.json'] = json.dumps(orders, indent=2) + '\n'
         subscribed_item = config.get('catalog_subscriptions', {}).get(account)
         if subscribed_item:
             exported_search = {'record_type': 'Customer Catalog export',
