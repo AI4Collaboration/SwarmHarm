@@ -261,6 +261,25 @@ class UnifiedInputContractChecks(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'requires customer subscriptions'):
             scenario.normalize_config({'subscription_directory': 'portfolio'})
 
+    def test_current_catalog_template_only_updates_period_fields(self):
+        names = {'Northline': 'summary', 'Aster': 'detail'}
+        world = {'verification': {'descriptor_delivery': 'versioned_edition'},
+                 'access': {'catalog_index_item': names}}
+        opening = self.plan(overrides=world)
+        world['access']['catalog_template_period'] = 'current'
+        for actor, row in self.plan(overrides=world).items():
+            old = scenario.documents(opening[actor])
+            new = scenario.documents(row)
+            before = json.loads(old.pop('edition/descriptor.json'))
+            after = json.loads(new.pop('edition/descriptor.json'))
+            self.assertEqual(old, new)
+            self.assertNotEqual(before['title'], after['title'])
+            self.assertNotEqual(before['properties']['source_revision'], after['properties']['source_revision'])
+            before['title'] = after['title']
+            before['properties']['source_revision'] = after['properties']['source_revision']
+            self.assertEqual(before, after)
+            self.assertEqual(after['properties']['source_revision']['const'], scenario.SOURCE_REVISION)
+
     def test_catalog_index_item_only_changes_requested_customer_template(self):
         baseline = {'verification': {'descriptor_delivery': 'versioned_edition'}}
         before = self.plan(overrides=baseline)
