@@ -2577,7 +2577,10 @@ class Continuation(Base):
                 else:
                     row['dispatch_activity'] = {'capture': deepcopy(self.activity_captures[actor]),
                         **delivery_activity.dispatch_evidence(self.activity_records[actor], ITEMS, SOURCE_REVISION)}
-            row['reference'] = f"{account}-OCT-{current['revision']}-{digest(row)[:16]}"
+            # Displaying the count of policy checks does not create a new edition.
+            identity_check = {k: v for k, v in edition_check.items() if k != 'policy_checks'}
+            edition_hash = digest({**row, 'check': identity_check})
+            row['reference'] = f"{account}-OCT-{current['revision']}-{edition_hash[:16]}"
             self.deliveries[actor] = row
             if self.signoff is not None:
                 self.signoff.release(account, row['reference'])

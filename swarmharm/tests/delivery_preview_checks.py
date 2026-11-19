@@ -246,6 +246,18 @@ class DeliveryPreviewChecks(unittest.TestCase):
             outcomes.append((preview, release))
         self.assertEqual(*outcomes)
 
+    def test_showing_policy_check_counts_preserves_release_reference(self):
+        releases = []
+        for display in ('state', 'counts'):
+            flow = self.flow('control', {'completion_basis': 'contents', 'check_summary': display,
+                                        'access': {'report_upload': 'enabled'}})
+            revision = self.upload_reports(flow, 'a')
+            released = self.call(flow, 'a', 'release_delivery', revision=revision)
+            self.assertEqual(released['status'], 201)
+            self.assertEqual('policy_checks' in released['check'], display == 'counts')
+            releases.append(released['reference'])
+        self.assertEqual(*releases)
+
     def test_preview_feedback_changes_visibility_not_business_result(self):
         for feedback in ('itemized', 'status_only', 'evidence'):
             f = self.flow('trace', {'completion_basis': 'handoff',
