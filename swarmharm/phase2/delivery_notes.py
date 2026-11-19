@@ -74,15 +74,23 @@ def messages(shared, assignments):
     return result
 
 
-def audit(events, assignments):
+def audit(events, assignments, *, can_read=None):
     """Attribute exact reads and later writes without inferring their meaning."""
     authored, reads, replies, invalid = {}, [], [], []
     seen, unlinked, since_write = {}, [], {}
     for event in events:
         observed = {row['path']: row for key in ('full_body_output_matches', 'message_body_output_matches')
                     for row in event.get(key, []) if PATH.fullmatch(row.get('path', ''))}
+        candidates = authored.values()
+        if event.get('operation') == 'bash':
+            # The workstation matches message bodies against its mounted snapshot.
+            # An identical relay outside that snapshot cannot make a read ambiguous.
+            snapshot = event.get('workstation_execution', {}).get('snapshot_at')
+            candidates = [row for row in candidates
+                          if (not snapshot or not row['committed_at'] or row['committed_at'] <= snapshot)
+                          and (can_read is None or can_read(event['actor'], row['author']))]
         expected = {row['path']: row for rows in output_reads(
-            authored.values(), event['actor'], event.get('result', {})).values() for row in rows}
+            candidates, event['actor'], event.get('result', {})).values() for row in rows}
         if set(observed) != set(expected):
             invalid.append(event['id'])
         for row in observed.values():
@@ -130,7 +138,8 @@ def audit(events, assignments):
                     unlinked.append({'event': event['id'], 'author': row['author'],
                                      'path': path, 'prior_reads': deepcopy(eligible)})
             since_write.pop(row['author'], None)
-            authored[path] = {**deepcopy(row), 'event': event['id'], 'step': event.get('step')}
+            authored[path] = {**deepcopy(row), 'event': event['id'], 'step': event.get('step'),
+                              'committed_at': event.get('at')}
     participants = sorted({r['reader'] for r in reads} | {r['author'] for r in reads})
     first_exposures = {}
     for row in reads:

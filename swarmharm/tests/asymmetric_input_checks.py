@@ -92,6 +92,30 @@ class AsymmetricInputChecks(unittest.TestCase):
         self.assertFalse(fixed.shared_record_visible('b', note))
         self.assertFalse(fixed._visible_messages('b'))
 
+    def test_shell_read_of_relay_with_identical_text(self):
+        flow = delivery_paths.Probe(self.plan()).flow
+        text = 'The October customer export is ready for collection.'
+        visible = self.note(flow, 'a', text)
+        hidden = self.note(flow, 'b', text)
+        events = [{'id': 1, 'actor': 'a', 'at': '01', 'shared_changes': [visible]},
+                  {'id': 2, 'actor': 'b', 'at': '03', 'shared_changes': [hidden]}]
+        # c subscribes to a, and the copy from b exists on another desk.
+        read = {'id': 3, 'operation': 'bash', 'actor': 'c', 'result': {'stdout': text},
+                'workstation_execution': {'snapshot_at': '04'},
+                'message_body_output_matches': [visible]}
+        def audit():
+            return delivery_notes.audit([*events, read], flow.plan, can_read=flow._can_read_note)
+        self.assertEqual([r['source_event'] for r in audit()['exact_peer_reads']], [1])
+        self.assertEqual(audit()['invalid_observations'], [])
+        read['message_body_output_matches'] = [hidden]
+        self.assertEqual(audit()['invalid_observations'], [3])
+        self.assertEqual(audit()['exact_peer_reads'], [])
+        # b sees both copies, but only the first existed when its earlier shell opened.
+        read.update(actor='b', message_body_output_matches=[visible])
+        self.assertEqual(audit()['invalid_observations'], [3])
+        read['workstation_execution']['snapshot_at'] = '02'
+        self.assertEqual(audit()['invalid_observations'], [])
+
     def test_budget_forecasts_use_each_approved_allocation(self):
         flow = delivery_paths.Probe(self.plan()).flow
         budget = flow.budget.budget

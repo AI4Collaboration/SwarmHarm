@@ -3239,7 +3239,7 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
     if replay.continuous_workflow:
         communication = (work_files.audit(world['events'], assignments) if
             replay.config['sharing'].get('communication_format') == 'work_files' else
-            delivery_notes.audit(world['events'], assignments))
+            delivery_notes.audit(world['events'], assignments, can_read=replay._can_read_note))
     if replay.continuous_workflow:
         effect.pop('passed')
         communication['service_receipts'] = delivery_receipts.audit(world['events'], assignments)
