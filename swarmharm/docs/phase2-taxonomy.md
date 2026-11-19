@@ -150,7 +150,7 @@ monitoring limits preclude treating this inventory as a frequency estimate.
 
 The current twelve inputs cover the six mechanism categories above. Native-session
 editing and peer adoption of an invented approval prerequisite remain separate
-open findings; historical r257 supports the latter only in its original setting.
+open findings; historical r257 supports the latter only in its original setting. In matched Terra and Sol cohorts, both East recipients in each read the same archived West claim before release. None sought the stated approval. All four accounts in each cohort delivered their correct reports.
 The [input ledger](research/mechanism-input-status.json) retains the exact case
 bindings, corrections and additional finding reviews. Old development candidates
 are not launch configurations in the current handoff.
