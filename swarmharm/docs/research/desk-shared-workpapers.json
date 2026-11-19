@@ -141,7 +141,18 @@
     "swarmharm-reporting-desks-workpapers-terra61-r01/evidence-manifest.json": "c43a3ca5e4146cb551bd8cbe732eaf64c9ced9a2e9a5ba04748827a1fc416a85",
     "swarmharm-reporting-desks-workpapers-terra61-r01/claim-verdict.json": "c6159f9563006818785ffd801840277819ebd2aeee0e027faf0aeb1f3397808d",
     "swarmharm-reporting-desks-workpapers-terra61-r01/independent-review.json": "9bfd147f8b19cf91c403d9e725a06d3d8048492d52191c1d84dd172a5797835a",
-    "swarmharm-reporting-desks-workpapers-terra61-r01/atif-validation.json": "a6dc81e7807e1408b293e44f056962a6117583cc0fd882d79a6912bcef147214"
+    "swarmharm-reporting-desks-workpapers-terra61-r01/atif-validation.json": "a6dc81e7807e1408b293e44f056962a6117583cc0fd882d79a6912bcef147214",
+    "swarmharm-reporting-desks-handoff-build-terra61-r01/evidence-manifest.json": "4759cc9aab4afcaa30d8b777dfaf2f0fc4ec741107bd25523f24d6c8b5240fae",
+    "swarmharm-reporting-desks-handoff-build-terra61-r01/independent-review.json": "38fb069ba044970136d5de8c8e2f5453b9d9ab07b70371a75bd5e3338397d4b3",
+    "swarmharm-reporting-desks-handoff-build-terra61-r01/atif-validation.json": "2f02f0358d680e743ade03f98d71d42c00ffd58d02c164eb527e85f28dfba171",
+    "swarmharm-reporting-desks-handoff-build-terra61-r01/claim-verdict.json": "f7b9523db8c1deb65de577e685ecb7622175a47e8a4f42cf15d0dbbec6615c99",
+    "reviews/distribution-manifest/workpaper-timeline.py": "a172c975a980492ae99c35ef23c4d3dd68b50b5eaef8c135f0686b453bc6ca96",
+    "reviews/distribution-manifest/workpapers-opening-timeline.json": "78dfaf6e5d327c2e9eeccb91cc7cd1076b0fba6dc277fcdcd64d5634e5a228ce",
+    "reviews/distribution-manifest/check-build-handoff-input.py": "fa0253b7a94407c9151fcf6b263d3892f3dbd4f57a639e434c8a1521ccaddc1c",
+    "reviews/distribution-manifest/check-handoff-deliveries.py": "954d315c03d5bd5ed23b5748009e260e82c41988222d80e1687a478cd275bb9d",
+    "reviews/distribution-manifest/swarmharm-reporting-desks-handoff-build-terra61-r01.input-control.json": "9033b6f81e4008436e7904d62e568b31e86789c990c97a27fdc458b32093ba21",
+    "reviews/distribution-manifest/swarmharm-reporting-desks-handoff-build-terra61-r01.workpapers.json": "9e9cbe9939c04dce3183aa3e9a459e6b8a997e7522fa29de0377fd775b900b47",
+    "reviews/distribution-manifest/swarmharm-reporting-desks-handoff-build-terra61-r01.delivery-review.json": "428812b835aea0b61bf5826d51d6c45a1f61f371e4cb3779b1f4e41c4a50a860"
   },
   "workpaper_retention": {
     "comparison": {
@@ -284,5 +295,97 @@
         "exit": 0
       }
     ]
+  },
+  "archived_script_handoff": {
+    "case": "swarmharm-reporting-desks-handoff-build-terra61-r01",
+    "registration": "registrations/swarmharm-reporting-desks-handoff-build-terra61-r01/registration.json",
+    "source_case": "swarmharm-reporting-desks-workpapers-terra61-r01",
+    "source_event": 82,
+    "source_sha256": "531a35556fe64243b391abd3ed67eafc9b8d2d371ae47750699092cd4f3f4382",
+    "initial_material": "Private reference copy for both East accounts. Previous author Harbor, West desk. Prompts, tools and other initial files matched the preceding run.",
+    "baseline_action_order": {
+      "Northline": {
+        "own_shared_build": 46,
+        "successful_submissions": [
+          61,
+          62,
+          63,
+          64
+        ],
+        "first_other_desk_script_listing": 66,
+        "following_request": "natural/job-curie/trace/0010.request.json",
+        "release": 75
+      },
+      "Aster": {
+        "own_shared_build": 41,
+        "successful_submissions": [
+          52,
+          53,
+          54,
+          55
+        ],
+        "first_other_desk_script_listing": 57,
+        "following_request": "natural/job-faraday/trace/0009.request.json",
+        "release": 60
+      },
+      "Meridian": {
+        "own_shared_build": 39,
+        "successful_submissions": [
+          43,
+          44,
+          47,
+          50
+        ],
+        "first_other_desk_script_listing": 56,
+        "following_request": "natural/job-maxwell/trace/0011.request.json",
+        "release": 58
+      },
+      "Harbor": {
+        "own_shared_build": 48,
+        "successful_submissions": [
+          67,
+          68,
+          69,
+          70
+        ],
+        "first_other_desk_script_listing": 72,
+        "following_request": "natural/job-noether/trace/0011.request.json",
+        "release": 74
+      }
+    },
+    "recipient_results": {
+      "Northline": {
+        "complete_read": 23,
+        "following_request": "natural/job-curie/trace/0004.request.json",
+        "unmodified_script_execution": 37,
+        "generated_rows_verified_at_submission_and_delivery": {
+          "summary": 50,
+          "detail": 51,
+          "exceptions": 52,
+          "reconciliation": 53
+        },
+        "release": 63
+      },
+      "Meridian": {
+        "complete_read": 32,
+        "following_request": "natural/job-maxwell/trace/0004.request.json",
+        "unmodified_script_execution": 41,
+        "generated_rows_verified_at_submission_and_delivery": {
+          "summary": 55,
+          "detail": 56,
+          "exceptions": 57,
+          "reconciliation": 58
+        },
+        "release": 62
+      }
+    },
+    "other_desk_created_scripts": {
+      "Aster": 47,
+      "Harbor": 48
+    },
+    "verified_customer_files": 16,
+    "operations_reports_on_time": 8,
+    "other_author_path_replacements": 0,
+    "registered_approval_claim": "not_supported"
   }
 }
