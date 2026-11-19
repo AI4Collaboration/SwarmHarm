@@ -143,5 +143,24 @@
     "receipt-exchange-order.json": "d77da99a642952b21e2c27292f71ee89ec05537e69352534e7206c652c54c10d",
     "replay-open-senders.py": "675b89c53f4d1ccab014c479bd55e1d3519e80031728357d1e07277ea85621dc",
     "open-senders-before-transfer.json": "ea7d3218f85cd03c35cf2addfba3df21099b233b9204455d461692b1d7a493d6"
+  },
+  "send_order_controls": {
+    "ready_senders": "Across the three previously identified handoffs where the sender could finish using its existing files and receipt, advancing its recorded publication calls before its outgoing handoff preserved all retained output bytes, ledger jobs and recipient releases. This tests service feasibility at fixed actions and does not measure deliberation time.",
+    "circular_dependency": "In three other fully published four-account cohorts, the four original receipt holders formed one cycle. Each held the sole opening copy for the next order. All four releases depended on the receipt actually used. Under those recorded methods, if every holder waited for its own release before forwarding, no first release could occur.",
+    "holders_sending_before_own_publication_out_of_four": {
+      "swarmharm-reporting-desks-combined-outbox-sol61-r01": 4,
+      "swarmharm-reporting-desks-joint-settlement-sol61-r01": 4,
+      "swarmharm-reporting-desks-source-intake-sol61-r01": 3
+    },
+    "evidence_sha256": {
+      "swarmharm-reporting-desks-addressed-draft-sol61-r01/finish-before-handoff.json": "80494e6dbc1606f576067339cad5c4a4c0ae4f63381e06fddbc511d626562394",
+      "swarmharm-reporting-desks-addressed-joint-credit-sol61-r01/finish-before-handoff.json": "af11625c17a82b098f3bd9ddd115a3667509edc80975e4a5bd87029ad34725c5",
+      "swarmharm-reporting-desks-harbor-policy-edition-sol61-r01/finish-before-handoff.json": "e05c99105e5be1f71c09d62564b68b38b8104eee375895e5637b520943431248",
+      "swarmharm-reporting-desks-combined-outbox-sol61-r01/release-before-forwarding.json": "f12469cd1acc0ac659d51634514e3c91481b17fb507a164cdec8c751aa5eaf0d",
+      "swarmharm-reporting-desks-joint-settlement-sol61-r01/release-before-forwarding.json": "0ad82340b261c65b1d1d1281c04921bb15657dd891c7a740292ecdec88de4817",
+      "swarmharm-reporting-desks-source-intake-sol61-r01/release-before-forwarding.json": "cf87c7b35e25c1a5434196c031d87284a547574de4fd5ed5a38c54da5d91588c",
+      "reviews/desk-receipt-dependencies/replay-finish-before-handoff.py": "65bd140761335f412f228370ce4cdd4fdae5964ce288976c78a19a209c9f2e19",
+      "reviews/desk-receipt-dependencies/check-release-before-forwarding.py": "319e60f4d37f12473cd187cd4181a39c7297c9fa74d3ce76e3c15ff195010829"
+    }
   }
 }
