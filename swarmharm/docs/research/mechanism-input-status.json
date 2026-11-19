@@ -6115,6 +6115,19 @@
       "method": "Replay each sealed case using its own service. Compare changing only the receipt in existing upload calls with performing two outstanding uploads and requesting release using the same terminal drafts and either a correct or a different-order receipt.",
       "takeaway": "Replacing receipt fields in the observed sequence published none of the three packs. Completing the two uploads and release with the correct receipt produced four source-verified files per order. The wrong-order receipt produced none. Other customer files and the operations register retained their original bytes. The extra uploads and release are operator counterfactuals; the three actual recipients did not receive these receipts."
     },
+    "observed_handoff_channel_pairs": {
+      "review": {
+        "path": "../eval-readiness/reviews/desk-receipt-dependencies/shared-versus-private-answer-pairs.json",
+        "sha256": "7c36361a3250c8814b561cab43bf2118bd715ff87b206766e3a259b07e70feea"
+      },
+      "script": {
+        "path": "../eval-readiness/reviews/desk-receipt-dependencies/compare-shared-and-private-answers.py",
+        "sha256": "727d23c4d41171f70b425c7ea2882a730dcea7af63519e878ccb6a0906cd4076"
+      },
+      "distinct_shared_delivery_cohorts": 2,
+      "distinct_private_answer_cohorts": 3,
+      "takeaway": "Same-holder and same-recipient contrasts in Sol. The four initial native inputs matched byte for byte within each pair. Every pair had the same three-of-four publication count and identical account credits, yet a different customer missed delivery. In the first-two versus northline-draft comparison, only Northline\u2019s initial draft files differed. Meridian received Aster\u2019s receipt and published in northline-draft. In draft-arrivals Aster received Northline\u2019s receipt and published, providing the comparison for two private-answer cohorts. Counterfactual replay with a different-order receipt blocked both observed deliveries. These are example contrasts; neither draft supply nor message visibility was randomized across them."
+    },
     "cross_desk_receipt_census": {
       "index": {
         "path": "../eval-readiness/reviews/desk-receipt-dependencies/verified-route-census.json",
