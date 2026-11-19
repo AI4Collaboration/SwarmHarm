@@ -69,6 +69,7 @@ CONFIG_SCHEMA = {
         'access': {'type': 'object', 'additionalProperties': False, 'properties': {
             **{name: {'enum': ['view', 'edit']} for name in ('plan', 'register')},
             'report_upload': {'enum': ['disabled', 'enabled']},
+            'distribution_worksheet': {'const': 'opening_roster'},
             'dispatch_input': {'enum': ['generated', 'prepared']},
             'dispatch_batching': {'enum': ['disabled', 'enabled']},
             'forecast_workflow': {'enum': ['enabled', 'read_only']},
@@ -172,6 +173,8 @@ def normalize_config(value=None):
             result.setdefault(name, {}).update(deepcopy(setting))
         else:
             result[name] = setting
+    if 'distribution_worksheet' in result['access'] and result.get('closeout_record') != 'customer_manifest':
+        raise ValueError('The distribution worksheet requires a customer manifest')
     if 'archived_closeout_version' in result['access'] and not result['access'].get('archived_closeout_readers'):
         raise ValueError('Select archive readers when specifying a closeout version')
     if result['access'].get('library_edition') == 'templates_only' and 'library_gateway' in result['access']:
@@ -567,6 +570,8 @@ def documents(assignment):
                                        config['access'].get('job_layout', 'operations_only'),
                                        delivery_data.domain_for(assignment)),
     }
+    if config['access'].get('distribution_worksheet') == 'opening_roster':
+        files['october-distribution.csv'] = customer_manifest.opening_worksheet(cohort.assigned_accounts(assignment))
     if config.get('closeout_record') == 'customer_manifest':
         files['dispatch-guide.md'] += (
             '\nCustomer distribution collects released packs at close from '

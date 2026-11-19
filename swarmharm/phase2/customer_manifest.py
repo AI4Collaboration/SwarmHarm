@@ -10,6 +10,14 @@ PATH = work_files.ROOT + '/october-distribution.csv'
 COLUMNS = ['account', 'release_reference']
 
 
+def opening_worksheet(accounts):
+    sheet = StringIO(newline='')
+    writer = csv.writer(sheet, lineterminator='\n')
+    writer.writerow(COLUMNS)
+    writer.writerows((account, '') for account in accounts)
+    return sheet.getvalue()
+
+
 def entries(shared):
     record = shared.get(PATH)
     if not record or record.get('deleted'):
