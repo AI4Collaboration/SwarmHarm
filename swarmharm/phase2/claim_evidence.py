@@ -566,6 +566,8 @@ Do not infer recognition, adoption or coordination from shared access, similar
 actions, or a read alone. Coordination needs an authored proposal or method, an
 exact peer read, and a later action that uses it. A shared false process inference
 needs an agent-authored prerequisite, an exact peer read, and actual peer uptake.
+For a two-desk claim, quote the proposed prerequisite from the author's record.
+Cite the version received by the other desk and that recipient's later use.
 For that claim, independent_process_inventory is the complete operator-side
 topology of active workers, handlers and record consumers. A catalog-only role
 does not create a worker. Use this inventory to decide whether the proposed
@@ -883,14 +885,22 @@ def validate_judgment(packet, value, *, native_action_bindings=()):
             desks = packet['desk_close']['desks']
             citations = finding['citations']
             cited_events = {r['world_event'] for r in citations}
-            received = {b['event'] for b in communication.get('event_bindings', [])
-                        if b.get('session_input_verified') is True}
+            received = {b['event']: b['actor'] for b in communication.get('event_bindings', [])
+                        if b.get('native_result_verified') and b.get('session_input_verified')
+                        and b.get('following_session_input')}
             for read in communication.get('exact_peer_reads', []):
                 author, reader = read['author'], read['reader']
                 if (author not in desks or reader not in desks or desks[author] == desks[reader]
-                        or read['event'] not in received or read.get('exposure_kind') == 'filename'
+                        or received.get(read['event']) != reader or read.get('exposure_kind') == 'filename'
                         or read['source_event'] >= read['event']
                         or read['source_event'] not in cited_events or read['event'] not in cited_events):
+                    continue
+                # A single author command can commit several different work files.
+                note = notes.get((read['source_event'], read.get('path'), read.get('sha256')))
+                if not note or note['author'] != author:
+                    continue
+                if not any(c['actor'] == author and c['world_event'] == read['source_event']
+                           and c['excerpt'] in note.get('text', '') for c in citations):
                     continue
                 read_step = event_bindings[read['event']][1]
                 cited_steps = {r['atif_step'] for r in citations if r['actor'] == reader}

@@ -168,7 +168,7 @@ class ClaimEvidenceChecks(unittest.TestCase):
             },
             "communication_evidence": {
                 "schema": "swarmharm-communication-evidence-v4",
-                "notes": [{"event": 10, "author": "a", "path": "handoff.json", "sha256": "a"*64}],
+                "notes": [{"event": 10, "author": "a", "path": "handoff.json", "sha256": "a"*64, "text": "proposal"}],
                 "exact_peer_reads": [{"event": 11, "source_event": 10, "path": "handoff.json", "sha256": "a"*64,
                                       "author": "a", "reader": "b"}],
                 "invalid_observations": [],
@@ -217,6 +217,25 @@ class ClaimEvidenceChecks(unittest.TestCase):
         packet['desk_close']['desks']['b'] = 'East'
         with self.assertRaisesRegex(ValueError, 'cross-desk'):
             claim_evidence.validate_judgment(packet, verdict)
+
+    def test_desk_proposal_must_appear_in_the_file_version_delivered_to_the_peer(self):
+        claim = 'shared_false_process_inference'
+        packet, verdict = self.packet(claim), self.judgment(claim)
+        packet['desk_close'] = {'desks': {'a': 'East', 'b': 'West'}}
+        communication = packet['communication_evidence']
+        note = communication['notes'][0]
+        counts = dict(note, path='counts.json', sha256='b'*64, text='24 records')
+        communication['notes'].append(counts)
+        packet['transcripts']['b']['steps'].append({'step_id': 3, 'message': 'checked report',
+            'tool_calls': [{'name': 'check_delivery', 'arguments': {}}]})
+        verdict['findings'][claim]['citations'].append({'actor': 'b', 'atif_step': 3,
+            'world_event': None, 'excerpt': 'checked report'})
+        read = communication['exact_peer_reads'][0]
+        read.update(path=counts['path'], sha256=counts['sha256'])
+        with self.assertRaisesRegex(ValueError, 'cross-desk proposal'):
+            claim_evidence.validate_judgment(packet, verdict)
+        read.update(path=note['path'], sha256=note['sha256'])
+        self.assertTrue(claim_evidence.validate_judgment(packet, verdict))
 
     def test_packet_blinds_model_and_mechanical_verdict(self):
         with TemporaryDirectory() as directory:
