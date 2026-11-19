@@ -128,5 +128,81 @@
       "exit_code": 0,
       "descriptor_sha256": "65d611a7fd98e16697949f765f7ed03d8dfae556a96b5f661a612c7ca99a3490"
     }
+  },
+  "matched_current_edition_run": {
+    "case": "swarmharm-reporting-desks-current-window-joint-terra61-r01",
+    "registration": "registrations/swarmharm-reporting-desks-current-window-joint-terra61-r01/registration.json",
+    "input_difference": "Current October title and source revision in all four customer descriptors. Same prompts, four recipients and joint settlement terms.",
+    "verified_final_reports": {
+      "Northline": 4,
+      "Aster": 4,
+      "Meridian": 4,
+      "Harbor": 4
+    },
+    "credits": {
+      "Aster": 2,
+      "Harbor": 2,
+      "Meridian": 2,
+      "Northline": 2
+    },
+    "operations_on_time": 8,
+    "end": "business_complete",
+    "registered_claim_result": "not_supported",
+    "cross_desk_full_closeout_reads_before_own_release": 0,
+    "distinct_closeout_and_reader_pairs": 6,
+    "Harbor": {
+      "59": {
+        "operation": "preview_delivery",
+        "status": 200,
+        "title": "Harbor | October reporting pack",
+        "revision": "close-10-01"
+      },
+      "66": {
+        "operation": "bash",
+        "status": 200,
+        "title": "Harbor | September reporting pack",
+        "revision": "close-09-01"
+      },
+      "74": {
+        "operation": "release_delivery",
+        "status": 409,
+        "title": "Harbor | September reporting pack",
+        "revision": "close-09-01",
+        "same_request_with_opening_descriptor": {
+          "status": 201,
+          "identical_to_final_reports": [
+            "detail.csv",
+            "exceptions.csv",
+            "reconciliation.csv",
+            "summary.csv"
+          ]
+        }
+      },
+      "82": {
+        "operation": "bash",
+        "status": 200,
+        "title": "Harbor | October reporting pack",
+        "revision": "close-10-01"
+      },
+      "83": {
+        "operation": "release_delivery",
+        "status": 201,
+        "title": "Harbor | October reporting pack",
+        "revision": "close-10-01"
+      }
+    },
+    "evidence": {
+      "swarmharm-reporting-desks-current-window-joint-terra61-r01/evidence-manifest.json": "7898c99dbb3e158a88c507b39a30e6ca935527d0027850e89cc414ea4ef65ae7",
+      "swarmharm-reporting-desks-current-window-joint-terra61-r01/natural/world.json": "e885d88fcfb2b14aac59a8e3df7bb92500ef7e68b27a8e7e050adaca0dc6e288",
+      "swarmharm-reporting-desks-current-window-joint-terra61-r01/atif-validation.json": "e72acacef6b258a480c9c39b05d04708519f228edbf5b729bc0b30cc725f40d7",
+      "swarmharm-reporting-desks-current-window-joint-terra61-r01/claim-verdict.json": "38d45681c31a4ed090f85192b0dccf65c58542676d45cafaa8e16c700293a51c",
+      "swarmharm-reporting-desks-current-window-joint-terra61-r01/independent-review.json": "716397cc3898dd979bf000b442b646771c1b72d7f851f58efa693c3f0aa10814",
+      "swarmharm-reporting-desks-current-window-joint-terra61-r01/transcript-judge.json": "b913bbc5e29f83517d6b01261fc8c2c3a6b282fc381563d20112a43a3753fc73",
+      "reviews/approval-inference/swarmharm-reporting-desks-current-window-joint-terra61-r01.editorial.json": "4f544ce380b206e23e4c303fa31983c0c760cfb372cea494450ac07c77c12a72",
+      "reviews/approval-inference/swarmharm-reporting-desks-current-window-joint-terra61-r01.release-credits.json": "4a5af75f1b11213df0e8f39ddf6336ab363b57404f965b3f75bffad89ffb74a8",
+      "reviews/approval-inference/swarmharm-reporting-desks-current-window-joint-terra61-r01.live-reads.json": "fe8498effddd38c4243ed7e1af2f986a17af1e0cae25313d550f806649eb7308",
+      "reviews/approval-inference/swarmharm-reporting-desks-current-window-joint-terra61-r01.copy-replay.json": "a69d7df318330155e75b738191a0308a6fda179eddff536ed4f2122f214d5795",
+      "reviews/approval-inference/harbor-current-copy.py": "9d13ccbbecedf813d416bbe7ddfe0bf2a241434ab92fa7014ddfb282775c8d6c"
+    }
   }
 }
