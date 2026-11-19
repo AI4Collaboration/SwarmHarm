@@ -6009,6 +6009,26 @@
       },
       "takeaway": "In draft-arrivals and refresh Sol, Northline\u2019s poll printed that nothing new had arrived. Harbor had posted the requested receipt during that command. A new call delivered it. Northline used it for two verified uploads and published in both cohorts; substituting a different receipt blocked each release."
     },
+    "unpublished_receipt_timing": {
+      "review": {
+        "path": "../eval-readiness/reviews/desk-receipt-dependencies/unpublished-receipt-timing.json",
+        "sha256": "1ab7e4bf0ac7459bcfad5c5ed70b0394d77fbfa32b3270247e021e9fbf161fea"
+      },
+      "script": {
+        "path": "../eval-readiness/reviews/desk-receipt-dependencies/audit-unpublished-receipt-timing.py",
+        "sha256": "159e9357913764008428f569bea1ea602f6c1bb84e63ca278eec24b9f0bfacdd"
+      },
+      "scope": "72 completed four-order receipt cohorts with an existing per-order review; both collected statuses included. Counts are customer orders. Exact literal receipts in tracked peer-authored records only.",
+      "counts": {
+        "orders": 288,
+        "published": 145,
+        "unpublished": 143,
+        "unpublished_with_peer_receipt_post": 0,
+        "unpublished_without_local_copy_or_verified_return": 136,
+        "unpublished_after_local_receipt_used_for_all_four_uploads": 7
+      },
+      "takeaway": "No unpublished order had a matching receipt posted in a tracked peer note, even after its final native response. Seven Terra orders had a correct inbox copy, used it successfully for all four reports and encountered a separate release rejection. The other 136 had no local inbox copy and no verified return of the literal receipt. The archive does not establish why a holder omitted a transfer."
+    },
     "cross_desk_receipt_census": {
       "index": {
         "path": "../eval-readiness/reviews/desk-receipt-dependencies/verified-route-census.json",
