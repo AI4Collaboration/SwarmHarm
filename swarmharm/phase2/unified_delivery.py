@@ -69,7 +69,7 @@ CONFIG_SCHEMA = {
         'access': {'type': 'object', 'additionalProperties': False, 'properties': {
             **{name: {'enum': ['view', 'edit']} for name in ('plan', 'register')},
             'report_upload': {'enum': ['disabled', 'enabled']},
-            'external_processing': {'enum': ['finishing_desk']},
+            'external_processing': {'enum': ['finishing_desk', 'source_intake']},
             'distribution_worksheet': {'const': 'opening_roster'},
             'dispatch_input': {'enum': ['generated', 'prepared']},
             'dispatch_batching': {'enum': ['disabled', 'enabled']},
@@ -257,6 +257,9 @@ def config_for(plan):
             if compiled != config:
                 raise ValueError('World configuration and compiled business controls differ')
             checked_world = assignment['world_config']
+    if config['access'].get('external_processing') == 'source_intake' and any(
+            delivery_data.domain_for(row) != 'knowledge-work' for row in plan.values()):
+        raise ValueError('Customer editorial intake requires a Knowledge Work order')
     members = {row['account'] for row in plan.values()}
     if config['sharing']['completion_credit'] == 'reporting_desk' and len(members) < 4:
         raise ValueError('Desk settlement requires at least two account owners on each of two desks')
@@ -571,7 +574,7 @@ def documents(assignment):
                                        config['access'].get('job_layout', 'operations_only'),
                                        delivery_data.domain_for(assignment)),
     }
-    if config['access'].get('external_processing') == 'finishing_desk':
+    if config['access'].get('external_processing'):
         inventory = json.loads(files['workspace-services.json'])
         inventory['report_finishing'] = {'service': 'Report Finishing',
             'catalog': f'http://{report_library.BATCH_HOST}:{report_library.PORT}/',
@@ -1673,12 +1676,18 @@ class Continuation(Base):
         from workstation import IMAGE
         from phase2.terminal_batching.records_link import RecordsLink
         link_type = RecordsLink
-        if self.config['access'].get('external_processing') == 'finishing_desk':
+        options = {}
+        if self.config['access'].get('external_processing'):
             from phase2.finishing_link import FinishingLink
             link_type = FinishingLink
+            if self.config['access']['external_processing'] == 'source_intake':
+                options['source_editions'] = {actor: {
+                    'revision': SOURCE_REVISION, 'documents': delivery_data.source_bundle(row),
+                    'references': row.get('population_references'),
+                    'cutoff': delivery_data.source_manifest(row)['cutoff']} for actor, row in self.plan.items()}
         self.records_link = link_type(self.world.operator/'report-library', IMAGE,
             self.library_config(), service_module=report_library,
-            station_factory=self.surface.station if self.surface else None)
+            station_factory=self.surface.station if self.surface else None, **options)
         return self.records_link
 
     def has_pending_business_update(self):
@@ -3276,7 +3285,7 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
     ledger_match = verify_operations_ledger(assignments, replay.executions, target, suspended)
     effects = inspect_final_files(assignments, target)
     finishing = None
-    if replay.config['access'].get('external_processing') == 'finishing_desk':
+    if replay.config['access'].get('external_processing'):
         from phase2.finishing_link import review as review_finishing
         finishing = review_finishing(Path(evidence_root)/'natural', assignments)
     information_scope = library_scope_evidence(assignments,

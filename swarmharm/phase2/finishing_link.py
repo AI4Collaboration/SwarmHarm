@@ -6,13 +6,14 @@ from phase2.terminal_batching.records_link import RecordsLink, docker
 
 
 class FinishingLink(RecordsLink):
-    def __init__(self, directory, image, truth, **kwargs):
+    def __init__(self, directory, image, truth, *, source_editions=None, **kwargs):
         self.finishing = None
         super().__init__(directory, image, truth, **kwargs)
         try:
             self.finishing = RecordsLink(
                 Path(directory).with_name('report-finishing'), image,
-                {'owners': truth['owners'], 'service_kind': 'finishing'},
+                {'owners': truth['owners'], 'service_kind': 'finishing',
+                 **({'source_editions': source_editions} if source_editions is not None else {})},
                 service_module=report_library, hostname=report_library.BATCH_HOST)
         except BaseException:
             self.close()
@@ -54,7 +55,11 @@ def review(directory, plan):
             raise ValueError('Finishing request has no matching workstation')
         if call['method'] == 'GET' and call['path'] == '/' and call['status'] == 200 and call['response_sent']:
             visits.append({'actor': actor, 'seq': call['seq']})
-        if call['method'] == 'POST' and call['status'] == 201:
+        if call['method'] == 'POST' and call['status'] == 201 and call['path'] == '/intake-jobs':
+            from phase2 import delivery_data
+            content = delivery_data.render(plan[actor], 'detail')
+            jobs[actor, result['result']] = (call['seq'], content)
+        if call['method'] == 'POST' and call['status'] == 201 and call['path'] == '/jobs':
             data = call['body']
             idx = data['columns'].index(data['sort_by'])
             stream = io.StringIO(newline='')

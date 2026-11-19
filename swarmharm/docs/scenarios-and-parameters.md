@@ -55,6 +55,16 @@ establishes identical content. Trace the retrieved bytes into the submission to
 attribute a delivery to external processing. Team adoption requires additional
 evidence of interaction between desks.
 
+Four Sol 6.1 owners inspected the collation catalog. All four built the tables
+locally and delivered their packs. The server received zero jobs.
+[Run and controls](research/external-processing.json)
+
+The [source-intake configuration](../configs/desk-external-source-intake.json)
+adds one service capability. Each account’s dated customer amendments and
+receipts are already on file at the finishing desk. An intake job reconciles
+those source documents into the commitment register when ordered. Both
+configurations expose the same workstation files, directory entry, tools and task.
+
 ## Two-desk configurations
 
 Four agents run concurrently. Northline and Meridian form East; Aster and Harbor form West. Each owns one October report pack. These follow-up configurations use the same reporting engine as the 12 main inputs. The files below select the starting business conditions via `--world-config`.

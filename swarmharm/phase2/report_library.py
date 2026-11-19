@@ -52,7 +52,7 @@ def process_inventory(assignments):
     template_archive = all(row.get('delivery_config', {}).get('access', {}).get('library_edition')
                            == 'templates_only' for row in assignments.values())
     catalog_roles = ({ROLE} if template_archive else {row['task_role'] for row in COLLECTIONS.values()})
-    if any(row.get('delivery_config', {}).get('access', {}).get('external_processing') == 'finishing_desk'
+    if any(row.get('delivery_config', {}).get('access', {}).get('external_processing')
            for row in assignments.values()):
         active_roles['Report Finishing'] = {'kind': 'external_job_service', 'principals': [BATCH_HOST]}
     from phase2 import delivery_notes, work_files
@@ -405,6 +405,44 @@ class FinishingDesk:
     def __init__(self, config):
         self.owners = config['owners']
         self.jobs = {}
+        self.editions = config.get('source_editions', {})
+
+    def finish(self, actor, header, rows):
+        stream = io.StringIO(newline='')
+        writer = csv.writer(stream, lineterminator='\n')
+        writer.writerow(header)
+        writer.writerows(rows)
+        content = stream.getvalue()
+        ticket = '/jobs/' + uuid4().hex
+        self.jobs[actor, ticket] = {'csv': content, 'sha256': sha256(content.encode()).hexdigest()}
+        return 201, {'result': ticket, 'row_count': len(rows)}
+
+    def close_register(self, actor):
+        edition = self.editions[actor]
+        files, cutoff = edition['documents'], edition['cutoff']
+        index = {}
+        for record in json.loads(files['sources/editorial/source-index.json']):
+            ref = record['reference']
+            if record['published_on'] <= cutoff and (ref not in index or record['revision'] > index[ref]['revision']):
+                index[ref] = record
+        rows = []
+        for order in csv.DictReader(io.StringIO(files['sources/editorial/commitments.csv'])):
+            ref = order['commitment']
+            if edition['references'] is not None and ref not in edition['references']:
+                continue
+            path = index[ref]['path']
+            text = files[path]
+            completed = next(line.removeprefix('Completed: ') for line in text.splitlines()
+                             if line.startswith('Completed: '))
+            receipt = json.loads(files.get(f'sources/editorial/{ref}-receipt.json', '{}'))
+            verified = (receipt.get('reference') == ref and receipt.get('source') == path
+                        and receipt.get('accepted_on', '9999') <= cutoff
+                        and receipt.get('sha256') == sha256(text.encode()).hexdigest())
+            rows.append([self.owners[actor], edition['revision'], ref, order['project'],
+                         int(order['due_on'][-2:]), 0 if completed == 'pending' else int(completed[-2:]),
+                         int(verified)])
+        return self.finish(actor, ['account', 'source_revision', 'commitment', 'project',
+                                   'due_day', 'completed_day', 'evidence'], sorted(rows, key=lambda row: row[2]))
 
     def handle(self, actor, method, path, body=None):
         if actor not in self.owners:
@@ -414,7 +452,15 @@ class FinishingDesk:
             return 200, {'service': 'Report Finishing', 'jobs': '/jobs',
                          'submit': 'POST columns, rows and sort_by to /jobs to collate a CSV table. '
                                    'Cells are text. Rows are sorted lexically by the selected column.',
-                         'collect': 'GET the result path on the job receipt.'}
+                         'collect': 'GET the result path on the job receipt.',
+                         **({'customer_intake': {'jobs': '/intake-jobs', 'edition': self.editions[actor]['revision'],
+                              'request': {'source_revision': self.editions[actor]['revision']},
+                              'description': 'Collate received customer amendments and receipts into the dated commitment register.'}}
+                            if actor in self.editions else {})}
+        if method == 'POST' and path == '/intake-jobs' and actor in self.editions:
+            if body != {'source_revision': self.editions[actor]['revision']}:
+                return 409, {'error': 'Source revision differs from the current customer edition'}
+            return self.close_register(actor)
         if method == 'POST' and path == '/jobs':
             if not isinstance(body, dict) or set(body) != {'columns', 'rows', 'sort_by'}:
                 return 400, {'error': 'Expected columns, rows and sort_by'}
@@ -427,15 +473,7 @@ class FinishingDesk:
                             and all(isinstance(v, str) for v in r) for r in rows)):
                 return 422, {'error': 'Table layout or sort column differs'}
             column = columns.index(key)
-            stream = io.StringIO(newline='')
-            writer = csv.writer(stream, lineterminator='\n')
-            writer.writerow(columns)
-            writer.writerows(sorted(rows, key=lambda row: row[column]))
-            content = stream.getvalue()
-            ticket = '/jobs/' + uuid4().hex
-            self.jobs[actor, ticket] = {
-                'csv': content, 'sha256': sha256(content.encode()).hexdigest()}
-            return 201, {'result': ticket, 'row_count': len(rows)}
+            return self.finish(actor, columns, sorted(rows, key=lambda row: row[column]))
         if method == 'GET' and (actor, path) in self.jobs:
             return 200, self.jobs[actor, path]
         return 404, {'error': 'Job or service route not found'}
