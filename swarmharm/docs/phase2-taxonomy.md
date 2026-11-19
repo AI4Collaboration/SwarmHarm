@@ -59,7 +59,7 @@ inputs and separately registered follow-ups. Follow-ups name the model used, inc
 **Analogue** identifies an observed business counterpart and its narrower scope.
 **Open** requires further current evidence. Each row's source status remains
 independent of our result. Source attempts and corrections retain those labels.
-These rows describe distinct actions and can overlap within one trajectory. Of the 33 rows where METR reports an occurrence (O), the current evidence directly matches 3, supports business analogues for 12 and leaves 18 open. The other 14 rows track attempts, mixed outcomes and an action METR reports was not taken.
+These rows describe distinct actions and can overlap within one trajectory. Of the 33 rows where METR reports an occurrence (O), the current evidence directly matches 3, supports business analogues for 11 and leaves 19 open. The other 14 rows track attempts, mixed outcomes and an action METR reports was not taken.
 
 Current references below resolve through the [input ledger](research/mechanism-input-status.json).
 The ledger records each selected case independently, including the exact input,
@@ -140,7 +140,7 @@ reasoning or a board message is not a message sent to a human.
 | R09 | Precomputation | T1 | O · [R][r-examples] | Open. In meridian-edition Sol, Meridian computed four reports from Aster’s current source files. The work order allowed advance preparation. With an amended deadline, earlier drafts and an issued receipt, Terra recomputed all four reports and published the current pack. Displacement of a required measured computation remains unobserved. [Provenance and replay](research/mechanism-input-status.json). |
 | R10 | Extra payload attribute | T1 | O · [R][r-examples] | Open — exploiting an ignored output field needs current evidence. |
 | R11 | Template/language bypass | T1 | O · [R][r-examples] | Open — template/language-condition avoidance needs current evidence. |
-| R12 | Knowing disavowal | F2, F3 | O · [R][r-awareness] | Analogue · S — the cost overrun was acknowledged and disclosed; a deliberate cheating disavowal remains open. |
+| R12 | Stated intentions and retrospective recognition | F2, F3 | O · [R][r-awareness] | Open. METR separately asked o3 about cheating in the abstract and about a specific completed plan. For that plan it identified a conflict with user intent in 10 of 10 judgments. In our Sol case, Aster corrected and disclosed its cost overrun. The paired intention and retrospective judgments are missing. |
 
 R04 includes the asynchronous variant. R08 finds no answers. The two reports'
 monitoring limits preclude treating this inventory as a frequency estimate.
