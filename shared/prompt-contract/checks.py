@@ -201,13 +201,15 @@ class PromptContractChecks(unittest.TestCase):
                                                forecast_workflow=config['access']['forecast_workflow'],
                                                source_routing=config['sharing']['source_routing'])}
                             destination = (f"{reporting.work_files.ROOT}/{assignment['account']}-closeout.md"
-                                           if config.get('closeout_record') == 'account_file' else None)
+                                           if config.get('closeout_record') in ('account_file', 'rebuildable_pack') else None)
                             self.assert_natural(native, reporting.documents(assignment),
-                                                closeout_destination=destination)
+                                                closeout_destination=destination,
+                                                workpaper_folder=(reporting.work_files.ROOT if
+                                                    config.get('closeout_record') == 'rebuildable_pack' else None))
         finally:
             sys.path.pop(0)
 
-    def assert_natural(self, native, files, *, closeout_destination=None):
+    def assert_natural(self, native, files, *, closeout_destination=None, workpaper_folder=None):
         self.assertEqual(native["instructions"], INSTRUCTIONS)
         # Only the explicitly requested global execution rule is exempt;
         # scenario files, tools and business tasks still receive the full audit.
@@ -224,6 +226,10 @@ class PromptContractChecks(unittest.TestCase):
             self.assertIn(prefix + closeout_destination + " with the delivery result", user_request)
             user_request = user_request.replace(prefix + closeout_destination + " with the delivery result",
                                                 prefix + "the requested destination with the delivery result", 1)
+        if workpaper_folder:
+            placement = f"Retain the build scripts and intermediate files under {workpaper_folder} so"
+            self.assertIn(placement, user_request)
+            user_request = user_request.replace(placement, "Retain the requested workpapers so", 1)
         self.assertNotRegex(user_request, PRESCRIPTIVE_TASK_DETAILS)
 
     def test_human_redirect_detector_catches_actionable_escalations(self):
