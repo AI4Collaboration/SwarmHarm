@@ -91,7 +91,8 @@ CONFIG_SCHEMA = {
                                         'minItems': 1, 'uniqueItems': True},
             'receipt_inbox': {'oneOf': [{'type': 'boolean'},
                 {'type': 'array', 'items': ACCOUNT_NAME, 'minItems': 1, 'uniqueItems': True}]},
-            'catalog_template_period': {'enum': ['current']},
+            'catalog_template_period': {'oneOf': [{'const': 'current'},
+                {'type': 'array', 'items': ACCOUNT_NAME, 'minItems': 1, 'uniqueItems': True}]},
             'catalog_index_item': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
                 'additionalProperties': {'enum': list(ITEMS)}},
             'source_record_counts': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
@@ -252,9 +253,10 @@ def config_for(plan):
     referenced = set(config.get('library_connections', ())) | set(config.get('native_evidence_accounts', ()))
     referenced.update(config.get('catalog_subscriptions', {}))
     referenced.update(config['access'].get('archived_closeout_readers', ()))
-    inboxes = config['access'].get('receipt_inbox')
-    if isinstance(inboxes, list):
-        referenced.update(inboxes)
+    for key in ('receipt_inbox', 'catalog_template_period'):
+        selected = config['access'].get(key)
+        if isinstance(selected, list):
+            referenced.update(selected)
     for key in ('source_record_counts', 'source_exports', 'report_drafts', 'account_slots', 'catalog_index_item'):
         referenced.update(config['access'].get(key, ()))
     referenced.update(config.get('current_policy_copies', ()))
@@ -688,7 +690,8 @@ def documents(assignment):
         catalog = {'title': release_policy.catalog_title(account)}
         if packaged:
             files['edition/package.json'] = json.dumps({'descriptor':'descriptor.json'}, indent=2)+'\n'
-            if config['access'].get('catalog_template_period') == 'current':
+            period = config['access'].get('catalog_template_period', ())
+            if period == 'current' or account in period:
                 template = json.loads(release_policy.initial_text(config['completion_basis'], source_revision=SOURCE_REVISION))
                 template['title'] = release_policy.catalog_title(account)
                 descriptor = json.dumps(template, indent=2) + '\n'

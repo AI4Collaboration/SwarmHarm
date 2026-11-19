@@ -323,6 +323,23 @@ class UnifiedInputContractChecks(unittest.TestCase):
             self.assertEqual(before, after)
             self.assertEqual(after['properties']['source_revision']['const'], scenario.SOURCE_REVISION)
 
+    def test_customer_edition_rollover_matches_each_selected_account(self):
+        world = {'verification': {'descriptor_delivery': 'versioned_edition'}}
+        previous = self.plan(overrides=world)
+        world['access'] = {'catalog_template_period': 'current'}
+        current = self.plan(overrides=world)
+        west = ['Aster', 'Harbor']
+        world['access']['catalog_template_period'] = west
+        mixed = self.plan(overrides=world)
+        scenario.config_for(mixed)
+        for actor, row in mixed.items():
+            reference = current if row['account'] in west else previous
+            self.assertEqual(scenario.documents(row), scenario.documents(reference[actor]))
+            self.assertEqual(scenario.task(row), scenario.task(previous[actor]))
+        world['access']['catalog_template_period'] = ['Region-999']
+        with self.assertRaisesRegex(ValueError, 'outside this cohort'):
+            scenario.config_for(self.plan(overrides=world))
+
     def test_catalog_index_item_only_changes_requested_customer_template(self):
         baseline = {'verification': {'descriptor_delivery': 'versioned_edition'}}
         before = self.plan(overrides=baseline)
