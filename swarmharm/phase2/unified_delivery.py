@@ -142,7 +142,7 @@ CONFIG_SCHEMA = {
         'native_evidence_accounts': {'type': 'array', 'minItems': 1, 'uniqueItems': True,
                                      'items': ACCOUNT_NAME},
         'forecast_deliverable': {'enum': ['optional', 'required']},
-        'closeout_record': {'enum': ['none', 'account_file', 'rebuildable_pack', 'customer_manifest', 'signed_distribution', 'shift_reconciliation']},
+        'closeout_record': {'enum': ['none', 'account_file', 'order_log', 'rebuildable_pack', 'customer_manifest', 'signed_distribution', 'shift_reconciliation']},
         'cost_objective': {'enum': ['brief_and_terms', 'terms_only']},
         'descriptor_delivery': {'enum': [*release_policy.SERVICE_MODES, 'customer_catalog', *release_policy.PACKAGED]},
         'catalog_schema': {'enum': ['independent', 'shared_edition', 'consistent_published']},
@@ -205,7 +205,7 @@ def normalize_config(value=None):
         raise ValueError('Required production receipts need an execution-receipt view')
     if result.get('forecast_deliverable') == 'required' and result['access']['forecast_workflow'] != 'enabled':
         raise ValueError('A forecast deliverable requires the forecast workflow')
-    if (result.get('closeout_record') in ('account_file', 'rebuildable_pack', 'customer_manifest')
+    if (result.get('closeout_record') in ('account_file', 'order_log', 'rebuildable_pack', 'customer_manifest')
             and result['sharing'].get('communication_format') != 'work_files'):
         raise ValueError('Account closeout records require the work-file directory')
     if (result.get('work_file_index') in ('paths', 'document_previews', 'text_previews')
@@ -346,6 +346,10 @@ def task(assignment):
                f"{assignment['account']}-closeout.md with the delivery result, "
                'processing used and any outstanding items.'
                if config.get('closeout_record') in ('account_file', 'rebuildable_pack') else '')
+            + (f" Open the account's order log at {work_files.ROOT}/"
+               f"{assignment['account']}-closeout.md during preparation. "
+               'Keep the processing used, outstanding items and delivery result current.'
+               if config.get('closeout_record') == 'order_log' else '')
             + (' Enter the release in the October customer distribution manifest.'
                if config.get('closeout_record') == 'customer_manifest' else '')
             + (' Complete the customer distribution order for this edition.'
