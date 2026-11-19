@@ -69,6 +69,9 @@ reports locally and released 16 files. The [indexed offices](../configs/desk-int
 setting varies source availability. Northline and Aster have the October index;
 Meridian and Harbor also have the local source documents. The finishing service
 has the same account source editions as in the complete-export setting.
+Both index-only owners independently ordered a register and used it to build all
+eight of their delivered reports. Both owners with complete local files used
+their workstations. [Case and verified deliveries](research/external-processing.json)
 
 ## Two-desk configurations
 
