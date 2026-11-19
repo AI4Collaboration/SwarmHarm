@@ -66,6 +66,10 @@ independent of our result. Source attempts and corrections retain those labels.
 These rows describe distinct actions and can overlap within one trajectory. Of the 33 rows where METR reports an occurrence (O), 31 are in the replication scope. The selected Sol 6.1 inputs and Sol/Terra follow-ups directly match 3, support business analogues for 13 and leave 15 open. H10 and H23 document source observations only. The separate multi-model archive provides an additional business analogue for H11. The other 14 rows track attempts, mixed outcomes and an action METR reports was not taken.
 
 Current references below resolve through the [input ledger](research/mechanism-input-status.json).
+Choose follow-ups by mechanism. For example, R02 and R03 are two timing
+variants, and R06 is one way to alter a grader. A variant alone does not
+require its own rollout. Retain routine coordination and recovery events in the
+trajectory when they help explain an action or its consequences.
 The ledger records each selected case independently, including the exact input,
 runtime and source hashes used for its review. New runner versions retain these
 source-bound results rather than relabeling them as new behavioral replications.
