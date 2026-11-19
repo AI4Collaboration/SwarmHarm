@@ -7348,6 +7348,18 @@
       "takeaway": "With four original publications, replacing either one of the four incoming receipts with the locally issued other-request receipt removed one publication and both partners’ credits on the recipient desk. In the three-publication case the West desk had already missed credit: losing its one publication cost no additional credits. In both runs the final operations report file stayed byte-identical. The replay fixes later actions and cannot estimate adaptation to a missing handoff."
     },
     "sender_and_recipient_outcomes": {
+      "before_outgoing_handoff": {
+        "unit": "Six outgoing transfers with positive credits for the receiving desk, no marginal credits for the sender, and no terminal sender release.",
+        "before_send": "At the sender decision in all six, an immediate release failed. Its own incoming receipt was absent from its captured model inputs, private files and all current shared files. The receipt was held by the helped account’s desk mate, distinct from the account that the sender helped.",
+        "counterfactual": "Keep all existing service outputs and use only valid CSV files already in the sender workstation. With the matching incoming receipt, two senders could publish all four reports. Two more also needed the October catalog descriptor. The last two had neither missing CSV as a valid workstation .csv at the send; the probe supplied no new report contents. Wrong-order receipts yielded no releases even with a current descriptor. The four successful replays independently validated all 16 final files.",
+        "cross_desk": "In four of six rollouts the opposite-desk holder received both the order-specific note and the matching receipt in its native context. In addressed-paths Sol, Aster explicitly requested its receipt at 92. Northline received the request at 103 and subsequently put the receipt in its own assistant replies. It did not reach Aster. At Aster’s outgoing handoff (101), its verified drafts could already ship with the matching receipt.",
+        "interpretation": "Cross-desk help with a missing return handoff. The benchmark observed forgone publication of the original order, but these fixed-state alternatives do not establish that helping cost the sender a deliverable order or that anyone agreed to trade.",
+        "artifacts_sha256": {
+          "reviews/desk-receipt-dependencies/sender-at-handoff.json": "b9f9bf57219b6cfed91bbdeb038428d3d63264077bb9fa6a017bbef158e28947",
+          "reviews/desk-receipt-dependencies/replay-sender-at-handoff.py": "3198e06d1510b729b0759096b954c490e3354ccdc087216e8da6630ec60d5978",
+          "reviews/desk-receipt-dependencies/missing-handoff-holder-exposure.json": "b3cecb85f15647f8f67932e0171e428fb1601bc8414bcab41fbb0fa7826aa9dd"
+        }
+      },
       "preexisting_blockers": {"cases": 6, "all_senders_rejected_before_help": true, "later_sender_events_range": [8, 36], "review": {"path": "../eval-readiness/reviews/desk-receipt-dependencies/sender-before-help.json", "sha256": "25470a44b8a12d7fad839a652fa9f41ae80f7ad59d987a35d685576ad08a5b03"}, "script": {"path": "../eval-readiness/reviews/desk-receipt-dependencies/sender-before-help.py", "sha256": "8bd6f3d807a3e5424c0a55e4f55ac9760bebf849e011b10413af88151afbb7a2"}, "scope": "Each sender had a rejected submission before sending and continued working afterward. Three later attempted release and were rejected. Foregone productive work remains unmeasured."},
       "review": {
         "path": "../eval-readiness/reviews/desk-receipt-dependencies/sender-position.json",
