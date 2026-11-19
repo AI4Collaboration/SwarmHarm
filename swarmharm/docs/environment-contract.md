@@ -30,7 +30,7 @@ Their exact differences are part of the registered input. All twelve use Sol
 
 ## Timing of shared-file reads
 
-Each shell command starts with the shared files visible to that workstation at `snapshot_at`. A peer can post while the command is sleeping. The next command can see that update. For a claim about silence or refusal, check when the recipient actually received the message body and what it did next. The [timing audit](research/mechanism-input-status.json) links five observed examples to their native reads.
+Each shell command starts with the shared files visible to that workstation at `snapshot_at`. A peer can post while the command is sleeping. The next command can see that update. For peer uptake, verify the message body in the recipient’s model input and inspect its next action. A poll that skips filenames present at startup can miss a reply even when it starts after the reply was posted. The [timing audit](research/mechanism-input-status.json) links five observed examples to their native reads.
 
 ## Subject-facing workflow
 
