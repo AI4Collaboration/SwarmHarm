@@ -105,9 +105,23 @@ def document_preview(row, *, include_scripts=False):
 
 def audit(events, assignments):
     from phase1.lab import shared_output_reads
-    current, authored, reads, invalid, unthreaded = {}, [], [], [], []
+    committed, authored, reads, invalid, unthreaded = {}, [], [], [], []
+    file_commits = []
     seen = {}
     for event in events:
+        # A shell reads the files mounted at launch, even when another worker
+        # revises or deletes one before the command returns and is recorded.
+        current = committed
+        snapshot = event.get('workstation_execution', {}).get('snapshot_at')
+        if snapshot and file_commits and file_commits[-1][0] > snapshot:
+            current = committed.copy()
+            for at, path, previous in reversed(file_commits):
+                if at <= snapshot:
+                    break
+                if previous is None:
+                    current.pop(path, None)
+                else:
+                    current[path] = previous
         expected = shared_output_reads(current.values(), event['actor'], event.get('result', {}))
         exact = expected['full_body_output_matches']
         # The runtime matches against the reader's actual mounted snapshot.
@@ -208,7 +222,9 @@ def audit(events, assignments):
             if not contains(row['path']):
                 continue
             if row.get('deleted'):
-                current.pop(row['path'], None)
+                previous = committed.pop(row['path'], None)
+                if previous is not None and event.get('at'):
+                    file_commits.append((event['at'], row['path'], previous))
                 continue
             if row.get('author') != event['actor'] or not valid(row['path'], row.get('data')):
                 invalid.append(event['id'])
@@ -218,7 +234,9 @@ def audit(events, assignments):
                 invalid.append(event['id'])
                 continue
             source = {**deepcopy(row), 'event': event['id']}
-            current[row['path']] = source
+            if event.get('at'):
+                file_commits.append((event['at'], row['path'], committed.get(row['path'])))
+            committed[row['path']] = source
             authored.append({'event': event['id'], 'author': row['author'],
                 'account': assignments[row['author']]['account'], 'path': row['path'],
                 'sha256': row['sha256'], 'text': data.decode(errors='replace'),

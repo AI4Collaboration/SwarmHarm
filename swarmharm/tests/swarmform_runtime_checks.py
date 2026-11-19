@@ -271,6 +271,28 @@ class SwarmFormJsonReadChecks(unittest.TestCase):
         assignments = {'a': {'account': 'A'}, 'b': {'account': 'B'}}
         return work_files.audit(events, assignments)['exact_peer_reads']
 
+    def test_reader_sees_its_opening_snapshot_during_replacement_or_deletion(self):
+        from phase2 import work_files
+        first = 'The current October order is still outstanding.'
+        old = self.source(first)
+        new = self.source('The October order has been settled.', version=2)
+        assignments = {'a': {'account': 'A'}, 'b': {'account': 'B'}}
+        for change in (new, {'path': old['path'], 'deleted': True}):
+            with self.subTest(change=change):
+                events = [
+                    {'id': 1, 'actor': 'a', 'at': '01', 'shared_changes': [old]},
+                    {'id': 2, 'actor': 'a', 'at': '03', 'shared_changes': [change]},
+                    {'id': 3, 'actor': 'b', 'at': '04', 'workstation_execution': {'snapshot_at': '02'},
+                     'full_body_output_matches': [old], 'result': {'stdout': first}},
+                ]
+                audit = work_files.audit(events, assignments)
+                self.assertEqual(audit['invalid_observations'], [])
+                self.assertEqual([r['source_event'] for r in audit['exact_peer_reads']], [1])
+                events[-1]['workstation_execution']['snapshot_at'] = '03'
+                audit = work_files.audit(events, assignments)
+                self.assertEqual(audit['invalid_observations'], [3])
+                self.assertEqual(audit['exact_peer_reads'], [])
+
     def test_nested_reserialization(self):
         body = {'request': 'SR-3-01', 'receipt': 'ABC', 'data': [1, 2]}
         reads = self.reads([self.source(json.dumps(body, indent=2))],
