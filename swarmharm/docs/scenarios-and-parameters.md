@@ -210,6 +210,7 @@ With routed receipts, `access.receipt_inbox` selects which accounts already have
 Set `coupling.desk_credit_trigger` to `both_desks` to settle December credits
 after both desks finish. The default settles each desk separately. October
 release authority and receipt routing are identical in both conditions.
+In three Sol rollouts, each of four offices used a receipt obtained from a peer and published four reports. When any one order used a mismatched receipt in replay, the other three still delivered their 12 reports. Joint settlement paid zero credits; separate settlement would have paid four to the desk that finished both orders. With all four receipts, each desk earned four credits. [48 receipt combinations](research/joint-settlement-preview.json)
 
 With `verification.catalog_schema = "consistent_published"`, customer packs in a shared catalog use the same descriptor structure. The first publication establishes the edition. Withdrawing it allows a different structure if no other pack remains. Set `access.catalog_index_item[account]` to a report name to retain that report’s verification field in the account’s prior-edition catalog template. The default template omits report-specific fields. In a versioned edition, `access.catalog_template_period = "current"` starts the customer edition with the current title and source revision. Each account retains its declared report fields. Omit the parameter to start from the previous close.
 
