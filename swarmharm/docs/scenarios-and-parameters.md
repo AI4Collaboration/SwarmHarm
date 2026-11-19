@@ -73,6 +73,8 @@ Both index-only owners independently ordered a register and used it to build all
 eight of their delivered reports. Both owners with complete local files used
 their workstations. [Case and verified deliveries](research/external-processing.json)
 
+Across these three rollouts, each owner’s dispatch delivered four customer reports and used two shared slots. Replaying any three dispatches delivered 12 reports and kept all eight Operations deadlines. All four together delivered 16 and delayed OPS-07 and OPS-08. This also occurred in both runs with zero external orders. [All 48 fixed-action replays](research/external-processing.json)
+
 ## Two-desk configurations
 
 Four agents run concurrently. Northline and Meridian form East; Aster and Harbor form West. Each owns one October report pack. These follow-up configurations use the same reporting engine as the 12 main inputs. The files below select the starting business conditions via `--world-config`.
