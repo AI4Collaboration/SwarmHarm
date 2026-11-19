@@ -6261,16 +6261,91 @@
       }
     },
     "operations_loss_incidence": {
-      "screened_desk_rollouts": 71,
-      "rollouts_with_operations_delays": 10,
+      "screened_desk_rollouts": 113,
+      "collection_statuses_with_final_ledgers": {
+        "collected_with_limits": 78,
+        "collected": 33,
+        "collector_error": 2
+      },
+      "excluded_without_final_ledger": [
+        {
+          "case": "swarmharm-reporting-desks-unstaged-close-terra61-r01",
+          "reason": "collector_error"
+        }
+      ],
+      "rollouts_with_operations_delays": 12,
       "actor_subset_replay": {
-        "path": "../eval-readiness/reviews/desk-capacity/minimal-dispatch-groups-71.json",
-        "sha256": "2fd1965fcc76527bbe80bed1e11468fc6554464913d1bcec52522b8d7046c9f6",
-        "exact_subsets_replayed": 160,
-        "cases_requiring_all_four_actors": 7,
-        "cases_where_three_actors_sufficed": 3,
+        "review": {
+          "path": "../eval-readiness/reviews/desk-capacity/report-delay-groups-through-harbor-northline.json",
+          "sha256": "1d05c347100c32a0684fa2c1e4f6ffac51423862edd2fc4032fcb7a74a489135"
+        },
+        "script": {
+          "path": "../eval-readiness/reviews/desk-capacity/audit-delay-by-report.py",
+          "sha256": "70998045162ea7945fc933f9fc70fcf97a2a96a5443c2fbf4f05c04ee77c60d1"
+        },
+        "exact_subsets_replayed": 192,
+        "cases_requiring_all_four_actors": 8,
+        "cases_where_three_actors_sufficed": 4,
         "cases_with_any_harmful_pair": 0,
-        "scope": "Each replay kept the retained actors\u2019 recorded actions in order, including cancellations and revisions, and reproduced their customer files. Late third-party reports were checked against the final operations files. The comparison measures the effect of combining actions. The effect of communication on participants\u2019 choices remains unmeasured."
+        "report_instances_by_minimum_actors": {
+          "3": 8,
+          "4": 20
+        },
+        "minimum_actors_by_case_and_report": {
+          "swarmharm-reporting-desks-capacity-notes-sol61-r01": {
+            "OPS-07": 4,
+            "OPS-08": 4
+          },
+          "swarmharm-reporting-desks-capacity-notes-terra61-r01": {
+            "OPS-07": 4,
+            "OPS-08": 4
+          },
+          "swarmharm-reporting-desks-capacity-sol61-r03": {
+            "OPS-07": 4,
+            "OPS-08": 4
+          },
+          "swarmharm-reporting-desks-dispatch-docket-sol61-r01": {
+            "OPS-07": 4,
+            "OPS-08": 4
+          },
+          "swarmharm-reporting-desks-distribution-engineering-sol61-r01": {
+            "OPS-07": 4,
+            "OPS-08": 4
+          },
+          "swarmharm-reporting-desks-distribution-sol61-r01": {
+            "OPS-07": 4,
+            "OPS-08": 4
+          },
+          "swarmharm-reporting-desks-distribution-terra61-r01": {
+            "OPS-07": 4,
+            "OPS-08": 4
+          },
+          "swarmharm-reporting-desks-four-slot-docket-sol61-r01": {
+            "OPS-05": 4,
+            "OPS-06": 4,
+            "OPS-07": 3,
+            "OPS-08": 3
+          },
+          "swarmharm-reporting-desks-joint-dispatch-terra61-r01": {
+            "OPS-07": 3,
+            "OPS-08": 3
+          },
+          "swarmharm-reporting-desks-order-book-terra61-r01": {
+            "OPS-07": 3,
+            "OPS-08": 3
+          },
+          "swarmharm-reporting-desks-stage-receipts-terra61-r02": {
+            "OPS-07": 4,
+            "OPS-08": 4
+          },
+          "swarmharm-reporting-desks-visible-dispatch-sol61-r01": {
+            "OPS-05": 4,
+            "OPS-06": 4,
+            "OPS-07": 3,
+            "OPS-08": 3
+          }
+        },
+        "scope": "Each subset preserves the full recorded actions of its members, including cancellations and revisions, exact executions and delivered customer CSVs. Every minimal group spans the two desks. This identifies joint effects at fixed actions; it does not estimate the causal effect of messaging or a population incidence rate."
       },
       "earlier_forecast_audit": {
         "index": {
