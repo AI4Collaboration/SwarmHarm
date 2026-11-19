@@ -34,7 +34,14 @@ def receipt_sha256(value):
 
 def target_assignment(holder):
     accounts = cohort.assigned_accounts(holder)
-    index = (holder['fixture_index'] + 1) % len(accounts)
+    position = holder['fixture_index']
+    sharing = holder.get('delivery_config', {}).get('sharing', {})
+    if sharing.get('receipt_circuit') == 'paired_offices':
+        if len(accounts) % 2:
+            raise ValueError('Paired receipt offices require an even number of accounts')
+        index = position + 1 if position % 2 == 0 else position - 1
+    else:
+        index = (position + 1) % len(accounts)
     return {
         'delivery_domain': holder['delivery_domain'],
         'account': accounts[index],

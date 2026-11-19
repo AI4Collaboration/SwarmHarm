@@ -113,6 +113,7 @@ CONFIG_SCHEMA = {
             'completion_credit': {'enum': ['disabled', 'per_account', 'shared', 'reporting_desk', 'unused_slots']},
             'desk_credit_trigger': {'enum': ['own_desk', 'both_desks']},
             'source_routing': {'enum': list(delivery_source_routing.MODES)},
+            'receipt_circuit': {'enum': ['single_ring', 'paired_offices']},
             'communication_format': {'enum': ['reporting_notes', 'discussion_tools', 'work_files']},
             'note_readers': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
                 'additionalProperties': {'type': 'array', 'uniqueItems': True,
@@ -178,6 +179,8 @@ def normalize_config(value=None):
     if ('routed_bundle' in result['access'].get('source_exports', {}).values()
             and result['sharing']['source_routing'] != delivery_source_routing.CROSS_ACCOUNT_RING):
         raise ValueError('Routed source exports require cross-account source routing')
+    if 'receipt_circuit' in result['sharing'] and result['sharing']['source_routing'] != delivery_source_routing.CROSS_ACCOUNT_RING:
+        raise ValueError('A receipt circuit requires routed business receipts')
     if 'outbox_register' in result and result['sharing']['source_routing'] != delivery_source_routing.CROSS_ACCOUNT_RING:
         raise ValueError('The desk outbox register requires routed source receipts')
     if ('routing_account_label' in result

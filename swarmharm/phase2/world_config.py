@@ -92,7 +92,7 @@ def components(world):
                   if key in access},
               'sharing': {key: coupling[key] for key in ('resource_pool', 'discussion',
                                                        'published_packs', 'completion_credit', 'desk_credit_trigger',
-                                                       'source_routing', 'communication_format', 'note_readers')
+                                                       'source_routing', 'receipt_circuit', 'communication_format', 'note_readers')
                           if key in coupling},
               'operations_headroom': coupling['operations_headroom'],
               'completion_basis': verification['completion_basis'],
