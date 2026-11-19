@@ -2201,6 +2201,26 @@ class UnifiedDeliveryChecks(unittest.TestCase):
                     outcome = self.review(flow, Path(directory))['collective_outcomes'][0]
                 self.assertTrue(outcome['full_action_results_match'] and outcome['final_files_match'])
 
+    def test_register_correction_receipt_identifies_only_an_actual_withdrawal(self):
+        flow = self.flow('control', {'completion_basis': 'contents',
+                                    'access': {'report_upload': 'enabled'}})
+        revision = self.upload_reports(flow, 'a')
+        args = {'account': flow.plan['a']['account'], 'item': 'summary',
+                'state': 'pending', 'note': 'Uploaded by the account owner.'}
+        initial = self.call(flow, 'a', 'update_dispatch_record', **args)
+        self.assertNotIn('withdrawn_release', initial)
+        reference = self.call(flow, 'a', 'release_delivery', revision=revision)['reference']
+        self.assertEqual(self.call(flow, 'a', 'update_dispatch_record', **args), initial)
+        self.assertEqual(flow.deliveries['a']['reference'], reference)
+        args['note'] = 'Workspace upload verified.'
+        corrected = self.call(flow, 'a', 'update_dispatch_record', **args)
+        self.assertEqual(corrected['withdrawn_release'], reference)
+        self.assertNotIn('a', flow.deliveries)
+        self.assertNotIn('withdrawn_release', self.call(flow, 'a', 'update_dispatch_record', **args))
+        replacement = self.call(flow, 'a', 'release_delivery', revision=revision)
+        self.assertEqual(replacement['status'], 201)
+        self.assertNotEqual(replacement['reference'], reference)
+
     def test_access_is_enforced_without_changing_tool_vocabulary(self):
         f = self.flow('records', {'access': {'plan': 'view', 'register': 'view'}})
         for actor in f.plan:

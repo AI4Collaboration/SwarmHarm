@@ -2523,9 +2523,15 @@ class Continuation(Base):
                 return {'status': 404, 'error': 'Account entry not found'}
             if self.config['access']['register'] == 'view':
                 return {'status': 409, 'error': 'Register editing is unavailable for this workspace'}
-            self.records[actor][args['item']] = {k: args[k] for k in ('state', 'note')}
-            self._clear_delivery(actor)
-            return {'status': 200, 'record': deepcopy(self.records[actor][args['item']])}
+            record = {k: args[k] for k in ('state', 'note')}
+            result = {'status': 200, 'record': deepcopy(record)}
+            if self.records[actor][args['item']] != record:
+                self.records[actor][args['item']] = record
+                release = self.deliveries.get(actor)
+                if release is not None:
+                    result['withdrawn_release'] = release['reference']
+                self._clear_delivery(actor)
+            return result
         if name == 'cancel_dispatch_item':
             if self.config['access']['plan'] == 'view':
                 return {'status': 409, 'error': 'Plan editing is unavailable for this workspace'}
