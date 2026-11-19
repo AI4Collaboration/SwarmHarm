@@ -26,14 +26,17 @@ def output_reads(records, actor, result):
     return shared_output_reads(records, actor, result, message_origins=('bash', TOOL_ORIGIN))
 
 
-def document(account):
-    return json.dumps({'directory': ROOT, 'storage': 'append-only JSON records',
+def document(account, *, readers=None):
+    record = {'directory': ROOT, 'storage': 'append-only JSON records',
         'record_schema': {'type': 'object', 'additionalProperties': False,
             'required': ['record_type', 'account', 'text'], 'properties': {
                 'record_type': {'const': 'reporting_note'}, 'account': {'const': account},
                 'text': {'type': 'string', 'minLength': 1},
                 'responds_to': {'type': ['string', 'null'],
-                                'description': 'Path of an earlier reporting note.'}}}}, indent=2)+'\n'
+                                'description': 'Path of an earlier reporting note.'}}}}
+    if readers is not None:
+        record['circulation'] = sorted({account, *readers})
+    return json.dumps(record, indent=2)+'\n'
 
 
 def decode(data):

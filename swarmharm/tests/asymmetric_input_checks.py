@@ -56,6 +56,18 @@ class AsymmetricInputChecks(unittest.TestCase):
         self.assertEqual([row['normal_release'] for row in fixed['actors'].values()],
                          [False, True, True, True])
 
+    def test_document_circulation_matches_runtime_readers(self):
+        for discussion in ('shared', 'per_account'):
+            plan = self.plan()
+            for row in plan.values():
+                row['delivery_config']['sharing']['discussion'] = discussion
+                row['world_config']['coupling']['discussion'] = discussion
+            flow = delivery_paths.Probe(plan).flow
+            for author, row in plan.items():
+                manifest = json.loads(s.documents(row)['reporting-records.json'])
+                self.assertEqual(manifest['circulation'], sorted(other['account']
+                    for reader, other in plan.items() if flow._can_read_note(reader, author)))
+
     def test_note_content_and_notifications_follow_the_same_subscriptions(self):
         flow = delivery_paths.Probe(self.plan()).flow
         before = {actor: flow.activity_signal(actor) for actor in flow.plan}

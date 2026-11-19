@@ -758,7 +758,11 @@ def documents(assignment):
             'The reporting service holds dispatch plans, execution records and released packs. '
             'The reporting register is mounted under /registry/reporting; '
             'reporting-records.json describes its record layout.\n')
-        files['reporting-records.json'] = delivery_notes.document(account)
+        subscriptions = config['sharing'].get('note_readers')
+        readers = None if subscriptions is None else subscriptions.get(account, [])
+        if config['sharing']['discussion'] != 'shared' and subscriptions is not None:
+            readers = []
+        files['reporting-records.json'] = delivery_notes.document(account, readers=readers)
         if config['sharing'].get('communication_format') == 'work_files':
             files.pop('reporting-records.json')
             files['PLATFORM.md'] = ('# Reporting workstation\n\n'
