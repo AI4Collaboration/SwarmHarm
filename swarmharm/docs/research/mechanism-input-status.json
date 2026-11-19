@@ -7348,6 +7348,21 @@
       "takeaway": "With four original publications, replacing either one of the four incoming receipts with the locally issued other-request receipt removed one publication and both partners’ credits on the recipient desk. In the three-publication case the West desk had already missed credit: losing its one publication cost no additional credits. In both runs the final operations report file stayed byte-identical. The replay fixes later actions and cannot estimate adaptation to a missing handoff."
     },
     "sender_and_recipient_outcomes": {
+      "prior_recipient_requests": {
+        "sample": "42 successful cross-desk receipt transfers in 14 Sol 6.1 rollouts. Classification uses the destination owner’s authored records in the sender’s native input before the transfer. The strongest direct cue wins.",
+        "before_transfer": {
+          "explicit_request_for_own_receipt": 9,
+          "reported_missing_or_required_receipt": 14,
+          "no_prior_record_from_destination_owner": 19
+        },
+        "interpretation": "Third-party records may also have been seen. This is a census of successful handoffs only.",
+        "linked_reply": "In addressed-draft Sol, Harbor requested its receipt at 92. Meridian read it at 97 and replied to the same path at 100. Harbor read the transfer at 112, uploaded at 115 and published at 126.",
+        "artifacts_sha256": {
+          "reviews/desk-receipt-dependencies/classify-receipt-requests.py": "200385229b2a64d565349be7d9d04324905f51e7fcd73881af4c9dddbc09fd7f",
+          "reviews/desk-receipt-dependencies/receipt-request-semantics.json": "fe6b1268bc8db18a62e0a815d50685b3d8fbdf5c8a29474c143fc89ef0a8b19d",
+          "reviews/desk-receipt-dependencies/peer-records-before-successful-handoffs.json": "30be0e5747e0cee1c4d2e243d7fb5ca09f5db76993f2179dd3e9485c26eb3729"
+        }
+      },
       "receipt_exchange_order": {
         "sample": "42 verified outgoing transfers leading to publication in 14 Sol 6.1 cohorts from the original 40-cohort census. All 42 senders lacked their own receipt at opening.",
         "timing": "In 33 sends no tool output supplied to the sender through its sending decision contained its own receipt. Of these, 23 subsequently used a peer receipt to publish; 10 had no verified incoming receipt-to-publication sequence. Nine sent after already reading their own receipt from another account.",
