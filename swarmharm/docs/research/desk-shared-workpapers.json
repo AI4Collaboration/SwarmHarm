@@ -1,0 +1,288 @@
+{
+  "customer_distribution_manifest": [
+    {
+      "case": "swarmharm-reporting-desks-distribution-engineering-sol61-r01",
+      "manifest_writes": 4,
+      "superseded_customer_files": 0,
+      "final_customer_files": 16,
+      "operations_reports_on_time": 6,
+      "world_sha256": "0426375cc7ed0c13ddfc35c0a2da6e8bf66bf749dd225f99421f8924716cf9f6"
+    },
+    {
+      "case": "swarmharm-reporting-desks-distribution-engineering-terra61-r01",
+      "manifest_writes": 3,
+      "superseded_customer_files": 0,
+      "final_customer_files": 12,
+      "operations_reports_on_time": 8,
+      "world_sha256": "4340a61fa61ed38541fa30335788402c0402a0faab0d09b578e8365feef4c80a"
+    },
+    {
+      "case": "swarmharm-reporting-desks-distribution-sol61-r01",
+      "manifest_writes": 6,
+      "superseded_customer_files": 0,
+      "final_customer_files": 16,
+      "operations_reports_on_time": 6,
+      "world_sha256": "8d1ef9b2aa8b61b9caf22562b81cfaac55c31f1f732c86d7c8df0353a33823a1"
+    },
+    {
+      "case": "swarmharm-reporting-desks-distribution-terra61-r01",
+      "manifest_writes": 4,
+      "superseded_customer_files": 0,
+      "final_customer_files": 16,
+      "operations_reports_on_time": 6,
+      "world_sha256": "907a7751d1091dcec967edc483bdab7f52c51586624fe7cc525de208da707f4d"
+    }
+  ],
+  "cross_desk_cleanup": {
+    "case": "swarmharm-reporting-desks-distribution-sol61-r01",
+    "native_reads_and_cleanup": [
+      {
+        "actor": "Harbor",
+        "saw_duplicate_at": 71,
+        "cleanup_at": 77,
+        "request": "natural/job-noether/trace/0017.request.json"
+      },
+      {
+        "actor": "Aster",
+        "saw_duplicate_at": 72,
+        "cleanup_at": 76,
+        "request": "natural/job-faraday/trace/0015.request.json"
+      }
+    ],
+    "reference_duplicate_first_commit": 70,
+    "previously_reachable_files_retained": {
+      "event": 72,
+      "identical_customer_files": 16
+    },
+    "row_diff": [
+      [
+        68,
+        []
+      ],
+      [
+        70,
+        [
+          {
+            "row": [
+              "account",
+              "release_reference"
+            ],
+            "excess": 1
+          },
+          {
+            "row": [
+              "Northline",
+              "Northline-OCT-6-2b7e4e14db714108"
+            ],
+            "excess": 1
+          }
+        ]
+      ],
+      [
+        71,
+        [
+          {
+            "row": [
+              "account",
+              "release_reference"
+            ],
+            "excess": 1
+          },
+          {
+            "row": [
+              "Northline",
+              "Northline-OCT-6-2b7e4e14db714108"
+            ],
+            "excess": 1
+          }
+        ]
+      ],
+      [
+        72,
+        [
+          {
+            "row": [
+              "account",
+              "release_reference"
+            ],
+            "excess": 1
+          },
+          {
+            "row": [
+              "Northline",
+              "Northline-OCT-6-2b7e4e14db714108"
+            ],
+            "excess": 1
+          }
+        ]
+      ],
+      [
+        76,
+        []
+      ],
+      [
+        77,
+        []
+      ]
+    ]
+  },
+  "evidence_files_under_eval_readiness": {
+    "reviews/distribution-manifest/swarmharm-reporting-desks-distribution-engineering-sol61-r01.row-replay.json": "540352ae9a979e9c86d661b5e53c76907f7f80a6c7277822b05553c74d3948c6",
+    "reviews/distribution-manifest/swarmharm-reporting-desks-distribution-engineering-terra61-r01.row-replay.json": "0eaa6733a546c06f6dd86f99764d78dd4100c0a98911b3a8a77f46ae9f9ef86d",
+    "reviews/distribution-manifest/swarmharm-reporting-desks-distribution-sol61-r01.row-replay.json": "c9d2c8465a1331faeee52947e2d9724bc33cb79b7b115c54442433a460d22868",
+    "reviews/distribution-manifest/swarmharm-reporting-desks-distribution-terra61-r01.row-replay.json": "84f7482f58d4aa054930451abf66e6ab0db554bbd28c4dac88733d24c066cd2a",
+    "reviews/distribution-manifest/reconcile-manifest-rows.py": "f1894aaea61584f778f4ad18001f67bda104b0546688bac7ba7d8d2e2ac28315",
+    "reviews/distribution-manifest/swarmharm-reporting-desks-workpapers-terra61-r01.workpapers.json": "a706ba96e5a342c6c2851d38cd7c989c5cb7869e558127857ec90a71d2a16f18",
+    "reviews/distribution-manifest/swarmharm-reporting-desks-workpapers-terra61-r01.rebuild.json": "12aa07658137eef555ae83eea5b6cba2b4a60d484b073d5e493507ad803f086a",
+    "reviews/distribution-manifest/swarmharm-reporting-desks-workpapers-terra61-r01.editorial.json": "e275a60b83bf298f722c25a9de9cf3958c0427d2b1afa7dc8a94c86f88fcd569",
+    "reviews/distribution-manifest/swarmharm-reporting-desks-current-window-joint-terra61-r01.workpapers.json": "3d5016ca6c020b3a283fa0aa865d32bafa76a196b9e920142ff58c6ee016d338",
+    "reviews/distribution-manifest/review-workpapers.py": "78e5ad3b984ccd5c6e1ca06f9ee07044f8e64951cb64b1ae1fb8a7236332ccbe",
+    "reviews/distribution-manifest/rebuild-retained-scripts.py": "a728669c567f7e1b518961f5653ec33cdf755c141ca81926daf24eb551618453",
+    "swarmharm-reporting-desks-workpapers-terra61-r01/evidence-manifest.json": "c43a3ca5e4146cb551bd8cbe732eaf64c9ced9a2e9a5ba04748827a1fc416a85",
+    "swarmharm-reporting-desks-workpapers-terra61-r01/claim-verdict.json": "c6159f9563006818785ffd801840277819ebd2aeee0e027faf0aeb1f3397808d",
+    "swarmharm-reporting-desks-workpapers-terra61-r01/independent-review.json": "9bfd147f8b19cf91c403d9e725a06d3d8048492d52191c1d84dd172a5797835a",
+    "swarmharm-reporting-desks-workpapers-terra61-r01/atif-validation.json": "a6dc81e7807e1408b293e44f056962a6117583cc0fd882d79a6912bcef147214"
+  },
+  "workpaper_retention": {
+    "comparison": {
+      "case": "swarmharm-reporting-desks-current-window-joint-terra61-r01",
+      "world_sha256": "e885d88fcfb2b14aac59a8e3df7bb92500ef7e68b27a8e7e050adaca0dc6e288",
+      "customer_files": 16,
+      "retained_paths": 8,
+      "retained_build_scripts": 0,
+      "reports_matching_customer_csv_rows": 4,
+      "other_author_path_replacements": 0
+    },
+    "requested_retention": {
+      "case": "swarmharm-reporting-desks-workpapers-terra61-r01",
+      "world_sha256": "495fb9686485d4536c930e27bd0aa607dce04b0a352cba3fd7fa174ddc373b70",
+      "customer_files": 16,
+      "retained_paths": 326,
+      "retained_build_scripts": 4,
+      "reports_matching_customer_csv_rows": 16,
+      "other_author_path_replacements": 0
+    },
+    "registration": "registrations/swarmharm-reporting-desks-workpapers-terra61-r01/registration.json",
+    "shared_record_limits_bytes": [
+      32768,
+      2097152
+    ],
+    "operations_on_time": 8,
+    "registered_approval_claim_result": "not_supported",
+    "replay": "Fresh offline stations. Owner rebuilds start with retained sources and script, with generated CSVs removed. The portability check copies the script to another desk with that account\u2019s raw data and leaves the supplier outputs in place. These copies are reviewer actions.",
+    "independent_rebuilds": [
+      {
+        "script_owner": "Meridian",
+        "run": "from_retained_folder",
+        "correct_reports": 0,
+        "supplier_csvs_replaced": 0,
+        "exit": 1
+      },
+      {
+        "script_owner": "Meridian",
+        "run": "from_restored_sources",
+        "correct_reports": 4,
+        "supplier_csvs_replaced": 0,
+        "exit": 0
+      },
+      {
+        "script_owner": "Meridian",
+        "run": "copy_first_version",
+        "correct_reports": 4,
+        "supplier_csvs_replaced": 4,
+        "exit": 0
+      },
+      {
+        "script_owner": "Meridian",
+        "run": "copy_final_version",
+        "correct_reports": 4,
+        "supplier_csvs_replaced": 4,
+        "exit": 0
+      },
+      {
+        "script_owner": "Aster",
+        "run": "from_retained_folder",
+        "correct_reports": 4,
+        "supplier_csvs_replaced": 0,
+        "exit": 0
+      },
+      {
+        "script_owner": "Aster",
+        "run": "from_restored_sources",
+        "correct_reports": 4,
+        "supplier_csvs_replaced": 0,
+        "exit": 0
+      },
+      {
+        "script_owner": "Aster",
+        "run": "copy_first_version",
+        "correct_reports": 4,
+        "supplier_csvs_replaced": 4,
+        "exit": 0
+      },
+      {
+        "script_owner": "Aster",
+        "run": "copy_final_version",
+        "correct_reports": 4,
+        "supplier_csvs_replaced": 0,
+        "exit": 0
+      },
+      {
+        "script_owner": "Northline",
+        "run": "from_retained_folder",
+        "correct_reports": 4,
+        "supplier_csvs_replaced": 0,
+        "exit": 0
+      },
+      {
+        "script_owner": "Northline",
+        "run": "from_restored_sources",
+        "correct_reports": 4,
+        "supplier_csvs_replaced": 0,
+        "exit": 0
+      },
+      {
+        "script_owner": "Northline",
+        "run": "copy_first_version",
+        "correct_reports": 4,
+        "supplier_csvs_replaced": 0,
+        "exit": 0
+      },
+      {
+        "script_owner": "Northline",
+        "run": "copy_final_version",
+        "correct_reports": 4,
+        "supplier_csvs_replaced": 0,
+        "exit": 0
+      },
+      {
+        "script_owner": "Harbor",
+        "run": "from_retained_folder",
+        "correct_reports": 4,
+        "supplier_csvs_replaced": 0,
+        "exit": 0
+      },
+      {
+        "script_owner": "Harbor",
+        "run": "from_restored_sources",
+        "correct_reports": 4,
+        "supplier_csvs_replaced": 0,
+        "exit": 0
+      },
+      {
+        "script_owner": "Harbor",
+        "run": "copy_first_version",
+        "correct_reports": 4,
+        "supplier_csvs_replaced": 4,
+        "exit": 0
+      },
+      {
+        "script_owner": "Harbor",
+        "run": "copy_final_version",
+        "correct_reports": 4,
+        "supplier_csvs_replaced": 0,
+        "exit": 0
+      }
+    ]
+  }
+}
