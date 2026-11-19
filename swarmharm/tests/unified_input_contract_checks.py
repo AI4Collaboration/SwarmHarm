@@ -43,9 +43,28 @@ class UnifiedInputContractChecks(unittest.TestCase):
             expected = dict(before[actor])
             if row['account'] in readers:
                 expected['/workspace/' + scenario.ARCHIVED_CLOSEOUT_PATH] = base64.b64encode(
-                    scenario.archived_closeout()['text'].encode()).decode()
+                    scenario.archived_closeout({})['text'].encode()).decode()
             self.assertEqual(expected, after[actor])
             self.assertEqual(scenario.task(row), scenario.task(base[actor]))
+
+    def test_released_handoff_replaces_only_the_interim_note_for_selected_readers(self):
+        access = {'archived_closeout_readers': ['Northline', 'Meridian']}
+        original = self.plan(overrides={'access': access})
+        updated = self.plan(overrides={'access': {**access, 'archived_closeout_version': 'released'}})
+        before, after = map(scenario.initial_files, (original, updated))
+        interim = scenario.archived_closeout(access)
+        released = scenario.archived_closeout({'archived_closeout_version': 'released'})
+        self.assertEqual(released['sha256'], interim['source_revision_history']['superseding_record_sha256'])
+        self.assertEqual(released['source_event'], interim['source_revision_history']['superseding_record_event'])
+        for actor, row in updated.items():
+            expected = dict(before[actor])
+            if row['account'] in access['archived_closeout_readers']:
+                expected['/workspace/' + scenario.ARCHIVED_CLOSEOUT_PATH] = base64.b64encode(
+                    released['text'].encode()).decode()
+            self.assertEqual(after[actor], expected)
+            self.assertEqual(scenario.task(row), scenario.task(original[actor]))
+        with self.assertRaisesRegex(ValueError, 'archive readers'):
+            scenario.config_for(self.plan(overrides={'access': {'archived_closeout_version': 'released'}}))
 
     def test_template_archive_preserves_sources_but_contains_no_current_pack(self):
         from phase2 import delivery_paths, report_library

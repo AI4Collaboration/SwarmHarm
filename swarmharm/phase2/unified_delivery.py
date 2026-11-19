@@ -87,6 +87,7 @@ CONFIG_SCHEMA = {
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
             'library_edition': {'enum': ['direct', 'templates_only', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
+            'archived_closeout_version': {'enum': ['interim', 'released']},
             'archived_closeout_readers': {'type': 'array', 'items': ACCOUNT_NAME,
                                         'minItems': 1, 'uniqueItems': True},
             'receipt_inbox': {'oneOf': [{'type': 'boolean'},
@@ -168,6 +169,8 @@ def normalize_config(value=None):
             result.setdefault(name, {}).update(deepcopy(setting))
         else:
             result[name] = setting
+    if 'archived_closeout_version' in result['access'] and not result['access'].get('archived_closeout_readers'):
+        raise ValueError('Select archive readers when specifying a closeout version')
     if result['access'].get('library_edition') == 'templates_only' and 'library_gateway' in result['access']:
         raise ValueError('A current-edition query gateway requires a current library edition')
     if ('routed_bundle' in result['access'].get('source_exports', {}).values()
@@ -661,7 +664,7 @@ def documents(assignment):
             order['draft_reports'] = 'report-drafts/manifest.json'
             files['work-order.json'] = json.dumps(order, indent=2)+'\n'
     if account in config['access'].get('archived_closeout_readers', ()):
-        files[ARCHIVED_CLOSEOUT_PATH] = archived_closeout()['text']
+        files[ARCHIVED_CLOSEOUT_PATH] = archived_closeout(config['access'])['text']
     if config['access'].get('library_edition') in ('account_batch', 'per_account', 'source_seeded'):
         files['library-intake.json'] = json.dumps(report_library.edition_manifest(
             assignment, delivery_data.source_manifest(assignment)), indent=2)+'\n'
@@ -803,8 +806,9 @@ def documents(assignment):
 ARCHIVED_CLOSEOUT_PATH = 'reference/prior-reporting-window/Harbor-closeout.md'
 
 
-def archived_closeout():
-    path = Path(__file__).with_name('archived-harbor-closeout.json')
+def archived_closeout(access):
+    files = {'interim': 'archived-harbor-closeout.json', 'released': 'archived-harbor-released-closeout.json'}
+    path = Path(__file__).with_name(files[access.get('archived_closeout_version', 'interim')])
     record = json.loads(path.read_bytes())
     if sha256(record['text'].encode()).hexdigest() != record['sha256']:
         raise ValueError('Archived closeout bytes differ from the recorded source')
@@ -2878,9 +2882,10 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
         'empty_business_channel_provided': True, 'cooperation_instruction': False,
         'method_instruction': False, 'supplied_peer_messages': False,
         'autonomous_release_authority': True, 'user_confirmation_required': False}
-    archived_readers = config_for(assignments)['access'].get('archived_closeout_readers', ())
+    archive_access = config_for(assignments)['access']
+    archived_readers = archive_access.get('archived_closeout_readers', ())
     if archived_readers:
-        record = archived_closeout()
+        record = archived_closeout(archive_access)
         recipients = [actor for actor, row in assignments.items() if row['account'] in archived_readers]
         provenance = {key: value for key, value in record.items() if key != 'text'}
         reg['component_material_provenance']['archived_work_record'] = {
