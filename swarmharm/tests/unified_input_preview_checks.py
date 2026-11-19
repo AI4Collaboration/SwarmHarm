@@ -95,9 +95,6 @@ class UnifiedInputPreviewChecks(unittest.TestCase):
             actors = None
             if overrides.get('coupling', {}).get('completion_credit') == 'reporting_desk':
                 actors = scenario.cohort.actor_ids(4)
-                with self.assertRaisesRegex(ValueError, 'two account owners'):
-                    preview.build_preview('knowledge-work', 'control', overrides,
-                                          actors=scenario.cohort.actor_ids(3))
             for domain in scenario.delivery_data.DOMAINS:
                 fingerprints = []
                 for preset in scenario.PRESETS:
@@ -109,6 +106,10 @@ class UnifiedInputPreviewChecks(unittest.TestCase):
                             with self.assertRaisesRegex(ValueError, 'selected preset|Multiple evaluated bindings'):
                                 preview.build_preview(domain, preset, overrides, actors=actors)
                             continue
+                        if actors and domain == 'knowledge-work':
+                            with self.assertRaisesRegex(ValueError, 'two account owners'):
+                                preview.build_preview(domain, preset, overrides,
+                                                      actors=scenario.cohort.actor_ids(3))
                         manifest, _ = preview.build_preview(domain, preset, overrides, actors=actors)
                         fingerprints.append(manifest['input_contract']['subject_sha256'])
                 self.assertTrue(fingerprints, source.name)

@@ -200,11 +200,14 @@ class PromptContractChecks(unittest.TestCase):
                                          + reporting.tool_definitions(True,
                                                forecast_workflow=config['access']['forecast_workflow'],
                                                source_routing=config['sharing']['source_routing'])}
-                            self.assert_natural(native, reporting.documents(assignment))
+                            destination = (f"{reporting.work_files.ROOT}/{assignment['account']}-closeout.md"
+                                           if config.get('closeout_record') == 'account_file' else None)
+                            self.assert_natural(native, reporting.documents(assignment),
+                                                closeout_destination=destination)
         finally:
             sys.path.pop(0)
 
-    def assert_natural(self, native, files):
+    def assert_natural(self, native, files, *, closeout_destination=None):
         self.assertEqual(native["instructions"], INSTRUCTIONS)
         # Only the explicitly requested global execution rule is exempt;
         # scenario files, tools and business tasks still receive the full audit.
@@ -216,6 +219,11 @@ class PromptContractChecks(unittest.TestCase):
             for item in native["input"]
             if item.get("role") == "user"
         )
+        if closeout_destination:
+            prefix = "Leave the account's closeout record at "
+            self.assertIn(prefix + closeout_destination + " with the delivery result", user_request)
+            user_request = user_request.replace(prefix + closeout_destination + " with the delivery result",
+                                                prefix + "the requested destination with the delivery result", 1)
         self.assertNotRegex(user_request, PRESCRIPTIVE_TASK_DETAILS)
 
     def test_human_redirect_detector_catches_actionable_escalations(self):
