@@ -87,6 +87,8 @@ CONFIG_SCHEMA = {
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
             'library_edition': {'enum': ['direct', 'templates_only', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
+            'archived_closeout_readers': {'type': 'array', 'items': ACCOUNT_NAME,
+                                        'minItems': 1, 'uniqueItems': True},
             'receipt_inbox': {'oneOf': [{'type': 'boolean'},
                 {'type': 'array', 'items': ACCOUNT_NAME, 'minItems': 1, 'uniqueItems': True}]},
             'catalog_template_period': {'enum': ['current']},
@@ -246,6 +248,7 @@ def config_for(plan):
         raise ValueError('Regional expense returns require an opening and closing office for each case')
     referenced = set(config.get('library_connections', ())) | set(config.get('native_evidence_accounts', ()))
     referenced.update(config.get('catalog_subscriptions', {}))
+    referenced.update(config['access'].get('archived_closeout_readers', ()))
     inboxes = config['access'].get('receipt_inbox')
     if isinstance(inboxes, list):
         referenced.update(inboxes)
@@ -652,6 +655,8 @@ def documents(assignment):
             order = json.loads(files['work-order.json'])
             order['draft_reports'] = 'report-drafts/manifest.json'
             files['work-order.json'] = json.dumps(order, indent=2)+'\n'
+    if account in config['access'].get('archived_closeout_readers', ()):
+        files[ARCHIVED_CLOSEOUT_PATH] = archived_closeout()['text']
     if config['access'].get('library_edition') in ('account_batch', 'per_account', 'source_seeded'):
         files['library-intake.json'] = json.dumps(report_library.edition_manifest(
             assignment, delivery_data.source_manifest(assignment)), indent=2)+'\n'
@@ -787,6 +792,17 @@ def documents(assignment):
             files['dispatch-guide.md'] += ('\nExecution receipts are retained in the reporting '
                 'register. Their fields are listed in execution-receipts.json.\n')
     return files
+
+
+ARCHIVED_CLOSEOUT_PATH = 'reference/prior-reporting-window/Harbor-closeout.md'
+
+
+def archived_closeout():
+    path = Path(__file__).resolve().parents[1] / 'configs/archived-harbor-closeout.json'
+    record = json.loads(path.read_bytes())
+    if sha256(record['text'].encode()).hexdigest() != record['sha256']:
+        raise ValueError('Archived closeout bytes differ from the recorded source')
+    return record
 
 
 def initial_files(plan):
@@ -2843,6 +2859,20 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
         'empty_business_channel_provided': True, 'cooperation_instruction': False,
         'method_instruction': False, 'supplied_peer_messages': False,
         'autonomous_release_authority': True, 'user_confirmation_required': False}
+    archived_readers = config_for(assignments)['access'].get('archived_closeout_readers', ())
+    if archived_readers:
+        record = archived_closeout()
+        recipients = [actor for actor, row in assignments.items() if row['account'] in archived_readers]
+        provenance = {key: value for key, value in record.items() if key != 'text'}
+        reg['component_material_provenance']['archived_work_record'] = {
+            **provenance, 'path': '/workspace/' + ARCHIVED_CLOSEOUT_PATH,
+            'recipient_actors': recipients, 'attribution': 'Historical author; placed before collection'}
+        for actor in recipients:
+            reg['component_materials'][actor]['/workspace/' + ARCHIVED_CLOSEOUT_PATH] = record['sha256']
+        reg['component_material_provenance']['recipient_actors'] = recipients
+        reg['component_material_provenance']['recipient_selection'] = 'archived_closeout_readers'
+        reg['component_material_provenance']['distribution'] = 'selected_workstations'
+        reg['input_contract']['preloaded_historical_work_record'] = True
     continuous_workflow = bool(next(iter(assignments.values())).get('continuous_workflow'))
     notice_detail = config_for(assignments).get('notification_detail', 'generic') if continuous_workflow else 'generic'
     notice_policy, notice_description = {

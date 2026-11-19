@@ -34,6 +34,19 @@ class UnifiedInputContractChecks(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'separately installed'):
             self.plan(overrides=world)
 
+    def test_historical_closeout_is_private_to_its_selected_readers(self):
+        readers = ['Northline', 'Meridian']
+        base = self.plan()
+        plan = self.plan(overrides={'access': {'archived_closeout_readers': readers}})
+        before, after = map(scenario.initial_files, (base, plan))
+        for actor, row in plan.items():
+            expected = dict(before[actor])
+            if row['account'] in readers:
+                expected['/workspace/' + scenario.ARCHIVED_CLOSEOUT_PATH] = base64.b64encode(
+                    scenario.archived_closeout()['text'].encode()).decode()
+            self.assertEqual(expected, after[actor])
+            self.assertEqual(scenario.task(row), scenario.task(base[actor]))
+
     def test_template_archive_preserves_sources_but_contains_no_current_pack(self):
         from phase2 import delivery_paths, report_library
         access = {'account_slots': {account: 4 for account in scenario.ACCOUNTS}}
