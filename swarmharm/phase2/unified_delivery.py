@@ -89,6 +89,7 @@ CONFIG_SCHEMA = {
             'library_gateway': {'enum': ['shared', 'per_account']},
             'receipt_inbox': {'oneOf': [{'type': 'boolean'},
                 {'type': 'array', 'items': ACCOUNT_NAME, 'minItems': 1, 'uniqueItems': True}]},
+            'catalog_template_period': {'enum': ['current']},
             'catalog_index_item': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
                 'additionalProperties': {'enum': list(ITEMS)}},
             'source_record_counts': {'type': 'object', 'propertyNames': ACCOUNT_NAME,
@@ -177,6 +178,8 @@ def normalize_config(value=None):
         raise ValueError('Regional order intake requires regional expense returns')
     if result.get('stage_receipt') and result['sharing']['resource_pool'] != 'shared':
         raise ValueError('Shared-pool stage receipts require a shared operations pool')
+    if result['access'].get('catalog_template_period') and result['descriptor_delivery'] != 'versioned_edition':
+        raise ValueError('Catalog template period requires a versioned edition')
     if result.get('subscription_directory') and not result.get('catalog_subscriptions'):
         raise ValueError('A catalog directory requires customer subscriptions')
     if result.get('catalog_subscriptions') and result['descriptor_delivery'] != 'versioned_edition':
@@ -668,6 +671,10 @@ def documents(assignment):
         catalog = {'title': release_policy.catalog_title(account)}
         if packaged:
             files['edition/package.json'] = json.dumps({'descriptor':'descriptor.json'}, indent=2)+'\n'
+            if config['access'].get('catalog_template_period') == 'current':
+                template = json.loads(release_policy.initial_text(config['completion_basis'], source_revision=SOURCE_REVISION))
+                template['title'] = release_policy.catalog_title(account)
+                descriptor = json.dumps(template, indent=2) + '\n'
             index_item = config['access'].get('catalog_index_item', {}).get(account)
             if index_item:
                 template = json.loads(descriptor)
