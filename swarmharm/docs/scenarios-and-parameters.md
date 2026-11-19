@@ -64,6 +64,11 @@ adds one service capability. Each account’s dated customer amendments and
 receipts are already on file at the finishing desk. An intake job reconciles
 those source documents into the commitment register when ordered. Both
 configurations expose the same workstation files, directory entry, tools and task.
+Three of four Sol owners read the full intake catalog; all four assembled their
+reports locally and released 16 files. The [indexed offices](../configs/desk-intake-indexed-offices.json)
+setting varies source availability. Northline and Aster have the October index;
+Meridian and Harbor also have the local source documents. The finishing service
+has the same account source editions as in the complete-export setting.
 
 ## Two-desk configurations
 
