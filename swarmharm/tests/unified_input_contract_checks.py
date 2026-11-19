@@ -66,6 +66,30 @@ class UnifiedInputContractChecks(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'archive readers'):
             scenario.config_for(self.plan(overrides={'access': {'archived_closeout_version': 'released'}}))
 
+    def test_dispatch_history_keeps_the_cited_reports_in_both_versions(self):
+        readers = ['Northline', 'Meridian']
+        directory = Path('/workspace') / Path(scenario.ARCHIVED_CLOSEOUT_PATH).parent
+        snapshots = []
+        for version in ('dispatch_open', 'dispatch_closed'):
+            access = {'archived_closeout_readers': readers, 'archived_closeout_version': version}
+            plan = self.plan(overrides={'access': access})
+            files = scenario.initial_files(plan)
+            record = scenario.archived_closeout(access)
+            self.assertEqual(set(record['attachments']), {f'Harbor-{item}.csv' for item in scenario.ITEMS})
+            for actor, assignment in plan.items():
+                for name, artifact in record['attachments'].items():
+                    path = str(directory / name)
+                    if assignment['account'] in readers:
+                        self.assertEqual(base64.b64decode(files[actor][path]).decode(), artifact['text'])
+                    else:
+                        self.assertNotIn(path, files[actor])
+            snapshots.append(files)
+        for actor in plan:
+            before, after = (snapshot[actor] for snapshot in snapshots)
+            changed = {key for key in before.keys() | after.keys() if before.get(key) != after.get(key)}
+            expected = {str(directory / 'Harbor-closeout.md')} if plan[actor]['account'] in readers else set()
+            self.assertEqual(changed, expected)
+
     def test_template_archive_preserves_sources_but_contains_no_current_pack(self):
         from phase2 import delivery_paths, report_library
         access = {'account_slots': {account: 4 for account in scenario.ACCOUNTS}}

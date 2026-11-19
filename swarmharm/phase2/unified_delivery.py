@@ -87,7 +87,7 @@ CONFIG_SCHEMA = {
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
             'library_edition': {'enum': ['direct', 'templates_only', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
-            'archived_closeout_version': {'enum': ['interim', 'released']},
+            'archived_closeout_version': {'enum': ['interim', 'released', 'dispatch_open', 'dispatch_closed']},
             'archived_closeout_readers': {'type': 'array', 'items': ACCOUNT_NAME,
                                         'minItems': 1, 'uniqueItems': True},
             'receipt_inbox': {'oneOf': [{'type': 'boolean'},
@@ -664,7 +664,10 @@ def documents(assignment):
             order['draft_reports'] = 'report-drafts/manifest.json'
             files['work-order.json'] = json.dumps(order, indent=2)+'\n'
     if account in config['access'].get('archived_closeout_readers', ()):
-        files[ARCHIVED_CLOSEOUT_PATH] = archived_closeout(config['access'])['text']
+        record = archived_closeout(config['access'])
+        files[ARCHIVED_CLOSEOUT_PATH] = record['text']
+        for name, attachment in record.get('attachments', {}).items():
+            files[str(Path(ARCHIVED_CLOSEOUT_PATH).with_name(name))] = attachment['text']
     if config['access'].get('library_edition') in ('account_batch', 'per_account', 'source_seeded'):
         files['library-intake.json'] = json.dumps(report_library.edition_manifest(
             assignment, delivery_data.source_manifest(assignment)), indent=2)+'\n'
@@ -808,8 +811,16 @@ ARCHIVED_CLOSEOUT_PATH = 'reference/prior-reporting-window/Harbor-closeout.md'
 
 def archived_closeout(access):
     files = {'interim': 'archived-harbor-closeout.json', 'released': 'archived-harbor-released-closeout.json'}
-    path = Path(__file__).with_name(files[access.get('archived_closeout_version', 'interim')])
-    record = json.loads(path.read_bytes())
+    version = access.get('archived_closeout_version', 'interim')
+    if version in ('dispatch_open', 'dispatch_closed'):
+        bundle = json.loads(Path(__file__).with_name('archived-harbor-dispatch.json').read_bytes())
+        versions = bundle.pop('versions')
+        record = {**bundle, **versions[version]}
+        for attachment in record['attachments'].values():
+            if sha256(attachment['text'].encode()).hexdigest() != attachment['sha256']:
+                raise ValueError('Archived report bytes differ from the recorded source')
+    else:
+        record = json.loads(Path(__file__).with_name(files[version]).read_bytes())
     if sha256(record['text'].encode()).hexdigest() != record['sha256']:
         raise ValueError('Archived closeout bytes differ from the recorded source')
     return record
@@ -2887,12 +2898,19 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
     if archived_readers:
         record = archived_closeout(archive_access)
         recipients = [actor for actor, row in assignments.items() if row['account'] in archived_readers]
-        provenance = {key: value for key, value in record.items() if key != 'text'}
+        provenance = {key: value for key, value in record.items() if key not in ('text', 'attachments')}
+        attachments = record.get('attachments', {})
+        if attachments:
+            provenance['attachments'] = {name: {k: v for k, v in item.items() if k != 'text'}
+                                         for name, item in attachments.items()}
         reg['component_material_provenance']['archived_work_record'] = {
             **provenance, 'path': '/workspace/' + ARCHIVED_CLOSEOUT_PATH,
             'recipient_actors': recipients, 'attribution': 'Historical author; placed before collection'}
         for actor in recipients:
             reg['component_materials'][actor]['/workspace/' + ARCHIVED_CLOSEOUT_PATH] = record['sha256']
+            for name, attachment in attachments.items():
+                path = Path('/workspace') / Path(ARCHIVED_CLOSEOUT_PATH).with_name(name)
+                reg['component_materials'][actor][str(path)] = attachment['sha256']
         reg['component_material_provenance']['recipient_actors'] = recipients
         reg['component_material_provenance']['recipient_selection'] = 'archived_closeout_readers'
         reg['component_material_provenance']['distribution'] = 'selected_workstations'
