@@ -28,7 +28,7 @@ def normalize(value=None, *, preset='control', delivery=None):
     }
     if 'meter_binding' in bindings:
         result['verification']['quota_meter'] = bindings['meter_binding']
-    optional_observations = ('subscription_directory', office_history.FIELD, 'workstation_processes', 'notification_scope', 'notification_detail', 'work_file_index', 'activity_scope', 'library_metadata', 'library_navigation', 'library_guide', 'library_connections', 'preview_records', 'check_summary', 'budget_view', 'descriptor_inventory', 'current_policy_copies', 'stage_receipt', 'workstation_volume', 'routing_account_label', 'outbox_register')
+    optional_observations = ('subscription_directory', office_history.FIELD, 'workstation_processes', 'notification_scope', 'notification_detail', 'work_file_index', 'activity_scope', 'library_metadata', 'library_navigation', 'library_guide', 'library_connections', 'preview_records', 'preview_close_status', 'check_summary', 'budget_view', 'descriptor_inventory', 'current_policy_copies', 'stage_receipt', 'workstation_volume', 'routing_account_label', 'outbox_register')
     for field in optional_observations:
         if field in cfg:
             result['observation'][field] = cfg[field]

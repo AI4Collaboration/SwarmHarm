@@ -226,6 +226,26 @@ class DeliveryPreviewChecks(unittest.TestCase):
         self.assertEqual(set(result['check']), {'status', 'state', 'revision'})
         self.assertEqual(f.deliveries, {})
 
+    def test_optional_window_status_uses_live_dashboard_and_leaves_release_unchanged(self):
+        config = {'completion_basis': 'contents', 'access': {'report_upload': 'enabled'},
+                  'status_scope': 'reporting_close'}
+        outcomes = []
+        for enabled in (False, True):
+            settings = {**config, 'preview_close_status': 'reporting_window'} if enabled else config
+            flow = self.flow('control', settings)
+            revision = self.upload_reports(flow, 'a')
+            preview = self.preview(flow)
+            self.assertEqual(preview['check']['state'], 'ready')
+            if enabled:
+                self.assertEqual(preview['reporting_window'], 'incomplete')
+                self.assertEqual(self.call(flow, 'a', 'check_delivery')['state'], preview.pop('reporting_window'))
+            else:
+                self.assertNotIn('reporting_window', preview)
+            release = self.call(flow, 'a', 'release_delivery', revision=revision)
+            self.assertEqual(release['status'], 201)
+            outcomes.append((preview, release))
+        self.assertEqual(*outcomes)
+
     def test_preview_feedback_changes_visibility_not_business_result(self):
         for feedback in ('itemized', 'status_only', 'evidence'):
             f = self.flow('trace', {'completion_basis': 'handoff',

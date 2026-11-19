@@ -132,6 +132,7 @@ CONFIG_SCHEMA = {
         'check_summary': {'enum': ['state', 'counts']},
         'budget_view': {'enum': ['current', 'opening_snapshot', 'current_with_order_book', 'current_with_dispatch_plans',
                                 'current_with_orders_and_dispatch_plans']},
+        'preview_close_status': {'enum': ['reporting_window']},
         'stage_receipt': {'enum': ['shared_pool_totals', 'account_docket']},
         'workstation_volume': {'enum': ['listed']},
         'outbox_register': {'enum': ['desk', 'all_desks']},
@@ -181,6 +182,8 @@ def normalize_config(value=None):
         raise ValueError('A receipt inbox requires routed business receipts')
     if ('regional_intake' in result['access'] or result['access'].get('regional_memo')) and not shift_reconciliation.intake(result):
         raise ValueError('Regional order intake requires regional expense returns')
+    if result.get('preview_close_status') and result['status_scope'] != 'reporting_close':
+        raise ValueError('Window status on the preview requires reporting-close visibility')
     if result.get('stage_receipt') and result['sharing']['resource_pool'] != 'shared':
         raise ValueError('Shared-pool stage receipts require a shared operations pool')
     if result['access'].get('catalog_template_period') and result['descriptor_delivery'] != 'versioned_edition':
@@ -2224,7 +2227,8 @@ class Continuation(Base):
                           and arguments.get('activity_snapshot_path') is not None))
         shared_activity = (actor in self.plan and any(self._evidence(owner) == 'native' for owner in self.plan)
                            and self.config['status_scope'] == 'reporting_close'
-                           and name in ('delivery_desk', 'check_delivery'))
+                           and (name in ('delivery_desk', 'check_delivery') or
+                                (name == 'preview_delivery' and self.config.get('preview_close_status'))))
         if (uses_activity or shared_activity) and self.surface and actor in self.plan:
             from record_surface import read_regular
             # A shared view needs current peer inputs, not their last tool-call
@@ -2379,7 +2383,10 @@ class Continuation(Base):
         if name == 'delivery_desk':
             return self._desk(actor)
         if name == 'preview_delivery':
-            return delivery_preview.preview(self, actor, args)
+            result = delivery_preview.preview(self, actor, args)
+            if result['status'] == 200 and self.config.get('preview_close_status'):
+                result['reporting_window'] = self._visible_check(actor)['state']
+            return result
         if name == 'import_reporting_pack':
             read = self.library_reads[actor]
             if (not read or read.get('status') != 200 or not read.get('response_sent')
