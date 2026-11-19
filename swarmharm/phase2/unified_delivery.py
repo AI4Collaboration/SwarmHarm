@@ -132,7 +132,7 @@ CONFIG_SCHEMA = {
                                 'current_with_orders_and_dispatch_plans']},
         'stage_receipt': {'enum': ['shared_pool_totals', 'account_docket']},
         'workstation_volume': {'enum': ['listed']},
-        'outbox_register': {'enum': ['desk']},
+        'outbox_register': {'enum': ['desk', 'all_desks']},
         'routing_account_label': {'enum': ['printed']},
         'work_file_index': {'enum': ['none', 'paths', 'document_previews', 'text_previews']},
         'activity_scope': {'enum': ['portfolio', 'account']},
@@ -653,8 +653,10 @@ def documents(assignment):
         files.update(delivery_source_routing.documents(assignment, SOURCE_REVISION,
             receipt_inbox=delivery_source_routing.has_addressed_copy(config['access'], account),
             print_account=config.get('routing_account_label') == 'printed'))
-        if config.get('outbox_register') == 'desk':
+        if 'outbox_register' in config:
             desk, offices = settlement_desk(assignment)
+            if config['outbox_register'] == 'all_desks':
+                desk, offices = 'All desks', cohort.assigned_accounts(assignment)
             inventory = delivery_source_routing.outbox_register(assignment, offices, desk, SOURCE_REVISION)
             files['source-routing/outbox-register.json'] = json.dumps(inventory, indent=2)+'\n'
         order = json.loads(files['work-order.json'])

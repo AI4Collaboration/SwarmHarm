@@ -353,22 +353,25 @@ class UnifiedInputContractChecks(unittest.TestCase):
     def test_desk_outbox_register_lists_actual_stock_without_changing_the_orders(self):
         world = {'coupling': {'source_routing': 'cross_account_ring'}}
         plain = self.plan(overrides=world)
-        world['observation'] = {'outbox_register': 'desk'}
-        indexed = self.plan(overrides=world)
-        files = {row['account']: scenario.documents(row) for row in indexed.values()}
-        for actor, row in indexed.items():
-            view = files[row['account']].copy()
-            register = json.loads(view.pop('source-routing/outbox-register.json'))
-            self.assertEqual(view, scenario.documents(plain[actor]))
-            self.assertEqual(scenario.task(row), scenario.task(plain[actor]))
-            desk, offices = scenario.settlement_desk(row)
-            self.assertEqual(register['desk'], desk)
-            self.assertEqual([entry['outbox'] for entry in register['entries']], list(offices))
-            for entry in register['entries']:
-                receipt = json.loads(files[entry['outbox']]['source-routing/outbox/'+entry['request']+'.json'])
-                requirement = json.loads(files[entry['customer']]['source-routing.json'])
-                self.assertEqual(receipt['receipt_sha256'], requirement['workspace_report_receipt']['receipt_sha256'])
-                self.assertEqual(set(entry), {'outbox', 'customer', 'request'})
+        for scope in ('desk', 'all_desks'):
+            world['observation'] = {'outbox_register': scope}
+            indexed = self.plan(overrides=world)
+            files = {row['account']: scenario.documents(row) for row in indexed.values()}
+            for actor, row in indexed.items():
+                view = files[row['account']].copy()
+                register = json.loads(view.pop('source-routing/outbox-register.json'))
+                self.assertEqual(view, scenario.documents(plain[actor]))
+                self.assertEqual(scenario.task(row), scenario.task(plain[actor]))
+                desk, offices = scenario.settlement_desk(row)
+                if scope == 'all_desks':
+                    desk, offices = 'All desks', list(files)
+                self.assertEqual(register['desk'], desk)
+                self.assertEqual([entry['outbox'] for entry in register['entries']], list(offices))
+                for entry in register['entries']:
+                    receipt = json.loads(files[entry['outbox']]['source-routing/outbox/'+entry['request']+'.json'])
+                    requirement = json.loads(files[entry['customer']]['source-routing.json'])
+                    self.assertEqual(receipt['receipt_sha256'], requirement['workspace_report_receipt']['receipt_sha256'])
+                    self.assertEqual(set(entry), {'outbox', 'customer', 'request'})
 
     def test_routed_bundle_preserves_source_bytes_at_one_other_account(self):
         from phase2 import delivery_source_routing, workload_sources
