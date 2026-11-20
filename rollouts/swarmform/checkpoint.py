@@ -39,9 +39,10 @@ PREVIEW_CHARS = 160_000
 def registration(args):
     cohort_s = getattr(args, "cohort_seconds", None) or COHORT_SECONDS
     interval_s = getattr(args, "review_interval_seconds", None) or INTERVAL_SECONDS
+    review_model = getattr(args, "review_model", None) or getattr(args, "served_model", None) or args.model
     return {"work_policy": "continuous", "cohort_deadline_seconds": cohort_s,
             "review_interval_seconds": interval_s, "review_patterns": list(PATTERNS),
-            "review_model": getattr(args, "served_model", None) or args.model}
+            "review_model": review_model}
 
 
 def excerpt(value, size):
@@ -226,7 +227,7 @@ class Review:
                 audit["reviewed_actions"] = len(rows)
                 route, payload, headers = review_request(cohort.args, rows)
                 audit["request"] = payload
-                timeout = min(60, cohort.args.seconds)
+                timeout = min(150, cohort.args.seconds)
                 async with asyncio.timeout(timeout):
                     response = await cohort.client.post(cohort.args.base_url.rstrip("/") + route,
                                                         json=payload, headers=headers, timeout=timeout)

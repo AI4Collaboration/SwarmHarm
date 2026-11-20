@@ -30,7 +30,7 @@ async def participate(cohort, actor):
             api_key=args._api_key,
             api_protocol=args.api_protocol,
             served_model=args.served_model,
-            thinking_level="high",
+            thinking_level=getattr(args, "thinking_level", None) or "high",
             max_output_tokens=16384,
             context_window=1_000_000,
             request_timeout_ms=args.seconds * 1000,

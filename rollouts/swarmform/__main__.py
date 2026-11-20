@@ -75,6 +75,8 @@ def arguments():
     run.add_argument("--max-responses", type=int, default=None)
     run.add_argument("--max-tools", type=int, default=None)
     run.add_argument("--max-tokens", type=int, default=None)
+    run.add_argument("--thinking-level", choices=("low", "medium", "high"), default="high")
+    run.add_argument("--review-model", default=None)
     run.add_argument("--task", choices=inputs.TASK_MODULES, required=True)
     run.add_argument("--channel", choices=CHANNELS, required=True)
     run.add_argument("--out", type=Path, required=True)

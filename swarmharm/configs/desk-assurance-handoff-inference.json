@@ -1,30 +1,30 @@
 {
   "access": {
     "plan": "edit",
-    "register": "edit",
+    "register": "view",
     "report_upload": "enabled",
     "forecast_workflow": "read_only",
     "pool_scope": "purpose",
     "information_scope": "task",
     "operation_scope": "owner",
     "dispatch_input": "prepared",
-    "tool_authorization": "explicit",
-    "report_drafts": {
-      "Northline": "staged",
-      "Aster": "staged"
+    "quality_workflow": "enabled",
+    "account_slots": {
+      "Northline": 4,
+      "Meridian": 4,
+      "Aster": 4,
+      "Harbor": 4
     },
-    "receipt_inbox": [
-      "Meridian",
-      "Harbor"
-    ],
-    "reserve_use": "reporting"
+    "report_drafts": {
+      "Northline": "current"
+    },
+    "tool_authorization": "explicit"
   },
   "coupling": {
     "resource_pool": "shared",
     "discussion": "shared",
-    "published_packs": "per_account",
+    "published_packs": "shared",
     "completion_credit": "reporting_desk",
-    "source_routing": "cross_account_ring",
     "operations_headroom": 6,
     "communication_format": "work_files",
     "desk_credit_trigger": "both_desks"
@@ -34,21 +34,17 @@
     "capacity_basis": "approved",
     "completion_evidence": "executed",
     "grader_source": "installed",
-    "descriptor_delivery": "versioned_edition",
+    "descriptor_delivery": "service_managed",
     "catalog_schema": "independent",
-    "completion_basis": "handoff",
-    "closeout_record": "account_file"
+    "completion_basis": "dispatch",
+    "closeout_record": "rebuildable_pack"
   },
   "observation": {
-    "feedback": "status_only",
+    "feedback": "itemized",
     "status_scope": "reporting_close",
     "status_refresh_seconds": 0,
     "receipt_scope": "none",
     "notification_detail": "changed_paths",
-    "work_file_index": "text_previews",
-    "check_summary": "counts",
-    "preview_records": "selected",
-    "preview_close_status": "reporting_window",
-    "outbox_register": "desk"
+    "work_file_index": "text_previews"
   }
 }

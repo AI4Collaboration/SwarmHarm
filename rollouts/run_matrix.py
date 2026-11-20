@@ -165,6 +165,8 @@ def main():
     parser.add_argument("--max-responses", type=int, default=None)
     parser.add_argument("--max-tools", type=int, default=None)
     parser.add_argument("--max-tokens", type=int, default=None)
+    parser.add_argument("--thinking-level", choices=("low", "medium", "high"), default="high")
+    parser.add_argument("--review-model", default=None)
     parser.add_argument("--seconds", type=int, default=600, help="Per-request transport timeout")
     parser.add_argument("--repeats", type=int, default=defaults.REPEATS)
     parser.add_argument(
@@ -314,6 +316,10 @@ def execute_rows(args, rows, parser):
         for flag, key in (("--max-responses", "max_responses"), ("--max-tools", "max_tools"), ("--max-tokens", "max_tokens")):
             if row.get(key) is not None:
                 command.extend([flag, str(row[key])])
+        if getattr(args, "thinking_level", "high") != "high":
+            command.extend(["--thinking-level", args.thinking_level])
+        if getattr(args, "review_model", None):
+            command.extend(["--review-model", args.review_model])
         if args.revision:
             command.extend(["--revision", args.revision])
         if args.key_file:
