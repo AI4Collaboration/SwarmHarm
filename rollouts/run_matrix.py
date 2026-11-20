@@ -18,6 +18,7 @@ from process_control import run_process
 
 from swarmform.__main__ import CHANNELS, ROOT, source_digest, write_json
 from swarmform.formation_inputs import TASK_MODULES
+from swarmform import checkpoint
 
 
 def completed_evidence(directory):
@@ -96,11 +97,17 @@ def cases(args):
                 # Cycle the first condition across replicates.
                 offset = (rep - 1) % len(CHANNELS)
                 for channel in CHANNELS[offset:] + CHANNELS[:offset]:
+                    if population == 1 and channel != "filesystem":
+                        continue
                     yield dict(
                         task=task,
                         channel=channel,
                         population=population,
                         seconds=args.seconds,
+                        **checkpoint.registration(args),
+                        entry_window_seconds=getattr(args, "entry_window_seconds", 0),
+                        **({"closed_mail_receipts": True} if getattr(args, "closed_mail_receipts", False) and channel == "direct" else {}),
+                        **({"stream_responses": True} if getattr(args, "stream_responses", False) else {}),
                         replicate=rep,
                         model=args.model,
                         revision=args.revision,
@@ -124,7 +131,8 @@ def main():
         default="chat-completions",
     )
     parser.add_argument("--served-model")
-    parser.add_argument("--model", required=True, help="Exact served model ID")
+    parser.add_argument("--model", default=defaults.MODELS[defaults.SWARMFORM_MODEL][0],
+                        help="Model identity (default: SwarmForm Terra 6.1)")
     parser.add_argument(
         "--revision", help="Immutable checkpoint or deployment revision"
     )
@@ -144,7 +152,12 @@ def main():
     parser.add_argument(
         "--tasks", nargs="+", choices=TASK_MODULES, default=list(defaults.TASKS)
     )
-    parser.add_argument("--seconds", type=int, default=600)
+    parser.add_argument("--entry-window-seconds", type=int, default=0,
+                        help="Spread starts evenly across this window")
+    parser.add_argument("--stream-responses", action="store_true", help="Stream Chat Completions and record chunks")
+    parser.add_argument("--closed-mail-receipts", action="store_true",
+                        help="Mark directed sends to a permanently closed direct-mail session")
+    parser.add_argument("--seconds", type=int, default=600, help="Per-request transport timeout")
     parser.add_argument("--repeats", type=int, default=defaults.REPEATS)
     parser.add_argument(
         "--execute", action="store_true", help="Run planned rows sequentially"
@@ -159,11 +172,17 @@ def main():
 
         args.harness = native_harness({"model": args.model})
     if not (
-        1 <= args.seconds <= 600 and args.repeats >= 1 and min(args.populations) >= 2
+        1 <= args.seconds <= 600 and args.repeats >= 1 and min(args.populations) >= 1
     ):
         parser.error(
-            "Use N >= 2, repeats >= 1 and a participant limit of 1 to 600 seconds"
+            "Use N >= 1, repeats >= 1 and a request timeout of 1 to 600 seconds"
         )
+    if not 0 <= args.entry_window_seconds < checkpoint.COHORT_SECONDS:
+        parser.error("Entry offsets must precede the common cohort deadline.")
+    if args.stream_responses and args.harness != "chat-completions":
+        parser.error("--stream-responses requires the Chat Completions harness")
+    if 1 in args.populations and any(not key.endswith("-possible") for key in args.tasks):
+        parser.error("For N=1 select --tasks tree-possible and/or planning-possible.")
     if len(set(args.tasks)) != len(args.tasks) or len(set(args.populations)) != len(
         args.populations
     ):
@@ -256,6 +275,8 @@ def execute_rows(args, rows, parser):
             str(row["population"]),
             "--seconds",
             str(args.seconds),
+            "--entry-window-seconds",
+            str(row["entry_window_seconds"]),
             "--model",
             args.model,
             "--harness",
@@ -271,6 +292,10 @@ def execute_rows(args, rows, parser):
             "--expected-source-sha256",
             row["source_sha256"],
         ]
+        if row.get("stream_responses"):
+            command.append("--stream-responses")
+        if row.get("closed_mail_receipts"):
+            command.append("--closed-mail-receipts")
         if args.revision:
             command.extend(["--revision", args.revision])
         if args.key_file:

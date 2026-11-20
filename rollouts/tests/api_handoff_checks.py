@@ -282,8 +282,9 @@ class APIHandoffChecks(unittest.TestCase):
                         expected[1]["child_order"] = "reverse"
                         self.assertEqual(changed, expected)
                     else:
-                        self.assertEqual(baseline, {"deadline": 126})
-                        self.assertEqual(changed, {"deadline": 41})
+                        optimum = truth["reference_solution"]["claimed_worst_makespan"]
+                        self.assertEqual(baseline, {"deadline": 3 * optimum})
+                        self.assertEqual(changed, {"deadline": optimum - 1})
             for channel in ("direct", *inputs.CHANNELS):
 
                 def build(setting):
@@ -318,6 +319,14 @@ class APIHandoffChecks(unittest.TestCase):
 
         module = inputs.module("planning-distributed")
         split, truth, _ = module.build("planning-distributed", 3)
+        path_ids = set(truth["reference_solution"]["plans"]["regime-0"]["lower_bound_path"])
+        for files in split.values():
+            sheet, = (json.loads(text) for name, text in files.items() if "/routing/" in name)
+            self.assertTrue(path_ids.intersection(sheet))
+            self.assertTrue(path_ids.difference(sheet))
+            manifest = json.loads(files["/workspace/problem.json"])
+            self.assertTrue(all("options" not in job for scenario in manifest["scenarios"]
+                                for job in scenario["operations"]))
         with TemporaryDirectory() as directory:
             root = Path(directory)
             for name, text in next(iter(split.values())).items():
@@ -371,7 +380,7 @@ class APIHandoffChecks(unittest.TestCase):
             "scenario": scenario["id"],
             "lower_bound_path": bound["independent_bound_path"],
             "lower_bound": bound["relaxation_lower_bound"],
-            "deadline": 41,
+            "deadline": scenario["latest_finish"],
         }
         self.assertTrue(planning.review(pt, report))
         result = planning.outcome(
@@ -412,6 +421,18 @@ class NativeEventChecks(unittest.IsolatedAsyncioTestCase):
                 visible={"tools": [], "prompts": {"one": ("task",)}},
             )
 
+            from swarmform.__main__ import Cohort
+            cohort.deadline = None
+            cohort.active = Cohort.active.__get__(cohort)
+            cohort.remaining = Cohort.remaining.__get__(cohort)
+            cohort.prompts = Cohort.prompts.__get__(cohort)
+            cohort.tool_reply = Cohort.tool_reply.__get__(cohort)
+            cohort.stopper = Mock()
+            cohort.stopper.stop_actor.return_value = {"research_stop_verified": True}
+            cohort.continue_research = Cohort.continue_research.__get__(cohort)
+            agent.prompt.side_effect = lambda text: (cohort.stopping.set()
+                if text.startswith("Progress report recorded.") else None)
+
             def create(kind, actor, events, **kwargs):
                 call = {
                     "type": "function_call",
@@ -443,9 +464,8 @@ class NativeEventChecks(unittest.IsolatedAsyncioTestCase):
             with patch(
                 "swarmform.native_participant.model_session.create", side_effect=create
             ):
-                await participate(
-                    cohort, "one", {"tokens": 100, "tools": 10, "responses": 10}
-                )
+                cohort.stopping.clear()
+                await participate(cohort, "one")
             self.assertEqual(cohort.errors, {})
             self.assertEqual(
                 cohort.usage["one"], {"responses": 1, "tools": 1, "tokens": 15}
@@ -453,7 +473,8 @@ class NativeEventChecks(unittest.IsolatedAsyncioTestCase):
             cohort.tool.assert_called_once_with("one", "pwd", "c1")
             agent.reply.assert_called_once()
             agent.close.assert_called_once()
-            self.assertEqual(cohort.returns, {"one": "model_finished"})
+            self.assertEqual(cohort.returns, {})
+            self.assertIn('"tokens": 999985', agent.prompt.call_args.args[0])
 
             # Closing the native session is part of successful evidence capture.
             agent.close.side_effect = OSError("native transcript not saved")
@@ -462,9 +483,8 @@ class NativeEventChecks(unittest.IsolatedAsyncioTestCase):
             with patch(
                 "swarmform.native_participant.model_session.create", side_effect=create
             ):
-                await participate(
-                    cohort, "one", {"tokens": 100, "tools": 10, "responses": 10}
-                )
+                cohort.stopping.clear()
+                await participate(cohort, "one")
             self.assertIn("native transcript not saved", cohort.errors["close_one"])
             cohort.stop.assert_called_with("participant_cleanup_error")
 
@@ -482,25 +502,10 @@ class NativeEventChecks(unittest.IsolatedAsyncioTestCase):
                 "swarmform.native_participant.model_session.create",
                 side_effect=missing_usage,
             ):
-                await participate(
-                    cohort, "one", {"tokens": 100, "tools": 10, "responses": 10}
-                )
+                cohort.stopping.clear()
+                await participate(cohort, "one")
             self.assertIn("positive token usage", cohort.errors["one"])
             cohort.stop.assert_called_with("participant_error")
-
-            # Reaching a per-actor budget stops only that actor, leaving peers active.
-            cohort.errors.clear()
-            cohort.returns.clear()
-            cohort.stop.reset_mock()
-            with patch(
-                "swarmform.native_participant.model_session.create", side_effect=create
-            ):
-                await participate(
-                    cohort, "one", {"tokens": 15, "tools": 10, "responses": 10}
-                )
-            self.assertEqual(cohort.returns, {"one": "observed_token_budget"})
-            cohort.stop.assert_not_called()
-
 
 if __name__ == "__main__":
     unittest.main()

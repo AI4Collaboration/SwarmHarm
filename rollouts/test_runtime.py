@@ -20,6 +20,7 @@ from unittest.mock import Mock, patch
 from argparse import Namespace
 
 import httpx
+from swarmform import checkpoint
 from swarmform import formation_inputs as inputs
 from swarmform.__main__ import Cohort
 from swarmform.__main__ import seal_evidence
@@ -234,6 +235,82 @@ class LifecycleTests(unittest.TestCase):
                 first.capture_terminal.side_effect = None
                 deployment.close()
                 deployment.resources.close.assert_called_once()
+
+    def test_progress_reports_keep_history_and_allowance_across_interfaces(self):
+        async def check(folder, channel):
+            args = Namespace(task="planning-distributed", channel=channel, population=3,
+                             model="fixture", base_url="http://fixture/v1")
+            reply = {"choices": [{"message": {"role": "assistant", "content": "Provisional result."},
+                                  "finish_reason": "stop"}], "usage": {"total_tokens": 20}}
+            requests = []
+
+            def respond(request):
+                requests.append(json.loads(request.content)["messages"])
+                if len(requests) == 3:
+                    cohort.stop("observed_structure")
+                return httpx.Response(200, json=reply)
+
+            async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+                cohort = Cohort(args, client, Path(folder))
+                cohort.start = time.monotonic()
+                await asyncio.wait_for(cohort.participant("Research01"), 2)
+                self.assertEqual([sum(m["role"] == "assistant" for m in req) for req in requests], [0, 1, 2])
+                self.assertEqual(requests[-1][-2]["content"], "Provisional result.")
+                self.assertIn('"tokens": 999960', requests[-1][-1]["content"])
+                self.assertEqual(cohort.usage["Research01"]["responses"], 3)
+                return requests[-1][-1]["content"]
+
+        notices = []
+        for channel in ("direct", *inputs.CHANNELS):
+            with tempfile.TemporaryDirectory() as folder:
+                notices.append(asyncio.run(check(folder, channel)))
+        self.assertEqual(len(set(notices)), 1)
+
+    def test_review_requires_receipts_and_causally_ordered_actions(self):
+        async def check(folder):
+            args = Namespace(task="planning-distributed", channel="socket", population=3,
+                             model="fixture", seconds=10, base_url="http://fixture/v1")
+            review = checkpoint.Review()
+            spec = checkpoint.PATTERNS["delegation_return"]
+            steps = []
+            for i, (actor, field) in enumerate(spec):
+                row = {"call_id": str(i), "decision_s": i * 0.1, "command": f"selected action {i}"}
+                result = {"stdout": f"received artifact {i}", "exit_code": 0}
+                review.record(actor, "tool_start", i * 0.1, row)
+                review.record(actor, "tool_result", i * 0.1 + 0.02, {"call_id": str(i), "result": result})
+                review.receipt(actor, str(i), i * 0.1 + 0.04, result["stdout"])
+                steps.append({"id": i, "quote": result["stdout"] if field == "stdout" else row["command"]})
+            verdict = {"pattern": "delegation_return", "roles": dict(zip("ABC", "ABC")),
+                       "steps": steps, "rationale": "Scripted chain."}
+            rows = list(review.actions.values())
+            self.assertTrue(checkpoint.verified(verdict, rows))
+            # A tool cannot use the result of its own read before the model receives it.
+            old = steps[2]
+            steps[2] = {"id": 1, "quote": rows[1]["command"]}
+            self.assertFalse(checkpoint.verified(verdict, rows))
+            steps[2] = old
+            rows[-1].pop("received_s")
+            self.assertFalse(checkpoint.verified(verdict, rows))
+            def respond(request):
+                self.assertNotIn("tools", json.loads(request.content))
+                return httpx.Response(200, json={"choices": [{"message": {"content": json.dumps(verdict)}}]})
+            async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+                cohort = Cohort(args, client, Path(folder))
+                cohort.review = review
+                cohort.start = time.monotonic() - 1
+                self.assertFalse(await review.check(cohort, 1))
+                self.assertEqual(review.results[1], "unverified")
+                review.receipt("A", "8", 0.84, rows[-1]["stdout"])
+                cohort.start = time.monotonic() - 1
+                cohort.deadline = cohort.start + 4
+                with patch.object(checkpoint, "INTERVAL_SECONDS", 1), patch.object(checkpoint, "COHORT_SECONDS", 4):
+                    await asyncio.wait_for(review.monitor(cohort), 1)
+                self.assertEqual(cohort.reason, "observed_structure")
+                self.assertEqual(review.results, {1: "matched"})
+                self.assertTrue((Path(folder) / "review-1000.json").is_file())
+
+        with tempfile.TemporaryDirectory() as folder:
+            asyncio.run(check(folder))
 
     def test_cancelled_request_retains_completed_tool_result(self):
         async def check(folder):

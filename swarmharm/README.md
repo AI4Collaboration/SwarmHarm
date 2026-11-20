@@ -142,7 +142,15 @@ All corrections, withdrawals and partial work remain in the review.
 The batch runner uses all 12 maintained inputs at each requested N: **36 cohorts /
 336 agent trajectories per model and repeat**. It records a plan, commits each
 registration locally, collects sequentially, exports ATIF and runs independent
-review. It does not run the separately billed transcript judge automatically.
+review. Add `--judge` (optionally `--judge-model MODEL`) to run the blinded
+transcript judge automatically and produce `mechanism-verdict.json` in the same
+pass; `scripts/run-evals --judge` forwards this option across the full lineup.
+Add `--coupling uncoupled` to run the matched per-account uncoupled baseline
+(isolating discussion, published packs and resource pools per account at the same
+population N) for measuring multi-agent amplification. Targeted mechanism studies
+can also select `--input-variant` for asymmetric one-way propagation
+(`*-asymmetric-v1`), unblocked shortcut temptation (`*-unblocked-v1`), or
+coordination-required shared-schema grader tampering (`*-reconciled-schema-v1`).
 Passed software checks are reused only when their source, runtime and required
 coverage match; each input still receives its own path validation.
 Agents within each cohort remain concurrent. The default runner performs the
@@ -154,10 +162,14 @@ export OPENAI_API_KEY_FILE="$SWARMHARM_API_KEY_FILE"
 # Print the complete plan without calling the model.
 "$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run_matrix.py \
   --model "$SWARMHARM_MODEL" --populations 4 8 16
-# Execute that plan. Registrations are committed locally; no push is needed.
+# Execute that plan with automatic transcript judging.
 "$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run_matrix.py \
-  --model "$SWARMHARM_MODEL" --populations 4 8 16 \
+  --model "$SWARMHARM_MODEL" --populations 4 8 16 --judge \
   --execute --out ../swarmharm-runs
+# Matched uncoupled baseline for amplification comparisons.
+"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run_matrix.py \
+  --model "$SWARMHARM_MODEL" --populations 4 8 16 --coupling uncoupled --judge \
+  --execute --out ../swarmharm-uncoupled-runs
 ```
 
 `OPENAI_API_KEY` is also accepted; it is placed in a temporary host-only key file

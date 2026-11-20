@@ -95,9 +95,23 @@ class CommonWorkspace(FileDeployment):
             run(self.container_args(n, label, volume))
             self.resources.callback(run, ['docker', 'rm', '-f', self.name])
             ids = account_ids(n)
-            root = ['docker', 'exec', self.name]
-            run([*root, 'mkdir', '-p', PROJECT, EXPORTS + '/messages'])
-            run([*root, 'chmod', '1777', PROJECT, EXPORTS + '/messages', EXPORTS])
+            root = ['docker', 'exec', '-i', self.name]
+            mail = EXPORTS + '/messages'
+            run([*root, 'mkdir', '-p', PROJECT, mail + '/all'])
+            run([*root, 'chmod', '1777', PROJECT, mail + '/all', EXPORTS])
+            run([*root, 'chmod', '755', mail])
+            if registration.get('closed_mail_receipts'):
+                run([*root, 'mkdir', '-m', '711', mail + '/.closed'])
+            make_boxes = '''
+import json, os, pathlib, sys
+mail = pathlib.Path(sys.argv[1])
+for actor, gid in json.load(sys.stdin):
+    os.setegid(gid)
+    folder = mail / actor
+    folder.mkdir()
+    folder.chmod(0o3773)
+'''
+            run([*root, 'python', '-I', '-c', make_boxes, mail], json.dumps(list(zip(startup, ids))))
             properties = json.loads(run(['docker', 'inspect', self.name]))[0]
             for (actor, files), uid in zip(startup.items(), ids):
                 run([*root, 'mkdir', '-m', '700', f'/var/log/workstation/{uid}'])
@@ -163,7 +177,7 @@ print(json.dumps({'installed':{f:digest(f) for f in spec['own']},'denied':denied
         project, messages = {}, {}
         for actor, station in self.stations.items():
             content = secrets.token_hex(20)
-            for base, inventory in ((PROJECT, project), (EXPORTS+'/messages', messages)):
+            for base, inventory in ((PROJECT, project), (EXPORTS+'/messages/all', messages)):
                 filename = f'{base}/.probe-{nonce}-{actor}'
                 station.as_account(['python', '-I', '-c', 'from pathlib import Path;import sys;Path(sys.argv[1]).write_text(sys.stdin.read())', filename], content)
                 inventory[filename] = sha256(content.encode()).hexdigest()
@@ -181,9 +195,14 @@ print(json.dumps({'installed':{f:digest(f) for f in spec['own']},'denied':denied
             if count != (n if key == 'mnt_ns' else 1):
                 raise RuntimeError('Common workspace namespace verification failed: '+key)
         for actor, station in self.stations.items():
-            station.as_account(['rm', f'{PROJECT}/.probe-{nonce}-{actor}', f'{EXPORTS}/messages/.probe-{nonce}-{actor}'])
-        if run(['docker','exec',self.name,'find',PROJECT,EXPORTS+'/messages','-mindepth','1']):
+            station.as_account(['rm', f'{PROJECT}/.probe-{nonce}-{actor}', f'{EXPORTS}/messages/all/.probe-{nonce}-{actor}'])
+        if run(['docker','exec',self.name,'find',PROJECT,EXPORTS+'/messages','-type','f']):
             raise RuntimeError('Control artifacts remain in the initial shared workspace')
+
+    def mark_mail_session_closed(self, actor):
+        if actor not in self.stations:
+            raise KeyError(actor)
+        run(['docker', 'exec', self.name, 'touch', f'{EXPORTS}/messages/.closed/{actor}'])
 
     def deliver(self, actor, batch, files):
         if batch != 'opening' or files or actor not in self.stations:

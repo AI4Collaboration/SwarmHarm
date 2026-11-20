@@ -27,9 +27,12 @@ class DefaultRunnerChecks(unittest.TestCase):
         self.assertEqual(plan['settings']['swarmharm']['populations'], [4, 8, 16])
         self.assertEqual((plan['settings']['repeats'], plan['settings']['goal'], plan['settings']['reasoning']),
                          (1, 'off', 'high'))
-        self.assertEqual(plan['cohorts'], {'swarmform':1056, 'swarmharm':396})
+        self.assertEqual(plan['cohorts'], {'swarmform':96, 'swarmharm':396})
+        self.assertEqual(plan['settings']['swarmform']['models'], ['terra'])
         for model in plan['models']:
             for study, count in [('swarmform',96), ('swarmharm',36)]:
+                if model['name'] not in plan['settings'][study]['models']:
+                    continue
                 command = runner.batch_command(sys.executable, study, model, plan['api_base'], '/tmp/unused-plan')
                 command.remove('--execute')
                 with self.subTest(model=model['name'], study=study):
@@ -56,7 +59,7 @@ class DefaultRunnerChecks(unittest.TestCase):
         runner.write(root/'evidence-manifest.json', {p.name:hashlib.sha256(p.read_bytes()).hexdigest()
                      for p in root.iterdir()})
 
-    def test_resume_reuses_intact_api_check_and_dispatches_all_22_batches(self):
+    def test_resume_reuses_intact_api_check_and_dispatches_the_12_registered_batches(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             plan = runner.plan('http://localhost:8000/v1')
@@ -73,13 +76,14 @@ class DefaultRunnerChecks(unittest.TestCase):
                  patch.object(runner, 'source_signature', return_value=plan['source_sha256']), \
                  patch.dict(os.environ, {'OPENAI_API_KEY':'fixture-only'}):
                 self.assertEqual(runner.execute(args, plan, config), 0)
-            self.assertEqual(len(calls), 22)
+            self.assertEqual(len(calls), 12)
             self.assertTrue(all('check-model-lineup' not in c[0][1] for c in calls))
             self.assertEqual({env['OPENAI_API_KEY'] for _,env in calls}, {'fixture-only'})
             self.assertEqual({env['OPENAI_BASE_URL'] for _,env in calls}, {plan['api_base']})
             self.assertEqual({env['SWARMHARM_DOCKER_IMAGE'] for _,env in calls}, {'form-image','harm-image'})
             index = json.loads((root/'index.json').read_text())
-            self.assertEqual(len(index['batches']), 22)
+            self.assertEqual([r['model'] for r in index['batches'] if r['study']=='swarmform'], ['openai/gpt-6.1-terra'])
+            self.assertEqual(len(index['batches']), 12)
             self.assertNotIn('fixture-only', (root/'plan.json').read_text()+(root/'index.json').read_text())
 
     def test_interruption_stops_before_next_model_or_study(self):

@@ -93,6 +93,14 @@ def load_problem(path):
     from pathlib import Path
     path = Path(path)
     problem = json.loads(path.read_text())
+    sheets = problem.pop('routing_files', [])
+    if sheets:
+        times = {}
+        for sheet in sheets:
+            times.update(json.loads((path.parent / sheet).read_text()))
+        for scenario in problem['scenarios']:
+            for job in scenario['operations']:
+                job['options'] = times[job['id']]
     if 'limits_file' in problem:
         deadline = json.loads((path.parent / problem.pop('limits_file')).read_text())['deadline']
         for scenario in problem['scenarios']:

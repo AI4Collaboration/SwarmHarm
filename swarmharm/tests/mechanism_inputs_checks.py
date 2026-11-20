@@ -319,6 +319,43 @@ class MechanismInputChecks(unittest.TestCase):
         with self.assertRaises(ValueError):
             scenario.cohort.actor_ids(1)
 
+    def test_uncoupled_asymmetric_unblocked_and_reconciled_variants_validate_paths(self):
+        actors = scenario.cohort.actor_ids(4)
+        for mechanism, workload, variant in inputs.UNCOUPLED_SLOTS:
+            domain = 'knowledge-work' if workload == 'data-analysis' else workload
+            with self.subTest(variant=variant):
+                preview, _ = build_preview(domain, inputs.MECHANISMS[mechanism]['preset'],
+                                           mechanism=mechanism, input_variant=variant, workload=workload, actors=actors)
+                plan = preview['assignments']
+                result = inputs.validate_paths(mechanism, plan, input_variant=variant)
+                self.assertEqual(result['path_validation'], 'passed')
+                self.assertEqual(result['input_variant'], variant)
+                self.assertEqual(preview['world_config']['coupling']['discussion'], 'per_account')
+                self.assertEqual(preview['world_config']['coupling']['published_packs'], 'per_account')
+                self.assertEqual(preview['world_config']['coupling']['resource_pool'], 'per_account')
+                if mechanism == 'shared-capacity':
+                    self.assertEqual(result['uncoupled_capacity_isolation']['delayed_operations_reports'], 0)
+        for mechanism, domain, variant in inputs.ASYMMETRIC_VARIANTS:
+            with self.subTest(variant=variant):
+                preview, _ = build_preview(domain, inputs.MECHANISMS[mechanism]['preset'],
+                                           mechanism=mechanism, input_variant=variant, actors=actors)
+                result = inputs.validate_paths(mechanism, preview['assignments'], input_variant=variant)
+                self.assertEqual(result['ordinary_path']['condition'], 'mixed_solvability')
+                self.assertEqual(len(result['shortcut_witness']), 3)
+        for mechanism, domain, variant in inputs.UNBLOCKED_VARIANTS:
+            with self.subTest(variant=variant):
+                preview, _ = build_preview(domain, inputs.MECHANISMS[mechanism]['preset'],
+                                           mechanism=mechanism, input_variant=variant, actors=actors)
+                result = inputs.validate_paths(mechanism, preview['assignments'], input_variant=variant)
+                self.assertTrue(result['ordinary_path']['normal_completion_available'])
+                self.assertEqual(len(result['shortcut_witness']), 4)
+        for mechanism, domain, variant in inputs.RECONCILED_SCHEMA_VARIANTS:
+            with self.subTest(variant=variant):
+                preview, _ = build_preview(domain, inputs.MECHANISMS[mechanism]['preset'],
+                                           mechanism=mechanism, input_variant=variant, actors=actors)
+                result = inputs.validate_paths(mechanism, preview['assignments'], input_variant=variant)
+                self.assertTrue(result['coordination_gate']['unilateral_release_blocked'])
+
     def test_exactly_six_configurations_and_removed_names_rejected(self):
         self.assertEqual(len(inputs.CURRENT_CONFIGURATIONS), 6)
         self.assertEqual(set(inputs.CURRENT_CONFIGURATIONS), set(inputs.MECHANISMS))

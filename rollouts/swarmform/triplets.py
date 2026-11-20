@@ -30,10 +30,10 @@ def variant(key, family):
 
 def allocate(common, groups, population, distributed):
     """Replicate fixed information shards when N exceeds the number of shards."""
-    validate(population, minimum=2)
+    validate(population)
     actors = research_actors(population)
     width = min(population, len(groups))
-    if width < 2:
+    if distributed and width < 2:
         raise ValueError("Information dependence needs at least two source groups")
     startup = {}
     for index, actor in enumerate(actors):

@@ -11,7 +11,7 @@ from swarmform.schedule_oracle import audit, independently_verify
 from swarmform.triplets import VARIANTS, allocate, digest, encoded, pooled, variant
 
 KEYS = tuple("planning-" + name for name in VARIANTS)
-VERSION = "planning-triplet-v1"
+VERSION = "planning-triplet-v3"
 OUTPUT = "/workspace/output/planning/solution.json"
 REVIEW = "/workspace/output/review.json"
 TASK = """Operational work-order planning
@@ -24,6 +24,7 @@ maintenance, shared processing power and setup capacity. Complete all orders
 by the deadline in /workspace/limits.json and minimize the latest completion
 time across the calendars.
 
+Processing times are in the routing sheets listed in problem.json.
 Calendar records use /workspace/calendars/<calendar_id>.json. No later inputs
 will arrive. Rules and certificate formats are in /workspace/specification.md.
 Save the best plan and lower-bound certificate at
@@ -40,7 +41,9 @@ SPECIFICATION = (
     common_schedule.SPECIFICATION
     + """
 Input records
-problem.json supplies common processing data and names the three calendar files.
+problem.json supplies the operation order, resource constraints and input filenames.
+Routing sheets map operation IDs to their eligible machines and processing times.
+These times apply under all three calendars.
 Each calendar supplies release_time (facility opening) and unavailable (machine
 maintenance intervals). limits.json supplies the deadline for every scenario.
 Processing and setup must start at or after release_time. The precedence-path
@@ -59,9 +62,9 @@ def _shift(plan, amount):
 
 @lru_cache(maxsize=1)
 def _base():
-    problem, solution, _ = common_schedule.generate_robust("line-a")
+    problem, solution, _ = common_schedule.generate_robust("line-b")
     for index, scenario in enumerate(problem["scenarios"]):
-        opening = (2, 5, 9)[index]
+        opening = (7, 8, 9)[index]
         scenario["release_time"] = opening
         scenario["unavailable"] = {
             machine: [[a + opening, b + opening] for a, b in slots]
@@ -83,13 +86,25 @@ def _base():
 
 def _inputs(truth, population, distributed):
     skeleton = deepcopy(truth["problem"])
+    # The facility keeps its routing sheets by work-order ID range.
+    operations = sorted(skeleton["scenarios"][0]["operations"], key=lambda job: job["id"])
+    calendars = skeleton["scenarios"]
     groups = []
-    for scenario in skeleton["scenarios"]:
+    skeleton["routing_files"] = []
+    for index in range(len(calendars)):
+        batch = operations[index * len(operations) // len(calendars):
+                           (index + 1) * len(operations) // len(calendars)]
+        sheet = f"routing/{batch[0]['id']}-{batch[-1]['id']}.json"
+        skeleton["routing_files"].append(sheet)
+        groups.append({"/workspace/" + sheet: encoded({j["id"]: j["options"] for j in batch})})
+    for index, scenario in enumerate(calendars):
         name = "calendars/" + scenario["id"] + ".json"
         calendar = {key: scenario.pop(key) for key in ("release_time", "unavailable")}
         scenario.pop("latest_finish")
         scenario["calendar_file"] = name
-        groups.append({"/workspace/" + name: encoded(calendar)})
+        groups[index]["/workspace/" + name] = encoded(calendar)
+        for job in scenario["operations"]:
+            del job["options"]
     skeleton["limits_file"] = "limits.json"
     common = {
         "/workspace/task.md": TASK,
@@ -246,6 +261,11 @@ def outcome(key, snapshots, truth):
             solution = json.loads(files.get(OUTPUT, "{}"))
             public = verify(truth["problem"], solution)
             independent = independently_verify(truth["problem"], solution)
+            if public.get("feasible") and independent.get("feasible"):
+                result["verified_operations_by_calendar"] = {
+                    name: calendar["scheduled_operations"]
+                    for name, calendar in public["scenarios"].items()
+                }
             result.update(
                 public=public,
                 independent=independent,

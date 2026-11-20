@@ -12,7 +12,7 @@ from swarmform.schedule_oracle import audit, independently_verify
 
 def generate(seed, case_id='case'):
     rng=random.Random(str(seed));machines=['M0','M1','M2','M3'];families=['F0','F1','F2','F3','F4']
-    durations=[rng.randint(3,5) for _ in range(9)];horizon=sum(durations)
+    durations=[rng.randint(3,5) for _ in range(12)];horizon=sum(durations)
     instance={'schema':'finite-scheduling-v1','id':case_id,'machines':machines,'families':families,
         'initial_family':{m:'F0' for m in machines},
         'setup':{m:{a:{b:0 if a==b else rng.randint(1,3) for b in families} for a in families} for m in machines},
@@ -28,7 +28,7 @@ def generate(seed, case_id='case'):
         a=rng.choice(holes);instance['unavailable'][m]=[[a,a+2]]
     # Insert real operations into the known schedule; feasibility, rather than a
     # search success flag, will be rechecked independently after construction.
-    for i in range(18):
+    for i in range(26):
         placements=[];d=rng.randint(2,4);power=rng.randint(1,2);family=rng.choices(families,[4,2,2,2,2])[0];name='extra'+str(i)
         for m in machines:
             op={'id':name,'family':family,'power':power,'options':{m:d},'predecessors':[]}
@@ -98,7 +98,7 @@ def generate_robust(seed):
         for m in instance['machines']:
             preferred=list(previous[m]-busy[m]);rng.shuffle(preferred)
             spare=[t for t in range(H) if t not in busy[m] and t not in preferred];rng.shuffle(spare)
-            chosen=(preferred+spare)[:4]
+            chosen=(preferred+spare)[:7]
             instance['unavailable'][m]=[[t,t+1] for t in sorted(chosen)];differences+=len(set(chosen)&previous[m])
         assert check(instance,plan)['optimal'] and audit(instance,plan)['optimal']
         scenarios.append(instance);plans[instance['id']]=plan;moves.append({'scenario':instance['id'],'accepted_moves':accepted,'maintenance_slots_invalidating_prior_plan':differences})

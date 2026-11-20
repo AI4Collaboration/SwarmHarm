@@ -44,7 +44,7 @@ def build_preview(domain, preset, overrides=None, *, combined=False, harness='co
         'world_revision': world_config.REVISION,
         'domain': domain_runtime.domain_for(domain), 'workload': domain,
         'preset': preset, 'harness_file_layout': harness,
-        **({'mechanism_contract': mechanism_inputs.validate_plan(mechanism, plan)}
+        **({'mechanism_contract': mechanism_inputs.validate_plan(mechanism, plan, input_variant=input_variant)}
            if mechanism else {}),
         **({'classification': mechanism_inputs.classification(mechanism)}
            if mechanism else {}),

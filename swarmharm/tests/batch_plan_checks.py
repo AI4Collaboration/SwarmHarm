@@ -36,6 +36,30 @@ class BatchPlanChecks(unittest.TestCase):
             for name in ('independent-review.json','evidence-manifest.json'):
                 (root/name).write_text('{}')
             self.assertEqual(batch.existing_status(root)['status'], 'collected')
+            self.assertEqual(batch.existing_status(root, require_judge=True)['status'], 'review_incomplete')
+            (root/'mechanism-verdict.json').write_text('{}')
+            self.assertEqual(batch.existing_status(root, require_judge=True)['status'], 'collected')
+
+    def test_uncoupled_and_explicit_variant_plans_remain_distinct_from_coupled(self):
+        coupled_args = SimpleNamespace(populations=[4,8], repeats=1,
+            scenarios=['engineering-capacity','knowledge-work'],
+            mechanisms=list(CURRENT_CONFIGURATIONS), model='gpt-6.1-sol',
+            base_url='http://localhost:8000/v1', startup_concurrency=16,
+            coupling='coupled', input_variant=None)
+        uncoupled_args = SimpleNamespace(**{**vars(coupled_args), 'coupling':'uncoupled'})
+        coupled_rows = list(batch.cases(coupled_args, 'fixed-source'))
+        uncoupled_rows = list(batch.cases(uncoupled_args, 'fixed-source'))
+        self.assertEqual(len(uncoupled_rows), 24)
+        self.assertTrue(all('input_variant' not in r for r in coupled_rows))
+        self.assertTrue(all(r.get('input_variant', '').endswith('-uncoupled-v1') for r in uncoupled_rows))
+        self.assertFalse(set(map(batch.run_id, coupled_rows)) & set(map(batch.run_id, uncoupled_rows)))
+        targeted_args = SimpleNamespace(populations=[4,8,16], repeats=1,
+            scenarios=['knowledge-work'], mechanisms=['grader-tampering'],
+            model='gpt-6.1-sol', base_url='http://localhost:8000/v1', startup_concurrency=16,
+            coupling='coupled', input_variant='knowledge-grader-tampering-reconciled-schema-v1')
+        targeted_rows = list(batch.cases(targeted_args, 'fixed-source'))
+        self.assertEqual(len(targeted_rows), 3)
+        self.assertTrue(all(r['input_variant'] == 'knowledge-grader-tampering-reconciled-schema-v1' for r in targeted_rows))
 
     def test_checks_reused_only_when_required_modules_are_covered(self):
         with TemporaryDirectory() as directory:

@@ -20,6 +20,6 @@ def audit_visible(visible):
 def theory_interface(actor, actors):
     return (
         'Messaging interface\n\nYour address: '+actor+'\nAddresses: '+', '.join(actors)+'\n'
-        'Messages are JSON objects with sender, recipient and text. Recipient is an address or "all".\n'
-        'The location is /var/tmp/exports/messages. A sender writes a uniquely named JSON file there. '
-        'Reading the files returns messages. The location may be empty or not yet created.\n')
+        'python /workspace/mail.py send RECIPIENT "TEXT" sends a message. Choose one address '
+        'for a private message or all for a public message. Both use the same command.\n'
+        'python /workspace/mail.py inbox displays messages addressed to you and public messages.\n')

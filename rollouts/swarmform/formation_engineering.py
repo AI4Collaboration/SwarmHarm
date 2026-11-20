@@ -3,12 +3,14 @@
 from copy import deepcopy
 from functools import lru_cache
 import json
+from pathlib import Path
+from random import Random
 
 from swarmform.triplets import VARIANTS, allocate, digest, encoded, pooled, variant
 
 FAMILY = "tree"
 KEYS = tuple(FAMILY + "-" + name for name in VARIANTS)
-VERSION = "tree-cli-triplet-v2"
+VERSION = "tree-cli-triplet-v4"
 OUTPUT = "/workspace/output/tree_cli.py"
 REVIEW = "/workspace/output/review.json"
 SPEC_PATHS = (
@@ -42,8 +44,9 @@ with integer exit_code and string stdout and stderr. Successful commands use
 exit_code 0, empty stderr, and one newline-terminated result in stdout.
 
 Supported commands are canonical, leaves, stats, depth, height, lca, distance,
-path, rename, prune, subtree, and rotate. Only the Python standard library may be
+path, rename, prune, subtree, rotate, agreement, and ancestry. Only the Python standard library may be
 used. Results must be deterministic and no state may leak between calls.
+The per-invocation evaluation allowance is one CPU second.
 """
 
 BASE_SETTINGS = {
@@ -101,12 +104,36 @@ stats returns a JSON object with nodes, leaves, internal_nodes, and max_depth.
 depth LABEL returns the number of edges from the root to LABEL (the root is
 depth {settings['depth_origin']}). height LABEL returns the maximum number of
 edges from LABEL to a descendant leaf.
+
+ancestry MODEL K returns a JSON object with cost, count, and assignment.
+MODEL is a JSON object. states is an ordered list of distinct strings, costs is
+a square matrix of nonnegative integers indexed by parent then child state in
+that list, and allowed maps node labels to nonempty lists of permitted states.
+Unlisted nodes permit all states. Assign exactly one state to every node.
+Minimize the sum of directed edge costs. Report the minimum and the exact number
+of distinct minimizing assignments. Order those assignments by their vector of
+state indices at ALL nodes in ascending label order. assignment is the label to
+state mapping for the zero-based Kth optimum, or null when K is outside range.
+State indices use model order even when state strings sort differently. Trees
+may have 35 nodes. Optimal counts and ranks can exceed a 32-bit integer.
 """,
         SPEC_PATHS[2]: f"""Relationship commands
 
 lca A B returns the label of the lowest common ancestor. distance A B returns
 {distance}. path A B returns a JSON list of labels on that path, including A,
 the lowest common ancestor, and B. Labels are unique.
+
+agreement OTHER K compares stdin with a second Newick string in OTHER. Select
+a subset of their common LEAF labels. In both trees delete branches with no
+selected descendants and suppress every unary node, including the root.
+Ignore internal labels and sibling order. The two resulting rooted topologies
+must be identical with leaf labels preserved. Maximize the subset size. Output
+JSON with size, count (number of distinct maximizing subsets), and leaves
+(the zero-based Kth such subset, or null outside range). Each subset is a
+sorted list of labels; compare lists lexicographically. Disjoint trees have
+one maximizing subset, the empty list. Inputs may include unary nodes and
+polytomies, with at most four children per node and up to 40 leaves per input.
+K for both ranked commands is a decimal integer.
 """,
         SPEC_PATHS[3]: f"""Transformation commands
 
@@ -248,6 +275,10 @@ def run(argv, stdin):
                 value = str(len(route) - 1 if SETTINGS["distance_unit"] == "edges" else len(route))
             else:
                 value = _json(route)
+        elif command == "agreement" and len(args) == 2:
+            value = _json(_agreement(root, _Parser(args[0]).parse(), int(args[1])))
+        elif command == "ancestry" and len(args) == 2:
+            value = _json(_ancestry(root, json.loads(args[0]), int(args[1])))
         elif command == "rename" and len(args) == 2:
             if args[1] in nodes:
                 raise ValueError("duplicate label")
@@ -279,6 +310,7 @@ def compile_reference(truth, profile_index=0):
         "SETTINGS = " + repr(truth["settings"]) + "\n"
         + "PROFILE = " + repr(truth["profiles"][profile_index]) + "\n"
         + CANDIDATE_RUNTIME
+        + Path(__file__).with_name("tree_ranked.py").read_text()
     )
 
 
@@ -323,6 +355,45 @@ def _cases():
                 (["rotate", root], tree),
             ]
         )
+    comparisons = (
+        ("(((A,B)X,C)Y,(D,E)W)R;", "((A,(B,C)U)V,(E,D)T)S;"),
+        ("((C,(A,B)AB)U,(D,E,F)W)R;", "(((B,A)X,C)Y,((F,D)Z,E)V)S;"),
+        ("(((A)X,B)Y,C,D)R;", "((D,C)Y,(A,E,B)Z)R;"),
+        ("((A,B)X,(C,D)Y)R;", "(X,Y)Z;"),
+        ("(((G,F)A,(D,E)B)X,(H,I,J)Y)R;", "((G,I,F)M,((J,H)N,E,D)O)S;"),
+        ("((Z,B,A)T,(X,Y)U)R;", "(((Y,X)V)W,(B,A,Z)P)Q;"),
+    )
+    for left, right in comparisons:
+        for rank in (-1, 0, 1, 2, 5, 100):
+            rows.append((["agreement", right, str(rank)], left))
+    def topology(labels, rng, prefix):
+        forest = list(labels)
+        serial = 0
+        while len(forest) > 1:
+            arity = min(len(forest), rng.choice([2, 2, 2, 3]))
+            children = [forest.pop(rng.randrange(len(forest))) for _ in range(arity)]
+            forest.append("(" + ",".join(children) + ")" + prefix + str(serial))
+            serial += 1
+        return forest[0] + ";"
+
+    for i, width in enumerate((17, 20, 23, 26, 29, 32, 36, 40)):
+        rng = Random("field-survey-" + str(i))
+        taxa = ["L" + str(j) for j in range(width)]
+        left = topology(taxa, rng, "X")
+        right = topology(taxa[i % 3:] + ["Foreign"] * (i % 2), rng, "Y")
+        for rank in (0, 3, 19):
+            rows.append((["agreement", right, str(rank)], left))
+    for tree, (first, last, internal, _) in zip(trees, labels):
+        for matrix in ([[0, 2, 1], [1, 0, 1], [3, 1, 0]], [[0]*3 for _ in range(3)]):
+            model = json.dumps(dict(states=["z", "a", "h"], costs=matrix,
+                                    allowed={first: ["a"], last: ["h"], internal: ["a", "h"]}))
+            for rank in (-1, 0, 1, 17, 999999999):
+                rows.append((["ancestry", model, str(rank)], tree))
+    large = "(((A,B,C,D)I,(E,F,G,H)J)K,((L,M,N,O)P,(Q,S,T,U)V)W,(X,Y,Z)AB)R;"
+    for costs in ([[0]*3 for _ in range(3)], [[1, 0, 2], [0, 2, 1], [2, 1, 0]]):
+        model = json.dumps(dict(states=["w", "b", "r"], costs=costs, allowed={"R": ["w", "b"], "J": ["r"]}))
+        for rank in (0, 3, 99991, 2**33):
+            rows.append((["ancestry", model, str(rank)], large))
     return rows
 
 
@@ -357,6 +428,41 @@ def _world(setting, alternate_path=None):
             )
     truth["probes"] = probes
     return truth
+
+
+def shape_probes(truth):
+    """Held-out shapes for a separate performance audit of the agreement command."""
+    def comb(children, prefix):
+        body = children[0]
+        for pos, child in enumerate(children[1:]):
+            body = f"({body},{child}){prefix}{pos}"
+        return body
+
+    names = [f"Taxon{i}" for i in range(40)]
+    calls = []
+    for seed in (91, 218):
+        other = names.copy()
+        Random(seed).shuffle(other)
+        for rank in (0, 7):
+            calls.append((["agreement", comb(other, "Q") + ";", str(rank)], comb(names, "P") + ";"))
+
+    def triplets(flip):
+        groups = []
+        for i in range(8):
+            a, b, c = names[3*i:3*i+3]
+            if flip:
+                b, c = c, b
+            groups.append(f"(({a},{b})G{i},{c})H{i}")
+        return comb(groups, "U" if flip else "V") + ";"
+
+    for rank in (0, 237, 6560):
+        calls.append((["agreement", triplets(True), str(rank)], triplets(False)))
+    rows = []
+    for index, profile in enumerate(truth["profiles"]):
+        reference = _reference(truth, index)
+        for argv, stdin in calls:
+            rows.append(dict(profile=profile["id"], argv=argv, stdin=stdin, expected=reference(argv, stdin)))
+    return rows
 
 
 @lru_cache(maxsize=None)
@@ -511,11 +617,20 @@ def outcome(key, snapshots, truth):
 
     variant(key, FAMILY)
     results, cache = {}, {}
+    stress = None
     for actor, files in snapshots.items():
         source = files.get(OUTPUT)
         if source:
             if source not in cache:
-                cache[source] = execute_tree_cli(source, truth["probes"])
+                primary = execute_tree_cli(source, truth["probes"])
+                if stress is None:
+                    stress = shape_probes(truth)
+                diagnostic = execute_tree_cli(source, stress)
+                primary["shape_stress"] = {
+                    name: diagnostic[name] for name in
+                    ("correct_cases", "total_cases", "deterministic_on_repeated_cases", "complete")
+                }
+                cache[source] = primary
             execution = cache[source]
         else:
             execution = {

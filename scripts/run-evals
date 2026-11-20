@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run both studies with the fixed 11-model lineup and their registered scales. Without --execute, print the plan."""
+"""Run SwarmForm on Terra and SwarmHarm on its registered model lineup. Without --execute, print the plan."""
 import argparse
 import fcntl
 import hashlib
@@ -30,13 +30,14 @@ def source_signature():
 
 def plan(base, mapping=None):
     models = defaults.selection(mapping=mapping)
-    return dict(settings=defaults.settings(), models=models, api_base=base,
-                cohorts=dict(swarmform=len(models)*len(defaults.TASKS)*len(defaults.CHANNELS)*len(defaults.SWARMFORM_POPULATIONS)*defaults.REPEATS,
-                             swarmharm=len(models)*len(defaults.MECHANISMS)*len(defaults.SCENARIOS)*len(defaults.POPULATIONS)*defaults.REPEATS),
+    settings = defaults.settings()
+    return dict(settings=settings, models=models, api_base=base,
+                cohorts=dict(swarmform=len(settings['swarmform']['models'])*len(defaults.TASKS)*len(defaults.CHANNELS)*len(defaults.SWARMFORM_POPULATIONS)*defaults.REPEATS,
+                             swarmharm=len(settings['swarmharm']['models'])*len(defaults.MECHANISMS)*len(defaults.SCENARIOS)*len(defaults.POPULATIONS)*defaults.REPEATS),
                 source_sha256=source_signature())
 
 
-def batch_command(python, study, model, base, output):
+def batch_command(python, study, model, base, output, *, judge=False, judge_model=None):
     script = 'rollouts/run_matrix.py' if study == 'swarmform' else 'swarmharm/run_matrix.py'
     populations = defaults.SWARMFORM_POPULATIONS if study == 'swarmform' else defaults.POPULATIONS
     args = [python, str(REPO/script), '--model', model['model'], '--served-model', model['served_model'],
@@ -47,6 +48,10 @@ def batch_command(python, study, model, base, output):
         args += ['--harness', model['harness'], '--tasks', *defaults.TASKS]
     else:
         args += ['--scenarios', *defaults.SCENARIOS, '--mechanisms', *defaults.MECHANISMS]
+        if judge:
+            args.append('--judge')
+            if judge_model:
+                args += ['--judge-model', judge_model]
     return args
 
 
@@ -132,6 +137,8 @@ def execute(args, expected, config):
         records = []
         for model in expected['models']:
             for study in ('swarmform', 'swarmharm'):
+                if model['name'] not in expected['settings'][study]['models']:
+                    continue
                 if source_signature() != expected['source_sha256']:
                     raise RuntimeError('Source changed during the batch; preserve this run and use a fresh output')
                 output = root/study/model['name']
@@ -143,8 +150,10 @@ def execute(args, expected, config):
                                  SWARMHARM_SANDBOX='docker', SWARMHARM_HARBOR_ENV=str(Path(python).parent.parent),
                                  SWARMHARM_NATIVE_CODEX=str(REPO/'shared/codex/node_modules/.bin/codex'))
                 with log_path.open('a') as log:
-                    code, interrupted = run_process(batch_command(python, study, model, expected['api_base'], output),
-                                                    cwd=REPO, env=study_env, stdout=log, stderr=subprocess.STDOUT)
+                    cmd = batch_command(python, study, model, expected['api_base'], output,
+                                        judge=getattr(args, 'judge', False),
+                                        judge_model=getattr(args, 'judge_model', None))
+                    code, interrupted = run_process(cmd, cwd=REPO, env=study_env, stdout=log, stderr=subprocess.STDOUT)
                 record.update(status='complete' if code == 0 and not interrupted else 'incomplete', returncode=code)
                 if interrupted: record['interrupted'] = interrupted
                 records.append(record)
@@ -160,6 +169,8 @@ def main():
     parser.add_argument('--base-url', default=os.environ.get('OPENAI_BASE_URL'))
     parser.add_argument('--key-file', type=Path, default=os.environ.get('OPENAI_API_KEY_FILE'))
     parser.add_argument('--model-map', type=Path, help='Optional provider ID spelling; all 11 models remain selected')
+    parser.add_argument('--judge', action='store_true', help='Run SwarmHarm transcript judge automatically on each collected cohort')
+    parser.add_argument('--judge-model', help='Explicit judge model ID when --judge is enabled')
     parser.add_argument('--out', type=Path, default=REPO.parent/'swarm-runs')
     parser.add_argument('--execute', action='store_true')
     args = parser.parse_args()

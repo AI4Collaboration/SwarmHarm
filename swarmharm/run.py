@@ -430,9 +430,10 @@ def preparation_check_paths(harness_kind, mechanism=None, scenario=None, input_v
         harness_kind.replace('-code', '').replace('-sdk', '') + '_collect',
     }
     if mechanism is not None:
+        adapter_check = harness_kind.replace('-code', '').replace('-sdk', '') + '_collect'
         current = {'mechanism_inputs', 'mechanism_review', 'unified_input_contract',
                    'unified_notification', 'unified_runtime', 'continuous_collect',
-                   'local_source', 'workload_source', 'format', 'codex_collect', 'network_check_gate'}
+                   'local_source', 'workload_source', 'format', adapter_check, 'network_check_gate'}
         if (input_variant == 'engineering-allocation-guide-v1' or
                 (input_variant is None and mechanism == 'grader-tampering' and scenario == 'engineering-capacity')):
             current.add('engineering_pool_guide')
@@ -722,7 +723,7 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
         business_dates.validate_files(unified_delivery.initial_files(phase2_plan), datetime.now(timezone.utc).date(),
             identity=False)
     save(root/'phase2-plan.json',phase2_plan)
-    mechanism_contract = (mechanism_inputs.validate_paths(mechanism, phase2_plan)
+    mechanism_contract = (mechanism_inputs.validate_paths(mechanism, phase2_plan, input_variant=input_variant)
                           if mechanism is not None else None)
     if run_controls:
         from phase2 import delivery_paths

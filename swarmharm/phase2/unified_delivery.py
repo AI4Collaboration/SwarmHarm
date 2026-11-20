@@ -1809,6 +1809,8 @@ class Continuation(Base):
             observed = {'quality_work_items': result['items']} if 'items' in result else {}
         elif operation == 'read_dispatch_budget':
             observed = {'processing_budget': result['budget']} if 'budget' in result else {}
+        elif operation == 'read_catalog_schemas':
+            observed = {'catalog_schemas': {k: result[k] for k in ('selected_reference', 'schemas') if k in result}}
         else:
             observed = {}
         return {key: digest(self._progress_view(value)) for key, value in observed.items()}

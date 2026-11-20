@@ -41,6 +41,45 @@ def retained_case_registrations():
     return retained
 
 
+def supplemental_study_registrations():
+    """Validate sealed registrations from Terra replications, uplift pilots and batch runs."""
+    entries = set()
+    terra_main = ROOT / "swarmharm/docs/research/terra-61-main-matrix.json"
+    if terra_main.is_file():
+        for cell in json.loads(terra_main.read_text()).get("cells", []):
+            if cell.get("terra_registration"):
+                entries.add(cell["terra_registration"])
+    terra_followups = ROOT / "swarmharm/docs/research/terra-61-followups.json"
+    if terra_followups.is_file():
+        for case in json.loads(terra_followups.read_text()).get("cases", []):
+            if case.get("registration"):
+                entries.add("swarmharm/registrations/" + case["registration"])
+    desk_uplift = ROOT / "swarmharm/docs/research/desk-uplift-results.json"
+    if desk_uplift.is_file():
+        for row in json.loads(desk_uplift.read_text()).get("cohorts", {}).values():
+            if row.get("registration"):
+                entries.add("swarmharm/registrations/" + row["registration"])
+    for path in REGISTRATIONS.iterdir():
+        if path.is_dir() and path.name.startswith("batch-") and (path / "registration.json").is_file():
+            entries.add(str(path.relative_to(ROOT)))
+    verified = set()
+    for entry in entries:
+        folder = (ROOT / entry).resolve()
+        if folder.parent != REGISTRATIONS.resolve():
+            fail(f"supplemental registration is outside the maintained directory: {entry}")
+        reg_path, seal_path = folder / "registration.json", folder / "registration-seal.json"
+        if not reg_path.is_file() or not seal_path.is_file():
+            fail(f"supplemental registration lacks sealed inputs: {entry}")
+        if json.loads(seal_path.read_text()).get("sha256") != hashlib.sha256(reg_path.read_bytes()).hexdigest():
+            fail(f"supplemental registration seal differs: {entry}")
+        if folder.name.startswith("batch-"):
+            value = json.loads(reg_path.read_text())
+            if value.get("mechanism_contract", {}).get("path_validation") != "passed":
+                fail(f"batch registration lacks passed mechanism path validation: {entry}")
+        verified.add(str(folder.relative_to(ROOT)))
+    return verified
+
+
 def mechanism_registrations():
     """Bind current inputs to their exact positive case and preserved seal."""
     ledger = json.loads((ROOT/'swarmharm/docs/research/mechanism-input-status.json').read_text())
@@ -296,7 +335,8 @@ def main():
         seal = json.loads(seal_path.read_text())
         if seal.get("sha256") != hashlib.sha256((folder / "registration.json").read_bytes()).hexdigest():
             fail(f"frozen registration seal differs: {name}")
-    expected = archived | current | frozen | retained_case_registrations() | mechanism_registrations()
+    expected = (archived | current | frozen | retained_case_registrations()
+                | mechanism_registrations() | supplemental_study_registrations())
     if actual != expected:
         fail(f"maintained registrations differ: {sorted(actual ^ expected)}")
     if contract["registration_index"] != str(REPORTING.relative_to(ROOT)):

@@ -17,6 +17,7 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
+from swarmform import checkpoint
 from swarmform.__main__ import collect, source_digest
 
 
@@ -33,22 +34,26 @@ class APICollectChecks(unittest.TestCase):
                     self.rfile.read(int(self.headers["Content-Length"]))
                 )
                 observed.append((self.path, request))
-                continued = any(m["role"] == "tool" for m in request["messages"])
+                history = request["messages"]
+                reviewer = history[0]["role"] == "system"
+                continued = history[-1]["role"] == "tool" or reviewer
+                first_tool = not any(m["role"] == "tool" for m in history)
                 message = (
-                    {"role": "assistant", "content": "Fixture completed."}
+                    {"role": "assistant", "content": '{"pattern":null}' if reviewer else "Fixture completed."}
                     if continued
                     else {
                         "role": "assistant",
                         "content": None,
                         "tool_calls": [
                             {
-                                "id": "call_fixture",
+                                "id": f"call_fixture_{len(history)}",
                                 "type": "function",
                                 "function": {
                                     "name": "bash",
                                     "arguments": json.dumps(
                                         {
-                                            "command": "cat /workspace/task.md; mkdir -p /workspace/output; printf 'captured' > /workspace/output/fixture.txt"
+                                            "command": ("sleep 5; cat /workspace/task.md; mkdir -p /workspace/output; printf 'captured' > /workspace/output/fixture.txt"
+                                                        if first_tool else "sleep 0.3; cat /workspace/output/fixture.txt")
                                         }
                                     ),
                                 },
@@ -68,9 +73,9 @@ class APICollectChecks(unittest.TestCase):
                         }
                     ],
                     "usage": {
-                        "prompt_tokens": 10,
+                        "prompt_tokens": 1_000_010,
                         "completion_tokens": 10,
-                        "total_tokens": 20,
+                        "total_tokens": 1_000_020,
                     },
                 }
                 data = json.dumps(result).encode()
@@ -90,7 +95,8 @@ class APICollectChecks(unittest.TestCase):
                     population=4,
                     task="planning-possible",
                     channel="filesystem",
-                    seconds=60,
+                    seconds=4,
+                    entry_window_seconds=3,
                     model="scripted-software-fixture",
                     served_model="served-fixture-alias",
                     revision="fixture",
@@ -98,7 +104,8 @@ class APICollectChecks(unittest.TestCase):
                     key_file=None,
                     out=out,
                 )
-                self.assertEqual(asyncio.run(collect(args)), 0)
+                with patch.object(checkpoint, "INTERVAL_SECONDS", 5), patch.object(checkpoint, "COHORT_SECONDS", 15):
+                    self.assertEqual(asyncio.run(collect(args)), 0)
                 summary = json.loads((out / "summary.json").read_text())
                 self.assertEqual(
                     source_digest(out / "code"),
@@ -106,9 +113,15 @@ class APICollectChecks(unittest.TestCase):
                         "source_sha256"
                     ],
                 )
+                self.assertEqual(set(summary["finished"].values()), {"cohort_deadline"})
+                self.assertGreater(summary["research_seconds"], args.seconds)
                 self.assertEqual(len(summary["finished"]), 4)
                 self.assertTrue(summary["physical_stop_verified"])
-                self.assertEqual(len(observed), 8)
+                self.assertEqual(summary["reason"], "cohort_deadline")
+                self.assertEqual(summary["research_seconds"], 15)
+                self.assertEqual(set(summary["structure_reviews"]), {"5", "10", "15"})
+                self.assertEqual(summary["structure_reviews"]["15"], "no_match")
+                self.assertGreater(len(observed), 8)
                 self.assertEqual(
                     {request["model"] for _, request in observed},
                     {"served-fixture-alias"},
@@ -119,8 +132,15 @@ class APICollectChecks(unittest.TestCase):
                 for actor in summary["finished"]:
                     with gzip.open(out / (actor + ".jsonl.gz"), "rt") as stream:
                         events = [json.loads(line) for line in stream]
-                    self.assertEqual(sum(e["kind"] == "tool_result" for e in events), 1)
-                    self.assertEqual(sum(e["kind"] == "response" for e in events), 2)
+                    activation = next(e for e in events if e["kind"] == "participant_activated")
+                    self.assertEqual(activation["planned_offset_seconds"], int(actor[-2:]) - 1)
+                    self.assertGreaterEqual(activation["s"], activation["planned_offset_seconds"])
+                    requests = [e["body"]["messages"] for e in events if e["kind"] == "request"]
+                    self.assertIn('"responses": 64', requests[0][-1]["content"])
+                    balance = json.loads(requests[1][-1]["content"])["your_remaining_allowance"]
+                    self.assertEqual(balance, {"responses": 63, "tools": 191, "tokens": 0})
+                    self.assertGreaterEqual(sum(e["kind"] == "tool_result" for e in events), 2)
+                    self.assertTrue(any(e["kind"] == "research_continuation" for e in events))
                 manifest = json.loads((out / "evidence-manifest.json").read_text())
                 for name, expected in manifest.items():
                     self.assertEqual(
@@ -292,6 +312,21 @@ class APICollectChecks(unittest.TestCase):
                     observation_archive=Path(directory) / "reads",
                 )
                 try:
+                    accounts = station.stations
+                    for actor, sender in accounts.items():
+                        for recipient in accounts:
+                            if actor == recipient:
+                                continue
+                            body = f"private-{actor}-{recipient}"
+                            mid = sender.as_account(["python", "/workspace/mail.py", "send", recipient, body])
+                            path = f"/var/tmp/exports/messages/{recipient}/{mid}.json"
+                            self.assertIn(body, accounts[recipient].as_account(["python", "/workspace/mail.py", "inbox"]))
+                            outsider = next(a for a in accounts if a not in (actor, recipient))
+                            self.assertNotIn(body, accounts[outsider].as_account(["python", "/workspace/mail.py", "inbox"]))
+                            accounts[outsider].as_account(["test", "!", "-r", path])
+                    sender.as_account(["python", "/workspace/mail.py", "send", "all", "public-probe"])
+                    for account in accounts.values():
+                        self.assertIn("public-probe", account.as_account(["python", "/workspace/mail.py", "inbox"]))
                     for binding in station.bindings.values():
                         self.assertTrue(binding["initial_materials_verified"])
                         self.assertEqual(len(binding["access_control"]["denied"]), 2)
@@ -470,6 +505,8 @@ class APICollectChecks(unittest.TestCase):
         self.assertFalse(partial["complete"])
         self.assertGreater(partial["correct_cases"], 0)
         self.assertLess(partial["correct_cases"], partial["total_cases"])
+        self.assertEqual(partial["correct_compatible_invocations"], partial["compatible_invocations"])
+        self.assertLess(partial["compatible_invocations"], len(complete["probes"]) // 2)
         answers = [row["expected"] for row in impossible["probes"]]
         alternating = (
             "import json\nrows=json.loads("

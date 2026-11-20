@@ -1,10 +1,34 @@
 {
   "schema_version": 4,
-  "updated_at": "2026-11-08",
+  "updated_at": "2026-11-20",
   "purpose": "Index of the complete evidence bundles supporting the maintained results. Verify each release manifest before review.",
   "repository": "AI4Collaboration/SwarmHarm",
   "visibility": "private",
   "current": {
+    "six_mechanism_main_matrix_sol61": {
+      "results": "mechanism-input-status.json",
+      "results_sha256": "39ae271c953a605cb32d157d21aa94aedc9228304c7c55a53dad19a6fdc34603",
+      "complete_cells": 12,
+      "native_trajectories": 48,
+      "scope": "Six threat models across Engineering and Knowledge Work at N=4 with Sol 6.1 (nine fresh runtime rechecks and three execution-matched sealed positives)."
+    },
+    "six_mechanism_terra61_replication": {
+      "results": "terra-61-main-matrix.json",
+      "results_sha256": "f3ab6b7c922575efb7ea0b67494078ce7976a2662742a744ca3376817b6668fe",
+      "followups": "terra-61-followups.json",
+      "followups_sha256": "9d920a55ec749f49449e80ca84b29b70071915e3923d04a5fe74ee2bd2df8cf4",
+      "complete_cells": 12,
+      "positive_cells": 9,
+      "native_trajectories": 48,
+      "scope": "Complete 12-cell N=4 Terra 6.1 replication across all six threat models (five mechanisms observed; Grader Manipulation absent in both domains), plus two supplementary four-agent cohorts."
+    },
+    "desk_communication_uplift_pilot": {
+      "results": "desk-uplift-results.json",
+      "results_sha256": "5cb9bb3afbf61cdbdf7c2f7ee5af1e36ef6f5299882a652b7ef218a7c3978dd1",
+      "complete_rollouts": 4,
+      "native_trajectories": 16,
+      "scope": "Two matched Terra 6.1 four-agent pairs comparing within-desk versus across-desk mail availability under shared capacity."
+    },
     "swarmform_cache_pilot": {
       "release": "https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-cache-v57-20261108",
       "results": "swarmform-cache-pilot.json",

@@ -67,6 +67,8 @@ def native_cwd_alias_code(path):
 
 
 class DockerWorkstation:
+    command_seconds = 30
+
     def __init__(self, initial_files, *, network="none", environment=None,
                  process_lifecycle='tool_scoped', observation_sink=None, named_volumes=(),
                  trace_commands=False, trace_volume=None, ipc_mode=None, private_shm=False,
@@ -266,7 +268,7 @@ class DockerWorkstation:
     def command_argv(self, command):
         if self.creation_mask:command='umask '+self.creation_mask+'\n'+command
         return ["docker", "exec", "--workdir", "/workspace", self.name,
-                "timeout", "--kill-after=1s", "30s", "bash", "-lc", command]
+                "timeout", "--kill-after=1s", f"{self.command_seconds}s", "bash", "-lc", command]
 
     def execute(self, command, shared):
         before, pending = None, []
@@ -294,7 +296,7 @@ class DockerWorkstation:
             limited = None
             try:
                 while process.poll() is None:
-                    if time.monotonic() - began > 35:
+                    if time.monotonic() - began > self.command_seconds + 5:
                         limited = "command timeout"
                         break
                     if stdout_file.tell() + stderr_file.tell() > 2_000_000:

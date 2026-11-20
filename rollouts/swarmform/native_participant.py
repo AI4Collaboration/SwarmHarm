@@ -8,13 +8,15 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "shared"))
 import model_session
+from .checkpoint import output_text
 
 
-async def participate(cohort, actor, limits):
+async def participate(cohort, actor):
     args = cohort.args
     events = queue.Queue()
     agent = None
     calls = {}
+    prompt_start = 0.0
     usage = cohort.usage[actor] = {"responses": 0, "tools": 0, "tokens": 0}
     try:
         tools = cohort.visible["tools"]
@@ -47,15 +49,32 @@ async def participate(cohort, actor, limits):
                 )
             ),
         )
-        while not cohort.stopping.is_set():
+        while cohort.active():
             try:
                 _, message = await asyncio.to_thread(events.get, True, 0.25)
             except queue.Empty:
                 continue
+            if not cohort.active():
+                return
             kind = message["type"]
-            cohort.trace(actor, "native_event", event=message)
+            event_time = cohort.trace(actor, "native_event", event=message)
             if kind == "ready":
-                agent.prompt(*cohort.visible["prompts"][actor])
+                prompt_start = event_time
+                agent.prompt(*cohort.prompts(actor))
+            elif kind == "request" and args.api_protocol == "native":
+                payload = message.get("payload", {})
+                # Pi exposes the provider request; SDK controllers expose their input projection.
+                # Use only tool outputs explicitly present in the current request history.
+                items = payload.get("input", [])
+                if isinstance(items, list):
+                    with cohort.lock:
+                        for item in reversed(items):
+                            if item.get("type") == "function_call" or item.get("role") == "assistant":
+                                break
+                            if item.get("type") == "function_call_output":
+                                cohort.review.receipt(actor, item.get("call_id"), event_time,
+                                                      output_text(item.get("output")))
+                prompt_start = event_time
             elif kind in ("transport_response", "provider_response", "response_update"):
                 response = (
                     message
@@ -91,13 +110,7 @@ async def participate(cohort, actor, limits):
                             "Provider must return positive token usage for matched budgets"
                         )
                     usage["tokens"] += count
-                    if usage["tokens"] >= limits["tokens"]:
-                        cohort.returns[actor] = "observed_token_budget"
-                        return
             elif kind == "tool_call":
-                if usage["tools"] >= limits["tools"]:
-                    cohort.returns[actor] = "tool_budget"
-                    return
                 usage["tools"] += 1
                 call_id = message["call_id"].split("|")[0]
                 call = calls[call_id]
@@ -112,6 +125,7 @@ async def participate(cohort, actor, limits):
                         "tool_start",
                         call_id=call_id,
                         command=arguments["command"],
+                        decision_s=prompt_start,
                     )
                     task = asyncio.create_task(
                         asyncio.to_thread(
@@ -125,15 +139,13 @@ async def participate(cohort, actor, limits):
                         )
                     )
                     result, _ = await asyncio.shield(task)
+                result = cohort.tool_reply(actor, result)
                 agent.reply(message["id"], output=json.dumps(result))
-                if usage["responses"] >= limits["responses"]:
-                    cohort.returns[actor] = "response_budget"
-                    return
             elif kind == "settled":
                 if message.get("error_message"):
                     raise RuntimeError(message["error_message"])
-                cohort.returns[actor] = "model_finished"
-                return
+                prompt_start = event_time
+                agent.prompt(cohort.continue_research(actor))
             elif kind in ("fatal", "exited", "closed"):
                 raise RuntimeError(str(message))
     except asyncio.CancelledError:

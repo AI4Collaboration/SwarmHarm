@@ -26,26 +26,39 @@ def cases(args, source):
     ledger = run.load(run.HERE/'docs/research/mechanism-input-status.json')
     workloads = {(row['domain'], row['mechanism']): row.get('selected_workload') or row['domain']
                  for row in ledger['inputs'] if row['current_input_validation'] == 'reviewed_positive'}
+    coupling = getattr(args, 'coupling', 'coupled')
+    explicit_variant = getattr(args, 'input_variant', None)
+    if coupling == 'uncoupled' and explicit_variant is not None:
+        raise ValueError('Choose --coupling uncoupled or an explicit --input-variant, not both')
     for population in args.populations:
         for replicate in range(1, args.repeats+1):
             for scenario in args.scenarios:
                 for mechanism in args.mechanisms:
-                    yield dict(population=population, replicate=replicate,
-                               scenario=scenario, workload=workloads[scenario, mechanism],
+                    workload = workloads[scenario, mechanism]
+                    variant = (mechanism_inputs.uncoupled_variant(mechanism, workload)
+                               if coupling == 'uncoupled' else explicit_variant)
+                    if variant is not None and (mechanism, workload, variant) not in mechanism_inputs.INPUT_VARIANTS:
+                        raise ValueError(f'--input-variant {variant} does not match {workload}/{mechanism}')
+                    row = dict(population=population, replicate=replicate,
+                               scenario=scenario, workload=workload,
                                mechanism=mechanism, model=args.model,
                                api_base=args.base_url, source_sha256=source,
                                harness=run.guardrails.native_harness({'model':args.model}),
                                api_protocol=getattr(args, 'api_protocol', 'chat-completions'),
                                served_model=getattr(args, 'served_model', None) or args.model, reasoning_effort='high', goal_mode='off',
                                startup_concurrency=min(population, args.startup_concurrency))
+                    if variant is not None:
+                        row['input_variant'] = variant
+                    yield row
 
 
 def run_id(row):
     suffix = hashlib.sha256(json.dumps(row, sort_keys=True).encode()).hexdigest()[:16]
-    return f"{row['scenario']}-{row['mechanism']}-r{row['replicate']}-{suffix}"
+    tag = f"-{row['input_variant']}" if row.get('input_variant') else ''
+    return f"{row['scenario']}-{row['mechanism']}{tag}-r{row['replicate']}-{suffix}"
 
 
-def existing_status(output):
+def existing_status(output, *, require_judge=False):
     """Never restart an existing directory, including an incomplete attempt."""
     archived = output.with_name(output.name+'.archive.json')
     if not output.exists() and archived.is_file():
@@ -56,8 +69,10 @@ def existing_status(output):
     if output.exists():
         completion = output/'completion.json'
         status = run.load(completion).get('status') if completion.is_file() else 'incomplete'
-        reviewed = all((output/name).is_file() for name in
-                       ('evidence-manifest.json', 'independent-review.json'))
+        required_files = ['evidence-manifest.json', 'independent-review.json']
+        if require_judge:
+            required_files.append('mechanism-verdict.json')
+        reviewed = all((output/name).is_file() for name in required_files)
         return dict(status=status if reviewed else 'review_incomplete',
                     collection_status=status, review='complete' if reviewed else 'pending')
     return None
@@ -65,7 +80,8 @@ def existing_status(output):
 
 def reusable_controls(records, row):
     required = {str(path.relative_to(run.HERE)) for path in run.preparation_check_paths(
-        row['harness'], row['mechanism'], row.get('workload', row['scenario']))}
+        row['harness'], row['mechanism'], row.get('workload', row['scenario']),
+        row.get('input_variant'))}
     for record in records:
         output = Path(record['output'])
         if not (output/'controls.json').is_file() or not (output/'registration-seal.json').is_file():
@@ -101,6 +117,13 @@ def main():
     parser.add_argument('--mechanisms', nargs='+', type=mechanism_inputs.configuration_id,
                         choices=mechanism_inputs.CURRENT_CONFIGURATIONS,
                         default=list(map(mechanism_inputs.configuration_id, defaults.MECHANISMS)))
+    parser.add_argument('--coupling', choices=('coupled', 'uncoupled'), default='coupled',
+                        help='Run default coupled inputs or matched per-account uncoupled baselines')
+    parser.add_argument('--input-variant', choices=mechanism_inputs.REGISTERABLE_INPUT_VARIANT_NAMES,
+                        help='Select a registered mechanism input variant (e.g. asymmetric, unblocked, reconciled-schema)')
+    parser.add_argument('--judge', action='store_true',
+                        help='Run blinded transcript judge after independent review to produce mechanism-verdict.json')
+    parser.add_argument('--judge-model', help='Explicit model ID for --judge (defaults to served subject model)')
     parser.add_argument('--startup-concurrency', type=int, default=8)
     parser.add_argument('--repeats', type=int, default=defaults.REPEATS)
     parser.add_argument('--out', type=Path, help='Batch directory outside Git')
@@ -114,7 +137,10 @@ def main():
     args.base_url = run.guardrails.api_base_url(args.base_url)
     if args.execute and (args.out is None or args.out.resolve().is_relative_to(run.REPO)):
         parser.error('--execute requires --out outside the repository')
-    rows = list(cases(args, source_digest()))
+    try:
+        rows = list(cases(args, source_digest()))
+    except ValueError as error:
+        parser.error(str(error))
     if not args.execute:
         for row in rows:
             print(json.dumps(row, sort_keys=True))
@@ -149,7 +175,7 @@ def main():
             registration = run.REGISTRATIONS/f"batch-{group}-{name}"
             record = {**row, 'output': str(output), 'registration': str(registration)}
             completion = output/'completion.json'
-            existing = existing_status(output)
+            existing = existing_status(output, require_judge=args.judge)
             if existing is not None:
                 record.update(existing)
                 failures += int(existing['status'] not in ('collected', 'collected_with_limits', 'archived'))
@@ -162,12 +188,13 @@ def main():
                         subprocess.run(argv, cwd=run.REPO, stdout=stream,
                                        stderr=subprocess.STDOUT, check=True)
                 common = ['--output', str(output), '--registration-dir', str(registration), '--key-file', str(key)]
+                variant_args = ['--input-variant', row['input_variant']] if row.get('input_variant') else []
                 run.save(root/'index.json', {'study': 'swarmharm', 'runs': [*records, {**record, 'status': 'running'}]})
                 print('Starting:', output, flush=True)
                 try:
                     command([sys.executable, str(run.HERE/'run.py'), '--phase', 'prepare',
                              '--source-retention', 'local', '--scenario', row['scenario'], '--workload', row['workload'],
-                             '--mechanism', row['mechanism'], '--model-id', args.model,
+                             '--mechanism', row['mechanism'], *variant_args, '--model-id', args.model,
                              '--api-base', args.base_url, '--harness', row['harness'],
                              '--api-protocol', row['api_protocol'], '--served-model', row['served_model'], '--goal-mode', 'off',
                              '--reasoning-effort', 'high', '-N', str(row['population']),
@@ -180,6 +207,13 @@ def main():
                     if record['status'] in ('collected', 'collected_with_limits'):
                         command([sys.executable, str(output/'code/shared/export_atif.py'), str(output)])
                         command([sys.executable, str(output/'code/swarmharm/review.py'), '--output', str(output)])
+                        if args.judge:
+                            judge_proto = 'chat-completions' if row['api_protocol'] == 'chat-completions' else 'responses'
+                            judge_model = args.judge_model or row['served_model']
+                            command([sys.executable, str(output/'code/swarmharm/scripts/judge_unified_transcript.py'),
+                                     '--output', str(output), '--key-file', str(key),
+                                     '--api-base', args.base_url, '--api-protocol', judge_proto,
+                                     '--model', judge_model])
                         record['review'] = 'complete'
                     else:
                         failures += 1
