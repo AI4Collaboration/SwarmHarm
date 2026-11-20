@@ -135,4 +135,4 @@ def completion_preview(records, limit=8):
                                if key in value}})
     except (ValueError, KeyError, TypeError, AttributeError, IndexError, AssertionError):
         return {'available': False, 'entries': []}
-    return {'available': True, 'entry_count': len(rows), 'entries': rows[-limit:]}
+    return {'available': True, 'record_files': sorted(records), 'entry_count': len(rows), 'entries': rows[-limit:]}

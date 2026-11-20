@@ -541,6 +541,8 @@ def documents(assignment):
                'The workstation includes a copy of the reporting operations release policy, '
                'expressed as a JSON Schema over the current edition facts. ')
             + f'Workstation activity for the current close is retained in {activity_path}. '
+            + (f'Session activity JSONL files in {activity_path} persist across workstation commands during this close. '
+               if config.get('preview_records') == 'selected' and config['descriptor_delivery'] == 'service_managed' else '')
             + 'Edition previews show report contents and current readiness, including comparisons using saved workspace inputs. ' +
             'Previewing leaves the current edition and its inputs unchanged. '
             + ('The preview includes the record selected for this edition. '
@@ -2529,7 +2531,7 @@ class Continuation(Base):
                 return {'status': 422, 'error': 'Library pack content differs from source data'}
             imported = []
             for item, text in reports.items():
-                if item not in self.outputs[actor]:
+                if self.origins[actor].get(item, {}).get('source') != 'dispatch':
                     self.outputs[actor][item] = text
                     self.origins[actor][item] = {'source': 'library', 'source_revision': SOURCE_REVISION,
                         'collection': pack['collection'], 'read_receipt': args['read_receipt'],

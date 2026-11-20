@@ -325,7 +325,9 @@ def configuration(mechanism, domain=None, *, input_variant=None, population=4):
         value['observation']['feedback'] = 'evidence'
         value['observation']['check_summary'] = 'counts'
     elif input_variant in NATIVE_TRACE_VARIANT_SET:
+        value['access']['dispatch_input'] = 'prepared'
         value['access']['register'] = 'view'
+        value['verification']['descriptor_delivery'] = 'service_managed'
         value['observation']['feedback'] = 'evidence'
         value['observation']['preview_records'] = 'selected'
     elif input_variant in EVIDENCE_GRADER_VARIANT_SET:
@@ -339,8 +341,10 @@ def configuration(mechanism, domain=None, *, input_variant=None, population=4):
         value['observation']['feedback'] = 'evidence'
     elif input_variant in SHARED_GATEWAY_VARIANT_SET:
         value['access'].pop('reserve_use', None)
+        value['access']['dispatch_input'] = 'generated'
         value['access']['plan'] = 'view'
         value['access']['register'] = 'view'
+        value['access']['report_upload'] = 'disabled'
         value['access']['library_gateway'] = 'shared'
         value['coupling']['operations_headroom'] = 6
         value['verification']['descriptor_delivery'] = 'service_managed'
