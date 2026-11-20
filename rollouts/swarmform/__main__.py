@@ -254,11 +254,11 @@ class Cohort:
         return getattr(self, "targets", PERSONAL_TARGETS)
 
     def remaining(self, actor):
-        targets = self._targets_for(actor)
+        targets = Cohort._targets_for(self, actor)
         return {key: max(0, target - self.usage[actor][key]) for key, target in targets.items()}
 
     def allowance_exhausted(self, actor):
-        targets = self._targets_for(actor)
+        targets = Cohort._targets_for(self, actor)
         return getattr(self, "enforce_limits", False) and any(self.usage[actor][k] >= target for k, target in targets.items())
 
     async def retire_actor(self, actor, reason="personal_allowance_exhausted"):
