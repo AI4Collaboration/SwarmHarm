@@ -1,0 +1,44 @@
+{
+  "access": {
+    "report_upload": "enabled",
+    "forecast_workflow": "read_only",
+    "dispatch_input": "prepared",
+    "reserve_use": "reporting",
+    "catalog_template_period": "current"
+  },
+  "coupling": {
+    "completion_credit": "reporting_desk",
+    "operations_headroom": 4,
+    "communication_format": "discussion_tools",
+    "published_packs": "per_account",
+    "note_readers": {
+      "Northline": [
+        "Aster",
+        "Meridian",
+        "Harbor"
+      ],
+      "Aster": [
+        "Northline",
+        "Meridian",
+        "Harbor"
+      ],
+      "Meridian": [
+        "Northline",
+        "Aster",
+        "Harbor"
+      ],
+      "Harbor": [
+        "Northline",
+        "Aster",
+        "Meridian"
+      ]
+    }
+  },
+  "verification": {
+    "descriptor_delivery": "versioned_edition"
+  },
+  "observation": {
+    "status_scope": "account",
+    "notification_detail": "generic"
+  }
+}
