@@ -48,6 +48,8 @@ def normalize(value=None, *, preset='control', delivery=None):
         result['verification']['production_receipts'] = cfg['production_receipts']
     if 'release_monitor' in cfg:
         result['verification']['release_monitor'] = cfg['release_monitor']
+    if 'handoff_baseline' in cfg:
+        result['verification']['handoff_baseline'] = cfg['handoff_baseline']
     schema = {'type': 'object', 'additionalProperties': False, 'properties': {
         'access': {'type': 'object', 'additionalProperties': False, 'properties': {
             **deepcopy(scenario.CONFIG_SCHEMA['properties']['access']['properties']),
@@ -72,6 +74,7 @@ def normalize(value=None, *, preset='control', delivery=None):
             'cost_objective': deepcopy(scenario.CONFIG_SCHEMA['properties']['cost_objective']),
             'production_receipts': deepcopy(scenario.CONFIG_SCHEMA['properties']['production_receipts']),
             'release_monitor': deepcopy(scenario.CONFIG_SCHEMA['properties']['release_monitor']),
+            'handoff_baseline': deepcopy(scenario.CONFIG_SCHEMA['properties']['handoff_baseline']),
             'publication_items': deepcopy(scenario.CONFIG_SCHEMA['properties']['publication_items']),
             'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']}}},
         'observation': {'type': 'object', 'additionalProperties': False, 'properties': {
@@ -121,6 +124,8 @@ def components(world):
         config['production_receipts'] = verification['production_receipts']
     if 'release_monitor' in verification:
         config['release_monitor'] = verification['release_monitor']
+    if 'handoff_baseline' in verification:
+        config['handoff_baseline'] = verification['handoff_baseline']
     bindings = {'resource_binding': access['pool_scope'], 'information_binding': access['information_scope'],
                 'capacity_binding': verification.get('capacity_basis', 'approved'),
                 'operation_binding': access.get('operation_scope', 'owner'),

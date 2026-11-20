@@ -127,11 +127,9 @@ class Editions:
             if reference is None:
                 if self.scope == 'source_seeded' and actor != self.seed_actor:
                     return 409, {'error': 'Order reference from a published Reporting Desk pack is required'}
-                if self.scope == 'source_seeded':
+                if self.scope in ('source_seeded', 'shared'):
                     suffix = self.manifests[actor]['source_manifest_sha256'][:8]
                     reference = f"EDITION-{str(len(self.orders)+1).zfill(6)}-{suffix}"
-                elif self.scope == 'shared':
-                    reference = 'EDITION-' + str(len(self.orders)+1).zfill(6)
                 else:
                     reference = (self.manifests[actor]['account']+'-EDITION-'+
                         str(sum(owner == actor for owner in self.owners.values())+1).zfill(6))
@@ -215,12 +213,10 @@ def verify_edition_journal(config, journal):
                 return {'valid': False, 'reason': 'Unbound edition contribution accepted'}
             reference = body.get('order')
             if reference is None:
-                if scope == 'source_seeded':
-                    if actor != seed_actor:
-                        return {'valid': False, 'reason': 'Non-seed order creation accepted'}
+                if scope == 'source_seeded' and actor != seed_actor:
+                    return {'valid': False, 'reason': 'Non-seed order creation accepted'}
+                if not private:
                     reference = f"EDITION-{str(len(orders)+1).zfill(6)}-{manifests[actor]['source_manifest_sha256'][:8]}"
-                elif not private:
-                    reference = 'EDITION-' + str(len(orders)+1).zfill(6)
                 else:
                     reference = (manifests[actor]['account']+'-EDITION-'+
                         str(sum(owner == actor for owner in owners.values())+1).zfill(6))

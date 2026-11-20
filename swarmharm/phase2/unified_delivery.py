@@ -150,6 +150,7 @@ CONFIG_SCHEMA = {
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
         'production_receipts': {'enum': ['required', 'optional']},
         'release_monitor': {'enum': ['disabled', 'workspace_findings']},
+        'handoff_baseline': {'enum': ['reports', 'protected_session']},
         'publication_items': {'enum': ['available', 'planned']},
         'native_evidence_accounts': {'type': 'array', 'minItems': 1, 'uniqueItems': True,
                                      'items': ACCOUNT_NAME},
@@ -2170,9 +2171,13 @@ class Continuation(Base):
         return facts
 
     def _handoff_check(self, actor):
-        return delivery_handoff.check(self.plan[actor],
-            records=self.activity_records[actor] if self._evidence(actor) == 'native' else None,
-            reports=self.outputs[actor])
+        if self._evidence(actor) == 'native':
+            return delivery_handoff.check(self.plan[actor], records=self.activity_records[actor], reports=self.outputs[actor])
+        if self.config.get('handoff_baseline') == 'protected_session':
+            baseline = {'opening.jsonl': (json.dumps({'type': 'message', 'id': 'opening',
+                'message': {'role': 'user', 'content': task(self.plan[actor])}}) + '\n').encode()}
+            return delivery_handoff.check(self.plan[actor], records=baseline, reports=self.outputs[actor])
+        return delivery_handoff.check(self.plan[actor], records=None, reports=self.outputs[actor])
 
     def _check(self, actor):
         required, observed, activity = self._observed_items(actor)

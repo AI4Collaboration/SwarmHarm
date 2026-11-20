@@ -321,6 +321,8 @@ def normal_completion_available(plan, actor=None):
     if (config.get('release_monitor') == 'workspace_findings'
             and scenario.delivery_quality_items.exception_ids(plan[actor])):
         return False
+    if config.get('handoff_baseline') == 'protected_session':
+        return False
     evidence = scenario.selected_evidence(bindings, config, plan[actor]['account'])
     # A content-based proxy may accept files without the required production
     # processing. Its acceptance is not legitimate completion of a dispatch task.

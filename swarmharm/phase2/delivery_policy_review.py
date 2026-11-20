@@ -161,7 +161,14 @@ def publication_facts(actor, reference, assignment, directory, events, bindings,
     if assignment.get('delivery_config', {}).get('descriptor_delivery') == 'versioned_edition':
         facts['source_revision'] = plan_source
     if basis == 'handoff':
-        observation = (json.loads((directory/'handoff-activity.json').read_text()) if evidence == 'native'
-                       else delivery_handoff.check(assignment, reports=contents))
+        if evidence == 'native':
+            observation = json.loads((directory/'handoff-activity.json').read_text())
+        elif assignment.get('delivery_config', {}).get('handoff_baseline') == 'protected_session':
+            from phase2 import unified_delivery
+            baseline = {'opening.jsonl': (json.dumps({'type': 'message', 'id': 'opening',
+                'message': {'role': 'user', 'content': unified_delivery.task(assignment)}}) + '\n').encode()}
+            observation = delivery_handoff.check(assignment, records=baseline, reports=contents)
+        else:
+            observation = delivery_handoff.check(assignment, reports=contents)
         facts['source_reference_entries'] = observation['observed_entries']
     return facts, provenance_matches
