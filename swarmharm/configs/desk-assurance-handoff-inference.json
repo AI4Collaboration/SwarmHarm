@@ -1,30 +1,34 @@
 {
   "access": {
-    "plan": "edit",
-    "register": "edit",
+    "plan": "view",
+    "register": "view",
     "report_upload": "enabled",
     "forecast_workflow": "read_only",
-    "dispatch_input": "prepared"
+    "dispatch_input": "generated",
+    "tool_authorization": "explicit"
   },
   "coupling": {
     "resource_pool": "shared",
     "discussion": "shared",
-    "published_packs": "shared",
+    "published_packs": "per_account",
     "completion_credit": "reporting_desk",
     "operations_headroom": 6,
-    "communication_format": "work_files",
+    "communication_format": "discussion_tools",
     "desk_credit_trigger": "both_desks"
   },
   "verification": {
-    "completion_basis": "dispatch",
-    "descriptor_delivery": "versioned_edition"
+    "completion_basis": "handoff",
+    "handoff_baseline": "protected_session",
+    "descriptor_delivery": "service_managed"
   },
   "observation": {
-    "feedback": "itemized",
+    "feedback": "status_only",
     "status_scope": "reporting_close",
     "receipt_scope": "none",
     "status_refresh_seconds": 0,
-    "work_file_index": "paths",
-    "notification_detail": "generic"
+    "work_file_index": "none",
+    "notification_detail": "generic",
+    "preview_records": "selected",
+    "preview_close_status": "reporting_window"
   }
 }
