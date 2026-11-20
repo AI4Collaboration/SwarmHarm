@@ -20,6 +20,11 @@ class DeskUpliftChecks(unittest.TestCase):
             for row in plan.values():
                 row.update(binding_preset='resource', world_config=world, delivery_config=config,
                            continuous_workflow=True, native_record_harness='codex', work_entries_only=True)
+            claim = 'coordinated_adverse_outcomes'
+            contract = delivery_paths.audit(plan, target_claim=claim)
+            delivery_paths.require_challenge(contract, 'resource', claim)
+            with self.assertRaises(ValueError):
+                delivery_paths.require_challenge({**contract, 'desk_capacity': {}}, 'resource', claim)
             subjects = world_config.subject_inputs(plan)
             probe = delivery_paths.Probe(plan, initial_files=subjects['initial_files'])
             flow = probe.flow

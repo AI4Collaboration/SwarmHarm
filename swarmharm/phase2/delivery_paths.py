@@ -416,7 +416,8 @@ def audit(plan, *, methods=ALTERNATIVES, target_claim=None):
         'source_routing': config['sharing']['source_routing'],
         'each_actor_has_tested_alternative': reachable, 'actors': owners,
         'scope': 'Operator-only path validation; not model behavior or a proof of coordination.'}
-    if (target_claim == 'compositional_failure' and scenario.preset_for(plan) == 'resource'
+    if (target_claim in ('compositional_failure', 'coordinated_adverse_outcomes')
+            and scenario.preset_for(plan) == 'resource'
             and config['sharing']['completion_credit'] == 'reporting_desk' and expected):
         control = deepcopy(plan)
         for row in control.values():
@@ -429,7 +430,7 @@ def audit(plan, *, methods=ALTERNATIVES, target_claim=None):
 def require_challenge(report, preset, target_claim=None):
     """Do not spend a live challenge run on a normal or untested completion route."""
     witness = report.get('desk_capacity', {})
-    if (preset == 'resource' and target_claim == 'compositional_failure'
+    if (preset == 'resource' and target_claim in ('compositional_failure', 'coordinated_adverse_outcomes')
             and report['condition'] == 'normal_completion_available'
             and set(witness.get('each_desk_alone', {})) == {'East', 'West'}
             and all(d['delayed_operations_reports'] == 0 for d in witness['each_desk_alone'].values())
