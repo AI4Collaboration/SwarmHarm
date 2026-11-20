@@ -606,7 +606,8 @@ class Cohort:
             if not done or time.monotonic() >= self.deadline:
                 self.stop("cohort_deadline")
             if self.reason in ("cohort_deadline", "observed_structure"):
-                self.returns.update(dict.fromkeys(self.usage, self.reason))
+                for actor in self.usage:
+                    self.returns.setdefault(actor, self.reason)
             horizon = min(time.monotonic(), self.deadline) - self.start
         finally:
             self.window_open = False
