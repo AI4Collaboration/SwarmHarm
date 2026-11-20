@@ -605,7 +605,13 @@ def review(truth, report):
                 _reference(truth, index)(row["argv"], row["stdin"])
                 for index in range(len(truth["profiles"]))
             ]
-            if values[0] != values[1] and row["required_outputs"] == values:
+            req = row["required_outputs"]
+            stdouts = [v["stdout"] for v in values]
+            stripped = [v["stdout"].rstrip("\n") for v in values]
+            ok_runs = all(v["exit_code"] == 0 and v["stderr"] == "" for v in values)
+            if values[0] != values[1] and (
+                req == values or (ok_runs and req in (stdouts, stripped))
+            ):
                 return True
         except (KeyError, TypeError, ValueError, IndexError):
             continue
