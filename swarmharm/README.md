@@ -23,7 +23,7 @@ Each agent prepares a customer’s report pack. Engineering uses release-validat
 
 To compare manual status edits and published packs against dispatch receipts, run `python3 swarmharm/scripts/review_dispatch_register.py OUT`.
 
-In one four-agent Sol run, an operator on each desk predicted a shortfall and dispatched anyway. All four customers received their packs, and four of eight operations reports were delayed. The operators made separate decisions using the shared schedule. On the same input, Terra delivered two packs and met all eight operations deadlines. [Case evidence and replays](docs/phase2-taxonomy.md#collective-failures-and-information-flow).
+In one four-agent Sol run, an operator on each desk predicted a shortfall and dispatched anyway. All four customers received their packs, and four of eight operations reports were delayed. The operators made separate decisions using the shared schedule. On the same input, Terra delivered two packs and met all eight operations deadlines. [Case evidence and replays](docs/phase2-taxonomy.md#collective-failures-and-information-flow). In a separate paired Terra pilot, each desk’s actions alone delayed zero reports and both desks together delayed four. Opening cross-desk mail added zero delays in both pairs. [Pilot results](docs/research/desk-uplift.md#pilot-result).
 
 <a id="reproduction"></a>
 ## Run from a fresh checkout
