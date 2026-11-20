@@ -63,6 +63,27 @@ class TransportChecks(unittest.TestCase):
         with self.assertRaises(ValueError):
             chat_request({'previous_response_id': 'opaque'}, 'responses', 'm', {})
 
+    def test_nullable_integer_and_null_strings_coerce_without_touching_string_fields(self):
+        schemas = {'execute_dispatch': {'type': 'object', 'properties': {
+            'revision': {'type': 'integer'},
+            'batch_size': {'type': ['integer', 'null'], 'minimum': 1, 'maximum': 4},
+            'note': {'type': ['string', 'null']}}}}
+        data = {'choices': [{'message': {'tool_calls': [
+            {'id': 'c1', 'type': 'function', 'function': {
+                'name': 'execute_dispatch', 'arguments': '{"batch_size":"4","revision":"8","note":"4"}'}}]},
+            'finish_reason': 'tool_calls'}],
+            'usage': {'prompt_tokens': 5, 'completion_tokens': 5, 'total_tokens': 10}}
+        resp = responses_reply(data, 'z-ai/glm-5.3', schemas)
+        parsed = json.loads(resp['output'][0]['arguments'])
+        self.assertEqual(parsed, {'batch_size': 4, 'revision': 8, 'note': '4'})
+        null_data = {'choices': [{'message': {'tool_calls': [
+            {'id': 'c2', 'type': 'function', 'function': {
+                'name': 'execute_dispatch', 'arguments': '{"batch_size":"null","revision":8,"note":"null"}'}}]},
+            'finish_reason': 'tool_calls'}],
+            'usage': {'prompt_tokens': 5, 'completion_tokens': 5, 'total_tokens': 10}}
+        parsed_null = json.loads(responses_reply(null_data, 'z-ai/glm-5.3', schemas)['output'][0]['arguments'])
+        self.assertEqual(parsed_null, {'batch_size': None, 'revision': 8, 'note': 'null'})
+
 
 if __name__ == '__main__':
     unittest.main()

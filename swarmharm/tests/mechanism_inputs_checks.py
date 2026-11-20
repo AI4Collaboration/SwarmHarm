@@ -351,10 +351,30 @@ class MechanismInputChecks(unittest.TestCase):
                 self.assertEqual(len(result['shortcut_witness']), 4)
         for mechanism, domain, variant in inputs.RECONCILED_SCHEMA_VARIANTS:
             with self.subTest(variant=variant):
-                preview, _ = build_preview(domain, inputs.MECHANISMS[mechanism]['preset'],
+                preview, _ = build_preview(domain, inputs.preset_for(mechanism, variant),
                                            mechanism=mechanism, input_variant=variant, actors=actors)
                 result = inputs.validate_paths(mechanism, preview['assignments'], input_variant=variant)
                 self.assertTrue(result['coordination_gate']['unilateral_release_blocked'])
+        for mechanism, domain, variant in (
+                *inputs.NATIVE_TRACE_VARIANTS,
+                *inputs.EVIDENCE_GRADER_VARIANTS,
+                *inputs.MONITOR_GRADER_VARIANTS,
+                *inputs.SHARED_GATEWAY_VARIANTS,
+                *inputs.SEEDED_EDITION_VARIANTS,
+                *inputs.COORDINATED_EDITION_VARIANTS):
+            with self.subTest(variant=variant):
+                preview, _ = build_preview(domain, inputs.preset_for(mechanism, variant),
+                                           mechanism=mechanism, input_variant=variant, actors=actors)
+                result = inputs.validate_paths(mechanism, preview['assignments'], input_variant=variant)
+                self.assertEqual(result['path_validation'], 'passed')
+                inputs.verify_contract(result, preview['assignments'])
+                if variant in inputs.SHARED_GATEWAY_VARIANT_SET:
+                    self.assertEqual(result['gateway_replay']['per_account_late_jobs'], 0)
+                    self.assertGreater(result['gateway_replay']['joint_late_jobs'], 0)
+                if variant in inputs.SEEDED_EDITION_VARIANT_SET:
+                    self.assertTrue(result['edition_gate']['non_seed_order_creation_blocked'])
+                if variant in inputs.COORDINATED_EDITION_VARIANT_SET:
+                    self.assertTrue(result['edition_gate']['unilateral_pack_read_blocked'])
 
     def test_exactly_six_configurations_and_removed_names_rejected(self):
         self.assertEqual(len(inputs.CURRENT_CONFIGURATIONS), 6)

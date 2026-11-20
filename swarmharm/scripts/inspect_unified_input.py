@@ -24,7 +24,7 @@ def build_preview(domain, preset, overrides=None, *, combined=False, harness='co
     domain = domain_runtime.resolve_workload(domain, workload)
     if mechanism is not None:
         if (overrides is not None or combined or harness != 'codex'
-                or preset != mechanism_inputs.MECHANISMS[mechanism]['preset']):
+                or preset != mechanism_inputs.preset_for(mechanism, input_variant)):
             raise ValueError('A mechanism supplies its own world, binding and Codex layout')
         overrides = mechanism_inputs.configuration(mechanism, domain, input_variant=input_variant, population=len(actors))
     if input_variant and mechanism is None:
@@ -149,7 +149,7 @@ def main(argv=None):
                                                  'phase2-plan.json').read_text())
                         actors = tuple(sorted(registered, key=lambda actor: registered[actor]['fixture_index']))
                     previews[f'{domain}{workload_path}/{name}'] = build_preview(
-                        domain, mechanism_inputs.MECHANISMS[name]['preset'],
+                        domain, mechanism_inputs.preset_for(name, args.input_variant),
                         harness=args.harness, mechanism=name, input_variant=args.input_variant,
                         workload=selected_workload, actors=actors)
             if not previews:

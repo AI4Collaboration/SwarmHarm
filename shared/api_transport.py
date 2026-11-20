@@ -133,7 +133,61 @@ def chat_request(body, protocol, model, cache):
     return request
 
 
-def responses_reply(data, model):
+def _allowed_scalar_types(prop):
+    if not isinstance(prop, dict):
+        return set()
+    types = set()
+    raw = prop.get('type')
+    if isinstance(raw, str):
+        types.add(raw)
+    elif isinstance(raw, list):
+        types.update(t for t in raw if isinstance(t, str))
+    for key in ('anyOf', 'oneOf'):
+        for sub in prop.get(key) or ():
+            if isinstance(sub, dict):
+                types.update(_allowed_scalar_types(sub))
+    return types
+
+
+def coerce_tool_arguments(raw_arguments, parameters_schema):
+    if not isinstance(raw_arguments, str) or not isinstance(parameters_schema, dict):
+        return raw_arguments
+    try:
+        parsed = json.loads(raw_arguments)
+    except (ValueError, TypeError):
+        return raw_arguments
+    if not isinstance(parsed, dict):
+        return raw_arguments
+    props = parameters_schema.get('properties')
+    if not isinstance(props, dict):
+        return raw_arguments
+    changed = False
+    for key, value in list(parsed.items()):
+        if not isinstance(value, str) or key not in props:
+            continue
+        allowed = _allowed_scalar_types(props[key])
+        if not allowed or 'string' in allowed:
+            continue
+        stripped = value.strip()
+        if 'null' in allowed and stripped.lower() in ('null', 'none', ''):
+            parsed[key] = None
+            changed = True
+        elif 'integer' in allowed and stripped.lstrip('-').isdigit() and stripped not in ('', '-'):
+            parsed[key] = int(stripped)
+            changed = True
+        elif 'number' in allowed:
+            try:
+                parsed[key] = float(stripped)
+                changed = True
+            except ValueError:
+                pass
+        elif 'boolean' in allowed and stripped.lower() in ('true', 'false'):
+            parsed[key] = stripped.lower() == 'true'
+            changed = True
+    return json.dumps(parsed) if changed else raw_arguments
+
+
+def responses_reply(data, model, tool_schemas=None):
     choice = data['choices'][0]
     message = choice['message']
     output = []
@@ -142,8 +196,11 @@ def responses_reply(data, model):
                        'role': 'assistant', 'status': 'completed', 'content': [{
                            'type': 'output_text', 'text': text_content(message['content']), 'annotations': []}]})
     for call in message.get('tool_calls') or []:
+        fn = dict(call['function'])
+        if tool_schemas and fn.get('name') in tool_schemas:
+            fn['arguments'] = coerce_tool_arguments(fn.get('arguments'), tool_schemas[fn['name']])
         output.append({'id': 'fc_' + uuid.uuid4().hex, 'type': 'function_call',
-                       'status': 'completed', 'call_id': call['id'], **call['function']})
+                       'status': 'completed', 'call_id': call['id'], **fn})
     usage = data.get('usage') or {}
     complete = choice.get('finish_reason') in ('stop', 'tool_calls')
     return {'id': 'resp_' + uuid.uuid4().hex, 'object': 'response', 'created_at': int(time.time()),
@@ -178,13 +235,17 @@ def response_events(response):
     yield {'type': 'response.' + response['status'], 'response': response}
 
 
-def messages_reply(data, model):
+def messages_reply(data, model, tool_schemas=None):
     choice = data['choices'][0]; message = choice['message']; content = []
     if message.get('content'):
         content.append({'type': 'text', 'text': text_content(message['content'])})
     for call in message.get('tool_calls') or []:
-        content.append({'type': 'tool_use', 'id': call['id'], 'name': call['function']['name'],
-                        'input': json.loads(call['function']['arguments'])})
+        name = call['function']['name']
+        raw_args = call['function']['arguments']
+        if tool_schemas and name in tool_schemas:
+            raw_args = coerce_tool_arguments(raw_args, tool_schemas[name])
+        content.append({'type': 'tool_use', 'id': call['id'], 'name': name,
+                        'input': json.loads(raw_args)})
     usage = data.get('usage') or {}
     return {'id': 'msg_' + uuid.uuid4().hex, 'type': 'message', 'role': 'assistant',
             'model': model, 'content': content, 'stop_sequence': None,
@@ -279,7 +340,10 @@ class ChatBridge:
                         raise ValueError('Provider must return usage.total_tokens')
                     for call in choice['message'].get('tool_calls') or []:
                         bridge.cache[call['id']] = deepcopy(choice['message'])
-                    value = responses_reply(data, bridge.model) if protocol == 'responses' else messages_reply(data, bridge.model)
+                    tool_schemas = {t['function']['name']: t['function'].get('parameters')
+                                    for t in request.get('tools') or [] if 'function' in t}
+                    value = (responses_reply(data, bridge.model, tool_schemas) if protocol == 'responses'
+                             else messages_reply(data, bridge.model, tool_schemas))
                     if protocol == 'responses':
                         names = {t['name'] + '__' + child['name']: (t['name'], child['name'])
                             for t in body.get('tools', []) if t.get('type') == 'namespace' for child in t['tools']}

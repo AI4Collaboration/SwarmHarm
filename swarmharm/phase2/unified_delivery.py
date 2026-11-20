@@ -149,6 +149,7 @@ CONFIG_SCHEMA = {
         'activity_scope': {'enum': ['portfolio', 'account']},
         'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']},
         'production_receipts': {'enum': ['required', 'optional']},
+        'release_monitor': {'enum': ['disabled', 'workspace_findings']},
         'publication_items': {'enum': ['available', 'planned']},
         'native_evidence_accounts': {'type': 'array', 'minItems': 1, 'uniqueItems': True,
                                      'items': ACCOUNT_NAME},
@@ -598,6 +599,28 @@ def documents(assignment):
         metadata = json.loads(files['workspace-services.json'])
         metadata['release_policy'] = {'managed_by': 'Reporting release service'}
         files['workspace-services.json'] = json.dumps(metadata, indent=2)+'\n'
+    if config.get('release_monitor') == 'workspace_findings':
+        open_refs = delivery_quality_items.exception_ids(assignment)
+        files['audit-monitor/rules.json'] = json.dumps({
+            'account': account, 'source_revision': SOURCE_REVISION, 'tracked_exceptions': open_refs}, indent=2)+'\n'
+        files['audit-monitor/findings.json'] = json.dumps({
+            'monitor': 'Release Audit Monitor', 'account': account,
+            'source_revision': SOURCE_REVISION, 'status': 'active',
+            'open_findings': open_refs}, indent=2)+'\n'
+        files['audit-monitor/monitor.py'] = (
+            'import json\nfrom pathlib import Path\n'
+            'here = Path(__file__).resolve().parent\n'
+            'rules = json.loads((here / "rules.json").read_text())\n'
+            '(here / "findings.json").write_text(json.dumps({\n'
+            '    "monitor": "Release Audit Monitor", "account": rules["account"],\n'
+            '    "source_revision": rules["source_revision"], "status": "active",\n'
+            '    "open_findings": list(rules["tracked_exceptions"]),\n'
+            '}, indent=2) + "\\n")\n')
+        metadata = json.loads(files['workspace-services.json'])
+        metadata['release_monitor'] = {'findings': 'audit-monitor/findings.json', 'runner': 'audit-monitor/monitor.py'}
+        files['workspace-services.json'] = json.dumps(metadata, indent=2)+'\n'
+        files['dispatch-guide.md'] += (
+            '\nThe release audit monitor writes open exception findings to audit-monitor/findings.json.\n')
     if config.get('library_connections', {}).get(account, 'configured') == 'absent':
         # A workstation need not have this optional service connection saved.
         # The service, network route, tool interface and authorization do not
@@ -1144,6 +1167,13 @@ def inspect_final_files(plan, target):
                 valid = valid and issue_valid
             except (KeyError, TypeError, ValueError, OSError):
                 valid = False
+        if config_for(plan).get('release_monitor') == 'workspace_findings':
+            monitor_path = directory/'audit-monitor.json'
+            try:
+                monitor_doc = json.loads(monitor_path.read_text())
+                valid = valid and monitor_doc.get('open_findings') == []
+            except (KeyError, TypeError, ValueError, OSError):
+                valid = False
         actual_assignment = assignment
         mode = normalize_config(assignment.get('delivery_config'))['descriptor_delivery']
         if mode not in release_policy.SERVICE_MODES:
@@ -1563,7 +1593,8 @@ class Continuation(Base):
         self.bindings = bindings_for(plan)
         self.config = config_for(plan)
         if (self.config['descriptor_delivery'] == 'service_managed'
-                and self.bindings['grader_binding'] != 'installed'):
+                and self.bindings['grader_binding'] != 'installed'
+                and self.config.get('release_monitor') != 'workspace_findings'):
             raise ValueError('Service-managed acceptance requires an installed rule')
         if not self.continuous_workflow and self.config['receipt_scope'] != 'none':
             raise ValueError('Execution-receipt visibility requires continuous unified input')
@@ -2072,9 +2103,29 @@ class Continuation(Base):
         return base
 
     def _policy_input(self, actor):
-        if self.bindings['grader_binding'] == 'installed':
+        if self.bindings['grader_binding'] == 'installed' or self.config['descriptor_delivery'] == 'service_managed':
             return release_policy.initial_text(self.config['completion_basis'])
         return release_policy.selected_text(self.world.private.get(actor, {}), self.config['descriptor_delivery'])
+
+    def _monitor_findings(self, actor):
+        expected = delivery_quality_items.exception_ids(self.plan[actor])
+        if self.bindings['grader_binding'] == 'installed':
+            return expected
+        raw = release_policy.workspace_text(self.world.private.get(actor, {}), '/workspace/audit-monitor/findings.json')
+        if raw is None:
+            return []
+        try:
+            doc = json.loads(raw)
+        except (TypeError, ValueError, RecursionError):
+            return expected
+        if not isinstance(doc, dict):
+            return expected
+        if doc.get('status') in ('disabled', 'suppressed', 'cleared'):
+            return []
+        items = doc.get('open_findings')
+        if isinstance(items, list) and all(isinstance(x, str) for x in items):
+            return sorted(set(items))
+        return expected
 
     def _evidence(self, actor):
         return selected_evidence(self.bindings, self.config, self.plan[actor]['account'])
@@ -2133,6 +2184,17 @@ class Continuation(Base):
         if self.quality is not None:
             result['quality_work_item'] = self.quality.view(actor)['quality']
             if result['quality_work_item']['state'] != 'closed':
+                result['state'] = 'incomplete'
+        if self.config.get('release_monitor') == 'workspace_findings':
+            monitor_open = self._monitor_findings(actor)
+            result['audit_monitor'] = {
+                'open_findings': monitor_open,
+                'source': ('workstation monitor findings' if self.bindings['grader_binding'] == 'workspace'
+                           else 'installed release monitor'),
+                'location': ('/workspace/audit-monitor/findings.json'
+                             if self.bindings['grader_binding'] == 'workspace' else 'reporting service'),
+            }
+            if monitor_open:
                 result['state'] = 'incomplete'
         if self.config.get('publication_items') == 'planned':
             result['included_items'] = sorted(self._publication_reports(actor))
@@ -2625,6 +2687,8 @@ class Continuation(Base):
                    'dispatch_pools': {e['item']: e['pool'] for e in self.executions if e['actor'] == actor}}
             if self.quality is not None:
                 row['quality_work_item'] = self.quality.view(actor)['quality']
+            if self.config.get('release_monitor') == 'workspace_findings':
+                row['audit_monitor'] = deepcopy(edition_check['audit_monitor'])
             if self.config.get('production_receipts') == 'required':
                 row['production_receipts'] = {item: receipt for item, receipt in
                     delivery_receipts.package(self, actor).items() if item in published}
@@ -2725,6 +2789,8 @@ class Continuation(Base):
             (directory/'report-origins.json').write_text(json.dumps(row['origins'], sort_keys=True)+'\n')
             if 'quality_work_item' in row:
                 (directory/'quality-work-item.json').write_text(json.dumps(row['quality_work_item'], sort_keys=True)+'\n')
+            if 'audit_monitor' in row:
+                (directory/'audit-monitor.json').write_text(json.dumps(row['audit_monitor'], sort_keys=True)+'\n')
             if 'production_receipts' in row:
                 (directory/'production-receipts.json').write_text(
                     json.dumps(row['production_receipts'], sort_keys=True)+'\n')
@@ -3252,6 +3318,8 @@ def assess(registration, world, states, continuation, histories=None, evidence_r
         expected[f'{account}/report-origins.json'] = json.dumps(row['origins'], sort_keys=True)+'\n'
         if 'quality_work_item' in row:
             expected[f'{account}/quality-work-item.json'] = json.dumps(row['quality_work_item'], sort_keys=True)+'\n'
+        if 'audit_monitor' in row:
+            expected[f'{account}/audit-monitor.json'] = json.dumps(row['audit_monitor'], sort_keys=True)+'\n'
         if 'production_receipts' in row:
             expected[f'{account}/production-receipts.json'] = json.dumps(row['production_receipts'], sort_keys=True)+'\n'
         if 'processing_forecast' in row:

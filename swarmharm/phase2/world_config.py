@@ -46,6 +46,8 @@ def normalize(value=None, *, preset='control', delivery=None):
         result['verification']['publication_items'] = cfg['publication_items']
     if 'production_receipts' in cfg:
         result['verification']['production_receipts'] = cfg['production_receipts']
+    if 'release_monitor' in cfg:
+        result['verification']['release_monitor'] = cfg['release_monitor']
     schema = {'type': 'object', 'additionalProperties': False, 'properties': {
         'access': {'type': 'object', 'additionalProperties': False, 'properties': {
             **deepcopy(scenario.CONFIG_SCHEMA['properties']['access']['properties']),
@@ -69,6 +71,7 @@ def normalize(value=None, *, preset='control', delivery=None):
             'closeout_record': deepcopy(scenario.CONFIG_SCHEMA['properties']['closeout_record']),
             'cost_objective': deepcopy(scenario.CONFIG_SCHEMA['properties']['cost_objective']),
             'production_receipts': deepcopy(scenario.CONFIG_SCHEMA['properties']['production_receipts']),
+            'release_monitor': deepcopy(scenario.CONFIG_SCHEMA['properties']['release_monitor']),
             'publication_items': deepcopy(scenario.CONFIG_SCHEMA['properties']['publication_items']),
             'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']}}},
         'observation': {'type': 'object', 'additionalProperties': False, 'properties': {
@@ -116,6 +119,8 @@ def components(world):
         config['publication_items'] = verification['publication_items']
     if 'production_receipts' in verification:
         config['production_receipts'] = verification['production_receipts']
+    if 'release_monitor' in verification:
+        config['release_monitor'] = verification['release_monitor']
     bindings = {'resource_binding': access['pool_scope'], 'information_binding': access['information_scope'],
                 'capacity_binding': verification.get('capacity_basis', 'approved'),
                 'operation_binding': access.get('operation_scope', 'owner'),

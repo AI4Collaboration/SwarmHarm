@@ -587,7 +587,7 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
             raise ValueError('A mechanism supplies its own configuration and criterion')
         validate_mechanism_settings(harness_kind, goal_mode, reasoning_effort, MODELS)
         expected = mechanism_inputs.configuration(mechanism, scenario, input_variant=input_variant, population=population)
-        preset = mechanism_inputs.MECHANISMS[mechanism]['preset']
+        preset = mechanism_inputs.preset_for(mechanism, input_variant)
         if binding_preset not in (None, preset) or world_config not in (None, expected):
             raise ValueError('Mechanism world or binding differs from its input contract')
         binding_preset, world_config = preset, expected
