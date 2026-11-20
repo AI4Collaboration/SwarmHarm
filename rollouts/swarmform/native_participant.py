@@ -141,9 +141,15 @@ async def participate(cohort, actor):
                     result, _ = await asyncio.shield(task)
                 result = cohort.tool_reply(actor, result)
                 agent.reply(message["id"], output=json.dumps(result))
+                if getattr(cohort, "allowance_exhausted", lambda _: False)(actor):
+                    await cohort.retire_actor(actor)
+                    return
             elif kind == "settled":
                 if message.get("error_message"):
                     raise RuntimeError(message["error_message"])
+                if getattr(cohort, "allowance_exhausted", lambda _: False)(actor):
+                    await cohort.retire_actor(actor)
+                    return
                 prompt_start = event_time
                 agent.prompt(cohort.continue_research(actor))
             elif kind in ("fatal", "exited", "closed"):

@@ -37,8 +37,10 @@ PREVIEW_CHARS = 160_000
 
 
 def registration(args):
-    return {"work_policy": "continuous", "cohort_deadline_seconds": COHORT_SECONDS,
-            "review_interval_seconds": INTERVAL_SECONDS, "review_patterns": list(PATTERNS),
+    cohort_s = getattr(args, "cohort_seconds", None) or COHORT_SECONDS
+    interval_s = getattr(args, "review_interval_seconds", None) or INTERVAL_SECONDS
+    return {"work_policy": "continuous", "cohort_deadline_seconds": cohort_s,
+            "review_interval_seconds": interval_s, "review_patterns": list(PATTERNS),
             "review_model": getattr(args, "served_model", None) or args.model}
 
 
@@ -233,8 +235,14 @@ class Review:
                 audit["response"] = data
                 raw = review_text(route, data).strip()
                 if raw.startswith("```") and raw.endswith("```"):
-                    raw = raw.split("\n", 1)[1][:-3]
-                verdict = json.loads(raw)
+                    raw = raw.split("\n", 1)[1][:-3].strip()
+                try:
+                    verdict = json.loads(raw)
+                except ValueError:
+                    start, end = raw.find("{"), raw.rfind("}")
+                    if start < 0 or end <= start:
+                        raise
+                    verdict = json.loads(raw[start:end + 1])
                 if not isinstance(verdict, dict) or "pattern" not in verdict:
                     raise ValueError("Missing review verdict")
                 audit["status"] = ("no_match" if verdict["pattern"] is None else
@@ -252,7 +260,9 @@ class Review:
         return audit["status"] == "matched"
 
     async def monitor(self, cohort):
-        for cutoff in range(INTERVAL_SECONDS, COHORT_SECONDS, INTERVAL_SECONDS):
+        cohort_s = getattr(cohort.args, "cohort_seconds", None) or COHORT_SECONDS
+        interval_s = getattr(cohort.args, "review_interval_seconds", None) or INTERVAL_SECONDS
+        for cutoff in range(interval_s, cohort_s, interval_s):
             await asyncio.sleep(max(0, cohort.start + cutoff - time.monotonic()))
             if await self.check(cohort, cutoff) and time.monotonic() < cohort.deadline:
                 cohort.stop("observed_structure")

@@ -107,6 +107,8 @@ def cases(args):
                         **checkpoint.registration(args),
                         entry_window_seconds=getattr(args, "entry_window_seconds", 0),
                         **({"closed_mail_receipts": True} if getattr(args, "closed_mail_receipts", False) and channel == "direct" else {}),
+                        **({"enforce_personal_limits": True} if getattr(args, "enforce_personal_limits", False) else {}),
+                        **({k: getattr(args, k) for k in ("max_responses", "max_tools", "max_tokens") if getattr(args, k, None) is not None}),
                         **({"stream_responses": True} if getattr(args, "stream_responses", False) else {}),
                         replicate=rep,
                         model=args.model,
@@ -157,6 +159,12 @@ def main():
     parser.add_argument("--stream-responses", action="store_true", help="Stream Chat Completions and record chunks")
     parser.add_argument("--closed-mail-receipts", action="store_true",
                         help="Mark directed sends to a permanently closed direct-mail session")
+    parser.add_argument("--cohort-seconds", type=int, default=None)
+    parser.add_argument("--review-interval-seconds", type=int, default=None)
+    parser.add_argument("--enforce-personal-limits", action="store_true")
+    parser.add_argument("--max-responses", type=int, default=None)
+    parser.add_argument("--max-tools", type=int, default=None)
+    parser.add_argument("--max-tokens", type=int, default=None)
     parser.add_argument("--seconds", type=int, default=600, help="Per-request transport timeout")
     parser.add_argument("--repeats", type=int, default=defaults.REPEATS)
     parser.add_argument(
@@ -177,7 +185,8 @@ def main():
         parser.error(
             "Use N >= 1, repeats >= 1 and a request timeout of 1 to 600 seconds"
         )
-    if not 0 <= args.entry_window_seconds < checkpoint.COHORT_SECONDS:
+    horizon_s = args.cohort_seconds or checkpoint.COHORT_SECONDS
+    if not 0 <= args.entry_window_seconds < horizon_s:
         parser.error("Entry offsets must precede the common cohort deadline.")
     if args.stream_responses and args.harness != "chat-completions":
         parser.error("--stream-responses requires the Chat Completions harness")
@@ -296,6 +305,15 @@ def execute_rows(args, rows, parser):
             command.append("--stream-responses")
         if row.get("closed_mail_receipts"):
             command.append("--closed-mail-receipts")
+        if args.cohort_seconds:
+            command.extend(["--cohort-seconds", str(args.cohort_seconds)])
+        if args.review_interval_seconds:
+            command.extend(["--review-interval-seconds", str(args.review_interval_seconds)])
+        if row.get("enforce_personal_limits"):
+            command.append("--enforce-personal-limits")
+        for flag, key in (("--max-responses", "max_responses"), ("--max-tools", "max_tools"), ("--max-tokens", "max_tokens")):
+            if row.get(key) is not None:
+                command.extend([flag, str(row[key])])
         if args.revision:
             command.extend(["--revision", args.revision])
         if args.key_file:

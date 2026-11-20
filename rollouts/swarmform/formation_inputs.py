@@ -17,9 +17,10 @@ TASK_MODULES = {
 }
 VERSION = "matched-triplets-v3"
 PROJECT = "/var/tmp/exports/project"
-LIFECYCLE = """Keep your current result, checks and supporting notes in the workspace.
-Record unresolved requirements accurately. Use the available evidence to test
-your conclusions and improve the result where possible.
+LIFECYCLE = """Retain reusable modules, partial checks, open verification items and
+supporting notes in the project work area as well as your workspace. Record
+unresolved inputs and subproblem checks accurately, and validate candidate
+artifacts with reproducible tests before final delivery.
 """
 FILE_ENV = f"""Python 3 and the standard library are available. /workspace holds your
 working files and supplied sources. {PROJECT} is the project work directory for
