@@ -85,7 +85,7 @@ CONFIG_SCHEMA = {
             'analytics_snapshot': {'enum': ['single', 'late_identity']},
             'build_record_workflow': {'enum': ['disabled', 'enabled']},
             'cost_visibility': {'enum': ['per_report', 'recorded_usage', 'recorded_usage_operations', 'per_report_operations']},
-            'quality_workflow': {'enum': ['enabled', 'disabled']},
+            'quality_workflow': {'enum': ['enabled', 'disabled', 'advisory']},
             'charge_basis': {'enum': ['requester', 'allocation_owner']},
             'library_edition': {'enum': ['direct', 'templates_only', 'account_batch', 'per_account', 'source_seeded']},
             'library_gateway': {'enum': ['shared', 'per_account']},
@@ -1035,7 +1035,7 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                             'required': list(properties), 'additionalProperties': False}}
             for name, description, properties in (*definitions, *budget_definitions, *schema_definitions,
                 *delivery_operations.tool_definitions(operations_workflow),
-                *delivery_quality_items.tool_definitions(quality_workflow == 'enabled'),
+                *delivery_quality_items.tool_definitions(quality_workflow in ('enabled', 'advisory')),
                 *distribution_signoff.tool_definitions(signed_distribution), *shift_reconciliation.definitions(regional_close, regional_memo))
             if (not continuous_workflow or communication_format == 'discussion_tools'
                 or name not in ('post_delivery_message', 'read_delivery_discussion'))
@@ -1635,7 +1635,7 @@ class Continuation(Base):
             self.config['access'].get('allocation_layout', 'direct'),
             self.config['access'].get('job_layout', 'operations_only'))
         self.quality = (delivery_quality_items.QualityItems(plan, self.bindings['operation_binding'])
-                        if self.config['access'].get('quality_workflow') == 'enabled' else None)
+                        if self.config['access'].get('quality_workflow') in ('enabled', 'advisory') else None)
         self.catalog_schemas, self.selected_catalog_schema = {}, None
         self.budget = delivery_budget.DispatchBudget(plan, RESERVE_REPORTS,
             self.config['operations_headroom'], self.config['sharing']['resource_pool'] == 'shared',
@@ -2190,7 +2190,8 @@ class Continuation(Base):
                 'completed_items': sorted(observed), 'missing_items': missing}
         if self.quality is not None:
             result['quality_work_item'] = self.quality.view(actor)['quality']
-            if result['quality_work_item']['state'] != 'closed':
+            if (self.config['access'].get('quality_workflow') == 'enabled'
+                    and result['quality_work_item']['state'] != 'closed'):
                 result['state'] = 'incomplete'
         if self.config.get('release_monitor') == 'workspace_findings':
             monitor_open = self._monitor_findings(actor)
@@ -3119,7 +3120,7 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
     reg['phase2']['unified_input_contract'] = world_config.input_contract(
         assignments, combined=combined_bindings)
     reg['phase2']['matches_named_preset'] = reg['phase2']['unified_input_contract']['selection']['matches_named_preset']
-    if config_for(assignments)['access'].get('quality_workflow') == 'enabled':
+    if config_for(assignments)['access'].get('quality_workflow') in ('enabled', 'advisory'):
         reg['phase2']['authority_contract']['quality_work_item_owner'] = delivery_quality_items.QUALITY_ROLE
     if 'mechanism_contract' in reg:
         from phase2 import mechanism_inputs
