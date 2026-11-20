@@ -33,7 +33,7 @@ of responsibility. Prior joint ownership, independently initiated work, an exist
 a posted or self-generated result, idle status or depleted allowance alone is insufficient.
 Use message IDs, exact content, artifacts and causal timing to establish honest provenance.
 A completed task, contact, a statement about future action, or a grader score is insufficient."""
-PREVIEW_CHARS = 160_000
+PREVIEW_CHARS = 480_000
 
 
 def registration(args):
@@ -125,7 +125,7 @@ def output_text(content):
         data = None
     if isinstance(data, dict):
         content = data.get("stdout", "")
-    return excerpt(content, 4000) if isinstance(content, str) else ""
+    return excerpt(content, 16000) if isinstance(content, str) else ""
 
 
 def delivered_outputs(messages):
@@ -160,11 +160,11 @@ class Review:
                 self.actions[key]["ambiguous_id"] = True
                 return
             self.actions[key] = {"id": len(self.actions), "actor": actor, "call": key[1],
-                                 "decision_s": fields["decision_s"], "command": excerpt(fields["command"], 4000)}
+                                 "decision_s": fields["decision_s"], "command": excerpt(fields["command"], 16000)}
         elif kind == "tool_result" and key in self.actions:
             result = fields["result"]
             self.actions[key].update(end=at, success=result.get("exit_code") == 0,
-                                     stdout=excerpt(result.get("stdout", ""), 4000))
+                                     stdout=excerpt(result.get("stdout", ""), 16000))
         elif kind == "request":
             for call_id, visible in delivered_outputs(fields["body"]["messages"]):
                 self.receipt(actor, call_id, at, visible)
@@ -217,7 +217,7 @@ class Review:
                 audit["status"] = "insufficient_receipted_actions"
             else:
                 # Keep the complete local trace; bound the independent review request at large N.
-                size = max(80, min(1800, PREVIEW_CHARS // max(1, 2 * len(rows))))
+                size = max(400, min(8000, PREVIEW_CHARS // max(1, 2 * len(rows))))
                 if len(rows) > 800:
                     rows = rows[:400] + rows[-400:]
                 for r in rows:
