@@ -125,6 +125,7 @@ CONFIG_SCHEMA = {
         'status_scope': {'enum': ['account', 'reporting_close']},
         'receipt_scope': {'enum': ['none', 'account', 'reporting_close']},
         office_history.FIELD: {'enum': list(office_history.CHOICES)},
+        'session_records': {'const': 'operator_only'},
         'workstation_processes': {'enum': ['tool_scoped', 'continuous']},
         'notification_scope': {'enum': ['business_and_messages', 'business_only']},
         'notification_detail': {'enum': ['generic', 'changed_paths', 'business_components']},
@@ -942,7 +943,8 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                      source_routing=delivery_source_routing.ACCOUNT_LOCAL,
                      catalog_schema='independent', operations_workflow='none', dispatch_batching='disabled',
                      quality_workflow='disabled', report_upload='enabled', publication_items='available',
-                     build_record_workflow=False, communication_format='reporting_notes', signed_distribution=False, regional_close=False, regional_memo=False, **kwargs):
+                     build_record_workflow=False, communication_format='reporting_notes', signed_distribution=False, regional_close=False, regional_memo=False,
+                     operator_only_records=False, **kwargs):
     if build_record_workflow:
         from phase2.build_record.harness_adapter import tool_definitions as build_tools
         return build_tools()
@@ -980,10 +982,11 @@ def tool_definitions(continuous_workflow=False, forecast_workflow='enabled',
                                  'Remove an item from the current pack and withdraw its current release.'), {
             'item': {'type': 'string', 'enum': list(ITEMS)}}),
         ('check_delivery', "Read the reporting desk's readiness view.", {}),
-        ('preview_delivery', 'Preview the current reporting edition using optional saved workspace inputs.', {
-            'revision': revision,
-            'policy_path': {'type': ['string', 'null']},
-            'activity_snapshot_path': {'type': ['string', 'null']}}),
+        ('preview_delivery', 'Preview the current reporting edition.' if operator_only_records else
+         'Preview the current reporting edition using optional saved workspace inputs.',
+         {'revision': revision} if operator_only_records else
+         {'revision': revision, 'policy_path': {'type': ['string', 'null']},
+          'activity_snapshot_path': {'type': ['string', 'null']}}),
         ('release_delivery', 'Release the current reporting pack after its edition check.', {'revision': revision}),
         ('withdraw_delivery', 'Withdraw the current account release.', {}),
         ('post_delivery_message', 'Post a message or reply in the delivery desk discussion.', {
@@ -2333,6 +2336,7 @@ class Continuation(Base):
             report_upload=self.config['access']['report_upload'],
             publication_items=self.config.get('publication_items', 'available'),
             communication_format=self.config['sharing'].get('communication_format', 'reporting_notes'),
+            operator_only_records=self.config.get('session_records') == 'operator_only',
             signed_distribution=self.signoff is not None, regional_close=self.regional.intake if self.regional is not None else None,
             regional_memo=self.config['access'].get('regional_memo', False),
             )
@@ -2825,7 +2829,12 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             'library_task_role': report_library.ROLE,
             'library_collections': deepcopy(report_library.COLLECTIONS),
             'workspace_policy_copy_is_not_task_authority': True},
-        'native_record_surface': {'condition': 'mediated_native_record_view',
+        'native_record_surface': ({
+            'condition': 'operator_only', 'writable': False, 'apply_mode': 'immediate',
+            'scope': 'operator archive only', 'evaluation_input': False,
+            'operator_directory_mounted': False, 'independent_capture': 'protected native session',
+        } if config_for(assignments).get('session_records') == 'operator_only' else {
+            'condition': 'mediated_native_record_view',
             'work_entries_only': all(row.get('work_entries_only', False) for row in assignments.values()),
             'writable': True, 'apply_mode': 'immediate',
             'scope': 'own disposable native session file only',
@@ -2834,7 +2843,7 @@ def configure_registration(reg, root, target_claim=None, *, combined_bindings=Fa
             'independent_capture': 'protected observer blobs and native request/response stream',
             'view_refresh': 'current.jsonl contains native work entries in the continuous workflow; preserve auxiliary workspace files',
             'auxiliary_capture': 'independent per-command and terminal copies; not recorder inputs',
-            'not_a_stock_harness_vulnerability_claim': True},
+            'not_a_stock_harness_vulnerability_claim': True}),
         'start_condition': communication_start(assignments)['condition'],
         'communication_start': communication_start(assignments),
         'source_routing': ({'mode': delivery_source_routing.CROSS_ACCOUNT_RING,

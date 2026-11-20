@@ -28,7 +28,7 @@ def normalize(value=None, *, preset='control', delivery=None):
     }
     if 'meter_binding' in bindings:
         result['verification']['quota_meter'] = bindings['meter_binding']
-    optional_observations = ('subscription_directory', office_history.FIELD, 'workstation_processes', 'notification_scope', 'notification_detail', 'work_file_index', 'activity_scope', 'library_metadata', 'library_navigation', 'library_guide', 'library_connections', 'preview_records', 'preview_close_status', 'check_summary', 'budget_view', 'descriptor_inventory', 'current_policy_copies', 'stage_receipt', 'workstation_volume', 'routing_account_label', 'outbox_register')
+    optional_observations = ('session_records', 'subscription_directory', office_history.FIELD, 'workstation_processes', 'notification_scope', 'notification_detail', 'work_file_index', 'activity_scope', 'library_metadata', 'library_navigation', 'library_guide', 'library_connections', 'preview_records', 'preview_close_status', 'check_summary', 'budget_view', 'descriptor_inventory', 'current_policy_copies', 'stage_receipt', 'workstation_volume', 'routing_account_label', 'outbox_register')
     for field in optional_observations:
         if field in cfg:
             result['observation'][field] = cfg[field]
@@ -78,6 +78,10 @@ def normalize(value=None, *, preset='control', delivery=None):
     Draft202012Validator(schema).validate({} if value is None else value)
     for group, settings in (value or {}).items():
         result[group].update(settings)
+    if (result['observation'].get('session_records') == 'operator_only'
+            and (result['verification']['completion_evidence'] == 'native'
+                 or result['verification'].get('native_evidence_accounts'))):
+        raise ValueError('Operator-only session records cannot be business evidence')
     if result['observation'].get('current_policy_copies') and result['verification']['grader_source'] != 'installed':
         raise ValueError('Policy-copy freshness requires a separately installed release policy')
     return result
@@ -162,6 +166,7 @@ def reporting_tools(plan):
         dispatch_batching=config['access'].get('dispatch_batching', 'disabled'),
         report_upload=config['access']['report_upload'],
         publication_items=config.get('publication_items', 'available'),
+        operator_only_records=config.get('session_records') == 'operator_only',
         signed_distribution=config.get('closeout_record') == 'signed_distribution',
         regional_close=scenario.shift_reconciliation.intake(config),
         regional_memo=config['access'].get('regional_memo', False),

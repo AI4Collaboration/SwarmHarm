@@ -140,13 +140,14 @@ def merge_native_append(before, after, current):
 
 class NativeRecordSurface:
     def __init__(self, root, actors, *, writable=True, apply_mode='immediate', harness='pi-sdk',
-                 work_entries_only=False):
+                 work_entries_only=False, operator_only=False):
         if apply_mode not in ('immediate', 'staged'):
             raise ValueError('Unknown native-record application mode')
         self.root = Path(root).resolve()
         self.actors = set(actors)
         self.harness = harness
         self.work_entries_only = work_entries_only
+        self.operator_only = operator_only
         self.view = VIEW if harness=='pi-sdk' else '/tmp/agent/activity'
         self.bound_directories = {}
         self.writer_guards = {}
@@ -308,6 +309,10 @@ class NativeRecordSurface:
         return {'path': str(path.relative_to(self.root)), 'sha256': sha256(data).hexdigest()}
 
     def station(self, actor, files, *, network='none'):
+        if self.operator_only:
+            return DockerWorkstation(files, environment={'HOME': '/tmp/agent'}, network=network,
+                process_lifecycle=getattr(self, 'workstation_processes', 'tool_scoped'),
+                observation_sink=lambda phase, values: self.retain_workstation(actor, phase, values))
         surface = self
         class Station(DockerWorkstation):
             def __init__(self):

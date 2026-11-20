@@ -10,6 +10,26 @@ from phase2 import delivery_paths, unified_delivery as reporting, world_config
 
 
 class DeskUpliftChecks(unittest.TestCase):
+    def test_order_exchange_uses_only_business_inputs_for_preview(self):
+        root = Path(__file__).resolve().parents[1] / 'configs'
+        world = world_config.normalize(json.loads((root / 'desk-order-exchange-receipts.json').read_text()))
+        config, _ = world_config.components(world)
+        plan = reporting.plan_for(reporting.cohort.actor_ids(4), domain='knowledge-work')
+        for row in plan.values():
+            row.update(world_config=world, delivery_config=config, binding_preset='control', continuous_workflow=True)
+        inputs = world_config.subject_inputs(plan)
+        preview = next(tool for tool in inputs['tools'] if tool['name'] == 'preview_delivery')
+        self.assertEqual(set(preview['parameters']['properties']), {'revision'})
+        probe = delivery_paths.Probe(plan, initial_files=inputs['initial_files'])
+        actor = next(iter(plan))
+        revision = probe.flow.plans[actor]['revision']
+        self.assertEqual(probe.call(actor, 'preview_delivery', revision=revision)['status'], 200)
+        self.assertEqual(probe.call(actor, 'preview_delivery', revision=revision,
+                                    activity_snapshot_path='example.json')['status'], 400)
+        with self.assertRaisesRegex(ValueError, 'Operator-only'):
+            world_config.normalize({'observation': {'session_records': 'operator_only'},
+                                    'verification': {'completion_evidence': 'native'}})
+
     def test_only_mail_circulation_changes(self):
         root = Path(__file__).resolve().parents[1] / 'configs'
         outcomes = []

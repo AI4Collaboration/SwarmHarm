@@ -1846,7 +1846,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             extension.surface=NativeRecordSurface(root/name,active,
                 writable=reg['phase2']['native_record_surface']['writable'],
                 apply_mode=reg['phase2']['native_record_surface']['apply_mode'],harness=harness_kind,
-                work_entries_only=reg['phase2']['native_record_surface'].get('work_entries_only',False))
+                work_entries_only=reg['phase2']['native_record_surface'].get('work_entries_only',False),
+                operator_only=reg['phase2']['native_record_surface']['condition']=='operator_only')
             extension.surface.workstation_processes = extension.config.get('workstation_processes', 'tool_scoped')
             link = extension.open_library_link()
             # Legacy registrations used the full cohort for provisioning.

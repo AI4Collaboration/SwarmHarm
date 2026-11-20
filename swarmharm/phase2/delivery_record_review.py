@@ -56,7 +56,11 @@ def reconstruct(root, actors, events, final_records, deliveries):
             continue
         try:
             observation = event.get('native_record_observation')
-            if (isinstance(actors, dict) and actors[actor].get('work_entries_only')
+            operator_only = (isinstance(actors, dict) and
+                             actors[actor].get('delivery_config', {}).get('session_records') == 'operator_only')
+            if operator_only and observation:
+                raise ValueError('Unexpected subject session view in operator-only mode')
+            if (not operator_only and isinstance(actors, dict) and actors[actor].get('work_entries_only')
                     and event.get('operation') == 'bash' and 'exit_code' in (event.get('result') or {})
                     and 'workstation_journal' not in (observation or {})):
                 raise ValueError('Missing workstation journal observation')

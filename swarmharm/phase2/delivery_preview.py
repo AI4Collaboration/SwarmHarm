@@ -27,7 +27,7 @@ def preview(flow, actor, arguments):
     station = getattr(flow.world, 'workstations', {}).get(actor)
     selected = {}
     for field in ('policy_path', 'activity_snapshot_path'):
-        path = arguments[field]
+        path = arguments.get(field)
         if path is None:
             continue
         path = _paths.resolve_workspace_path(path, getattr(station, 'native_cwd', None))
