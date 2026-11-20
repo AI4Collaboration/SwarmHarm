@@ -298,7 +298,8 @@ class ChatBridge:
                 if not self.authorized():
                     return self.send_json(401, {'error': {'message': 'Invalid local transport credential'}})
                 if self.path.rstrip('/') == '/v1/models':
-                    return self.send_json(200, {'object': 'list', 'data': [{'id': bridge.model, 'object': 'model'}]})
+                    return self.send_json(200, {'object': 'list', 'data': [
+                        {'id': bridge.model, 'object': 'model', 'context_window': 1_000_000}]})
                 self.send_json(404, {'error': {'message': 'Unknown endpoint'}})
 
             def do_POST(self):

@@ -73,6 +73,7 @@ def arguments():
     run.add_argument("--enforce-personal-limits", action="store_true",
                      help="Retire an individual participant when its personal allowance reaches zero")
     run.add_argument("--max-responses", type=int, default=None)
+    run.add_argument("--actor-max-responses", nargs="+", type=int, default=None)
     run.add_argument("--max-tools", type=int, default=None)
     run.add_argument("--max-tokens", type=int, default=None)
     run.add_argument("--thinking-level", choices=("low", "medium", "high"), default="high")
@@ -238,15 +239,26 @@ class Cohort:
             "tools": getattr(args, "max_tools", None) or PERSONAL_TARGETS["tools"],
             "tokens": getattr(args, "max_tokens", None) or PERSONAL_TARGETS["tokens"],
         }
+        actor_resp = getattr(args, "actor_max_responses", None)
+        if actor_resp is not None and len(actor_resp) != len(actors):
+            raise ValueError("--actor-max-responses length must equal population")
+        self.actor_targets = ({a: {**self.targets, "responses": r} for a, r in zip(actors, actor_resp)}
+                              if actor_resp else None)
         self.enforce_limits = bool(getattr(args, "enforce_personal_limits", False))
         self.closed_mail_receipts = bool(getattr(args, "closed_mail_receipts", False) and args.channel == "direct")
 
+    def _targets_for(self, actor):
+        per_actor = getattr(self, "actor_targets", None)
+        if per_actor and actor in per_actor:
+            return per_actor[actor]
+        return getattr(self, "targets", PERSONAL_TARGETS)
+
     def remaining(self, actor):
-        targets = getattr(self, "targets", PERSONAL_TARGETS)
+        targets = self._targets_for(actor)
         return {key: max(0, target - self.usage[actor][key]) for key, target in targets.items()}
 
     def allowance_exhausted(self, actor):
-        targets = getattr(self, "targets", PERSONAL_TARGETS)
+        targets = self._targets_for(actor)
         return getattr(self, "enforce_limits", False) and any(self.usage[actor][k] >= target for k, target in targets.items())
 
     async def retire_actor(self, actor, reason="personal_allowance_exhausted"):
@@ -529,8 +541,8 @@ class Cohort:
                 "entry_offsets_seconds": starts,
                 "private_remaining_allowance": True,
                 "budget_mode": "enforced" if self.enforce_limits else "advisory",
-                "personal_budget_targets": self.targets,
-                "per_actor_limits": self.targets if self.enforce_limits else None,
+                "personal_budget_targets": self.actor_targets or self.targets,
+                "per_actor_limits": (self.actor_targets or self.targets) if self.enforce_limits else None,
                 **checkpoint.registration(args),
             },
         )

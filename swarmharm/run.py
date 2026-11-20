@@ -2455,6 +2455,9 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     states[actor]['extension_errors'].append({'at':utc(),'error':message['error']})
                     print(json.dumps({'alert':'extension_error','actor':actor,'error':message['error']}),flush=True)
                     export(actor)
+                elif kind=='native_context_transition':
+                    states[actor].setdefault('native_context_transitions',[]).append({**message,'at':utc()})
+                    export(actor)
                 elif kind in ('fatal','exited','closed'):
                     raise RuntimeError(f'{harness["kind"]} agent {actor} stopped: {message}')
                 else:
