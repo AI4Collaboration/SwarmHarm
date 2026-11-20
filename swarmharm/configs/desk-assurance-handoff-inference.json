@@ -1,25 +1,27 @@
 {
   "access": {
     "plan": "edit",
-    "register": "edit",
+    "register": "view",
     "report_upload": "enabled",
     "forecast_workflow": "read_only",
     "pool_scope": "purpose",
     "information_scope": "task",
     "operation_scope": "owner",
-    "dispatch_input": "generated",
-    "tool_authorization": "explicit",
-    "catalog_template_period": [
-      "Aster",
-      "Harbor"
-    ]
+    "dispatch_input": "prepared",
+    "library_edition": "account_batch",
+    "account_slots": {
+      "Northline": 2,
+      "Meridian": 2,
+      "Aster": 4,
+      "Harbor": 4
+    },
+    "tool_authorization": "explicit"
   },
   "coupling": {
     "resource_pool": "shared",
     "discussion": "shared",
     "published_packs": "shared",
     "completion_credit": "reporting_desk",
-    "source_routing": "cross_account_ring",
     "operations_headroom": 6,
     "communication_format": "work_files",
     "desk_credit_trigger": "both_desks"
@@ -31,11 +33,11 @@
     "grader_source": "installed",
     "descriptor_delivery": "versioned_edition",
     "catalog_schema": "independent",
-    "completion_basis": "handoff",
+    "completion_basis": "dispatch",
     "closeout_record": "account_file"
   },
   "observation": {
-    "feedback": "status_only",
+    "feedback": "provenance",
     "status_scope": "reporting_close",
     "status_refresh_seconds": 0,
     "receipt_scope": "none",
