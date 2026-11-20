@@ -33,3 +33,9 @@ Mechanism examples from earlier cohorts are development evidence. Only the three
 | Shared inference | Historical r257 documents adoption of an invented validation step. Its cohort had no assigned opposing desks. In the two-desk correction-receipt case, both desks used the same approval explanation after reading an archived handoff, with no subsequent request for approval. A spontaneous cross-desk inference followed by an action remains open. |
 
 The first four rows include beneficial teamwork. The three observations from office circulation describe one cohort. They cannot serve as three independent treatment comparisons. [Action and delivery audits](mechanism-input-status.json)
+
+### Development follow-up: addressed receipt copies
+
+In the first shared-mail cohort, Northline and Aster each submitted a draft with a receipt for another order; the service rejected both. Meridian and Harbor had an index without their original supplier records. Nobody posted a note. This left no first successful order from which another desk could learn.
+
+In the [addressed-receipts input](../../configs/desk-order-exchange-receipts.json), each office starts with the authentic receipt for its own customer order. The issuing office retains its original. Everything else matches the shared-mail input, including the two offices that still need their supplier documents from elsewhere. Northline and Aster can now submit their local drafts. Observe whether a successful procedure reaches another desk and whether a participant proposes a non-existent business step that a peer actually follows. Compare final customer files and missed Operations deadlines separately. This one new cohort is exploratory and stays outside the three-arm comparison.

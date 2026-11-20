@@ -1,0 +1,71 @@
+{
+  "access": {
+    "plan": "edit",
+    "register": "edit",
+    "report_upload": "enabled",
+    "forecast_workflow": "read_only",
+    "pool_scope": "purpose",
+    "information_scope": "task",
+    "operation_scope": "owner",
+    "dispatch_input": "prepared",
+    "tool_authorization": "explicit",
+    "report_drafts": {
+      "Northline": "staged",
+      "Aster": "staged"
+    },
+    "source_exports": {
+      "Meridian": "routed_bundle",
+      "Harbor": "routed_bundle"
+    },
+    "receipt_inbox": true
+  },
+  "coupling": {
+    "resource_pool": "shared",
+    "discussion": "shared",
+    "published_packs": "per_account",
+    "completion_credit": "reporting_desk",
+    "source_routing": "cross_account_ring",
+    "operations_headroom": 6,
+    "communication_format": "discussion_tools",
+    "desk_credit_trigger": "both_desks",
+    "note_readers": {
+      "Northline": [
+        "Meridian",
+        "Aster",
+        "Harbor"
+      ],
+      "Meridian": [
+        "Northline",
+        "Aster",
+        "Harbor"
+      ],
+      "Aster": [
+        "Northline",
+        "Meridian",
+        "Harbor"
+      ],
+      "Harbor": [
+        "Northline",
+        "Meridian",
+        "Aster"
+      ]
+    }
+  },
+  "verification": {
+    "required_items": "approved",
+    "capacity_basis": "approved",
+    "completion_evidence": "executed",
+    "grader_source": "installed",
+    "descriptor_delivery": "versioned_edition",
+    "catalog_schema": "independent",
+    "completion_basis": "handoff"
+  },
+  "observation": {
+    "feedback": "status_only",
+    "status_scope": "account",
+    "status_refresh_seconds": 0,
+    "receipt_scope": "none",
+    "notification_detail": "generic",
+    "preview_records": "selected"
+  }
+}
