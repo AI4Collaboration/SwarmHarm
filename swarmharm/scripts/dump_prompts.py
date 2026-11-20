@@ -71,7 +71,7 @@ def configured_inputs(domain, preset, world, harness, workload=None, population=
               "system_prompt_config": CLAUDE_PROMPT if harness == "claude-code" else CODEX_PROMPT,
               "input_projection": controller_harness({"kind": harness})["input_projection"],
               "input_hashes": manifest["input_contract"]["subject_sha256"],
-              "new_business_state_notice": unified_delivery.Continuation.calendar_change_message}
+              "notification_detail": manifest["world_config"]["observation"].get("notification_detail", "generic")}
     return header, audits, subjects["initial_files"]
 
 

@@ -710,7 +710,6 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
     save(root/'fixtures.json',rows);save(root/'activation-plan.json',activation)
     save(root/'topology.json',topology_spec)
     shutil.copy2(HERE/'source-manifest.json',root/'source-manifest.json')
-    continuation_module=(unified_delivery)
     phase2_plan=(deepcopy(unified_plan))
     for assignment in phase2_plan.values():
         assignment['native_record_harness']=harness_kind
@@ -772,33 +771,13 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
     save(root/'initial-file-audit.json', {phase:{actor:lab.files(item,actor) for actor,item in cell.items()} for phase,cell in plan.items()})
     component_sources = (unified_delivery.initial_state(phase2_plan))
     audit = load(root/'initial-input-audit.json')
+    reporting_tools = unified_delivery.world_config.reporting_tools(phase2_plan)
     for actor in plan['natural']:
         audit['natural'][actor]['tools'] = phase2_component.base_tools(
             plan['natural'][actor], component_family)
         audit['natural'][actor]['input'] = [
-            {'role':'user','content':continuation_module.task(phase2_plan[actor])}]
-        audit['natural'][actor]['tools'] += continuation_module.tool_definitions(
-            family=component_family,
-            **({'continuous_workflow': True,
-                'build_record_workflow': unified_delivery.build_record_workflow(phase2_plan[actor]),
-                'forecast_workflow': unified_delivery.config_for(
-                    phase2_plan)['access']['forecast_workflow'],
-                'source_routing': unified_delivery.config_for(
-                    phase2_plan)['sharing']['source_routing'],
-                'catalog_schema': unified_delivery.config_for(
-                    phase2_plan).get('catalog_schema', 'independent'),
-                'operations_workflow': unified_delivery.config_for(phase2_plan)['access'].get('operations_workflow', 'none'),
-                'quality_workflow': unified_delivery.config_for(phase2_plan)['access'].get('quality_workflow', 'disabled'),
-                'dispatch_batching': unified_delivery.config_for(phase2_plan)['access'].get('dispatch_batching', 'disabled'),
-                'report_upload': unified_delivery.config_for(phase2_plan)['access']['report_upload'],
-                'publication_items': unified_delivery.config_for(phase2_plan).get('publication_items', 'available'),
-                'signed_distribution': unified_delivery.config_for(phase2_plan).get('closeout_record') == 'signed_distribution',
-                'regional_close': unified_delivery.shift_reconciliation.intake(unified_delivery.config_for(phase2_plan)),
-                'regional_memo': unified_delivery.config_for(phase2_plan)['access'].get('regional_memo', False),
-                'communication_format': unified_delivery.config_for(phase2_plan)['sharing'].get('communication_format', 'reporting_notes'),
-                }),
-            include_subject_goal=False,
-            **({'proof_stage': proof_stage} if proof_stage != 'off' else {}))
+            {'role':'user','content':unified_delivery.task(phase2_plan[actor])}]
+        audit['natural'][actor]['tools'] += reporting_tools
     save(root/'initial-input-audit.json', audit)
     files = load(root/'initial-file-audit.json')
     files['natural'] = phase2_component.initial_files(plan['natural'], phase2_plan, component_sources)
@@ -1800,7 +1779,6 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     api_key=None if subscription else AXONHUB_KEY_FILE.read_text().strip()
     api_base=None if subscription else registration_api_base(reg)
     formation_review=module('swarmharm_v1_runtime_review',HERE/'review.py')
-    continuation_module=(unified_delivery)
     initial=load(root/'initial-input-audit.json');response_review=[];transport_attempts=[]
     state_lock=Lock()
     began=time.monotonic();deadline=began+budget['max_batch_seconds'];progress={
@@ -1833,7 +1811,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             from phase2.build_record.unified_bridge import UnifiedBuildBridge
             extension=UnifiedBuildBridge.from_plan(world,extension_plan,reg['component_initial_state'])
         else:
-            extension=continuation_module.Continuation(world,extension_plan)
+            extension=unified_delivery.Continuation(world,extension_plan)
         phase2_activation=None;termination_reason='quiescence'
         events=agent_runtime.new_queue();agents={}
         shell_pool=ThreadPoolExecutor(max_workers=budget['active_contexts_natural'])
@@ -1841,24 +1819,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         # The selected SDK owns the live loop and queues input for its next turn.
         running=set();pending_texts={};pending_tools={}
         turn_records={};executed_calls={}
-        phase2_definitions = continuation_module.tool_definitions(
-            **({'continuous_workflow': True,
-                'build_record_workflow': unified_delivery.build_record_workflow(next(iter(extension.plan.values()))),
-                'forecast_workflow': extension.config['access']['forecast_workflow'],
-                'source_routing': extension.config['sharing']['source_routing'],
-                'catalog_schema': extension.config.get('catalog_schema', 'independent'),
-                'operations_workflow': extension.config['access'].get('operations_workflow', 'none'),
-                'quality_workflow': extension.config['access'].get('quality_workflow', 'disabled'),
-                'dispatch_batching': extension.config['access'].get('dispatch_batching', 'disabled'),
-                'report_upload': extension.config['access']['report_upload'],
-                'publication_items': extension.config.get('publication_items', 'available'),
-                'signed_distribution': extension.config.get('closeout_record') == 'signed_distribution',
-                'regional_close': unified_delivery.shift_reconciliation.intake(extension.config),
-                'regional_memo': extension.config['access'].get('regional_memo', False),
-                'communication_format': extension.config['sharing'].get('communication_format', 'reporting_notes'),
-                }),
-            **({'family': reg['phase2']['component_family'],
-                'include_subject_goal': bool(reg.get('subject_goal'))}))
+        phase2_definitions = unified_delivery.world_config.reporting_tools(extension_plan)
         phase2_tool_names=[tool['name'] for tool in phase2_definitions]
         next_snapshot_at=0.0
         def export(actor=None):

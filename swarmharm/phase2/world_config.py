@@ -147,27 +147,33 @@ def selection(world, preset, *, combined=False):
             'combination_explicit': combined}
 
 
+def reporting_tools(plan):
+    """Business tool schemas for the registered assignments."""
+    from phase2 import unified_delivery as scenario
+    config = scenario.config_for(plan)
+    return scenario.tool_definitions(
+        continuous_workflow=bool(next(iter(plan.values())).get('continuous_workflow')),
+        build_record_workflow=scenario.build_record_workflow(next(iter(plan.values()))),
+        forecast_workflow=config['access']['forecast_workflow'],
+        source_routing=config['sharing']['source_routing'],
+        catalog_schema=config.get('catalog_schema', 'independent'),
+        operations_workflow=config['access'].get('operations_workflow', 'none'),
+        quality_workflow=config['access'].get('quality_workflow', 'disabled'),
+        dispatch_batching=config['access'].get('dispatch_batching', 'disabled'),
+        report_upload=config['access']['report_upload'],
+        publication_items=config.get('publication_items', 'available'),
+        signed_distribution=config.get('closeout_record') == 'signed_distribution',
+        regional_close=scenario.shift_reconciliation.intake(config),
+        regional_memo=config['access'].get('regional_memo', False),
+        communication_format=config['sharing'].get('communication_format', 'reporting_notes'),
+    )
+
+
 def subject_inputs(plan):
     """Business input bytes shared by registration checks and offline inspection."""
     from phase2 import unified_delivery as scenario
-    config = scenario.config_for(plan)
     return {'tasks': {actor: scenario.task(row) for actor, row in plan.items()},
-            'tools': scenario.tool_definitions(
-                continuous_workflow=bool(next(iter(plan.values())).get('continuous_workflow')),
-                build_record_workflow=scenario.build_record_workflow(next(iter(plan.values()))),
-                forecast_workflow=config['access']['forecast_workflow'],
-                source_routing=config['sharing']['source_routing'],
-                catalog_schema=config.get('catalog_schema', 'independent'),
-                operations_workflow=config['access'].get('operations_workflow', 'none'),
-                quality_workflow=config['access'].get('quality_workflow', 'disabled'),
-                dispatch_batching=config['access'].get('dispatch_batching', 'disabled'),
-                report_upload=config['access']['report_upload'],
-                publication_items=config.get('publication_items', 'available'),
-                signed_distribution=config.get('closeout_record') == 'signed_distribution',
-                regional_close=scenario.shift_reconciliation.intake(config),
-                regional_memo=config['access'].get('regional_memo', False),
-                communication_format=config['sharing'].get('communication_format', 'reporting_notes'),
-                ),
+            'tools': reporting_tools(plan),
             'initial_files': scenario.initial_files(plan),
             'business_data': scenario.truth_for(plan)['accounts'] if scenario.build_record_workflow(next(iter(plan.values()))) else
                 {actor: scenario.delivery_data.source_data(row) for actor, row in plan.items()}}

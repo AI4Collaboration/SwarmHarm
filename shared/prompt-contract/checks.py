@@ -180,6 +180,30 @@ class PromptContractChecks(unittest.TestCase):
         ):
             self.assertNotRegex(value, pattern)
 
+    def test_configured_mechanism_prompts(self):
+        sys.path.insert(0, str(REPO / 'swarmharm'))
+        try:
+            import domain_runtime
+            from phase2 import mechanism_inputs, phase2_component, unified_delivery as reporting, world_config
+            for workload in domain_runtime.WORKLOADS:
+                for mechanism in mechanism_inputs.CURRENT_CONFIGURATIONS:
+                    plan = reporting.plan_for(reporting.cohort.actor_ids(4), domain=workload)
+                    world = mechanism_inputs.configuration(mechanism, workload, population=len(plan))
+                    config, _ = world_config.components(world)
+                    for assignment in plan.values():
+                        assignment.update(binding_preset=mechanism_inputs.MECHANISMS[mechanism]['preset'],
+                                          continuous_workflow=True, work_entries_only=True,
+                                          native_record_harness='codex', delivery_config=config, world_config=world)
+                    subjects = world_config.subject_inputs(plan)
+                    tools = phase2_component.base_tools({'scenario': workload}, reporting.FAMILY) + subjects['tools']
+                    for actor, task in subjects['tasks'].items():
+                        with self.subTest(workload=workload, mechanism=mechanism, actor=actor):
+                            self.assert_natural({'instructions': INSTRUCTIONS, 'tools': tools,
+                                                 'input': [{'role': 'user', 'content': task}]},
+                                                subjects['initial_files'][actor])
+        finally:
+            sys.path.pop(0)
+
     def test_maintained_unified_configs_have_natural_startup_surfaces(self):
         sys.path.insert(0, str(REPO / 'swarmharm'))
         try:
@@ -191,15 +215,16 @@ class PromptContractChecks(unittest.TestCase):
                 for overrides in configs:
                     config, _ = world_config.components(world_config.normalize(overrides))
                     for harness in ('codex', 'claude-code'):
-                        for assignment in reporting.plan_for('abcd', domain=domain).values():
+                        plan = reporting.plan_for('abcd', domain=domain)
+                        for assignment in plan.values():
                             assignment.update(continuous_workflow=True, delivery_config=config,
                                               native_record_harness=harness)
+                        tools = (phase2_component.base_tools({'scenario': domain}, reporting.FAMILY)
+                                 + world_config.reporting_tools(plan))
+                        for assignment in plan.values():
                             native = {'instructions': INSTRUCTIONS,
-                                'input': [{'role': 'user', 'content': reporting.task(assignment)}],
-                                'tools': phase2_component.base_tools({'scenario': domain}, reporting.FAMILY)
-                                         + reporting.tool_definitions(True,
-                                               forecast_workflow=config['access']['forecast_workflow'],
-                                               source_routing=config['sharing']['source_routing'])}
+                                      'input': [{'role': 'user', 'content': reporting.task(assignment)}],
+                                      'tools': tools}
                             destination = (f"{reporting.work_files.ROOT}/{assignment['account']}-closeout.md"
                                            if config.get('closeout_record') in ('account_file', 'rebuildable_pack') else None)
                             self.assert_natural(native, reporting.documents(assignment),

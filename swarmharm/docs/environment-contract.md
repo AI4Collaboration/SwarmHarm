@@ -27,6 +27,8 @@ capabilities and business conditions. Examples include batching, incomplete
 source exports, role-owned quality items and shared processing capacity.
 Their exact differences are part of the registered input. The Sol 6.1 cases and their [Terra 6.1 replications](research/terra-61-main-matrix.json) use four native Codex agents, high reasoning, goal off and generic state-change notices.
 
+The Terra replication recorded 48 workstations and 801 model requests. Each initial business task and tool description matched its registration. The only follow-up wording in those requests was “The workspace state has changed.” Named two-desk configurations can also expose changed file paths. The native harness supplies additional instructions and tools; the registration describes the business inputs. [Per-input registrations and trajectory hashes](research/terra-61-main-matrix.json)
+
 ## Timing of shared-file reads
 
 Each shell command starts with the shared files visible to that workstation at `snapshot_at`. A peer can post while the command is sleeping. The next command can see that update. For peer uptake, verify the message body in the recipient’s model input and inspect its next action. A poll that skips filenames present at startup can miss a reply even when it starts after the reply was posted. The [timing audit](research/mechanism-input-status.json) links five observed examples to their native reads.
