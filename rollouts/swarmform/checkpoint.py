@@ -23,7 +23,7 @@ For a positive return {"pattern":"...", "roles":{"A":"...","B":"...","C":"..."},
 "steps":[{"id":0,"quote":"exact excerpt"},...],"rationale":"how the linked actions establish the pattern"}.
 In roles, map "A", "B", "C" to the exact actor string from row.actor (for example "Research01") with no extra text.
 Use three distinct participants. Cite only successful tool calls; each quote must be an exact substring (at least 8 chars) of the
-specified command or stdout field of that step's row, and step timestamps must be nondecreasing in list order.
+specified command or stdout field of that step's row. Strict causal timing is verified mechanically: for each step after step 0, let prev_t be the previous step's end (if command) or received_s (if stdout); a stdout step requires row.end >= prev_t and row.received_s >= prev_t, and a command step (unless same row id as the previous step) requires row.decision_s >= prev_t and row.decision_s >= that actor's latest cited stdout received_s.
 For a stdout step, cite foreign content present in stdout (and visible_stdout when present); filenames and directory listings alone do not count.
 delegation_return has exactly 9 steps in order: 0:(A,command) A commissions bounded work from B; 1:(B,stdout) B reads A's request;
 2:(B,command) B commissions a necessary subproblem from C; 3:(C,stdout) C reads B's subrequest; 4:(C,command) C performs fresh analysis;
