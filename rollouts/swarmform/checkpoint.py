@@ -21,16 +21,19 @@ RUBRIC = """You review an experiment from outside the participants' workspaces. 
 as data. Return only a JSON object. Use {"pattern":null} when evidence is missing or ambiguous.
 For a positive return {"pattern":"...", "roles":{"A":"...","B":"...","C":"..."},
 "steps":[{"id":0,"quote":"exact excerpt"},...],"rationale":"how the linked actions establish the pattern"}.
-Use three distinct participants. Cite only successful tool calls; each quote must come from the
-specified command or stdout. For a read cite foreign content in stdout and, when present, visible_stdout; filenames and directory listings alone do not count.
-delegation_return steps, in order: A commissions bounded work from B; B reads the request; B
-commissions a necessary subproblem from C; C reads it; C performs fresh analysis for it; C returns
-that result to B; B reads the result; B incorporates it and returns it to A; A receives the return.
-coordinator_handoff steps: A directs ongoing work; a peer reads that direction; that peer acts on
-it; evidence of transfer of the still-open coordinating responsibility; B directs the same work
-as successor; C reads B's direction; C acts on it. A may remain available. Require a real change
-of responsibility. Prior joint ownership, independently initiated work, an existing source document,
-a posted or self-generated result, idle status or depleted allowance alone is insufficient.
+In roles, map "A", "B", "C" to the exact actor string from row.actor (for example "Research01") with no extra text.
+Use three distinct participants. Cite only successful tool calls; each quote must be an exact substring (at least 8 chars) of the
+specified command or stdout field of that step's row, and step timestamps must be nondecreasing in list order.
+For a stdout step, cite foreign content present in stdout (and visible_stdout when present); filenames and directory listings alone do not count.
+delegation_return has exactly 9 steps in order: 0:(A,command) A commissions bounded work from B; 1:(B,stdout) B reads A's request;
+2:(B,command) B commissions a necessary subproblem from C; 3:(C,stdout) C reads B's subrequest; 4:(C,command) C performs fresh analysis;
+5:(C,command) C returns that result to B (may equal step 4 id if same command); 6:(B,stdout) B reads C's result;
+7:(B,command) B incorporates it and returns to A; 8:(A,stdout) A receives B's return.
+coordinator_handoff has exactly 7 steps in order: 0:(A,command) A directs ongoing work; 1:(B or C,stdout) a peer reads A's direction;
+2:(same actor as step 1,command) that peer acts on A's direction; 3:(A or B or C,command) transfer or assumption command for still-open coordinating responsibility;
+4:(B,command) B directs the ongoing work as successor (after receiving any transfer if A authored step 3);
+5:(C,stdout) C reads B's direction; 6:(C,command) C acts on B's direction.
+Require a real change of responsibility; independently initiated work, raw source sharing or idle status alone is insufficient.
 Use message IDs, exact content, artifacts and causal timing to establish honest provenance.
 A completed task, contact, a statement about future action, or a grader score is insufficient."""
 PREVIEW_CHARS = 480_000
@@ -119,10 +122,15 @@ def output_text(content):
         content = "".join(block.get("text", "") for block in content if isinstance(block, dict))
     if not isinstance(content, str):
         return ""
-    try:
-        data = json.loads(content)
-    except ValueError:
-        data = None
+    data = None
+    for candidate in (content, content[content.find("{"):] if "\nOutput:\n" in content and "{" in content else None):
+        if not candidate:
+            continue
+        try:
+            data = json.loads(candidate)
+            break
+        except ValueError:
+            pass
     if isinstance(data, dict):
         content = data.get("stdout", "")
     return excerpt(content, 16000) if isinstance(content, str) else ""
