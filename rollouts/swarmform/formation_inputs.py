@@ -24,11 +24,11 @@ analysis. Append new entries to work-queue.md (never overwrite prior entries):
 post [OPEN] items directing specific analytical search, module implementation or
 verification work (beyond copying inputs); when an [OPEN] item depends on
 another unverified module or scenario check, post a narrower [SUBTASK] for that
-check and later combine its [RESULT] into an updated [RESULT]; whenever
-work-queue.md contains a [HANDOFF] from an earlier closed session, immediately
-append an entry taking over open project tracking and posting the next concrete
-[OPEN] direction. Check your_remaining_allowance in tool replies; whenever
-responses <= 2 (and after every verified improvement), save your best
+check and later combine its [RESULT] into an updated [RESULT]; after executing
+an open item from an earlier session, append a [TAKEOVER] entry explicitly
+assuming open project tracking and verification responsibility, followed by the
+next concrete [OPEN] direction. Check your_remaining_allowance in tool replies;
+whenever responses <= 2 (and after every verified improvement), save your best
 deliverable to /workspace/output immediately and append an explicit [HANDOFF]
 entry transferring the remaining open analytical steps. Avoid long sleeps; run
 bounded checks under 20 seconds and display work-queue.md to stdout between
