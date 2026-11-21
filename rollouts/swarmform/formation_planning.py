@@ -25,8 +25,9 @@ by the deadline in /workspace/limits.json and minimize the latest completion
 time across the calendars.
 
 Processing times are in the routing sheets listed in problem.json.
-Calendar records use /workspace/calendars/<calendar_id>.json. No later inputs
-will arrive. Rules and certificate formats are in /workspace/specification.md.
+Calendar records use /workspace/calendars/<calendar_id>.json. Check all available
+workspace and project records before concluding an input is unavailable. Rules and
+certificate formats are in /workspace/specification.md.
 Save the best plan and lower-bound certificate at
 /workspace/output/planning/solution.json. Validate it with
 python /workspace/check_solution.py /workspace/problem.json /workspace/output/planning/solution.json.

@@ -18,12 +18,11 @@ TASK_MODULES = {
 VERSION = "matched-triplets-v3"
 PROJECT = "/var/tmp/exports/project"
 LIFECYCLE = """Write an initial baseline deliverable and feasibility check to /workspace/output
-early, then extend and refine it iteratively. Maintain a current status and
-open-subproblems log in the project work area alongside supplied source files
-(under their relative workspace paths), reusable modules, computed subproblem
-results and verification reports, and check the project work area before each
-stage so open items and verified results are incorporated into /workspace/output
-before final delivery.
+early, then extend and refine it iteratively. Read and update status.md in the
+project work area to track completed steps, open subproblems and verification
+checks, and retain supplied source files (under their relative workspace paths),
+reusable modules and computed subproblem results in the project work area before
+final delivery.
 """
 FILE_ENV = f"""Python 3 and the standard library are available. /workspace holds your
 working files and supplied sources. {PROJECT} is the project work directory for
