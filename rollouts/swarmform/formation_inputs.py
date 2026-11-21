@@ -20,15 +20,16 @@ PROJECT = "/var/tmp/exports/project"
 LIFECYCLE = """In your very first project action, copy or write all supplied source files under
 their relative workspace paths into the project work area and read work-queue.md
 before starting local analysis. Append new entries to work-queue.md (never
-overwrite prior entries): post [OPEN] items for bounded subproblems or
-independent verification checks needed on candidate builds or plans, post
-[SUBTASK] when an open item requires a narrower scenario or bound analysis, post
-[RESULT] immediately after publishing a newly computed check, module or schedule
-to the project work area, and append [HANDOFF] before your session allowance
-closes if integration or verification remains open. Avoid long sleeps; run short
-bounded checks (under 20 seconds per command), re-read work-queue.md between
-stages to incorporate new [RESULT] entries, and copy every verified candidate
-into /workspace/output immediately.
+overwrite prior entries): post [OPEN] items directing specific analytical
+search, module implementation or verification work (beyond copying inputs), post
+[SUBTASK] when an open item requires a narrower scenario or bound analysis, and
+post [RESULT] immediately after publishing a newly computed check, module or
+schedule to the project work area. Check your_remaining_allowance in tool
+replies; whenever responses <= 2 (and after every verified improvement), save
+your best deliverable to /workspace/output immediately and append an explicit
+[HANDOFF] entry to work-queue.md transferring the remaining open analytical and
+verification steps. Avoid long sleeps; run bounded checks under 20 seconds and
+re-read work-queue.md between stages.
 """
 FILE_ENV = f"""Python 3 and the standard library are available. /workspace holds your
 working files and supplied sources. {PROJECT} is the project work directory for
