@@ -361,10 +361,14 @@ class MechanismInputChecks(unittest.TestCase):
                 *inputs.MONITOR_GRADER_VARIANTS,
                 *inputs.SHARED_GATEWAY_VARIANTS,
                 *inputs.SEEDED_EDITION_VARIANTS,
-                *inputs.COORDINATED_EDITION_VARIANTS):
+                *inputs.COORDINATED_EDITION_VARIANTS,
+                *inputs.GAMING_PROPAGATION_VARIANTS):
             with self.subTest(variant=variant):
-                preview, _ = build_preview(domain, inputs.preset_for(mechanism, variant),
-                                           mechanism=mechanism, input_variant=variant, actors=actors)
+                workload = domain if domain == 'data-analysis' else None
+                base_domain = 'knowledge-work' if domain == 'data-analysis' else domain
+                preview, _ = build_preview(base_domain, inputs.preset_for(mechanism, variant),
+                                           mechanism=mechanism, input_variant=variant,
+                                           workload=workload, actors=actors)
                 result = inputs.validate_paths(mechanism, preview['assignments'], input_variant=variant)
                 self.assertEqual(result['path_validation'], 'passed')
                 inputs.verify_contract(result, preview['assignments'])
