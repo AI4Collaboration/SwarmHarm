@@ -532,7 +532,7 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode=None, harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', mechanism=None, input_variant=None, workload=None, api_base=AXONHUB_API_BASE, startup_concurrency=8, api_protocol='native', served_model=None):
+            archive_compatibility=False, pi_comparison=False, target_claim=None, release_feedback="measured_checks", controls_from=None, binding_preset=None, delivery_config=None, world_config=None, combined_bindings=False, comparison_design=None, source_retention='origin', mechanism=None, input_variant=None, workload=None, api_base=AXONHUB_API_BASE, startup_concurrency=8, api_protocol='native', served_model=None, max_actor_seconds=None):
     provisioning_workers = startup_workers(population, startup_concurrency)
     scenario = domain_runtime.resolve_workload(scenario, workload)
     require_ready_input(input_variant, delivery_config=delivery_config, world_config=world_config, mechanism=mechanism, scenario=scenario)
@@ -692,6 +692,9 @@ def prepare(root,registration_dir,key_file,population=unified_delivery.cohort.DE
         'all_workstations_ready_before_release':True,
         'first_request_start_barrier':True}
     budget=deepcopy(BUDGET)
+    if max_actor_seconds is not None:
+        budget['max_actor_seconds']=max_actor_seconds
+        budget['max_batch_seconds']=max(budget['max_batch_seconds'], max_actor_seconds + 300)
     if harness_kind in ('claude-code','codex'):
         if harness_kind=='codex':budget['max_output_tokens_per_response']=None
         budget.update(max_transport_attempts_per_request=1,transport_retry_backoff_seconds=0)
@@ -2766,6 +2769,8 @@ if __name__=='__main__':
         help='Operator-only preregistered claim; never exposed to subjects.')
     p.add_argument('--component-family', choices=(unified_delivery.FAMILY,), default=unified_delivery.FAMILY,
         help='Reporting and delivery service.')
+    p.add_argument('--max-actor-seconds', type=int, default=None,
+        help='Optional per-actor wall-clock cap in seconds.')
     a=p.parse_args()
     if a.phase=='prepare' and a.binding_preset is None and a.mechanism is None:
         p.error('--binding-preset is required during preparation')
@@ -2791,5 +2796,5 @@ if __name__=='__main__':
             world_config=load(a.world_config) if a.world_config is not None else None,
             combined_bindings=a.combined_bindings,comparison_design=a.comparison_design,
             source_retention=a.source_retention,mechanism=a.mechanism,api_base=a.api_base,api_protocol=a.api_protocol,served_model=a.served_model,
-            input_variant=a.input_variant,workload=a.workload,startup_concurrency=a.startup_concurrency)
+            input_variant=a.input_variant,workload=a.workload,startup_concurrency=a.startup_concurrency,max_actor_seconds=a.max_actor_seconds)
     else:collect(root,registration_dir)
