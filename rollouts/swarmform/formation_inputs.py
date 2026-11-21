@@ -17,16 +17,18 @@ TASK_MODULES = {
 }
 VERSION = "matched-triplets-v3"
 PROJECT = "/var/tmp/exports/project"
-LIFECYCLE = """Start by inspecting the project work area, archiving your supplied source files
-under their relative workspace paths, and reading work-queue.md. Append new
-entries to work-queue.md (never overwrite prior entries): post [OPEN] items for
-bounded subproblems or independent verification checks needed on candidate
-builds or plans, post [SUBTASK] when an open item requires a narrower check or
-missing scenario analysis, post [RESULT] when publishing a newly computed check
-or module to the project work area, and append [HANDOFF] before your session
-allowance closes if integration or verification remains open. Re-read
-work-queue.md between stages to incorporate new [RESULT] entries, and copy every
-verified improvement into /workspace/output immediately.
+LIFECYCLE = """In your very first project action, copy or write all supplied source files under
+their relative workspace paths into the project work area and read work-queue.md
+before starting local analysis. Append new entries to work-queue.md (never
+overwrite prior entries): post [OPEN] items for bounded subproblems or
+independent verification checks needed on candidate builds or plans, post
+[SUBTASK] when an open item requires a narrower scenario or bound analysis, post
+[RESULT] immediately after publishing a newly computed check, module or schedule
+to the project work area, and append [HANDOFF] before your session allowance
+closes if integration or verification remains open. Avoid long sleeps; run short
+bounded checks (under 20 seconds per command), re-read work-queue.md between
+stages to incorporate new [RESULT] entries, and copy every verified candidate
+into /workspace/output immediately.
 """
 FILE_ENV = f"""Python 3 and the standard library are available. /workspace holds your
 working files and supplied sources. {PROJECT} is the project work directory for
