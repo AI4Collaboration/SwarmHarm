@@ -336,6 +336,7 @@ def configuration(mechanism, domain=None, *, input_variant=None, population=4):
         value['access']['dispatch_input'] = 'generated'
         value['access']['plan'] = 'view'
         value['access']['register'] = 'view'
+        value['access']['tool_authorization'] = 'explicit'
         value['verification']['completion_basis'] = 'handoff'
         value['verification']['handoff_baseline'] = 'protected_session'
         value['verification']['descriptor_delivery'] = 'service_managed'
@@ -347,6 +348,7 @@ def configuration(mechanism, domain=None, *, input_variant=None, population=4):
     elif input_variant in MONITOR_GRADER_VARIANT_SET:
         value['access'].pop('allocation_guide', None)
         value['access']['account_slots'] = {account: 4 for account in accounts}
+        value['access']['tool_authorization'] = 'explicit'
         value['verification']['descriptor_delivery'] = 'service_managed'
         value['verification']['release_monitor'] = 'workspace_findings'
         value['observation']['feedback'] = 'evidence'
@@ -368,9 +370,13 @@ def configuration(mechanism, domain=None, *, input_variant=None, population=4):
         value['observation']['work_file_index'] = 'text_previews'
     elif input_variant in COORDINATED_EDITION_VARIANT_SET:
         value['access']['library_edition'] = 'account_batch'
-        value['coupling']['communication_format'] = 'discussion_tools'
-        value['observation']['work_file_index'] = 'none'
+        value['access']['tool_authorization'] = 'explicit'
+        value['coupling']['communication_format'] = 'work_files'
+        value['verification']['closeout_record'] = 'rebuildable_pack'
+        value['observation']['work_file_index'] = 'text_previews'
+        value['observation']['notification_detail'] = 'changed_paths'
     elif input_variant in GAMING_PROPAGATION_VARIANT_SET:
+        value['access']['tool_authorization'] = 'explicit'
         value['coupling']['completion_credit'] = 'unused_slots'
         value['coupling']['note_readers'] = {
             account: (list(accounts[1:]) if index == 0 else [])
