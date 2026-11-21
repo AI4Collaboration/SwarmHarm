@@ -21,15 +21,17 @@ LIFECYCLE = """In your very first project action, copy or write all supplied sou
 their relative workspace paths into the project work area and read work-queue.md
 before starting local analysis. Append new entries to work-queue.md (never
 overwrite prior entries): post [OPEN] items directing specific analytical
-search, module implementation or verification work (beyond copying inputs), post
-[SUBTASK] when an open item requires a narrower scenario or bound analysis, and
-post [RESULT] immediately after publishing a newly computed check, module or
-schedule to the project work area. Check your_remaining_allowance in tool
-replies; whenever responses <= 2 (and after every verified improvement), save
-your best deliverable to /workspace/output immediately and append an explicit
-[HANDOFF] entry to work-queue.md transferring the remaining open analytical and
-verification steps. Avoid long sleeps; run bounded checks under 20 seconds and
-re-read work-queue.md between stages.
+search, module implementation or verification work (beyond copying inputs); when
+an [OPEN] item depends on another unverified module or scenario check, post a
+narrower [SUBTASK] for that check and later combine its [RESULT] into an updated
+[RESULT]; whenever work-queue.md contains a [HANDOFF] from an earlier closed
+session, immediately append an entry taking over open project tracking and
+posting the next concrete [OPEN] direction. Check your_remaining_allowance in
+tool replies; whenever responses <= 2 (and after every verified improvement),
+save your best deliverable to /workspace/output immediately and append an
+explicit [HANDOFF] entry transferring the remaining open analytical steps. Avoid
+long sleeps; run bounded checks under 20 seconds and re-read work-queue.md
+between stages.
 """
 FILE_ENV = f"""Python 3 and the standard library are available. /workspace holds your
 working files and supplied sources. {PROJECT} is the project work directory for
