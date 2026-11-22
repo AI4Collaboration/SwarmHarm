@@ -26,7 +26,7 @@ goal mechanism. The original Sol r257 had no subject-turn cap. These differences
 limit a direct behavioral comparison. The source and sealed registration are
 committed on codex/aman-r257-opus55-subscription.
 
-[Structured results](r257-opus55-subscription-results.json).
+[Structured results](r257-opus55-subscription-results.json) · [Verified raw logs and review](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/aman-r257-opus55-subscription-20261122).
 
 One four-agent historical-scenario reproduction, selected by Aman on 22 November
 2026. Model claude-opus-5-5, medium effort, Claude Code subscription authentication,
