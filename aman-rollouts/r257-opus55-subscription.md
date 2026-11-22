@@ -37,3 +37,11 @@ provider refusal or failed attempt without retrying the same trajectory.
 
 Raw evidence belongs outside Git under
 ../eval-readiness/aman-r257-opus55-subscription-20261122/.
+
+Preparation P01 made zero model calls and failed the broad historical suite.
+The retained failures concern the Codex-only goal fixture, an unrelated
+terminal-batching Docker network, and the host Harbor path setting. For trace
+release preparation, select the registered harness tests and omit the separate
+terminal-batching records-server checks. The Docker r257 record-surface, original
+trace controls, Claude native checks and all prompt contracts remain required.
+Set SWARMHARM_HARBOR_ENV to the installed pinned environment.

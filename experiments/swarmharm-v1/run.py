@@ -574,8 +574,11 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         capture=io.StringIO();suite=unittest.TestSuite()
         for path in sorted(HERE.rglob('*checks.py')):
             adapter = {'pi_collect_checks.py':'pi-sdk', 'claude_collect_checks.py':'claude-code',
-                       'codex_collect_checks.py':'codex'}.get(path.name)
+                       'codex_collect_checks.py':'codex', 'native_goal_checks.py':'codex'}.get(path.name)
             if adapter is not None and adapter != harness_kind:
+                continue
+            if trace_study and path.name == 'records_server_checks.py':
+                # This condition has no terminal-batching network records service.
                 continue
             name = str(path.relative_to(HERE)).replace('.', '_').replace('/', '_')
             suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(module(
