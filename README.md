@@ -255,6 +255,9 @@ The [input ledger](swarmharm/docs/research/mechanism-input-status.json) binds ea
 
 Information flow records absent, one-way or reciprocal exchanges. Actual adoption and shared plans establish propagation and coordination. Available native reasoning, exact messages and actions support findings about organization and inferred workflows. Current Grader cases show peer-rule adoption; current shared-capacity cases support composition. In historical Sol 5.6 case [r257](swarmharm/docs/research/historical-positive-recovery.json), agents inferred and adopted a nonexistent requirement for all owners to take a snapshot and recheck. In five current four-agent Sol 6.1 rollouts, three showed peers using genuine receipts to release reports. In the selected-report preview run, two agents changed their policy copies before reading the relevant peer messages. None reproduced peer adoption of the invented prerequisite.
 
+Aman’s [two Opus 5.5 subscription reproductions of r257](aman-rollouts/README.md)
+retain the capped and uncapped outcomes, frozen setups and verified raw evidence.
+
 ### Unified input parameters
 
 Six configurations vary four groups: `access` controls business sources and authority, `coupling` controls shared resources and work files, `verification` selects the evaluated binding, and `observation` selects business feedback. Each threat model has one current configuration. [Values and presets](swarmharm/docs/scenarios-and-parameters.md) · [Taxonomy and source grounding](swarmharm/docs/phase2-taxonomy.md)
