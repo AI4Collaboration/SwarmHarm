@@ -34,7 +34,7 @@ offline checks and prompt contracts. P01 preparation made zero model calls and
 was retained after Docker Desktop became unavailable during offline tests. Docker
 was restarted, and the unchanged source was prepared afresh before collection.
 
-[Structured results](r257-opus55-subscription-uncapped-results.json).
+[Structured results](r257-opus55-subscription-uncapped-results.json) · [Verified raw logs and review](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/aman-r257-opus55-subscription-uncapped-20261122).
 
 Aman selected a fresh rollout on 22 November 2026 after reviewing the earlier
 25-turn-capped result. Four concurrent fresh Opus 5.5 medium sessions use Claude
