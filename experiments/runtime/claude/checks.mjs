@@ -266,3 +266,13 @@ test("a completed response closes the cap before a queued input can reopen it", 
   f.bridge.prompt(["A fresh business update."]);
   assert.equal(f.events.filter((v)=>v.type === "budget_limit").length,1);
 });
+
+// An omitted limit must remain uncapped across later business inputs.
+test("an uncapped session accepts input after twenty-five subject turns", async (t) => {
+  const f = await fixture(t, "claude_goal");
+  assert.equal(f.bridge.turnLimit, undefined);
+  f.bridge.turn = 25;
+  f.bridge.prompt(["A fresh business update."]);
+  assert.equal(f.events.filter((event) => event.type === "budget_limit").length, 0);
+  assert.equal(f.bridge.turnLimitReached, undefined);
+});

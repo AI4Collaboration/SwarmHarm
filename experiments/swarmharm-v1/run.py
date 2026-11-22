@@ -384,7 +384,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode='off', harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False, pi_comparison=False, target_claim=None, subscription_study=False):
+            archive_compatibility=False, pi_comparison=False, target_claim=None, subscription_study=False,
+            no_subject_turn_limit=False):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind is None:
@@ -394,6 +395,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     validate_harness_policy(harness_kind, offline_adapter_test, offline_fixture=not run_controls, pi_comparison=pi_comparison)
     if reasoning_effort not in REASONING_EFFORTS:
         raise ValueError('Unsupported reasoning effort')
+    if no_subject_turn_limit and not subscription_study:
+        raise ValueError('Uncapped subscription observation requires the explicit subscription route')
     if subscription_study and (harness_kind != 'claude-code' or offline_adapter_test):
         raise ValueError('The explicit subscription route requires live Claude Code')
     native_gateway = harness_kind in AXONHUB_LIVE_HARNESS_BASES and not offline_adapter_test and not subscription_study
@@ -464,7 +467,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'evidence_limit':codex_agent.EVIDENCE_LIMIT}
     elif harness_kind=='claude-code':
         for model in MODELS.values():claude_agent.validate_model(model)
-        harness=claude_agent.harness_registration(goal_mode,next(iter(MODELS.values())),max_subject_turns=25 if subscription_study else None)
+        subject_turn_limit = 25 if subscription_study and not no_subject_turn_limit else None
+        harness=claude_agent.harness_registration(goal_mode,next(iter(MODELS.values())),max_subject_turns=subject_turn_limit)
         routes={'checked_at':utc(),'provider':'claude-subscription','models':MODELS,
             'auth_status':harness['auth_status'],'api_key_billing':False,
             'sdk_catalog':claude_agent.subscription_catalog(next(iter(MODELS.values())),reasoning_effort),
@@ -1221,7 +1225,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'differences':['Opus 5.5 medium instead of GPT-5.6 Sol high',
                     'Claude Code native goal instead of Codex native goal',
                     'Claude subscription authentication',
-                    '25 cumulative subject responses per agent; first cap ends cohort',
+                    ('No subject-turn ceiling, matching the original r257 stopping budget' if no_subject_turn_limit
+                     else '25 cumulative subject responses per agent; first cap ends cohort'),
                     'registered installed runtime versions and local immutable image'],
                 'interpretation':'Historical scenario reproduction with model and harness differences',
             }
@@ -2629,6 +2634,7 @@ if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--phase',choices=['prepare','collect'],required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--registration-dir',type=Path,required=True);p.add_argument('--key-file',type=Path)
     p.add_argument('--subscription-study',action='store_true',help='Explicitly authorized Claude Code subscription reproduction.')
+    p.add_argument('--no-subject-turn-limit',action='store_true',help='Use only the registered time limits for the explicit subscription study.')
     p.add_argument('--pi-comparison',action='store_true',help='Explicit human-requested Sol 5.6 Pi comparison; never a fallback.')
     p.add_argument('--harness',choices=('claude-code','codex','pi-sdk'),default=None,
         help='Model-family default: Claude Code for Claude; Codex for OpenAI. Adapter admission is checked before preparation.')
@@ -2694,5 +2700,6 @@ if __name__=='__main__':
             component_family=a.component_family,initial_material=a.initial_material,
             material_distribution=a.material_distribution,
             goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,subscription_study=a.subscription_study,
+            no_subject_turn_limit=a.no_subject_turn_limit,
             proof_stage=a.proof_stage,pi_comparison=a.pi_comparison,target_claim=a.target_claim)
     else:collect(root,registration_dir)
