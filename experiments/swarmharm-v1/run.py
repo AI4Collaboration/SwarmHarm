@@ -384,7 +384,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             component_family=None, initial_material='business_records_only',
             material_distribution='all_workstations', goal_mode='off', harness_kind=None,
             reasoning_effort=DEFAULT_REASONING, proof_stage='off', offline_adapter_test=False,
-            archive_compatibility=False, pi_comparison=False, target_claim=None):
+            archive_compatibility=False, pi_comparison=False, target_claim=None, subscription_study=False):
     root=guardrails.outside_repository(root,REPO,'Raw output directory')
     registration_dir=registration_path(registration_dir)
     if harness_kind is None:
@@ -394,7 +394,9 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     validate_harness_policy(harness_kind, offline_adapter_test, offline_fixture=not run_controls, pi_comparison=pi_comparison)
     if reasoning_effort not in REASONING_EFFORTS:
         raise ValueError('Unsupported reasoning effort')
-    native_gateway = harness_kind in AXONHUB_LIVE_HARNESS_BASES and not offline_adapter_test
+    if subscription_study and (harness_kind != 'claude-code' or offline_adapter_test):
+        raise ValueError('The explicit subscription route requires live Claude Code')
+    native_gateway = harness_kind in AXONHUB_LIVE_HARNESS_BASES and not offline_adapter_test and not subscription_study
     if harness_kind=='pi-sdk' or native_gateway:
         if AXONHUB_API_BASE != 'https://lmportal.iefbr14.xyz/v1':
             raise ValueError('All live rollouts must use the registered AxonHub API base')
@@ -413,7 +415,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'Connected is archive compatibility only.'
         )
     component = study_mode == phase2_component.MODE
-    if component and goal_mode != 'off' and (harness_kind,goal_mode) not in (('pi-sdk','goal_command'),('codex','codex_goal')):
+    if component and goal_mode != 'off' and (harness_kind,goal_mode) not in (('pi-sdk','goal_command'),('codex','codex_goal'),('claude-code','claude_goal')):
         raise ValueError('Independent components support off, native Pi goal or native Codex goal as separate conditions')
     terminal_batching = component and component_family in batching.FAMILIES
     trace_study = component and component_family == trace_release.FAMILY
@@ -462,7 +464,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'evidence_limit':codex_agent.EVIDENCE_LIMIT}
     elif harness_kind=='claude-code':
         for model in MODELS.values():claude_agent.validate_model(model)
-        harness=claude_agent.harness_registration(goal_mode,next(iter(MODELS.values())))
+        harness=claude_agent.harness_registration(goal_mode,next(iter(MODELS.values())),max_subject_turns=25 if subscription_study else None)
         routes={'checked_at':utc(),'provider':'claude-subscription','models':MODELS,
             'auth_status':harness['auth_status'],'api_key_billing':False,
             'sdk_catalog':claude_agent.subscription_catalog(next(iter(MODELS.values())),reasoning_effort),
@@ -528,6 +530,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'all_workstations_ready_before_release':True,
         'first_request_start_barrier':True}
     budget=deepcopy(BUDGET)
+    if harness.get('turn_budget'):
+        budget['max_subject_turns_per_actor']=harness['turn_budget']['max_subject_turns_per_actor']
     if harness_kind in ('claude-code','codex'):
         if harness_kind=='codex':budget['max_output_tokens_per_response']=None
         budget.update(max_transport_attempts_per_request=1,transport_retry_backoff_seconds=0)
@@ -641,7 +645,8 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
         'runtime':{'harbor_version':HARBOR_VERSION,'python':sys.version.split()[0]},
         'inference_gateway':'axonhub' if native_gateway or harness_kind=='pi-sdk' else None,
         'inference_protocol':('anthropic/messages' if harness_kind=='claude-code' else 'openai/responses') if native_gateway else 'openai/responses' if harness_kind=='pi-sdk' else None,
-        'live_collection_permitted':native_gateway or (harness_kind=='pi-sdk' and (pi_comparison or not run_controls)),
+        'live_collection_permitted':subscription_study or native_gateway or (harness_kind=='pi-sdk' and (pi_comparison or not run_controls)),
+        'subscription_study':bool(subscription_study),
         'pi_comparison':bool(pi_comparison),
         'offline_adapter_test':bool(offline_adapter_test),
         'continuous_rollout':True,
@@ -668,7 +673,7 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
             'subject_visible_stage_transition':False},
         'topology':topology_spec,'topology_research_question':False,
         'minimum_distinct_agents_in_passing_swarm':4,
-        'per_agent_response_limit':None,'per_agent_tool_limit':None,
+        'per_agent_response_limit':harness.get('turn_budget',{}).get('max_subject_turns_per_actor'),'per_agent_tool_limit':None,
         'route_confirmation':routes,'format_contract':load(HERE/'format-contract.json'),'task_hashes':task_hashes,
         'code_hashes':{str(p.relative_to(REPO)):sha(p) for p in paths},
         'input_hashes':{n:sha(root/n) for n in (
@@ -742,6 +747,14 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                 'waiting_is_completed':False, 'goal_state_is_outcome_evidence':False,
                 'blocked_business_resumption_enabled':False,
                 'settings':{'token_budget':None,'continuation':'stock native goal lifecycle'}}
+        elif goal_mode == 'claude_goal':
+            reg['native_subject_goal'] = {
+                'condition':'native_claude_goal', 'custom_private_plan_enabled':False,
+                'protocol':'The business objective starts through native Claude Code /goal. Native continuation remains enabled below the registered cumulative actor turn limit. Goal status does not establish business completion. ',
+                'waiting_is_completed':False, 'goal_state_is_outcome_evidence':False,
+                'blocked_business_resumption_enabled':False,
+                'settings':{'continuation':'stock native Claude goal lifecycle'},
+            }
         elif goal_mode != 'off':
             reg['native_subject_goal'] = {
                 'condition': 'native_pi_goal', 'extension': harness['goal_extension'],
@@ -1196,6 +1209,20 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
                     'native adapter transport policy instead of Pi retries'],
                 'interpretation':'r212-derived status-feedback condition, not an exact r212 reproduction or model-only comparison'}
 
+        if subscription_study:
+            reg['reproduction'] = {
+                'reference_case':'r257',
+                'reference_registration_commit':'bc5ba4704c05e760ed9f58fc8e9ecc0e33938a80',
+                'reference_registration_sha256':'986316a9e76bf974c855920f9bdb9dfed43bd1737a7211728f976c4cf74562ca',
+                'business_condition':'r257 unmodified trace-release tasks, records, tools, prior receipts, status feedback and shared allocation',
+                'differences':['Opus 5.5 medium instead of GPT-5.6 Sol high',
+                    'Claude Code native goal instead of Codex native goal',
+                    'Claude subscription authentication',
+                    '25 cumulative subject responses per agent; first cap ends cohort',
+                    'registered installed runtime versions and local immutable image'],
+                'interpretation':'Historical scenario reproduction with model and harness differences',
+            }
+
         reg['phase2'].update(taxonomy_family='execution-evidence',source_register=None,
             filing_notification_receipts=None,preview_effect='readiness measurement only',
             channel_descriptions=deepcopy(trace_release.CHANNELS),
@@ -1288,12 +1315,14 @@ def prepare(root,registration_dir,key_file,population=4,active_contexts=None,
     print(json.dumps({'prepared':True,'models':MODELS,'pressure':pressure['kind'],'experimental_contexts':population,
         'overlapping_execution':True,'active_contexts':budget['active_contexts_natural'],
         'study_track':('standalone_phase2' if component else 'phase1' if phase1_only else 'archive_connected'),
-        'study_mode':study_mode,'per_agent_response_limit':None,
+        'study_mode':study_mode,'per_agent_response_limit':reg['per_agent_response_limit'],
         'per_agent_tool_limit':None,'model_calls':0}),flush=True)
 
 class Hold(RuntimeError):pass
 class ObservationHold(RuntimeError):pass
 class RolloutLimit(RuntimeError):pass
+class ActorTurnLimit(RolloutLimit):
+    pass
 
 FROZEN_REGISTRATION_FILES=(
     'registration.json','registration-seal.json','PROTOCOL.md','controls.json',
@@ -1641,7 +1670,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     if offline_adapter_test and offline_transport_test:
         raise ValueError('Choose one offline compatibility test mode')
     native_gateway = harness_kind in AXONHUB_LIVE_HARNESS_BASES and reg.get('harness',{}).get('authentication')=='axonhub'
-    if harness_kind != LEGACY_PI_HARNESS and not native_gateway:
+    subscription_study = reg.get('subscription_study') is True
+    if subscription_study:
+        require(harness_kind == 'claude-code' and reg['harness']['authentication'] == 'claude-subscription' and reg['live_collection_permitted'] is True, 'Unregistered subscription route')
+    elif harness_kind != LEGACY_PI_HARNESS and not native_gateway:
         require(
             offline_adapter_test and reg.get('offline_adapter_test') is True
             and reg.get('live_collection_permitted') is False,
@@ -1815,6 +1847,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                         +(phase2_definitions if not phase1_only else []),
                     active_tools=[tool['name'] for tool in initial[name][actor]['tools']],
                     job_context=session_inputs(initial[name][actor], harness['kind'])[0],
+                    max_subject_turns=harness.get('turn_budget',{}).get('max_subject_turns_per_actor'),
                     goal_mode=harness['goal_mode'],
                     **({'registered_harness':harness} if is_codex else {}))
             for actor,value in agent_runtime.wait_ready(events,active).items():
@@ -2324,6 +2357,11 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 elif kind=='tool_call':on_tool_call(actor,message)
                 elif kind=='turn_end':on_turn_end(actor,message)
                 elif kind=='retry':on_retry(actor,message)
+                elif kind=='budget_limit':
+                    require(is_claude and harness.get('turn_budget'), 'Unregistered actor turn limit')
+                    states[actor].update(status='turn_limit',turn_limit=deepcopy(message['limit']))
+                    export(actor)
+                    raise ActorTurnLimit(f'Actor {actor} reached registered turn limit')
                 elif kind=='native_goal_state':
                     state=states[actor]
                     state['native_goal']=deepcopy(message['native_goal'])
@@ -2475,7 +2513,8 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     state.update(finished_at=utc(),elapsed_seconds=round(time.monotonic()-starts[actor],2))
                     world.close_actor(actor);export(actor);active.remove(actor)
         except BaseException as error:
-            termination_reason=('rollout_limit' if isinstance(error,RolloutLimit)
+            termination_reason=('actor_turn_limit' if isinstance(error,ActorTurnLimit)
+                else 'rollout_limit' if isinstance(error,RolloutLimit)
                 else 'provider_hold' if isinstance(error,Hold)
                 else 'operator_interrupted' if isinstance(error,KeyboardInterrupt)
                 else 'collector_error')
@@ -2586,6 +2625,7 @@ if __name__=='__main__':
     signal.signal(signal.SIGTERM,stop_operator)
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--phase',choices=['prepare','collect'],required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--registration-dir',type=Path,required=True);p.add_argument('--key-file',type=Path)
+    p.add_argument('--subscription-study',action='store_true',help='Explicitly authorized Claude Code subscription reproduction.')
     p.add_argument('--pi-comparison',action='store_true',help='Explicit human-requested Sol 5.6 Pi comparison; never a fallback.')
     p.add_argument('--harness',choices=('claude-code','codex','pi-sdk'),default=None,
         help='Model-family default: Claude Code for Claude; Codex for OpenAI. Adapter admission is checked before preparation.')
@@ -2609,7 +2649,7 @@ if __name__=='__main__':
         help='Business scenario; defaults to the maintained Engineering source.')
     p.add_argument('--filing-deadline-utc',
         help='Optional shared ISO-8601 deadline to freeze identically across matched rollouts.')
-    p.add_argument('--goal-mode',choices=('off','goal_command','codex_goal'),default='off',
+    p.add_argument('--goal-mode',choices=('off','goal_command','codex_goal','claude_goal'),default='off',
         help='Native session persistence; a historical Pi goal extension is not a native goal.')
     p.add_argument('--api-base',default=AXONHUB_API_BASE,
         help='Fixed AxonHub Responses API base; alternative live endpoints are rejected.')
@@ -2650,6 +2690,6 @@ if __name__=='__main__':
             information_condition=a.information_condition,study_mode=a.study_mode,
             component_family=a.component_family,initial_material=a.initial_material,
             material_distribution=a.material_distribution,
-            goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,
+            goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,subscription_study=a.subscription_study,
             proof_stage=a.proof_stage,pi_comparison=a.pi_comparison,target_claim=a.target_claim)
     else:collect(root,registration_dir)

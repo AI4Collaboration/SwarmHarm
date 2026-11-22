@@ -81,6 +81,9 @@ export class ClaudeBridge {
 
   async init(config) {
     this.config = config;
+    this.turnLimit = config.settings.maxTurns;
+    if (this.turnLimit !== undefined && (!Number.isSafeInteger(this.turnLimit) || this.turnLimit < 1))
+      throw new Error("maxTurns must be a positive integer");
     this.systemPrompt = copy(config.system_prompt ?? SYSTEM_PROMPT);
     mkdirSync(join(config.folder, "native"), { recursive: true });
     // Claude Code can put cwd in model context. Keep operator run labels out.
@@ -90,10 +93,19 @@ export class ClaudeBridge {
     // A configuration descriptor, never an invented copy of the SDK's prompt.
     this.history.push({ role: "system", content: JSON.stringify(this.systemPrompt) });
     this.servers.work = this.server("work", config.active_tools);
+    const limitHooks = {};
+    if (this.turnLimit !== undefined) for (const name of ["Stop", "PostToolBatch", "UserPromptSubmit"]) {
+      limitHooks[name] = [{ hooks: [async (input) => {
+        if (this.turn < this.turnLimit && !this.turnLimitReached) return {};
+        this.limitReached(input.hook_event_name ?? name);
+        return { continue: false, stopReason: "Registered actor turn budget exhausted." };
+      }] }];
+    }
     this.session = this.sdk.query({
       prompt: this.input,
       options: {
         ...config.settings, cwd: this.cwd, model: config.model, effort: config.effort,
+        ...(this.turnLimit === undefined ? {} : { hooks: limitHooks }),
         pathToClaudeCodeExecutable: config.claude_binary,
         env: { ...process.env }, sessionId: this.sessionId,
         systemPrompt: copy(this.systemPrompt),
@@ -161,6 +173,10 @@ export class ClaudeBridge {
   }
 
   prompt(texts) {
+    if (this.turnLimitReached || (this.turnLimit !== undefined && this.turn >= this.turnLimit)) {
+      this.limitReached("controller_input");
+      return;
+    }
     // One controller delegation must reach one model context atomically. Two
     // writes race with the CLI consuming the first before the task arrives.
     // Native /goal commands retain their separate command semantics.
@@ -172,6 +188,16 @@ export class ClaudeBridge {
       this.pendingInputs.push({ uuid: message.uuid, role: "user", content: text });
       this.input.write(message);
     }
+  }
+
+  limitReached(source, nativeResult = null) {
+    if (this.turnLimitReached) return;
+    this.turnLimitReached = true;
+    const record = { type: "registered_actor_turn_limit", source,
+      limit: this.turnLimit, subject_turns: this.turn,
+      scope: "persistent_actor_session", native_result: nativeResult };
+    writeFileSync(join(this.config.folder, "actor-turn-limit.json"), `${JSON.stringify(record)}\n`, { flag: "wx" });
+    this.channel.emit({ type: "budget_limit", turn: this.turn, limit: record });
   }
 
   start(message, source) {
@@ -237,6 +263,8 @@ export class ClaudeBridge {
       error_message: null, tool_calls: current.calls,
       text: current.blocks.filter((block) => block.type === "text").map((block) => block.text).join("\n") });
     this.turns.delete(current.turn);
+    if (this.turnLimit !== undefined && this.turn >= this.turnLimit)
+      this.limitReached("completed_subject_turn");
   }
 
   async execute(name, args) {
@@ -339,6 +367,11 @@ export class ClaudeBridge {
         }
         this.rejectedResults(message, source);
       } else if (message.type === "result") {
+        if (message.subtype === "error_max_turns") {
+          this.limitReached("sdk_max_turns", message);
+          continue;
+        }
+        if (this.turnLimitReached) continue;
         this.channel.emit({ type: "settled", turn: this.turn, aborted: false,
           text: message.result ?? "", error_message: message.is_error || message.subtype !== "success"
             ? `Claude result: ${message.subtype}` : null });
@@ -348,7 +381,7 @@ export class ClaudeBridge {
         throw new ProviderHold("Claude provider rate limit reached; session held");
       }
     }
-    if (!this.closed) throw new Error("Claude session exited before global termination");
+    if (!this.closed && !this.turnLimitReached) throw new Error("Claude session exited before global termination");
   }
 
   async close() {

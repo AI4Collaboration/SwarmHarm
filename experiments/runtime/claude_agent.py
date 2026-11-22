@@ -190,13 +190,24 @@ def subscription_catalog(model,effort):
     return value
 
 
-def harness_registration(goal_mode='off', model=None):
+def harness_registration(goal_mode='off', model=None, *, max_subject_turns=None):
     if goal_mode not in GOAL_MODES:
         raise ValueError('pi-goal is available only with the Pi harness; use claude_goal for Claude')
     if goal_mode != 'off' and model is None:
         raise ValueError('Claude native goals require an exact evaluator model')
     if model is not None:validate_model(model)
-    return _registration(goal_mode, model, authentication='claude-subscription', auth=subscription_auth())
+    result = _registration(goal_mode, model, authentication='claude-subscription', auth=subscription_auth())
+    if max_subject_turns is not None:
+        if type(max_subject_turns) is not int or max_subject_turns < 1:
+            raise ValueError('Subject turn limit must be a positive integer')
+        result['settings'] = {**SETTINGS, 'maxTurns': max_subject_turns}
+        result['turn_budget'] = {
+            'max_subject_turns_per_actor': max_subject_turns,
+            'scope': 'cumulative streamed subject response groups across the persistent session',
+            'hidden_goal_evaluator_calls_counted': False,
+            'cohort_terminal': 'first actor reaching its registered limit',
+        }
+    return result
 
 
 def _registration(goal_mode, model, *, authentication, auth):
@@ -257,7 +268,7 @@ class ClaudeAgent:
 
     def __init__(self, actor, events, *, folder, model, thinking_level,
                  max_output_tokens, request_timeout_ms, tools, active_tools,
-                 goal_mode, api_base=None, api_key=None, **unused):
+                 goal_mode, api_base=None, api_key=None, max_subject_turns=None, **unused):
         gateway = api_base is not None or api_key is not None
         accepted_models = gateway_model_ids(model) if gateway else [model]
         if not gateway: validate_model(model)
@@ -286,7 +297,7 @@ class ClaudeAgent:
             'type': 'init', 'model': model, 'accepted_native_model_ids': accepted_models, 'effort': thinking_level,
             'claude_binary': claude_binary(), 'folder': str(self.folder),
             'tools': tools,
-            'active_tools': active_tools, 'settings': SETTINGS, 'system_prompt': SYSTEM_PROMPT,
+            'active_tools': active_tools, 'settings': {**SETTINGS, **({'maxTurns':max_subject_turns} if max_subject_turns is not None else {})}, 'system_prompt': SYSTEM_PROMPT,
             'request_timeout_ms': request_timeout_ms,
             'goal_mode': goal_mode,
             'input_delivery': ('atomic-sdk-replay-v1' if gateway and goal_mode == 'off' else None),
