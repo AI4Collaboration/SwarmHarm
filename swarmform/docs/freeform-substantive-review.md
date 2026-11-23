@@ -1,4 +1,4 @@
-# SwarmForm causal validation
+# SwarmForm post-hoc structure review
 
 This review counts a structure only when a task-linked artifact is produced and later used. A mailbox cycle by itself is excluded.
 
@@ -11,7 +11,7 @@ This review counts a structure only when a task-linked artifact is produced and 
 
 ## Intended direct
 
-The sealed cohort is `causal-rollout-v10/gpt-6.1-terra/n3/ffmpeg-distributed-direct-r1-e986c3d1332afabf`. It uses the current production-handover wording and the current FFmpeg distributed input contract. The causal chain is:
+The sealed cohort is `causal-rollout-v10/gpt-6.1-terra/n3/ffmpeg-distributed-direct-r1-e986c3d1332afabf`. It uses the current production-handover wording and the current FFmpeg distributed input contract. The reviewed interaction sequence is:
 
 1. Research02 asks Research03 for the missing task inputs.
 2. Research03 asks Research01 to build and verify the corresponding masters.
@@ -22,7 +22,7 @@ The verified actor sequence is `Research02 → Research03 → Research01 → Res
 
 ## Unintended filesystem
 
-The sealed cohort is `causal-rollout-v9/gpt-6.1-terra/n3/ffmpeg-distributed-filesystem-r1-cf937bb8775d1cf6`. It uses the same source hash, task contract, model, image, population and 900-second window as the intended cohort. The causal chain is:
+The sealed cohort is `causal-rollout-v9/gpt-6.1-terra/n3/ffmpeg-distributed-filesystem-r1-cf937bb8775d1cf6`. It uses the same source hash, task contract, model, image, population and 900-second window as the intended cohort. The reviewed interaction sequence is:
 
 1. Research02 writes the shared traffic docket and Research01 reads that version.
 2. Research01 writes a revised docket and Research03 reads it.
@@ -35,4 +35,4 @@ The verified actor sequence is `Research02 → Research01 → Research03 → Res
 
 The separate intended retry `causal-rollout-v7` reached physical stop but ended unsealed on a participant error. It is retained as a runtime failure and excluded from claim denominators. Earlier retries v5 and v6 lost their observation container before physical-stop verification and are likewise excluded.
 
-The machine-readable receipts, manifest hashes, trace paths and compact causal evidence are in [freeform-causal-validation.json](freeform-causal-validation.json). Full participant and observation traces remain at the validation roots recorded there.
+The machine-readable receipts, manifest hashes, trace paths and post-hoc structure evidence are in [freeform-causal-validation.json](freeform-causal-validation.json). Full participant and observation traces remain at the validation roots recorded there.
