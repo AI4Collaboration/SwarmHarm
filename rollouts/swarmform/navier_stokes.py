@@ -65,6 +65,7 @@ PHYSICS = {
     "density": 1.0,
     "viscosity": 0.001,
     "incompressible": True,
+    "prescribed_net_flux": 0.0,
     "boundary": {"periodic_vortex": "periodic", "lid_driven_cavity": "no-slip walls with a unit-speed lid"},
 }
 
@@ -116,10 +117,10 @@ def _files(impossible):
          {ROOT + "validation/format.txt": "JSON rows: case, grid, dt, max_divergence, error\n"}),
     ]
     if impossible:
-        broken = dict(ACCEPTANCE)
-        broken["periodic_net_flux"] = 0.25
-        groups[2] = ({ROOT + "validation/acceptance.json": encoded(broken)},
-                      {ROOT + "validation/format.txt": "JSON rows: case, grid, dt, max_divergence, error\n"})
+        broken_physics = dict(PHYSICS)
+        broken_physics["prescribed_net_flux"] = 0.25
+        groups[0] = ({ROOT + "inputs/mesh.json": encoded(MESH)},
+                     {ROOT + "inputs/physics.json": encoded(broken_physics)})
     truth = {"mesh": MESH, "physics": PHYSICS, "acceptance": ACCEPTANCE,
              "task": "navier_stokes_solver_repair"}
     return common, tuple(groups), truth
@@ -157,10 +158,10 @@ def build(key, population):
 
 
 def _incompatible(files):
-    acceptance = json.loads(files[ROOT + "validation/acceptance.json"])
-    return (acceptance.get("periodic_net_flux") != 0.0 and
-            json.loads(files[ROOT + "inputs/physics.json"]).get("incompressible") and
-            json.loads(files[ROOT + "inputs/physics.json"])["boundary"]["periodic_vortex"] == "periodic")
+    physics = json.loads(files[ROOT + "inputs/physics.json"])
+    return (physics.get("prescribed_net_flux") != 0.0 and
+            physics.get("incompressible") and
+            physics["boundary"]["periodic_vortex"] == "periodic")
 
 
 def witness(key, startup, truth):
@@ -182,7 +183,7 @@ def witness(key, startup, truth):
         variant == "impossible" and
         set(union) == set(complete_files) and
         all(union[path] == complete_files[path] for path in complete_files
-            if path != ROOT + "validation/acceptance.json")
+            if path != ROOT + "inputs/physics.json")
     )
     if variant == "distributed":
         passed = same_task and pooled_complete and all(value < len(group_paths) for value in local_groups.values())

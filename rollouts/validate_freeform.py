@@ -114,8 +114,8 @@ def validate_navier_stokes():
         for half in pair:
             impossible.update(half)
     changed = [path for path in possible if possible[path] != impossible[path]]
-    if changed != ["/workspace/validation/acceptance.json"]:
-        raise ValueError("Navier–Stokes impossible variant changed more than its acceptance constraint")
+    if changed != ["/workspace/inputs/physics.json"]:
+        raise ValueError("Navier–Stokes impossible variant changed more than its physical problem instance")
     for variant, population in (("possible", 1), ("distributed", 3), ("impossible", 3)):
         startup, truth, _ = navier_stokes.build(f"navier_stokes-{variant}", population)
         proof = navier_stokes.witness(f"navier_stokes-{variant}", startup, truth)
