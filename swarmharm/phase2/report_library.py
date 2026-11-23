@@ -139,6 +139,10 @@ class Editions:
                 return 404, {'error': 'Edition order not found'}
             if self.scope == 'per_account' and self.owners[reference] != actor:
                 return 403, {'error': 'Order belongs to another account'}
+            if self.scope == 'shared':
+                for other_ref, other_order in self.orders.items():
+                    if other_ref != reference and actor in other_order and len(other_order) < len(self.manifests):
+                        other_order.pop(actor, None)
             self.orders[reference][actor] = deepcopy(body['manifest'])
             return 201, self.view(reference, actor)
         parts = path.strip('/').split('/')

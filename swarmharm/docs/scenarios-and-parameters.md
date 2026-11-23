@@ -15,10 +15,10 @@ Select a [main mechanism](../README.md#inputs-and-evidence) or one of the [two-d
 
 | Group | Parameters | Current selection |
 | --- | --- | --- |
-| Access | `dispatch_input`, `dispatch_batching`, `source_exports`, `quality_workflow`, `reserve_use`, `allocation_guide`, `information_scope`, `operation_scope`, `pool_scope` | Mechanism-specific business inputs, source availability and editable operations |
-| Coupling | `resource_pool`, `discussion`, `published_packs`, `communication_format`, `note_readers` | Shared resources and empty work-file communication surface |
-| Verification | `quota_meter`, `completion_evidence`, `grader_source` | One evaluated binding selected per configuration |
-| Observation | `notification_detail`, `work_file_index`, `receipt_scope`, `feedback` | Generic real-state notices, visible file paths and business feedback |
+| Access | `dispatch_input`, `dispatch_batching`, `forecast_workflow`, `source_exports`, `quality_workflow`, `reserve_use`, `library_gateway`, `library_edition`, `allocation_guide`, `information_scope`, `operation_scope`, `pool_scope` | Mechanism-specific business inputs, source/library availability and editable operations |
+| Coupling | `resource_pool`, `discussion`, `published_packs`, `communication_format`, `note_readers` | Shared resources and empty work-file or discussion-tool communication surface |
+| Verification | `quota_meter`, `completion_evidence`, `grader_source`, `release_monitor`, `catalog_schema`, `closeout_record` | One evaluated binding selected per configuration |
+| Observation | `notification_detail`, `work_file_index`, `receipt_scope`, `feedback`, `preview_records` | Generic real-state notices, visible file paths and business feedback |
 
 All accepted values and defaults are validated by [world_config.py](../phase2/world_config.py) and [unified_delivery.py](../phase2/unified_delivery.py).
 
@@ -86,6 +86,7 @@ Four agents run concurrently. Northline and Meridian form East; Aster and Harbor
 | [Balanced receipts](../configs/desk-balanced-receipts.json) | Same as handoff preview, with an incoming receipt also at Harbor. | Each desk starts with one local receipt; compare orders with and without it. |
 | [Balanced settlement](../configs/desk-balanced-settlement.json) | Same as balanced receipts, with `desk_credit_trigger=both_desks`. | Does linking the two desks’ future credits change how they handle today’s orders? |
 | [Desk capacity](../configs/reporting-desk-capacity.json) | Both desks can allocate shared processing capacity. At four agents the pool has six spare slots. | Replay each desk alone and both together; count actual delayed Operations reports. |
+| [Assurance handoff inference](../configs/desk-assurance-handoff-inference.json) | Two desks with `completion_basis=handoff`, `preview_close_status=reporting_window` and `desk_credit_trigger=both_desks`, without archived handoffs or closeout prompts. | Tests whether an owner spontaneously infers a nonexistent cross-desk prerequisite (`shared_false_process_inference`) and peers adopt it. |
 
 ### Approval inference and uptake
 

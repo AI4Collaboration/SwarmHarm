@@ -39,28 +39,39 @@ def cases(args, source):
                  for row in ledger['inputs'] if row['current_input_validation'] == 'reviewed_positive'}
     coupling = getattr(args, 'coupling', 'coupled')
     explicit_variant = getattr(args, 'input_variant', None)
-    if coupling == 'uncoupled' and explicit_variant is not None:
-        raise ValueError('Choose --coupling uncoupled or an explicit --input-variant, not both')
+    variant_suite = getattr(args, 'variant_suite', 'main')
+    if coupling == 'uncoupled' and (explicit_variant is not None or variant_suite != 'main'):
+        raise ValueError('Choose --coupling uncoupled, --input-variant, or --variant-suite extended/all, not combinations')
+    if explicit_variant is not None and variant_suite != 'main':
+        raise ValueError('Choose --input-variant or --variant-suite extended/all, not both')
+    def make_row(population, replicate, scenario, workload, mechanism, variant=None):
+        row = dict(population=population, replicate=replicate,
+                   scenario=scenario, workload=workload,
+                   mechanism=mechanism, model=args.model,
+                   api_base=args.base_url, source_sha256=source,
+                   harness=run.guardrails.native_harness({'model':args.model}),
+                   api_protocol=getattr(args, 'api_protocol', 'chat-completions'),
+                   served_model=getattr(args, 'served_model', None) or args.model, reasoning_effort='high', goal_mode='off',
+                   startup_concurrency=min(population, args.startup_concurrency))
+        if variant is not None:
+            row['input_variant'] = variant
+        return row
     for population in args.populations:
         for replicate in range(1, args.repeats+1):
-            for scenario in args.scenarios:
-                for mechanism in args.mechanisms:
-                    workload = workloads[scenario, mechanism]
-                    variant = (mechanism_inputs.uncoupled_variant(mechanism, workload)
-                               if coupling == 'uncoupled' else explicit_variant)
-                    if variant is not None and (mechanism, workload, variant) not in mechanism_inputs.INPUT_VARIANTS:
-                        raise ValueError(f'--input-variant {variant} does not match {workload}/{mechanism}')
-                    row = dict(population=population, replicate=replicate,
-                               scenario=scenario, workload=workload,
-                               mechanism=mechanism, model=args.model,
-                               api_base=args.base_url, source_sha256=source,
-                               harness=run.guardrails.native_harness({'model':args.model}),
-                               api_protocol=getattr(args, 'api_protocol', 'chat-completions'),
-                               served_model=getattr(args, 'served_model', None) or args.model, reasoning_effort='high', goal_mode='off',
-                               startup_concurrency=min(population, args.startup_concurrency))
-                    if variant is not None:
-                        row['input_variant'] = variant
-                    yield row
+            if variant_suite in ('main', 'all'):
+                for scenario in args.scenarios:
+                    for mechanism in args.mechanisms:
+                        workload = workloads[scenario, mechanism]
+                        variant = (mechanism_inputs.uncoupled_variant(mechanism, workload)
+                                   if coupling == 'uncoupled' else explicit_variant)
+                        if variant is not None and (mechanism, workload, variant) not in mechanism_inputs.INPUT_VARIANTS:
+                            raise ValueError(f'--input-variant {variant} does not match {workload}/{mechanism}')
+                        yield make_row(population, replicate, scenario, workload, mechanism, variant)
+            if variant_suite in ('extended', 'all'):
+                for mechanism, workload, variant in mechanism_inputs.EXTENDED_SUITE_VARIANTS:
+                    scenario = 'engineering-capacity' if workload == 'engineering-capacity' else 'knowledge-work'
+                    if scenario in args.scenarios and mechanism in args.mechanisms:
+                        yield make_row(population, replicate, scenario, workload, mechanism, variant)
 
 
 def run_id(row):
@@ -223,6 +234,8 @@ def main():
                         help='Run default coupled inputs or matched per-account uncoupled baselines')
     parser.add_argument('--input-variant', choices=mechanism_inputs.REGISTERABLE_INPUT_VARIANT_NAMES,
                         help='Select a registered mechanism input variant (e.g. asymmetric, unblocked, reconciled-schema)')
+    parser.add_argument('--variant-suite', choices=('main', 'extended', 'all'), default='main',
+                        help='Run the 12 main inputs (default), all extended mechanism variants, or both')
     parser.add_argument('--judge', action='store_true',
                         help='Run blinded transcript judge after independent review to produce mechanism-verdict.json')
     parser.add_argument('--judge-model', help='Explicit model ID for --judge (defaults to served subject model)')

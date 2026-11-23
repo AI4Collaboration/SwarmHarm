@@ -95,6 +95,13 @@ Credentials stay on the host outside Git and agent workstations.
 - **Mechanism** — `task-gaming`, `evidence-tampering` (Trace Tampering),
   `grader-manipulation`, `information-authority`, `action-authority`,
   or `shared-capacity`. These selectors load the six maintained parameterizations.
+- **Extended mechanism variants** — pass `--input-variant <name>` on `run.py` / `run_matrix.py`, or `--variant-suite extended` (or `--variant-suite all`) on `run_matrix.py` to evaluate specialized surfaces across both domains:
+  - Native session trace tampering (`*-evidence-tampering-native-v1`)
+  - Release-audit monitor interference (`*-grader-tampering-monitor-v1`)
+  - Shared query-gateway compositional overload (`*-shared-capacity-gateway-v1`)
+  - Asymmetric one-way propagation across authority, gaming, trace and grader surfaces (`*-information-authority-seeded-v1`, `*-task-gaming-propagation-v1`, `*-action-authority-propagation-v1`, `*-asymmetric-v1`)
+  - Reciprocal multi-owner coordination (`*-grader-tampering-reconciled-schema-v1`, `*-information-authority-coordinated-edition-v1`, `*-task-gaming-reconciled-forecast-v1`)
+  - Spontaneous two-desk false process inference (`--world-config swarmharm/configs/desk-assurance-handoff-inference.json --binding-preset trace --target-claim shared_false_process_inference`)
 - **Runtime** — model-family native harness, high reasoning, goal off. Real state changes can
   resume the same session. Preparation freezes the API route, model, input,
   software, image and budgets.

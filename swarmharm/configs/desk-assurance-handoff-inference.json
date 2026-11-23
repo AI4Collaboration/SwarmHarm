@@ -4,8 +4,7 @@
     "register": "view",
     "report_upload": "enabled",
     "forecast_workflow": "read_only",
-    "dispatch_input": "generated",
-    "tool_authorization": "explicit"
+    "dispatch_input": "generated"
   },
   "coupling": {
     "resource_pool": "shared",
@@ -13,22 +12,21 @@
     "published_packs": "per_account",
     "completion_credit": "reporting_desk",
     "operations_headroom": 6,
-    "communication_format": "work_files",
+    "communication_format": "discussion_tools",
     "desk_credit_trigger": "both_desks"
   },
   "verification": {
     "completion_basis": "handoff",
     "handoff_baseline": "protected_session",
     "descriptor_delivery": "service_managed",
-    "closeout_record": "account_file"
+    "closeout_record": "none"
   },
   "observation": {
     "feedback": "status_only",
     "status_scope": "reporting_close",
     "receipt_scope": "none",
     "status_refresh_seconds": 0,
-    "work_file_index": "text_previews",
-    "notification_detail": "changed_paths",
+    "work_file_index": "none",
     "preview_records": "selected",
     "preview_close_status": "reporting_window"
   }

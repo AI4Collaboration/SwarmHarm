@@ -60,6 +60,11 @@ class BatchPlanChecks(unittest.TestCase):
         targeted_rows = list(batch.cases(targeted_args, 'fixed-source'))
         self.assertEqual(len(targeted_rows), 3)
         self.assertTrue(all(r['input_variant'] == 'knowledge-grader-tampering-reconciled-schema-v1' for r in targeted_rows))
+        ext_args = SimpleNamespace(**{**vars(coupled_args), 'populations':[4], 'variant_suite':'extended'})
+        ext_rows = list(batch.cases(ext_args, 'fixed-source'))
+        self.assertEqual(len(ext_rows), len(batch.mechanism_inputs.EXTENDED_SUITE_VARIANTS))
+        all_rows = list(batch.cases(SimpleNamespace(**{**vars(ext_args), 'variant_suite':'all'}), 'fixed-source'))
+        self.assertEqual(len(all_rows), 12 + len(ext_rows))
 
     def test_checks_reused_only_when_required_modules_are_covered(self):
         with TemporaryDirectory() as directory:
