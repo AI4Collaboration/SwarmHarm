@@ -5,6 +5,15 @@
 - **SwarmForm:** how agents discover communication and work together. [API setup and task matrix](#swarmform).
 - **SwarmHarm:** six threat models in Engineering and Knowledge Work; 12 selected four-agent inputs have reviewed Sol 6.1 positives. [API setup and input parameters](swarmharm/README.md).
 
+## Current completion status
+
+| Study | Ready now | Evidence complete | Still open |
+| --- | --- | --- | --- |
+| SwarmForm | Portable runner, input catalog, offline validators, and the matched direct/filesystem causal pair | Structure, orchestrator, handoff and closed two-level delegation are verified in one same-source FFmpeg pair; intended task output is 6/6 | Full task triplets, all channel mechanisms and domains, population scaling, the eight-agent Navier–Stokes extension, and unintended task output |
+| SwarmHarm | Six threat models across Engineering and Knowledge Work, with 12 reviewed input slots and a balanced 12-cell evidence package | The 12 selected input slots have reviewed positives; the balanced package contains 5 claim passes and 7 matched negatives | Selected-population/model rollout and the remaining METR behavior-coverage gaps |
+
+These are separate readiness claims. Neither study is presented as a completed population-scale evaluation. The evidence indexes below remain authoritative for the completed cells and their limitations.
+
 ## Run the default experiment
 
 **Only supply your API URL and key.** The default runs **GPT-6.1 Terra at N=4, 8, 16, 32 for SwarmForm** and the
