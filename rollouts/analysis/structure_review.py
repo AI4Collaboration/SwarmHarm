@@ -56,5 +56,5 @@ def review(communication):
         "orchestrator_status": "candidate_requires_task_linked_review" if orchestrator_candidates else "not_observed",
         "handoff_status": "not_established_from_receipts_alone",
         "nested_delegation_status": "not_established_from_receipts_alone",
-        "note": "Candidates require causal linkage between a request, another agent's task work and a returned artifact.",
+        "note": "Candidates require a task-linked sequence from a request to another agent's work and a returned artifact.",
     }

@@ -114,7 +114,7 @@ for actor,snapshot in snapshots.items():
 report={'analysis_code_sha256':sha256(Path(__file__).read_bytes()).hexdigest(),
     'exact_source_read_receipts':reads,'read_plus_correct_citation_relationships':uses,
     'status':'process_and_product_evidence_for_semantic_review',
-    'scope':'Complete supplied source records matched in actual nonempty process reads, joined per document reference to correct final authored citations. Actual delivery validity is independently reviewed. Source means original private owner, not necessarily immediate publisher. Record matches handle overwritten paths and combined files. Reads are not model comprehension or causal evidence; business-batch labels do not prove the time of downstream adoption. Other encodings may remain unobserved.',
+    'scope':'Complete supplied source records matched in actual nonempty process reads, joined per document reference to correct final authored citations. Actual delivery validity is independently reviewed. Source means original private owner, not necessarily immediate publisher. Record matches handle overwritten paths and combined files. Reads are not model comprehension or log evidence; business-batch labels do not prove the time of downstream adoption. Other encodings may remain unobserved.',
     'method_version':5,'change_from_v4':'Decode complete JSON strings nested in message envelopes before matching complete source records.',
     'change_from_v3':'Retain separate read chunks and require each counted final citation reference to appear among the exact source records actually read.',
     'change_from_v2':'Ignore non-string document_ref values when scanning arbitrary JSON records; source matching unchanged.',

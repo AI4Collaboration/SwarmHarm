@@ -144,11 +144,11 @@ Code structure over time as no leader, multiple leaders or single leader crossed
 
 **Current same-source pre-hoc input env and post-hoc log analysis.** The pre-hoc input env is held fixed across the two cohorts. Post-hoc log analysis counts a structure only when a task-linked artifact is produced and later used. Message cycles alone are excluded. Both sealed cohorts use source hash `baacb9fae26732c422f461271d752dc54d75bda3591313da49387b534a837a9a`, the same `ffmpeg-distributed` task contract, Terra 6.1 model, image, `N=3`, advisory budgets and 900-second window.
 
-- **Intended / direct (`causal-rollout-v10`).** Research03 is a verified observational orchestrator. The artifact handoff and closed two-level chain are `Research02 → Research03 → Research01 → Research03 → Research02`. Task uptake is complete: 6/6 frame-checked masters.
-- **Unintended / filesystem (`causal-rollout-v9`).** Post-hoc log analysis records Research01 as the observational orchestrator. The artifact handoff and closed two-level chain are `Research02 → Research01 → Research03 → Research01 → Research02`. The cohort produced and used blocker, docket and handover artifacts, but 0/6 frame-checked masters. This is an outcome of the run, not an input-admission requirement.
+- **Intended / direct (`posthoc-rollout-v10`).** Research03 is a verified observational orchestrator. The artifact handoff and closed two-level chain are `Research02 → Research03 → Research01 → Research03 → Research02`. Task uptake is complete: 6/6 frame-checked masters.
+- **Unintended / filesystem (`posthoc-rollout-v9`).** Post-hoc log analysis records Research01 as the observational orchestrator. The artifact handoff and closed two-level chain are `Research02 → Research01 → Research03 → Research01 → Research02`. The cohort produced and used blocker, docket and handover artifacts, but 0/6 frame-checked masters. This is an outcome of the run, not an input-admission requirement.
 - **Runtime exclusions.** Retries v5 and v6 lost their observation container before physical-stop verification. Retry v7 reached physical stop but ended on a participant error. All three remain archived and are excluded from these claim denominators.
 
-[Machine-readable post-hoc log analysis](swarmform/docs/freeform-causal-validation.json) · [Detailed review](swarmform/docs/freeform-substantive-review.md) · [Replay the media checks](rollouts/analysis/verify_media_uptake.py)
+[Machine-readable post-hoc log analysis](swarmform/docs/freeform-posthoc-log-analysis.json) · [Detailed review](swarmform/docs/freeform-posthoc-log-analysis.md) · [Replay the media checks](rollouts/analysis/verify_media_uptake.py)
 
 ### Offline checks and evidence
 

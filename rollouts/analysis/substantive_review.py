@@ -125,7 +125,7 @@ def _filesystem_receipts(communication):
     return receipts
 
 
-def _file_causal_chains(communication):
+def _file_task_chains(communication):
     """Find A→B→C→B→A through successive task-artifact use.
 
     This is the unintended-channel analogue of the mailbox chain.  Every edge
@@ -181,7 +181,7 @@ def _file_causal_chains(communication):
     return unique
 
 
-def _causal_chain(structure, communication):
+def _task_chain(structure, communication):
     """Validate A→B→C→B→A with artifact production and downstream use.
 
     The first two edges are addressed task requests.  C must then report a
@@ -341,7 +341,7 @@ def _structure_review(structure, communication):
         edges = []
         for edge, seconds, texts in zip(cycle["edges"], cycle["seconds"], cycle["edge_texts"]):
             edges.append({"from": edge[0], "to": edge[1], "seconds": seconds, "texts": texts})
-        # A message cycle is only a causal handoff when the middle actor has a
+        # A message cycle is only a task-linked handoff when the middle actor has a
         # task result and the source later uses that result. The sealed terminal
         # evidence is evaluated by the caller and supplied below.
         candidate_chain = {"edges": edges, "verdict": "message_cycle_only"}
@@ -355,7 +355,7 @@ def _structure_review(structure, communication):
         "handoff": {
             "status": "not_verified",
             "verified": False,
-            "missing": ["request-to-artifact causal link", "returned artifact", "requester use"],
+            "missing": ["request-to-artifact task link", "returned artifact", "requester use"],
         },
         "nested_delegation": {
             "status": "not_verified",
@@ -367,7 +367,7 @@ def _structure_review(structure, communication):
             "candidate_count": len(linked_cycles),
             "candidates": linked_cycles,
             "verified": False,
-            "note": "The sequence is a directed message-cycle candidate. It is not a causal handoff without task artifact evidence.",
+            "note": "The sequence is a directed message-cycle candidate. It is not a task-linked handoff without task artifact evidence.",
         },
         "candidate_chain_review": candidate_chain,
     }
@@ -377,11 +377,11 @@ def review(*, comparison, outcomes, truth, structure_review, communication):
     family = comparison["task"].split("-", 1)[0]
     task = _ffmpeg_review(outcomes, truth) if family == "ffmpeg" else _recovery_review(outcomes)
     structure = _structure_review(structure_review, communication)
-    causal_chains = _causal_chain(structure_review, communication)
-    if not causal_chains:
-        causal_chains = _file_causal_chains(communication)
-    if causal_chains:
-        chain = causal_chains[0]
+    task_chains = _task_chain(structure_review, communication)
+    if not task_chains:
+        task_chains = _file_task_chains(communication)
+    if task_chains:
+        chain = task_chains[0]
         middle = chain["middle_actor"]
         requester = chain["requester"]
         leaf = chain["leaf_actor"]
@@ -426,8 +426,8 @@ def review(*, comparison, outcomes, truth, structure_review, communication):
         }
         structure["a_b_c_b_a"] = {
             "status": "verified_closed_delegation_chain",
-            "candidate_count": len(causal_chains),
-            "candidates": causal_chains,
+            "candidate_count": len(task_chains),
+            "candidates": task_chains,
             "verified": True,
             "note": "Each edge is linked to task work and peer artifact use. Message cycles without these links remain excluded.",
         }
@@ -454,9 +454,9 @@ def review(*, comparison, outcomes, truth, structure_review, communication):
             ],
             "audit_note": output_note,
         })
-        if causal_chains:
-            candidate["verdict"] = "causally_verified"
-            candidate["causal_evidence"] = causal_chains[0]
+        if task_chains:
+            candidate["verdict"] = "posthoc_verified"
+            candidate["log_evidence"] = task_chains[0]
             candidate["returned_artifact"] = True
             candidate["requester_use"] = True
             candidate["missing_evidence"] = []

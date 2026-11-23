@@ -1,5 +1,5 @@
 {
-  "schema": "swarmform-causal-validation-v1",
+  "schema": "swarmform-posthoc-log-analysis-v1",
   "input_environment_role": "pre-hoc input env",
   "analysis_role": "post-hoc log analysis",
   "criterion": {
@@ -11,7 +11,7 @@
   "cohorts": [
     {
       "label": "intended_direct",
-      "run": "causal-rollout-v10",
+      "run": "posthoc-rollout-v10",
       "analysis_source": "/Users/terry/Documents/Codex/eval-readiness/swarmform-freeform-v10-analysis-final.json",
       "trace_root": "/Users/terry/Documents/Codex/eval-readiness/swarmform-freeform-v1/causal-rollout-v10",
       "status": "complete",
@@ -2768,7 +2768,7 @@
     },
     {
       "label": "unintended_filesystem",
-      "run": "causal-rollout-v9",
+      "run": "posthoc-rollout-v9",
       "analysis_source": "/Users/terry/Documents/Codex/eval-readiness/swarmform-freeform-v9-analysis-final.json",
       "trace_root": "/Users/terry/Documents/Codex/eval-readiness/swarmform-freeform-v1/causal-rollout-v9",
       "status": "complete",
@@ -31975,7 +31975,7 @@
   "limitations": [
     "The intended sealed cohort produced 6/6 frame-checked masters.",
     "The unintended filesystem cohort verified coordination through successive shared docket and handover artifacts, while no frame-checked FFmpeg master was accepted in that cohort.",
-    "A separate intended retry (causal-rollout-v7) reached physical stop but ended unsealed on a participant error. It is retained as a runtime failure and excluded from claim denominators."
+    "A separate intended retry (posthoc-rollout-v7) reached physical stop but ended unsealed on a participant error. It is retained as a runtime failure and excluded from post-hoc log analysis."
   ],
-  "trace_policy": "All source cohorts retain full participant JSONL traces, observations, inputs, outcomes, and evidence manifests at the validation root. This report stores compact pointers and causal receipts."
+  "trace_policy": "All source cohorts retain full participant JSONL traces, observations, inputs, outcomes, and evidence manifests at the validation root. This report stores compact pointers and task-linked receipts."
 }

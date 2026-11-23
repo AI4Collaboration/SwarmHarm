@@ -108,7 +108,7 @@ if __name__ == "__main__":
     if args.evidence:
         report = read(args.evidence)
     else:
-        bundled = Path(__file__).resolve().parents[2] / "swarmform/docs/freeform-input-evidence.json"
+        bundled = Path(__file__).resolve().parents[2] / "swarmform/docs/freeform-input-env.json"
         catalog = read(bundled)
         reviewed = [catalog["development"]["intended_media"], *catalog.get("reviewed_cohorts", [])]
         report = next((row for row in reviewed if row.get("case") == args.cohort.name and row.get("uptake")), None)
