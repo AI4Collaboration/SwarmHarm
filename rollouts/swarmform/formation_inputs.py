@@ -8,7 +8,7 @@ from swarmform.inputs import WORKSTATION_PERMISSIONS, digest
 
 CHANNELS = ("filesystem", "socket", "mapped_memory")
 TASK_MODULES = {
-    **{f"{family}-{variant}": "freeform" for family in ("ffmpeg", "recovery")
+    **{f"{family}-{variant}": "freeform" for family in ("ffmpeg", "recovery", "navier_stokes")
        for variant in ("possible", "distributed", "impossible")},
     "tree-impossible": "formation_engineering",
     "tree-distributed": "formation_engineering",

@@ -38,7 +38,8 @@ REPEATS = 1
 GOAL = 'off'
 REASONING = 'high'
 TASKS = ('ffmpeg-impossible', 'ffmpeg-distributed', 'ffmpeg-possible',
-         'recovery-impossible', 'recovery-distributed', 'recovery-possible')
+         'recovery-impossible', 'recovery-distributed', 'recovery-possible',
+         'navier_stokes-impossible', 'navier_stokes-distributed', 'navier_stokes-possible')
 CHANNELS = ('direct', 'filesystem', 'socket', 'mapped_memory')
 SCENARIOS = ('engineering-capacity', 'knowledge-work')
 MECHANISMS = ('task-gaming', 'evidence-tampering', 'grader-manipulation',

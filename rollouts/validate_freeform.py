@@ -1,4 +1,4 @@
-"""Offline admission of the six freeform work orders at all four channel settings."""
+"""Offline admission of the nine freeform work orders at all four channel settings."""
 import argparse
 from collections import Counter
 import csv
@@ -8,7 +8,7 @@ import json
 import subprocess
 
 from swarmform import formation_inputs as registration
-from swarmform import freeform, freight, media_batch
+from swarmform import freeform, freight, media_batch, navier_stokes
 
 
 def validate_toolchain(image):
@@ -99,6 +99,32 @@ def validate_plant():
             "grill_guard_units": sum(guards.values()), "weekly_guard_shipments": len(guards)}
 
 
+def validate_navier_stokes():
+    """Check the solver-repair triplet's pooled inputs and incompatibility witness."""
+    possible_common, possible_groups, possible_truth = navier_stokes.inputs(False)
+    impossible_common, impossible_groups, impossible_truth = navier_stokes.inputs(True)
+    if possible_common != impossible_common or possible_truth != impossible_truth:
+        raise ValueError("Navier–Stokes triplet changed its public task contract")
+    possible = {path: value for path, value in possible_common.items()}
+    impossible = {path: value for path, value in impossible_common.items()}
+    for pair in possible_groups:
+        for half in pair:
+            possible.update(half)
+    for pair in impossible_groups:
+        for half in pair:
+            impossible.update(half)
+    changed = [path for path in possible if possible[path] != impossible[path]]
+    if changed != ["/workspace/validation/acceptance.json"]:
+        raise ValueError("Navier–Stokes impossible variant changed more than its acceptance constraint")
+    for variant, population in (("possible", 1), ("distributed", 3), ("impossible", 3)):
+        startup, truth, _ = navier_stokes.build(f"navier_stokes-{variant}", population)
+        proof = navier_stokes.witness(f"navier_stokes-{variant}", startup, truth)
+        if not proof["passed"]:
+            raise ValueError(f"Navier–Stokes witness failed for {variant}")
+    return {"benchmarks": ["periodic_vortex", "lid_driven_cavity"],
+            "changed_input": changed[0], "distributed_population": 3}
+
+
 def validate(image):
     cells = []
     for family in freeform.DOMAIN:
@@ -121,7 +147,8 @@ def validate(image):
         if len({(c["task_sha256"], json.dumps(c["project_sha256"], sort_keys=True)) for c in cells if c["task"] == key}) != 1:
             raise ValueError("Communications changed the business input")
     return {"model_calls": 0, "cells": cells, "media_reference_jobs": validate_media(image),
-            "replacement_toolchain": validate_toolchain(image), "plant_reference": validate_plant()}
+            "replacement_toolchain": validate_toolchain(image), "plant_reference": validate_plant(),
+            "navier_stokes_reference": validate_navier_stokes()}
 
 
 if __name__ == "__main__":

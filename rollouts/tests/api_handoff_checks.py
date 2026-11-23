@@ -42,11 +42,15 @@ class APIHandoffChecks(unittest.TestCase):
 
     def test_default_matrix_and_task_material_match_across_channels(self):
         rows = self.plan()
-        self.assertEqual(len(rows), 96)
+        task_count = len({row["task"] for row in rows})
+        self.assertEqual(len(rows), task_count * len(CHANNELS) * 4)
         self.assertEqual(
             list(dict.fromkeys(r["population"] for r in rows)), [4, 8, 16, 32]
         )
-        self.assertEqual(sum(row["population"] for row in rows), 1_440)
+        self.assertEqual(
+            sum(row["population"] for row in rows),
+            task_count * len(CHANNELS) * sum((4, 8, 16, 32)),
+        )
 
     def test_finished_or_archived_attempts_are_not_restarted(self):
         import hashlib

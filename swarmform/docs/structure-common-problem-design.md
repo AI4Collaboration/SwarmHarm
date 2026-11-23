@@ -3,7 +3,7 @@
 This is an unimplemented historical proposal, retained for references from the
 structure-study records. It does not configure the current API runner or define
 handoff work. Use the [SwarmForm API guide](../../rollouts/README.md) for the
-current six tasks, four communication conditions and N=4,8,16 commands.
+current three task triplets, four communication conditions and N=4,8,16 commands.
 
 The retained results use their own original registrations; they do not validate
 this proposed interval policy.

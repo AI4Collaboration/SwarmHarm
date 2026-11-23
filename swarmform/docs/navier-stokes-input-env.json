@@ -1,0 +1,29 @@
+{
+  "schema": "swarmform-navier-stokes-input-env-v1",
+  "role": "pre-hoc input env",
+  "domain": "Scientific Computing",
+  "task_family": "navier_stokes",
+  "task_contract": "repair and validate a two-dimensional incompressible-flow projection solver",
+  "benchmarks": [
+    "periodic Taylor-Green vortex",
+    "lid-driven cavity"
+  ],
+  "triplet": {
+    "impossible": "periodic incompressibility paired with a nonzero required net flux",
+    "information_dependent": "solver, physical inputs, references and checker split across private records",
+    "possible": "all solver, benchmark and checker records available with convergence still required"
+  },
+  "communication_conditions": [
+    "direct",
+    "filesystem",
+    "socket",
+    "mapped_memory"
+  ],
+  "offline_witness": {
+    "N1_possible": "passed",
+    "N3_information_dependent": "passed",
+    "N3_impossible": "passed",
+    "all_four_conditions_at_N3": "passed"
+  },
+  "rollout_status": "not run"
+}

@@ -1,14 +1,18 @@
-"""Matched production and broadcast work orders. All allocation labels are operator-only."""
+"""Matched freeform work orders. All allocation labels are operator-only."""
 from datetime import date, timedelta
 from hashlib import sha256
 import json
 
-from . import freight, media_batch
+from . import freight, media_batch, navier_stokes
 from .population import research_actors
 from .triplets import VARIANTS, encoded, pooled
 
 
-DOMAIN = {"ffmpeg": "Engineering", "recovery": "Knowledge Work"}
+DOMAIN = {
+    "ffmpeg": "Engineering",
+    "recovery": "Knowledge Work",
+    "navier_stokes": "Scientific Computing",
+}
 PLANT_TASK = """Manitoba parts plant
 
 Two truck running boards have been out of production for three months. How can the plant clear the backlog, meet the customer's April and May shipping commitments, and keep grill guards shipping?
@@ -94,13 +98,23 @@ def plant_schedule(orders, *, relocate=True, extended=True):
     return schedule
 
 
+def _inputs(family, impossible):
+    if family == "ffmpeg":
+        return media_batch.inputs(impossible)
+    if family == "recovery":
+        return plant_inputs(impossible)
+    if family == "navier_stokes":
+        return navier_stokes.inputs(impossible)
+    raise ValueError(family)
+
+
 def build(key, population):
     family, variant = key.split("-")
     if family not in DOMAIN or variant not in VARIANTS:
         raise ValueError(key)
     if population < (2 if variant == "distributed" else 1):
         raise ValueError("A distributed instance needs distinct holders")
-    common, pairs, truth = (plant_inputs if family == "recovery" else media_batch.inputs)(variant == "impossible")
+    common, pairs, truth = _inputs(family, variant == "impossible")
     actors = research_actors(population)
     width = min(len(actors), len(pairs))
     startup = {}
@@ -113,7 +127,10 @@ def build(key, population):
         startup[actor] = files
     return startup, truth, {"domain": DOMAIN[family], "family": family,
                             "task_class": VARIANTS[variant], "freeform": True,
-                            "input_version": "freeform-freight-v3" if family == "recovery" else "freeform-airings-v4", "output_paths": []}
+                            "input_version": ("freeform-freight-v3" if family == "recovery"
+                                               else "freeform-airings-v4" if family == "ffmpeg"
+                                               else navier_stokes.VERSION),
+                            "output_paths": []}
 
 
 def witness(key, startup, truth):
@@ -121,13 +138,13 @@ def witness(key, startup, truth):
     full, feasible, _ = build(family + "-possible", 1)
     complete = next(iter(full.values()))
     union = pooled(startup)
-    _, pairs, _ = (plant_inputs if family == "recovery" else media_batch.inputs)(False)
-    local_pairs = {a: sum(all(next(iter(half)) in files for half in pair) for pair in pairs)
+    _, pairs, _ = _inputs(family, False)
+    local_pairs = {a: sum(all(path in files for half in pair for path in half) for pair in pairs)
                    for a, files in startup.items()}
     private_ok = union == complete and all(n == 0 for n in local_pairs.values())
     if family == "ffmpeg":
         proof = media_batch.proof(union, truth, feasible, variant)
-    else:
+    elif family == "recovery":
         measured = list(union[ROOT + "plant/certificates.csv"].splitlines()[1:])
         assay = {lot: float(value) for lot, value in (row.split(",") for row in measured)}
         charges = sum(int(line.split(",")[1]) for line in union[ROOT + "plant/receipts.csv"].splitlines()[1:]
@@ -170,6 +187,8 @@ def witness(key, startup, truth):
                  (0 < charges < sum(shipped.values()) if variant == "impossible" else charges >= sum(shipped.values())),
                  "available_charges": charges, "boards_due": sum(o["quantity_sets"] for o in truth["orders"]),
                  "schedule_in_full_world": schedule, "foreign_quantity_alternatives_fit": alternatives}
+    else:
+        proof = navier_stokes.witness(key, startup, truth)
     proof.update(local_complete_pairs=local_pairs, pooled_equals_possible=union == complete)
     proof["passed"] = proof["passed"] and (private_ok if variant == "distributed" else
                                             all(n == len(pairs) for n in local_pairs.values()))

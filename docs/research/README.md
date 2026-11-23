@@ -5,6 +5,7 @@
 - [Same-source pre-hoc input env and post-hoc log analysis](../../swarmform/docs/freeform-posthoc-log-analysis.json): intended direct (`posthoc-rollout-v10`) and unintended filesystem (`posthoc-rollout-v9`) use source hash `baacb9fae26732c422f461271d752dc54d75bda3591313da49387b534a837a9a`, the same FFmpeg distributed task contract, Terra 6.1, `N=3`, advisory budgets and a 900-second window.
 - [Detailed post-hoc log analysis](../../swarmform/docs/freeform-posthoc-log-analysis.md): both cohorts have recorded orchestrator, artifact handoff and closed two-level delegation. The intended cohort completed 6/6 frame-checked masters. The unintended cohort completed 0/6. These outcome labels are analyzed after collection and do not define pre-hoc input env admission.
 - [Implementation README](../../README.md#swarmform): setup, task triplets, conditions and reproduction commands.
+- [Navier–Stokes pre-hoc input manifest](../../swarmform/docs/navier-stokes-input-env.json): Scientific Computing triplet with offline witnesses. No rollout has been run for this family.
 
 Message cycles alone do not count as structure. Runtime retries v5/v6/v7 remain archived as provenance and are excluded from the current denominators.
 
