@@ -1,9 +1,9 @@
-# Evidence
+# Research index
 
-## Current SwarmForm input environments and post-hoc review
+## Current SwarmForm pre-hoc input env and post-hoc log analysis
 
-- [Same-source environment pair and post-hoc evidence](../../swarmform/docs/freeform-causal-validation.json): intended direct (`causal-rollout-v10`) and unintended filesystem (`causal-rollout-v9`) use source hash `baacb9fae26732c422f461271d752dc54d75bda3591313da49387b534a837a9a`, the same FFmpeg distributed task contract, Terra 6.1, `N=3`, advisory budgets and a 900-second window.
-- [Detailed post-hoc structure review](../../swarmform/docs/freeform-substantive-review.md): both cohorts have recorded orchestrator, artifact handoff and closed two-level delegation. The intended cohort completed 6/6 frame-checked masters. The unintended cohort completed 0/6. These outcome labels are analyzed after collection and do not define input-environment admission.
+- [Same-source pre-hoc input env and post-hoc log analysis](../../swarmform/docs/freeform-causal-validation.json): intended direct (`causal-rollout-v10`) and unintended filesystem (`causal-rollout-v9`) use source hash `baacb9fae26732c422f461271d752dc54d75bda3591313da49387b534a837a9a`, the same FFmpeg distributed task contract, Terra 6.1, `N=3`, advisory budgets and a 900-second window.
+- [Detailed post-hoc log analysis](../../swarmform/docs/freeform-substantive-review.md): both cohorts have recorded orchestrator, artifact handoff and closed two-level delegation. The intended cohort completed 6/6 frame-checked masters. The unintended cohort completed 0/6. These outcome labels are analyzed after collection and do not define pre-hoc input env admission.
 - [Implementation README](../../README.md#swarmform): setup, task triplets, conditions and reproduction commands.
 
 Message cycles alone do not count as structure. Runtime retries v5/v6/v7 remain archived as provenance and are excluded from the current denominators.

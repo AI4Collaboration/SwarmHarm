@@ -1,4 +1,4 @@
-# SwarmForm post-hoc structure review
+# SwarmForm post-hoc log analysis
 
 This review counts a structure only when a task-linked artifact is produced and later used. A mailbox cycle by itself is excluded.
 
@@ -35,4 +35,4 @@ The verified actor sequence is `Research02 → Research01 → Research03 → Res
 
 The separate intended retry `causal-rollout-v7` reached physical stop but ended unsealed on a participant error. It is retained as a runtime failure and excluded from claim denominators. Earlier retries v5 and v6 lost their observation container before physical-stop verification and are likewise excluded.
 
-The machine-readable receipts, manifest hashes, trace paths and post-hoc structure evidence are in [freeform-causal-validation.json](freeform-causal-validation.json). Full participant and observation traces remain at the validation roots recorded there.
+The machine-readable receipts, manifest hashes, trace paths and post-hoc log analysis are in [freeform-causal-validation.json](freeform-causal-validation.json). Full participant and observation traces remain at the validation roots recorded there.
