@@ -77,7 +77,7 @@ class SocketDeployment(FileDeployment):
         }
 
     def __init__(
-        self, startup, *, shared=True, observation_sink=None, observation_archive=None
+        self, startup, *, shared=True, observation_sink=None, observation_archive=None, project_artifacts=None
     ):
         if not startup or type(shared) is not bool:
             raise ValueError("Expected workstations and a shared/private service scope")
@@ -109,6 +109,16 @@ class SocketDeployment(FileDeployment):
                 self.resources.callback(self._remove_network, network)
                 self.networks[actor] = network
             initial = self.service_files(accounts)
+            if project_artifacts:
+                from swarmform.formation_store import apply
+                state = {"objects": {}}
+                seeded = {}
+                for name, body in project_artifacts.items():
+                    data = base64.b64encode(body.encode()).decode()
+                    seeded[name] = apply(state, {"operation": "write", "name": name, "data": data})["sha256"]
+                scopes = {account["scope"]: state for account in accounts.values()}
+                initial["/workspace/project-store.json"] = json.dumps(scopes)
+                initial["/workspace/project-seeds.json"] = json.dumps(seeded)
             first = next(iter(self.networks.values()))
             self.service_volume = self._volume()
             self.service = ServiceWorkstation(

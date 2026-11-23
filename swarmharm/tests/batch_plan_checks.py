@@ -107,6 +107,101 @@ class BatchPlanChecks(unittest.TestCase):
                 {'archive': str(root)+'.tar.gz', 'sha256':'fixture'}))
             self.assertEqual(batch.existing_status(root)['status'], 'archive_missing')
 
+    def test_batch_lock_rejects_concurrent_runner_on_same_output(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)/'batch'
+            with batch.batch_lock(root):
+                with self.assertRaises(RuntimeError):
+                    with batch.batch_lock(root):
+                        pass
+
+    def test_review_incomplete_resumes_only_missing_judge_step(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)/'out'
+            key = Path(directory)/'key'; key.write_text('secret\n')
+            args = SimpleNamespace(
+                populations=[4], repeats=1, scenarios=['knowledge-work'],
+                mechanisms=['task-gaming'], model='openai/gpt-6.1-sol',
+                served_model='openai/gpt-6.1-sol', api_protocol='chat-completions',
+                base_url='http://localhost:8000/v1', startup_concurrency=4,
+                coupling='coupled', input_variant=None, judge=True,
+                judge_model='openai/gpt-6.1-sol', max_attempts=2,
+                retry_backoff_seconds=0.0, key_file=key, out=root)
+            rows = list(batch.cases(args, 'fixed-source'))
+            name = batch.run_id(rows[0])
+            cohort = root/'openai-gpt-6.1-sol'/'n4'/name
+            cohort.mkdir(parents=True)
+            (cohort/'completion.json').write_text('{"status":"collected"}')
+            (cohort/'atif-validation.json').write_text('{}')
+            (cohort/'independent-review.json').write_text('{}')
+            (cohort/'evidence-manifest.json').write_text('{}')
+            called = []
+
+            def fake_run_process(argv, **kwargs):
+                called.append(argv)
+                if any('judge_unified_transcript.py' in str(x) for x in argv):
+                    (cohort/'mechanism-verdict.json').write_text('{"target_observed":true}')
+                return 0, None
+
+            with patch.object(batch, 'run_process', side_effect=fake_run_process), \
+                 patch.object(batch.subprocess, 'check_output', return_value=''):
+                rc = batch.execute_rows(args, rows, root, SimpleNamespace(error=self.fail))
+            self.assertEqual(rc, 0)
+            self.assertEqual(len(called), 1)
+            self.assertIn('judge_unified_transcript.py', ' '.join(map(str, called[0])))
+            index = json.loads((root/'index.json').read_text())
+            self.assertEqual(index['runs'][0]['status'], 'collected')
+            self.assertTrue(index['runs'][0]['resumed_review'])
+
+    def test_transient_cohort_failure_preserves_attempt_one_and_retries_attempt_two(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)/'out'
+            fake_regs = Path(directory)/'regs'; fake_regs.mkdir()
+            key = Path(directory)/'key'; key.write_text('secret\n')
+            args = SimpleNamespace(
+                populations=[4], repeats=1, scenarios=['knowledge-work'],
+                mechanisms=['task-gaming'], model='openai/gpt-6.1-sol',
+                served_model='openai/gpt-6.1-sol', api_protocol='chat-completions',
+                base_url='http://localhost:8000/v1', startup_concurrency=4,
+                coupling='coupled', input_variant=None, judge=False,
+                judge_model=None, max_attempts=2, retry_backoff_seconds=0.0,
+                key_file=key, out=root)
+            rows = list(batch.cases(args, 'fixed-source'))
+
+            def fake_run_process(argv, **kwargs):
+                cmd = ' '.join(map(str, argv))
+                out_idx = argv.index('--output') + 1 if '--output' in argv else None
+                out_dir = Path(argv[out_idx]) if out_idx else None
+                if '--phase prepare' in cmd:
+                    out_dir.mkdir(parents=True, exist_ok=True)
+                    return 0, None
+                if '--phase collect' in cmd:
+                    if not str(out_dir).endswith('-attempt-002'):
+                        (out_dir/'completion.json').write_text('{"status":"collector_error"}')
+                        return 1, None
+                    (out_dir/'completion.json').write_text('{"status":"collected"}')
+                    (out_dir/'evidence-manifest.json').write_text('{}')
+                    return 0, None
+                if 'export_atif.py' in cmd:
+                    Path(argv[-1], 'atif-validation.json').write_text('{}')
+                if 'review.py' in cmd:
+                    (out_dir/'independent-review.json').write_text('{}')
+                return 0, None
+
+            with patch.object(batch, 'run_process', side_effect=fake_run_process), \
+                 patch.object(batch, 'reap_dead_owner_resources'), \
+                 patch.object(batch.run, 'REGISTRATIONS', fake_regs), \
+                 patch.object(batch.subprocess, 'check_output', return_value=''):
+                rc = batch.execute_rows(args, rows, root, SimpleNamespace(error=self.fail))
+            self.assertEqual(rc, 0)
+            index = json.loads((root/'index.json').read_text())
+            rec = index['runs'][0]
+            self.assertEqual(rec['status'], 'collected')
+            self.assertTrue(rec['output'].endswith('-attempt-002'))
+            self.assertEqual(len(rec['prior_attempts']), 1)
+            self.assertEqual(rec['prior_attempts'][0]['status'], 'collector_error')
+            self.assertTrue(Path(rec['prior_attempts'][0]['output']).is_dir())
+
 
 if __name__ == '__main__':
     unittest.main()

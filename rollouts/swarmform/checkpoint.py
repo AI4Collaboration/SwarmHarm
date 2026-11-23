@@ -4,6 +4,8 @@ import gzip
 import json
 import time
 
+from .provider_retry import retry_request
+
 from atomic import atomic_json
 
 INTERVAL_SECONDS = 300
@@ -173,9 +175,6 @@ class Review:
             result = fields["result"]
             self.actions[key].update(end=at, success=result.get("exit_code") == 0,
                                      stdout=excerpt(result.get("stdout", ""), 16000))
-        elif kind == "request":
-            for call_id, visible in delivered_outputs(fields["body"]["messages"]):
-                self.receipt(actor, call_id, at, visible)
 
     def native_records(self, cohort, cutoff):
         # The Chat Completions bridge archives actual native model inputs and selection times.
@@ -186,13 +185,12 @@ class Review:
                 continue
             with gzip.open(path, "rt") as f:
                 r = json.load(f)
-            if "upstream_request" not in r or r["at"] - origin > cutoff:
+            if "upstream_request" not in r or "upstream_response" not in r or r["at"] - origin > cutoff:
                 continue
             choice = (r.get("upstream_response", {}).get("choices") or [{}])[0]
             calls = [c["id"] for c in choice.get("message", {}).get("tool_calls") or []]
             captures.append((path, path.parents[1].name, r["at"] - origin,
-                             list(delivered_outputs(r["upstream_request"]["messages"])), calls,
-                             "upstream_response" in r))
+                             list(delivered_outputs(r["upstream_request"]["messages"])), calls))
         return captures
 
     async def check(self, cohort, cutoff, terminal=False):
@@ -205,14 +203,14 @@ class Review:
                     and getattr(cohort.args, "api_protocol", "chat-completions") == "chat-completions"):
                 captures = await asyncio.to_thread(self.native_records, cohort, cutoff)
             with cohort.lock:
-                for capture, actor, at, outputs, calls, completed in captures:
+                for capture, actor, at, outputs, calls in captures:
                     for call_id, visible in outputs:
                         self.receipt(actor, call_id, at, visible)
                     for call_id in calls:
                         row = self.actions.get((actor, call_id))
                         if row:
                             row["decision_s"] = at
-                    if completed and all((actor, call_id) in self.actions for call_id in calls):
+                    if all((actor, call_id) in self.actions for call_id in calls):
                         self.native_seen.add(capture)
                 rows = [dict(r) for r in self.actions.values()
                         if r.get("success") and not r.get("ambiguous_id") and r["end"] <= cutoff]
@@ -223,6 +221,9 @@ class Review:
             eligible = {r["actor"] for r in rows if "received_s" in r}
             if len(eligible) < 2 or len({r["actor"] for r in rows}) < 3:
                 audit["status"] = "insufficient_receipted_actions"
+            elif getattr(cohort.args, "api_protocol", None) == "subscription":
+                audit["status"] = "awaiting_offline_review"
+                audit["actions"] = rows
             else:
                 # Keep the complete local trace; bound the independent review request at large N.
                 size = max(400, min(8000, PREVIEW_CHARS // max(1, 2 * len(rows))))
@@ -237,9 +238,12 @@ class Review:
                 audit["request"] = payload
                 timeout = min(150, cohort.args.seconds)
                 async with asyncio.timeout(timeout):
-                    response = await cohort.client.post(cohort.args.base_url.rstrip("/") + route,
-                                                        json=payload, headers=headers, timeout=timeout)
-                response.raise_for_status()
+                    async def send(attempt):
+                        reply = await cohort.client.post(cohort.args.base_url.rstrip("/") + route,
+                                                         json=payload, headers=headers, timeout=timeout)
+                        reply.raise_for_status()
+                        return reply
+                    response = await retry_request(send, lambda failure: audit.setdefault("retries", []).append(failure))
                 data = response.json()
                 audit["response"] = data
                 raw = review_text(route, data).strip()

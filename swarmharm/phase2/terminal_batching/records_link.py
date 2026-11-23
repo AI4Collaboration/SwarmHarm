@@ -68,21 +68,37 @@ class RecordsLink:
         ]
         try:
             links = []
+            owners = list(truth["owners"])
             subnets = iter(available_subnets())
-            for idx, actor in enumerate(truth["owners"]):
+            subnet_lock = Lock()
+
+            def create_owner_network(item):
+                idx, actor = item
                 net = self.name + "-" + str(idx)
-                for subnet in subnets:
+                while True:
+                    with subnet_lock:
+                        subnet = next(subnets, None)
+                    if subnet is None:
+                        raise RuntimeError('SWARMHARM_NETWORK_POOL has no free workstation links')
                     try:
                         docker('network', 'create', '--internal', '--driver', 'bridge',
                                '--subnet', subnet, '--opt',
                                'com.docker.network.bridge.gateway_mode_ipv4=isolated', *label, net)
-                        break
+                        return idx, actor, net
                     except RuntimeError as exc:
                         if 'overlap' not in str(exc).lower():
                             raise
-                else:
-                    raise RuntimeError('SWARMHARM_NETWORK_POOL has no free workstation links')
-                self.networks[actor] = net
+
+            from concurrent.futures import ThreadPoolExecutor
+            created = {}
+            try:
+                with ThreadPoolExecutor(max_workers=min(16, max(1, len(owners)))) as pool:
+                    for idx, actor, net in pool.map(create_owner_network, enumerate(owners)):
+                        created[actor] = net
+            finally:
+                self.networks.update(created)
+            for actor in owners:
+                net = self.networks[actor]
                 links += ["--network", f"name={net},alias={hostname or service_module.HOSTNAME}"]
             docker(
                 "run",
@@ -220,19 +236,29 @@ class RecordsLink:
         )
 
     def close(self):
-        with ExitStack() as cleanup:
-            for net in self.networks.values():
-                cleanup.callback(docker, "network", "rm", net)
-            self.networks.clear()
-            if self.started:
-                cleanup.callback(docker, "rm", "-f", self.name)
-                self.started = False
-                if (self.directory / "input.json").exists():
-                    rows = self.journal()
-                    (self.directory / "requests.jsonl").write_text(
-                        "".join(json.dumps(r) + "\n" for r in rows)
-                    )
-                    if self.config.get('query_gateway'):
-                        queue = docker("exec", self.name, "cat", "/tmp/query-queue-final.json")
-                        json.loads(queue)
-                        (self.directory / "query-queue-final.json").write_text(queue)
+        nets = list(self.networks.values())
+        was_started = self.started
+        self.networks.clear()
+        self.started = False
+        try:
+            if was_started and (self.directory / "input.json").exists():
+                rows = self.journal()
+                (self.directory / "requests.jsonl").write_text(
+                    "".join(json.dumps(r) + "\n" for r in rows)
+                )
+                if self.config.get('query_gateway'):
+                    queue = docker("exec", self.name, "cat", "/tmp/query-queue-final.json")
+                    json.loads(queue)
+                    (self.directory / "query-queue-final.json").write_text(queue)
+        finally:
+            try:
+                if was_started:
+                    docker("rm", "-f", self.name)
+            finally:
+                if nets:
+                    try:
+                        docker("network", "rm", *nets, timeout=max(25, len(nets)))
+                    except RuntimeError:
+                        for net in nets:
+                            try: docker("network", "rm", net)
+                            except RuntimeError: pass

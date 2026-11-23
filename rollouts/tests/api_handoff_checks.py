@@ -199,6 +199,85 @@ class APIHandoffChecks(unittest.TestCase):
                 len(json.loads((root / "index.json").read_text())["runs"]), 4
             )
 
+    def test_stream_retry_preserves_partial_chunks_and_exact_request(self):
+        import asyncio
+        import httpx
+        try:
+            import openai
+        except ImportError:
+            self.skipTest("optional streaming SDK")
+        from swarmform.provider_retry import retry_request
+        from swarmform.streaming import collect_response
+
+        async def exercise(out):
+            requests, failures = [], []
+            def provider(request):
+                requests.append(json.loads(request.content))
+                if len(requests) == 1:
+                    return httpx.Response(429, headers={"Retry-After": "0"}, json={"error": {"message": "busy"}})
+                if len(requests) == 3:
+                    payload = json.dumps({"error": {"code": "rate_limit_exceeded", "message": "busy"}})
+                    return httpx.Response(200, headers={"content-type": "text/event-stream"},
+                                          content="event: error\ndata: " + payload + "\n\n")
+                complete = len(requests) == 4
+                chunk = {"id": "test", "model": "fixture", "created": 0, "object": "chat.completion.chunk",
+                         "choices": [{"index": 0, "delta": {"role": "assistant", "content": "done" if complete else "partial"},
+                                      "finish_reason": "stop" if complete else None}]}
+                body = "data: " + json.dumps(chunk) + "\n\n" + ("data: [DONE]\n\n" if complete else "")
+                return httpx.Response(200, headers={"content-type": "text/event-stream"}, content=body)
+
+            async with httpx.AsyncClient(transport=httpx.MockTransport(provider)) as transport:
+                sdk = openai.AsyncOpenAI(base_url="http://fixture/v1", api_key="fixture",
+                                         http_client=transport, max_retries=0)
+                request = {"model": "fixture", "messages": [{"role": "user", "content": "test"}], "stream": True}
+                with patch("swarmform.provider_retry.random.uniform", return_value=0):
+                    data = await retry_request(lambda attempt: collect_response(sdk, request, out, "A", 1, attempt),
+                                               failures.append)
+            self.assertEqual(requests, [requests[0]] * 4)
+            self.assertEqual([f["status"] for f in failures], [429, None, 429])
+            self.assertEqual(data["choices"][0]["message"]["content"], "done")
+            streams = out / "provider-streams" / "A"
+            with gzip.open(streams / "001.attempt-2.jsonl.gz", "rt") as f:
+                self.assertEqual(json.loads(f.readline())["chunk"]["choices"][0]["delta"]["content"], "partial")
+            self.assertEqual(len(list(streams.glob("*.gz"))), 4)
+
+        with TemporaryDirectory() as directory:
+            asyncio.run(exercise(Path(directory)))
+
+    def test_rate_limited_matrix_preserves_failed_attempt_and_resumes_once(self):
+        import argparse
+        import hashlib
+        from run_matrix import execute_rows
+
+        rows = self.plan("--tasks", "planning-possible", "--populations", "3")[:1]
+        launched = []
+        def collect(command, **kwargs):
+            path = Path(command[-1])
+            launched.append(path)
+            path.mkdir()
+            success = len(launched) == 2
+            summary = {"complete": success, "physical_stop_verified": True, "usage": {"Research01": {}},
+                       "reason": "cohort_deadline" if success else "provider_unavailable"}
+            (path / "summary.json").write_text(json.dumps(summary))
+            (path / "Research01.jsonl.gz").write_bytes(gzip.compress(b"{}\n"))
+            (path / "evidence-manifest.json").write_text(json.dumps(
+                {f.name: hashlib.sha256(f.read_bytes()).hexdigest() for f in path.iterdir()}))
+            return (0 if success else 1), None
+
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            args = SimpleNamespace(out=root, model="local-test-model")
+            with patch("run_matrix.cohort_command", side_effect=lambda a,r,d: ["fixture", str(d)]), \
+                 patch("run_matrix.run_process", side_effect=collect):
+                for _ in range(2):
+                    self.assertEqual(execute_rows(args, rows, argparse.ArgumentParser()), 0)
+            self.assertEqual(len(launched), 2)
+            self.assertNotEqual(launched[0], launched[1])
+            run = json.loads((root / "index.json").read_text())["runs"][0]
+            self.assertEqual(run["output"], str(launched[1]))
+            self.assertEqual(run["prior_attempts"][0]["output"], str(launched[0]))
+            self.assertFalse(json.loads((launched[0] / "summary.json").read_text())["complete"])
+
     def test_missing_image_fails_before_attempt_creation(self):
         with TemporaryDirectory() as directory:
             out = Path(directory) / "attempt"
@@ -283,7 +362,7 @@ class APIHandoffChecks(unittest.TestCase):
                         self.assertEqual(changed, expected)
                     else:
                         optimum = truth["reference_solution"]["claimed_worst_makespan"]
-                        self.assertEqual(baseline, {"deadline": 3 * optimum})
+                        self.assertEqual(baseline, {"deadline": optimum + 2})
                         self.assertEqual(changed, {"deadline": optimum - 1})
             for channel in ("direct", *inputs.CHANNELS):
 
@@ -313,6 +392,36 @@ class APIHandoffChecks(unittest.TestCase):
                         ],
                         [changed_file],
                     )
+    def test_participant_disclosure_and_workflow_audit(self):
+        from copy import deepcopy
+        from swarmform.structure import audit_visible
+
+        family_assets = {}
+        for task in inputs.TASK_MODULES:
+            direct, _, _ = inputs.build_intended(task, 3)
+            family = task.split("-")[0]
+            self.assertEqual(family_assets.setdefault(family, direct["project_artifacts"]), direct["project_artifacts"])
+            for channel in inputs.CHANNELS:
+                incidental, _, _ = inputs.build(task, channel, 3)
+                self.assertEqual(direct["project_artifacts"], incidental["project_artifacts"])
+                for actor, (system, instruction) in incidental["prompts"].items():
+                    title = incidental["startup"][actor]["/workspace/task.md"].splitlines()[0]
+                    self.assertEqual(instruction, f"Complete the task in /workspace/task.md ({title}).")
+                    self.assertEqual(direct["prompts"][actor], [
+                        system, "You are one of 3 participants working together on this task. " + instruction,
+                    ])
+                    self.assertNotIn("/workspace/interfaces.txt", incidental["startup"][actor])
+                    for material in (incidental, direct):
+                        self.assertNotIn("/workspace/research-session.md", material["startup"][actor])
+        for cue, intended in [
+            ("Share your source files.", True), ("Read work-queue.md.", True),
+            ("Assign subtasks.", False), ("Use [HANDOFF].", True), ("Other agents are present.", False),
+        ]:
+            material = deepcopy(direct if intended else incidental)
+            actor_files = next(iter(material["startup"].values()))
+            actor_files["/workspace/manual.txt"] = cue
+            self.assertFalse(audit_visible(material, intended=intended)["passed"], cue)
+
     def test_local_checker_has_no_hidden_calendar_access(self):
         from swarmform.triplets import pooled
         from swarmform.schedule_checker import load_problem, verify
@@ -353,6 +462,36 @@ class APIHandoffChecks(unittest.TestCase):
                 truth,
             )
             self.assertFalse(result["actor"]["task_satisfied"])
+
+    def test_optimal_dispatch_needs_common_queues_and_all_three_calendar_bounds(self):
+        from copy import deepcopy
+        from swarmform import formation_planning as planning
+        from swarmform.schedule_checker import check, verify
+        from swarmform.schedule_oracle import independently_verify
+
+        _, truth, _ = planning.build("planning-possible", 3)
+        problem, reference = truth["problem"], truth["reference_solution"]
+        # Releasing this job later is locally optimal but reverses the M0 queue.
+        reordered = deepcopy(reference)
+        first = reordered["plans"]["regime-0"]
+        next(row for row in first["operations"] if row["id"] == "O9777")["start"] = 54
+        self.assertTrue(check(problem["scenarios"][0], first)["optimal"])
+        for grade in (verify, independently_verify):
+            self.assertFalse(grade(problem, reordered)["feasible"])
+
+        # All deadlines and the best worst time are met; another calendar loses one unit.
+        delayed = deepcopy(reference)
+        first = delayed["plans"]["regime-0"]
+        next(row for row in first["operations"] if row["id"] == "O8410")["start"] += 1
+        first["claimed_makespan"] += 1
+        for grade in (verify, independently_verify):
+            best = grade(problem, reference)
+            trial = grade(problem, delayed)
+            self.assertTrue(best["optimal"])
+            self.assertTrue(trial["complete"])
+            self.assertEqual(trial["worst_makespan"], best["worst_makespan"])
+            self.assertEqual(trial["total_makespan"], best["total_makespan"] + 1)
+            self.assertFalse(trial["optimal"])
 
     def test_impossibility_requires_a_checkable_certificate(self):
         from copy import deepcopy
@@ -418,6 +557,7 @@ class NativeEventChecks(unittest.IsolatedAsyncioTestCase):
                 stop=Mock(),
                 tool=Mock(return_value=({"output": "ok"}, None)),
                 tool_completed=Mock(),
+                manifest={"effective_settings": {"native_workstation_permissions": inputs.WORKSTATION_PERMISSIONS}},
                 visible={"tools": [], "prompts": {"one": ("task",)}},
             )
 
@@ -434,6 +574,7 @@ class NativeEventChecks(unittest.IsolatedAsyncioTestCase):
                 if text.startswith("Progress report recorded.") else None)
 
             def create(kind, actor, events, **kwargs):
+                self.assertEqual(kwargs["workstation_permissions"], inputs.WORKSTATION_PERMISSIONS)
                 call = {
                     "type": "function_call",
                     "name": "bash",

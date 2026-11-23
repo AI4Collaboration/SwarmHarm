@@ -318,7 +318,15 @@ def main(argv=None):
         type=Path,
         help="Validate a preserved response instead of making a model call.",
     )
+    parser.add_argument(
+        "--max-attempts",
+        type=int,
+        default=3,
+        help="Maximum attempts on transient HTTP or stream failures (default: 3).",
+    )
     args = parser.parse_args(argv)
+    if args.max_attempts < 1:
+        parser.error("--max-attempts must be positive")
     root = guardrails.outside_repository(args.output, REPO, "Rollout output")
     review_root = (
         guardrails.outside_repository(args.review_dir, REPO, "Monitor review")
@@ -334,51 +342,71 @@ def main(argv=None):
     mechanical_bytes = mechanism_path.read_bytes() if mechanism_path.is_file() else None
     mechanical = json.loads(mechanical_bytes) if mechanical_bytes is not None else None
     request_value = {**claim_evidence.judge_request(packet, args.model), 'stream': True}
-    attempts, attempt = next_attempt(review_root)
-    attempt_request = attempts / f"{attempt}-request.json"
-    attempt_response = attempts / f"{attempt}-response.json"
-    write_new(attempt_request, request_value)
-    secret = '';stream_capture=BytesIO()
-    try:
-        if args.response_file:
-            response = json.loads(args.response_file.read_text())
-        else:
-            key_file = guardrails.credential_file(args.key_file, REPO)
-            secret = key_file.read_text().strip()
-            api_base = args.api_base or json.loads((root/'registration.json').read_text()).get(
-                'api_base', AXONHUB_RESPONSES.removesuffix('/responses'))
-            write_new(attempts / f"{attempt}-route.json",
-                      {'api_base': guardrails.api_base_url(api_base), 'model': args.model,
-                       'api_protocol': args.api_protocol})
-            post_kwargs = {}
-            if api_base != AXONHUB_RESPONSES.removesuffix('/responses'):
-                post_kwargs['api_base'] = api_base
-            if args.api_protocol != 'responses':
-                post_kwargs['protocol'] = args.api_protocol
-            response = post(request_value, secret, stream_capture, **post_kwargs)
-        if completed_response_refusal(response):
-            data=stream_capture.getvalue() or json.dumps(response,ensure_ascii=False).encode()
-            raise StreamFailure('refusal',data,'provider_stated_refusal')
-    except urllib.error.HTTPError as exc:
+    retryable_http = frozenset({408, 409, 425, 429, 500, 502, 503, 504} | set(range(520, 531)))
+    limit = 1 if args.response_file else args.max_attempts
+    response = None
+    attempts = attempt = attempt_response = None
+    stream_capture = BytesIO()
+    for try_idx in range(1, limit + 1):
+        attempts, attempt = next_attempt(review_root)
+        attempt_request = attempts / f"{attempt}-request.json"
+        attempt_response = attempts / f"{attempt}-response.json"
+        write_new(attempt_request, request_value)
+        secret = ''
+        stream_capture = BytesIO()
         try:
-            diagnostic=provider_http_diagnostic(exc,secret)
-        except Exception:
-            diagnostic={'status':http_status(exc),'capture_state':'unavailable'}
-        write_new(attempts / f"{attempt}-error.json",{
-            'at':datetime.now(timezone.utc).isoformat(),'error_type':'HTTPError',
-            'error':f'HTTP Error {http_status(exc)}', 'provider_response':diagnostic})
-        raise RuntimeError(f'HTTP Error {http_status(exc)}; provider metadata saved.') from None
-    except StreamFailure as exc:
-        write_new(attempts / f"{attempt}-error.json",{
-            'at':datetime.now(timezone.utc).isoformat(),'error_type':'StreamFailure',
-            'stream_state':exc.state,'policy_status':exc.policy_status,
-            'stream_prefix_sha256':exc.digest,'stream_prefix_bytes':exc.byte_count})
-        raise RuntimeError('Semantic judge stream did not complete; diagnostic saved.') from None
-    except Exception:
-        write_new(attempts / f"{attempt}-error.json",{
-            'at':datetime.now(timezone.utc).isoformat(),'error_type':'OtherError',
-            'error':'diagnostic_unavailable'})
-        raise RuntimeError('Semantic judge failed; diagnostic saved.') from None
+            if args.response_file:
+                response = json.loads(args.response_file.read_text())
+            else:
+                key_file = guardrails.credential_file(args.key_file, REPO)
+                secret = key_file.read_text().strip()
+                api_base = args.api_base or json.loads((root/'registration.json').read_text()).get(
+                    'api_base', AXONHUB_RESPONSES.removesuffix('/responses'))
+                write_new(attempts / f"{attempt}-route.json",
+                          {'api_base': guardrails.api_base_url(api_base), 'model': args.model,
+                           'api_protocol': args.api_protocol})
+                post_kwargs = {}
+                if api_base != AXONHUB_RESPONSES.removesuffix('/responses'):
+                    post_kwargs['api_base'] = api_base
+                if args.api_protocol != 'responses':
+                    post_kwargs['protocol'] = args.api_protocol
+                response = post(request_value, secret, stream_capture, **post_kwargs)
+            if completed_response_refusal(response):
+                data=stream_capture.getvalue() or json.dumps(response,ensure_ascii=False).encode()
+                raise StreamFailure('refusal',data,'provider_stated_refusal')
+            break
+        except urllib.error.HTTPError as exc:
+            status_code = http_status(exc)
+            try:
+                diagnostic=provider_http_diagnostic(exc,secret)
+            except Exception:
+                diagnostic={'status':status_code,'capture_state':'unavailable'}
+            write_new(attempts / f"{attempt}-error.json",{
+                'at':datetime.now(timezone.utc).isoformat(),'error_type':'HTTPError',
+                'error':f'HTTP Error {status_code}', 'provider_response':diagnostic})
+            if (status_code in retryable_http
+                    and diagnostic.get('policy_status') != 'provider_stated_refusal'
+                    and try_idx < limit):
+                __import__('time').sleep(min(20.0, 2.0 * (2 ** (try_idx - 1))))
+                continue
+            raise RuntimeError(f'HTTP Error {status_code}; provider metadata saved.') from None
+        except StreamFailure as exc:
+            write_new(attempts / f"{attempt}-error.json",{
+                'at':datetime.now(timezone.utc).isoformat(),'error_type':'StreamFailure',
+                'stream_state':exc.state,'policy_status':exc.policy_status,
+                'stream_prefix_sha256':exc.digest,'stream_prefix_bytes':exc.byte_count})
+            if exc.policy_status != 'provider_stated_refusal' and try_idx < limit:
+                __import__('time').sleep(min(20.0, 2.0 * (2 ** (try_idx - 1))))
+                continue
+            raise RuntimeError('Semantic judge stream did not complete; diagnostic saved.') from None
+        except Exception as exc:
+            write_new(attempts / f"{attempt}-error.json",{
+                'at':datetime.now(timezone.utc).isoformat(),'error_type':'OtherError',
+                'error':'diagnostic_unavailable'})
+            if isinstance(exc, (TimeoutError, urllib.error.URLError, ConnectionError)) and try_idx < limit:
+                __import__('time').sleep(min(20.0, 2.0 * (2 ** (try_idx - 1))))
+                continue
+            raise RuntimeError('Semantic judge failed; diagnostic saved.') from None
     response_bytes=(json.dumps(response,indent=2,ensure_ascii=False)+'\n').encode('utf-8')
     stage='model_identity'
     try:

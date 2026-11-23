@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import re
 import tarfile
+import time
 import subprocess
 import sys
 
@@ -21,26 +22,41 @@ from swarmform.formation_inputs import TASK_MODULES
 from swarmform import checkpoint
 
 
-def completed_evidence(directory):
+def sealed_summary(directory):
+    """Read the authenticated summary and verify the files it was sealed with."""
     try:
-        status = json.loads((directory / "summary.json").read_bytes())
         files = json.loads((directory / "evidence-manifest.json").read_bytes())
-        if not status.get("complete") or not status.get("physical_stop_verified"):
-            return False
-        if "summary.json" not in files or not any(
-            name.endswith(".jsonl.gz") for name in files
-        ):
-            return False
+        if "summary.json" not in files or not any(name.endswith(".jsonl.gz") for name in files):
+            return None
         for name, expected in files.items():
             path = (directory / name).resolve()
             if not path.is_relative_to(directory.resolve()):
-                return False
+                return None
             with path.open("rb") as stream:
                 if hashlib.file_digest(stream, "sha256").hexdigest() != expected:
-                    return False
-        return True
+                    return None
+        summary = json.loads((directory / "summary.json").read_bytes())
+        return summary if isinstance(summary, dict) else None
     except (OSError, ValueError, TypeError, AttributeError):
-        return False
+        return None
+
+
+def completed_evidence(directory):
+    summary = sealed_summary(directory)
+    return bool(summary and summary.get("complete") and summary.get("physical_stop_verified"))
+
+
+def resume_details(summary):
+    if not summary or summary.get("complete") or not summary.get("physical_stop_verified"):
+        return {}
+    reason = summary.get("reason")
+    if reason not in ("operator_interrupt", "provider_unavailable", "provider_rejected"):
+        return {}
+    if set(summary.get("errors", {})) - set(summary.get("usage", {})):
+        return {}
+    delays = summary.get("pending_provider_errors", {}).values()
+    return {"retry_reason": reason,
+            "retry_not_before": max((failure["retry_not_before"] for failure in delays), default=0)}
 
 
 def archived_evidence(index):
@@ -63,6 +79,7 @@ def archived_evidence(index):
         complete = status.get("complete") and status.get("physical_stop_verified")
         return {
             "status": "archived" if complete else "incomplete",
+            **resume_details(status),
             "archive": str(archive),
             "sha256": row["sha256"],
         }
@@ -91,13 +108,14 @@ def batch_lock(root):
 
 
 def cases(args):
+    selected = set(getattr(args, "channels", None) or CHANNELS)
     for population in args.populations:
         for rep in range(1, args.repeats + 1):
             for task in args.tasks:
                 # Cycle the first condition across replicates.
                 offset = (rep - 1) % len(CHANNELS)
                 for channel in CHANNELS[offset:] + CHANNELS[:offset]:
-                    if population == 1 and channel != "filesystem":
+                    if channel not in selected or (population == 1 and channel != "filesystem"):
                         continue
                     yield dict(
                         task=task,
@@ -129,7 +147,7 @@ def main():
     )
     parser.add_argument(
         "--api-protocol",
-        choices=["chat-completions", "native"],
+        choices=["chat-completions", "native", "subscription"],
         default="chat-completions",
     )
     parser.add_argument("--served-model")
@@ -154,6 +172,8 @@ def main():
     parser.add_argument(
         "--tasks", nargs="+", choices=TASK_MODULES, default=list(defaults.TASKS)
     )
+    parser.add_argument("--channels", nargs="+", choices=CHANNELS, default=list(CHANNELS),
+                        help="Limit collection to these communication conditions")
     parser.add_argument("--entry-window-seconds", type=int, default=0,
                         help="Spread starts evenly across this window")
     parser.add_argument("--stream-responses", action="store_true", help="Stream Chat Completions and record chunks")
@@ -176,6 +196,8 @@ def main():
         "--out", type=Path, help="Parent directory outside the repository"
     )
     args = parser.parse_args()
+    if 1 in args.populations and "filesystem" not in args.channels:
+        parser.error("N=1 requires the filesystem condition")
     if args.harness == "auto":
         sys.path.insert(0, str(ROOT.parent / "shared"))
         from guardrails import native_harness
@@ -190,10 +212,12 @@ def main():
     horizon_s = args.cohort_seconds or checkpoint.COHORT_SECONDS
     if not 0 <= args.entry_window_seconds < horizon_s:
         parser.error("Entry offsets must precede the common cohort deadline.")
+    if args.api_protocol == "subscription" and args.harness != "codex":
+        parser.error("Subscription transport requires --harness codex.")
     if args.stream_responses and args.harness != "chat-completions":
         parser.error("--stream-responses requires the Chat Completions harness")
     if 1 in args.populations and any(not key.endswith("-possible") for key in args.tasks):
-        parser.error("For N=1 select --tasks tree-possible and/or planning-possible.")
+        parser.error("For N=1 select possible-but-hard tasks.")
     if len(set(args.tasks)) != len(args.tasks) or len(set(args.populations)) != len(
         args.populations
     ):
@@ -240,115 +264,116 @@ def execute_rows(args, rows, parser):
             / f"n{row['population']}"
             / (f"{row['task']}-{row['channel']}-r{row['replicate']}-{cohort_id}")
         )
-        record = {**row, "output": str(directory)}
-        archive_index = directory.with_name(directory.name + ".archive.json")
-        if not directory.exists() and archive_index.exists():
-            record.update(archived_evidence(archive_index))
-            failures += int(record["status"] != "archived")
-            records.append(record)
-            write_json(root / "index.json", {"study": "swarmform", "runs": records})
-            continue
-        if directory.exists():
-            if completed_evidence(directory):
-                print("Already completed", directory, flush=True)
-                record["status"] = "complete"
+        base = directory
+        previous = []
+        new_attempts = 0
+        interrupted = None
+        while True:
+            if previous:
+                directory = base.with_name(f"{base.name}-attempt-{len(previous) + 1:03d}")
+            record = {**row, "output": str(directory)}
+            if previous:
+                record["prior_attempts"] = list(previous)
+            log = directory.with_name(directory.name + ".log")
+            archive_index = directory.with_name(directory.name + ".archive.json")
+            if directory.exists():
+                summary = sealed_summary(directory)
+                complete = summary and summary.get("complete") and summary.get("physical_stop_verified")
+                record.update(status="complete" if complete else "incomplete", **resume_details(summary))
+            elif archive_index.exists():
+                record.update(archived_evidence(archive_index))
+            elif log.exists():
+                record.update(status="incomplete", log=str(log))
             else:
-                print(
-                    "Preserved incomplete or damaged attempt",
-                    directory,
-                    file=sys.stderr,
-                )
-                failures += 1
-                record["status"] = "incomplete"
-            records.append(record)
-            write_json(root / "index.json", {"study": "swarmform", "runs": records})
-            continue
-        log = directory.with_name(directory.name + ".log")
-        if log.exists():
-            records.append({**record, "status": "incomplete", "log": str(log)})
-            failures += 1
-            write_json(root / "index.json", {"study": "swarmform", "runs": records})
-            continue
-        if source_digest() != row["source_sha256"]:
-            raise RuntimeError(
-                "Source changed during the batch; use a fresh output root"
-            )
-        command = [
-            sys.executable,
-            "-m",
-            "swarmform",
-            "run",
-            "--task",
-            row["task"],
-            "--channel",
-            row["channel"],
-            "--population",
-            str(row["population"]),
-            "--seconds",
-            str(args.seconds),
-            "--entry-window-seconds",
-            str(row["entry_window_seconds"]),
-            "--model",
-            args.model,
-            "--harness",
-            args.harness,
-            "--api-protocol",
-            args.api_protocol,
-            "--served-model",
-            args.served_model or args.model,
-            "--base-url",
-            args.base_url,
-            "--out",
-            str(directory),
-            "--expected-source-sha256",
-            row["source_sha256"],
-        ]
-        if row.get("stream_responses"):
-            command.append("--stream-responses")
-        if row.get("closed_mail_receipts"):
-            command.append("--closed-mail-receipts")
-        if args.cohort_seconds:
-            command.extend(["--cohort-seconds", str(args.cohort_seconds)])
-        if args.review_interval_seconds:
-            command.extend(["--review-interval-seconds", str(args.review_interval_seconds)])
-        if row.get("enforce_personal_limits"):
-            command.append("--enforce-personal-limits")
-        for flag, key in (("--max-responses", "max_responses"), ("--max-tools", "max_tools"), ("--max-tokens", "max_tokens")):
-            if row.get(key) is not None:
-                command.extend([flag, str(row[key])])
-        if getattr(args, "thinking_level", "high") != "high":
-            command.extend(["--thinking-level", args.thinking_level])
-        if getattr(args, "review_model", None):
-            command.extend(["--review-model", args.review_model])
-        if args.revision:
-            command.extend(["--revision", args.revision])
-        if args.key_file:
-            command.extend(["--key-file", str(args.key_file.expanduser().resolve())])
-        print("Starting", directory, flush=True)
-        directory.parent.mkdir(parents=True, exist_ok=True)
-        write_json(
-            root / "index.json",
-            {"study": "swarmform", "runs": [*records, {**record, "status": "running"}]},
-        )
-        with log.open("a") as stream:
-            code, interrupted = run_process(
-                command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT
-            )
-        failures += int(code != 0 or interrupted is not None)
-        record.update(
-            status="complete" if code == 0 and not interrupted else "incomplete",
-            returncode=code,
-            log=str(log),
-        )
-        if directory.exists():
-            record["raw_bytes"] = sum(
-                p.stat().st_size for p in directory.rglob("*") if p.is_file()
-            )
+                if previous:
+                    delay = previous[-1]["retry_not_before"] - time.time()
+                    if delay > 0:
+                        time.sleep(delay)
+                command = cohort_command(args, row, directory)
+                new_attempts += 1
+                write_json(root / "index.json",
+                           {"study": "swarmform", "runs": [*records, {**record, "status": "running"}]})
+                print("Starting", directory, flush=True)
+                directory.parent.mkdir(parents=True, exist_ok=True)
+                with log.open("x") as stream:
+                    code, interrupted = run_process(command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT)
+                record.update(status="complete" if code == 0 and not interrupted else "incomplete",
+                              returncode=code, log=str(log))
+                if directory.exists():
+                    record["raw_bytes"] = sum(p.stat().st_size for p in directory.rglob("*") if p.is_file())
+                if record["status"] == "incomplete":
+                    record.update(resume_details(sealed_summary(directory)))
+                if record.get("retry_reason") in ("operator_interrupt", "provider_rejected"):
+                    break
+            if interrupted or not record.get("retry_reason") or new_attempts >= 2:
+                break
+            previous.append({key: value for key, value in record.items()
+                             if key in ("output", "status", "retry_reason", "retry_not_before", "log", "archive")})
+        failures += int(record["status"] not in ("complete", "archived"))
         records.append(record)
         write_json(root / "index.json", {"study": "swarmform", "runs": records})
-        if interrupted:
+        if interrupted or record.get("retry_reason") in ("operator_interrupt", "provider_rejected", "provider_unavailable"):
             break
     return int(failures != 0)
+
+
+def cohort_command(args, row, directory):
+    if source_digest() != row["source_sha256"]:
+        raise RuntimeError(
+            "Source changed during the batch; use a fresh output root"
+        )
+    command = [
+        sys.executable,
+        "-m",
+        "swarmform",
+        "run",
+        "--task",
+        row["task"],
+        "--channel",
+        row["channel"],
+        "--population",
+        str(row["population"]),
+        "--seconds",
+        str(args.seconds),
+        "--entry-window-seconds",
+        str(row["entry_window_seconds"]),
+        "--model",
+        args.model,
+        "--harness",
+        args.harness,
+        "--api-protocol",
+        args.api_protocol,
+        "--served-model",
+        args.served_model or args.model,
+        "--base-url",
+        args.base_url,
+        "--out",
+        str(directory),
+        "--expected-source-sha256",
+        row["source_sha256"],
+    ]
+    if row.get("stream_responses"):
+        command.append("--stream-responses")
+    if row.get("closed_mail_receipts"):
+        command.append("--closed-mail-receipts")
+    if args.cohort_seconds:
+        command.extend(["--cohort-seconds", str(args.cohort_seconds)])
+    if args.review_interval_seconds:
+        command.extend(["--review-interval-seconds", str(args.review_interval_seconds)])
+    if row.get("enforce_personal_limits"):
+        command.append("--enforce-personal-limits")
+    for flag, key in (("--max-responses", "max_responses"), ("--max-tools", "max_tools"), ("--max-tokens", "max_tokens")):
+        if row.get(key) is not None:
+            command.extend([flag, str(row[key])])
+    if getattr(args, "thinking_level", "high") != "high":
+        command.extend(["--thinking-level", args.thinking_level])
+    if getattr(args, "review_model", None):
+        command.extend(["--review-model", args.review_model])
+    if args.revision:
+        command.extend(["--revision", args.revision])
+    if args.key_file:
+        command.extend(["--key-file", str(args.key_file.expanduser().resolve())])
+    return command
 
 
 if __name__ == "__main__":

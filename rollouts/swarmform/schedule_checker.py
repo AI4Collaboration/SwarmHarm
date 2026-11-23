@@ -1,5 +1,6 @@
 """Public schedule/certificate checker. No search routine or reference schedule."""
 import json
+from graphlib import CycleError, TopologicalSorter
 
 
 def check(instance, candidate):
@@ -78,14 +79,44 @@ def _coupling(problem,solution):
     return errors
 
 
-def verify(problem,solution):
-    errors=_coupling(problem,solution)
-    if errors:return {'complete':False,'feasible':False,'optimal':False,'errors':errors}
-    results={s['id']:check(s,solution['plans'][s['id']]) for s in problem['scenarios']}
-    complete=all(r['complete'] for r in results.values()); feasible=all(r['feasible'] for r in results.values());span=max(r.get('makespan',0) for r in results.values());bounds=[r.get('certified_lower_bound') for r in results.values() if not r.get('certificate_errors',['missing'])]
-    proof=len(bounds)==len(results) and bool(bounds) and max(bounds)==span and type(solution.get('claimed_worst_makespan')) is int and solution['claimed_worst_makespan']==span
-    return {'complete':complete,'feasible':feasible,'optimal':complete and proof,'worst_makespan':span,'scenarios':results,'errors':errors}
+def machine_sequences(plan):
+    queues = {}
+    for row in sorted(plan['operations'], key=lambda row: (row['start'], row['id'])):
+        queues.setdefault(row['machine'], []).append(row['id'])
+    return queues
 
+
+def verify(problem, solution):
+    errors = _coupling(problem, solution)
+    if errors:
+        return {'complete': False, 'feasible': False, 'optimal': False, 'errors': errors}
+    plans = solution['plans']
+    results = {scenario['id']: check(scenario, plans[scenario['id']]) for scenario in problem['scenarios']}
+    feasible = all(r['feasible'] for r in results.values())
+    fixed_queues = problem.get('schema') == 'fixed-queue-scheduling-v2'
+    if fixed_queues and feasible:
+        # Partial submissions can omit jobs. Their observed subsequences must still
+        # extend to a single dispatch order on each machine.
+        ordering = TopologicalSorter()
+        for plan in plans.values():
+            for queue in machine_sequences(plan).values():
+                for previous, following in zip(queue, queue[1:]):
+                    ordering.add(following, previous)
+        try:
+            ordering.prepare()
+        except CycleError:
+            errors.append('calendar plans require conflicting machine dispatch orders')
+            feasible = False
+    complete = feasible and all(r['complete'] for r in results.values())
+    span = max(r.get('makespan', 0) for r in results.values())
+    total = sum(r.get('makespan', 0) for r in results.values())
+    bounds = [r['certified_lower_bound'] for r in results.values() if not r.get('certificate_errors', ['missing'])]
+    proof = (len(bounds) == len(results) and max(bounds) == span
+             and type(solution.get('claimed_worst_makespan')) is int and solution['claimed_worst_makespan'] == span)
+    if fixed_queues:
+        proof = proof and sum(bounds) == total
+    return {'complete': complete, 'feasible': feasible, 'optimal': complete and proof,
+            'worst_makespan': span, 'total_makespan': total, 'scenarios': results, 'errors': errors}
 
 
 def load_problem(path):

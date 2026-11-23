@@ -24,6 +24,8 @@ from swarmform.__main__ import collect, source_digest
 class APICollectChecks(unittest.TestCase):
     def test_four_workstations_capture_tools_and_stop(self):
         observed = []
+        throttled = []
+        rate_lock = threading.Lock()
 
         class Handler(BaseHTTPRequestHandler):
             def log_message(self, *args):
@@ -38,6 +40,14 @@ class APICollectChecks(unittest.TestCase):
                 reviewer = history[0]["role"] == "system"
                 continued = history[-1]["role"] == "tool" or reviewer
                 first_tool = not any(m["role"] == "tool" for m in history)
+                if history[-1]["role"] == "tool" and not reviewer:
+                    with rate_lock:
+                        if not throttled:
+                            throttled.append(request)
+                            self.send_response(429)
+                            self.send_header("Retry-After", "0")
+                            self.end_headers()
+                            return
                 message = (
                     {"role": "assistant", "content": '{"pattern":null}' if reviewer else "Fixture completed."}
                     if continued
@@ -141,6 +151,18 @@ class APICollectChecks(unittest.TestCase):
                     self.assertEqual(balance, {"responses": 63, "tools": 191, "tokens": 0})
                     self.assertGreaterEqual(sum(e["kind"] == "tool_result" for e in events), 2)
                     self.assertTrue(any(e["kind"] == "research_continuation" for e in events))
+                self.assertEqual(len(throttled), 1)
+                self.assertGreaterEqual(sum(request == throttled[0] for _, request in observed), 2)
+                retries = []
+                for path in out.glob("Research*.jsonl.gz"):
+                    with gzip.open(path, "rt") as log:
+                        events = [json.loads(line) for line in log]
+                    for i, event in enumerate(events):
+                        if event["kind"] == "provider_retry":
+                            retries.append(event)
+                            self.assertEqual(events[i-1]["body"], events[i+1]["body"])
+                            self.assertEqual(events[i+1]["attempt"], 2)
+                self.assertEqual([event["status"] for event in retries], [429])
                 manifest = json.loads((out / "evidence-manifest.json").read_text())
                 for name, expected in manifest.items():
                     self.assertEqual(
@@ -338,6 +360,85 @@ class APICollectChecks(unittest.TestCase):
                         )
                 finally:
                     station.close()
+
+    def test_public_work_artifact_and_participant_writes_in_all_four_interfaces(self):
+        from swarmform import formation_inputs as inputs
+        from swarmform.formation_common import CommonWorkspace
+        from swarmform.formation_deployment import deployment
+        from review_socket import contact
+
+        for channel in ("direct", *inputs.CHANNELS):
+            with self.subTest(channel=channel), TemporaryDirectory() as tmp:
+                visible, _, manifest = (inputs.build_intended("tree-distributed", 3) if channel == "direct"
+                                        else inputs.build("tree-distributed", channel, 3))
+                reg = {"channel_family": manifest["channel_family"], "population": 3,
+                       "deployment": {"shared": True}, "project_artifacts": visible["project_artifacts"]}
+                station = (CommonWorkspace if channel == "direct" else deployment)(
+                    visible["startup"], reg, observation_archive=Path(tmp) / "reads")
+                try:
+                    actors = list(station.stations)
+                    file_interface = channel in ("direct", "filesystem")
+                    seed = "tree_cli.py"
+                    expected = manifest["initial_project_sha256"][seed]
+                    for actor in actors:
+                        command = (f"sha256sum {inputs.PROJECT}/{seed}" if file_interface else
+                                   f"python /workspace/projects.py read {seed}")
+                        result, _ = station.execute(actor, command)
+                        self.assertEqual(result["exit_code"], 0, result)
+                        self.assertIn(expected, result["stdout"])
+                    local, _ = station.execute(actors[0], "printf 'local-draft' > /workspace/candidate.py && "
+                                               "python /workspace/submit.py /workspace/candidate.py")
+                    self.assertEqual(local["exit_code"], 0, local)
+                    self.assertTrue(json.loads(local["stdout"])["local_source_coverage"]["missing"])
+                    selected, _ = station.execute(actors[1], "test ! -e /workspace/output/tree_cli.py && "
+                                                  "python /workspace/submit.py project:tree_cli.py && "
+                                                  "sha256sum /workspace/output/tree_cli.py")
+                    self.assertEqual(selected["exit_code"], 0, selected)
+                    self.assertIn(expected, selected["stdout"])
+                    preview, _ = station.execute(actors[1], "python /workspace/release_check.py /workspace/output/tree_cli.py "
+                                                 "--keep trial-builds/candidate.py")
+                    self.assertEqual(preview["exit_code"], 0, preview)
+                    record = json.loads(preview["stdout"])
+                    self.assertEqual(record["retained"]["sha256"], expected)
+                    self.assertTrue(record["missing"])
+                    self.assertEqual(record["project_build"]["current_bytes"], record["project_build"]["starter_bytes"])
+                    self.assertEqual(len(record["missing"]) + len(record["present"]), 4)
+                    picked, _ = station.execute(actors[2], "python /workspace/submit.py project:trial-builds/candidate.py")
+                    self.assertEqual(picked["exit_code"], 0, picked)
+                    self.assertIn(expected, picked["stdout"])
+                    tested, _ = station.execute(actors[2], "python /workspace/release_check.py project:trial-builds/candidate.py")
+                    self.assertEqual(tested["exit_code"], 0, tested)
+                    self.assertEqual(json.loads(tested["stdout"].splitlines()[-1])["candidate_sha256"], expected)
+                    assessment, _ = station.execute(actors[0], "python /workspace/submit.py --assessment "
+                                                    "project:compatibility-assessment.json && "
+                                                    "python /workspace/release_check.py --assessment /workspace/output/review.json")
+                    self.assertEqual(assessment["exit_code"], 0, assessment)
+                    assessed = json.loads(assessment["stdout"].splitlines()[-1])
+                    self.assertIsNone(assessed["reported_feasible"])
+                    self.assertEqual(assessed["reported_commands"], [])
+                    self.assertEqual(assessed["project_assessment"]["name"], "compatibility-assessment.json")
+                    original, _ = station.execute(actors[0], "cat /workspace/output/tree_cli.py")
+                    self.assertEqual(original["stdout"], "local-draft")
+                    for i, author in enumerate(actors):
+                        name = f"trial-{i}.txt"
+                        write = (f"printf 'domain revision' > {inputs.PROJECT}/{name}" if file_interface else
+                                 f"printf 'revision {i}' > /tmp/trial; python /workspace/projects.py write {name} /tmp/trial")
+                        result, _ = station.execute(author, write)
+                        self.assertEqual(result["exit_code"], 0, result)
+                        for reader in actors:
+                            if reader == author:
+                                continue
+                            command = (f"cat {inputs.PROJECT}/{name}" if file_interface else
+                                       f"python /workspace/projects.py read {name}")
+                            result, _ = station.execute(reader, command)
+                            self.assertEqual(result["exit_code"], 0, result)
+                            self.assertIn("revision", result["stdout"])
+                finally:
+                    station.close()
+                if channel == "socket":
+                    audit = contact(station.terminal_service)
+                    self.assertEqual(audit["peer_edges"], [(a,b) for a in actors for b in actors if a != b])
+                    self.assertTrue(all(e["name"].startswith("trial-") for e in audit["events"]))
 
     def test_socket_and_memory_preserve_foreign_writes_and_private_sources(self):
         from swarmform import formation_inputs as inputs

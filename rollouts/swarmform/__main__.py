@@ -20,6 +20,7 @@ from urllib.parse import urlsplit
 
 from . import formation_inputs as inputs
 from . import checkpoint
+from .provider_retry import ATTEMPTS, ProviderUnavailable, provider_rejected, retry_request
 from .formation_common import CommonWorkspace
 from .formation_deployment import deployment
 from .participant_stop import ParticipantStop
@@ -44,7 +45,7 @@ def arguments():
     )
     run.add_argument(
         "--api-protocol",
-        choices=["chat-completions", "native"],
+        choices=["chat-completions", "native", "subscription"],
         default="chat-completions",
     )
     run.add_argument(
@@ -102,6 +103,8 @@ def arguments():
         from guardrails import native_harness
 
         args.harness = native_harness({"model": args.model})
+    if args.api_protocol == "subscription" and args.harness != "codex":
+        parser.error("Subscription transport requires --harness codex.")
     if args.stream_responses and args.harness != "chat-completions":
         parser.error("--stream-responses requires the Chat Completions harness")
     return args
@@ -120,6 +123,7 @@ def source_files():
                 if p.is_file() and p.suffix in (".json", ".mjs")
             ],
             ROOT / "requirements.txt",
+            ROOT / "Dockerfile.media",
             ROOT.parent / "shared/workstation-patch.LICENSE",
             ROOT.parent / "shared/Dockerfile.workstation",
         ]
@@ -232,6 +236,7 @@ class Cohort:
         self.stopping = asyncio.Event()
         self.reason = "all_finished"
         self.errors = {}
+        self.pending_provider_errors = {}
         self.active_tools = set()
         self.snapshot_count = 0
         self.targets = {
@@ -398,26 +403,29 @@ class Cohort:
                 }
                 if getattr(self.args, "stream_responses", False):
                     request.update(stream=True, stream_options={"include_usage": True})
-                decision = self.trace(actor, "request", body=request)
-                if request["stream"]:
-                    from .streaming import collect_response
-                    data = await collect_response(self.stream_client, request, self.out, actor, usage["responses"])
-                else:
-                    reply = await self.client.post(
-                        self.args.base_url.rstrip("/") + "/chat/completions", json=request
-                    )
-                    if reply.is_error:
-                        self.trace(
-                            actor,
-                            "http_error",
-                            status=reply.status_code,
-                            request_id=reply.headers.get("x-request-id"),
-                        )
-                        raise RuntimeError(
-                            f"Chat Completions returned HTTP {reply.status_code}"
-                        )
-                    data = reply.json()
-                self.trace(actor, "response", body=data)
+                async def send(attempt):
+                    decision = self.trace(actor, "request", body=request, attempt=attempt)
+                    if request["stream"]:
+                        from .streaming import collect_response
+                        data = await collect_response(self.stream_client, request, self.out, actor,
+                                                      usage["responses"], attempt)
+                    else:
+                        reply = await self.client.post(
+                            self.args.base_url.rstrip("/") + "/chat/completions", json=request)
+                        reply.raise_for_status()
+                        data = reply.json()
+                    return data, decision
+
+                def record_failure(failure):
+                    self.pending_provider_errors[actor] = failure
+                    self.trace(actor, "provider_retry", **failure)
+
+                data, decision = await retry_request(send, record_failure)
+                self.pending_provider_errors.pop(actor, None)
+                with self.lock:
+                    for call_id, stdout in checkpoint.delivered_outputs(messages):
+                        self.review.receipt(actor, call_id, decision, stdout)
+                self.trace(actor, "response", body=data, request_s=decision)
                 choice = data["choices"][0]
                 msg = choice["message"]
                 counter = (data.get("usage") or {}).get("total_tokens")
@@ -439,6 +447,8 @@ class Cohort:
                     messages.append({k: v for k, v in msg.items() if v is not None})
                     messages.append({"role": "user", "content": self.continue_research(actor)})
                     continue
+                if choice.get("finish_reason") not in ("tool_calls", "stop"):
+                    raise ValueError("Incomplete tool response: " + str(choice.get("finish_reason")))
                 # Preserve model reasoning fields required on follow-up calls by some serving stacks.
                 messages.append({k: v for k, v in msg.items() if v is not None})
                 for call in calls:
@@ -484,9 +494,17 @@ class Cohort:
         except asyncio.CancelledError:
             self.trace(actor, "cancelled", reason=self.reason)
             raise
+        except ProviderUnavailable as error:
+            self.errors[actor] = str(error)
+            self.stop("provider_unavailable")
         except Exception as error:
+            self.pending_provider_errors.pop(actor, None)
+            response = getattr(error, "response", None)
+            if response is not None:
+                self.trace(actor, "http_error", status=response.status_code,
+                           request_id=response.headers.get("x-request-id"))
             self.errors[actor] = f"{type(error).__name__}: {error}"
-            self.stop("participant_error")
+            self.stop("provider_rejected" if provider_rejected(error) else "participant_error")
 
     async def run(self):
         args = self.args
@@ -494,6 +512,8 @@ class Cohort:
             "population": args.population,
             "deployment": {"shared": True},
             "channel_family": self.manifest["channel_family"],
+            "project_artifacts": self.visible["project_artifacts"],
+            "freeform": self.manifest["task_metadata"].get("freeform", False),
         }
         reg["closed_mail_receipts"] = bool(getattr(args, "closed_mail_receipts", False) and args.channel == "direct")
         from swarmform.workstation import IMAGE
@@ -520,7 +540,9 @@ class Cohort:
                 "population": args.population,
                 "model": args.model,
                 "revision": args.revision,
-                "base_url": args.base_url,
+                "base_url": None
+                if getattr(args, "api_protocol", "chat-completions") == "subscription"
+                else args.base_url,
                 "study_version": "native-session-v1"
                 if getattr(args, "harness", "chat-completions") != "chat-completions"
                 else "chat-completions-v1",
@@ -529,6 +551,9 @@ class Cohort:
                 "served_model": getattr(args, "served_model", None) or args.model,
                 "native_runtime": getattr(args, "_native_runtime", None),
                 "observation_policy": "post_tool_and_terminal_v1",
+                "review_request_attempts": ATTEMPTS,
+                **({"participant_request_attempts": ATTEMPTS}
+                   if getattr(args, "harness", "chat-completions") == "chat-completions" else {}),
                 "source_sha256": registered_source,
                 "python": platform.python_version(),
                 "httpx": httpx.__version__,
@@ -557,6 +582,8 @@ class Cohort:
             raise RuntimeError(
                 "Source changed during preparation; no participants started"
             )
+        if self.manifest["task_metadata"].get("freeform"):
+            write_json(self.out / "feasibility.json", inputs.witness(self.visible, self.truth, self.manifest))
         constructor = CommonWorkspace if args.channel == "direct" else deployment
         self.station = await asyncio.to_thread(
             constructor,
@@ -684,15 +711,31 @@ class Cohort:
         for actor, snap in self.last.items():
             if actor not in outputs:
                 continue
-            outputs[actor] = {}
+            if self.manifest["task_metadata"].get("freeform"):
+                # Preserve the exact bytes and names of arbitrary user-chosen
+                # artifacts. Project storage and narrative evidence are analyzed
+                # independently from the complete versioned traces.
+                opening = self.visible["startup"][actor]
+                for root in ("/workspace", "/var/tmp/exports", "temporary_files"):
+                    for name, content in snap.get(root, {}).items():
+                        if "/.swarmform-stop-" in name or name.startswith("/var/tmp/exports/messages/"):
+                            continue
+                        raw = base64.b64decode(content)
+                        if name not in opening or raw != opening[name].encode():
+                            outputs[actor][name] = raw
+                continue
             for key, data in snap.get("/workspace", {}).items():
                 if key.startswith("/workspace/output/"):
-                    raw = base64.b64decode(data)
-                    outputs[actor][key] = raw.decode(errors="replace")
+                    outputs[actor][key] = base64.b64decode(data).decode(errors="replace")
         write_json(
             self.out / "outcomes.json",
             inputs.module(args.task).outcome(args.task, outputs, self.truth),
         )
+        if self.reason == "cohort_deadline":
+            for actor in self.pending_provider_errors:
+                if self.usage[actor]["responses"] == 0:
+                    self.errors[actor] = "Provider unavailable throughout the window"
+                    self.reason = "provider_unavailable"
         passed = (
             bool(receipt["research_stop_verified"])
             and not self.errors
@@ -705,6 +748,7 @@ class Cohort:
             "usage": self.usage,
             "finished": self.returns,
             "structure_reviews": self.review.results,
+            "pending_provider_errors": self.pending_provider_errors,
             "errors": self.errors,
             "physical_stop_verified": receipt["research_stop_verified"],
         }
@@ -780,22 +824,19 @@ async def collect(args):
     asyncio.get_running_loop().set_default_executor(
         ThreadPoolExecutor(max_workers=max(32, args.population + 4))
     )
-    key_file = getattr(args, "key_file", None)
-    key = (
-        Path(key_file).expanduser().read_text().strip()
-        if key_file
-        else os.environ.get("OPENAI_API_KEY")
-    )
+    key = None
+    if getattr(args, "api_protocol", "chat-completions") == "subscription":
+        from codex_agent import harness_registration
+        args._native_runtime = harness_registration("off", args.model.removeprefix("openai/"))
+    else:
+        key_file = getattr(args, "key_file", None)
+        key = Path(key_file).expanduser().read_text().strip() if key_file else os.environ.get("OPENAI_API_KEY")
+        if getattr(args, "harness", "chat-completions") != "chat-completions":
+            if not key:
+                raise ValueError("Native API harnesses require the configured API key")
+            import model_session
+            args._native_runtime = model_session.registration(args.harness, args.model, args.base_url)
     args._api_key = key
-    if getattr(args, "harness", "chat-completions") != "chat-completions":
-        if not key:
-            raise ValueError("Native harnesses require the configured API key")
-        sys.path.insert(0, str(ROOT.parent / "shared"))
-        import model_session
-
-        args._native_runtime = model_session.registration(
-            args.harness, args.model, args.base_url
-        )
     if getattr(args, "stream_responses", False):
         try:
             import openai

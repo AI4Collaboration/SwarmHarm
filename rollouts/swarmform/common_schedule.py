@@ -6,7 +6,7 @@ from copy import deepcopy
 
 
 
-from swarmform.schedule_checker import check, verify
+from swarmform.schedule_checker import check, machine_sequences, verify
 
 from swarmform.schedule_oracle import audit, independently_verify
 
@@ -87,12 +87,14 @@ def occupied(instance,candidate):
 
 def generate_robust(seed):
     initial,witness=generate(seed,'regime-0'); H=witness['claimed_makespan'];rng=random.Random('recourse:'+str(seed));scenarios=[initial];plans={initial['id']:witness}; moves=[]
+    dispatch_order = machine_sequences(witness)
     for index in range(1,3):
         instance=deepcopy(initial);instance['id']='regime-'+str(index);instance['unavailable']={m:[] for m in instance['machines']}
         plan=deepcopy(witness);defs={j['id']:j for j in instance['operations']};accepted=0
         for attempt in range(600):
             row=rng.choice(plan['operations']);old=row['start'];row['start']=rng.randrange(H-defs[row['id']]['options'][row['machine']]+1)
-            if row['start']!=old and check(instance,plan)['optimal']:accepted+=1
+            if row['start'] != old and machine_sequences(plan) == dispatch_order and check(instance, plan)['optimal']:
+                accepted += 1
             else:row['start']=old
         busy=occupied(instance,plan);previous=occupied(initial,witness);differences=0
         for m in instance['machines']:
@@ -103,18 +105,19 @@ def generate_robust(seed):
         assert check(instance,plan)['optimal'] and audit(instance,plan)['optimal']
         scenarios.append(instance);plans[instance['id']]=plan;moves.append({'scenario':instance['id'],'accepted_moves':accepted,'maintenance_slots_invalidating_prior_plan':differences})
     assignment={r['id']:r['machine'] for r in witness['operations']}
-    problem={'schema':'robust-scheduling-v1','scenarios':scenarios}
+    problem={'schema':'fixed-queue-scheduling-v2','scenarios':scenarios}
     solution={'machine_assignment':assignment,'plans':plans,'claimed_worst_makespan':H}
     assert verify(problem,solution)['optimal'] and independently_verify(problem,solution)['optimal']
     return problem,solution,{'construction':moves}
 
 
-SPECIFICATION = '''Finite robust scheduling specification, version 1
+SPECIFICATION = '''Finite robust scheduling specification, version 2
 
 Times and durations are integers. Every operation is nonpreemptive and must appear
 exactly once in each complete scenario plan. Its machine must be a listed option;
-the same machine must be used for that operation in every scenario. Only start
-times may vary. Processing occupies [start, start + selected duration). A predecessor
+the machine and its work-order sequence must be committed before the calendar
+is known. Start times may vary. On each machine the submitted start times must
+induce the same work-order sequence in all three complete plans. Processing occupies [start, start + selected duration). A predecessor
 must finish by the operation's processing start, and every start is nonnegative.
 All processing must finish by latest_finish.
 
@@ -137,15 +140,16 @@ is a nonempty list of distinct operation ids whose successive pairs follow actua
 precedence edges. Add the facility's release_time to the sum of the minimum
 listed duration of each operation on this path. This is a lower bound on every
 feasible completion time for that scenario.
-Supply a valid path and truthful completion time for every scenario. A complete
-feasible result is certified optimal if its worst completion time equals the
-largest supplied path bound. This proof uses the public constraints and schedule,
-not a search program's assertion. A feasible result whose bound does not match
-is feasible progress, not a certified optimum. A partial plan must include the
+First minimize the worst completion time. Among schedules attaining that value,
+minimize the sum of completion times across the three calendars. Provide one
+path bound and the actual completion time per calendar. If all three bounds
+match their completion times under one dispatch order, both objectives are
+certified: no calendar could finish earlier even with its own dispatch order.
+A schedule with unmatched bounds is recorded as progress. A partial plan must include the
 predecessors of every included operation. Missing operations are reported separately.
 
 Run: python /workspace/check_solution.py /workspace/problem.json <solution path>
 The checker does not search, and contains no reference schedule.
 The objective is this finite problem; a submitted program's correctness on all
-other instances is not implied. No later calendar deliveries are scheduled.
+other instances is not implied.
 '''

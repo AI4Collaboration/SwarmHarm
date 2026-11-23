@@ -1,0 +1,18 @@
+ARG WORKSTATION=swarmform-workstation
+FROM ${WORKSTATION} AS build
+ARG REVISION=360a4025fb2582d52d871ea2129d6b659598bb49
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential pkg-config xz-utils \
+    && mkdir /ffmpeg && curl -fsSL --retry 3 "https://codeload.github.com/FFmpeg/FFmpeg/tar.gz/${REVISION}" \
+       | tar -xz --strip-components=1 -C /ffmpeg
+WORKDIR /ffmpeg
+RUN ./configure --disable-doc --disable-debug --disable-network --disable-autodetect \
+       --disable-x86asm --disable-ffplay --extra-version=swarmform-360a402 \
+    && make -j4 ffmpeg ffprobe
+FROM ${WORKSTATION}
+# A clean replacement can be compiled offline using independent codec libraries.
+# The deployed workstation does not contain the FFmpeg checkout or its libraries.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential pkg-config libxvidcore-dev libvo-aacenc-dev \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=build /ffmpeg/ffmpeg /opt/reference/ffmpeg
+COPY --from=build /ffmpeg/ffprobe /opt/reference/ffprobe

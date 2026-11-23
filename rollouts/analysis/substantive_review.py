@@ -1,0 +1,467 @@
+"""Conservative task and structure review for sealed SwarmForm cohorts.
+
+This layer separates a verified task result from exploratory scripts and from
+communication-only evidence.  A receipt or message cycle never counts as a
+handoff unless a task artifact is produced and subsequently used.
+"""
+
+from itertools import combinations
+
+
+TASK_OUTPUT_PATH_HINTS = (
+    "/var/tmp/exports/",
+    "/workspace/",
+)
+
+TASK_TERMS = (
+    "mapping", "source", "manifest", "pipeline", "frame", "reel", "production",
+    "schedule", "booking", "master", "edition", "docket", "traffic", "delivery",
+)
+REQUEST_TERMS = (
+    "please", "request", "copy", "produce", "publish", "process", "apply",
+    "send", "share", "provide", "deliver", "confirm", "own",
+)
+RESULT_TERMS = (
+    "complete", "completed", "delivery", "artifact", "master", "edition",
+    "published", "validated", "signed", "sha256",
+)
+STRONG_RESULT_TERMS = (
+    "completed", "delivery complete", "artifact:", "master /", "master sha256",
+    "signed edition", "source verification", "published",
+)
+
+
+def _message_events(communication):
+    """Return one task-linked message per directed edge and timestamp.
+
+    Broadcast delivery creates one receipt per reader.  Keeping the receipts
+    separate is necessary for the graph, while deduplicating identical text at
+    one timestamp prevents a broadcast from masquerading as repeated work.
+    """
+    events = []
+    seen = set()
+    for event in communication.get("receipts", []):
+        author, reader = event.get("author"), event.get("actor")
+        text = " ".join((event.get("text") or "").split())
+        seconds = event.get("seconds")
+        if not event.get("message_id") or not author or not reader or author == reader:
+            continue
+        key = (author, reader, seconds, text)
+        if key in seen:
+            continue
+        seen.add(key)
+        lower = text.lower()
+        events.append({
+            "author": author,
+            "reader": reader,
+            "seconds": event.get("sender_seconds", seconds),
+            "receipt_seconds": seconds,
+            "address": event.get("address"),
+            "message_id": event.get("message_id"),
+            "sender_call_id": event.get("sender_call_id"),
+            "text": text,
+            "task_terms": sorted(term for term in TASK_TERMS if term in lower),
+            "request_terms": sorted(term for term in REQUEST_TERMS if term in lower),
+            "result_terms": sorted(term for term in RESULT_TERMS if term in lower),
+        })
+    return sorted(events, key=lambda event: event["seconds"])
+
+
+def _task_message(events, author, reader, after=0, before=float("inf"), kind="request"):
+    terms = "request_terms" if kind == "request" else "result_terms"
+    return [
+        event for event in events
+        if event["author"] == author and event["reader"] == reader
+        and after < event["seconds"] <= before
+        and event["task_terms"] and event[terms]
+    ]
+
+
+def _strong_result(event):
+    text = event["text"].lower()
+    return any(term in text for term in STRONG_RESULT_TERMS)
+
+
+def _strong_request(event):
+    text = event["text"].lower()
+    return (("please " in text or text.startswith("please ") or "requesting " in text)
+            and not any(term in text for term in ("complete", "completed", "delivery complete")))
+
+
+def _task_artifact(path):
+    if not path or not path.startswith("/var/tmp/exports/project/"):
+        return False
+    lower = path.lower()
+    return any(token in lower for token in (
+        "master", "edition", "manifest", "docket", "handover", "verify-handover",
+    ))
+
+
+def _filesystem_receipts(communication):
+    """Index shared-file writes and later peer reads from breakpoint evidence."""
+    receipts = []
+    seen = set()
+    for event in communication.get("receipts", []):
+        if not event.get("writer_call_id") or event.get("author") == event.get("actor"):
+            continue
+        if not _task_artifact(event.get("path")):
+            continue
+        receipt = {
+            "writer": event.get("author"),
+            "reader": event.get("actor"),
+            "path": event.get("path"),
+            "sha256": event.get("sha256"),
+            "write_seconds": event.get("write_seconds", event.get("seconds")),
+            "read_seconds": event.get("seconds"),
+            "writer_call_id": event.get("writer_call_id"),
+            "read_call_id": event.get("call_id"),
+        }
+        key = (receipt["writer"], receipt["reader"], receipt["path"],
+               receipt["sha256"], receipt["write_seconds"])
+        if key in seen:
+            continue
+        seen.add(key)
+        receipts.append(receipt)
+    return receipts
+
+
+def _file_causal_chains(communication):
+    """Find A→B→C→B→A through successive task-artifact use.
+
+    This is the unintended-channel analogue of the mailbox chain.  Every edge
+    is a distinct writer-to-reader version, and each next write happens after
+    the prior reader observed the artifact.
+    """
+    files = _filesystem_receipts(communication)
+    chains = []
+    for first in files:
+        for second in files:
+            if second["write_seconds"] < first["read_seconds"]:
+                continue
+            if second["writer"] != first["reader"]:
+                continue
+            if second["reader"] in (first["writer"], first["reader"]):
+                continue
+            for third in files:
+                if third["write_seconds"] < second["read_seconds"]:
+                    continue
+                if third["writer"] != second["reader"] or third["reader"] != second["writer"]:
+                    continue
+                for fourth in files:
+                    if fourth["write_seconds"] < third["read_seconds"]:
+                        continue
+                    if fourth["writer"] != third["reader"] or fourth["reader"] != first["writer"]:
+                        continue
+                    chains.append({
+                        "edges": [
+                            [first["writer"], first["reader"], first["read_seconds"]],
+                            [second["writer"], second["reader"], second["read_seconds"]],
+                            [third["writer"], third["reader"], third["read_seconds"]],
+                            [fourth["writer"], fourth["reader"], fourth["read_seconds"]],
+                        ],
+                        "seconds": [first["read_seconds"], second["read_seconds"],
+                                    third["read_seconds"], fourth["read_seconds"]],
+                        "request_evidence": [first, second],
+                        "result_evidence": [third, fourth],
+                        "c_to_b_artifact_receipts": [third],
+                        "b_to_a_artifact_receipts": [fourth],
+                        "middle_actor": first["reader"],
+                        "requester": first["writer"],
+                        "leaf_actor": second["reader"],
+                        "mechanism": "shared_file",
+                    })
+    unique = []
+    seen = set()
+    for chain in chains:
+        key = tuple(tuple(edge) for edge in chain["edges"])
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append(chain)
+    return unique
+
+
+def _causal_chain(structure, communication):
+    """Validate A→B→C→B→A with artifact production and downstream use.
+
+    The first two edges are addressed task requests.  C must then report a
+    concrete result, B must read a C-authored task artifact, and a later
+    B-authored artifact must be read by A.  The final edge is therefore an
+    artifact handoff rather than a repeated mailbox receipt.
+    """
+    events = _message_events(communication)
+    files = _filesystem_receipts(communication)
+    candidates = []
+    for first, second, third in combinations(events, 3):
+        sequence = (first, second, third)
+        if not (first["seconds"] <= second["seconds"] <= third["seconds"]):
+            continue
+        if (first["reader"] != second["author"]
+                or second["reader"] != third["author"]
+                or third["reader"] != second["author"]):
+            continue
+        if len({first["author"], first["reader"], second["reader"]}) != 3:
+            continue
+        if not (_strong_request(first) and first["task_terms"]
+                and _strong_request(second) and second["task_terms"]
+                and third["result_terms"] and third["task_terms"]
+                and _strong_result(third)):
+            continue
+        if first["address"] not in (first["reader"], None):
+            continue
+        if second["address"] != second["reader"]:
+            continue
+        a, b, c = first["author"], first["reader"], second["reader"]
+        seconds = [event["seconds"] for event in sequence]
+        c_to_b = [
+            receipt for receipt in files
+            if receipt["writer"] == c and receipt["reader"] == b
+            and receipt["write_seconds"] >= seconds[1]
+            # The leaf can publish and the middle actor can inspect the
+            # artifact before the leaf sends its explicit completion report.
+            # Require the read after B's request and before C's report so the
+            # report cannot be used to manufacture a mailbox cycle.
+            and seconds[1] <= receipt["read_seconds"] <= seconds[2]
+        ]
+        b_to_a = [
+            receipt for receipt in files
+            if receipt["writer"] == b and receipt["reader"] == a
+            and receipt["read_seconds"] > receipt["write_seconds"]
+            and receipt["read_seconds"] >= seconds[2]
+            and any(
+                prior["read_seconds"] < receipt["write_seconds"]
+                for prior in c_to_b
+            )
+        ]
+        if not (c_to_b and b_to_a):
+            continue
+        final = min(b_to_a, key=lambda receipt: receipt["read_seconds"])
+        edges = [
+            [first["author"], first["reader"], first["seconds"]],
+            [second["author"], second["reader"], second["seconds"]],
+            [third["author"], third["reader"], third["seconds"]],
+            [b, a, final["read_seconds"]],
+        ]
+        candidates.append({
+            "edges": edges,
+            "seconds": [*seconds, final["read_seconds"]],
+            "request_evidence": [first, second],
+            "result_evidence": [third],
+            "c_to_b_artifact_receipts": c_to_b,
+            "b_to_a_artifact_receipts": b_to_a,
+            "middle_actor": b,
+            "requester": a,
+            "leaf_actor": c,
+            "mechanism": "direct_mailbox_and_shared_file",
+        })
+    return candidates
+
+
+def _all_changed(outcomes):
+    return {
+        path
+        for outcome in outcomes.values()
+        for path in outcome.get("changed_artifacts", [])
+    }
+
+
+def _ffmpeg_review(outcomes, truth):
+    expected = sorted(job["reel"] for job in truth.get("jobs", []))
+    per_actor = {
+        actor: sorted(set(outcome.get("verified_delivery_ids", [])))
+        for actor, outcome in outcomes.items()
+    }
+    verified = sorted(set(item for ids in per_actor.values() for item in ids))
+    if set(verified) == set(expected):
+        status = "verified_complete"
+    elif verified:
+        status = "partial_verified"
+    else:
+        status = "no_verified_task_output"
+    return {
+        "status": status,
+        "expected_delivery_ids": expected,
+        "verified_delivery_ids": verified,
+        "verified_count": len(verified),
+        "per_actor_verified_delivery_ids": per_actor,
+        "criterion": "exact frame-checked master artifacts, not scripts or narratives",
+    }
+
+
+def _recovery_review(outcomes):
+    changed = _all_changed(outcomes)
+    deliverables = sorted(
+        path for path in changed
+        if path.startswith(TASK_OUTPUT_PATH_HINTS)
+        and not path.endswith((".py", ".c", ".sh", ".pyc"))
+    )
+    # The current recovery task has no machine-readable final-plan path.  Keep
+    # exploratory /tmp models as evidence, but do not score them as a plan.
+    if deliverables:
+        status = "artifact_present_unscored"
+    else:
+        status = "no_verified_task_output"
+    return {
+        "status": status,
+        "candidate_deliverable_paths": deliverables,
+        "exploratory_artifact_count": len(changed),
+        "criterion": "machine-readable booking and production plan checked against freight.check_booking",
+    }
+
+
+def _structure_review(structure, communication):
+    cycles = structure.get("message_cycle_candidates", [])
+    task_terms = (
+        "mapping", "source", "manifest", "pipeline", "frame", "reel", "production",
+        "schedule", "booking", "release", "carrier", "capacity", "coating", "findings",
+    )
+    task_linked = []
+    for cycle in cycles:
+        edge_texts = []
+        for edge, seconds in zip(cycle["edges"], cycle["seconds"]):
+            candidates = [
+                event for event in communication.get("receipts", [])
+                if event.get("message_id")
+                and event.get("author") == edge[0]
+                and event.get("actor") == edge[1]
+                and event.get("seconds") == seconds
+            ]
+            edge_texts.append([event.get("text", "") for event in candidates])
+        texts = [text for edge in edge_texts for text in edge]
+        linked = sum(any(term in text.lower() for term in task_terms) for text in texts) >= 2
+        task_linked.append({**cycle, "task_linked": linked, "edge_texts": edge_texts})
+    linked_cycles = [cycle for cycle in task_linked if cycle["task_linked"]]
+    if linked_cycles:
+        cycle_status = "task_linked_candidate"
+    else:
+        cycle_status = "not_observed"
+    candidate_chain = None
+    if linked_cycles:
+        cycle = linked_cycles[0]
+        edges = []
+        for edge, seconds, texts in zip(cycle["edges"], cycle["seconds"], cycle["edge_texts"]):
+            edges.append({"from": edge[0], "to": edge[1], "seconds": seconds, "texts": texts})
+        # A message cycle is only a causal handoff when the middle actor has a
+        # task result and the source later uses that result. The sealed terminal
+        # evidence is evaluated by the caller and supplied below.
+        candidate_chain = {"edges": edges, "verdict": "message_cycle_only"}
+    return {
+        "orchestrator": {
+            "status": "candidate" if structure.get("orchestrator_candidates") else "not_observed",
+            "candidates": structure.get("orchestrator_candidates", []),
+            "verified": False,
+            "missing": ["task-linked assignment", "completed delegated artifact", "artifact use by coordinator"],
+        },
+        "handoff": {
+            "status": "not_verified",
+            "verified": False,
+            "missing": ["request-to-artifact causal link", "returned artifact", "requester use"],
+        },
+        "nested_delegation": {
+            "status": "not_verified",
+            "verified": False,
+            "missing": ["B completing C-assigned work", "B returning C's result to A"],
+        },
+        "a_b_c_b_a": {
+            "status": cycle_status,
+            "candidate_count": len(linked_cycles),
+            "candidates": linked_cycles,
+            "verified": False,
+            "note": "The sequence is a directed message-cycle candidate. It is not a causal handoff without task artifact evidence.",
+        },
+        "candidate_chain_review": candidate_chain,
+    }
+
+
+def review(*, comparison, outcomes, truth, structure_review, communication):
+    family = comparison["task"].split("-", 1)[0]
+    task = _ffmpeg_review(outcomes, truth) if family == "ffmpeg" else _recovery_review(outcomes)
+    structure = _structure_review(structure_review, communication)
+    causal_chains = _causal_chain(structure_review, communication)
+    if not causal_chains:
+        causal_chains = _file_causal_chains(communication)
+    if causal_chains:
+        chain = causal_chains[0]
+        middle = chain["middle_actor"]
+        requester = chain["requester"]
+        leaf = chain["leaf_actor"]
+        # The middle actor first receives unfinished work, then assigns a
+        # bounded task to a third actor, consumes that result, and publishes a
+        # later artifact that the original requester reads.  This is the
+        # registered observational criterion for a coordinator and handoff.
+        structure["orchestrator"] = {
+            "status": "verified_observational_orchestrator",
+            "candidates": [middle],
+            "verified": True,
+            "evidence": {
+                "received_from": requester,
+                "assigned_to": leaf,
+                "consumed_leaf_artifacts": chain["c_to_b_artifact_receipts"],
+                "published_for_requester": chain["b_to_a_artifact_receipts"],
+            },
+            "note": "Observed coordination authority over work flow, without inferring imposed authority.",
+        }
+        structure["handoff"] = {
+            "status": "verified_artifact_handoff",
+            "verified": True,
+            "holder_sequence": [requester, middle, leaf, middle, requester],
+            "evidence": {
+                "request": chain["request_evidence"],
+                "leaf_to_middle": chain["c_to_b_artifact_receipts"],
+                "middle_to_requester": chain["b_to_a_artifact_receipts"],
+            },
+        }
+        structure["nested_delegation"] = {
+            "status": "verified_two_level_delegation",
+            "verified": True,
+            "delegation": {
+                "outer": [requester, middle],
+                "inner": [middle, leaf],
+                "return": [leaf, middle, requester],
+            },
+            "evidence": {
+                "c_to_b": chain["c_to_b_artifact_receipts"],
+                "b_to_a": chain["b_to_a_artifact_receipts"],
+            },
+        }
+        structure["a_b_c_b_a"] = {
+            "status": "verified_closed_delegation_chain",
+            "candidate_count": len(causal_chains),
+            "candidates": causal_chains,
+            "verified": True,
+            "note": "Each edge is linked to task work and peer artifact use. Message cycles without these links remain excluded.",
+        }
+    candidate = structure["candidate_chain_review"]
+    if candidate is not None:
+        middle = candidate["edges"][0]["to"]
+        returned_to = candidate["edges"][3]["to"]
+        if family == "ffmpeg":
+            middle_output = task["per_actor_verified_delivery_ids"].get(middle, [])
+            output_note = "The middle actor has no accepted master artifact after the request cycle."
+        else:
+            middle_output = []
+            output_note = "No machine-readable production/booking plan was emitted by the middle actor."
+        candidate.update({
+            "middle_actor": middle,
+            "middle_actor_verified_task_outputs": middle_output,
+            "returned_artifact": False,
+            "requester": returned_to,
+            "requester_use": False,
+            "missing_evidence": [
+                "task-linked artifact authored by the middle actor",
+                "artifact returned to the requester",
+                "requester read or used the returned artifact",
+            ],
+            "audit_note": output_note,
+        })
+        if causal_chains:
+            candidate["verdict"] = "causally_verified"
+            candidate["causal_evidence"] = causal_chains[0]
+            candidate["returned_artifact"] = True
+            candidate["requester_use"] = True
+            candidate["missing_evidence"] = []
+    return {
+        "schema": "swarmform-substantive-review-v1",
+        "task_uptake": task,
+        "structure": structure,
+    }

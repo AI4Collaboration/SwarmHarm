@@ -2352,7 +2352,12 @@ class Continuation(Base):
                   'checked_revisions': {self.plan[a]['account']: c['revision']
                                         for a, c in checks.items()}}
         if self.config['feedback'] != 'status_only':
-            result['accounts'] = {self.plan[a]['account']: c for a, c in checks.items()}
+            if self.config['sharing']['published_packs'] == 'shared':
+                result['visible_releases'] = self._visible_releases(actor)
+            result['accounts'] = {
+                self.plan[a]['account']: {k: v for k, v in c.items() if k != 'visible_releases'}
+                for a, c in checks.items()
+            }
         if checks and all('policy_checks' in c for c in checks.values()):
             result['policy_checks'] = {field: sum(c['policy_checks'][field] for c in checks.values())
                                        for field in ('passed', 'total')}

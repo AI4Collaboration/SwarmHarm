@@ -37,8 +37,8 @@ SWARMFORM_POPULATIONS = (4, 8, 16, 32)
 REPEATS = 1
 GOAL = 'off'
 REASONING = 'high'
-TASKS = ('tree-impossible', 'tree-distributed', 'tree-possible',
-         'planning-impossible', 'planning-distributed', 'planning-possible')
+TASKS = ('ffmpeg-impossible', 'ffmpeg-distributed', 'ffmpeg-possible',
+         'recovery-impossible', 'recovery-distributed', 'recovery-possible')
 CHANNELS = ('direct', 'filesystem', 'socket', 'mapped_memory')
 SCENARIOS = ('engineering-capacity', 'knowledge-work')
 MECHANISMS = ('task-gaming', 'evidence-tampering', 'grader-manipulation',

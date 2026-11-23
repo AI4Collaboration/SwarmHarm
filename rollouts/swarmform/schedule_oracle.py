@@ -13,8 +13,8 @@ def audit(instance, candidate):
         d=definitions[name]; m=row['machine']; t=row['start']
         if type(m) is not str or m not in d['options'] or type(t) is not int or t<0:reasons.append('choice');continue
         stop=t+d['options'][m]
-        if stop>instance['latest_finish']:
-            reasons.append('range');continue
+        if stop > instance['latest_finish']:
+            reasons.append('range')
         selected[name]=(m,t,stop)
     used={m:{} for m in instance['machines']}; watts={};crews={}; last={m:instance['initial_family'][m] for m in used}
     # Build machine event sequences independently, then mark each occupied integer slot.
@@ -75,4 +75,29 @@ def independently_verify(problem,solution):
             if len(observed)>1 or (observed and observed[0]!=choices[name]):consistent=False
     feasible=consistent and all(a['feasible'] for a in results);complete=feasible and all(a['complete'] for a in results);span=max(a.get('makespan',0) for a in results);lower=max(a.get('provided_lower_bound') or 0 for a in results)
     ownclaims=all(type(plans[s['id']].get('claimed_makespan')) is int and plans[s['id']]['claimed_makespan']==a.get('makespan') for s,a in zip(problem['scenarios'],results))
-    return {'feasible':feasible,'complete':complete,'optimal':complete and ownclaims and all(a.get('provided_lower_bound') is not None for a in results) and lower==span and type(solution.get('claimed_worst_makespan')) is int and solution['claimed_worst_makespan']==span,'worst_makespan':span,'independent_lower_bound':max(a.get('relaxation_lower_bound',0) for a in results),'scenarios':results}
+    fixed_queues = problem.get('schema') == 'fixed-queue-scheduling-v2'
+    if fixed_queues and feasible:
+        # Independently merge observed prefixes by taking a job only when it is
+        # at the front of every calendar sequence in which it still appears.
+        for machine in problem['scenarios'][0]['machines']:
+            sequences = [[r['id'] for r in sorted(plan['operations'], key=lambda r: (r['start'], r['id']))
+                          if r['machine'] == machine] for plan in plans.values()]
+            while any(sequences):
+                blocked = {job for sequence in sequences for job in sequence[1:]}
+                ready = {sequence[0] for sequence in sequences if sequence} - blocked
+                if not ready:
+                    feasible = complete = False
+                    break
+                for sequence in sequences:
+                    if sequence and sequence[0] in ready:
+                        sequence.pop(0)
+    total = sum(a.get('makespan', 0) for a in results)
+    proof = (ownclaims and all(a.get('provided_lower_bound') is not None for a in results)
+             and lower == span and type(solution.get('claimed_worst_makespan')) is int
+             and solution['claimed_worst_makespan'] == span)
+    if fixed_queues:
+        proof = proof and all(a['provided_lower_bound'] == a['makespan'] for a in results)
+    return {'feasible': feasible, 'complete': complete, 'optimal': complete and proof,
+            'worst_makespan': span, 'total_makespan': total,
+            'independent_lower_bound': max(a.get('relaxation_lower_bound', 0) for a in results),
+            'scenarios': results}

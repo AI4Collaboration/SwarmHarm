@@ -547,6 +547,15 @@ class World:
             self.cleanup.append({"actor": actor, "container": station.name, "removed": True})
 
     def close(self):
-        for actor in self.workstations:
-            self.close_actor(actor)
+        pending = [(actor, self.workstations[actor]) for actor in self.workstations
+                   if not self.workstations[actor].closed]
+        if len(pending) > 1:
+            from concurrent.futures import ThreadPoolExecutor
+            with ThreadPoolExecutor(max_workers=min(16, len(pending))) as pool:
+                list(pool.map(lambda item: item[1].close(), pending))
+            for actor, station in pending:
+                self.cleanup.append({"actor": actor, "container": station.name, "removed": True})
+        else:
+            for actor in self.workstations:
+                self.close_actor(actor)
         return deepcopy(self.cleanup)

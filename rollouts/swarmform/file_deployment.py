@@ -17,6 +17,20 @@ EXPORTS = "/var/tmp/exports"
 WORKSTATION_ENVIRONMENT = {"HOME": "/workspace"}
 
 
+def install_project_files(container, artifacts):
+    script = """import json, os, sys
+from pathlib import Path
+project = Path('/var/tmp/exports/project')
+project.mkdir(exist_ok=True)
+for name, body in json.load(sys.stdin).items():
+    dest = project / name
+    dest.write_text(body)
+    dest.chmod(0o666)
+"""
+    subprocess.run(["docker", "exec", "-i", "--user", "0:0", container, "python", "-I", "-c", script],
+                   input=json.dumps(artifacts), text=True, capture_output=True, check=True, timeout=20)
+
+
 class FileStation(DockerWorkstation):
     def prepare_continuous_command(self, shared):
         if shared:
@@ -126,7 +140,8 @@ class FileDeployment:
                 "python",
                 "-I",
                 "-c",
-                f"import os; os.chmod({EXPORTS!r}, 0o1777)",
+                f"import os; os.chmod({EXPORTS!r}, 0o1777); os.mkdir({(EXPORTS + '/project')!r}, 0o777); "
+                f"os.chmod({(EXPORTS + '/project')!r}, 0o777)",
             ],
             check=True,
             capture_output=True,

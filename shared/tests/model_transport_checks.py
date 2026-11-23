@@ -1,10 +1,16 @@
+import gzip
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
 import sys
+import tempfile
+import threading
 import unittest
+import urllib.error
+import urllib.request
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from api_transport import chat_request, responses_reply, response_events, messages_reply, message_events
+from api_transport import ChatBridge, chat_request, responses_reply, response_events, messages_reply, message_events
 from model_lineup import selection
 from guardrails import native_harness
 import claude_agent
@@ -83,6 +89,66 @@ class TransportChecks(unittest.TestCase):
             'usage': {'prompt_tokens': 5, 'completion_tokens': 5, 'total_tokens': 10}}
         parsed_null = json.loads(responses_reply(null_data, 'z-ai/glm-5.3', schemas)['output'][0]['arguments'])
         self.assertEqual(parsed_null, {'batch_size': None, 'revision': 8, 'note': 'null'})
+
+    def test_chat_bridge_retries_transient_429_and_502_but_never_retries_400(self):
+        events = []
+
+        class Upstream(BaseHTTPRequestHandler):
+            def log_message(self, *args): pass
+
+            def do_POST(self):
+                events.append(len(events) + 1)
+                step = self.server.responses.pop(0)
+                status, payload, headers = step
+                raw = json.dumps(payload).encode()
+                self.send_response(status)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(raw)))
+                for k, v in headers.items():
+                    self.send_header(k, v)
+                self.end_headers()
+                self.wfile.write(raw)
+
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Upstream)
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                server.responses = [
+                    (429, {'error': {'message': 'rate limit'}}, {'Retry-After': '0.01'}),
+                    (502, {'error': {'message': 'bad gateway'}}, {}),
+                    (200, {'model': 'openai/gpt-6.1-sol',
+                           'choices': [{'message': {'content': 'Recovered'}, 'finish_reason': 'stop'}],
+                           'usage': {'prompt_tokens': 4, 'completion_tokens': 2, 'total_tokens': 6}}, {}),
+                ]
+                bridge = ChatBridge(f'http://127.0.0.1:{server.server_port}/v1', 'secret',
+                                    'openai/gpt-6.1-sol', tmp, max_attempts=4, retry_backoff=0.01)
+                try:
+                    req = urllib.request.Request(
+                        bridge.base + '/responses',
+                        data=json.dumps({'model': 'openai/gpt-6.1-sol',
+                                         'input': [{'role': 'user', 'content': 'hi'}]}).encode(),
+                        headers={'Authorization': 'Bearer ' + bridge.token, 'Content-Type': 'application/json'})
+                    reply = json.load(urllib.request.urlopen(req, timeout=10))
+                    self.assertEqual(reply['output'][0]['content'][0]['text'], 'Recovered')
+                    self.assertEqual(len(events), 3)
+
+                    events.clear()
+                    server.responses = [(400, {'error': {'message': 'invalid request'}}, {})]
+                    bad_req = urllib.request.Request(
+                        bridge.base + '/responses',
+                        data=json.dumps({'model': 'openai/gpt-6.1-sol',
+                                         'input': [{'role': 'user', 'content': 'hi'}]}).encode(),
+                        headers={'Authorization': 'Bearer ' + bridge.token, 'Content-Type': 'application/json'})
+                    with self.assertRaises(urllib.error.HTTPError) as ctx:
+                        urllib.request.urlopen(bad_req, timeout=10)
+                    self.assertEqual(ctx.exception.code, 400)
+                    self.assertEqual(len(events), 1)
+                finally:
+                    bridge.close()
+                captured = json.load(gzip.open(Path(tmp) / '000001.json.gz', 'rt'))
+                self.assertEqual([r['status'] for r in captured['retry_history']], [429, 502])
+        finally:
+            server.shutdown(); server.server_close()
 
 
 if __name__ == '__main__':

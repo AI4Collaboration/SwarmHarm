@@ -4,11 +4,15 @@ The unmodified native harness owns its loop and memory. This adapter only transl
 wire formats. It records both sides, preserves upstream reasoning fields on tool
 round trips, and never substitutes models or retries a rejected request.
 """
+from collections import deque
 from copy import deepcopy
 import gzip
+import http.client
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
+import os
 from pathlib import Path
+import random
 import secrets
 import threading
 import time
@@ -19,6 +23,45 @@ import uuid
 from guardrails import api_base_url, open_url
 
 VERSION = 'chat-completions-bridge-v1'
+RETRYABLE_HTTP_STATUS = frozenset({408, 409, 425, 429, 500, 502, 503, 504} | set(range(520, 531)))
+NON_RETRYABLE_ERROR_CODES = frozenset({400, 401, 403, 404, 422})
+NVIDIA_BYOK_PREFIXES = ('deepseek/', 'z-ai/', 'moonshotai/')
+_UPSTREAM_LIMIT = max(1, int(os.environ.get('SWARMHARM_MAX_INFLIGHT_REQUESTS', '16')))
+_UPSTREAM_SEMAPHORE = threading.BoundedSemaphore(_UPSTREAM_LIMIT)
+_MAX_TPM = max(0, int(os.environ.get('SWARMHARM_MAX_TPM', '7500000')))
+_TPM_LOCK = threading.Lock()
+_TOKEN_WINDOW = deque()
+
+
+def _strip_unsupported_schema_keywords(value, *, strip_strict=False):
+    if isinstance(value, dict):
+        excluded = {'uniqueItems', 'strict'} if strip_strict else {'uniqueItems'}
+        return {k: _strip_unsupported_schema_keywords(v, strip_strict=strip_strict)
+                for k, v in value.items() if k not in excluded}
+    if isinstance(value, list):
+        return [_strip_unsupported_schema_keywords(item, strip_strict=strip_strict) for item in value]
+    return value
+
+
+def _pace_tpm():
+    if _MAX_TPM <= 0:
+        return
+    while True:
+        now = time.monotonic()
+        with _TPM_LOCK:
+            while _TOKEN_WINDOW and now - _TOKEN_WINDOW[0][0] >= 60.0:
+                _TOKEN_WINDOW.popleft()
+            used = sum(tok for _, tok in _TOKEN_WINDOW)
+            if used < _MAX_TPM or not _TOKEN_WINDOW:
+                return
+            wait_s = max(0.2, min(5.0, 60.05 - (now - _TOKEN_WINDOW[0][0])))
+        time.sleep(wait_s)
+
+
+def _record_tpm(tokens):
+    if _MAX_TPM > 0 and isinstance(tokens, int) and tokens > 0:
+        with _TPM_LOCK:
+            _TOKEN_WINDOW.append((time.monotonic(), tokens))
 
 
 def text_content(content):
@@ -268,11 +311,16 @@ def message_events(message):
 
 
 class ChatBridge:
-    def __init__(self, base, key, model, folder, *, served_model=None, timeout=300, on_response=None):
+    def __init__(self, base, key, model, folder, *, served_model=None, timeout=300, on_response=None,
+                 max_attempts=None, retry_backoff=2.0):
         self.upstream = api_base_url(base); self.key = key; self.model = model
         self.served_model = served_model or model; self.timeout = timeout
+        self.max_attempts = max(1, int(max_attempts if max_attempts is not None
+                                       else os.environ.get('SWARMHARM_BRIDGE_MAX_ATTEMPTS', '6')))
+        self.retry_backoff = float(retry_backoff)
         self.folder = Path(folder); self.folder.mkdir(parents=True, exist_ok=True)
-        self.token = secrets.token_urlsafe(32); self.cache = {}; self.lock = threading.Lock(); self.sequence = 0
+        self.token = secrets.token_urlsafe(32); self.cache = {}
+        self.lock = threading.Lock(); self.cache_lock = threading.Lock(); self.sequence = 0
         bridge = self
 
         def capture(sequence, record):
@@ -317,17 +365,79 @@ class ChatBridge:
                     if body.get('model') != bridge.model:
                         raise ValueError('Native harness changed the registered model')
                     protocol = 'responses' if endpoint.endswith('responses') else 'messages'
-                    request = chat_request(body, protocol, bridge.served_model, bridge.cache)
+                    with bridge.cache_lock:
+                        cache_snapshot = dict(bridge.cache)
+                    request = chat_request(body, protocol, bridge.served_model, cache_snapshot)
+                    is_nvidia_byok = ('openrouter.ai' in bridge.upstream
+                                      and str(bridge.served_model).lower().startswith(NVIDIA_BYOK_PREFIXES))
+                    if 'tools' in request:
+                        request['tools'] = _strip_unsupported_schema_keywords(
+                            request['tools'], strip_strict=is_nvidia_byok)
+                    if is_nvidia_byok:
+                        request['provider'] = {'only': ['Nvidia']}
                     record['upstream_request'] = request
                     record['status'] = 'inflight'
                     capture(sequence, record)
-                    req = urllib.request.Request(bridge.upstream + '/chat/completions',
-                        data=json.dumps(request).encode(), headers={'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + bridge.key, 'User-Agent': 'SwarmHarm-API/1.0'})
-                    with open_url(req, timeout=bridge.timeout) as upstream:
-                        data = json.load(upstream)
-                        record['response_headers'] = {k: v for k, v in upstream.headers.items()
-                            if k.lower() in ('x-request-id', 'request-id', 'x-axonhub-request-id')}
+                    payload_bytes = json.dumps(request).encode()
+                    retries = []
+                    data = None
+                    for attempt in range(1, bridge.max_attempts + 1):
+                        _pace_tpm()
+                        req = urllib.request.Request(
+                            bridge.upstream + '/chat/completions',
+                            data=payload_bytes,
+                            headers={'Content-Type': 'application/json',
+                                     'Authorization': 'Bearer ' + bridge.key,
+                                     'User-Agent': 'SwarmHarm-API/1.0'})
+                        try:
+                            with _UPSTREAM_SEMAPHORE:
+                                with open_url(req, timeout=bridge.timeout) as upstream:
+                                    data = json.load(upstream)
+                                    record['response_headers'] = {k: v for k, v in upstream.headers.items()
+                                        if k.lower() in ('x-request-id', 'request-id', 'x-axonhub-request-id')}
+                            if isinstance(data, dict):
+                                _record_tpm((data.get('usage') or {}).get('total_tokens'))
+                            if isinstance(data, dict) and isinstance(data.get('error'), dict):
+                                code = data['error'].get('code')
+                                if code in NON_RETRYABLE_ERROR_CODES or attempt == bridge.max_attempts:
+                                    raise ValueError('Upstream provider error: ' + json.dumps(data['error'])[:400])
+                                delay = min(45.0, bridge.retry_backoff * (2 ** (attempt - 1)) + random.uniform(0, 0.5))
+                                retries.append({'attempt': attempt, 'upstream_error_code': code, 'sleep_s': round(delay, 3)})
+                                time.sleep(delay)
+                                continue
+                            if not isinstance(data, dict) or not isinstance(data.get('choices'), list) or not data['choices']:
+                                if attempt == bridge.max_attempts:
+                                    raise ValueError('Provider returned empty choices')
+                                delay = min(45.0, bridge.retry_backoff * (2 ** (attempt - 1)) + random.uniform(0, 0.5))
+                                retries.append({'attempt': attempt, 'error': 'empty_choices', 'sleep_s': round(delay, 3)})
+                                time.sleep(delay)
+                                continue
+                            break
+                        except urllib.error.HTTPError as error:
+                            if error.code not in RETRYABLE_HTTP_STATUS or attempt == bridge.max_attempts:
+                                raise
+                            retry_after = None
+                            if error.headers:
+                                raw_ra = error.headers.get('Retry-After')
+                                if raw_ra:
+                                    try: retry_after = float(raw_ra)
+                                    except ValueError: pass
+                            base_delay = 12.0 if error.code == 429 else bridge.retry_backoff * (2 ** (attempt - 1))
+                            delay = min(45.0, (retry_after + 1.0) if retry_after is not None
+                                        else base_delay + random.uniform(0, 1.0))
+                            retries.append({'attempt': attempt, 'status': error.code, 'sleep_s': round(delay, 3)})
+                            try: error.close()
+                            except Exception: pass
+                            time.sleep(delay)
+                        except (TimeoutError, urllib.error.URLError, http.client.IncompleteRead,
+                                ConnectionError, json.JSONDecodeError) as error:
+                            if attempt == bridge.max_attempts:
+                                raise
+                            delay = min(30.0, bridge.retry_backoff * (2 ** (attempt - 1)) + random.uniform(0, 0.4))
+                            retries.append({'attempt': attempt, 'error': type(error).__name__, 'sleep_s': round(delay, 3)})
+                            time.sleep(delay)
+                    if retries:
+                        record['retry_history'] = retries
                     record['upstream_response'] = data
                     canonical = lambda name: str(name).split('/')[-1].replace('.', '-')
                     if canonical(data.get('model')) not in {canonical(bridge.model), canonical(bridge.served_model)}:
@@ -339,8 +449,9 @@ class ChatBridge:
                         raise ValueError('Provider returned content_filter')
                     if not isinstance((data.get('usage') or {}).get('total_tokens'), int):
                         raise ValueError('Provider must return usage.total_tokens')
-                    for call in choice['message'].get('tool_calls') or []:
-                        bridge.cache[call['id']] = deepcopy(choice['message'])
+                    with bridge.cache_lock:
+                        for call in choice['message'].get('tool_calls') or []:
+                            bridge.cache[call['id']] = deepcopy(choice['message'])
                     tool_schemas = {t['function']['name']: t['function'].get('parameters')
                                     for t in request.get('tools') or [] if 'function' in t}
                     value = (responses_reply(data, bridge.model, tool_schemas) if protocol == 'responses'

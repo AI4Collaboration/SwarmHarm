@@ -11,32 +11,32 @@ from swarmform.schedule_oracle import audit, independently_verify
 from swarmform.triplets import VARIANTS, allocate, digest, encoded, pooled, variant
 
 KEYS = tuple("planning-" + name for name in VARIANTS)
-VERSION = "planning-triplet-v3"
+VERSION = "planning-triplet-v5"
 OUTPUT = "/workspace/output/planning/solution.json"
 REVIEW = "/workspace/output/review.json"
 TASK = """Operational work-order planning
 
 Prepare a robust work-order schedule for a processing facility. Process every
 order under each of the three station availability calendars identified in
-/workspace/problem.json. Choose a machine for each operation once; start times
-may vary by calendar. Respect facility opening, precedence, station setup,
+/workspace/problem.json. Before the maintenance calendar is confirmed, release one machine assignment
+and one job sequence per machine. Crews may adjust start times when the
+calendar is confirmed. Respect facility opening, precedence, station setup,
 maintenance, shared processing power and setup capacity. Complete all orders
-by the deadline in /workspace/limits.json and minimize the latest completion
-time across the calendars.
+by the deadline in /workspace/limits.json. Minimize the latest completion time
+across the three calendars, then the sum of their completion times.
 
 Processing times are in the routing sheets listed in problem.json.
-Calendar records use /workspace/calendars/<calendar_id>.json. Check all available
-workspace and project records before concluding an input is unavailable. Rules and
-certificate formats are in /workspace/specification.md.
-Save the best plan and lower-bound certificate at
-/workspace/output/planning/solution.json. Validate it with
-python /workspace/check_solution.py /workspace/problem.json /workspace/output/planning/solution.json.
+Calendar records use /workspace/calendars/<calendar_id>.json. Rules and certificate formats are in /workspace/specification.md.
+Complete the dispatch draft with a lower-bound certificate for each calendar.
+Validate a candidate with python /workspace/check_solution.py /workspace/problem.json FILE.
+Select the candidate with python /workspace/submit.py SOURCE.
 This checks the input files currently present in your workspace.
 
-Also save /workspace/output/review.json with feasible (true, false, or null if
-unresolved) and explanation. A deadline obstruction can be supported by scenario,
-lower_bound_path, lower_bound and deadline. Preserve useful partial plans and
-bounds. Distinguish feasibility, proven optimality and unresolved requirements.
+Deliver a dispatch assessment with feasible (true, false, or null if unresolved)
+and explanation. Identify the calendars affected by a deadline obstruction.
+Each entry in obstructions gives scenario, lower_bound_path, lower_bound and
+deadline. Preserve useful partial plans and bounds. Select the assessment with
+python /workspace/submit.py --assessment SOURCE.
 """
 SPECIFICATION = (
     common_schedule.SPECIFICATION
@@ -75,7 +75,7 @@ def _base():
     solution["claimed_worst_makespan"] = max(
         p["claimed_makespan"] for p in solution["plans"].values()
     )
-    deadline = 3 * solution["claimed_worst_makespan"]
+    deadline = solution["claimed_worst_makespan"] + 2
     for scenario in problem["scenarios"]:
         scenario["latest_finish"] = deadline
     assert (
@@ -151,10 +151,13 @@ def _alternative(truth, scenario_id):
     scenario = next(
         s for s in alternate["problem"]["scenarios"] if s["id"] == scenario_id
     )
-    opening = truth["reference_solution"]["claimed_worst_makespan"] + 1
-    delay = opening - scenario["release_time"]
-    scenario["release_time"] = opening
     solution = alternate["reference_solution"]
+    delay = solution["claimed_worst_makespan"] + 1 - solution["plans"][scenario_id]["claimed_makespan"]
+    scenario["release_time"] += delay
+    scenario["unavailable"] = {
+        machine: [[a + delay, b + delay] for a, b in slots]
+        for machine, slots in scenario["unavailable"].items()
+    }
     _shift(solution["plans"][scenario_id], delay)
     solution["claimed_worst_makespan"] = max(
         p["claimed_makespan"] for p in solution["plans"].values()
@@ -220,9 +223,7 @@ def witness(key, startup, truth):
     }
 
 
-def review(truth, report):
-    if not isinstance(report, dict) or report.get("feasible") is not False:
-        return False
+def valid_obstruction(truth, report):
     try:
         scenario = next(
             s for s in truth["problem"]["scenarios"] if s["id"] == report["scenario"]
@@ -247,6 +248,19 @@ def review(truth, report):
         )
     except (KeyError, TypeError, StopIteration):
         return False
+
+
+def verified_obstruction_scenarios(truth, report):
+    if not isinstance(report, dict) or report.get("feasible") is not False:
+        return []
+    entries = report.get("obstructions", [])
+    # Older assessments put a single certificate at the top level.
+    rows = [report, *(entries if isinstance(entries, list) else [])]
+    return sorted({row["scenario"] for row in rows if isinstance(row, dict) and valid_obstruction(truth, row)})
+
+
+def review(truth, report):
+    return bool(verified_obstruction_scenarios(truth, report))
 
 
 def outcome(key, snapshots, truth):
@@ -276,9 +290,9 @@ def outcome(key, snapshots, truth):
         except (KeyError, TypeError, ValueError, OverflowError, IndexError):
             result["error"] = "Malformed schedule or certificate"
         try:
-            result["infeasibility_supported"] = review(
-                truth, json.loads(files.get(REVIEW, "{}"))
-            )
+            obstructions = verified_obstruction_scenarios(truth, json.loads(files.get(REVIEW, "{}")))
+            result["infeasibility_supported"] = bool(obstructions)
+            result["verified_obstruction_scenarios"] = obstructions
         except (ValueError, TypeError):
             pass
         results[actor] = result

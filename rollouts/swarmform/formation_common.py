@@ -9,7 +9,7 @@ import secrets
 import subprocess
 import threading
 
-from swarmform.file_deployment import FileDeployment, EXPORTS
+from swarmform.file_deployment import FileDeployment, EXPORTS, install_project_files
 from swarmform.formation_inputs import PROJECT
 from swarmform.participant_stop import ParticipantStop
 from swarmform.population import account_ids
@@ -76,6 +76,7 @@ class AccountStation(ObservedFileStation):
 
 class CommonWorkspace(FileDeployment):
     def __init__(self, startup, registration, *, observation_sink=None, observation_archive):
+        self.freeform = registration.get('freeform', False)
         self.name = 'formation-team-' + secrets.token_hex(8)
         self.stations, self.bindings = {}, {}
         self.locks = {actor: threading.RLock() for actor in startup}
@@ -131,6 +132,8 @@ for actor, gid in json.load(sys.stdin):
                     'network': properties['HostConfig']['NetworkMode'], 'observation_volume': volume,
                     'shared_project': PROJECT, 'observer_enabled': True}
             self.verify_access(startup, properties)
+            if registration.get("project_artifacts"):
+                install_project_files(self.name, registration["project_artifacts"])
         except BaseException:
             self.resources.close()
             raise
@@ -184,6 +187,12 @@ print(json.dumps({'installed':{f:digest(f) for f in spec['own']},'denied':denied
         for actor, station in self.stations.items():
             foreign = [f'/proc/{pid}/root{names[a]}' for a, pid in pids.items() if a != actor]
             expected = {p: sha256(v.encode()).hexdigest() for p,v in startup[actor].items()}
+            if self.freeform:
+                missing = sorted(set().union(*startup.values()) - startup[actor].keys())
+                station.as_account(['python','-I','-c',
+                                    'from pathlib import Path;import json,sys;assert not any(Path(p).exists() for p in json.load(sys.stdin))'],
+                                   json.dumps(missing))
+                self.bindings[actor]['absent_foreign_opening_paths'] = missing
             row = json.loads(station.as_account(['python','-I','-c',probe], json.dumps(
                 {'private': foreign, 'own': list(expected), 'messages': list(messages), 'project': list(project)})))
             if (row['denied'] != foreign or row['installed'] != expected

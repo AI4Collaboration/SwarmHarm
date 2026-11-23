@@ -1,17 +1,28 @@
 """Single-model SwarmHarm component. Use scripts/run-evals for the full default lineup."""
 import argparse
+from contextlib import contextmanager
+import fcntl
 import hashlib
 import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
+import time
 
 import run
 import model_lineup as defaults
+import launch_capacity
+from process_control import run_process
 from phase2 import mechanism_inputs
+
+RETRYABLE_COLLECTION_STATUSES = frozenset({'collector_error', 'provider_hold', 'observer_hold', 'incomplete'})
+PERMANENT_LOG_MARKERS = ('HTTP Error 401', 'HTTP Error 403', 'Model blocked by guardrail',
+                         'Provider not allowed by guardrail', 'Unknown model family',
+                         'Invalid served model ID', 'Invalid local transport credential')
 
 
 def source_digest():
@@ -78,12 +89,22 @@ def existing_status(output, *, require_judge=False):
     return None
 
 
-def reusable_controls(records, row):
+def reusable_controls(records, row, *, search_roots=()):
     required = {str(path.relative_to(run.HERE)) for path in run.preparation_check_paths(
         row['harness'], row['mechanism'], row.get('workload', row['scenario']),
         row.get('input_variant'))}
-    for record in records:
-        output = Path(record['output'])
+    expected_hashes = None
+    candidates = [Path(record['output']) for record in records if 'output' in record]
+    for extra_root in search_roots:
+        extra_root = Path(extra_root)
+        if extra_root.is_dir():
+            for pattern in ('*/*/*/controls.json', '*/*/*/*/controls.json', '*/*/*/*/*/controls.json'):
+                candidates.extend(sorted(p.parent for p in extra_root.glob(pattern)))
+    seen = set()
+    for output in candidates:
+        if output in seen:
+            continue
+        seen.add(output)
         if not (output/'controls.json').is_file() or not (output/'registration-seal.json').is_file():
             continue
         # A passing controls file is reusable only when the sealed registration
@@ -91,8 +112,9 @@ def reusable_controls(records, row):
         # be retained for audit, but must never supply controls to a new run.
         try:
             registration = run.load(output/'registration.json')
-            expected_hashes = {str(path.relative_to(run.REPO)): run.sha(path)
-                               for path in run.code_paths()}
+            if expected_hashes is None:
+                expected_hashes = {str(path.relative_to(run.REPO)): run.sha(path)
+                                   for path in run.code_paths()}
         except (OSError, KeyError, TypeError, ValueError):
             continue
         if registration.get('code_hashes') != expected_hashes:
@@ -102,6 +124,86 @@ def reusable_controls(records, row):
             # Preparation also verifies source, image, runtime and every sealed hash.
             return ['--controls-from', str(output)]
     return []
+
+
+@contextmanager
+def batch_lock(root):
+    root.mkdir(parents=True, exist_ok=True)
+    with (root/'.run.lock').open('a') as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as error:
+            raise RuntimeError(f'Batch output directory is already locked by another runner: {root}') from error
+        try:
+            yield
+        finally:
+            fcntl.flock(lock, fcntl.LOCK_UN)
+
+
+def reap_dead_owner_resources():
+    """Clean up managed Docker containers/networks left by crashed PIDs without touching live owners."""
+    try:
+        rows = subprocess.check_output(
+            ['docker', 'ps', '-a', '--filter', 'label=org.swarmharm.managed=true',
+             '--format', '{{.ID}}\t{{.Label "org.swarmharm.owner-pid"}}'],
+            text=True, timeout=15).splitlines()
+        stale_containers = [cid for line in rows if '\t' in line
+                            for cid, pid in [line.split('\t', 1)]
+                            if pid.isdigit() and not launch_capacity.process_alive(pid)]
+        if stale_containers:
+            subprocess.run(['docker', 'rm', '-f', *stale_containers],
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=30)
+        net_ids = subprocess.check_output(
+            ['docker', 'network', 'ls', '--filter', 'label=org.swarmharm.managed=true',
+             '--format', '{{.ID}}'], text=True, timeout=15).split()
+        if net_ids:
+            inspected = subprocess.run(['docker', 'network', 'inspect', *net_ids],
+                                       capture_output=True, text=True, timeout=20)
+            if inspected.returncode == 0:
+                stale_nets = [n['Id'] for n in json.loads(inspected.stdout)
+                              if str(n.get('Labels', {}).get('org.swarmharm.owner-pid', '')).isdigit()
+                              and not launch_capacity.process_alive(n['Labels']['org.swarmharm.owner-pid'])]
+                if stale_nets:
+                    subprocess.run(['docker', 'network', 'rm', *stale_nets],
+                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=30)
+    except Exception:
+        pass
+
+
+def cleanup_uncommitted_registration(registration):
+    """If prepare failed before git commit, remove only the untracked registration directory."""
+    if not registration.exists():
+        return
+    tracked = subprocess.run(['git', 'ls-files', '--error-unmatch', str(registration)],
+                             cwd=run.REPO, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    if tracked.returncode != 0:
+        shutil.rmtree(registration, ignore_errors=True)
+
+
+def run_post_collection(output, row, args, key, runner):
+    """Idempotently run any missing ATIF export, mechanical review, and optional transcript judge."""
+    if not (output/'atif-validation.json').is_file():
+        runner([sys.executable, str(output/'code/shared/export_atif.py'), str(output)])
+    if not (output/'independent-review.json').is_file():
+        runner([sys.executable, str(output/'code/swarmharm/review.py'), '--output', str(output)])
+    if args.judge and not (output/'mechanism-verdict.json').is_file():
+        judge_proto = 'chat-completions' if row['api_protocol'] == 'chat-completions' else 'responses'
+        judge_model = args.judge_model or row['served_model']
+        runner([sys.executable, str(output/'code/swarmharm/scripts/judge_unified_transcript.py'),
+                '--output', str(output), '--key-file', str(key),
+                '--api-base', args.base_url, '--api-protocol', judge_proto,
+                '--model', judge_model])
+
+
+def is_retryable_attempt(record, log_path):
+    status = record.get('status')
+    if status in ('collected', 'collected_with_limits', 'archived', 'archive_missing', 'operator_interrupted'):
+        return False
+    if log_path.is_file():
+        tail = log_path.read_text(errors='replace')[-8000:]
+        if any(marker in tail for marker in PERMANENT_LOG_MARKERS):
+            return False
+    return status in RETRYABLE_COLLECTION_STATUSES or status in ('command_failed', 'review_incomplete')
 
 
 def main():
@@ -124,13 +226,17 @@ def main():
     parser.add_argument('--judge', action='store_true',
                         help='Run blinded transcript judge after independent review to produce mechanism-verdict.json')
     parser.add_argument('--judge-model', help='Explicit model ID for --judge (defaults to served subject model)')
-    parser.add_argument('--startup-concurrency', type=int, default=8)
+    parser.add_argument('--startup-concurrency', type=int, default=16)
+    parser.add_argument('--max-attempts', type=int, default=2,
+                        help='Maximum total attempts per planned cell on transient infrastructure/API failures (default: 2)')
+    parser.add_argument('--retry-backoff-seconds', type=float, default=10.0,
+                        help='Delay before starting a fresh retry attempt directory (default: 10s)')
     parser.add_argument('--repeats', type=int, default=defaults.REPEATS)
     parser.add_argument('--out', type=Path, help='Batch directory outside Git')
     parser.add_argument('--execute', action='store_true', help='Register, commit each registration and collect sequentially')
     args = parser.parse_args()
-    if min(args.populations) < 2 or args.repeats < 1 or args.startup_concurrency < 1:
-        parser.error('Use N >= 2, positive repeats and positive startup concurrency')
+    if min(args.populations) < 2 or args.repeats < 1 or args.startup_concurrency < 1 or args.max_attempts < 1:
+        parser.error('Use N >= 2, positive repeats, positive startup concurrency and positive max-attempts')
     for values in (args.populations, args.scenarios, args.mechanisms):
         if len(values) != len(set(values)):
             parser.error('Selections must not contain duplicates')
@@ -148,7 +254,15 @@ def main():
     if subprocess.check_output(['git', 'status', '--porcelain'], cwd=run.REPO, text=True).strip():
         parser.error('Commit source changes before collecting')
     root = args.out.resolve()
-    root.mkdir(parents=True, exist_ok=True)
+    needed_nets = max(args.populations) + 24
+    current_nets = int(os.environ.get('SWARMHARM_MAX_WORKSTATION_NETWORKS', str(launch_capacity.DEFAULT_NETWORK_LIMIT)))
+    if current_nets < needed_nets:
+        os.environ['SWARMHARM_MAX_WORKSTATION_NETWORKS'] = str(needed_nets)
+    with batch_lock(root):
+        return execute_rows(args, rows, root, parser)
+
+
+def execute_rows(args, rows, root, parser):
     if (root/'plan.json').exists() and run.load(root/'plan.json') != rows:
         parser.error('This output root contains a different plan; choose a fresh --out')
     for identity in ('GIT_AUTHOR_IDENT', 'GIT_COMMITTER_IDENT'):
@@ -167,63 +281,113 @@ def main():
             stream.write(credential+'\n')
             temporary_key = key = Path(stream.name)
     key = key.expanduser().resolve()
+    search_roots = [root, root.parent, root.parent.parent]
     failures = 0
     try:
         for row in rows:
             name = run_id(row)
-            output = root/model_slug/f"n{row['population']}"/name
-            registration = run.REGISTRATIONS/f"batch-{group}-{name}"
-            record = {**row, 'output': str(output), 'registration': str(registration)}
-            completion = output/'completion.json'
-            existing = existing_status(output, require_judge=args.judge)
-            if existing is not None:
-                record.update(existing)
-                failures += int(existing['status'] not in ('collected', 'collected_with_limits', 'archived'))
-                print('Preserved existing attempt:', output, flush=True)
-            else:
-                output.parent.mkdir(parents=True, exist_ok=True)
-                log = output.with_name(name+'.log')
+            base_output = root/model_slug/f"n{row['population']}"/name
+            base_reg_name = f"batch-{group}-{name}"
+            previous = []
+            new_attempts = 0
+            interrupted = False
+            attempt_idx = 0
+            while True:
+                attempt_idx += 1
+                suffix = '' if attempt_idx == 1 else f'-attempt-{attempt_idx:03d}'
+                output = base_output.with_name(name + suffix)
+                registration = run.REGISTRATIONS/(base_reg_name + suffix)
+                log = output.with_name(output.name + '.log')
+                record = {**row, 'output': str(output), 'registration': str(registration)}
+                if previous:
+                    record['prior_attempts'] = list(previous)
+                completion = output/'completion.json'
+
                 def command(argv):
                     with log.open('a') as stream:
-                        subprocess.run(argv, cwd=run.REPO, stdout=stream,
-                                       stderr=subprocess.STDOUT, check=True)
-                common = ['--output', str(output), '--registration-dir', str(registration), '--key-file', str(key)]
-                variant_args = ['--input-variant', row['input_variant']] if row.get('input_variant') else []
-                run.save(root/'index.json', {'study': 'swarmharm', 'runs': [*records, {**record, 'status': 'running'}]})
-                print('Starting:', output, flush=True)
-                try:
-                    command([sys.executable, str(run.HERE/'run.py'), '--phase', 'prepare',
-                             '--source-retention', 'local', '--scenario', row['scenario'], '--workload', row['workload'],
-                             '--mechanism', row['mechanism'], *variant_args, '--model-id', args.model,
-                             '--api-base', args.base_url, '--harness', row['harness'],
-                             '--api-protocol', row['api_protocol'], '--served-model', row['served_model'], '--goal-mode', 'off',
-                             '--reasoning-effort', 'high', '-N', str(row['population']),
-                             '--startup-concurrency', str(row['startup_concurrency']),
-                             *reusable_controls(records, row), *common])
-                    command(['git', 'add', '--', str(registration)])
-                    command(['git', 'commit', '-m', f'Register {registration.name}'])
-                    command([sys.executable, str(run.HERE/'run.py'), '--phase', 'collect', *common])
-                    record['status'] = run.load(completion)['status']
-                    if record['status'] in ('collected', 'collected_with_limits'):
-                        command([sys.executable, str(output/'code/shared/export_atif.py'), str(output)])
-                        command([sys.executable, str(output/'code/swarmharm/review.py'), '--output', str(output)])
-                        if args.judge:
-                            judge_proto = 'chat-completions' if row['api_protocol'] == 'chat-completions' else 'responses'
-                            judge_model = args.judge_model or row['served_model']
-                            command([sys.executable, str(output/'code/swarmharm/scripts/judge_unified_transcript.py'),
-                                     '--output', str(output), '--key-file', str(key),
-                                     '--api-base', args.base_url, '--api-protocol', judge_proto,
-                                     '--model', judge_model])
-                        record['review'] = 'complete'
-                    else:
-                        failures += 1
-                except subprocess.CalledProcessError as error:
-                    record.update(status='command_failed', returncode=error.returncode, log=str(log))
-                    failures += 1
-                if output.exists():
-                    record['raw_bytes'] = sum(p.stat().st_size for p in output.rglob('*') if p.is_file())
+                        code, sig = run_process(argv, cwd=run.REPO, stdout=stream, stderr=subprocess.STDOUT)
+                    if sig:
+                        raise KeyboardInterrupt(f'Interrupted by {sig}')
+                    if code != 0:
+                        raise subprocess.CalledProcessError(code, argv)
+
+                existing = existing_status(output, require_judge=args.judge)
+                if existing is not None:
+                    if (existing['status'] == 'review_incomplete'
+                            and existing.get('collection_status') in ('collected', 'collected_with_limits')):
+                        print('Resuming pending review steps:', output, flush=True)
+                        try:
+                            run_post_collection(output, row, args, key, command)
+                            existing = existing_status(output, require_judge=args.judge)
+                            record['resumed_review'] = True
+                        except KeyboardInterrupt:
+                            interrupted = True
+                            record.update(existing, status='operator_interrupted')
+                            break
+                        except subprocess.CalledProcessError as error:
+                            record.update(existing, returncode=error.returncode, log=str(log))
+                    record.update(existing)
+                    if existing['status'] in ('collected', 'collected_with_limits', 'archived'):
+                        print('Preserved completed attempt:', output, flush=True)
+                        break
+                    print('Preserved failed/incomplete attempt:', output, f"({existing['status']})", flush=True)
+                else:
+                    if new_attempts > 0 and args.retry_backoff_seconds > 0:
+                        time.sleep(args.retry_backoff_seconds)
+                    reap_dead_owner_resources()
+                    output.parent.mkdir(parents=True, exist_ok=True)
+                    common = ['--output', str(output), '--registration-dir', str(registration), '--key-file', str(key)]
+                    variant_args = ['--input-variant', row['input_variant']] if row.get('input_variant') else []
+                    run.save(root/'index.json', {'study': 'swarmharm', 'runs': [*records, {**record, 'status': 'running'}]})
+                    print('Starting:', output, flush=True)
+                    new_attempts += 1
+                    prepared_committed = False
+                    try:
+                        command([sys.executable, str(run.HERE/'run.py'), '--phase', 'prepare',
+                                 '--source-retention', 'local', '--scenario', row['scenario'], '--workload', row['workload'],
+                                 '--mechanism', row['mechanism'], *variant_args, '--model-id', args.model,
+                                 '--api-base', args.base_url, '--harness', row['harness'],
+                                 '--api-protocol', row['api_protocol'], '--served-model', row['served_model'], '--goal-mode', 'off',
+                                 '--reasoning-effort', 'high', '-N', str(row['population']),
+                                 '--startup-concurrency', str(row['startup_concurrency']),
+                                 *reusable_controls(records, row, search_roots=search_roots), *common])
+                        command(['git', 'add', '--', str(registration)])
+                        command(['git', 'commit', '-m', f'Register {registration.name}'])
+                        prepared_committed = True
+                        command([sys.executable, str(run.HERE/'run.py'), '--phase', 'collect', *common])
+                        record['status'] = run.load(completion)['status']
+                        if record['status'] in ('collected', 'collected_with_limits'):
+                            run_post_collection(output, row, args, key, command)
+                            record['review'] = 'complete'
+                    except KeyboardInterrupt:
+                        if not prepared_committed:
+                            cleanup_uncommitted_registration(registration)
+                        interrupted = True
+                        record.update(status='operator_interrupted', log=str(log))
+                        break
+                    except subprocess.CalledProcessError as error:
+                        if not prepared_committed:
+                            cleanup_uncommitted_registration(registration)
+                        c_status = run.load(completion).get('status') if completion.is_file() else 'command_failed'
+                        record.update(status=c_status, returncode=error.returncode, log=str(log))
+                    if output.exists():
+                        record['raw_bytes'] = sum(p.stat().st_size for p in output.rglob('*') if p.is_file())
+                    if record['status'] in ('collected', 'collected_with_limits') and record.get('review') == 'complete':
+                        break
+
+                if (attempt_idx >= args.max_attempts
+                        or new_attempts >= args.max_attempts
+                        or not is_retryable_attempt(record, log)):
+                    break
+                previous.append({k: record[k] for k in ('output', 'registration', 'status', 'returncode', 'log')
+                                 if k in record})
+
+            if record.get('status') not in ('collected', 'collected_with_limits', 'archived') or record.get('review') == 'pending':
+                failures += 1
             records.append(record)
             run.save(root/'index.json', {'study': 'swarmharm', 'runs': records})
+            if interrupted:
+                return 1
             # A partial registration must be inspected before another preparation.
             if subprocess.check_output(['git', 'status', '--porcelain'], cwd=run.REPO, text=True).strip():
                 print('Stopped after an incomplete registration; see the batch index.', file=sys.stderr)

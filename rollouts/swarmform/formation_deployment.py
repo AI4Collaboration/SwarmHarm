@@ -1,5 +1,6 @@
 """Three scoped work-resource deployments using the existing observed workstations."""
 
+import base64
 import json
 import os
 from pathlib import Path
@@ -10,7 +11,7 @@ import subprocess
 
 from atomic import atomic_json
 from swarmform.memory_capture import capture_memory
-from swarmform.file_deployment import FileDeployment
+from swarmform.file_deployment import FileDeployment, install_project_files
 from swarmform.socket_deployment import SocketDeployment, command
 from swarmform.workstation import IMAGE
 
@@ -131,7 +132,7 @@ def deployment(startup, registration, **observations):
     family = registration["channel_family"]
     shared = registration["deployment"]["shared"]
     if family == "socket":
-        instance = SocketDeployment(startup, shared=shared, **observations)
+        instance = SocketDeployment(startup, shared=shared, project_artifacts=registration.get("project_artifacts"), **observations)
         return checked(instance, startup, registration)
     options = dict(
         population=len(startup), observation_settle_seconds=2, **observations
@@ -147,18 +148,45 @@ def deployment(startup, registration, **observations):
 
 def checked(instance, startup, registration):
     try:
+        family = registration["channel_family"]
+        assets = registration.get("project_artifacts", {})
+        stations = list(instance.stations.values())
+        targets = stations[:1] if registration["deployment"]["shared"] else stations
+        for station in targets if assets else ():
+            if family == "filesystem":
+                install_project_files(station.name, assets)
+            elif family == "mapped_memory":
+                script = """import json, runpy, sys
+write = runpy.run_path('/workspace/projects.py')['mapped_request']
+for name, data in json.load(sys.stdin).items():
+    write({'operation':'write','name':name,'data':data})
+"""
+                payload = {name: base64.b64encode(body.encode()).decode() for name, body in assets.items()}
+                subprocess.run(["docker", "exec", "-i", "--user", f"{station.business_uid}:{station.business_gid}",
+                                station.name, "python", "-I", "-c", script], input=json.dumps(payload),
+                               text=True, capture_output=True, check=True, timeout=20)
         for actor, files in startup.items():
             expected = {
                 path: sha256(text.encode()).hexdigest() for path, text in files.items()
             }
+            installed = dict(expected)
+            access_check = ""
+            if family == "filesystem":
+                from swarmform.formation_inputs import PROJECT
+                access_check = f"import os; assert os.path.isdir({PROJECT!r}) and os.access({PROJECT!r}, os.R_OK|os.W_OK|os.X_OK);"
+                installed.update({PROJECT + "/" + name: sha256(body.encode()).hexdigest() for name, body in assets.items()})
+            missing = sorted(set().union(*startup.values()) - files.keys()) if registration.get("freeform") else []
+            absence_check = f"assert not any(Path(p).exists() for p in {missing!r});"
             script = (
-                "import hashlib,json;from pathlib import Path;"
-                "paths=json.loads(" + repr(json.dumps(list(files))) + ");"
+                "import hashlib,json;from pathlib import Path;" + access_check + absence_check +
+                "paths=json.loads(" + repr(json.dumps(list(installed))) + ");"
                 "print(json.dumps({p:hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in paths}))"
             )
             result, _ = instance.execute(actor, "python -c " + shlex.quote(script))
-            if result["exit_code"] != 0 or json.loads(result["stdout"]) != expected:
+            if result["exit_code"] != 0 or json.loads(result["stdout"]) != installed:
                 raise RuntimeError("Installed task materials differ for " + actor)
+            if registration.get("freeform"):
+                instance.bindings[actor]["absent_foreign_opening_paths"] = missing
             instance.bindings[actor]["startup_sha256"] = expected
             instance.bindings[actor]["initial_materials_verified"] = True
         return instance

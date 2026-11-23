@@ -11,6 +11,7 @@ from importlib.metadata import version as package_version
 import importlib.util
 import http.client
 import json
+import os
 import re
 from pathlib import Path
 import shutil
@@ -1871,15 +1872,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 require(all(world.private[actor].get(path) == value for path, value in material.items()),
                         'Component workstation differs from the prepared documents')
             save(root/name/'continuation-activation.json', phase2_activation)
-            for actor in active:
-                item=plan[actor];histories[actor]=[];starts[actor]=time.monotonic()
-                states[actor]={'actor':actor,'provider':item['provider'],
-                    'start_group':item.get('start_group',0),'status':'starting','steps':0,
-                    'tools':0,'final':'','completion_attempts':[],'platform_notifications':[],
-                    'extension_continuations':[],'harness_rejected_tool_calls':[],
-                    'extension_errors':[],'provider_retries':[]}
+            def spawn_agent(actor):
+                item=plan[actor]
                 save(root/name/actor/'initial-input.json',initial[name][actor])
-                agents[actor]=agent_class(
+                return actor, agent_class(
                     actor,events,folder=root/name/actor/harness_folder,model=reg['models'][item['provider']],
                     api_base=api_base,api_key=api_key,thinking_level=reg['reasoning'],
                     max_output_tokens=budget['max_output_tokens_per_response'],
@@ -1891,6 +1887,23 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     job_context=session_inputs(initial[name][actor], harness['kind'])[0],
                     goal_mode=harness['goal_mode'],
                     **({'registered_harness':harness} if is_codex else {}))
+
+            for actor in active:
+                item=plan[actor];histories[actor]=[];starts[actor]=time.monotonic()
+                states[actor]={'actor':actor,'provider':item['provider'],
+                    'start_group':item.get('start_group',0),'status':'starting','steps':0,
+                    'tools':0,'final':'','completion_attempts':[],'platform_notifications':[],
+                    'extension_continuations':[],'harness_rejected_tool_calls':[],
+                    'extension_errors':[],'provider_retries':[]}
+            if len(active) > 1:
+                with ThreadPoolExecutor(max_workers=min(16, len(active))) as spawn_pool:
+                    futures = {actor: spawn_pool.submit(spawn_agent, actor) for actor in active}
+                    for actor in active:
+                        _, instance = futures[actor].result()
+                        agents[actor] = instance
+            else:
+                for actor in active:
+                    _, agents[actor] = spawn_agent(actor)
             for actor,value in agent_runtime.wait_ready(events,active).items():
                 save(root/name/actor/f'{harness_folder}-system-prompt.json',{'system_prompt':value['system_prompt'],
                     'active_tools':value['active_tools'],'commands':value['commands']})
@@ -1971,6 +1984,10 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                         'One context reached its registered wall-clock limit; '
                         'the continuous population is no longer intact.')
                 step=state['steps']+1;label=f"{step:04d}";folder=root/name/actor/'trace'
+                max_actor_steps=int(os.environ.get('SWARMHARM_MAX_ACTOR_STEPS','0'))
+                if state.get('context_limit_reached') or (max_actor_steps>0 and step>max_actor_steps and extension.activated):
+                    wait(actor)
+                    return False
                 check=current_completion(actor)
                 signal=activity_signal(actor)
                 resume_revision=None
@@ -2097,8 +2114,11 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 state['status']='waiting_for_platform_change';state['waiting_since']=utc()
                 export(actor)
             def wake_waiting():
+                max_actor_steps=int(os.environ.get('SWARMHARM_MAX_ACTOR_STEPS','0'))
                 for candidate in active.copy():
                     if states[candidate]['status'] not in ('waiting_for_platform_change', 'waiting_for_native_goal'):
+                        continue
+                    if states[candidate].get('context_limit_reached') or (max_actor_steps>0 and states[candidate]['steps']>=max_actor_steps and extension.activated):
                         continue
                     check=current_completion(candidate)
                     signal=activity_signal(candidate)
@@ -2298,6 +2318,14 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                         'transport_attempts':len(turn_records.get((actor,message['turn']),{}).get('attempts',{}))})
                     record_review({'path':str(folder.relative_to(root)),'label':label,
                         'status':'provider_error','detail':message['error_message']})
+                    if any(k in message['error_message'].lower() for k in (
+                            'context_length', 'maximum context length', 'context window',
+                            'input size exceeds', 'exceeds 8 mb', 'payload too large')):
+                        state['context_limit_reached']=True
+                        wait(actor)
+                        update(waiting_workers=sum(v['status']=='waiting_for_platform_change' for v in states.values()),
+                               inflight_workers=len(running))
+                        return
                     raise Hold(message['error_message'])
                 if (message.get('control_epoch',0)<state.get('controller_epoch',0)
                         or state.get('controller_prompt_pending')
@@ -2601,8 +2629,13 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             # shells, retain already executed work, then remove the workstations.
             shell_pool.shutdown(wait=True,cancel_futures=True)
             preserve_pending_shells(world,shell_tasks,root/name,reason=termination_reason)
-            for actor,agent in agents.items():
-                states[actor][f'{harness_folder}_exit_code']=agent.close()
+            if len(agents) > 1:
+                with ThreadPoolExecutor(max_workers=min(16, len(agents))) as close_pool:
+                    exit_codes = dict(zip(agents, close_pool.map(lambda a: a.close(), agents.values())))
+            else:
+                exit_codes = {actor: agent.close() for actor, agent in agents.items()}
+            for actor in agents:
+                states[actor][f'{harness_folder}_exit_code']=exit_codes[actor]
                 if is_codex:
                     extension.surface.bound_directories.pop(actor,None)
             if extension.activated:

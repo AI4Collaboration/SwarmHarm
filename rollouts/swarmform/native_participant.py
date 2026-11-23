@@ -20,22 +20,25 @@ async def participate(cohort, actor):
     usage = cohort.usage[actor] = {"responses": 0, "tools": 0, "tokens": 0}
     try:
         tools = cohort.visible["tools"]
+        subscription = args.api_protocol == "subscription"
         agent = model_session.create(
             args.harness,
             actor,
             events,
             folder=cohort.out / "native" / actor,
-            model=args.model,
-            api_base=args.base_url,
+            model=args.model.removeprefix("openai/") if subscription else args.model,
+            **({"registered_model": args.model} if subscription else {}),
+            api_base=None if subscription else args.base_url,
             api_key=args._api_key,
-            api_protocol=args.api_protocol,
-            served_model=args.served_model,
+            api_protocol="native" if subscription else args.api_protocol,
+            served_model=None if subscription else args.served_model,
             thinking_level=getattr(args, "thinking_level", None) or "high",
             max_output_tokens=16384,
             context_window=1_000_000,
             request_timeout_ms=args.seconds * 1000,
             tools=tools,
             active_tools=[t["name"] for t in tools],
+            workstation_permissions=cohort.manifest["effective_settings"]["native_workstation_permissions"],
             job_context=None,
             goal_mode="off",
             on_transport_response=lambda response: events.put(
@@ -61,7 +64,7 @@ async def participate(cohort, actor):
             if kind == "ready":
                 prompt_start = event_time
                 agent.prompt(*cohort.prompts(actor))
-            elif kind == "request" and args.api_protocol == "native":
+            elif kind == "request" and args.api_protocol in ("native", "subscription"):
                 payload = message.get("payload", {})
                 # Pi exposes the provider request; SDK controllers expose their input projection.
                 # Use only tool outputs explicitly present in the current request history.
@@ -89,13 +92,13 @@ async def participate(cohort, actor):
                     if call.get("type") == "function_call":
                         calls[call["call_id"]] = call
                 count_usage = kind == "transport_response" or (
-                    args.api_protocol == "native" and kind == "provider_response"
+                    args.api_protocol in ("native", "subscription") and kind == "provider_response"
                 )
                 if count_usage:
                     usage["responses"] += 1
                     tokens = response.get("usage") or {}
                     count = tokens.get("total_tokens")
-                    if count is None and args.api_protocol == "native":
+                    if count is None and args.api_protocol in ("native", "subscription"):
                         fields = (
                             "input_tokens",
                             "output_tokens",

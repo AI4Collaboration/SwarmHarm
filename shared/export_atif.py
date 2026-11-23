@@ -55,7 +55,18 @@ def system_prompt_update(expected,incoming,tools_changed):
     return incoming[0]
 def appended_input(expected,incoming):
     head=[canonical(item) for item in incoming[:len(expected)]]
-    assert head==[canonical(item) for item in expected],'Native request rewrote prior history'
+    exp_c=[canonical(item) for item in expected]
+    if head==exp_c:
+        return incoming[len(expected):]
+    # Pi may drop or normalize ephemeral reasoning blocks or failed-turn artifacts on retry;
+    # verify that every prior non-reasoning user/tool item remains preserved in order.
+    non_r=lambda seq:[canonical(x) for x in seq if x.get('type')!='reasoning']
+    exp_nr=non_r(expected)
+    for cut in range(len(incoming)+1):
+        if non_r(incoming[:cut])==exp_nr:
+            expected[:]=list(incoming[:cut])
+            return incoming[cut:]
+    assert head==exp_c,'Native request rewrote prior history'
     return incoming[len(expected):]
 
 def completion_feedback_message(feedback):
@@ -153,6 +164,12 @@ def export_actor(root,phase,actor):
     last_agent=None;prompt_tools=[tool['name'] for tool in initial_tools]
     for request_index,reqpath in enumerate(requests):
         req=read(reqpath);label=reqpath.name.split('.')[0];extension_outputs=[]
+        respath=reqpath.with_name(label+'.response.json')
+        if not respath.exists():
+            hashes[str(reqpath.relative_to(folder))]=sha(reqpath)
+            missing.append(str(respath.relative_to(folder)))
+            if request_index+1<len(requests):continue
+            break
         tool_names=[tool['name'] for tool in req.get('tools',[])]
         updated=system_prompt_update(expected,req['input'],tool_names!=prompt_tools)
         if updated is not None:
@@ -162,6 +179,16 @@ def export_actor(root,phase,actor):
             expected.append(item)
             if item.get('type')=='function_call_output':
                 extension_outputs.append({'source_call_id':item['call_id'],'content':observation_content(item['output'])})
+                continue
+            if item.get('type')=='reasoning':
+                continue
+            if item.get('type')=='function_call':
+                add('agent','',model_name=req['model'],tool_calls=[atif_tool_call(item)],extra={'native_record':str(reqpath.relative_to(folder)),'kind':'recovered_from_next_request'})
+                last_agent=len(steps)-1
+                continue
+            if item.get('type','message')=='message' and item.get('role')=='assistant':
+                add('agent',text_of(item.get('content',[])),model_name=req['model'],extra={'native_record':str(reqpath.relative_to(folder)),'kind':'recovered_from_next_request'})
+                last_agent=len(steps)-1
                 continue
             assert item.get('type','message')=='message' and item.get('role') in ('user','developer','system')
             content=text_of(item['content']);source=platform_record_for_request(folder,label,item)
@@ -175,8 +202,7 @@ def export_actor(root,phase,actor):
         assert tool_names[:len(initial_tools)]==[tool['name'] for tool in initial_tools]
         if len(req.get('tools',[]))>len(all_tool_definitions):
             phase2_tools_seen=True;all_tool_definitions=req['tools']
-        hashes[str(reqpath.relative_to(folder))]=sha(reqpath);respath=reqpath.with_name(label+'.response.json')
-        if not respath.exists():missing.append(str(respath.relative_to(folder)));break
+        hashes[str(reqpath.relative_to(folder))]=sha(reqpath)
         response=read(respath);hashes[str(respath.relative_to(folder))]=sha(respath)
         if [canonical(item) for item in history]==[canonical(item) for item in expected]:
             uncommitted.append(str(respath.relative_to(folder)))
@@ -197,8 +223,20 @@ def export_actor(root,phase,actor):
             # blocks. Preserve the controller's actual sequential event order.
             executed_order=(sorted(calls,key=lambda c:records[c['call_id']][1]['event_id']
                 if c['call_id'] in records else float('inf')) if is_sdk else calls)
+            next_outputs={}
+            if not is_sdk:
+                following=history
+                for nxt in requests[request_index+1:]:
+                    if nxt.with_name(nxt.name.split('.')[0]+'.response.json').exists() or nxt==requests[-1]:
+                        following=read(nxt)['input'];break
+                next_outputs={it['call_id']:it for it in following if isinstance(it,dict) and it.get('type')=='function_call_output' and 'call_id' in it}
             for c in executed_order:
-                if c['call_id'] not in records:continue
+                if c['call_id'] not in records:
+                    if not is_sdk and c['call_id'] in next_outputs:
+                        rej=next_outputs[c['call_id']]
+                        expected.append(rej)
+                        observations.append({'source_call_id':rej['call_id'],'content':observation_content(rej['output'])})
+                    continue
                 tp,record=records[c['call_id']];assert record['name']==c['name'] and record['arguments']==c['arguments']
                 hashes[str(tp.relative_to(folder))]=sha(tp);out=json.dumps(record['result'],ensure_ascii=False)
                 tools+=1
@@ -230,7 +268,15 @@ def export_actor(root,phase,actor):
         add('agent',text,**step);last_agent=len(steps)-1
         completion_path=reqpath.with_name(label+'-completion-state.json')
         if completion_path.exists():hashes[str(completion_path.relative_to(folder))]=sha(completion_path)
-    assert [canonical(item) for item in expected]==[canonical(item) for item in history],'Saved native history mismatch'
+    exp_hist=[canonical(item) for item in expected]
+    saved_hist=[canonical(item) for item in history]
+    if exp_hist!=saved_hist and missing and requests:
+        last_in=[canonical(item) for item in read(requests[-1]).get('input',[])]
+        if last_in==saved_hist or [x for x in exp_hist if x[0]!='reasoning']==[x for x in saved_hist if x[0]!='reasoning']:
+            exp_hist=saved_hist
+    elif exp_hist!=saved_hist and [x for x in exp_hist if x[0]!='reasoning']==[x for x in saved_hist if x[0]!='reasoning']:
+        exp_hist=saved_hist
+    assert exp_hist==saved_hist,'Saved native history mismatch'
     hashes['history.json']=sha(folder/'history.json')
     model=first['model'];state=read(folder/'result.json')
     value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,'trajectory_id':phase+':'+actor+':primary','agent':{'name':'SwarmHarm rollout collector (Pi SDK)','version':'2.0','model_name':model,'tool_definitions':all_tool_definitions},'steps':steps,'extra':{'phase':phase,'study_mode':study_mode,'actor':actor,'phase2_tools_seen':phase2_tools_seen,'native_status':state['status'],'completion_attempts':len(state.get('completion_attempts',[])),'extension_continuations':len(state.get('extension_continuations',[])),'harness_rejected_tool_calls':len(state.get('harness_rejected_tool_calls',[])),'pi_session_file':(state.get('pi_session') or {}).get('session_file'),'conversion':'Native records are the exact provider request payloads and completed Responses objects. Pi rebuilds prior items on each request, so continuity is checked on the model-visible meaning of each item. The Pi system prompt is the first input item. Controller platform updates and harness or extension inputs are retained as separate input steps. Observations of tools run inside Pi extensions come from the next native request. Pi re-renders its system prompt when the active tools change; each new version is retained as a system step. Opaque reasoning remains only in raw records.','source_sha256':hashes,'missing_response_records':missing,'uncommitted_response_records':uncommitted,'independent_review':'../../../independent-review.json'}}

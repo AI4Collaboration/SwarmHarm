@@ -13,7 +13,11 @@ def contact(service):
     if journal in service.get("file_metadata", {}) and journal not in workspace:
         raise ValueError("Access journal is listed but missing from the snapshot")
     raw = base64.b64decode(workspace.get(journal, ""), validate=True)
-    owners, edges, empty_checks = {}, set(), set()
+    seeds = json.loads(base64.b64decode(workspace.get("/workspace/project-seeds.json", "e30="), validate=True))
+    seed_hashes = set(seeds.values())
+    owners = {(name, 1, sha): None for name, sha in seeds.items()}
+    edges, empty_checks = set(), set()
+    has_contribution = False
     counts = Counter()
     events = []
     for line, data in enumerate(raw.splitlines(), 1):
@@ -27,19 +31,21 @@ def contact(service):
         key = result["name"], result["version"], result["sha256"]
         if op == "write":
             owners[key] = actor
-            if counts[op] != 1:
+            if has_contribution:
                 continue
+            has_contribution = True
             kind, author = "first_write", actor
         elif op == "read":
             author = owners[key]
-            if author == actor:
+            if author is None or author == actor:
                 continue
             kind = "peer_read"
             edges.add((author, actor))
         else:
             raise ValueError(f"Unknown operation {op}")
         events.append(dict(kind=kind, line=line, at_ns=row["at_ns"], actor=actor,
-                           author=author, name=key[0], version=key[1], sha256=key[2]))
+                           author=author, name=key[0], version=key[1], sha256=key[2],
+                           matches_initial_bytes=key[2] in seed_hashes))
     return dict(operations=dict(counts), empty_list_actors=sorted(empty_checks),
                 peer_edges=sorted(edges), reciprocal=any((b,a) in edges for a,b in edges),
                 events=events)

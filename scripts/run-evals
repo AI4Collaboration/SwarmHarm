@@ -28,20 +28,34 @@ def source_signature():
     return hashlib.sha256(b'\0'.join(e for e in entries if b'/registrations/' not in e)).hexdigest()
 
 
-def plan(base, mapping=None):
-    models = defaults.selection(mapping=mapping)
+def plan(base, mapping=None, *, names=None, studies=None, populations=None):
+    models = defaults.selection(names=names, mapping=mapping)
     settings = defaults.settings()
+    if names is not None:
+        selected = [m['name'] for m in models]
+        settings['swarmharm']['models'] = selected
+        settings['swarmform']['models'] = [n for n in settings['swarmform']['models'] if n in selected]
+    if studies is not None:
+        for study in ('swarmform', 'swarmharm'):
+            if study not in studies:
+                settings[study]['models'] = []
+    if populations is not None:
+        for study in ('swarmform', 'swarmharm'):
+            if settings[study]['models']:
+                settings[study]['populations'] = list(populations)
+    sf_pops = settings['swarmform']['populations']
+    sh_pops = settings['swarmharm']['populations']
     return dict(settings=settings, models=models, api_base=base,
-                cohorts=dict(swarmform=len(settings['swarmform']['models'])*len(defaults.TASKS)*len(defaults.CHANNELS)*len(defaults.SWARMFORM_POPULATIONS)*defaults.REPEATS,
-                             swarmharm=len(settings['swarmharm']['models'])*len(defaults.MECHANISMS)*len(defaults.SCENARIOS)*len(defaults.POPULATIONS)*defaults.REPEATS),
+                cohorts=dict(swarmform=len(settings['swarmform']['models'])*len(defaults.TASKS)*len(defaults.CHANNELS)*len(sf_pops)*defaults.REPEATS,
+                             swarmharm=len(settings['swarmharm']['models'])*len(defaults.MECHANISMS)*len(defaults.SCENARIOS)*len(sh_pops)*defaults.REPEATS),
                 source_sha256=source_signature())
 
 
-def batch_command(python, study, model, base, output, *, judge=False, judge_model=None):
+def batch_command(python, study, model, base, output, *, populations=None, judge=False, judge_model=None):
     script = 'rollouts/run_matrix.py' if study == 'swarmform' else 'swarmharm/run_matrix.py'
-    populations = defaults.SWARMFORM_POPULATIONS if study == 'swarmform' else defaults.POPULATIONS
+    resolved_pops = populations or (defaults.SWARMFORM_POPULATIONS if study == 'swarmform' else defaults.POPULATIONS)
     args = [python, str(REPO/script), '--model', model['model'], '--served-model', model['served_model'],
-            '--base-url', base, '--populations', *map(str, populations),
+            '--base-url', base, '--populations', *map(str, resolved_pops),
             '--repeats', str(defaults.REPEATS), '--api-protocol', 'chat-completions',
             '--execute', '--out', str(output)]
     if study == 'swarmform':
@@ -115,25 +129,31 @@ def execute(args, expected, config):
                 env[f'GIT_{role}_NAME'] = 'SwarmHarm Runner'
                 env[f'GIT_{role}_EMAIL'] = 'runner@swarmharm.invalid'
         python = config['python']
+        skip_check = bool(getattr(args, 'skip_api_check', False))
         check = root/'api-check'
-        if not check.exists():
-            print(f"Checking all 11 models at N=4; log: {root/'api-check.log'}", flush=True)
-            write(root/'index.json', dict(api_check='running', batches=[]))
-            command = [python, str(REPO/'scripts/check-model-lineup'), '--base-url', expected['api_base'],
-                       '--population', '4', '--out', str(check), '--execute']
-            if args.model_map: command += ['--model-map', str(args.model_map)]
-            with (root/'api-check.log').open('a') as log:
-                code, interrupted = run_process(command, cwd=REPO, env=env, stdout=log, stderr=subprocess.STDOUT)
-            if interrupted:
-                write(root/'index.json', dict(api_check='interrupted', batches=[]))
-                return 1
-        if not integration_complete(check, expected):
-            index_path = root/'index.json'
-            index = json.loads(index_path.read_text()) if index_path.exists() else dict(batches=[])
-            index['api_check'] = 'failed'
-            write(index_path, index)
-            raise RuntimeError('N=4 API check is incomplete or failed; see api-check.log. Preserved without rerunning.')
-        print('N=4 API check passed; starting or resuming the study matrices.', flush=True)
+        if not skip_check:
+            if not check.exists():
+                selected_names = [m['name'] for m in expected['models']]
+                print(f"Checking {len(selected_names)} models at N=4; log: {root/'api-check.log'}", flush=True)
+                write(root/'index.json', dict(api_check='running', batches=[]))
+                command = [python, str(REPO/'scripts/check-model-lineup'), '--base-url', expected['api_base'],
+                           '--population', '4', '--out', str(check), '--execute']
+                if getattr(args, 'models', None):
+                    command += ['--models', *selected_names]
+                if args.model_map: command += ['--model-map', str(args.model_map)]
+                with (root/'api-check.log').open('a') as log:
+                    code, interrupted = run_process(command, cwd=REPO, env=env, stdout=log, stderr=subprocess.STDOUT)
+                if interrupted:
+                    write(root/'index.json', dict(api_check='interrupted', batches=[]))
+                    return 1
+            if not integration_complete(check, expected):
+                index_path = root/'index.json'
+                index = json.loads(index_path.read_text()) if index_path.exists() else dict(batches=[])
+                index['api_check'] = 'failed'
+                write(index_path, index)
+                raise RuntimeError('N=4 API check is incomplete or failed; see api-check.log. Preserved without rerunning.')
+            print('N=4 API check passed; starting or resuming the study matrices.', flush=True)
+        api_check_state = 'skipped' if skip_check else 'passed'
         records = []
         for model in expected['models']:
             for study in ('swarmform', 'swarmharm'):
@@ -144,20 +164,24 @@ def execute(args, expected, config):
                 output = root/study/model['name']
                 log_path = root/f"{study}-{model['name']}.log"
                 record = dict(study=study, model=model['model'], output=str(output), log=str(log_path), status='running')
-                write(root/'index.json', dict(api_check='passed', batches=[*records, record]))
+                write(root/'index.json', dict(api_check=api_check_state, batches=[*records, record]))
                 print(f"Running {study} / {model['name']}; records: {output}", flush=True)
+                study_pops = expected['settings'][study]['populations']
+                max_nets = max(int(os.environ.get('SWARMHARM_MAX_WORKSTATION_NETWORKS', '16')), max(study_pops) + 24)
                 study_env = dict(env, SWARMHARM_DOCKER_IMAGE=config['images'][study],
                                  SWARMHARM_SANDBOX='docker', SWARMHARM_HARBOR_ENV=str(Path(python).parent.parent),
-                                 SWARMHARM_NATIVE_CODEX=str(REPO/'shared/codex/node_modules/.bin/codex'))
+                                 SWARMHARM_NATIVE_CODEX=str(REPO/'shared/codex/node_modules/.bin/codex'),
+                                 SWARMHARM_MAX_WORKSTATION_NETWORKS=str(max_nets))
                 with log_path.open('a') as log:
                     cmd = batch_command(python, study, model, expected['api_base'], output,
+                                        populations=study_pops,
                                         judge=getattr(args, 'judge', False),
                                         judge_model=getattr(args, 'judge_model', None))
                     code, interrupted = run_process(cmd, cwd=REPO, env=study_env, stdout=log, stderr=subprocess.STDOUT)
                 record.update(status='complete' if code == 0 and not interrupted else 'incomplete', returncode=code)
                 if interrupted: record['interrupted'] = interrupted
                 records.append(record)
-                write(root/'index.json', dict(api_check='passed', batches=records))
+                write(root/'index.json', dict(api_check=api_check_state, batches=records))
                 if interrupted: return 1
                 if subprocess.check_output(['git', 'status', '--porcelain'], cwd=REPO).strip():
                     raise RuntimeError('An incomplete registration needs review; see the batch log')
@@ -168,15 +192,25 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base-url', default=os.environ.get('OPENAI_BASE_URL'))
     parser.add_argument('--key-file', type=Path, default=os.environ.get('OPENAI_API_KEY_FILE'))
-    parser.add_argument('--model-map', type=Path, help='Optional provider ID spelling; all 11 models remain selected')
+    parser.add_argument('--model-map', type=Path, help='Optional provider ID spelling; all selected models remain bound')
+    parser.add_argument('--models', nargs='+', choices=tuple(defaults.MODELS),
+                        help='Optional subset of lineup names (e.g. deepseek glm kimi luna terra sol)')
+    parser.add_argument('--studies', nargs='+', choices=('swarmform', 'swarmharm'),
+                        help='Optional study subset (default: both)')
+    parser.add_argument('--populations', nargs='+', type=int,
+                        help='Optional population list override (e.g. 4 16 64)')
+    parser.add_argument('--skip-api-check', action='store_true',
+                        help='Skip initial N=4 API check when routes are already verified')
     parser.add_argument('--judge', action='store_true', help='Run SwarmHarm transcript judge automatically on each collected cohort')
     parser.add_argument('--judge-model', help='Explicit judge model ID when --judge is enabled')
     parser.add_argument('--out', type=Path, default=REPO.parent/'swarm-runs')
     parser.add_argument('--execute', action='store_true')
     args = parser.parse_args()
+    if args.populations and min(args.populations) < 2:
+        parser.error('--populations requires integers >= 2')
     if args.model_map: args.model_map = args.model_map.expanduser().resolve()
     base = api_base_url(args.base_url) if args.base_url else None
-    expected = plan(base, args.model_map)
+    expected = plan(base, args.model_map, names=args.models, studies=args.studies, populations=args.populations)
     if not args.execute:
         print(json.dumps(expected, indent=2)); return 0
     if not base: parser.error('Set OPENAI_BASE_URL to your provider API URL')
