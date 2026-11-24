@@ -400,7 +400,8 @@ def review(*, comparison, outcomes, truth, structure_review, communication):
     if truth.get("task") == "programbench_release":
         ids = sorted({item for output in outcomes.values() for item in output.get("verified_delivery_ids", [])})
         task = dict(status="requires_review", criterion="independent CLI reconstruction",
-                    verified_release_products=ids, feasible_release_count=len(truth["released"]))
+                    matching_product_bytes=ids, feasible_release_count=len(truth["released"]),
+                    release_selection="requires a task-linked release record", cli_compatibility="unscored")
     elif truth.get("task") == "ffmpeg_commissioning":
         task = {"status": "requires_review", "criterion": "independent CLI reconstruction and binding orders"}
         if truth["jobs"]:

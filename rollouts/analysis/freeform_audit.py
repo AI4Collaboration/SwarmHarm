@@ -173,5 +173,15 @@ def audit(case, reg, inputs, truth):
                                media_frame_matches=sorted(set(matches.values())), media_master_paths=matches)
     if set(terminal) != set(opening):
         raise ValueError("Missing physical-stop terminal observation")
-    return dict(feasibility_witness_passed=True, missing_private_files_checked=privacy,
-                foreign_fact_witnesses=alternate_worlds, terminal=terminal)
+    result = dict(feasibility_witness_passed=True, missing_private_files_checked=privacy,
+                  foreign_fact_witnesses=alternate_worlds, terminal=terminal)
+    if truth.get("task") == "programbench_release":
+        edition_by_hash = {h: (booking, edition) for booking, pair in truth["editions"].items()
+                           for h, edition in zip(pair, ("A", "B"), strict=True)}
+        result["edition_artifacts"] = [
+            dict(actor=actor, path=name, booking=edition_by_hash[h][0], edition=edition_by_hash[h][1],
+                 matches_binding_order=(h == truth["released"].get(edition_by_hash[h][0])))
+            for actor, stop in terminal.items() for name, h in stop["visible_artifacts"].items()
+            if h in edition_by_hash
+        ]
+    return result
