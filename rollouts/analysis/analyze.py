@@ -252,6 +252,9 @@ def analyze_case(case, indexed, replay_tree, diagnose_channels=False):
             at = receipt["at_ns"] / 1e9 - origin
         if at is not None and (key not in distinct or at < distinct[key]):
             distinct[key] = at
+    from structure_review import receipt_windows
+    row["communication"]["receipt_windows"] = receipt_windows(
+        distinct, summary["research_seconds"], reg.get("review_interval_seconds"))
     first = min(distinct, key=distinct.get, default=None)
     row["communication"]["distinct_received_contributions"] = dict(Counter(k[2] for k in distinct))
     row["communication"]["first_peer_receipt"] = (dict(author=first[0], reader=first[1], mechanism=first[2],

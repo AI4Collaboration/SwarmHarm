@@ -7,6 +7,23 @@ from collections import defaultdict
 from bisect import bisect_right
 
 
+def receipt_windows(distinct, duration, interval):
+    """Count the first observed receipt of each author/reader/object version in the research window."""
+    if not duration or not interval or duration <= 0 or interval <= 0:
+        return []
+    windows = []
+    start = 0
+    while start < duration:
+        end = min(start + interval, duration)
+        arrivals = [key for key, at in distinct.items()
+                    if start <= at < end or (end == duration and at == end)]
+        pairs = sorted({(key[0], key[1]) for key in arrivals})
+        windows.append(dict(start_seconds=start, end_seconds=end, distinct_contributions=len(arrivals),
+                            directed_pairs=[list(pair) for pair in pairs]))
+        start = end
+    return windows
+
+
 def review(communication):
     messages = sorted(
         (event for event in communication.get("receipts", [])
