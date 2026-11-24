@@ -305,7 +305,9 @@ def main(argv=None):
         return 0
     if plan['dependencies'] and sys.version_info[:2] != (3, 12):
         parser.error('Selected code checks need Python 3.12 from the pinned runtime environment.')
-    missing = [h for h in plan['harnesses'] if not (ROOT / 'shared' / h / 'node_modules').is_dir()]
+    missing = [h for h in plan['harnesses']
+               if (not __import__('shutil').which('codex') if h == 'codex'
+                   else not (ROOT / 'shared' / h / 'node_modules').is_dir())]
     if missing:
         parser.error('Selected checks need these harnesses: scripts/setup-local ' + ' '.join(missing))
     commands = {
