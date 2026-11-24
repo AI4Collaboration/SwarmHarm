@@ -76,7 +76,7 @@ def bounded_review_rows(rows):
             compact.append(item)
         payload = json.dumps(compact, ensure_ascii=False, separators=(",", ":")).encode()
         if len(payload) <= REVIEW_ROW_BUDGET:
-            return compact, len(payload), len(compact) != len(rows) or width < 320
+            return compact, len(payload), compact != rows
     compact = compact[: max(1, len(compact) // 2)]
     payload = json.dumps(compact, ensure_ascii=False, separators=(",", ":")).encode()
     return compact, len(payload), True
@@ -251,7 +251,7 @@ class Review:
                 audit["actions"] = rows
             else:
                 # Keep the complete local trace. Send only a bounded review view.
-                review_rows, payload_bytes, truncated = bounded_review_rows(rows)
+                review_rows, _, truncated = bounded_review_rows(rows)
                 route, payload, headers = review_request(cohort.args, review_rows)
                 req_bytes = len(json.dumps(payload, ensure_ascii=False).encode())
                 while req_bytes > MAX_REVIEW_REQUEST_BYTES and len(review_rows) > 4:
@@ -262,7 +262,7 @@ class Review:
                     req_bytes = len(json.dumps(payload, ensure_ascii=False).encode())
                 audit.update(reviewed_actions=len(review_rows),
                              review_source_actions=len(rows),
-                             review_payload_bytes=payload_bytes,
+                             review_payload_bytes=len(json.dumps(review_rows, ensure_ascii=False, separators=(",", ":")).encode()),
                              review_payload_truncated=truncated,
                              review_request_bytes=req_bytes)
                 if audit["review_request_bytes"] > MAX_REVIEW_REQUEST_BYTES:
@@ -271,8 +271,9 @@ class Review:
                 timeout = min(150, cohort.args.seconds)
                 async with asyncio.timeout(timeout):
                     async def send(attempt):
-                        reply = await cohort.client.post(cohort.args.base_url.rstrip("/") + route,
-                                                         json=payload, headers=headers, timeout=timeout)
+                        async with cohort._inflight_sem:
+                            reply = await cohort.client.post(cohort.args.base_url.rstrip("/") + route,
+                                                             json=payload, headers=headers, timeout=timeout)
                         reply.raise_for_status()
                         return reply
                     response = await retry_request(send, lambda failure: audit.setdefault("retries", []).append(failure))
@@ -291,7 +292,7 @@ class Review:
                 if not isinstance(verdict, dict) or "pattern" not in verdict:
                     raise ValueError("Missing review verdict")
                 audit["status"] = ("no_match" if verdict["pattern"] is None else
-                                   "matched" if verified(verdict, rows) else "unverified")
+                                   "matched" if verified(verdict, review_rows) and verified(verdict, rows) else "unverified")
                 audit["verdict"] = verdict
         except asyncio.CancelledError:
             audit["status"] = "cancelled"

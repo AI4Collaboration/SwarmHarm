@@ -32,7 +32,13 @@ ROOT = Path(__file__).resolve().parent.parent
 PERSONAL_TARGETS = {"responses": 64, "tools": 192, "tokens": 1_000_000}
 API_TOOL_OUTPUT_CHARS = 12_000
 API_CONTEXT_BYTES = 128 * 1024
-MAX_INFLIGHT_REQUESTS = max(1, int(os.environ.get("SWARMFORM_MAX_INFLIGHT_REQUESTS", "32")))
+
+
+def request_limit(population):
+    limit = int(os.environ.get("SWARMFORM_MAX_INFLIGHT_REQUESTS", "32"))
+    if limit < 1:
+        raise ValueError("SWARMFORM_MAX_INFLIGHT_REQUESTS must be positive")
+    return min(population, limit)
 
 
 def _ensure_open_file_headroom(minimum=65536):
@@ -50,38 +56,43 @@ def bounded_api_text(value, limit=API_TOOL_OUTPUT_CHARS):
     if not isinstance(value, str) or len(value) <= limit:
         return value
     marker = "\n[… local trace retained; provider context truncated …]\n"
-    room = max(0, limit - len(marker))
+    if limit <= len(marker):
+        return marker[:limit]
+    room = limit - len(marker)
     left = room // 2
     return value[:left] + marker + value[-(room - left):]
 
 
-def provider_messages(messages):
-    """Create a bounded provider view while retaining the complete local history."""
-    for limit in (4_000, 2_000, 1_000, 512, 256):
-        projected = []
-        for message in messages:
-            item = dict(message)
-            content = item.get("content")
-            if isinstance(content, str):
-                if item.get("role") == "tool":
-                    try:
-                        value = json.loads(content)
-                    except ValueError:
-                        value = None
-                    if isinstance(value, dict):
-                        value = dict(value)
-                        for field in ("stdout", "stderr", "output"):
-                            if isinstance(value.get(field), str):
-                                value[field] = bounded_api_text(value[field], limit)
-                        item["content"] = json.dumps(value, ensure_ascii=False)
-                    else:
-                        item["content"] = bounded_api_text(content, limit)
-                else:
-                    item["content"] = bounded_api_text(content, limit)
-            projected.append(item)
-        if len(json.dumps(projected, ensure_ascii=False).encode()) <= API_CONTEXT_BYTES:
-            return projected
-    return projected
+def bounded_chat_request(request, opening_count, remaining):
+    """Keep the original task and the newest whole assistant/tool exchanges."""
+    def wire_size(payload):
+        return len(json.dumps(payload, ensure_ascii=False, separators=(",", ":"), allow_nan=False).encode())
+
+    if wire_size(request) <= API_CONTEXT_BYTES:
+        return request
+    messages = request["messages"]
+    exchanges = [i for i, msg in enumerate(messages) if msg["role"] == "assistant"]
+    if exchanges:
+        opening = messages[:opening_count]
+        # Search for the longest suffix that fits, keeping tool calls with their results.
+        low, high = 1, len(exchanges)
+        while low < high:
+            mid = (low + high) // 2
+            candidate = {**request, "messages": opening + messages[exchanges[mid]:]}
+            if wire_size(candidate) <= API_CONTEXT_BYTES:
+                high = mid
+            else:
+                low = mid + 1
+        if low < len(exchanges):
+            return {**request, "messages": opening + messages[exchanges[low]:]}
+        # A single oversized tool call cannot be split from its results. Record the
+        # omission on the wire and in the request trace, without fabricating a receipt.
+        notice = {"role": "user", "content": "Previous exchange exceeded the context limit. "
+                  + "Your remaining allowance: " + json.dumps(remaining)}
+        candidate = {**request, "messages": opening + [notice]}
+        if wire_size(candidate) <= API_CONTEXT_BYTES:
+            return candidate
+    raise ValueError("The opening task and tool schema exceed the 128 KiB request limit")
 
 
 def arguments():
@@ -296,7 +307,7 @@ class Cohort:
         self.deadline = None
         self.lock = threading.Lock()
         self._trace_locks = {actor: threading.Lock() for actor in actors}
-        self._inflight_sem = asyncio.Semaphore(MAX_INFLIGHT_REQUESTS)
+        self._inflight_sem = asyncio.Semaphore(request_limit(args.population))
         self.usage = {}
         self.returns = {}
         self.stopping = asyncio.Event()
@@ -360,14 +371,15 @@ class Cohort:
 
     def api_tool_reply(self, actor, result):
         reply = self.tool_reply(actor, result)
-        for field in ("stdout", "stderr", "output"):
-            if isinstance(reply.get(field), str):
-                original = reply[field]
-                reply[field] = bounded_api_text(original)
-                if reply[field] != original:
-                    reply["provider_context_truncated"] = True
-                    reply["provider_context_original_chars"] = len(original)
-                    break
+        fields = [k for k in ("stdout", "stderr", "output") if isinstance(reply.get(k), str) and reply[k]]
+        total = sum(len(reply[k]) for k in fields)
+        if total > API_TOOL_OUTPUT_CHARS:
+            room = API_TOOL_OUTPUT_CHARS
+            for index, field in enumerate(sorted(fields, key=lambda k: len(reply[k]))):
+                reply[field] = bounded_api_text(reply[field], room // (len(fields) - index))
+                room -= len(reply[field])
+            reply["provider_context_truncated"] = True
+            reply["provider_context_original_chars"] = total
         return reply
 
     def continue_research(self, actor):
@@ -473,12 +485,13 @@ class Cohort:
         messages = [
             {"role": "user", "content": text} for text in self.prompts(actor)
         ]
+        opening_count = len(messages)
         try:
             while self.active():
                 request = {
                     "model": getattr(self.args, "served_model", None)
                     or self.args.model,
-                    "messages": provider_messages(messages),
+                    "messages": messages,
                     "tools": tools,
                     "stream": False,
                 }
@@ -488,28 +501,24 @@ class Cohort:
                     request["service_tier"] = self.args.service_tier
                 if getattr(self.args, "stream_responses", False):
                     request.update(stream=True, stream_options={"include_usage": True})
-                async def send(attempt):
-                    decision = self.trace(actor, "request", body=request, attempt=attempt)
-                    sem = getattr(self, "_inflight_sem", None)
-                    if sem is not None:
-                        async with sem:
-                            if request["stream"]:
-                                from .streaming import collect_response
-                                data = await collect_response(self.stream_client, request, self.out, actor,
-                                                              usage["responses"], attempt)
-                            else:
-                                reply = await self.client.post(
-                                    self.args.base_url.rstrip("/") + "/chat/completions", json=request)
-                                reply.raise_for_status()
-                                data = reply.json()
-                    else:
+                request = bounded_chat_request(request, opening_count, self.remaining(actor))
+                messages = request["messages"]
+
+                async def send(attempt, *, fallback=None):
+                    base = fallback[0] if fallback else self.args.base_url
+                    headers = {"Authorization": "Bearer " + fallback[1]} if fallback else {}
+                    async with self._inflight_sem:
+                        if not self.active():
+                            raise asyncio.CancelledError
+                        decision = self.trace(actor, "request", body=request, attempt=attempt,
+                                              **({"fallback_base": base} if fallback else {}))
                         if request["stream"]:
                             from .streaming import collect_response
                             data = await collect_response(self.stream_client, request, self.out, actor,
                                                           usage["responses"], attempt)
                         else:
-                            reply = await self.client.post(
-                                self.args.base_url.rstrip("/") + "/chat/completions", json=request)
+                            reply = await self.client.post(base.rstrip("/") + "/chat/completions",
+                                                           json=request, headers=headers)
                             reply.raise_for_status()
                             data = reply.json()
                     return data, decision
@@ -524,25 +533,10 @@ class Cohort:
                     fallback = getattr(self, "_axonhub_fallback", None)
                     if not fallback or request.get("stream"):
                         raise
-                    fb_base, fb_key = fallback
-                    self.trace(actor, "provider_fallback", primary_error=type(primary_err).__name__, fallback_base=fb_base)
-                    async def send_fallback(attempt):
-                        decision = self.trace(actor, "request", body=request, attempt=attempt, fallback_base=fb_base)
-                        sem = getattr(self, "_inflight_sem", None)
-                        headers_fb = {"Authorization": "Bearer " + fb_key}
-                        if sem is not None:
-                            async with sem:
-                                reply = await self.client.post(
-                                    fb_base.rstrip("/") + "/chat/completions", json=request, headers=headers_fb)
-                                reply.raise_for_status()
-                                data = reply.json()
-                        else:
-                            reply = await self.client.post(
-                                fb_base.rstrip("/") + "/chat/completions", json=request, headers=headers_fb)
-                            reply.raise_for_status()
-                            data = reply.json()
-                        return data, decision
-                    data, decision = await retry_request(send_fallback, record_failure)
+                    self.trace(actor, "provider_fallback", primary_error=type(primary_err).__name__,
+                               fallback_base=fallback[0])
+                    data, decision = await retry_request(lambda attempt: send(attempt, fallback=fallback),
+                                                         record_failure)
                 self.pending_provider_errors.pop(actor, None)
                 with self.lock:
                     for call_id, stdout in checkpoint.delivered_outputs(messages):
@@ -695,7 +689,7 @@ class Cohort:
                 "service_tier": getattr(args, "service_tier", None),
                 "observation_policy": "post_tool_and_terminal_v1",
                 "review_request_attempts": ATTEMPTS,
-                **({"participant_request_attempts": ATTEMPTS}
+                **({"participant_request_attempts": ATTEMPTS, "max_inflight_requests": request_limit(args.population)}
                    if getattr(args, "harness", "chat-completions") == "chat-completions" else {}),
                 "source_sha256": registered_source,
                 "python": platform.python_version(),

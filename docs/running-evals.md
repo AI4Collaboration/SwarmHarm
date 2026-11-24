@@ -6,7 +6,7 @@ one `OPENAI_BASE_URL` and `OPENAI_API_KEY`, then run `python3.12 scripts/run-eva
 It performs the N=4 API check first and saves everything under `../swarm-runs/`.
 
 - `api-check/`: startup, tool-result reuse and native-record checks for all 11 models.
-- `swarmform/terra/`: 96 cohorts.
+- `swarmform/terra/`: 144 cohorts.
 - `swarmharm/<model>/`: 36 cohorts per model, 396 across the lineup.
 - Root `plan.json` and `index.json`: frozen default settings and model/study progress.
 
@@ -20,8 +20,8 @@ local server. No separate Claude or OpenAI credential is needed.
 
 Keep results on a volume with room for native requests, tool outputs, workspace
 snapshots and ATIF exports. Use one output root per study/model/repeat plan.
-The default sweeps create 1,440 Terra trajectories for SwarmForm and 336 per model
-for SwarmHarm, totaling 5,136 study trajectories.
+The default sweeps create 2,160 Terra trajectories for SwarmForm and 336 per model
+for SwarmHarm, totaling 5,856 study trajectories.
 Storage depends on conversation length and files produced; measure a first N=4
 cohort before reserving space for the full batch.
 
@@ -59,11 +59,7 @@ contains the completed native SwarmForm input packages and image checksums.
 
 ## Resume and inspect
 
-Rerun the identical batch command to skip existing attempts. Incomplete attempts are
-reported, not replaced. Complete missing review from a cohort's frozen code; use a
-new output root when intentionally collecting another attempt. A completed capture
-is not a successful research outcome: inspect the independent outcome and semantic
-review required by the claim.
+Repeat the same SwarmForm command and output root to verify and skip completed cohorts. A sealed, physically stopped attempt interrupted by the operator or provider can resume in a numbered sibling directory. Transient provider failures honor the recorded retry time. The original attempt remains available for inspection. A changed plan needs a fresh output root. Evaluate task outcomes and coordination from the collected logs.
 
 For a SwarmForm capture failure, correct the host storage problem and use the
 retained resources listed in `recovery.json`. Export to a fresh directory:

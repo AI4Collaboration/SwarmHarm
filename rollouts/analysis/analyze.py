@@ -179,7 +179,8 @@ def analyze_case(case, indexed, replay_tree, diagnose_channels=False):
         raise ValueError("Sealed evidence is missing required study or participant data")
     if digest(inputs) != reg["manifest"]["worker_visible_sha256"] or digest(truth) != reg["manifest"]["truth_sha256"]:
         raise ValueError("Archived inputs differ from their registration")
-    for key in ("task", "channel", "population", "model", "source_sha256", "harness", "cohort_deadline_seconds"):
+    for key in ("task", "channel", "population", "model", "source_sha256", "harness",
+                "cohort_deadline_seconds", "max_inflight_requests"):
         if key in indexed and indexed[key] != reg.get(key):
             raise ValueError(f"Batch and cohort registration disagree on {key}")
 
@@ -205,7 +206,7 @@ def analyze_case(case, indexed, replay_tree, diagnose_channels=False):
         "task", "condition", "channel", "population", "model", "served_model", "revision", "harness",
         "api_protocol", "thinking_level", "service_tier", "source_sha256", "image", "budget_mode", "work_policy", "entry_offsets_seconds",
         "personal_budget_targets", "per_actor_limits", "cohort_deadline_seconds", "review_interval_seconds",
-        "review_model", "review_patterns")}
+        "review_model", "review_patterns", "max_inflight_requests")}
     comparison["task_class"] = reg["manifest"]["task_class_id"]
     comparison["domain"] = reg["manifest"]["domain"]
     comparison["input_version"] = reg["manifest"]["version"]

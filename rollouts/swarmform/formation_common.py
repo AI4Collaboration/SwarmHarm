@@ -87,7 +87,7 @@ class CommonWorkspace(FileDeployment):
         if n < 2 or registration.get("population", n) != n:
             raise ValueError("Common workspace population differs from its inputs")
         volume = self.name + '-observations'
-        label = ['--label', 'org.swarmharm.managed=true', '--label', f'org.swarmharm.owner-pid={os.getpid()}']
+        label = ['--label', 'org.swarmform.managed=true', '--label', f'org.swarmform.owner-pid={os.getpid()}']
         try:
             run(['docker', 'volume', 'create', *label, volume])
             self.resources.callback(run, ['docker', 'volume', 'rm', volume])

@@ -58,17 +58,74 @@ class APIHandoffChecks(unittest.TestCase):
         )
 
     def test_provider_context_is_bounded_without_pruning_local_history(self):
-        from swarmform.__main__ import API_CONTEXT_BYTES, provider_messages
+        import httpx
+        from swarmform.__main__ import API_CONTEXT_BYTES, bounded_chat_request
 
-        messages = [
-            {"role": "tool", "tool_call_id": str(i),
-             "content": json.dumps({"stdout": "z" * 12_000, "exit_code": 0})}
-            for i in range(80)
-        ]
-        projected = provider_messages(messages)
-        self.assertLessEqual(len(json.dumps(projected).encode()), API_CONTEXT_BYTES)
-        self.assertEqual(len(messages), 80)
-        self.assertEqual(len(json.loads(messages[0]["content"])["stdout"]), 12_000)
+        opening = {"role": "user", "content": "original task"}
+        messages = [opening]
+        for i in range(80):
+            call = {"id": str(i), "type": "function",
+                    "function": {"name": "bash", "arguments": json.dumps({"command": "echo ok"})}}
+            messages.extend([{"role": "assistant", "tool_calls": [call]},
+                             {"role": "tool", "tool_call_id": str(i), "content": "界" * 12_000}])
+        request = {"messages": messages, "model": "fixture", "tools": [{"description": "x" * 16_000}]}
+        projected = bounded_chat_request(request, 1, {})
+        self.assertLessEqual(len(httpx.Request("POST", "http://localhost", json=projected).content),
+                             API_CONTEXT_BYTES)
+        kept = projected["messages"]
+        self.assertEqual(kept[0], opening)
+        self.assertEqual(kept[-2:], messages[-2:])
+        self.assertLess(len(kept), len(messages))
+        for call, result in zip(kept[1::2], kept[2::2], strict=True):
+            self.assertEqual(call["tool_calls"][0]["id"], result["tool_call_id"])
+        self.assertEqual(len(messages), 161)
+        self.assertEqual(len(messages[2]["content"]), 12_000)
+
+        messages[-2]["tool_calls"][0]["function"]["arguments"] = "x" * API_CONTEXT_BYTES
+        projected = bounded_chat_request(request, 1, {"responses": 5})
+        self.assertEqual([m["role"] for m in projected["messages"]], ["user", "user"])
+        self.assertIn('"responses": 5', projected["messages"][-1]["content"])
+        self.assertEqual(len(messages[-2]["tool_calls"][0]["function"]["arguments"]), API_CONTEXT_BYTES)
+
+    def test_queued_actor_does_not_send_or_record_a_request_after_stop(self):
+        import time
+        import httpx
+        from swarmform.__main__ import Cohort
+
+        async def check(out):
+            entered, release = asyncio.Event(), asyncio.Event()
+            requests = []
+
+            async def respond(request):
+                requests.append(request)
+                entered.set()
+                await release.wait()
+                message = {"role": "assistant", "content": "ok"}
+                return httpx.Response(200, json={"choices": [{"message": message, "finish_reason": "stop"}],
+                                                "usage": {"total_tokens": 1}})
+
+            args = SimpleNamespace(task="ffmpeg-distributed", channel="direct", population=2,
+                                   model="fixture", base_url="http://localhost/v1")
+            async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+                cohort = Cohort(args, client, out)
+                cohort.start = time.monotonic()
+                first, second = cohort.visible["startup"]
+                active = asyncio.create_task(cohort.participant(first))
+                await asyncio.wait_for(entered.wait(), 2)
+                queued = asyncio.create_task(cohort.participant(second))
+                await asyncio.sleep(0)
+                self.assertFalse((out / f"{second}.jsonl.gz").exists())
+                cohort.stop("operator_interrupt")
+                release.set()
+                await active
+                with self.assertRaises(asyncio.CancelledError):
+                    await queued
+                self.assertEqual(len(requests), 1)
+                with gzip.open(out / f"{second}.jsonl.gz", "rt") as stream:
+                    self.assertEqual([json.loads(line)["kind"] for line in stream], ["cancelled"])
+
+        with TemporaryDirectory() as folder, patch.dict(os.environ, SWARMFORM_MAX_INFLIGHT_REQUESTS="1"):
+            asyncio.run(check(Path(folder)))
 
     def plan(self, *args):
         result = subprocess.run(

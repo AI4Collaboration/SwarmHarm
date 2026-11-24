@@ -36,9 +36,9 @@ def create_private_network(name):
                     "--subnet",
                     str(subnet),
                     "--label",
-                    "org.swarmharm.managed=true",
+                    "org.swarmform.managed=true",
                     "--label",
-                    f"org.swarmharm.owner-pid={os.getpid()}",
+                    f"org.swarmform.owner-pid={os.getpid()}",
                     name,
                 ]
             )

@@ -15,11 +15,10 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "shared"))
 import model_lineup as defaults
-import launch_capacity
 from guardrails import resolve_api_base
 from process_control import run_process
 
-from swarmform.__main__ import CHANNELS, ROOT, resolve_harness, source_digest, write_json
+from swarmform.__main__ import CHANNELS, ROOT, request_limit, resolve_harness, source_digest, write_json
 from swarmform.formation_inputs import TASK_MODULES
 from swarmform import checkpoint
 
@@ -96,31 +95,6 @@ def archived_evidence(index):
         return {"status": "archive_damaged", "error": str(error)}
 
 
-def reap_dead_owner_resources():
-    """Remove managed Docker containers, networks, and volumes whose owner PID has exited."""
-    for kind, cmd_list in (
-        ("container", ["docker", "ps", "-a", "--filter", "label=org.swarmharm.managed=true",
-                       "--format", "{{.ID}}\t{{.Label \"org.swarmharm.owner-pid\"}}"]),
-        ("network", ["docker", "network", "ls", "--filter", "label=org.swarmharm.managed=true",
-                     "--format", "{{.ID}}\t{{.Label \"org.swarmharm.owner-pid\"}}"]),
-        ("volume", ["docker", "volume", "ls", "--filter", "label=org.swarmharm.managed=true",
-                    "--format", "{{.Name}}\t{{.Label \"org.swarmharm.owner-pid\"}}"]),
-    ):
-        try:
-            lines = subprocess.check_output(cmd_list, text=True, timeout=20).splitlines()
-        except Exception:
-            continue
-        dead = []
-        for line in lines:
-            parts = line.strip().split("\t")
-            if len(parts) == 2 and parts[1].isdigit() and not launch_capacity.process_alive(parts[1]):
-                dead.append(parts[0])
-        if dead:
-            rm_cmd = (["docker", "rm", "-f", *dead] if kind == "container"
-                      else ["docker", kind, "rm", *dead])
-            subprocess.run(rm_cmd, capture_output=True, timeout=30)
-
-
 @contextmanager
 def batch_lock(root):
     root.mkdir(parents=True, exist_ok=True)
@@ -149,6 +123,8 @@ def cases(args):
                         channel=channel,
                         population=population,
                         seconds=args.seconds,
+                        **({"max_inflight_requests": request_limit(population)}
+                           if getattr(args, "harness", "chat-completions") == "chat-completions" else {}),
                         thinking_level=getattr(args, "thinking_level", None),
                         **({"service_tier": args.service_tier} if getattr(args, "service_tier", None) else {}),
                         **checkpoint.registration(args),
@@ -273,10 +249,6 @@ def main():
         parser.error(
             "Set SWARMHARM_DOCKER_IMAGE to the built image ID before collection"
         )
-    needed_nets = max(args.populations) + 32
-    current_nets = int(os.environ.get("SWARMHARM_MAX_WORKSTATION_NETWORKS", str(launch_capacity.DEFAULT_NETWORK_LIMIT)))
-    if current_nets < needed_nets:
-        os.environ["SWARMHARM_MAX_WORKSTATION_NETWORKS"] = str(needed_nets)
     with batch_lock(args.out.resolve()):
         return execute_rows(args, rows, parser)
 
@@ -325,7 +297,6 @@ def execute_rows(args, rows, parser):
                     delay = previous[-1]["retry_not_before"] - time.time()
                     if delay > 0:
                         time.sleep(delay)
-                reap_dead_owner_resources()
                 command = cohort_command(args, row, directory)
                 new_attempts += 1
                 write_json(root / "index.json",

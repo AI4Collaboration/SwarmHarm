@@ -1,6 +1,6 @@
 # Model and harness routing
 
-The SwarmForm matrix and historical reproduction use native harnesses through **AxonHub**, including Claude Code. New SwarmHarm Codex runs also accept a registered OpenAI-compatible Responses endpoint through `--api-base`. See the [API quickstart](../swarmharm/README.md#run-from-a-fresh-checkout).
+The current SwarmForm matrix defaults to OpenAI-compatible Chat Completions. Historical native-harness runs used AxonHub. [SwarmForm setup](../README.md#swarmform) New SwarmHarm Codex runs also accept a registered OpenAI-compatible Responses endpoint through `--api-base`. See the [API quickstart](../swarmharm/README.md#run-from-a-fresh-checkout).
 
 The following routing policy describes the AxonHub condition.
 

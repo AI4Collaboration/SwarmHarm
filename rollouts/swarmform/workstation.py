@@ -115,8 +115,8 @@ class DockerWorkstation:
         self.paused = False
         args = [
             "docker", "run", "-d", "--rm", "--pull=never", "--name", self.name,
-            "--label", "org.swarmharm.managed=true",
-            "--label", f"org.swarmharm.owner-pid={os.getpid()}",
+            "--label", "org.swarmform.managed=true",
+            "--label", f"org.swarmform.owner-pid={os.getpid()}",
             f"--network={network}", "--read-only", "--cap-drop=ALL",
             "--security-opt=no-new-privileges", "--user", f"{self.business_uid}:{self.business_gid}",
             "--memory=512m", "--cpus=1", "--pids-limit=64",
