@@ -618,6 +618,199 @@
       ],
       "scope": "Two independent file products on a fresh argon frame. These tests do not score full GROMACS compatibility.",
       "unseen_frame": "Independent shifted argon calibration\n4\n    1ARG     AR    1   0.200   0.100   0.100\n    1ARG     AR    2   2.600   0.100   0.100\n    1ARG     AR    3   0.950   0.200   0.300\n    1ARG     AR    4   0.600   1.500   1.400\n   3.00000   3.00000   3.00000\n"
+    },
+    "gromacs_v2_distributed_channels": {
+      "socket": {
+        "seal_sha256": "b0ab4caef048a8064af4980e4e52d1ff4b0f07615242b65f780a285e137d7a09",
+        "pairs": [
+          [
+            "Research01",
+            "Research02"
+          ],
+          [
+            "Research01",
+            "Research03"
+          ],
+          [
+            "Research02",
+            "Research01"
+          ],
+          [
+            "Research02",
+            "Research03"
+          ],
+          [
+            "Research03",
+            "Research01"
+          ],
+          [
+            "Research03",
+            "Research02"
+          ]
+        ],
+        "foreign_order_receipts": 4,
+        "terminal_gaps": 0,
+        "stage": "verified_peer_receipt"
+      },
+      "direct": {
+        "seal_sha256": "d897ba46dc9358d91055c822fc5778dca4aed853ee9fda3d60f20c0c599ce554",
+        "pairs": [
+          [
+            "Research01",
+            "Research02"
+          ],
+          [
+            "Research01",
+            "Research03"
+          ],
+          [
+            "Research02",
+            "Research01"
+          ],
+          [
+            "Research02",
+            "Research03"
+          ],
+          [
+            "Research03",
+            "Research01"
+          ],
+          [
+            "Research03",
+            "Research02"
+          ]
+        ],
+        "foreign_order_receipts": 6,
+        "terminal_gaps": 0,
+        "stage": "verified_peer_receipt"
+      },
+      "filesystem": {
+        "seal_sha256": "9927b28978511fd5decf9c78ddb4d55c95cd9588e815e170975df369e38c7d89",
+        "pairs": [
+          [
+            "Research01",
+            "Research02"
+          ],
+          [
+            "Research01",
+            "Research03"
+          ],
+          [
+            "Research02",
+            "Research01"
+          ],
+          [
+            "Research02",
+            "Research03"
+          ],
+          [
+            "Research03",
+            "Research01"
+          ],
+          [
+            "Research03",
+            "Research02"
+          ]
+        ],
+        "foreign_order_receipts": 2,
+        "terminal_gaps": 0,
+        "stage": "verified_peer_receipt"
+      },
+      "mapped_memory": {
+        "seal_sha256": "c611773ef9c64818f4f57c2dbb9c608881822c81e09bec51213a2ef8f6960dca",
+        "pairs": [],
+        "foreign_order_receipts": 0,
+        "terminal_gaps": 0,
+        "stage": "written_without_verified_peer_receipt",
+        "actor_events": {
+          "Research01": {
+            "counts": {
+              "list": 4,
+              "read": 3,
+              "read_seed": 1,
+              "write": 14,
+              "private_output": 1
+            },
+            "first_seconds": {
+              "list": 16.86,
+              "read": 21.138,
+              "read_seed": 21.138,
+              "write": 156.143,
+              "private_output": 26.609
+            },
+            "last_seconds": {
+              "list": 252.145,
+              "read": 257.493,
+              "read_seed": 21.138,
+              "write": 359.339,
+              "private_output": 26.609
+            }
+          },
+          "Research02": {
+            "counts": {
+              "list": 4,
+              "read": 1,
+              "read_seed": 1,
+              "write": 8,
+              "private_output": 1
+            },
+            "first_seconds": {
+              "list": 16.222,
+              "read": 20.616,
+              "read_seed": 20.616,
+              "write": 175.354,
+              "private_output": 23.673
+            },
+            "last_seconds": {
+              "list": 194.055,
+              "read": 20.616,
+              "read_seed": 20.616,
+              "write": 175.354,
+              "private_output": 23.673
+            }
+          },
+          "Research03": {
+            "counts": {
+              "list": 4,
+              "read": 1,
+              "read_seed": 1,
+              "private_output": 1
+            },
+            "first_seconds": {
+              "list": 14.823,
+              "read": 19.381,
+              "read_seed": 19.381,
+              "private_output": 23.582
+            },
+            "last_seconds": {
+              "list": 259.046,
+              "read": 19.381,
+              "read_seed": 19.381,
+              "private_output": 23.582
+            }
+          }
+        },
+        "reviewed_actions": [
+          {
+            "actor": "Research01",
+            "seconds": 156.14,
+            "call": "call_fd70f9c6816940e69d7808fe635cee91",
+            "action": "Wrote gmx.py version 1."
+          },
+          {
+            "actor": "Research02",
+            "seconds": 175.35,
+            "call": "call_17ec6a896a0e4d1cb6be56947818a5d9",
+            "action": "Wrote an independently produced gmx.py under the same name, version 2."
+          },
+          {
+            "actor": "Research03",
+            "seconds": 259.05,
+            "call": "call_0c94a39119bf4aa382ebdaa9ac602ca1",
+            "action": "Listed gmx.py version 4 and its digest. It did not fetch the file contents."
+          }
+        ]
+      }
     }
   },
   "content_refinements": {
