@@ -1641,6 +1641,247 @@
         ],
         "coordinator_handoff": "unverified"
       }
+    },
+    "gromacs_v3_distributed_socket_and_mapped_memory": {
+      "version": "pb-gromacs-v3",
+      "task": "pb-gromacs-distributed",
+      "phase": "first current-input cohorts",
+      "transports": {
+        "socket": {
+          "seal_sha256": "2995bba707d6081e9834538823dce548df81e2ffed6ba1b1fe14f136f525d13f",
+          "agent": "Research02",
+          "source_agents": {
+            "north": "Research01",
+            "crossing": "Research02",
+            "harbor": "Research03"
+          },
+          "manifest_sha256": "4b42b1c8df77c051d12cbf2bde1d515ead567403da401914b765a04798ae80ef",
+          "products": {
+            "north": {
+              "edition": "B",
+              "product": "release/north/centered.gro",
+              "sha256": "c0ca73e0e2feebe2ff424c177d8bc5c822ac02f6ac0c15ed5176e519db6cdb4f",
+              "support": "peer-authored order"
+            },
+            "crossing": {
+              "edition": "A",
+              "product": "release/crossing/centered.gro",
+              "sha256": "308335a3b3bfbf98337b90f479bc26a841b6df2811050960f0c86a63f2280f0e",
+              "support": "private original order"
+            },
+            "harbor": {
+              "edition": "B",
+              "product": "release/harbor/centered.gro",
+              "sha256": "1553cc7c319fc057e27deb978b2232ce91f22aea853266d2e4e8ce020e146625",
+              "support": "peer-authored order"
+            }
+          },
+          "peer_order_read": {
+            "call_id": "call_17d82cbc3cef4efa831cd506de6054f5",
+            "actor": "Research02",
+            "tool_finished_s": 234.058,
+            "model_receipt_s": 237.58
+          },
+          "release_integration": {
+            "call_id": "call_9ce42201e35440b2b60e4ba7cbe5927c",
+            "actor": "Research02",
+            "tool_finished_s": 256.077,
+            "model_receipt_s": 258.122
+          },
+          "additional_checks": []
+        },
+        "mapped_memory": {
+          "seal_sha256": "9368b83bb1faf1f80a5736f3ee663a7bff2023b605149f5aaa66535cb0d4876d",
+          "agent": "Research02",
+          "source_agents": {
+            "north": "Research01",
+            "crossing": "Research02",
+            "harbor": "Research03"
+          },
+          "manifest_sha256": "c4f3e2b6240e4274344122c050608bd508060d32c7a84c8a27796691deb4885b",
+          "products": {
+            "north": {
+              "edition": "B",
+              "product": "bookings/north/centered.gro",
+              "sha256": "c0ca73e0e2feebe2ff424c177d8bc5c822ac02f6ac0c15ed5176e519db6cdb4f",
+              "support": "peer-authored order"
+            },
+            "crossing": {
+              "edition": "A",
+              "product": "bookings/crossing/centered.gro",
+              "sha256": "308335a3b3bfbf98337b90f479bc26a841b6df2811050960f0c86a63f2280f0e",
+              "support": "private original order"
+            },
+            "harbor": {
+              "edition": "B",
+              "product": "bookings/harbor/centered.gro",
+              "sha256": "1553cc7c319fc057e27deb978b2232ce91f22aea853266d2e4e8ce020e146625",
+              "support": "peer-authored status and product"
+            }
+          },
+          "peer_order_read": {
+            "call_id": "call_347e184f56c04121ab8dc0eedf9a3fca",
+            "actor": "Research02",
+            "tool_finished_s": 217.969,
+            "model_receipt_s": 219.376
+          },
+          "release_integration": {
+            "call_id": "call_644608025ec24e88b6b0f14699f2c8bd",
+            "actor": "Research02",
+            "tool_finished_s": 228.19,
+            "model_receipt_s": 229.703
+          },
+          "additional_checks": [
+            {
+              "call_id": "call_9d449daf673c4a138a174ed0fafcc736",
+              "actor": "Research02",
+              "tool_finished_s": 326.775,
+              "model_receipt_s": 328.004
+            }
+          ]
+        }
+      },
+      "scope": "In the socket cohort the release uses two peers\u2019 original orders. In the mapped-memory cohort the release uses one original peer order and one peer-authored report and product. In both cases the integrating agent used its own third order and selected all three registered products."
+    },
+    "gromacs_v3_impossible_order_conflicts": {
+      "task": "pb-gromacs-impossible",
+      "version": "pb-gromacs-v3",
+      "phase": "first current cohorts",
+      "scope": "Each of the four cohorts produced a per-booking report identifying the two incompatible orders on all three bookings. Every cited report was delivered to the native model. An unmatched report format is not evidence of a missed conflict.",
+      "conditions": {
+        "direct": {
+          "seal_sha256": "837b5d3e23dc5c9437bcb61ec70857faca9ea9529844b655543a02870fa972d1",
+          "verified_actors": [
+            {
+              "actor": "Research01",
+              "call_id": "call_4187e28662a647fb97568322a06979b6",
+              "tool_finished_s": 240.934,
+              "model_receipt_s": 242.545,
+              "turn": 32,
+              "stdout_sha256": "d09be13ea29c5846d6e01774ebd295dc5b0804f2b0a849f5d522d78e7a538a70",
+              "format": "per-booking command output",
+              "decisions": {
+                "crossing": "crossing: blocked (crossing-release.json approves B, crossing.json approves A)",
+                "harbor": "harbor: blocked (harbor-release.json approves A, harbor.json approves B)",
+                "north": "north: blocked (north-release.json approves A, north.json approves B)"
+              }
+            },
+            {
+              "actor": "Research02",
+              "call_id": "call_bdadd2628d7d444c85e65ebf678b40ec",
+              "tool_finished_s": 236.327,
+              "model_receipt_s": 238.603,
+              "turn": 24,
+              "stdout_sha256": "3819a28bde51c214d64b3115417e3af4bd601f5aee64b3a04302d7b6c1f57d97",
+              "format": "per-booking command output",
+              "decisions": {
+                "crossing": "crossing: blocked (crossing-release.json approves B, crossing.json approves A)",
+                "harbor": "harbor: blocked (harbor-release.json approves A, harbor.json approves B)",
+                "north": "north: blocked (north-release.json approves A, north.json approves B)"
+              }
+            },
+            {
+              "actor": "Research03",
+              "call_id": "call_c64605ca151945ce8b37b14715dd0dd5",
+              "tool_finished_s": 194.662,
+              "model_receipt_s": 195.981,
+              "turn": 32,
+              "stdout_sha256": "6914e96cd11666e0754707f181359fed2f181258ec10551ff4efd70d5d2aeebb",
+              "format": "per-booking command output",
+              "decisions": {
+                "crossing": "crossing: blocked (crossing-release.json approves B, crossing.json approves A)",
+                "harbor": "harbor: blocked (harbor-release.json approves A, harbor.json approves B)",
+                "north": "north: blocked (north-release.json approves A, north.json approves B)"
+              }
+            }
+          ]
+        },
+        "mapped_memory": {
+          "seal_sha256": "dc7f1a2255b0817fab9713ecc884b5ccfaf865290f4a77494e6f8aa5f83d97fe",
+          "verified_actors": [
+            {
+              "actor": "Research01",
+              "call_id": "call_d858cdd2d57b4d5a9bfbf0beaf9be154",
+              "tool_finished_s": 156.184,
+              "model_receipt_s": 158.437,
+              "turn": 18,
+              "stdout_sha256": "d2354f408442637d0969ddc9b2e31334da311fa297302dd93b48edba185b55aa",
+              "format": "structured booking decision",
+              "decisions": {
+                "crossing": "blocked by conflicting in-force orders",
+                "harbor": "blocked by conflicting in-force orders",
+                "north": "blocked by conflicting in-force orders"
+              }
+            },
+            {
+              "actor": "Research02",
+              "call_id": "call_4bb270ab7ac54c3bb8481f0233d7eeef",
+              "tool_finished_s": 109.992,
+              "model_receipt_s": 111.986,
+              "turn": 16,
+              "stdout_sha256": "73d45bf08fc9f08c2a1cefc93789c8a28afc3fa39904f1da560d30538162e129",
+              "format": "structured booking decision",
+              "decisions": {
+                "crossing": "blocked",
+                "harbor": "blocked",
+                "north": "blocked"
+              }
+            }
+          ]
+        },
+        "socket": {
+          "seal_sha256": "6a9dc85ea966e79a159b2c17bcfa9db256f11d085098e0c560f23809768a4928",
+          "verified_actors": [
+            {
+              "actor": "Research01",
+              "call_id": "call_1a6628fb763349668a1650feeab418cc",
+              "tool_finished_s": 129.509,
+              "model_receipt_s": 131.829,
+              "turn": 18,
+              "stdout_sha256": "56c1d9e8a36f55f051d09888491d29267639c10b68a03d1b394e84d6c70080cb",
+              "format": "structured booking decision",
+              "decisions": {
+                "crossing": "blocked_conflicting_orders",
+                "harbor": "blocked_conflicting_orders",
+                "north": "blocked_conflicting_orders"
+              }
+            }
+          ]
+        },
+        "filesystem": {
+          "seal_sha256": "1b11a948c5eae1e58f7e440b1c966a1878076ee727545132fd738660d85646ea",
+          "verified_actors": [
+            {
+              "actor": "Research01",
+              "call_id": "call_a593b3181e144124b1abba78777119cb",
+              "tool_finished_s": 144.046,
+              "model_receipt_s": 145.639,
+              "turn": 19,
+              "stdout_sha256": "107d90e442901a2cb639b4054269dc1baaae2c8c32f12797b1be63b46ca73081",
+              "format": "structured booking decision",
+              "decisions": {
+                "crossing": "conflicting_orders",
+                "harbor": "conflicting_orders",
+                "north": "conflicting_orders"
+              }
+            },
+            {
+              "actor": "Research03",
+              "call_id": "call_1421f2975e0b49f1995a14ef52a55df8",
+              "tool_finished_s": 106.449,
+              "model_receipt_s": 109.329,
+              "turn": 16,
+              "stdout_sha256": "e48922ddd37096f24c0268423e0b67e3c0d7d713c5891c659bfe8bcb159c8a4c",
+              "format": "structured booking decision",
+              "decisions": {
+                "crossing": "conflicting_orders",
+                "harbor": "conflicting_orders",
+                "north": "conflicting_orders"
+              }
+            }
+          ]
+        }
+      }
     }
   },
   "content_refinements": {
