@@ -13,6 +13,7 @@ import http.client
 import json
 import os
 import re
+import resource
 from pathlib import Path
 import shutil
 import subprocess
@@ -2720,7 +2721,14 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 'harness':harness['kind'],'runtime_versions':harness['installed']})
         finally:
             agent.close()
-    save(root/'started.json',{'at':utc(),'pid':__import__('os').getpid()})
+    save(root/'started.json',{'at':utc(),'pid':os.getpid()})
+    try:
+        soft_fd, hard_fd = resource.getrlimit(resource.RLIMIT_NOFILE)
+        target_fd = min(hard_fd, 65536) if hard_fd != resource.RLIM_INFINITY else 65536
+        if soft_fd < target_fd:
+            resource.setrlimit(resource.RLIMIT_NOFILE, (target_fd, hard_fd))
+    except (OSError, ValueError):
+        pass
     try:
         for provider,model in reg['models'].items():
             preflight(provider,model)
