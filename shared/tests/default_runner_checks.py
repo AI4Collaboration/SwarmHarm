@@ -27,10 +27,10 @@ class DefaultRunnerChecks(unittest.TestCase):
         self.assertEqual(plan['settings']['swarmharm']['populations'], [4, 8, 16])
         self.assertEqual((plan['settings']['repeats'], plan['settings']['goal'], plan['settings']['reasoning']),
                          (1, 'off', 'high'))
-        self.assertEqual(plan['cohorts'], {'swarmform':96, 'swarmharm':396})
+        self.assertEqual(plan['cohorts'], {'swarmform':144, 'swarmharm':396})
         self.assertEqual(plan['settings']['swarmform']['models'], ['terra'])
         for model in plan['models']:
-            for study, count in [('swarmform',96), ('swarmharm',36)]:
+            for study, count in [('swarmform',144), ('swarmharm',36)]:
                 if model['name'] not in plan['settings'][study]['models']:
                     continue
                 command = runner.batch_command(sys.executable, study, model, plan['api_base'], '/tmp/unused-plan')
