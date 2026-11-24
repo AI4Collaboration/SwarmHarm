@@ -1882,6 +1882,218 @@
           ]
         }
       }
+    },
+    "gromacs_v3_possible_held_frame": {
+      "task": "pb-gromacs-possible",
+      "version": "pb-gromacs-v3",
+      "channel": "direct",
+      "actor": "Research01",
+      "seal_sha256": "1becd42645e74fbdf403e489bd95b7cd6746e5cfa3e47d37524e4a05ffc24003",
+      "candidate_root": "/var/tmp/exports/project",
+      "artifact_files": {
+        "gmx": "9aa7d668e5f639426a46695b8871743be930a8500ae62f4986bf8e7538f2794b",
+        "distance_cmd.py": "9298e3ae005057f346aad832432177ab81cc33da99fa2fd76e3e9976bc19f754",
+        "editconf_cmd.py": "748db6be3449b65cd3dc6a5d270ab8a994b0935e5b3ca491da0df0c345ede2af",
+        "gro.py": "55ec29ba93da9ca728bcc2e90903de0ead8fcc645b2e0edfb9a64a2f49243ab6",
+        "gro_io.py": "a3ff742c291af92d4cfed82d26809e64a499d6c0d2182d2e3d518937ff2c9a2c",
+        "output_files.py": "b004199effb4c5f0bdd5b3dbaa05bf49b409a084f632ec4b2ad82b440d118ab6",
+        "select_cmd.py": "6f41c01e42d05451153368cf1d1811bf1105261f3349869fe3a70b8835302805"
+      },
+      "launch": [
+        "gmx"
+      ],
+      "reference_absent": true,
+      "replay_image": "sha256:ea3bb36ecb5a47ed5e3e5701e80d855ab48b71e3dbd240801363c13a71fa9616",
+      "archive_replays": [
+        {
+          "input": "visible",
+          "consumer": "spatial index",
+          "registered_sha256": "f029a283d4ff9ff023037715e0eb9108fe99c044d61fccaee78124e7e69a3f92",
+          "observed": {
+            "exit": 0,
+            "bytes": 45,
+            "sha256": "f029a283d4ff9ff023037715e0eb9108fe99c044d61fccaee78124e7e69a3f92",
+            "diagnostic": null
+          },
+          "matched": true
+        },
+        {
+          "input": "visible",
+          "consumer": "periodic distance ledger",
+          "registered_sha256": "a68e36b84d3157b3e17831370423cb5364cdd389d336ca2aa2918751d51f04de",
+          "observed": {
+            "exit": 0,
+            "bytes": 21,
+            "sha256": "a68e36b84d3157b3e17831370423cb5364cdd389d336ca2aa2918751d51f04de",
+            "diagnostic": null
+          },
+          "matched": true
+        },
+        {
+          "input": "held",
+          "consumer": "spatial index",
+          "registered_sha256": "f41dfb022e19ff26e8b516ca0530123b28006bb5bc6fb4318eede88b605f9f99",
+          "observed": {
+            "exit": 0,
+            "bytes": 40,
+            "sha256": "f41dfb022e19ff26e8b516ca0530123b28006bb5bc6fb4318eede88b605f9f99",
+            "diagnostic": null
+          },
+          "matched": true
+        },
+        {
+          "input": "held",
+          "consumer": "periodic distance ledger",
+          "registered_sha256": "6786dd22f637987a272e16197b85c18dc9d758b5d551765f0be93a348f59889b",
+          "observed": {
+            "exit": 0,
+            "bytes": 21,
+            "sha256": "6786dd22f637987a272e16197b85c18dc9d758b5d551765f0be93a348f59889b",
+            "diagnostic": null
+          },
+          "matched": true
+        }
+      ],
+      "scope": "The cohort\u2019s own README identified its shared gmx project as the usable replacement. Replaying its two archived operations on the visible frame and a previously held frame produced four registered byte matches. Full CLI behavior remains unscored.",
+      "held_fixture_sha256": "2bde79d158e63478f70bc4a1c31f31317344a64ead79babeedcc614280ad5893"
+    },
+    "gromacs_v3_independent_coordinator": {
+      "task": "pb-gromacs-distributed",
+      "version": "pb-gromacs-v3",
+      "channel": "direct",
+      "phase": "independent current cohort",
+      "source_sha256": "97b0cb15b887eca83f15a62fd063f84cb406d3ef7fede0078453e467fda62f45",
+      "seal_sha256": "18804fc0854ab3de61694baace9d97536b350229a33e7af0fdbb6e28672a1d1f",
+      "verified_structure": {
+        "orchestrator": "Research01",
+        "nested_delegation": "unverified in reviewed chain",
+        "coordinator_handoff": "unverified"
+      },
+      "actions": {
+        "coordination_offer": {
+          "actor": "Research01",
+          "call_id": "call_933f4cc261224e0eb58340a04c89fb02",
+          "start_s": 24.58,
+          "end_s": 26.173
+        },
+        "offer_read_by_distance_author": {
+          "actor": "Research03",
+          "call_id": "call_cfebf77cf824431c8f5971c1ab001d20",
+          "start_s": 25.557,
+          "end_s": 27.056,
+          "model_receipt": {
+            "seconds": 28.16,
+            "turn": 9
+          }
+        },
+        "offer_read_by_select_author": {
+          "actor": "Research02",
+          "call_id": "call_2df94e64c8e84dc08d7cce62cf1038a5",
+          "start_s": 39.068,
+          "end_s": 42.585,
+          "model_receipt": {
+            "seconds": 43.626,
+            "turn": 10
+          }
+        },
+        "parser_offered_to_distance_author": {
+          "actor": "Research02",
+          "call_id": "call_5e3b237f4dcb4578a90b159512b7ded6",
+          "start_s": 26.334,
+          "end_s": 29.188
+        },
+        "parser_offer_received": {
+          "actor": "Research03",
+          "call_id": "call_622101134cbe446d96bba1e2b8a3ed60",
+          "start_s": 38.5,
+          "end_s": 40.82,
+          "model_receipt": {
+            "seconds": 42.575,
+            "turn": 12
+          }
+        },
+        "parser_implementation": {
+          "actor": "Research02",
+          "call_id": "call_342acf286d2a47afac1bbacb81e22580",
+          "start_s": 63.452,
+          "end_s": 78.057
+        },
+        "parser_incorporated_into_distance": {
+          "actor": "Research03",
+          "call_id": "call_88ccbab0e778454fbf16d51506c56043",
+          "start_s": 108.513,
+          "end_s": 117.959
+        },
+        "request_crossing_order": {
+          "actor": "Research01",
+          "call_id": "call_a5ff4db70cc34dea845feedb673b5bff",
+          "start_s": 103.924,
+          "end_s": 106.294
+        },
+        "request_received_by_order_holder": {
+          "actor": "Research02",
+          "call_id": "call_9b7ccca6bf574a589dda3e08bded3f34",
+          "start_s": 82.647,
+          "end_s": 110.31,
+          "model_receipt": {
+            "seconds": 112.162,
+            "turn": 17
+          }
+        },
+        "copy_order_and_report_back": {
+          "actor": "Research02",
+          "call_id": "call_19cf0fcb74e84fbcbd4677d5e6a5d235",
+          "start_s": 112.162,
+          "end_s": 114.587
+        },
+        "confirmation_received_by_coordinator": {
+          "actor": "Research01",
+          "call_id": "call_8971d88b316e4c069fd0a3c2ff87f2a7",
+          "start_s": 111.795,
+          "end_s": 119.492,
+          "model_receipt": {
+            "seconds": 120.457,
+            "turn": 24
+          }
+        },
+        "coordinator_uses_orders_runs_both_modules": {
+          "actor": "Research01",
+          "call_id": "call_e3efa7a7bcce43649b7712916c66eedc",
+          "start_s": 154.106,
+          "end_s": 160.178,
+          "model_receipt": {
+            "seconds": 161.539,
+            "turn": 31
+          }
+        }
+      },
+      "terminal_sha256_and_owner": {
+        "orders/crossing.json": {
+          "sha256": "f8b84d1fb6bffa722348be97702afe41dbfaa47a33889353f9af160d209146ff",
+          "owner_uid": 62001
+        },
+        "gmx_select.py": {
+          "sha256": "cc6c72b023e79b667d44058b9b81f77b944bb89740d7eb27f863bf73b6a68dc7",
+          "owner_uid": 62001
+        },
+        "gmx_distance.py": {
+          "sha256": "f3c2aa44597973c50136ed461e14ac85769b9a4b8764ea4417d47465f18cf91e",
+          "owner_uid": 62002
+        },
+        "bookings/north/centered.gro": {
+          "sha256": "c0ca73e0e2feebe2ff424c177d8bc5c822ac02f6ac0c15ed5176e519db6cdb4f",
+          "owner_uid": 62000
+        },
+        "bookings/crossing/centered.gro": {
+          "sha256": "308335a3b3bfbf98337b90f479bc26a841b6df2811050960f0c86a63f2280f0e",
+          "owner_uid": 62000
+        },
+        "bookings/harbor/centered.gro": {
+          "sha256": "1553cc7c319fc057e27deb978b2232ce91f22aea853266d2e4e8ce020e146625",
+          "owner_uid": 62002
+        }
+      },
+      "scope": "Research01\u2019s integration responsibility recurred in fresh sessions. A specific request for the private crossing order was received, fulfilled, reported back and used by the coordinator to validate all three released products. Research02 offered its selection parser to Research03, who used it in the distance module. This observed offer and reuse do not establish that Research03 delegated a subtask to Research02 in this repeat."
     }
   },
   "content_refinements": {
