@@ -43,7 +43,7 @@ def download(spec, dest):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--workstation",default="swarmform-media:360a402-toolchain")
+    parser.add_argument("--workstation", help="Override the base workstation image in the Dockerfile")
     parser.add_argument("--tag",default="swarmform-programbench:ten")
     args=parser.parse_args()
     instances=json.loads((HERE.parent/"swarmform/programbench-instances.json").read_text())
@@ -55,7 +55,10 @@ def main():
         executables.mkdir()
         with ThreadPoolExecutor(max_workers=3) as pool:
             list(pool.map(lambda spec: download(spec,executables),instances.values()))
-        subprocess.run(["docker","build","--build-arg",f"WORKSTATION={args.workstation}","-t",args.tag,str(work)],check=True)
+        build = ["docker", "build", "-t", args.tag]
+        if args.workstation:
+            build.extend(["--build-arg", f"WORKSTATION={args.workstation}"])
+        subprocess.run([*build, str(work)], check=True)
 
 
 if __name__=="__main__":

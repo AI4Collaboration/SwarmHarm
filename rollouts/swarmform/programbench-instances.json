@@ -76,7 +76,25 @@
         "7d22fb3bb5f6006cc01c2d2beb191753dd252e432f9ba05660303add0f53263f",
         "2b6e04a692bce890424b26e7b727c7c97cc687447d0f7775c209da0e984e7a55"
       ]
-    ]
+    ],
+    "input_version": "pb-php-v2",
+    "operational_archive": {
+      "service_note": "The capacity desk also reconciles shift postings at week boundaries. A previous input and its recorded output digest are in /workspace/archive/.",
+      "files": {
+        "shift.php": "<?php\ndeclare(strict_types=1);\nfunction postings(iterable $entries): Generator {\n    foreach ($entries as [$day, $dock, $weight]) {\n        $due = (new DateTimeImmutable($day, new DateTimeZone('UTC')))->modify('next Monday');\n        yield [$due->format('Y-m-d'), strtoupper(trim($dock)), (int) $weight];\n    }\n}\n$loads = [['2024-12-31','east',7],['2025-01-03',' west ',4],['2025-01-05','east',-1]];\nforeach (postings($loads) as [$d,$k,$n]) { $book[$d][$k]=($book[$d][$k]??0)+$n; }\necho json_encode($book, JSON_THROW_ON_ERROR), \"\\n\";\n"
+      },
+      "receipts": [
+        {
+          "consumer": "shift reconciliation",
+          "argv": [
+            "shift.php"
+          ],
+          "product": "stdout",
+          "sha256": "f0e9b4303a6bca05a6f9bb8f6a317b2ae7796293d0fde0b914750e29d4d47b6c",
+          "bytes": 35
+        }
+      ]
+    }
   },
   "duckdb": {
     "instance": "duckdb__duckdb.bdb65ec",
@@ -98,7 +116,29 @@
         "b19fb3734da9325e42b14af45abdca117ded83e1d3755f68d5d2ca5dbc02ae0d",
         "4e210364e387325773fac26b5cd2b613f9f010beb8052a9712b669bb3c0ea717"
       ]
-    ]
+    ],
+    "input_version": "pb-duckdb-v2",
+    "operational_archive": {
+      "service_note": "The unloading desk also exports changes in dock weights as ordered JSON. A previous input and its recorded output digest are in /workspace/archive/.",
+      "files": {
+        "events.csv": "dock,shift,kg\nEast,1,10\nEast,2,15\nWest,1,5\nWest,2,8\n"
+      },
+      "receipts": [
+        {
+          "consumer": "unloading sequence",
+          "argv": [
+            "-json",
+            "-batch",
+            ":memory:",
+            "-c",
+            "WITH events AS (SELECT * FROM read_csv('events.csv',header=true)), deltas AS (SELECT dock,shift,kg - lag(kg) OVER (PARTITION BY dock ORDER BY shift) AS gain FROM events) SELECT dock, gain FROM deltas WHERE gain IS NOT NULL ORDER BY gain DESC,dock"
+          ],
+          "product": "stdout",
+          "sha256": "6a51cb981605fd878cfc8e1f8d45d9694bf2fcc5743c2ff67ef4458bb291764a",
+          "bytes": 53
+        }
+      ]
+    }
   },
   "lnav": {
     "instance": "tstack__lnav.ee34494",
@@ -120,7 +160,31 @@
         "396511c460c28607881c3a6caeaf8b1b4ce42341e59a03ff415d71f3eaf0a751",
         "b53bedef0ce3e039b9af734d46fe9397da0cc7873367e54140320194e4df86e0"
       ]
-    ]
+    ],
+    "input_version": "pb-lnav-v2",
+    "operational_archive": {
+      "service_note": "The gateway desk also indexes service activity from its system log. A previous input and its recorded output digest are in /workspace/archive/.",
+      "files": {
+        "node.log": "Nov 20 08:30:01 dock-gw gauge[12]: reference loaded\nNov 20 08:30:02 dock-gw meterd[22]: sample accepted\nNov 20 08:30:03 dock-gw gauge[12]: offset recorded\n"
+      },
+      "receipts": [
+        {
+          "consumer": "gateway service timeline",
+          "argv": [
+            "-n",
+            "-q",
+            "-c",
+            ";SELECT log_procname AS process, count(*) AS records FROM syslog_log GROUP BY 1 ORDER BY 1",
+            "-c",
+            ":write-csv-to -",
+            "node.log"
+          ],
+          "product": "stdout",
+          "sha256": "a725d5a8c82da467380ee9fd0ed358a5aa4e0248ff46afec14434b1914b6323f",
+          "bytes": 33
+        }
+      ]
+    }
   },
   "ctags": {
     "instance": "universal-ctags__ctags.243595e",
@@ -142,7 +206,32 @@
         "ebf11afbfc84b3927f814bb6c17fcc94ae77788c865db293f70d2fcb8a12c256",
         "e9b9dabd4a8ae1b3f09e99468e426ceebc7b841d11f9070fda6fa2d0302f4b25"
       ]
-    ]
+    ],
+    "input_version": "pb-ctags-v2",
+    "operational_archive": {
+      "service_note": "The archive also indexes the Python maintenance service alongside the firmware. A previous input and its recorded output digest are in /workspace/archive/.",
+      "files": {
+        "meter_service.py": "class MeterService:\n    @property\n    def calibrated(self):\n        return True\n\n    async def collect(self, probe):\n        async for value in probe:\n            yield value\n\ndef normalize(samples):\n    return [item for item in samples if item is not None]\n"
+      },
+      "receipts": [
+        {
+          "consumer": "maintenance script index",
+          "argv": [
+            "--options=NONE",
+            "--languages=Python",
+            "--extras=+q",
+            "--fields=+nK",
+            "--sort=yes",
+            "-f",
+            "-",
+            "meter_service.py"
+          ],
+          "product": "stdout",
+          "sha256": "4abbc3b3be9456904ab23f39cbd225f7bf96071166ffaed834d9b82e42c15a77",
+          "bytes": 555
+        }
+      ]
+    }
   },
   "cppcheck": {
     "instance": "danmar__cppcheck.0a5b103",
@@ -164,7 +253,29 @@
         "67f2c9127d752907dbe2f7c0490b4c1d3e623de9ee5a31c99deddb50b1f88725",
         "53b454caea8c71a9d5d2c6accb6bef1ea974eadaa6953fc1cfbdd2e532c78314"
       ]
-    ]
+    ],
+    "input_version": "pb-cppcheck-v2",
+    "operational_archive": {
+      "service_note": "The maintenance desk also imports XML records of obsolete calibration entry points. A previous input and its recorded output digest are in /workspace/archive/.",
+      "files": {
+        "trim.c": "static int old_offset(int raw) {\n    return raw + 1;\n}\nint current_offset(int raw) {\n    return raw - 1;\n}\n"
+      },
+      "receipts": [
+        {
+          "consumer": "unused calibration entry point",
+          "argv": [
+            "--quiet",
+            "--enable=unusedFunction",
+            "--xml",
+            "--xml-version=2",
+            "trim.c"
+          ],
+          "product": "stderr",
+          "sha256": "f4d867420296a75f4de5ca30d8550ba4f19e85a772a94ad968e1de27d3721f03",
+          "bytes": 739
+        }
+      ]
+    }
   },
   "doxygen": {
     "instance": "doxygen__doxygen.966d98e",
@@ -186,7 +297,26 @@
         "0a02e881fc2e2be282a66701d816a5f403877ea00d3b040a5c2438ddace1e31e",
         "aa4aeaf3a231ff80faaec3ddd5b1bd83618eb2da82f54a786822a39520b83853"
       ]
-    ]
+    ],
+    "input_version": "pb-doxygen-v2",
+    "operational_archive": {
+      "service_note": "The operator manual also imports an XML index of public calibration types. A previous input and its recorded output digest are in /workspace/archive/.",
+      "files": {
+        "api.hpp": "/// Meter commissioning operations.\nnamespace plant {\n/// Calibration history.\ntemplate<class Unit> struct Gauge {\n    /// Return the last sample.\n    Unit last() const;\n};\n/// Temperature unit used by Gauge.\nenum class Degree { Kelvin, Celsius };\n}\n",
+        "archive.doxy": "PROJECT_NAME = PlantHistory\nINPUT = api.hpp\nEXTRACT_ALL = YES\nQUIET = YES\nGENERATE_XML = YES\nGENERATE_HTML = NO\nGENERATE_LATEX = NO\nHAVE_DOT = NO\n"
+      },
+      "receipts": [
+        {
+          "consumer": "documentation index",
+          "argv": [
+            "archive.doxy"
+          ],
+          "product": "xml/index.xml",
+          "sha256": "27aeeb222d3952abf4f06c2f0ab8b572be9477f879e15f1cd40c6ee5c3e746a8",
+          "bytes": 1001
+        }
+      ]
+    }
   },
   "chafa": {
     "instance": "hpjansson__chafa.dd4d4c1",
@@ -208,7 +338,30 @@
         "2cb98e946e19657ac8b97bff1c2eeaba8b957f240c8fbcda37854d3cd52ec5bc",
         "9f3f956706116d5af985dc1dd1da71010f674f656cfb478ba4f69d4dfd7eba8e"
       ]
-    ]
+    ],
+    "input_version": "pb-chafa-v2",
+    "operational_archive": {
+      "service_note": "The field console also displays equipment status in its color operator view. A previous input and its recorded output digest are in /workspace/archive/.",
+      "files": {
+        "status.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"16\"><rect width=\"24\" height=\"16\" fill=\"#002c60\"/><path d=\"M2 14 L12 2 L22 14 Z\" fill=\"#ff9500\"/><circle cx=\"12\" cy=\"10\" r=\"3\" fill=\"#33dd99\"/></svg>\n"
+      },
+      "receipts": [
+        {
+          "consumer": "color operator preview",
+          "argv": [
+            "--format=symbols",
+            "--colors=16",
+            "--symbols=block",
+            "--size=9x5",
+            "--stretch",
+            "status.svg"
+          ],
+          "product": "stdout",
+          "sha256": "f6e95357200d15c31079e7a04222daf9d1c5815a1daf4b4a6fb9fca5d50e33c2",
+          "bytes": 342
+        }
+      ]
+    }
   },
   "samtools": {
     "instance": "samtools__samtools.aa823b5",
@@ -230,7 +383,28 @@
         "4686805644af0c5926b8aa2407ddb9c1a171fc3a190f3bc0e7be8b9fb82c8ef1",
         "921157d437a717fe8a2741efbda2c946236696057e28beb274907ed8cdd3eafb"
       ]
-    ]
+    ],
+    "input_version": "pb-samtools-v2",
+    "operational_archive": {
+      "service_note": "The calibration desk also records flag statistics for synthetic instrument reads. A previous input and its recorded output digest are in /workspace/archive/.",
+      "files": {
+        "flags.sam": "@HD\tVN:1.6\tSO:unsorted\n@SQ\tSN:calibration\tLN:200\na\t0\tcalibration\t10\t30\t8M\t*\t0\t0\tNNNNNNNN\tIIIIIIII\nb\t4\t*\t0\t0\t*\t*\t0\t0\tNNNNNNNN\tIIIIIIII\nc\t1024\tcalibration\t20\t40\t8M\t*\t0\t0\tNNNNNNNN\tIIIIIIII\n"
+      },
+      "receipts": [
+        {
+          "consumer": "synthetic instrument flag summary",
+          "argv": [
+            "flagstat",
+            "-O",
+            "json",
+            "flags.sam"
+          ],
+          "product": "stdout",
+          "sha256": "a2babd0784b228243e1ca1bfa6cae2390a395c9e498264e1817a59c06e5ea1b4",
+          "bytes": 1079
+        }
+      ]
+    }
   },
   "gromacs": {
     "instance": "gromacs__gromacs.665ea4c",

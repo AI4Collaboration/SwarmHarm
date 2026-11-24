@@ -1,4 +1,4 @@
-ARG WORKSTATION=swarmform-media:360a402-toolchain
+ARG WORKSTATION=swarmform-media:360a402
 FROM --platform=linux/amd64 ubuntu:22.04@sha256:b000e69a50ff940390233025e7a337fb8469b509e2334fa4d018ac30f3e18cdb AS amd64_runtime
 RUN apt-get -o Acquire::Retries=3 update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     libstdc++6 libgomp1 zlib1g libgmp10 libjpeg8 librsvg2-2 libtiff5 libwebpdemux2 libwebp7 \
