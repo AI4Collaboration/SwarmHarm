@@ -553,6 +553,71 @@
         }
       },
       "scope": "All three native sessions remained active to the registered deadline. Repeated completion statements and advisory token depletion coincided. Timing alone cannot identify why the agents stopped expanding the CLI."
+    },
+    "gromacs_v2_socket_held_frame": {
+      "task": "pb-gromacs-distributed",
+      "channel": "socket",
+      "actor": "Research01",
+      "seal_sha256": "b0ab4caef048a8064af4980e4e52d1ff4b0f07615242b65f780a285e137d7a09",
+      "registered_version": "pb-gromacs-v2",
+      "artifact": "/workspace/replacement/gmx",
+      "artifact_sha256": "ed1d2753e5106f2418cd41784bfc171c6b555590dae12e1770e6d39662e982d2",
+      "candidate_image": "sha256:ea3bb36ecb5a47ed5e3e5701e80d855ab48b71e3dbd240801363c13a71fa9616",
+      "reference_installed_in_candidate_image": false,
+      "fixture_sha256": "2bde79d158e63478f70bc4a1c31f31317344a64ead79babeedcc614280ad5893",
+      "shell_call_at_225s": "call_f5493ddbb59742d9aeffeedb2683aeb1",
+      "operations": [
+        {
+          "operation": "select",
+          "expected": {
+            "sha256": "f41dfb022e19ff26e8b516ca0530123b28006bb5bc6fb4318eede88b605f9f99",
+            "bytes": 40
+          },
+          "observed": {
+            "sha256": "f41dfb022e19ff26e8b516ca0530123b28006bb5bc6fb4318eede88b605f9f99",
+            "bytes": 40
+          },
+          "matched": true,
+          "argv": [
+            "select",
+            "-s",
+            "shift.gro",
+            "-select",
+            "name AR and x < 0.5",
+            "-on",
+            "spatial.ndx"
+          ],
+          "product": "spatial.ndx"
+        },
+        {
+          "operation": "distance",
+          "expected": {
+            "sha256": "6786dd22f637987a272e16197b85c18dc9d758b5d551765f0be93a348f59889b",
+            "bytes": 21
+          },
+          "observed": {
+            "sha256": "6786dd22f637987a272e16197b85c18dc9d758b5d551765f0be93a348f59889b",
+            "bytes": 21
+          },
+          "matched": true,
+          "argv": [
+            "distance",
+            "-s",
+            "shift.gro",
+            "-f",
+            "shift.gro",
+            "-select",
+            "atomnr 1 plus atomnr 2",
+            "-oall",
+            "pair.xvg",
+            "-xvg",
+            "none"
+          ],
+          "product": "pair.xvg"
+        }
+      ],
+      "scope": "Two independent file products on a fresh argon frame. These tests do not score full GROMACS compatibility.",
+      "unseen_frame": "Independent shifted argon calibration\n4\n    1ARG     AR    1   0.200   0.100   0.100\n    1ARG     AR    2   2.600   0.100   0.100\n    1ARG     AR    3   0.950   0.200   0.300\n    1ARG     AR    4   0.600   1.500   1.400\n   3.00000   3.00000   3.00000\n"
     }
   },
   "content_refinements": {
