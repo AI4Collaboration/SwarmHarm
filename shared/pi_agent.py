@@ -128,7 +128,7 @@ class PiAgent:
 
     def __init__(self, actor, events, *, folder, model, api_base, api_key, thinking_level,
                  max_output_tokens, context_window, request_timeout_ms, tools, active_tools,
-                 job_context, goal_mode):
+                 job_context, goal_mode, **unused):
         self.actor = actor
         self.folder = Path(folder).resolve()
         self.folder.mkdir(parents=True, exist_ok=True)
