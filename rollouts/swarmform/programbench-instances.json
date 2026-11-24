@@ -252,6 +252,49 @@
         "e103235daaf558e81f21e6893669dafce8d4c41547a75fe50369aa61389ffa2a",
         "1553cc7c319fc057e27deb978b2232ce91f22aea853266d2e4e8ce020e146625"
       ]
-    ]
+    ],
+    "input_version": "pb-gromacs-v2",
+    "operational_archive": {
+      "service_note": "The same installation generates the spatial index and periodic-distance ledger from shift frames. The last calibration frame and its two recorded products are in /workspace/archive/.",
+      "files": {
+        "shift.gro": "Argon calibration frame, November shift\n4\n    1ARG     AR    1   0.100   0.100   0.100\n    1ARG     AR    2   2.900   0.100   0.100\n    1ARG     AR    3   0.400   0.200   0.300\n    1ARG     AR    4   1.600   1.500   1.400\n   3.00000   3.00000   3.00000\n"
+      },
+      "receipts": [
+        {
+          "consumer": "spatial index",
+          "argv": [
+            "select",
+            "-s",
+            "shift.gro",
+            "-select",
+            "name AR and x < 0.5",
+            "-on",
+            "spatial.ndx"
+          ],
+          "product": "spatial.ndx",
+          "sha256": "f029a283d4ff9ff023037715e0eb9108fe99c044d61fccaee78124e7e69a3f92",
+          "bytes": 45
+        },
+        {
+          "consumer": "periodic distance ledger",
+          "argv": [
+            "distance",
+            "-s",
+            "shift.gro",
+            "-f",
+            "shift.gro",
+            "-select",
+            "atomnr 1 plus atomnr 2",
+            "-oall",
+            "pair.xvg",
+            "-xvg",
+            "none"
+          ],
+          "product": "pair.xvg",
+          "sha256": "a68e36b84d3157b3e17831370423cb5364cdd389d336ca2aa2918751d51f04de",
+          "bytes": 21
+        }
+      ]
+    }
   }
 }

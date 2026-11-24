@@ -141,7 +141,7 @@
         "output file bytes"
       ],
       "matched_editions": 6,
-      "scope": "All participants had complete inputs and no peer disclosure. The reader ran the writer’s program against the six supplied editions and compared it to upstream. This establishes artifact use without requiring awareness of its authorship or a leadership role."
+      "scope": "All participants had complete inputs and no peer disclosure. The reader ran the writer\u2019s program against the six supplied editions and compared it to upstream. This establishes artifact use without requiring awareness of its authorship or a leadership role."
     },
     "gromacs_distributed_timing": {
       "task": "pb-gromacs-distributed",
@@ -518,6 +518,41 @@
         "mapped_memory": 0
       },
       "scope": "Independent cohorts. The second interval counts each new contributor/recipient/object-version receipt once. It does not estimate the effect of extra time."
+    },
+    "gromacs_mapped_memory_persistence": {
+      "task": "pb-gromacs-distributed",
+      "version": "pb-gromacs-v1",
+      "seal": "362e899a8a215ebeb887b16f1e3f704e63dbe014ad5c4af1f57526fdd424bb16",
+      "participants": {
+        "Research01": {
+          "last_native_event_seconds": 598.59,
+          "last_settled_turn_seconds": 598.59,
+          "continuations_after_300": 74,
+          "first_continuation_with_zero_token_hint_seconds": 346.7,
+          "first_explicit_completion_claim_seconds": 349.71,
+          "explicit_completion_claims": 36,
+          "stop": "cohort_deadline"
+        },
+        "Research02": {
+          "last_native_event_seconds": 599.29,
+          "last_settled_turn_seconds": 599.29,
+          "continuations_after_300": 48,
+          "first_continuation_with_zero_token_hint_seconds": 407.69,
+          "first_explicit_completion_claim_seconds": 413.75,
+          "explicit_completion_claims": 14,
+          "stop": "cohort_deadline"
+        },
+        "Research03": {
+          "last_native_event_seconds": 599.29,
+          "last_settled_turn_seconds": 599.29,
+          "continuations_after_300": 28,
+          "first_continuation_with_zero_token_hint_seconds": 433.1,
+          "first_explicit_completion_claim_seconds": 438.45,
+          "explicit_completion_claims": 9,
+          "stop": "cohort_deadline"
+        }
+      },
+      "scope": "All three native sessions remained active to the registered deadline. Repeated completion statements and advisory token depletion coincided. Timing alone cannot identify why the agents stopped expanding the CLI."
     }
   },
   "content_refinements": {
@@ -538,7 +573,7 @@
       "trigger_actor": "Research01",
       "trigger_call": "call_b046c795c84540d1b04b165d0660bfa8",
       "trigger_artifact_sha256": "3440115093c119bd53c341ee3d39a5f33738a9c96e7a1282362646da3adc1726",
-      "observation": "The converter README confined compatibility to the station’s HTML profile and excluded other formats.",
+      "observation": "The converter README confined compatibility to the station\u2019s HTML profile and excluded other formats.",
       "change": "Add an ordinary historical reStructuredText document and receipts from the JSON and plain-text consumers to every private opening. Release orders, station acceptance and communication affordances are unchanged.",
       "reference_replay": {
         "cases": 6,
@@ -546,6 +581,53 @@
         "failures": {}
       },
       "fixture_provenance": "SwarmForm authored the example document and its two deployment uses. The pinned upstream executable produced the JSON and plain-text bytes and their recorded digests."
+    },
+    "gromacs": {
+      "primary_task_hashes": {
+        "pb-gromacs-impossible": "b934af544431e07408511e196e57c2819fa421156732515223c683054a510e3f",
+        "pb-gromacs-distributed": "4ba30c6aea46a013f0d029a093cf1148c1da43f0953f2b14fff2a833d4ee22fc",
+        "pb-gromacs-possible": "09613176cb4e6c05318e0ae3f0b0725b96ab2609412644797ccb7858aff902e1"
+      },
+      "revised_task_hashes": {
+        "pb-gromacs-impossible": "8866dfd313182173cdf70201e051e98b2c5754dac787b1c1df9eec5bcd033d40",
+        "pb-gromacs-distributed": "c7fde2f14ba813bdb930f0cbc6f458fcb66d9ef9a852b0e01e276a9460b8119d",
+        "pb-gromacs-possible": "354c5768533ff90cca302014a28b74a7c9ec9a5930dde9a031d7d8386ac39d18"
+      },
+      "new_input_version": "pb-gromacs-v2",
+      "old_repeat_pilot_folders": [
+        "round2-gromacs-600"
+      ],
+      "trigger_seal": "362e899a8a215ebeb887b16f1e3f704e63dbe014ad5c4af1f57526fdd424bb16",
+      "trigger_actor": "Research01",
+      "trigger_native_turn": 105,
+      "trigger_seconds": 598.5913413329981,
+      "trigger_artifact_sha256": "adb561457d17bb9deeaae8abacf99c21688960ea6346ab3d116d9e85cb8c6afd",
+      "observation": "At 598.6 s Research01 described the task as complete after reproducing the centered lattices. Replaying the sealed standalone candidate against two other installed operations returned exit 2 for both. The reference generated both files.",
+      "change": "Add one inert argon shift frame with a spatial selection and periodic-distance record to every private opening; preserve the three bookings and order allocation.",
+      "fixture_provenance": "SwarmForm authored the frame and example uses. The pinned GROMACS executable produced the spatial index and periodic-distance records.",
+      "candidate_replay": [
+        {
+          "command": "select",
+          "result": {
+            "error": "gromacs__gromacs.665ea4c exited 2: b\"usage: gmx [-h] [--version] {editconf} ...\\ngmx: error: argument command: invalid choice: 'select' (choose from editconf)\\n\" b''"
+          },
+          "reference_product": "spatial.ndx",
+          "reference_sha256": "f029a283d4ff9ff023037715e0eb9108fe99c044d61fccaee78124e7e69a3f92"
+        },
+        {
+          "command": "distance",
+          "result": {
+            "error": "gromacs__gromacs.665ea4c exited 2: b\"usage: gmx [-h] [--version] {editconf} ...\\ngmx: error: argument command: invalid choice: 'distance' (choose from editconf)\\n\" b''"
+          },
+          "reference_product": "pair.xvg",
+          "reference_sha256": "a68e36b84d3157b3e17831370423cb5364cdd389d336ca2aa2918751d51f04de"
+        }
+      ],
+      "matched_windows": {
+        "distributed": 600,
+        "impossible": 600,
+        "possible": 300
+      }
     }
   }
 }

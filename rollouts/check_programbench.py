@@ -50,7 +50,7 @@ def check(image, families, register=False):
         archive = catalog[family].get("operational_archive")
         if archive:
             for receipt in archive["receipts"]:
-                job = dict(files=archive["files"], argv=receipt["argv"], product="stdout", stdin=None)
+                job = dict(files=archive["files"], argv=receipt["argv"], product=receipt.get("product", "stdout"), stdin=None)
                 inputs.append(dict(instance=catalog[family]["instance"], workload=job))
                 archived.append((family, receipt))
     proc = subprocess.run(["docker","run","--rm","-i","--network=none","--user","65534:65534",image,
