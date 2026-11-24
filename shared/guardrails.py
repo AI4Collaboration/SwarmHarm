@@ -7,6 +7,9 @@ import urllib.error
 import urllib.request
 from urllib.parse import urlsplit
 
+OPENROUTER_API_BASE = 'https://openrouter.ai/api/v1'
+AXONHUB_API_BASE = 'https://lmportal.iefbr14.xyz/v1'
+
 
 def outside_repository(path, repository, label):
     resolved = Path(path).expanduser().resolve()
@@ -47,6 +50,72 @@ def credential_file(path, repository):
     if not resolved.read_text().strip():
         raise ValueError("The API key file is empty")
     return resolved
+
+
+def resolve_api_base(explicit=None, *, allow_axonhub_default=True):
+    """Prioritize OpenAI-compatible API URLs (explicit / OPENAI_BASE_URL / OpenRouter), then AxonHub."""
+    if explicit:
+        return api_base_url(explicit)
+    for var in ('OPENAI_BASE_URL', 'OPENAI_API_BASE', 'OPENROUTER_BASE_URL'):
+        val = os.environ.get(var, '').strip()
+        if val:
+            return api_base_url(val)
+    if os.environ.get('OPENROUTER_API_KEY', '').strip() or os.environ.get('OPENROUTER_API_KEY_FILE', '').strip():
+        return OPENROUTER_API_BASE
+    if allow_axonhub_default:
+        return api_base_url(os.environ.get('AXONHUB_BASE_URL', AXONHUB_API_BASE))
+    return None
+
+
+def resolve_api_key(key_file=None, repository=None, *, api_base=None):
+    """Resolve credential prioritizing explicit file, OpenAI/OpenRouter env vars, then AxonHub."""
+    def _read_file(candidate):
+        p = Path(candidate).expanduser()
+        if repository is not None:
+            p = credential_file(p, repository)
+        elif not p.is_file() or not p.read_text().strip():
+            raise ValueError(f"API key file is missing or empty: {p}")
+        return p.read_text().strip()
+
+    if key_file is not None:
+        return _read_file(key_file)
+    base_str = str(api_base or '').lower()
+    if 'openrouter.ai' in base_str:
+        file_vars = ('OPENROUTER_API_KEY_FILE', 'OPENAI_API_KEY_FILE', 'AXONHUB_API_KEY_FILE')
+        env_vars = ('OPENROUTER_API_KEY', 'OPENAI_API_KEY', 'AXONHUB_API_KEY')
+    elif 'lmportal.iefbr14.xyz' in base_str:
+        file_vars = ('AXONHUB_API_KEY_FILE', 'OPENAI_API_KEY_FILE', 'OPENROUTER_API_KEY_FILE')
+        env_vars = ('AXONHUB_API_KEY', 'OPENAI_API_KEY', 'OPENROUTER_API_KEY')
+    else:
+        file_vars = ('OPENAI_API_KEY_FILE', 'OPENROUTER_API_KEY_FILE', 'AXONHUB_API_KEY_FILE')
+        env_vars = ('OPENAI_API_KEY', 'OPENROUTER_API_KEY', 'AXONHUB_API_KEY')
+    for fvar in file_vars:
+        fval = os.environ.get(fvar, '').strip()
+        if fval:
+            return _read_file(fval)
+    for evar in env_vars:
+        eval_ = os.environ.get(evar, '').strip()
+        if eval_:
+            return eval_
+    return None
+
+
+def resolve_axonhub_fallback(primary_base, primary_key=None, *, repository=None):
+    """Return (axonhub_base, axonhub_key) when primary is non-AxonHub and AxonHub fallback is configured."""
+    axon_base = api_base_url(os.environ.get('AXONHUB_BASE_URL', AXONHUB_API_BASE))
+    if not primary_base or api_base_url(primary_base) == axon_base:
+        return None
+    f_file = os.environ.get('AXONHUB_API_KEY_FILE', '').strip()
+    if f_file:
+        p = credential_file(f_file, repository) if repository is not None else Path(f_file).expanduser()
+        if p.is_file() and p.read_text().strip():
+            return axon_base, p.read_text().strip()
+    f_key = os.environ.get('AXONHUB_API_KEY', '').strip()
+    if f_key:
+        return axon_base, f_key
+    if os.environ.get('SWARMHARM_AXONHUB_FALLBACK', '').strip() in ('1', 'true', 'yes') and primary_key:
+        return axon_base, primary_key
+    return None
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):

@@ -223,7 +223,8 @@ def main():
     parser.add_argument('--api-protocol', choices=('chat-completions','native'), default='chat-completions')
     parser.add_argument('--served-model', help='Exact provider ID, if different from native identity')
     parser.add_argument('--model', required=True, help='Selected model identity; see docs/model-lineup.md')
-    parser.add_argument('--base-url', default=os.environ.get('OPENAI_BASE_URL', run.AXONHUB_API_BASE))
+    parser.add_argument('--base-url', default=None,
+                        help='OpenAI-compatible API URL (prioritizes --base-url / OPENAI_BASE_URL / OpenRouter, then AxonHub)')
     parser.add_argument('--key-file', type=Path, default=os.environ.get('OPENAI_API_KEY_FILE'))
     parser.add_argument('--populations', nargs='+', type=int, default=list(defaults.POPULATIONS))
     parser.add_argument('--scenarios', nargs='+', choices=['engineering-capacity', 'knowledge-work'],
@@ -256,7 +257,7 @@ def main():
     for values in (args.populations, args.scenarios, args.mechanisms):
         if len(values) != len(set(values)):
             parser.error('Selections must not contain duplicates')
-    args.base_url = run.guardrails.api_base_url(args.base_url)
+    args.base_url = run.guardrails.resolve_api_base(args.base_url, allow_axonhub_default=True)
     if args.execute and (args.out is None or args.out.resolve().is_relative_to(run.REPO)):
         parser.error('--execute requires --out outside the repository')
     try:
@@ -290,9 +291,9 @@ def execute_rows(args, rows, root, parser):
     key = args.key_file
     temporary_key = None
     if key is None:
-        credential = os.environ.get('OPENAI_API_KEY')
+        credential = run.guardrails.resolve_api_key(repository=run.REPO, api_base=args.base_url)
         if not credential:
-            parser.error('Set OPENAI_API_KEY, OPENAI_API_KEY_FILE or --key-file')
+            parser.error('Set OPENAI_API_KEY, OPENROUTER_API_KEY, OPENAI_API_KEY_FILE or --key-file')
         with tempfile.NamedTemporaryFile(mode='w', prefix='swarmharm-key-', delete=False) as stream:
             stream.write(credential+'\n')
             temporary_key = key = Path(stream.name)

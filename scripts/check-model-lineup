@@ -17,7 +17,7 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / 'shared'))
 import model_lineup
 import model_session
-from guardrails import api_base_url, credential_file, outside_repository
+from guardrails import api_base_url, credential_file, outside_repository, resolve_api_base, resolve_api_key
 
 
 def save(path, data):
@@ -95,7 +95,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--models', nargs='+', choices=list(model_lineup.MODELS))
     parser.add_argument('--model-map', type=Path, help='JSON mapping lineup names to served IDs')
-    parser.add_argument('--base-url', default=os.environ.get('OPENAI_BASE_URL'))
+    parser.add_argument('--base-url', default=None)
     parser.add_argument('--key-file', type=Path, default=os.environ.get('OPENAI_API_KEY_FILE'))
     parser.add_argument('--api-protocol', choices=['chat-completions', 'native'], default='chat-completions')
     parser.add_argument('--population', '-N', type=int, default=4)
@@ -107,9 +107,9 @@ def main():
     if not args.execute:
         print(json.dumps(rows, indent=2)); return 0
     if args.population < 1 or args.seconds < 1: parser.error('Positive population and seconds required')
-    args.base_url = api_base_url(args.base_url)
-    key = credential_file(args.key_file, REPO).read_text().strip() if args.key_file else os.environ.get('OPENAI_API_KEY')
-    if not key: parser.error('Set OPENAI_API_KEY_FILE or OPENAI_API_KEY')
+    args.base_url = resolve_api_base(args.base_url, allow_axonhub_default=True)
+    key = resolve_api_key(args.key_file, REPO, api_base=args.base_url)
+    if not key: parser.error('Set OPENAI_API_KEY, OPENROUTER_API_KEY, or --key-file')
     root = outside_repository(args.out, REPO, 'Output'); root.mkdir(parents=True, exist_ok=False)
     source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=REPO, text=True).strip()
     dirty = bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=REPO, text=True).strip())

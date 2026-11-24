@@ -13,7 +13,7 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO/'shared'))
 import model_lineup as defaults
 from process_control import run_process
-from guardrails import api_base_url, credential_file, outside_repository
+from guardrails import api_base_url, credential_file, outside_repository, resolve_api_base, resolve_api_key
 
 
 def write(path, data):
@@ -121,6 +121,10 @@ def execute(args, expected, config):
                    SWARMHARM_HARBOR_ENV=str(Path(config['python']).parent.parent))
         if args.key_file:
             env['OPENAI_API_KEY_FILE'] = str(args.key_file)
+        elif not env.get('OPENAI_API_KEY', '').strip():
+            resolved_key = resolve_api_key(repository=REPO, api_base=expected['api_base'])
+            if resolved_key:
+                env['OPENAI_API_KEY'] = resolved_key
         # Automated registration commits require no personal Git identity.
         for role in ('AUTHOR', 'COMMITTER'):
             result = subprocess.run(['git', 'var', f'GIT_{role}_IDENT'], cwd=REPO, env=env,
@@ -190,7 +194,8 @@ def execute(args, expected, config):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--base-url', default=os.environ.get('OPENAI_BASE_URL'))
+    parser.add_argument('--base-url', default=None,
+                        help='OpenAI-compatible API URL (prioritizes --base-url / OPENAI_BASE_URL / OpenRouter, then AxonHub)')
     parser.add_argument('--key-file', type=Path, default=os.environ.get('OPENAI_API_KEY_FILE'))
     parser.add_argument('--model-map', type=Path, help='Optional provider ID spelling; all selected models remain bound')
     parser.add_argument('--models', nargs='+', choices=tuple(defaults.MODELS),
@@ -209,13 +214,13 @@ def main():
     if args.populations and min(args.populations) < 2:
         parser.error('--populations requires integers >= 2')
     if args.model_map: args.model_map = args.model_map.expanduser().resolve()
-    base = api_base_url(args.base_url) if args.base_url else None
+    base = resolve_api_base(args.base_url, allow_axonhub_default=True)
     expected = plan(base, args.model_map, names=args.models, studies=args.studies, populations=args.populations)
     if not args.execute:
         print(json.dumps(expected, indent=2)); return 0
-    if not base: parser.error('Set OPENAI_BASE_URL to your provider API URL')
     if args.key_file: args.key_file = credential_file(args.key_file, REPO)
-    elif not os.environ.get('OPENAI_API_KEY', '').strip(): parser.error('Set OPENAI_API_KEY or OPENAI_API_KEY_FILE')
+    elif not resolve_api_key(repository=REPO, api_base=base):
+        parser.error('Set OPENAI_API_KEY, OPENROUTER_API_KEY, OPENAI_API_KEY_FILE (or AXONHUB_API_KEY for AxonHub fallback)')
     if subprocess.check_output(['git', 'status', '--porcelain'], cwd=REPO).strip():
         parser.error('Commit source changes before collection')
     config = runtime_config()

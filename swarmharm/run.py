@@ -2786,8 +2786,8 @@ if __name__=='__main__':
         help='Optional shared ISO-8601 deadline to freeze identically across matched rollouts.')
     p.add_argument('--goal-mode',choices=('off','goal_command','codex_goal','claude_goal'),default=None,
         help='Defaults to off. A native-goal comparison uses the matching harness mode.')
-    p.add_argument('--api-base',default=AXONHUB_API_BASE,
-        help='OpenAI-compatible Responses API base for Codex, including /v1 when required.')
+    p.add_argument('--api-base',default=None,
+        help='OpenAI-compatible API base URL (prioritizes --api-base / OPENAI_BASE_URL / OpenRouter, then AxonHub).')
     p.add_argument('--study-mode', choices=(phase2_component.UNIFIED_MODE,), default=phase2_component.UNIFIED_MODE,
         help='One continuous reporting workflow (default: unified).')
     p.add_argument('--controls-from',type=Path,help='Reuse successful offline checks bound to identical source and native runtime; reverify model routing.')
@@ -2815,27 +2815,43 @@ if __name__=='__main__':
     a=p.parse_args()
     if a.phase=='prepare' and a.binding_preset is None and a.mechanism is None:
         p.error('--binding-preset is required during preparation')
+    a.api_base=guardrails.resolve_api_base(a.api_base, allow_axonhub_default=True)
+    temp_key_path=None
+    if a.key_file is None:
+        env_key=guardrails.resolve_api_key(repository=REPO, api_base=a.api_base)
+        if env_key:
+            import tempfile
+            fd, raw_tmp = tempfile.mkstemp(prefix='swarmharm-api-key-')
+            os.chmod(raw_tmp, 0o600)
+            with os.fdopen(fd, 'w') as kh:
+                kh.write(env_key + '\n')
+            temp_key_path = Path(raw_tmp)
+            a.key_file = temp_key_path
     AXONHUB_KEY_FILE=a.key_file
     root=guardrails.outside_repository(a.output,REPO,'Raw output directory')
     registration_dir=registration_path(a.registration_dir)
-    if a.phase=='prepare':
-        if not a.model_alias or not all(c.isalnum() or c in '_-' for c in a.model_alias):
-            raise ValueError('Invalid model alias.')
-        model_id=a.model_id or 'openai/gpt-5.6-sol'
-        if a.harness is None:
-            a.harness=guardrails.native_harness({'model':model_id})
-        MODELS={a.model_alias:model_id}
-        UPSTREAM_MODELS={a.model_alias:a.upstream_model_id or model_id}
-    if a.phase=='prepare':
-        prepare(root,registration_dir,AXONHUB_KEY_FILE,a.population,a.active_contexts,
-            a.provider_concurrency,a.topology_file,cue_condition=a.cue_condition,
-            filing_deadline_utc=a.filing_deadline_utc,scenario=a.scenario,
-            study_mode=a.study_mode,component_family=a.component_family,
-            goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,
-            pi_comparison=a.pi_comparison,target_claim=a.target_claim,controls_from=a.controls_from,binding_preset=a.binding_preset,
-            delivery_config=load(a.delivery_config) if a.delivery_config is not None else None,
-            world_config=load(a.world_config) if a.world_config is not None else None,
-            combined_bindings=a.combined_bindings,comparison_design=a.comparison_design,
-            source_retention=a.source_retention,mechanism=a.mechanism,api_base=a.api_base,api_protocol=a.api_protocol,served_model=a.served_model,
-            input_variant=a.input_variant,workload=a.workload,startup_concurrency=a.startup_concurrency,max_actor_seconds=a.max_actor_seconds)
-    else:collect(root,registration_dir)
+    try:
+        if a.phase=='prepare':
+            if not a.model_alias or not all(c.isalnum() or c in '_-' for c in a.model_alias):
+                raise ValueError('Invalid model alias.')
+            model_id=a.model_id or 'openai/gpt-5.6-sol'
+            if a.harness is None:
+                a.harness=guardrails.native_harness({'model':model_id})
+            MODELS={a.model_alias:model_id}
+            UPSTREAM_MODELS={a.model_alias:a.upstream_model_id or model_id}
+        if a.phase=='prepare':
+            prepare(root,registration_dir,AXONHUB_KEY_FILE,a.population,a.active_contexts,
+                a.provider_concurrency,a.topology_file,cue_condition=a.cue_condition,
+                filing_deadline_utc=a.filing_deadline_utc,scenario=a.scenario,
+                study_mode=a.study_mode,component_family=a.component_family,
+                goal_mode=a.goal_mode,harness_kind=a.harness,reasoning_effort=a.reasoning_effort,
+                pi_comparison=a.pi_comparison,target_claim=a.target_claim,controls_from=a.controls_from,binding_preset=a.binding_preset,
+                delivery_config=load(a.delivery_config) if a.delivery_config is not None else None,
+                world_config=load(a.world_config) if a.world_config is not None else None,
+                combined_bindings=a.combined_bindings,comparison_design=a.comparison_design,
+                source_retention=a.source_retention,mechanism=a.mechanism,api_base=a.api_base,api_protocol=a.api_protocol,served_model=a.served_model,
+                input_variant=a.input_variant,workload=a.workload,startup_concurrency=a.startup_concurrency,max_actor_seconds=a.max_actor_seconds)
+        else:collect(root,registration_dir)
+    finally:
+        if temp_key_path is not None:
+            temp_key_path.unlink(missing_ok=True)

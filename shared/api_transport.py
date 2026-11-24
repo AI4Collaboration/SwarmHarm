@@ -20,7 +20,7 @@ import urllib.error
 import urllib.request
 import uuid
 
-from guardrails import api_base_url, open_url
+from guardrails import api_base_url, open_url, resolve_axonhub_fallback
 
 VERSION = 'chat-completions-bridge-v1'
 RETRYABLE_HTTP_STATUS = frozenset({408, 409, 425, 429, 500, 502, 503, 504} | set(range(520, 531)))
@@ -312,9 +312,10 @@ def message_events(message):
 
 class ChatBridge:
     def __init__(self, base, key, model, folder, *, served_model=None, timeout=300, on_response=None,
-                 max_attempts=None, retry_backoff=2.0):
+                 max_attempts=None, retry_backoff=2.0, fallback=None):
         self.upstream = api_base_url(base); self.key = key; self.model = model
         self.served_model = served_model or model; self.timeout = timeout
+        self.fallback = fallback if fallback is not None else resolve_axonhub_fallback(self.upstream, self.key)
         self.max_attempts = max(1, int(max_attempts if max_attempts is not None
                                        else os.environ.get('SWARMHARM_BRIDGE_MAX_ATTEMPTS', '6')))
         self.retry_backoff = float(retry_backoff)
@@ -368,79 +369,113 @@ class ChatBridge:
                     with bridge.cache_lock:
                         cache_snapshot = dict(bridge.cache)
                     request = chat_request(body, protocol, bridge.served_model, cache_snapshot)
-                    is_nvidia_byok = ('openrouter.ai' in bridge.upstream
-                                      and str(bridge.served_model).lower().startswith(NVIDIA_BYOK_PREFIXES))
+                    is_openrouter_non_oai = ('openrouter.ai' in bridge.upstream
+                                             and str(bridge.served_model).lower().startswith(NVIDIA_BYOK_PREFIXES))
                     if 'tools' in request:
                         request['tools'] = _strip_unsupported_schema_keywords(
-                            request['tools'], strip_strict=is_nvidia_byok)
-                    if is_nvidia_byok:
-                        request['provider'] = {'only': ['Nvidia']}
+                            request['tools'], strip_strict=is_openrouter_non_oai)
+                    provider_only = os.environ.get('OPENROUTER_PROVIDER_ONLY', '').strip()
+                    if 'openrouter.ai' in bridge.upstream and provider_only:
+                        request['provider'] = {'only': [p.strip() for p in provider_only.split(',') if p.strip()]}
                     record['upstream_request'] = request
                     record['status'] = 'inflight'
                     capture(sequence, record)
-                    payload_bytes = json.dumps(request).encode()
                     retries = []
-                    data = None
-                    for attempt in range(1, bridge.max_attempts + 1):
-                        _pace_tpm()
-                        req = urllib.request.Request(
-                            bridge.upstream + '/chat/completions',
-                            data=payload_bytes,
-                            headers={'Content-Type': 'application/json',
-                                     'Authorization': 'Bearer ' + bridge.key,
-                                     'User-Agent': 'SwarmHarm-API/1.0'})
-                        try:
-                            with _UPSTREAM_SEMAPHORE:
-                                with open_url(req, timeout=bridge.timeout) as upstream:
-                                    data = json.load(upstream)
-                                    record['response_headers'] = {k: v for k, v in upstream.headers.items()
-                                        if k.lower() in ('x-request-id', 'request-id', 'x-axonhub-request-id')}
-                            if isinstance(data, dict):
-                                _record_tpm((data.get('usage') or {}).get('total_tokens'))
-                            if isinstance(data, dict) and isinstance(data.get('error'), dict):
-                                code = data['error'].get('code')
-                                if code in NON_RETRYABLE_ERROR_CODES or attempt == bridge.max_attempts:
-                                    raise ValueError('Upstream provider error: ' + json.dumps(data['error'])[:400])
-                                delay = min(45.0, bridge.retry_backoff * (2 ** (attempt - 1)) + random.uniform(0, 0.5))
-                                retries.append({'attempt': attempt, 'upstream_error_code': code, 'sleep_s': round(delay, 3)})
+
+                    def _call_route(route_base, route_key, route_req):
+                        payload_bytes = json.dumps(route_req).encode()
+                        for attempt in range(1, bridge.max_attempts + 1):
+                            _pace_tpm()
+                            req = urllib.request.Request(
+                                route_base + '/chat/completions',
+                                data=payload_bytes,
+                                headers={'Content-Type': 'application/json',
+                                         'Authorization': 'Bearer ' + route_key,
+                                         'User-Agent': 'SwarmHarm-API/1.0'})
+                            try:
+                                with _UPSTREAM_SEMAPHORE:
+                                    with open_url(req, timeout=bridge.timeout) as upstream:
+                                        resp_data = json.load(upstream)
+                                        record['response_headers'] = {k: v for k, v in upstream.headers.items()
+                                            if k.lower() in ('x-request-id', 'request-id', 'x-axonhub-request-id')}
+                                if isinstance(resp_data, dict):
+                                    _record_tpm((resp_data.get('usage') or {}).get('total_tokens'))
+                                if isinstance(resp_data, dict) and isinstance(resp_data.get('error'), dict):
+                                    err_obj = resp_data['error']
+                                    code = err_obj.get('code')
+                                    transient_400 = (code == 400 and 'rejected by the upstream model'
+                                                     in json.dumps(err_obj).lower())
+                                    if (code in NON_RETRYABLE_ERROR_CODES and not transient_400) or attempt == bridge.max_attempts:
+                                        raise ValueError('Upstream provider error: ' + json.dumps(err_obj)[:400])
+                                    delay = min(45.0, bridge.retry_backoff * (2 ** (attempt - 1)) + random.uniform(0, 0.5))
+                                    retries.append({'attempt': attempt, 'upstream_error_code': code, 'sleep_s': round(delay, 3)})
+                                    time.sleep(delay)
+                                    continue
+                                if not isinstance(resp_data, dict) or not isinstance(resp_data.get('choices'), list) or not resp_data['choices']:
+                                    if attempt == bridge.max_attempts:
+                                        raise ValueError('Provider returned empty choices')
+                                    delay = min(45.0, bridge.retry_backoff * (2 ** (attempt - 1)) + random.uniform(0, 0.5))
+                                    retries.append({'attempt': attempt, 'error': 'empty_choices', 'sleep_s': round(delay, 3)})
+                                    time.sleep(delay)
+                                    continue
+                                return resp_data
+                            except urllib.error.HTTPError as error:
+                                err_body = b''
+                                if error.code == 400:
+                                    try: err_body = error.read()
+                                    except Exception: pass
+                                transient_http_400 = (error.code == 400 and b'rejected by the upstream model' in err_body.lower())
+                                if (error.code not in RETRYABLE_HTTP_STATUS and not transient_http_400) or attempt == bridge.max_attempts:
+                                    if err_body:
+                                        error.fp = http.client.BytesIO(err_body) if hasattr(http.client, 'BytesIO') else __import__('io').BytesIO(err_body)
+                                    raise
+                                retry_after = None
+                                if error.headers:
+                                    raw_ra = error.headers.get('Retry-After')
+                                    if raw_ra:
+                                        try: retry_after = float(raw_ra)
+                                        except ValueError: pass
+                                base_delay = 12.0 if error.code == 429 else bridge.retry_backoff * (2 ** (attempt - 1))
+                                delay = min(45.0, (retry_after + 1.0) if retry_after is not None
+                                            else base_delay + random.uniform(0, 1.0))
+                                retries.append({'attempt': attempt, 'status': error.code, 'sleep_s': round(delay, 3)})
+                                try: error.close()
+                                except Exception: pass
                                 time.sleep(delay)
-                                continue
-                            if not isinstance(data, dict) or not isinstance(data.get('choices'), list) or not data['choices']:
+                            except (TimeoutError, urllib.error.URLError, http.client.IncompleteRead,
+                                    ConnectionError, json.JSONDecodeError) as error:
                                 if attempt == bridge.max_attempts:
-                                    raise ValueError('Provider returned empty choices')
-                                delay = min(45.0, bridge.retry_backoff * (2 ** (attempt - 1)) + random.uniform(0, 0.5))
-                                retries.append({'attempt': attempt, 'error': 'empty_choices', 'sleep_s': round(delay, 3)})
+                                    raise
+                                delay = min(30.0, bridge.retry_backoff * (2 ** (attempt - 1)) + random.uniform(0, 0.4))
+                                retries.append({'attempt': attempt, 'error': type(error).__name__, 'sleep_s': round(delay, 3)})
                                 time.sleep(delay)
-                                continue
-                            break
-                        except urllib.error.HTTPError as error:
-                            if error.code not in RETRYABLE_HTTP_STATUS or attempt == bridge.max_attempts:
-                                raise
-                            retry_after = None
-                            if error.headers:
-                                raw_ra = error.headers.get('Retry-After')
-                                if raw_ra:
-                                    try: retry_after = float(raw_ra)
-                                    except ValueError: pass
-                            base_delay = 12.0 if error.code == 429 else bridge.retry_backoff * (2 ** (attempt - 1))
-                            delay = min(45.0, (retry_after + 1.0) if retry_after is not None
-                                        else base_delay + random.uniform(0, 1.0))
-                            retries.append({'attempt': attempt, 'status': error.code, 'sleep_s': round(delay, 3)})
-                            try: error.close()
-                            except Exception: pass
-                            time.sleep(delay)
-                        except (TimeoutError, urllib.error.URLError, http.client.IncompleteRead,
-                                ConnectionError, json.JSONDecodeError) as error:
-                            if attempt == bridge.max_attempts:
-                                raise
-                            delay = min(30.0, bridge.retry_backoff * (2 ** (attempt - 1)) + random.uniform(0, 0.4))
-                            retries.append({'attempt': attempt, 'error': type(error).__name__, 'sleep_s': round(delay, 3)})
-                            time.sleep(delay)
+
+                    try:
+                        data = _call_route(bridge.upstream, bridge.key, request)
+                    except Exception as primary_error:
+                        if bridge.fallback is None:
+                            raise
+                        fb_base, fb_key = bridge.fallback
+                        fb_req = {k: v for k, v in request.items() if k != 'provider'}
+                        fb_req['model'] = bridge.model
+                        retries.append({'fallback_to': fb_base, 'primary_error': type(primary_error).__name__})
+                        record['axonhub_fallback_used'] = True
+                        record['fallback_upstream'] = fb_base
+                        data = _call_route(fb_base, fb_key, fb_req)
+
                     if retries:
                         record['retry_history'] = retries
+                    usage_dict = data.get('usage') if isinstance(data.get('usage'), dict) else None
+                    if usage_dict is not None and not isinstance(usage_dict.get('total_tokens'), int):
+                        pt, ct = usage_dict.get('prompt_tokens'), usage_dict.get('completion_tokens')
+                        if isinstance(pt, int) and isinstance(ct, int):
+                            usage_dict['total_tokens'] = pt + ct
                     record['upstream_response'] = data
-                    canonical = lambda name: str(name).split('/')[-1].replace('.', '-')
-                    if canonical(data.get('model')) not in {canonical(bridge.model), canonical(bridge.served_model)}:
+                    canonical = lambda name: str(name).split('/')[-1].replace('.', '-').lower()
+                    returned_model = canonical(data.get('model'))
+                    expected_models = {canonical(bridge.model), canonical(bridge.served_model)}
+                    if not any(returned_model == exp or returned_model.startswith(exp + '-') or exp.startswith(returned_model + '-')
+                               for exp in expected_models if exp):
                         raise ValueError('Provider returned a different model: ' + str(data.get('model')))
                     if on_response is not None:
                         on_response(data)

@@ -150,6 +150,69 @@ class TransportChecks(unittest.TestCase):
         finally:
             server.shutdown(); server.server_close()
 
+    def test_openai_compatible_priority_and_axonhub_fallback(self):
+        from guardrails import AXONHUB_API_BASE, OPENROUTER_API_BASE, resolve_api_base, resolve_api_key, resolve_axonhub_fallback
+        from unittest.mock import patch
+
+        with patch.dict('os.environ', {}, clear=True):
+            self.assertEqual(resolve_api_base(), AXONHUB_API_BASE)
+        with patch.dict('os.environ', {'OPENROUTER_API_KEY': 'sk-or-test'}, clear=True):
+            self.assertEqual(resolve_api_base(), OPENROUTER_API_BASE)
+            self.assertEqual(resolve_api_key(api_base=OPENROUTER_API_BASE), 'sk-or-test')
+        with patch.dict('os.environ', {'OPENAI_BASE_URL': 'https://custom.example/v1',
+                                       'OPENROUTER_API_KEY': 'sk-or-test',
+                                       'OPENAI_API_KEY': 'sk-custom',
+                                       'AXONHUB_API_KEY': 'sk-axon'}, clear=True):
+            self.assertEqual(resolve_api_base(), 'https://custom.example/v1')
+            self.assertEqual(resolve_api_key(api_base='https://custom.example/v1'), 'sk-custom')
+            self.assertEqual(resolve_axonhub_fallback('https://custom.example/v1', 'sk-custom'),
+                             (AXONHUB_API_BASE, 'sk-axon'))
+
+        # Test runtime failover: primary returns 404 (e.g. blocked model on OpenRouter), fallback AxonHub returns 200
+        def make_server(queue_list, log_list):
+            class H(BaseHTTPRequestHandler):
+                def log_message(self, *args): pass
+                def do_POST(self):
+                    code, payload = queue_list.pop(0)
+                    log_list.append((self.headers.get('Authorization'), json.loads(self.rfile.read(int(self.headers['Content-Length'])))))
+                    raw = json.dumps(payload).encode()
+                    self.send_response(code); self.send_header('Content-Type', 'application/json')
+                    self.send_header('Content-Length', str(len(raw))); self.end_headers()
+                    self.wfile.write(raw)
+            srv = ThreadingHTTPServer(('127.0.0.1', 0), H)
+            threading.Thread(target=srv.serve_forever, daemon=True).start()
+            return srv
+
+        p_log, f_log = [], []
+        p_srv = make_server([(404, {'error': {'message': 'No endpoints available', 'code': 404}})], p_log)
+        f_srv = make_server([(200, {'model': 'openai/gpt-6.1-sol-20261101',
+                                    'choices': [{'message': {'content': 'AxonHub rescued'}, 'finish_reason': 'stop'}],
+                                    'usage': {'prompt_tokens': 5, 'completion_tokens': 3}})], f_log)
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                bridge = ChatBridge(f'http://127.0.0.1:{p_srv.server_port}/v1', 'or-key',
+                                    'openai/gpt-6.1-sol', tmp, max_attempts=2, retry_backoff=0.01,
+                                    fallback=(f'http://127.0.0.1:{f_srv.server_port}/v1', 'axon-key'))
+                try:
+                    req = urllib.request.Request(
+                        bridge.base + '/responses',
+                        data=json.dumps({'model': 'openai/gpt-6.1-sol',
+                                         'input': [{'role': 'user', 'content': 'hello'}]}).encode(),
+                        headers={'Authorization': 'Bearer ' + bridge.token, 'Content-Type': 'application/json'})
+                    reply = json.load(urllib.request.urlopen(req, timeout=10))
+                    self.assertEqual(reply['output'][0]['content'][0]['text'], 'AxonHub rescued')
+                    self.assertEqual(reply['usage']['total_tokens'], 8)
+                    self.assertEqual(len(p_log), 1)
+                    self.assertEqual(len(f_log), 1)
+                    self.assertEqual(f_log[0][0], 'Bearer axon-key')
+                finally:
+                    bridge.close()
+                cap = json.load(gzip.open(Path(tmp) / '000001.json.gz', 'rt'))
+                self.assertTrue(cap['axonhub_fallback_used'])
+        finally:
+            p_srv.shutdown(); p_srv.server_close()
+            f_srv.shutdown(); f_srv.server_close()
+
 
 if __name__ == '__main__':
     unittest.main()

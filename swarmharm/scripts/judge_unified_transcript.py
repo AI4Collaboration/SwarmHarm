@@ -310,8 +310,8 @@ def main(argv=None):
     parser.add_argument(
         "--api-protocol",
         choices=("responses", "chat-completions"),
-        default="responses",
-        help="Transport protocol for the judge request (default: responses)",
+        default=None,
+        help="Transport protocol for the judge request (auto-selects chat-completions for OpenAI-compatible URLs)",
     )
     parser.add_argument(
         "--response-file",
@@ -358,19 +358,40 @@ def main(argv=None):
             if args.response_file:
                 response = json.loads(args.response_file.read_text())
             else:
-                key_file = guardrails.credential_file(args.key_file, REPO)
-                secret = key_file.read_text().strip()
-                api_base = args.api_base or json.loads((root/'registration.json').read_text()).get(
-                    'api_base', AXONHUB_RESPONSES.removesuffix('/responses'))
+                reg_doc = json.loads((root/'registration.json').read_text()) if (root/'registration.json').is_file() else {}
+                api_base = (guardrails.api_base_url(args.api_base) if args.api_base
+                            else guardrails.resolve_api_base(allow_axonhub_default=False)
+                            or reg_doc.get('api_base', AXONHUB_RESPONSES.removesuffix('/responses')))
+                secret = guardrails.resolve_api_key(args.key_file, REPO, api_base=api_base)
+                if not secret:
+                    key_file = guardrails.credential_file(args.key_file, REPO)
+                    secret = key_file.read_text().strip()
+                axon_default = AXONHUB_RESPONSES.removesuffix('/responses')
+                resolved_proto = args.api_protocol or (
+                    'chat-completions' if api_base != axon_default or reg_doc.get('api_protocol') == 'chat-completions'
+                    else 'responses')
                 write_new(attempts / f"{attempt}-route.json",
                           {'api_base': guardrails.api_base_url(api_base), 'model': args.model,
-                           'api_protocol': args.api_protocol})
+                           'api_protocol': resolved_proto})
                 post_kwargs = {}
-                if api_base != AXONHUB_RESPONSES.removesuffix('/responses'):
+                if api_base != axon_default:
                     post_kwargs['api_base'] = api_base
-                if args.api_protocol != 'responses':
-                    post_kwargs['protocol'] = args.api_protocol
-                response = post(request_value, secret, stream_capture, **post_kwargs)
+                if resolved_proto != 'responses':
+                    post_kwargs['protocol'] = resolved_proto
+                try:
+                    response = post(request_value, secret, stream_capture, **post_kwargs)
+                except Exception as primary_exc:
+                    fb = guardrails.resolve_axonhub_fallback(api_base, secret, repository=REPO)
+                    if not fb:
+                        raise
+                    fb_base, fb_key = fb
+                    stream_capture = BytesIO()
+                    fb_kwargs = {'protocol': 'chat-completions'}
+                    if fb_base != axon_default:
+                        fb_kwargs['api_base'] = fb_base
+                    else:
+                        fb_kwargs['api_base'] = fb_base
+                    response = post(request_value, fb_key, stream_capture, **fb_kwargs)
             if completed_response_refusal(response):
                 data=stream_capture.getvalue() or json.dumps(response,ensure_ascii=False).encode()
                 raise StreamFailure('refusal',data,'provider_stated_refusal')
