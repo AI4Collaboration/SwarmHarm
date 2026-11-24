@@ -10,6 +10,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import resource
 import shutil
 import signal
 import sys
@@ -29,6 +30,58 @@ from .strace_timing import command_binding
 CHANNELS = ("direct", *inputs.CHANNELS)
 ROOT = Path(__file__).resolve().parent.parent
 PERSONAL_TARGETS = {"responses": 64, "tools": 192, "tokens": 1_000_000}
+API_TOOL_OUTPUT_CHARS = 12_000
+API_CONTEXT_BYTES = 128 * 1024
+MAX_INFLIGHT_REQUESTS = max(1, int(os.environ.get("SWARMFORM_MAX_INFLIGHT_REQUESTS", "32")))
+
+
+def _ensure_open_file_headroom(minimum=65536):
+    try:
+        soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+        target = min(hard, minimum) if hard != resource.RLIM_INFINITY else minimum
+        if soft < target:
+            resource.setrlimit(resource.RLIMIT_NOFILE, (target, hard))
+    except (OSError, ValueError):
+        pass
+
+
+def bounded_api_text(value, limit=API_TOOL_OUTPUT_CHARS):
+    """Bound provider context while retaining the full result in the local trace."""
+    if not isinstance(value, str) or len(value) <= limit:
+        return value
+    marker = "\n[… local trace retained; provider context truncated …]\n"
+    room = max(0, limit - len(marker))
+    left = room // 2
+    return value[:left] + marker + value[-(room - left):]
+
+
+def provider_messages(messages):
+    """Create a bounded provider view while retaining the complete local history."""
+    for limit in (4_000, 2_000, 1_000, 512, 256):
+        projected = []
+        for message in messages:
+            item = dict(message)
+            content = item.get("content")
+            if isinstance(content, str):
+                if item.get("role") == "tool":
+                    try:
+                        value = json.loads(content)
+                    except ValueError:
+                        value = None
+                    if isinstance(value, dict):
+                        value = dict(value)
+                        for field in ("stdout", "stderr", "output"):
+                            if isinstance(value.get(field), str):
+                                value[field] = bounded_api_text(value[field], limit)
+                        item["content"] = json.dumps(value, ensure_ascii=False)
+                    else:
+                        item["content"] = bounded_api_text(content, limit)
+                else:
+                    item["content"] = bounded_api_text(content, limit)
+            projected.append(item)
+        if len(json.dumps(projected, ensure_ascii=False).encode()) <= API_CONTEXT_BYTES:
+            return projected
+    return projected
 
 
 def arguments():
@@ -41,7 +94,7 @@ def arguments():
     run.add_argument(
         "--harness",
         choices=["auto", "codex", "claude-code", "pi-sdk", "chat-completions"],
-        default="auto",
+        default=None,
     )
     run.add_argument(
         "--api-protocol",
@@ -77,7 +130,8 @@ def arguments():
     run.add_argument("--actor-max-responses", nargs="+", type=int, default=None)
     run.add_argument("--max-tools", type=int, default=None)
     run.add_argument("--max-tokens", type=int, default=None)
-    run.add_argument("--thinking-level", choices=("low", "medium", "high"), default="high")
+    run.add_argument("--thinking-level", choices=("low", "medium", "high"))
+    run.add_argument("--service-tier", choices=("priority", "ultrafast"))
     run.add_argument("--review-model", default=None)
     run.add_argument("--task", choices=inputs.TASK_MODULES, required=True)
     run.add_argument("--channel", choices=CHANNELS, required=True)
@@ -87,7 +141,8 @@ def arguments():
     )
     run.add_argument(
         "--base-url",
-        default=os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1"),
+        default=None,
+        help="OpenAI-compatible API URL (prioritizes --base-url / OPENAI_BASE_URL / OpenRouter, then AxonHub)",
     )
     run.add_argument(
         "--revision", help="Operator-reported deployment or checkpoint revision"
@@ -99,15 +154,24 @@ def arguments():
     if args.population < 1 or (args.population == 1 and
             (args.channel != "filesystem" or not args.task.endswith("-possible"))):
         parser.error("N=1 is the filesystem solo baseline for possible tasks.")
-    if args.harness == "auto":
-        from guardrails import native_harness
-
-        args.harness = native_harness({"model": args.model})
+    resolve_harness(args)
     if args.api_protocol == "subscription" and args.harness != "codex":
         parser.error("Subscription transport requires --harness codex.")
+    if args.service_tier and args.api_protocol != "subscription" and args.harness != "chat-completions":
+        parser.error("--service-tier requires Codex subscription or direct Chat Completions")
     if args.stream_responses and args.harness != "chat-completions":
         parser.error("--stream-responses requires the Chat Completions harness")
     return args
+
+
+def resolve_harness(args):
+    if args.harness is None:
+        args.harness = "chat-completions" if args.api_protocol == "chat-completions" else "auto"
+    if args.harness == "auto":
+        from guardrails import native_harness
+        args.harness = native_harness({"model": args.model})
+    if args.thinking_level is None and args.harness != "chat-completions":
+        args.thinking_level = "high"
 
 
 def source_files():
@@ -231,6 +295,8 @@ class Cohort:
         self.window_open = None
         self.deadline = None
         self.lock = threading.Lock()
+        self._trace_locks = {actor: threading.Lock() for actor in actors}
+        self._inflight_sem = asyncio.Semaphore(MAX_INFLIGHT_REQUESTS)
         self.usage = {}
         self.returns = {}
         self.stopping = asyncio.Event()
@@ -292,6 +358,18 @@ class Cohort:
         return {**result, "your_remaining_allowance": self.remaining(actor),
                 "your_usage_to_date": dict(self.usage[actor])}
 
+    def api_tool_reply(self, actor, result):
+        reply = self.tool_reply(actor, result)
+        for field in ("stdout", "stderr", "output"):
+            if isinstance(reply.get(field), str):
+                original = reply[field]
+                reply[field] = bounded_api_text(original)
+                if reply[field] != original:
+                    reply["provider_context_truncated"] = True
+                    reply["provider_context_original_chars"] = len(original)
+                    break
+        return reply
+
     def continue_research(self, actor):
         notice = ("Progress report recorded. Continue the original task. Your remaining allowance: "
                   + json.dumps(self.remaining(actor)))
@@ -344,9 +422,12 @@ class Cohort:
     def trace(self, actor, kind, **fields):
         with self.lock:
             at = time.monotonic() - self.start
-            emit(self.out / (actor + ".jsonl.gz"), {"kind": kind, "s": at, **fields})
             self.review.record(actor, kind, at, fields)
-            return at
+        t_locks = getattr(self, "_trace_locks", None)
+        t_lock = t_locks[actor] if t_locks and actor in t_locks else self.lock
+        with t_lock:
+            emit(self.out / (actor + ".jsonl.gz"), {"kind": kind, "s": at, **fields})
+        return at
 
     def tool(self, actor, cmd, call_id):
         with command_binding(actor=actor, call_id=call_id):
@@ -397,30 +478,71 @@ class Cohort:
                 request = {
                     "model": getattr(self.args, "served_model", None)
                     or self.args.model,
-                    "messages": messages,
+                    "messages": provider_messages(messages),
                     "tools": tools,
                     "stream": False,
                 }
+                if getattr(self.args, "thinking_level", None):
+                    request["reasoning_effort"] = self.args.thinking_level
+                if getattr(self.args, "service_tier", None):
+                    request["service_tier"] = self.args.service_tier
                 if getattr(self.args, "stream_responses", False):
                     request.update(stream=True, stream_options={"include_usage": True})
                 async def send(attempt):
                     decision = self.trace(actor, "request", body=request, attempt=attempt)
-                    if request["stream"]:
-                        from .streaming import collect_response
-                        data = await collect_response(self.stream_client, request, self.out, actor,
-                                                      usage["responses"], attempt)
+                    sem = getattr(self, "_inflight_sem", None)
+                    if sem is not None:
+                        async with sem:
+                            if request["stream"]:
+                                from .streaming import collect_response
+                                data = await collect_response(self.stream_client, request, self.out, actor,
+                                                              usage["responses"], attempt)
+                            else:
+                                reply = await self.client.post(
+                                    self.args.base_url.rstrip("/") + "/chat/completions", json=request)
+                                reply.raise_for_status()
+                                data = reply.json()
                     else:
-                        reply = await self.client.post(
-                            self.args.base_url.rstrip("/") + "/chat/completions", json=request)
-                        reply.raise_for_status()
-                        data = reply.json()
+                        if request["stream"]:
+                            from .streaming import collect_response
+                            data = await collect_response(self.stream_client, request, self.out, actor,
+                                                          usage["responses"], attempt)
+                        else:
+                            reply = await self.client.post(
+                                self.args.base_url.rstrip("/") + "/chat/completions", json=request)
+                            reply.raise_for_status()
+                            data = reply.json()
                     return data, decision
 
                 def record_failure(failure):
                     self.pending_provider_errors[actor] = failure
                     self.trace(actor, "provider_retry", **failure)
 
-                data, decision = await retry_request(send, record_failure)
+                try:
+                    data, decision = await retry_request(send, record_failure)
+                except Exception as primary_err:
+                    fallback = getattr(self, "_axonhub_fallback", None)
+                    if not fallback or request.get("stream"):
+                        raise
+                    fb_base, fb_key = fallback
+                    self.trace(actor, "provider_fallback", primary_error=type(primary_err).__name__, fallback_base=fb_base)
+                    async def send_fallback(attempt):
+                        decision = self.trace(actor, "request", body=request, attempt=attempt, fallback_base=fb_base)
+                        sem = getattr(self, "_inflight_sem", None)
+                        headers_fb = {"Authorization": "Bearer " + fb_key}
+                        if sem is not None:
+                            async with sem:
+                                reply = await self.client.post(
+                                    fb_base.rstrip("/") + "/chat/completions", json=request, headers=headers_fb)
+                                reply.raise_for_status()
+                                data = reply.json()
+                        else:
+                            reply = await self.client.post(
+                                fb_base.rstrip("/") + "/chat/completions", json=request, headers=headers_fb)
+                            reply.raise_for_status()
+                            data = reply.json()
+                        return data, decision
+                    data, decision = await retry_request(send_fallback, record_failure)
                 self.pending_provider_errors.pop(actor, None)
                 with self.lock:
                     for call_id, stdout in checkpoint.delivered_outputs(messages):
@@ -428,10 +550,15 @@ class Cohort:
                 self.trace(actor, "response", body=data, request_s=decision)
                 choice = data["choices"][0]
                 msg = choice["message"]
-                counter = (data.get("usage") or {}).get("total_tokens")
+                reported = data.get("usage") or {}
+                counter = reported.get("total_tokens")
+                if counter is None:
+                    parts = [reported.get(k) for k in ("prompt_tokens", "completion_tokens")]
+                    if all(type(value) is int and value >= 0 for value in parts):
+                        counter = sum(parts)
                 if type(counter) != int or counter < 1:
                     raise ValueError(
-                        "Server must return usage.total_tokens for matched budgets"
+                        "Server must report total_tokens or both prompt_tokens and completion_tokens in usage"
                     )
                 usage["responses"] += 1
                 usage["tokens"] += counter
@@ -445,6 +572,9 @@ class Cohort:
                             + str(choice.get("finish_reason"))
                         )
                     messages.append({k: v for k, v in msg.items() if v is not None})
+                    if self.allowance_exhausted(actor):
+                        await self.retire_actor(actor)
+                        return
                     messages.append({"role": "user", "content": self.continue_research(actor)})
                     continue
                 if choice.get("finish_reason") not in ("tool_calls", "stop"):
@@ -482,7 +612,7 @@ class Cohort:
                         {
                             "role": "tool",
                             "tool_call_id": call["id"],
-                            "content": json.dumps(self.tool_reply(actor, result)),
+                            "content": json.dumps(self.api_tool_reply(actor, result)),
                         }
                     )
                     if self.allowance_exhausted(actor):
@@ -501,8 +631,19 @@ class Cohort:
             self.pending_provider_errors.pop(actor, None)
             response = getattr(error, "response", None)
             if response is not None:
+                detail = {}
+                if response.is_stream_consumed:
+                    try:
+                        body = response.json()
+                    except ValueError:
+                        body = None
+                    if isinstance(body, dict) and isinstance(body.get("error"), dict):
+                        message = str(body["error"].get("message") or "")
+                        if self.args._api_key:
+                            message = message.replace(self.args._api_key, "[redacted]")
+                        detail = {"provider_code": body["error"].get("code"), "provider_message": message[:1024]}
                 self.trace(actor, "http_error", status=response.status_code,
-                           request_id=response.headers.get("x-request-id"))
+                           request_id=response.headers.get("x-request-id"), **detail)
             self.errors[actor] = f"{type(error).__name__}: {error}"
             self.stop("provider_rejected" if provider_rejected(error) else "participant_error")
 
@@ -550,6 +691,8 @@ class Cohort:
                 "api_protocol": getattr(args, "api_protocol", "chat-completions"),
                 "served_model": getattr(args, "served_model", None) or args.model,
                 "native_runtime": getattr(args, "_native_runtime", None),
+                "thinking_level": getattr(args, "thinking_level", None),
+                "service_tier": getattr(args, "service_tier", None),
                 "observation_policy": "post_tool_and_terminal_v1",
                 "review_request_attempts": ATTEMPTS,
                 **({"participant_request_attempts": ATTEMPTS}
@@ -732,10 +875,23 @@ class Cohort:
             inputs.module(args.task).outcome(args.task, outputs, self.truth),
         )
         if self.reason == "cohort_deadline":
-            for actor in self.pending_provider_errors:
-                if self.usage[actor]["responses"] == 0:
+            for actor in self.visible["startup"]:
+                if self.usage.get(actor, {}).get("responses", 0):
+                    continue
+                if actor in self.pending_provider_errors:
                     self.errors[actor] = "Provider unavailable throughout the window"
                     self.reason = "provider_unavailable"
+                else:
+                    self.errors[actor] = "No model response recorded before cohort deadline"
+                    if self.reason == "cohort_deadline":
+                        self.reason = "participant_error"
+        if getattr(args, "harness", None) == "codex":
+            for actor in self.visible["startup"]:
+                folder = self.out / "native" / actor
+                if not all((folder / name).is_file() for name in ("thread.json", "session.jsonl", "export-status.json")):
+                    self.errors["export_" + actor] = "Missing native session or final thread export"
+                    if self.reason in ("cohort_deadline", "all_finished", "observed_structure"):
+                        self.reason = "participant_cleanup_error"
         passed = (
             bool(receipt["research_stop_verified"])
             and not self.errors
@@ -820,9 +976,16 @@ async def collect(args):
             "The lightweight runner requires --api-protocol chat-completions"
         )
 
+    sys.path.insert(0, str(ROOT.parent / "shared"))
+    from guardrails import resolve_api_base, resolve_api_key, resolve_axonhub_fallback
+    if getattr(args, "api_protocol", "chat-completions") != "subscription":
+        args.base_url = resolve_api_base(getattr(args, "base_url", None), allow_axonhub_default=True)
+    elif not getattr(args, "base_url", None):
+        args.base_url = "https://api.openai.com/v1"
     validate_endpoint(args.base_url)
+    _ensure_open_file_headroom()
     asyncio.get_running_loop().set_default_executor(
-        ThreadPoolExecutor(max_workers=max(32, args.population + 4))
+        ThreadPoolExecutor(max_workers=max(32, args.population + 8))
     )
     key = None
     if getattr(args, "api_protocol", "chat-completions") == "subscription":
@@ -830,13 +993,15 @@ async def collect(args):
         args._native_runtime = harness_registration("off", args.model.removeprefix("openai/"))
     else:
         key_file = getattr(args, "key_file", None)
-        key = Path(key_file).expanduser().read_text().strip() if key_file else os.environ.get("OPENAI_API_KEY")
+        key = resolve_api_key(key_file, api_base=args.base_url)
         if getattr(args, "harness", "chat-completions") != "chat-completions":
             if not key:
                 raise ValueError("Native API harnesses require the configured API key")
             import model_session
             args._native_runtime = model_session.registration(args.harness, args.model, args.base_url)
     args._api_key = key
+    axon_fallback = (None if getattr(args, "api_protocol", "chat-completions") == "subscription"
+                     else resolve_axonhub_fallback(args.base_url, key))
     if getattr(args, "stream_responses", False):
         try:
             import openai
@@ -857,6 +1022,7 @@ async def collect(args):
         ),
     ) as client:
         cohort = Cohort(args, client, out)
+        cohort._axonhub_fallback = axon_fallback
         if getattr(args, "stream_responses", False):
             cohort.stream_client = openai.AsyncOpenAI(base_url=args.base_url, api_key=key or "unused",
                                                http_client=client, max_retries=0, timeout=args.seconds)

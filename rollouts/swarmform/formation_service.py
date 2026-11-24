@@ -51,7 +51,10 @@ def serve():
         def log_message(self, *args):
             pass
 
-    server = ThreadingHTTPServer(("0.0.0.0", 8080), Handler)
+    class _ArtifactHTTPServer(ThreadingHTTPServer):
+        request_queue_size = 256
+
+    server = _ArtifactHTTPServer(("0.0.0.0", 8080), Handler)
     server.daemon_threads = False
     server.timeout = 0.1
     try:

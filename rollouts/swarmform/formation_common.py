@@ -1,5 +1,6 @@
 """One Linux work environment with a shared project, and private per-account home views."""
 import base64
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import ExitStack
 from hashlib import sha256
 import json
@@ -43,7 +44,7 @@ exec setpriv --reuid="$uid" --regid="$uid" --clear-groups --no-new-privs python 
 
 
 class AccountStation(ObservedFileStation):
-    def __init__(self, name, uid, pid, archive, sink):
+    def __init__(self, name, uid, pid, archive, sink, *, observer_version=None):
         self.name = name
         self.business_uid = self.business_gid = uid
         self.account_view = ['nsenter', f'--mount=/proc/{pid}/ns/mnt', '--wdns=/workspace', '--']
@@ -56,7 +57,7 @@ class AccountStation(ObservedFileStation):
         self.closed = False
         self.observation_sink = sink
         self.configure_archive(archive)
-        self.observer_version = run(['docker', 'exec', name, 'strace', '--version']).splitlines()[0]
+        self.observer_version = observer_version or run(['docker', 'exec', name, 'strace', '--version']).splitlines()[0]
 
     def as_account(self, argv, data=None):
         return run(['docker', 'exec', '-i', self.name, *self.account_view, 'setpriv',
@@ -114,8 +115,10 @@ for actor, gid in json.load(sys.stdin):
 '''
             run([*root, 'python', '-I', '-c', make_boxes, mail], json.dumps(list(zip(startup, ids))))
             properties = json.loads(run(['docker', 'inspect', self.name]))[0]
-            for (actor, files), uid in zip(startup.items(), ids):
-                run([*root, 'mkdir', '-m', '700', f'/var/log/workstation/{uid}'])
+            shared_obs_ver = run(['docker', 'exec', self.name, 'strace', '--version']).splitlines()[0]
+            run([*root, 'mkdir', '-m', '700', *[f'/var/log/workstation/{uid}' for uid in ids]])
+            def _setup_account(pair):
+                (actor, files), uid = pair
                 run(['docker', 'exec', '-d', self.name, 'unshare', '--mount', '--propagation', 'private',
                      'sh', '-c', START_VIEW, 'setup', str(uid)])
                 pid = run([*root, 'sh', '-ec', 'for i in $(seq 1 200); do if test -s "$1"; then cat "$1"; exit; fi; sleep .02; done; exit 1',
@@ -123,14 +126,23 @@ for actor, gid in json.load(sys.stdin):
                 if not pid.isdigit():
                     raise RuntimeError('Missing account namespace owner')
                 sink = (lambda phase, value, actor=actor: observation_sink(actor, phase, value)) if observation_sink else None
-                station = AccountStation(self.name, uid, int(pid), Path(observation_archive)/actor, sink)
-                self.stations[actor] = station
+                station = AccountStation(self.name, uid, int(pid), Path(observation_archive)/actor, sink, observer_version=shared_obs_ver)
                 payload = {path: base64.b64encode(content.encode()).decode() for path, content in files.items()}
                 station.as_account(['python', '-I', '-c', HYDRATE], json.dumps({'files': payload}))
-                self.bindings[actor] = {'container': self.name, 'container_id': properties['Id'],
-                    'user': str(uid), 'sentinel_pid': int(pid), 'image': properties['Image'],
-                    'network': properties['HostConfig']['NetworkMode'], 'observation_volume': volume,
-                    'shared_project': PROJECT, 'observer_enabled': True}
+                binding = {'container': self.name, 'container_id': properties['Id'],
+                           'user': str(uid), 'sentinel_pid': int(pid), 'image': properties['Image'],
+                           'network': properties['HostConfig']['NetworkMode'], 'observation_volume': volume,
+                           'shared_project': PROJECT, 'observer_enabled': True}
+                return actor, station, binding
+            acct_pairs = list(zip(startup.items(), ids))
+            if len(acct_pairs) >= 4:
+                with ThreadPoolExecutor(max_workers=min(16, len(acct_pairs))) as pool:
+                    built_accts = list(pool.map(_setup_account, acct_pairs))
+            else:
+                built_accts = [_setup_account(p) for p in acct_pairs]
+            for actor, station, binding in built_accts:
+                self.stations[actor] = station
+                self.bindings[actor] = binding
             self.verify_access(startup, properties)
             if registration.get("project_artifacts"):
                 install_project_files(self.name, registration["project_artifacts"])
@@ -178,33 +190,50 @@ print(json.dumps({'installed':{f:digest(f) for f in spec['own']},'denied':denied
  'ipc_ns':os.readlink('/proc/self/ns/ipc'),'mnt_ns':os.readlink('/proc/self/ns/mnt')}))
 """
         project, messages = {}, {}
-        for actor, station in self.stations.items():
+        def _write_probe(item):
+            actor, station = item
             content = secrets.token_hex(20)
-            for base, inventory in ((PROJECT, project), (EXPORTS+'/messages/all', messages)):
-                filename = f'{base}/.probe-{nonce}-{actor}'
-                station.as_account(['python', '-I', '-c', 'from pathlib import Path;import sys;Path(sys.argv[1]).write_text(sys.stdin.read())', filename], content)
-                inventory[filename] = sha256(content.encode()).hexdigest()
-        for actor, station in self.stations.items():
-            foreign = [f'/proc/{pid}/root{names[a]}' for a, pid in pids.items() if a != actor]
-            expected = {p: sha256(v.encode()).hexdigest() for p,v in startup[actor].items()}
-            if self.freeform:
-                missing = sorted(set().union(*startup.values()) - startup[actor].keys())
-                station.as_account(['python','-I','-c',
-                                    'from pathlib import Path;import json,sys;assert not any(Path(p).exists() for p in json.load(sys.stdin))'],
-                                   json.dumps(missing))
-                self.bindings[actor]['absent_foreign_opening_paths'] = missing
-            row = json.loads(station.as_account(['python','-I','-c',probe], json.dumps(
-                {'private': foreign, 'own': list(expected), 'messages': list(messages), 'project': list(project)})))
-            if (row['denied'] != foreign or row['installed'] != expected
-                    or row['messages'] != messages or row['project'] != project):
-                raise RuntimeError('Shared/private control failed for '+actor)
-            self.bindings[actor].update(initial_materials_verified=True, startup_sha256=expected, access_control=row)
+            p_file = f'{PROJECT}/.probe-{nonce}-{actor}'
+            m_file = f'{EXPORTS}/messages/all/.probe-{nonce}-{actor}'
+            station.as_account(['python', '-I', '-c',
+                                'from pathlib import Path;import sys;d=sys.stdin.read();Path(sys.argv[1]).write_text(d);Path(sys.argv[2]).write_text(d)',
+                                p_file, m_file], content)
+            digest_val = sha256(content.encode()).hexdigest()
+            return p_file, m_file, digest_val
+        st_items = list(self.stations.items())
+        workers = min(16, max(1, len(st_items)))
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            for p_file, m_file, d_val in pool.map(_write_probe, st_items):
+                project[p_file] = d_val
+                messages[m_file] = d_val
+            all_startup_paths = set().union(*startup.values()) if self.freeform else set()
+            def _check_probe(item):
+                actor, station = item
+                foreign = [f'/proc/{pid}/root{names[a]}' for a, pid in pids.items() if a != actor]
+                expected = {p: sha256(v.encode()).hexdigest() for p,v in startup[actor].items()}
+                missing = None
+                if self.freeform:
+                    missing = sorted(all_startup_paths - startup[actor].keys())
+                    station.as_account(['python','-I','-c',
+                                        'from pathlib import Path;import json,sys;assert not any(Path(p).exists() for p in json.load(sys.stdin))'],
+                                       json.dumps(missing))
+                row = json.loads(station.as_account(['python','-I','-c',probe], json.dumps(
+                    {'private': foreign, 'own': list(expected), 'messages': list(messages), 'project': list(project)})))
+                if (row['denied'] != foreign or row['installed'] != expected
+                        or row['messages'] != messages or row['project'] != project):
+                    raise RuntimeError('Shared/private control failed for '+actor)
+                return actor, expected, row, missing
+            for actor, expected, row, missing in pool.map(_check_probe, st_items):
+                if missing is not None:
+                    self.bindings[actor]['absent_foreign_opening_paths'] = missing
+                self.bindings[actor].update(initial_materials_verified=True, startup_sha256=expected, access_control=row)
         for key in ('pid_ns', 'net_ns', 'ipc_ns', 'mnt_ns'):
             count = len({r['access_control'][key] for r in self.bindings.values()})
             if count != (n if key == 'mnt_ns' else 1):
                 raise RuntimeError('Common workspace namespace verification failed: '+key)
-        for actor, station in self.stations.items():
-            station.as_account(['rm', f'{PROJECT}/.probe-{nonce}-{actor}', f'{EXPORTS}/messages/all/.probe-{nonce}-{actor}'])
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            list(pool.map(lambda item: item[1].as_account(
+                ['rm', f'{PROJECT}/.probe-{nonce}-{item[0]}', f'{EXPORTS}/messages/all/.probe-{nonce}-{item[0]}']), st_items))
         if run(['docker','exec',self.name,'find',PROJECT,EXPORTS+'/messages','-type','f']):
             raise RuntimeError('Control artifacts remain in the initial shared workspace')
 

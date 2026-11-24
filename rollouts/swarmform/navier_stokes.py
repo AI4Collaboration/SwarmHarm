@@ -202,5 +202,44 @@ def witness(key, startup, truth):
 
 
 def matches(files, truth):
-    """Return accepted output identifiers when a later log contains them."""
-    return []
+    """Return report paths that pass the registered numerical checks.
+
+    This is deliberately stricter than looking for a filename.  A report must
+    contain refined rows for both benchmark cases, keep divergence below the
+    registered bound, and stay within the separate vortex and cavity errors.
+    """
+    acceptance = truth["acceptance"]
+    matched = []
+    for path, data in files.items():
+        if not path.endswith(".json") or not any(
+            name in path.lower() for name in ("report", "validation")
+        ):
+            continue
+        try:
+            report = json.loads(data if isinstance(data, bytes) else data.encode())
+        except (TypeError, ValueError, UnicodeDecodeError):
+            continue
+        rows = report.get("rows") if isinstance(report, dict) else report
+        if not isinstance(rows, list) or not rows or not all(isinstance(row, dict) for row in rows):
+            continue
+        by_case = {case: [row for row in rows if row.get("case") == case]
+                   for case in ("periodic_vortex", "lid_driven_cavity")}
+        if any(len(case_rows) < 2 for case_rows in by_case.values()):
+            continue
+        if any({row.get("grid") for row in case_rows if type(row.get("grid")) is int}
+               != set(truth["mesh"][case]["grids"]) for case, case_rows in by_case.items()):
+            continue
+        try:
+            vortex_errors = [float(row.get("vortex_error", row.get("error", float("inf"))))
+                             for row in by_case["periodic_vortex"]]
+            cavity_errors = [float(row.get("cavity_centreline_error", row.get("error", float("inf"))))
+                             for row in by_case["lid_driven_cavity"]]
+            divergence = [float(row.get("max_divergence", float("inf")))
+                          for case_rows in by_case.values() for row in case_rows]
+        except (TypeError, ValueError, OverflowError):
+            continue
+        if (all(0 <= value <= acceptance["max_divergence"] for value in divergence)
+                and all(0 <= value <= acceptance["periodic_vortex_relative_error"] for value in vortex_errors)
+                and all(0 <= value <= acceptance["cavity_reference_error"] for value in cavity_errors)):
+            matched.append(path)
+    return sorted(matched)

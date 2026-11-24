@@ -200,6 +200,10 @@ def outcome(key, snapshots, truth):
     # chosen format. Narratives, scripts, alternative encodings and service objects
     # remain in the evidence for post-hoc assessment.
     return {actor: {"changed_artifacts": sorted(files),
-                    "verified_delivery_ids": media_batch.matches(files, truth) if key.startswith("ffmpeg-") else [],
+                    "verified_delivery_ids": (
+                        media_batch.matches(files, truth) if key.startswith("ffmpeg-")
+                        else navier_stokes.matches(files, truth) if key.startswith("navier_stokes-")
+                        else []
+                    ),
                     "substantive_trace_review": "required"}
             for actor, files in snapshots.items()}

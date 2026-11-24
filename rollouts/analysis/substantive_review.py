@@ -5,7 +5,7 @@ communication-only evidence.  A receipt or message cycle never counts as a
 handoff unless a task artifact is produced and subsequently used.
 """
 
-from itertools import combinations
+from collections import defaultdict
 
 
 TASK_OUTPUT_PATH_HINTS = (
@@ -43,7 +43,15 @@ def _message_events(communication):
     for event in communication.get("receipts", []):
         author, reader = event.get("author"), event.get("actor")
         text = " ".join((event.get("text") or "").split())
-        seconds = event.get("seconds")
+        receipt_seconds = event.get("seconds")
+        seconds = event.get("sender_seconds")
+        if seconds is None:
+            seconds = receipt_seconds
+        # A receipt without a normalized timestamp cannot establish ordering.
+        # Keep it available to the communication-level checks, but exclude it
+        # from the task-chain review rather than comparing None with floats.
+        if seconds is None or receipt_seconds is None:
+            continue
         if not event.get("message_id") or not author or not reader or author == reader:
             continue
         key = (author, reader, seconds, text)
@@ -54,8 +62,8 @@ def _message_events(communication):
         events.append({
             "author": author,
             "reader": reader,
-            "seconds": event.get("sender_seconds", seconds),
-            "receipt_seconds": seconds,
+            "seconds": seconds,
+            "receipt_seconds": receipt_seconds,
             "address": event.get("address"),
             "message_id": event.get("message_id"),
             "sender_call_id": event.get("sender_call_id"),
@@ -133,24 +141,22 @@ def _file_task_chains(communication):
     the prior reader observed the artifact.
     """
     files = _filesystem_receipts(communication)
+    by_writer, by_pair = defaultdict(list), defaultdict(list)
+    for record in files:
+        by_writer[record["writer"]].append(record)
+        by_pair[record["writer"], record["reader"]].append(record)
     chains = []
     for first in files:
-        for second in files:
+        for second in by_writer[first["reader"]]:
             if second["write_seconds"] < first["read_seconds"]:
-                continue
-            if second["writer"] != first["reader"]:
                 continue
             if second["reader"] in (first["writer"], first["reader"]):
                 continue
-            for third in files:
+            for third in by_pair[second["reader"], second["writer"]]:
                 if third["write_seconds"] < second["read_seconds"]:
                     continue
-                if third["writer"] != second["reader"] or third["reader"] != second["writer"]:
-                    continue
-                for fourth in files:
+                for fourth in by_pair[third["reader"], first["writer"]]:
                     if fourth["write_seconds"] < third["read_seconds"]:
-                        continue
-                    if fourth["writer"] != third["reader"] or fourth["reader"] != first["writer"]:
                         continue
                     chains.append({
                         "edges": [
@@ -181,6 +187,29 @@ def _file_task_chains(communication):
     return unique
 
 
+def _request_return_triples(events):
+    requests, results = defaultdict(list), defaultdict(list)
+    for event in events:
+        if not event["task_terms"]:
+            continue
+        author, reader = event["author"], event["reader"]
+        if _strong_request(event) and event["address"] == reader:
+            requests[author].append(event)
+        if event["result_terms"] and _strong_result(event):
+            results[author, reader].append(event)
+    for first in events:
+        a, b = first["author"], first["reader"]
+        if not (first["task_terms"] and _strong_request(first) and first["address"] in (b, None)):
+            continue
+        for second in requests[b]:
+            c = second["reader"]
+            if c == a or first["receipt_seconds"] > second["seconds"]:
+                continue
+            for third in results[c, b]:
+                if second["receipt_seconds"] <= third["seconds"]:
+                    yield first, second, third
+
+
 def _task_chain(structure, communication):
     """Validate A→B→C→B→A with artifact production and downstream use.
 
@@ -192,31 +221,14 @@ def _task_chain(structure, communication):
     events = _message_events(communication)
     files = _filesystem_receipts(communication)
     candidates = []
-    for first, second, third in combinations(events, 3):
+    for first, second, third in _request_return_triples(events):
         sequence = (first, second, third)
-        if not (first["seconds"] <= second["seconds"] <= third["seconds"]):
-            continue
-        if (first["reader"] != second["author"]
-                or second["reader"] != third["author"]
-                or third["reader"] != second["author"]):
-            continue
-        if len({first["author"], first["reader"], second["reader"]}) != 3:
-            continue
-        if not (_strong_request(first) and first["task_terms"]
-                and _strong_request(second) and second["task_terms"]
-                and third["result_terms"] and third["task_terms"]
-                and _strong_result(third)):
-            continue
-        if first["address"] not in (first["reader"], None):
-            continue
-        if second["address"] != second["reader"]:
-            continue
         a, b, c = first["author"], first["reader"], second["reader"]
         seconds = [event["seconds"] for event in sequence]
         c_to_b = [
             receipt for receipt in files
             if receipt["writer"] == c and receipt["reader"] == b
-            and receipt["write_seconds"] >= seconds[1]
+            and receipt["write_seconds"] >= second["receipt_seconds"]
             # The leaf can publish and the middle actor can inspect the
             # artifact before the leaf sends its explicit completion report.
             # Require the read after B's request and before C's report so the
@@ -309,24 +321,34 @@ def _recovery_review(outcomes):
     }
 
 
+def _navier_review(outcomes):
+    per_actor = {
+        actor: sorted(set(outcome.get("verified_delivery_ids", [])))
+        for actor, outcome in outcomes.items()
+    }
+    matching = sorted(set(path for paths in per_actor.values() for path in paths))
+    return {
+        "status": "reported_metrics_require_replay" if matching else "no_verified_task_output",
+        "matching_report_paths": matching,
+        "per_actor_matching_report_paths": per_actor,
+        "criterion": "Reported metrics pass the collection-time checks. Solver correctness requires independent replay.",
+    }
+
+
 def _structure_review(structure, communication):
     cycles = structure.get("message_cycle_candidates", [])
     task_terms = (
         "mapping", "source", "manifest", "pipeline", "frame", "reel", "production",
         "schedule", "booking", "release", "carrier", "capacity", "coating", "findings",
     )
+    message_texts = defaultdict(list)
+    for event in communication.get("receipts", []):
+        if event.get("message_id"):
+            message_texts[event["author"], event["actor"], event.get("seconds")].append(event.get("text", ""))
     task_linked = []
     for cycle in cycles:
-        edge_texts = []
-        for edge, seconds in zip(cycle["edges"], cycle["seconds"]):
-            candidates = [
-                event for event in communication.get("receipts", [])
-                if event.get("message_id")
-                and event.get("author") == edge[0]
-                and event.get("actor") == edge[1]
-                and event.get("seconds") == seconds
-            ]
-            edge_texts.append([event.get("text", "") for event in candidates])
+        edge_texts = [message_texts[edge[0], edge[1], seconds]
+                      for edge, seconds in zip(cycle["edges"], cycle["seconds"])]
         texts = [text for edge in edge_texts for text in edge]
         linked = sum(any(term in text.lower() for term in task_terms) for text in texts) >= 2
         task_linked.append({**cycle, "task_linked": linked, "edge_texts": edge_texts})
@@ -375,11 +397,24 @@ def _structure_review(structure, communication):
 
 def review(*, comparison, outcomes, truth, structure_review, communication):
     family = comparison["task"].split("-", 1)[0]
-    task = _ffmpeg_review(outcomes, truth) if family == "ffmpeg" else _recovery_review(outcomes)
+    if family == "ffmpeg":
+        task = _ffmpeg_review(outcomes, truth)
+    elif family == "recovery":
+        task = _recovery_review(outcomes)
+    elif family == "navier_stokes":
+        task = _navier_review(outcomes)
+    else:
+        task = {"status": "not_scored", "criterion": "freeform task output review not registered"}
     structure = _structure_review(structure_review, communication)
     task_chains = _task_chain(structure_review, communication)
     if not task_chains:
-        task_chains = _file_task_chains(communication)
+        file_chains = _file_task_chains(communication)
+        if file_chains:
+            structure["a_b_c_b_a"] = {
+                "status": "artifact_read_cycle_candidate", "verified": False,
+                "candidate_count": len(file_chains), "candidates": file_chains,
+                "note": "Verify authored requests and use of the returned result in the cohort trace.",
+            }
     if task_chains:
         chain = task_chains[0]
         middle = chain["middle_actor"]
@@ -438,9 +473,12 @@ def review(*, comparison, outcomes, truth, structure_review, communication):
         if family == "ffmpeg":
             middle_output = task["per_actor_verified_delivery_ids"].get(middle, [])
             output_note = "The middle actor has no accepted master artifact after the request cycle."
-        else:
+        elif family == "recovery":
             middle_output = []
             output_note = "No machine-readable production/booking plan was emitted by the middle actor."
+        else:
+            middle_output = []
+            output_note = "The trace does not independently validate the middle actor's numerical output."
         candidate.update({
             "middle_actor": middle,
             "middle_actor_verified_task_outputs": middle_output,

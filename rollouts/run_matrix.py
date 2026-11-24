@@ -15,9 +15,11 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "shared"))
 import model_lineup as defaults
+import launch_capacity
+from guardrails import resolve_api_base
 from process_control import run_process
 
-from swarmform.__main__ import CHANNELS, ROOT, source_digest, write_json
+from swarmform.__main__ import CHANNELS, ROOT, resolve_harness, source_digest, write_json
 from swarmform.formation_inputs import TASK_MODULES
 from swarmform import checkpoint
 
@@ -94,6 +96,31 @@ def archived_evidence(index):
         return {"status": "archive_damaged", "error": str(error)}
 
 
+def reap_dead_owner_resources():
+    """Remove managed Docker containers, networks, and volumes whose owner PID has exited."""
+    for kind, cmd_list in (
+        ("container", ["docker", "ps", "-a", "--filter", "label=org.swarmharm.managed=true",
+                       "--format", "{{.ID}}\t{{.Label \"org.swarmharm.owner-pid\"}}"]),
+        ("network", ["docker", "network", "ls", "--filter", "label=org.swarmharm.managed=true",
+                     "--format", "{{.ID}}\t{{.Label \"org.swarmharm.owner-pid\"}}"]),
+        ("volume", ["docker", "volume", "ls", "--filter", "label=org.swarmharm.managed=true",
+                    "--format", "{{.Name}}\t{{.Label \"org.swarmharm.owner-pid\"}}"]),
+    ):
+        try:
+            lines = subprocess.check_output(cmd_list, text=True, timeout=20).splitlines()
+        except Exception:
+            continue
+        dead = []
+        for line in lines:
+            parts = line.strip().split("\t")
+            if len(parts) == 2 and parts[1].isdigit() and not launch_capacity.process_alive(parts[1]):
+                dead.append(parts[0])
+        if dead:
+            rm_cmd = (["docker", "rm", "-f", *dead] if kind == "container"
+                      else ["docker", kind, "rm", *dead])
+            subprocess.run(rm_cmd, capture_output=True, timeout=30)
+
+
 @contextmanager
 def batch_lock(root):
     root.mkdir(parents=True, exist_ok=True)
@@ -122,6 +149,8 @@ def cases(args):
                         channel=channel,
                         population=population,
                         seconds=args.seconds,
+                        thinking_level=getattr(args, "thinking_level", None),
+                        **({"service_tier": args.service_tier} if getattr(args, "service_tier", None) else {}),
                         **checkpoint.registration(args),
                         entry_window_seconds=getattr(args, "entry_window_seconds", 0),
                         **({"closed_mail_receipts": True} if getattr(args, "closed_mail_receipts", False) and channel == "direct" else {}),
@@ -143,7 +172,7 @@ def main():
     parser.add_argument(
         "--harness",
         choices=["auto", "codex", "claude-code", "pi-sdk", "chat-completions"],
-        default="auto",
+        default=None,
     )
     parser.add_argument(
         "--api-protocol",
@@ -158,7 +187,8 @@ def main():
     )
     parser.add_argument(
         "--base-url",
-        default=os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1"),
+        default=None,
+        help="OpenAI-compatible API URL (prioritizes --base-url / OPENAI_BASE_URL / OpenRouter, then AxonHub)",
     )
     parser.add_argument(
         "--populations",
@@ -185,7 +215,10 @@ def main():
     parser.add_argument("--max-responses", type=int, default=None)
     parser.add_argument("--max-tools", type=int, default=None)
     parser.add_argument("--max-tokens", type=int, default=None)
-    parser.add_argument("--thinking-level", choices=("low", "medium", "high"), default="high")
+    parser.add_argument("--thinking-level", choices=("low", "medium", "high"),
+                        help="Native reasoning effort; opt in for compatible Chat Completions endpoints")
+    parser.add_argument("--service-tier", choices=("priority", "ultrafast"),
+                        help="Request this tier only on an endpoint that supports it")
     parser.add_argument("--review-model", default=None)
     parser.add_argument("--seconds", type=int, default=600, help="Per-request transport timeout")
     parser.add_argument("--repeats", type=int, default=defaults.REPEATS)
@@ -198,11 +231,7 @@ def main():
     args = parser.parse_args()
     if 1 in args.populations and "filesystem" not in args.channels:
         parser.error("N=1 requires the filesystem condition")
-    if args.harness == "auto":
-        sys.path.insert(0, str(ROOT.parent / "shared"))
-        from guardrails import native_harness
-
-        args.harness = native_harness({"model": args.model})
+    resolve_harness(args)
     if not (
         1 <= args.seconds <= 600 and args.repeats >= 1 and min(args.populations) >= 1
     ):
@@ -214,6 +243,8 @@ def main():
         parser.error("Entry offsets must precede the common cohort deadline.")
     if args.api_protocol == "subscription" and args.harness != "codex":
         parser.error("Subscription transport requires --harness codex.")
+    if args.service_tier and args.api_protocol != "subscription" and args.harness != "chat-completions":
+        parser.error("--service-tier requires Codex subscription or direct Chat Completions")
     if args.stream_responses and args.harness != "chat-completions":
         parser.error("--stream-responses requires the Chat Completions harness")
     if 1 in args.populations and any(not key.endswith("-possible") for key in args.tasks):
@@ -228,6 +259,7 @@ def main():
         parser.error("--execute requires --out outside the repository")
     from swarmform.__main__ import validate_endpoint
 
+    args.base_url = resolve_api_base(args.base_url, allow_axonhub_default=True)
     validate_endpoint(args.base_url)
     source = source_digest()
     from swarmform.workstation import IMAGE
@@ -241,6 +273,10 @@ def main():
         parser.error(
             "Set SWARMHARM_DOCKER_IMAGE to the built image ID before collection"
         )
+    needed_nets = max(args.populations) + 32
+    current_nets = int(os.environ.get("SWARMHARM_MAX_WORKSTATION_NETWORKS", str(launch_capacity.DEFAULT_NETWORK_LIMIT)))
+    if current_nets < needed_nets:
+        os.environ["SWARMHARM_MAX_WORKSTATION_NETWORKS"] = str(needed_nets)
     with batch_lock(args.out.resolve()):
         return execute_rows(args, rows, parser)
 
@@ -289,6 +325,7 @@ def execute_rows(args, rows, parser):
                     delay = previous[-1]["retry_not_before"] - time.time()
                     if delay > 0:
                         time.sleep(delay)
+                reap_dead_owner_resources()
                 command = cohort_command(args, row, directory)
                 new_attempts += 1
                 write_json(root / "index.json",
@@ -365,8 +402,10 @@ def cohort_command(args, row, directory):
     for flag, key in (("--max-responses", "max_responses"), ("--max-tools", "max_tools"), ("--max-tokens", "max_tokens")):
         if row.get(key) is not None:
             command.extend([flag, str(row[key])])
-    if getattr(args, "thinking_level", "high") != "high":
+    if getattr(args, "thinking_level", None) is not None:
         command.extend(["--thinking-level", args.thinking_level])
+    if row.get("service_tier"):
+        command.extend(["--service-tier", row["service_tier"]])
     if getattr(args, "review_model", None):
         command.extend(["--review-model", args.review_model])
     if args.revision:

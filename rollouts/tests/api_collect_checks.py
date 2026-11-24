@@ -24,6 +24,7 @@ from swarmform.__main__ import collect, source_digest
 class APICollectChecks(unittest.TestCase):
     def test_four_workstations_capture_tools_and_stop(self):
         observed = []
+        authorization = set()
         throttled = []
         rate_lock = threading.Lock()
 
@@ -36,6 +37,7 @@ class APICollectChecks(unittest.TestCase):
                     self.rfile.read(int(self.headers["Content-Length"]))
                 )
                 observed.append((self.path, request))
+                authorization.add(self.headers.get("Authorization"))
                 history = request["messages"]
                 reviewer = history[0]["role"] == "system"
                 continued = history[-1]["role"] == "tool" or reviewer
@@ -85,7 +87,6 @@ class APICollectChecks(unittest.TestCase):
                     "usage": {
                         "prompt_tokens": 1_000_010,
                         "completion_tokens": 10,
-                        "total_tokens": 1_000_020,
                     },
                 }
                 data = json.dumps(result).encode()
@@ -101,6 +102,8 @@ class APICollectChecks(unittest.TestCase):
         try:
             with TemporaryDirectory() as directory:
                 out = Path(directory) / "cohort"
+                key_file = Path(directory) / "fixture.key"
+                key_file.write_text("local-test-key")
                 args = SimpleNamespace(
                     population=4,
                     task="planning-possible",
@@ -111,10 +114,10 @@ class APICollectChecks(unittest.TestCase):
                     served_model="served-fixture-alias",
                     revision="fixture",
                     base_url=f"http://127.0.0.1:{server.server_port}/v1",
-                    key_file=None,
+                    key_file=key_file,
                     out=out,
                 )
-                with patch.object(checkpoint, "INTERVAL_SECONDS", 5), patch.object(checkpoint, "COHORT_SECONDS", 15):
+                with patch.object(checkpoint, "INTERVAL_SECONDS", 5), patch.object(checkpoint, "COHORT_SECONDS", 25):
                     self.assertEqual(asyncio.run(collect(args)), 0)
                 summary = json.loads((out / "summary.json").read_text())
                 self.assertEqual(
@@ -128,10 +131,16 @@ class APICollectChecks(unittest.TestCase):
                 self.assertEqual(len(summary["finished"]), 4)
                 self.assertTrue(summary["physical_stop_verified"])
                 self.assertEqual(summary["reason"], "cohort_deadline")
-                self.assertEqual(summary["research_seconds"], 15)
-                self.assertEqual(set(summary["structure_reviews"]), {"5", "10", "15"})
-                self.assertEqual(summary["structure_reviews"]["15"], "no_match")
+                self.assertEqual(summary["research_seconds"], 25)
+                self.assertEqual(set(summary["structure_reviews"]), {"5", "10", "15", "20", "25"})
+                self.assertEqual(summary["structure_reviews"]["25"], "no_match")
                 self.assertGreater(len(observed), 8)
+                self.assertLessEqual(
+                    max(len(json.dumps(request).encode()) for _, request in observed),
+                    128 * 1024,
+                )
+                self.assertEqual(authorization, {"Bearer local-test-key"})
+                self.assertFalse(any("reasoning_effort" in r or "service_tier" in r for _, r in observed))
                 self.assertEqual(
                     {request["model"] for _, request in observed},
                     {"served-fixture-alias"},
@@ -250,8 +259,6 @@ class APICollectChecks(unittest.TestCase):
                     str(root / "rollouts/run_matrix.py"),
                     "--model",
                     "fixture",
-                    "--harness",
-                    "chat-completions",
                     "--populations",
                     "2",
                     "--tasks",

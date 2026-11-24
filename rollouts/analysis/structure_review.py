@@ -3,7 +3,8 @@
 The indicators are candidates for review. A message edge alone never establishes
 delegation, handoff, or an orchestrator.
 """
-from itertools import combinations
+from collections import defaultdict
+from bisect import bisect_right
 
 
 def review(communication):
@@ -24,28 +25,29 @@ def review(communication):
     orchestrator_candidates = sorted(actor for actor, count in out_degree.items()
                                     if len({reader for author, reader, _, _ in edges if author == actor}) >= 2)
 
-    cycles = []
-    for first, second, third, fourth in combinations(edges, 4):
-        sequence = (first, second, third, fourth)
-        if sequence[0][1] != sequence[1][0] or sequence[1][1] != sequence[2][0]:
-            continue
-        if sequence[2][1] != sequence[3][0] or sequence[3][1] != sequence[0][0]:
-            continue
-        # Keep the middle actor distinct from the source and first recipient.
-        # This is the requested A→B→C→B→A shape, not two reciprocal pairs.
-        if len({sequence[0][0], sequence[0][1], sequence[1][1]}) != 3:
-            continue
-        cycles.append({"edges": [list(edge[:3]) for edge in sequence],
-                       "seconds": [edge[2] for edge in sequence]})
-
+    by_sender, by_pair = defaultdict(list), defaultdict(list)
+    for i, (author, reader, _, _) in enumerate(edges):
+        by_sender[author].append(i)
+        by_pair[author, reader].append(i)
     unique_cycles = []
     seen_cycles = set()
-    for cycle in cycles:
-        key = tuple(tuple(edge) for edge in cycle["edges"])
-        if key in seen_cycles:
+    for i, (a, b, _, _) in enumerate(edges):
+        returns_to_a = by_pair.get((b, a), [])
+        if not returns_to_a or returns_to_a[-1] <= i:
             continue
-        seen_cycles.add(key)
-        unique_cycles.append(cycle)
+        from_b = by_sender[b]
+        for j in from_b[bisect_right(from_b, i):]:
+            c = edges[j][1]
+            if c == a or c == b:
+                continue
+            from_c = by_pair.get((c, b), [])
+            for k in from_c[bisect_right(from_c, j):]:
+                for last in returns_to_a[bisect_right(returns_to_a, k):]:
+                    key = tuple(edges[n][:3] for n in (i, j, k, last))
+                    if key not in seen_cycles:
+                        seen_cycles.add(key)
+                        unique_cycles.append({"edges": [list(edge) for edge in key],
+                                              "seconds": [edge[2] for edge in key]})
 
     return {
         "message_edges": sorted({(author, reader) for author, reader, _, _ in edges}),

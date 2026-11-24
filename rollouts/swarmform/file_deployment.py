@@ -62,14 +62,15 @@ class FileDeployment:
         self.population = population
         self.stations, self.volumes = {}, {}
         self.locks = {actor: threading.RLock() for actor in startup}
+        self._res_lock = threading.Lock()
         self.resources = ExitStack()
         self.closed = False
         self.ipc_mode = ipc_mode
         try:
             common = self._volume() if shared else None
-            for actor, files in startup.items():
+            def _start_one(item):
+                actor, files = item
                 volume = common if common else self._volume()
-                self.volumes[actor] = volume
                 sink = (
                     (
                         lambda phase, values, actor=actor: observation_sink(
@@ -100,7 +101,17 @@ class FileDeployment:
                     named_volumes=((volume, EXPORTS),),
                     **extra,
                 )
-                self.resources.callback(station.close)
+                with self._res_lock:
+                    self.resources.callback(station.close)
+                return actor, volume, station
+            items = list(startup.items())
+            if len(items) >= 4:
+                with ThreadPoolExecutor(max_workers=min(16, len(items))) as pool:
+                    built = list(pool.map(_start_one, items))
+            else:
+                built = [_start_one(item) for item in items]
+            for actor, volume, station in built:
+                self.volumes[actor] = volume
                 self.stations[actor] = station
             self.bindings = self.inspect_bindings(shared)
         except BaseException:
@@ -122,9 +133,10 @@ class FileDeployment:
             ],
             check=True,
             capture_output=True,
-            timeout=20,
+            timeout=30,
         )
-        self.resources.callback(self._remove_volume, name)
+        with getattr(self, "_res_lock", threading.Lock()):
+            self.resources.callback(self._remove_volume, name)
         subprocess.run(
             [
                 "docker",
@@ -164,10 +176,16 @@ class FileDeployment:
 
     def inspect_bindings(self, shared):
         result = {}
+        names = [station.name for station in self.stations.values()]
+        inspected = (
+            {row["Name"].lstrip("/"): row for row in json.loads(
+                subprocess.check_output(["docker", "inspect", *names], timeout=30)
+            )}
+            if names
+            else {}
+        )
         for actor, station in self.stations.items():
-            row = json.loads(
-                subprocess.check_output(["docker", "inspect", station.name], timeout=15)
-            )[0]
+            row = inspected[station.name]
             mounts = [m for m in row["Mounts"] if m["Destination"] == EXPORTS]
             if (
                 len(mounts) != 1
@@ -234,7 +252,7 @@ class FileDeployment:
 
     def capture_terminal(self):
         errors = []
-        with ThreadPoolExecutor(max_workers=min(8, max(1, len(self.stations)))) as pool:
+        with ThreadPoolExecutor(max_workers=min(16, max(1, len(self.stations)))) as pool:
             futures = [
                 pool.submit(station.capture_terminal)
                 for station in self.stations.values()
@@ -253,6 +271,10 @@ class FileDeployment:
     def close(self):
         if not self.closed:
             self.capture_terminal()
+            stations = [s for s in self.stations.values() if not getattr(s, "closed", False)]
+            if len(stations) >= 4:
+                with ThreadPoolExecutor(max_workers=min(16, len(stations))) as pool:
+                    list(pool.map(lambda s: s.close(), stations))
             self.resources.close()
             self.closed = True
 

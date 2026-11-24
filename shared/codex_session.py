@@ -43,7 +43,8 @@ class CodexAgent:
     def __init__(self, actor, events, *, folder, model, thinking_level, tools,
                  active_tools, goal_mode, job_context=None, api_key=None,
                  api_base=None, registered_harness=None, request_timeout_ms=300000,
-                 workstation_permissions=None, response_idle_timeout_ms=None, registered_model=None, **unused):
+                 workstation_permissions=None, response_idle_timeout_ms=None, registered_model=None,
+                 service_tier=None, **unused):
         import codex_agent as runtime
         self.gateway = api_base is not None or api_key is not None
         if self.gateway:
@@ -78,6 +79,7 @@ class CodexAgent:
         self.folder = Path(folder).resolve()
         self.folder.mkdir(parents=True, exist_ok=True)
         self.model, self.effort = model, thinking_level
+        self.service_tier = service_tier
         self.registered_model = registered_model or model
         self.definitions = {tool['name']: tool for tool in tools}
         self.base_tools = list(active_tools)
@@ -207,12 +209,15 @@ class CodexAgent:
                 if not self.gateway:
                     self.runtime.check_subscription(self.rpc)
                 started = self.rpc.request('thread/start', {'model': self.model,
+                    **({'serviceTier': self.service_tier} if self.service_tier else {}),
                     'cwd': str(workspace), 'approvalPolicy': 'never',
                     'sandbox': 'workspace-write' if self.workstation_permissions else 'read-only',
                     'experimentalRawEvents': True, 'ephemeral': False})
                 self.thread_id = started['thread']['id']
                 if started['model'] != self.model:
                     raise RuntimeError('Codex selected a different model')
+                if self.service_tier and started.get('serviceTier') != self.service_tier:
+                    raise RuntimeError(f"Codex selected service tier {started.get('serviceTier')!r}, expected {self.service_tier!r}")
                 self._verify_tools()
                 threading.Thread(target=self._accept, daemon=True).start()
                 session_file=started['thread'].get('path')
@@ -448,6 +453,9 @@ class CodexAgent:
                 elif method == 'rawResponseItem/completed':
                     item = deepcopy(params['item'])
                     kind = item.get('type')
+                    if kind == 'configuration_update':
+                        # The RPC journal already contains this control event.
+                        return
                     if kind == 'message' and item.get('role') != 'assistant':
                         self.inputs.append(source)
                         if self.goal_mode == 'codex_goal' and item.get('role')=='user':

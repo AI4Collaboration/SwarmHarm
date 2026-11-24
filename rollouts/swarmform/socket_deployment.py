@@ -1,6 +1,7 @@
 """Socket artifact service with scoped accounts and private client networks."""
 
 import base64
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import ExitStack
 import json
 from ipaddress import IPv4Network
@@ -23,7 +24,7 @@ def command(argv):
 def create_private_network(name):
     # Each network has just a client and service. Docker's automatic /16 pools
     # can run out before N=32, so allocate small, non-overlapping internal nets.
-    for _ in range(128):
+    for _ in range(256):
         subnet = IPv4Network(((10 << 24) | (secrets.randbits(21) << 3), 29))
         try:
             command(
@@ -86,6 +87,7 @@ class SocketDeployment(FileDeployment):
                 "Socket service requires an external observation directory"
             )
         self.resources = ExitStack()
+        self._res_lock = threading.Lock()
         self.closed = False
         self.stations = {}
         self.volumes = {}
@@ -94,6 +96,7 @@ class SocketDeployment(FileDeployment):
         accounts = {}
         self.terminal_service = None
         try:
+            planned_nets = {}
             for actor, files in startup.items():
                 config = json.loads(files[self.connection_path])
                 if config["url"] != self.service_url:
@@ -104,10 +107,20 @@ class SocketDeployment(FileDeployment):
                     "actor": actor,
                     "scope": "office" if shared else actor,
                 }
-                network = "office-network-" + secrets.token_hex(8)
+                planned_nets[actor] = "office-network-" + secrets.token_hex(8)
+            def _make_net(pair):
+                actor, network = pair
                 create_private_network(network)
-                self.resources.callback(self._remove_network, network)
-                self.networks[actor] = network
+                with self._res_lock:
+                    self.resources.callback(self._remove_network, network)
+                return actor, network
+            net_items = list(planned_nets.items())
+            if len(net_items) >= 4:
+                with ThreadPoolExecutor(max_workers=min(16, len(net_items))) as pool:
+                    created_nets = list(pool.map(_make_net, net_items))
+            else:
+                created_nets = [_make_net(p) for p in net_items]
+            self.networks = dict(created_nets)
             initial = self.service_files(accounts)
             if project_artifacts:
                 from swarmform.formation_store import apply
@@ -150,7 +163,8 @@ class SocketDeployment(FileDeployment):
             )
             if result["exit_code"] != 0:
                 raise RuntimeError(result)
-            for actor, files in startup.items():
+            def _start_station(item):
+                actor, files = item
                 sink = (
                     (
                         lambda phase, value, actor=actor: observation_sink(
@@ -165,7 +179,6 @@ class SocketDeployment(FileDeployment):
                     {"archive": Path(observation_archive) / actor},
                 )
                 volume = self._volume()
-                self.volumes[actor] = volume
                 station = cls(
                     {
                         p: base64.b64encode(t.encode()).decode()
@@ -179,11 +192,35 @@ class SocketDeployment(FileDeployment):
                     registry_enabled=False,
                     **extra,
                 )
-                self.resources.callback(station.close)
+                with self._res_lock:
+                    self.resources.callback(station.close)
+                return actor, volume, station
+            st_items = list(startup.items())
+            if len(st_items) >= 4:
+                with ThreadPoolExecutor(max_workers=min(16, len(st_items))) as pool:
+                    built = list(pool.map(_start_station, st_items))
+            else:
+                built = [_start_station(item) for item in st_items]
+            for actor, volume, station in built:
+                self.volumes[actor] = volume
                 self.stations[actor] = station
             self.bindings = {}
+            st_names = [s.name for s in self.stations.values()]
+            net_names = [self.networks[a] for a in self.stations]
+            rows_by_name = ({r["Name"].lstrip("/"): r for r in json.loads(command(["docker", "inspect", *st_names]).stdout)}
+                            if st_names else {})
+            nets_by_name = ({r["Name"]: r for r in json.loads(command(["docker", "network", "inspect", *net_names]).stdout)}
+                            if net_names else {})
+            namespace_code = "import os,json; print(json.dumps({n:os.readlink('/proc/self/ns/'+n) for n in ('pid','ipc','mnt','net')}))"
+            def _fetch_ns(station_name):
+                return station_name, json.loads(command(["docker", "exec", station_name, "python", "-I", "-c", namespace_code]).stdout)
+            if len(st_names) >= 4:
+                with ThreadPoolExecutor(max_workers=min(16, len(st_names))) as pool:
+                    ns_by_name = dict(pool.map(_fetch_ns, st_names))
+            else:
+                ns_by_name = dict(_fetch_ns(n) for n in st_names)
             for actor, station in self.stations.items():
-                row = json.loads(command(["docker", "inspect", station.name]).stdout)[0]
+                row = rows_by_name[station.name]
                 network = row["NetworkSettings"]["Networks"]
                 mounts = [
                     m
@@ -228,31 +265,14 @@ class SocketDeployment(FileDeployment):
                     raise RuntimeError(
                         "Unexpected workstation network or shared volume"
                     )
-                network_row = json.loads(
-                    command(
-                        ["docker", "network", "inspect", self.networks[actor]]
-                    ).stdout
-                )[0]
+                network_row = nets_by_name[self.networks[actor]]
                 if not network_row["Internal"] or {
                     v["Name"] for v in network_row["Containers"].values()
                 } != {station.name, self.service.name}:
                     raise RuntimeError(
                         "Client network must contain only its workstation and its service"
                     )
-                namespace_code = "import os,json; print(json.dumps({n:os.readlink('/proc/self/ns/'+n) for n in ('pid','ipc','mnt','net')}))"
-                namespaces = json.loads(
-                    command(
-                        [
-                            "docker",
-                            "exec",
-                            station.name,
-                            "python",
-                            "-I",
-                            "-c",
-                            namespace_code,
-                        ]
-                    ).stdout
-                )
+                namespaces = ns_by_name[station.name]
                 self.bindings[actor] = {
                     "container": station.name,
                     "network": self.networks[actor],

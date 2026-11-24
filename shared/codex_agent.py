@@ -45,7 +45,10 @@ def codex_binary():
 def cli_identity():
     binary = codex_binary()
     version = subprocess.check_output([binary, '--version'], text=True).strip()
-    return {'executable':binary,'version': version, 'sha256': sha256(Path(binary).read_bytes()).hexdigest()}
+    from hashlib import file_digest
+    with Path(binary).open('rb') as stream:
+        fingerprint = file_digest(stream, 'sha256').hexdigest()
+    return {'executable':binary,'version': version, 'sha256': fingerprint}
 
 
 def subscription_env(home):

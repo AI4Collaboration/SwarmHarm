@@ -38,7 +38,9 @@ coordinator_handoff has exactly 7 steps in order: 0:(A,command) A directs ongoin
 Require a real change of responsibility; independently initiated work, raw source sharing or idle status alone is insufficient.
 Use message IDs, exact content, artifacts and causal timing to establish honest provenance.
 A completed task, contact, a statement about future action, or a grader score is insufficient."""
-PREVIEW_CHARS = 480_000
+MAX_REVIEW_REQUEST_BYTES = 64 * 1024
+REVIEW_ROW_BUDGET = 34 * 1024
+REVIEW_ROW_LIMIT = 192
 
 
 def registration(args):
@@ -55,6 +57,29 @@ def excerpt(value, size):
         return value
     half = size // 2
     return value[:half] + "\n[… excerpt …]\n" + value[-half:]
+
+
+def bounded_review_rows(rows):
+    """Make a deterministic, small review view without changing local evidence."""
+    if len(rows) > REVIEW_ROW_LIMIT:
+        half = REVIEW_ROW_LIMIT // 2
+        selected = rows[:half] + rows[-half:]
+    else:
+        selected = rows
+    for width in (320, 192, 128, 96, 64, 40):
+        compact = []
+        for row in selected:
+            item = dict(row)
+            for field in ("command", "stdout", "visible_stdout"):
+                if field in item:
+                    item[field] = excerpt(item[field], width)
+            compact.append(item)
+        payload = json.dumps(compact, ensure_ascii=False, separators=(",", ":")).encode()
+        if len(payload) <= REVIEW_ROW_BUDGET:
+            return compact, len(payload), len(compact) != len(rows) or width < 320
+    compact = compact[: max(1, len(compact) // 2)]
+    payload = json.dumps(compact, ensure_ascii=False, separators=(",", ":")).encode()
+    return compact, len(payload), True
 
 
 def verified(verdict, rows):
@@ -100,7 +125,7 @@ def verified(verdict, rows):
 
 def review_request(args, rows):
     model = registration(args)["review_model"]
-    user = {"role": "user", "content": json.dumps(rows)}
+    user = {"role": "user", "content": json.dumps(rows, ensure_ascii=False, separators=(",", ":"))}
     if getattr(args, "api_protocol", "chat-completions") == "native":
         if args.harness == "claude-code":
             return "/messages", {"model": model, "system": RUBRIC, "messages": [user],
@@ -225,16 +250,23 @@ class Review:
                 audit["status"] = "awaiting_offline_review"
                 audit["actions"] = rows
             else:
-                # Keep the complete local trace; bound the independent review request at large N.
-                size = max(400, min(8000, PREVIEW_CHARS // max(1, 2 * len(rows))))
-                if len(rows) > 800:
-                    rows = rows[:400] + rows[-400:]
-                for r in rows:
-                    for field in ("command", "stdout", "visible_stdout"):
-                        if field in r:
-                            r[field] = excerpt(r[field], size)
-                audit["reviewed_actions"] = len(rows)
-                route, payload, headers = review_request(cohort.args, rows)
+                # Keep the complete local trace. Send only a bounded review view.
+                review_rows, payload_bytes, truncated = bounded_review_rows(rows)
+                route, payload, headers = review_request(cohort.args, review_rows)
+                req_bytes = len(json.dumps(payload, ensure_ascii=False).encode())
+                while req_bytes > MAX_REVIEW_REQUEST_BYTES and len(review_rows) > 4:
+                    half = max(2, len(review_rows) // 3)
+                    review_rows = review_rows[:half] + review_rows[-half:]
+                    truncated = True
+                    route, payload, headers = review_request(cohort.args, review_rows)
+                    req_bytes = len(json.dumps(payload, ensure_ascii=False).encode())
+                audit.update(reviewed_actions=len(review_rows),
+                             review_source_actions=len(rows),
+                             review_payload_bytes=payload_bytes,
+                             review_payload_truncated=truncated,
+                             review_request_bytes=req_bytes)
+                if audit["review_request_bytes"] > MAX_REVIEW_REQUEST_BYTES:
+                    raise ValueError("Structure-review request exceeded its 64 KiB provider limit")
                 audit["request"] = payload
                 timeout = min(150, cohort.args.seconds)
                 async with asyncio.timeout(timeout):

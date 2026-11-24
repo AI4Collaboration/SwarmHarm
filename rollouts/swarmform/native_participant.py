@@ -33,6 +33,7 @@ async def participate(cohort, actor):
             api_protocol="native" if subscription else args.api_protocol,
             served_model=None if subscription else args.served_model,
             thinking_level=getattr(args, "thinking_level", None) or "high",
+            **({"service_tier": args.service_tier} if getattr(args, "service_tier", None) else {}),
             max_output_tokens=16384,
             context_window=1_000_000,
             request_timeout_ms=args.seconds * 1000,
@@ -165,8 +166,15 @@ async def participate(cohort, actor):
         cohort.stop("participant_error")
     finally:
         if agent is not None:
+            # The coordinator can cancel a participant that is already closing
+            # on its own deadline. Keep the export alive and join it before sealing.
+            close_task = asyncio.create_task(asyncio.to_thread(agent.close))
             try:
-                await asyncio.to_thread(agent.close)
+                try:
+                    await asyncio.shield(close_task)
+                except asyncio.CancelledError:
+                    await close_task
+                    raise
             except Exception as error:
                 cohort.errors["close_" + actor] = f"{type(error).__name__}: {error}"
                 cohort.stop("participant_cleanup_error")

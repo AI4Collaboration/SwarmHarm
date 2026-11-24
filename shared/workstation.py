@@ -439,7 +439,13 @@ class DockerWorkstation:
 
     def command_argv(self, command):
         if self.creation_mask:command='umask '+self.creation_mask+'\n'+command
+        oom_guard = (
+            'import os,sys\nfrom pathlib import Path\n'
+            'try:Path("/proc/self/oom_score_adj").write_text("800")\n'
+            'except OSError:pass\nos.execvp(sys.argv[1],sys.argv[1:])'
+        )
         return ["docker", "exec", "--workdir", "/workspace", self.name,
+                "python", "-I", "-c", oom_guard,
                 "timeout", "--kill-after=1s", "30s", "bash", "-lc", command]
 
     def execute(self, command, shared):

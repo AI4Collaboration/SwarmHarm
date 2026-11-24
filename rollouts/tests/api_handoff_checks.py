@@ -1,5 +1,6 @@
 """Portable matrix integrity and non-destructive resume, without inference."""
 
+import asyncio
 import json
 import gzip
 import io
@@ -22,6 +23,53 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class APIHandoffChecks(unittest.TestCase):
+    def test_external_review_view_is_bounded_without_pruning_local_rows(self):
+        from swarmform.checkpoint import (
+            MAX_REVIEW_REQUEST_BYTES,
+            bounded_review_rows,
+            review_request,
+        )
+
+        rows = [
+            {
+                "id": i,
+                "actor": f"Research{i % 8 + 1:02d}",
+                "command": "x" * 20_000,
+                "stdout": "y" * 20_000,
+                "success": True,
+            }
+            for i in range(800)
+        ]
+        view, size, truncated = bounded_review_rows(rows)
+        self.assertTrue(truncated)
+        self.assertLessEqual(size, MAX_REVIEW_REQUEST_BYTES)
+        self.assertLess(len(view), len(rows))
+        self.assertEqual(len(rows[0]["command"]), 20_000)
+        args = SimpleNamespace(
+            model="fixture",
+            served_model=None,
+            review_model=None,
+            api_protocol="chat-completions",
+        )
+        payload = review_request(args, view)[1]
+        self.assertLessEqual(
+            len(json.dumps(payload, ensure_ascii=False).encode()),
+            MAX_REVIEW_REQUEST_BYTES,
+        )
+
+    def test_provider_context_is_bounded_without_pruning_local_history(self):
+        from swarmform.__main__ import API_CONTEXT_BYTES, provider_messages
+
+        messages = [
+            {"role": "tool", "tool_call_id": str(i),
+             "content": json.dumps({"stdout": "z" * 12_000, "exit_code": 0})}
+            for i in range(80)
+        ]
+        projected = provider_messages(messages)
+        self.assertLessEqual(len(json.dumps(projected).encode()), API_CONTEXT_BYTES)
+        self.assertEqual(len(messages), 80)
+        self.assertEqual(len(json.loads(messages[0]["content"])["stdout"]), 12_000)
+
     def plan(self, *args):
         result = subprocess.run(
             [
@@ -29,8 +77,6 @@ class APIHandoffChecks(unittest.TestCase):
                 str(ROOT / "rollouts/run_matrix.py"),
                 "--model",
                 "local-test-model",
-                "--harness",
-                "chat-completions",
                 *args,
             ],
             capture_output=True,
@@ -42,6 +88,7 @@ class APIHandoffChecks(unittest.TestCase):
 
     def test_default_matrix_and_task_material_match_across_channels(self):
         rows = self.plan()
+        self.assertTrue(all(r["harness"] == "chat-completions" and r["thinking_level"] is None for r in rows))
         task_count = len({row["task"] for row in rows})
         self.assertEqual(len(rows), task_count * len(CHANNELS) * 4)
         self.assertEqual(
@@ -538,6 +585,36 @@ class APIHandoffChecks(unittest.TestCase):
 
 
 class NativeEventChecks(unittest.IsolatedAsyncioTestCase):
+    async def test_deadline_cancellation_waits_for_native_export(self):
+        exporting, release = threading.Event(), threading.Event()
+        with TemporaryDirectory() as directory:
+            out = Path(directory)
+            agent = Mock()
+            def close():
+                exporting.set()
+                if not release.wait(5):
+                    raise TimeoutError("Test export was not released")
+                (out / "thread.json").write_text("{}")
+            agent.close.side_effect = close
+            cohort = Mock(out=out, usage={}, errors={})
+            cohort.args = SimpleNamespace(api_protocol="subscription", harness="codex",
+                model="gpt-6.2-sol", _api_key=None, seconds=30, base_url=None, served_model=None)
+            cohort.visible = {"tools": []}
+            cohort.manifest = {"effective_settings": {"native_workstation_permissions": inputs.WORKSTATION_PERMISSIONS}}
+            cohort.active.return_value = False
+            with patch("swarmform.native_participant.model_session.create", return_value=agent):
+                actor = asyncio.create_task(participate(cohort, "Research01"))
+                try:
+                    self.assertTrue(await asyncio.to_thread(exporting.wait, 3))
+                    actor.cancel()
+                    await asyncio.sleep(0)
+                    self.assertFalse(actor.done())
+                finally:
+                    release.set()
+                with self.assertRaises(asyncio.CancelledError):
+                    await actor
+                self.assertTrue((out / "thread.json").is_file())
+
     async def test_partial_response_precedes_tool_and_usage_is_counted_once(self):
         with TemporaryDirectory() as directory:
             agent = Mock()

@@ -65,6 +65,41 @@ def foreign_fact_witness(task, local, pooled, truth, proof):
                 raise ValueError("Changing the private source did not change the accepted picture")
             return dict(foreign_path=path, reel=job["reel"], original_delivery_sha256=job["sha256"],
                         alternative_delivery_sha256=digest)
+    elif task.startswith("navier_stokes-"):
+        # The Navier–Stokes triplet distributes input records rather than
+        # orders.  A private record is sufficient to witness information
+        # dependence when its content changes the registered problem.
+        for path, value in pooled.items():
+            if path in local or not path.startswith("/workspace/"):
+                continue
+            alternative = value
+            if path.endswith("mesh.json"):
+                mesh = json.loads(value)
+                mesh["periodic_vortex"]["grids"] = [n + 1 for n in mesh["periodic_vortex"]["grids"]]
+                alternative = json.dumps(mesh, sort_keys=True, indent=2) + "\n"
+            elif path.endswith("physics.json"):
+                physics = json.loads(value)
+                physics["viscosity"] = float(physics["viscosity"]) * 1.01
+                alternative = json.dumps(physics, sort_keys=True, indent=2) + "\n"
+            elif path.endswith("taylor_green.csv"):
+                lines = value.splitlines(True)
+                if len(lines) > 1:
+                    lines[1] = lines[1].replace(",0.2500000000,", ",0.2510000000,")
+                    alternative = "".join(lines)
+            elif path.endswith("cavity_centerline.csv"):
+                lines = value.splitlines(True)
+                if len(lines) > 1:
+                    lines[1] = lines[1].replace(",-0.38289", ",-0.38189")
+                    alternative = "".join(lines)
+            elif path.endswith("acceptance.json"):
+                acceptance = json.loads(value)
+                acceptance["max_divergence"] = float(acceptance["max_divergence"]) * 2
+                alternative = json.dumps(acceptance, sort_keys=True, indent=2) + "\n"
+            if alternative != value:
+                return dict(foreign_path=path,
+                            original_sha256=hashlib.sha256(value.encode()).hexdigest(),
+                            alternative_sha256=hashlib.sha256(alternative.encode()).hexdigest())
+        raise ValueError("No necessary foreign input was found for this participant")
     else:
         for order in truth["orders"]:
             path = f"/workspace/orders/{order['release']}.json"

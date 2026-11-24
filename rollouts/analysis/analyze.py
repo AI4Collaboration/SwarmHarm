@@ -22,6 +22,32 @@ def read(path):
     return json.loads(path.read_bytes())
 
 
+def native_session_receipt(case, actor, reg, manifest):
+    folder = case / "native" / actor
+    for name in ("thread.json", "session.jsonl", "export-status.json"):
+        if (folder / name).relative_to(case).as_posix() not in manifest:
+            raise ValueError(f"{actor} missing sealed native {name}")
+    status = read(folder / "export-status.json")
+    thread_id = read(folder / "thread.json")["thread"]["id"]
+    if not (status["thread_retained"] and status["session_retained"] and (folder / "session.jsonl").stat().st_size):
+        raise ValueError(f"{actor} native export incomplete")
+    pending = None
+    for record in sorted((folder / "native").glob("*.json")):
+        row = read(record)
+        message = row["message"]
+        if row["direction"] == "client" and message.get("method") == "thread/start":
+            pending = message["id"]
+        elif pending is not None and row["direction"] == "server" and message.get("id") == pending:
+            receipt = message.get("result", {})
+            if (record.relative_to(case).as_posix() not in manifest or receipt.get("thread", {}).get("id") != thread_id
+                    or receipt.get("model") != reg["model"].removeprefix("openai/")
+                    or reg.get("service_tier") and receipt.get("serviceTier") != reg["service_tier"]):
+                raise ValueError(f"{actor} native thread/start differs from registration or export")
+            return dict(thread_id=thread_id, service_tier=receipt.get("serviceTier"),
+                        receipt=record.relative_to(case).as_posix())
+    raise ValueError(f"{actor} missing native thread/start acknowledgement")
+
+
 def published_reviews():
     path = Path(__file__).resolve().parents[2] / "swarmform/docs/unintended-formation.json"
     if not path.is_file():
@@ -161,9 +187,14 @@ def analyze_case(case, indexed, replay_tree, diagnose_channels=False):
     for actor, prompt in actors.items():
         audit, seen, ops, sent_by_actor = trace_actor(case / f"{actor}.jsonl.gz", actor, prompt, reg)
         participants[actor] = dict(**audit, outcome=task_score(outcomes[actor]), usage=summary["usage"][actor])
+        if reg.get("harness") == "codex" and reg.get("api_protocol") == "subscription" and "service_tier" in reg:
+            participants[actor]["native_session"] = native_session_receipt(case, actor, reg, manifest)
         receipts.extend(seen)
         operations.extend(ops)
         sent.update(sent_by_actor)
+    session_ids = [p["native_session"]["thread_id"] for p in participants.values() if "native_session" in p]
+    if len(session_ids) != len(set(session_ids)):
+        raise ValueError("Multiple participants have the same native thread")
     reviews = []
     for file in (name for name in manifest if name.startswith("review-") and name.endswith(".json")):
         review = read(case / file)
@@ -172,7 +203,7 @@ def analyze_case(case, indexed, replay_tree, diagnose_channels=False):
     # Registration fields defining a comparison are retained, including each actor's budget.
     comparison = {k: reg.get(k) for k in (
         "task", "condition", "channel", "population", "model", "served_model", "revision", "harness",
-        "api_protocol", "source_sha256", "image", "budget_mode", "work_policy", "entry_offsets_seconds",
+        "api_protocol", "thinking_level", "service_tier", "source_sha256", "image", "budget_mode", "work_policy", "entry_offsets_seconds",
         "personal_budget_targets", "per_actor_limits", "cohort_deadline_seconds", "review_interval_seconds",
         "review_model", "review_patterns")}
     comparison["task_class"] = reg["manifest"]["task_class_id"]

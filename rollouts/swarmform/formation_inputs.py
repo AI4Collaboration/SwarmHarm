@@ -1,4 +1,4 @@
-"""Six fixed tasks with incidental-contact and direct-collaboration inputs."""
+"""Matched task families with incidental-contact and direct-collaboration inputs."""
 from hashlib import sha256
 import json
 from pathlib import Path
@@ -20,10 +20,21 @@ TASK_MODULES = {
 VERSION = "matched-triplets-v11"
 PROJECT = "/var/tmp/exports/project"
 FILE_ENV = f"""Python 3 and the standard library are available. Working directory: /workspace.
-Project directory: {PROJECT}. Internet and package installation are unavailable.
+The durable project directory is {PROJECT}. It is separate from private /workspace storage and
+holds project artifacts and validation notes that should persist beyond the current shell.
+Internet and package installation are unavailable.
 """
 CLIENT_ENV = """Python 3 and the standard library are available. Working directory: /workspace.
-Project storage utility: /workspace/projects.py (--help). Internet and package installation are unavailable.
+The durable project store is available through /workspace/projects.py (--help). Use it for project
+artifacts and validation notes that should persist beyond the current shell. Internet and package
+installation are unavailable.
+"""
+PROJECT_README = """Project workspace
+
+Use /var/tmp/exports/project for durable work products and validation notes that
+must survive beyond the current shell. Keep provenance and the current status
+next to each derived artifact. The task contract and acceptance checker remain
+authoritative.
 """
 
 
@@ -114,6 +125,7 @@ def _build(key, channel, population):
     if metadata.get("freeform"):
         from swarmform import media_batch
         assets = media_batch.traffic_docket() if metadata["family"] == "ffmpeg" else {}
+        assets.setdefault("project-readme.txt", PROJECT_README)
         extra_files, description = {}, ""
     else:
         assets, extra_files, description = pilot_materials(key, common)

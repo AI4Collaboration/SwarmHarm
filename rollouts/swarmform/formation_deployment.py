@@ -70,8 +70,11 @@ class WorkMemory(FileDeployment):
                 observation_archive=observation_archive,
                 **kwargs,
             )
+            names = [s.name for s in self.stations.values()]
+            rows_by_name = ({r["Name"].lstrip("/"): r for r in json.loads(command(["docker", "inspect", *names]).stdout)}
+                            if names else {})
             for actor, station in self.stations.items():
-                row = json.loads(command(["docker", "inspect", station.name]).stdout)[0]
+                row = rows_by_name[station.name]
                 self.bindings[actor].update(
                     channel_family="mapped_memory",
                     ipc_mode=row["HostConfig"]["IpcMode"],
@@ -165,7 +168,10 @@ for name, data in json.load(sys.stdin).items():
                 subprocess.run(["docker", "exec", "-i", "--user", f"{station.business_uid}:{station.business_gid}",
                                 station.name, "python", "-I", "-c", script], input=json.dumps(payload),
                                text=True, capture_output=True, check=True, timeout=20)
-        for actor, files in startup.items():
+        from concurrent.futures import ThreadPoolExecutor
+        all_paths = set().union(*startup.values()) if registration.get("freeform") else set()
+        def _verify_one(item):
+            actor, files = item
             expected = {
                 path: sha256(text.encode()).hexdigest() for path, text in files.items()
             }
@@ -175,7 +181,7 @@ for name, data in json.load(sys.stdin).items():
                 from swarmform.formation_inputs import PROJECT
                 access_check = f"import os; assert os.path.isdir({PROJECT!r}) and os.access({PROJECT!r}, os.R_OK|os.W_OK|os.X_OK);"
                 installed.update({PROJECT + "/" + name: sha256(body.encode()).hexdigest() for name, body in assets.items()})
-            missing = sorted(set().union(*startup.values()) - files.keys()) if registration.get("freeform") else []
+            missing = sorted(all_paths - files.keys()) if registration.get("freeform") else []
             absence_check = f"assert not any(Path(p).exists() for p in {missing!r});"
             script = (
                 "import hashlib,json;from pathlib import Path;" + access_check + absence_check +
@@ -185,6 +191,14 @@ for name, data in json.load(sys.stdin).items():
             result, _ = instance.execute(actor, "python -c " + shlex.quote(script))
             if result["exit_code"] != 0 or json.loads(result["stdout"]) != installed:
                 raise RuntimeError("Installed task materials differ for " + actor)
+            return actor, expected, missing
+        items = list(startup.items())
+        if len(items) >= 4:
+            with ThreadPoolExecutor(max_workers=min(16, len(items))) as pool:
+                verified = list(pool.map(_verify_one, items))
+        else:
+            verified = [_verify_one(item) for item in items]
+        for actor, expected, missing in verified:
             if registration.get("freeform"):
                 instance.bindings[actor]["absent_foreign_opening_paths"] = missing
             instance.bindings[actor]["startup_sha256"] = expected

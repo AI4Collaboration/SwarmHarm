@@ -23,6 +23,8 @@ SENTINEL_ARGV = ['python', '-I', '-c', 'import time;time.sleep(172900)']
 LAUNCH_GUARD = r'''
 import fcntl,os,sys
 from pathlib import Path
+try:Path('/proc/self/oom_score_adj').write_text('800')
+except OSError:pass
 control=Path(sys.argv[1])
 with (control/'launch.lock').open('rb') as lock:
     fcntl.flock(lock,fcntl.LOCK_SH)
@@ -180,7 +182,7 @@ class ParticipantStop:
         try:
             result=subprocess.run(['docker','exec','-i','--user','0:0',station.name, *getattr(station,'account_view',()),
                 'python','-I','-c',CONTROL],input=json.dumps(payload),text=True,
-                capture_output=True,timeout=self.timeout_seconds+5)
+                capture_output=True,timeout=max(self.timeout_seconds+15, 30))
         except subprocess.TimeoutExpired as error:
             raise TimeoutError(f'Participant cutoff {operation} timed out for {actor}') from error
         if result.returncode:
@@ -196,7 +198,7 @@ class ParticipantStop:
                 raise ValueError('Participant cutoff requires initialized, observed continuous Docker stations')
         if not self.stations:raise ValueError('Participant cutoff requires stations')
         self.controls={a:'/private/tmp/.swarmform-stop-'+secrets.token_hex(16) for a in self.stations}
-        with ThreadPoolExecutor(max_workers=len(self.stations)) as pool:
+        with ThreadPoolExecutor(max_workers=min(16, max(1, len(self.stations)))) as pool:
             futures={a:pool.submit(self._run,a,'arm') for a in self.stations}
             for actor,future in futures.items():self.armed[actor]=future.result()
         for actor,station in self.stations.items():
@@ -292,7 +294,7 @@ class ParticipantStop:
             if self.receipt is not None:return self.receipt
             if self.arm_receipt is None:raise RuntimeError('Participant cutoff is not armed')
             requested=time.monotonic();at=utc()
-            with ThreadPoolExecutor(max_workers=len(self.stations)) as pool:
+            with ThreadPoolExecutor(max_workers=min(16, max(1, len(self.stations)))) as pool:
                 futures={a:pool.submit(self.stop_actor,a,reason=reason,deadline_monotonic=deadline_monotonic) for a in self.stations}
                 actors={a:f.result() for a,f in futures.items()}
             self.receipt={'schema':1,'reason':reason,'requested_at':at,'requested_monotonic':requested,
