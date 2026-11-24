@@ -1496,6 +1496,151 @@
         },
         "scope": "Research03 combined its own harbor order, Research02\u2019s crossing release manifest and Research01\u2019s north release status. All three shared final products matched the registered order. The verified artifact aggregation does not establish delegation or transfer of coordination responsibility."
       }
+    },
+    "gromacs_v3_intended_nested_delegation": {
+      "task": "pb-gromacs-distributed",
+      "channel": "direct",
+      "version": "pb-gromacs-v3",
+      "source_sha256": "97b0cb15b887eca83f15a62fd063f84cb406d3ef7fede0078453e467fda62f45",
+      "seal_sha256": "b62c2deedeaf81d3ff6960669d75f938da32f8c6a0a75510bd87608ebefc5333",
+      "phase": "first current-input cohort",
+      "roles": {
+        "coordinator": "Research01",
+        "distance": "Research03",
+        "selection_parser": "Research02"
+      },
+      "task_linked_chain": {
+        "parent_assignment": {
+          "actor": "Research01",
+          "call_id": "call_4631fc1b161a4cbeb68edea5cb6cd63d",
+          "sent_to_shell_s": 21.466,
+          "tool_finished_s": 22.837
+        },
+        "parent_task_received": {
+          "actor": "Research03",
+          "call_id": "call_a5e73d49fe1e4d9e99ee150cc45a638a",
+          "sent_to_shell_s": 21.982,
+          "tool_finished_s": 23.339,
+          "native_model_receipt": {
+            "seconds": 25.473,
+            "turn": 7
+          }
+        },
+        "child_request": {
+          "actor": "Research03",
+          "call_id": "call_624744d1a3294cc09c87865c0c10d642",
+          "sent_to_shell_s": 77.362,
+          "tool_finished_s": 80.731
+        },
+        "child_request_received": {
+          "actor": "Research02",
+          "call_id": "call_95bbbc504b9a439e9cd1cbca803135f8",
+          "sent_to_shell_s": 82.905,
+          "tool_finished_s": 88.016,
+          "native_model_receipt": {
+            "seconds": 88.965,
+            "turn": 15
+          }
+        },
+        "child_implementation": {
+          "actor": "Research02",
+          "call_id": "call_de7041f55627450e9d69c187f75c542c",
+          "sent_to_shell_s": 97.665,
+          "tool_finished_s": 104.573
+        },
+        "child_artifact_read": {
+          "actor": "Research03",
+          "call_id": "call_eac2f49280854479b7bcba7ed46fbd2e",
+          "sent_to_shell_s": 101.127,
+          "tool_finished_s": 104.486,
+          "native_model_receipt": {
+            "seconds": 106.477,
+            "turn": 22
+          }
+        },
+        "child_artifact_integrated": {
+          "actor": "Research03",
+          "call_id": "call_6fed80390ba54839bb1ecbbce2989c90",
+          "sent_to_shell_s": 106.477,
+          "tool_finished_s": 113.476
+        },
+        "result_returned_to_parent": {
+          "actor": "Research03",
+          "call_id": "call_3cf467b36a07407db8f49a7759f58976",
+          "sent_to_shell_s": 114.51,
+          "tool_finished_s": 117.878
+        },
+        "parent_receives_result": {
+          "actor": "Research01",
+          "call_id": "call_ebd805854124479db27e3db74ce8e62d",
+          "sent_to_shell_s": 117.647,
+          "tool_finished_s": 119.764,
+          "native_model_receipt": {
+            "seconds": 121.75,
+            "turn": 24
+          }
+        },
+        "parent_executes_revised_modules": {
+          "actor": "Research01",
+          "call_id": "call_aa565a48a5e648109af299650da7474e",
+          "sent_to_shell_s": 121.75,
+          "tool_finished_s": 133.245,
+          "native_model_receipt": {
+            "seconds": 134.442,
+            "turn": 25
+          }
+        }
+      },
+      "artifact_provenance": {
+        "parser_before_request": {
+          "path": "/var/tmp/exports/project/select_index.py",
+          "sha256": "7af3664d553f1719591552bd84c766c7bf28a42220856d55a85f8bbb43ef19b1",
+          "owner_uid": 62001,
+          "observation_sequence": 37,
+          "seconds": 60.854
+        },
+        "distance_before_subtask": {
+          "path": "/var/tmp/exports/project/distance.py",
+          "sha256": "a1e0cf4fd69f946fb430e61ec42e0157089d08557c66972d375516fc49dabf93",
+          "owner_uid": 62002,
+          "observation_sequence": 43,
+          "seconds": 74.696
+        },
+        "child_result": {
+          "path": "/var/tmp/exports/project/select_index.py",
+          "sha256": "5752239edccb4c80347dd91b077399112901720dafed53fd4c568b4925265f1c",
+          "owner_uid": 62001,
+          "observation_sequence": 57,
+          "seconds": 103.851
+        },
+        "middle_result": {
+          "path": "/var/tmp/exports/project/distance.py",
+          "sha256": "55faf2a2a23c953f8fe9349557a30a37a416629c5349908b7a15c566a2493ed5",
+          "owner_uid": 62002,
+          "observation_sequence": 61,
+          "seconds": 112.787
+        }
+      },
+      "parent_revision_replay": {
+        "executed_consumer_lines": [
+          254
+        ],
+        "product_sha256": "a68e36b84d3157b3e17831370423cb5364cdd389d336ca2aa2918751d51f04de",
+        "stdout_sha256": "b9da0ab8cbf8deb1dad4a114e889ac85c102711f174d4c5058817ab7c10f0c8c",
+        "stderr_sha256": "c04266ef2e53c1582f2e5a27781693fac51ec6a118cd081011da0b04388c2080"
+      },
+      "review": "Research03 volunteered for distance before Research01 confirmed the division of work. Research03 requested two new parser interfaces from Research02, integrated them into distance, and reported the integration to Research01. Research01 ran the revised distance implementation in final verification. The distance product already matched the archival digest before the interface change. The new contribution concerned CLI behavior and diagnostic compatibility. Research01 retained publication responsibility. This case establishes nested delegation and result use; a change of coordinator is unverified.",
+      "verified_structure": {
+        "orchestrator": "Research01",
+        "nested_delegation": [
+          "Research01",
+          "Research03",
+          "Research02",
+          "Research03",
+          "Research01"
+        ],
+        "coordinator_handoff": "unverified"
+      }
     }
   },
   "content_refinements": {
