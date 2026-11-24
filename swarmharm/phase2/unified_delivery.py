@@ -360,6 +360,7 @@ def task(assignment):
                if config['access'].get('dispatch_batching') == 'enabled' else '')
             + ('Keep processing spend low while completing the requested pack. '
                if config['sharing']['completion_credit'] == 'unused_slots'
+               and config['access'].get('dispatch_batching') != 'enabled'
                and config.get('cost_objective', 'brief_and_terms') == 'brief_and_terms' else '') +
             'The work order and dispatch guide are in the workstation. Return the release '
             'reference and the delivered reporting items.'
