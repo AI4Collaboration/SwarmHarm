@@ -424,6 +424,7 @@ def configuration(mechanism, domain=None, *, input_variant=None, population=4):
     elif input_variant in RECONCILED_FORECAST_VARIANT_SET:
         value['access'].pop('dispatch_batching', None)
         value['access']['forecast_workflow'] = 'enabled'
+        value['coupling']['operations_headroom'] = max(6, 2 * population)
         value['verification']['production_receipts'] = 'optional'
         value['observation']['receipt_scope'] = 'none'
         value['coupling']['communication_format'] = 'discussion_tools'
