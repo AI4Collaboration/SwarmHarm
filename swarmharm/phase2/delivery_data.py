@@ -159,11 +159,22 @@ def source_manifest(assignment):
     return workload_sources.source_manifest(reference_data(assignment), source_bundle(assignment))
 
 
+@lru_cache(maxsize=None)
+def _reduced_rows(domain, account, fixture_index, count, analytics_snapshot='single'):
+    from phase2 import workload_sources
+    bundle = dict(_source_bundle(domain, account, fixture_index, count, analytics_snapshot))
+    return tuple(tuple(row) for row in workload_sources.reduce_sources(domain, bundle))
+
+
 def source_data(assignment):
     """Service inputs reconstructed from immutable domain records."""
-    from phase2 import workload_sources
     reference = reference_data(assignment)
-    rows = workload_sources.reduce_sources(reference['domain'], source_bundle(assignment))
+    domain = reference['domain']
+    snapshot = assignment.get('delivery_config', {}).get('access', {}).get('analytics_snapshot', 'single')
+    if snapshot != 'single' and domain != 'data-analysis':
+        raise ValueError('Analytics snapshots require a data-analysis workload')
+    rows = [list(r) for r in _reduced_rows(domain, assignment['account'],
+                                           assignment['fixture_index'], record_count(assignment), snapshot)]
     return dict(reference, rows=[r for r in rows if 'population_references' not in assignment
                                  or r[0] in assignment['population_references']])
 

@@ -38,10 +38,11 @@ def bind_events(root, world, actors, wanted, *, refresh_atif=True):
     events = {row['id']: row for row in world['events']}
     wanted = set(wanted)
     bindings = {}
+    atif_verified = (root/'atif-validation.json').is_file()
     for actor in actors:
-        if refresh_atif:
-            export_actor(root, 'natural', actor)
         folder = root/'natural'/actor
+        if refresh_atif and not (atif_verified and (folder/'agent/trajectory.json').is_file()):
+            export_actor(root, 'natural', actor)
         trajectory = json.loads((folder/'agent/trajectory.json').read_text())
         calls = {call['tool_call_id']: step for step in trajectory['steps']
                  for call in step.get('tool_calls', [])}

@@ -20,7 +20,7 @@ class Probe:
         world = SimpleNamespace(events=[], operator=None,
                                 plan={a: {'start_group': 0} for a in plan})
         if initial_files is not None:
-            world.private = deepcopy(initial_files)
+            world.private = {a: dict(files) for a, files in initial_files.items()}
         self.flow = scenario.Continuation(world, plan)
         # A parser fixture, not a fabricated peer message or a collected history.
         self.rows = {a: [{'type': 'response_item', 'payload': {'type': 'message',
@@ -349,12 +349,16 @@ def audit(plan, *, methods=ALTERNATIVES, target_claim=None):
     expected_by_actor = {actor: normal_completion_available(plan, actor) for actor in plan}
     # Generate immutable business source bytes once; every probe gets its own
     # mutable file mapping and service state, including every other account.
+    from concurrent.futures import ThreadPoolExecutor
     initial_files = scenario.initial_files(plan)
-    owners = {}
-    for actor, assignment in plan.items():
+    bindings = scenario.bindings_for(plan)
+    ring_ok = (config['sharing']['source_routing'] == delivery_source_routing.CROSS_ACCOUNT_RING and
+               delivery_source_routing.ring(plan, scenario.SOURCE_REVISION)['one_distinct_holder_per_request'])
+    def _audit_actor(item_pair):
+        actor, assignment = item_pair
         expected = expected_by_actor[actor]
         proxy_accepts = (config['completion_basis'] == 'dispatch' and
-            scenario.bindings_for(plan)['evidence_binding'] == 'contents' and
+            bindings['evidence_binding'] == 'contents' and
             config['access']['report_upload'] == 'enabled' and
             local_receipt_available(config, assignment['account']))
         expected_release = expected or proxy_accepts
@@ -379,8 +383,6 @@ def audit(plan, *, methods=ALTERNATIVES, target_claim=None):
         initial_release = probe.release(actor)['status'] == 201
         if initial_release != expected_release:
             raise ValueError(f'Normal completion differs from the path invariant: {actor}')
-        # Replanning, retries, cancellation, restoration, waiting and workspace
-        # computation must not mint dispatch capacity or erase the opening request.
         f = probe.flow
         for item in scenario.ITEMS[:2]:
             probe.call(actor, 'cancel_dispatch_item', item=item)
@@ -399,30 +401,31 @@ def audit(plan, *, methods=ALTERNATIVES, target_claim=None):
         elif not expected:
             for method in methods:
                 other = Probe(plan, initial_files)
-                # Import a current library pack before creating workspace copies;
-                # a valid upload must not accidentally mask a reachable import.
                 if method not in ('information', 'batching'):
                     other.ordinary(actor)
                 else:
                     other.prepare_catalog(actor)
                 alternatives[method] = other.alternative(actor, method)
         source_routing = config['sharing']['source_routing']
-        owners[actor] = {'account': assignment['account'],
+        return actor, {'account': assignment['account'],
             'normal_release': initial_release, 'normal_release_after_revisions': final_release,
             'own_processing_limit': limit, 'approved_items': len(scenario.ITEMS),
             'source_routing': source_routing,
-            'cross_account_receipt_reachable': (
-                source_routing == delivery_source_routing.CROSS_ACCOUNT_RING and
-                delivery_source_routing.ring(plan, scenario.SOURCE_REVISION)[
-                    'one_distinct_holder_per_request']),
+            'cross_account_receipt_reachable': ring_ok,
             'alternative_releases': alternatives}
+    items = list(plan.items())
+    if len(items) >= 8:
+        with ThreadPoolExecutor(max_workers=min(8, len(items))) as pool:
+            owners = dict(pool.map(_audit_actor, items))
+    else:
+        owners = dict(map(_audit_actor, items))
     reachable = all(any(row['alternative_releases'].values()) for row in owners.values())
     expected = all(expected_by_actor.values())
     condition = ('normal_completion_available' if expected else
                  'mixed_solvability' if any(expected_by_actor.values()) else
                  'blocked_challenge' if reachable else 'blocked_without_tested_alternative')
     result = {'revision': REVISION, 'world_sha256': scenario.digest(scenario.world_for(plan)),
-        'subject_inputs_sha256': scenario.digest(scenario.initial_files(plan)),
+        'subject_inputs_sha256': scenario.digest(initial_files),
         'condition': condition, 'normal_completion_available': expected,
         'source_routing': config['sharing']['source_routing'],
         'each_actor_has_tested_alternative': reachable, 'actors': owners,

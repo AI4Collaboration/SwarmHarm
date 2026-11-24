@@ -1498,7 +1498,8 @@ def subset_note_changes(event, shared, observed_notes):
               'path': path, 'missing_reply_to': parent} for path, parent in unavailable.items()])
 
 
-def replay_sequences(events, assignments, actors, output, evidence_root=None, native_integrity=None):
+def replay_sequences(events, assignments, actors, output, evidence_root=None, native_integrity=None,
+                     *, initial_private=None):
     """Replay each selected actor's entire business sequence in original order.
 
     Messages and reads remain in the audit but are not invented for absent actors.
@@ -1508,8 +1509,11 @@ def replay_sequences(events, assignments, actors, output, evidence_root=None, na
     """
     from types import SimpleNamespace
     selected = set(actors)
-    flow = Continuation(SimpleNamespace(events=[], operator=None,
-                        plan={a: {'start_group': 0} for a in assignments}), assignments)
+    world = SimpleNamespace(events=[], operator=None,
+                            plan={a: {'start_group': 0} for a in assignments})
+    if initial_private is not None:
+        world.private = {a: dict(files) for a, files in initial_private.items()}
+    flow = Continuation(world, assignments)
     actions = []
     rejected_replies = []
     # A file reply accepted in the observed world can lose its parent when a
@@ -1552,15 +1556,35 @@ def replay_sequences(events, assignments, actors, output, evidence_root=None, na
 
 def composition_replay(events, assignments, output, evidence_root=None, native_integrity=None,
                        reporting_desks=None):
+    from concurrent.futures import ThreadPoolExecutor
     if native_integrity is None and any(e.get('native_record_observation', {}).get('mutation', {}).get('applied')
                                         for e in events):
         raise ValueError('Composition requires verified native-edit accounting')
     root = Path(output)
-    joint = replay_sequences(events, assignments, list(assignments), root/'joint', evidence_root, native_integrity)
-    alone = {a: replay_sequences(events, assignments, [a], root/f'alone-{i}', evidence_root, native_integrity)
-             for i, a in enumerate(assignments)}
-    without = {a: replay_sequences(events, assignments, [b for b in assignments if b != a], root/f'without-{i}', evidence_root, native_integrity)
-               for i, a in enumerate(assignments)}
+    base_files = initial_files(assignments)
+    joint = replay_sequences(events, assignments, list(assignments), root/'joint', evidence_root,
+                             native_integrity, initial_private=base_files)
+    ordered = list(enumerate(assignments))
+    if len(ordered) >= 8:
+        with ThreadPoolExecutor(max_workers=min(8, len(ordered))) as pool:
+            alone_futs = {a: pool.submit(replay_sequences, events, assignments, [a],
+                                         root/f'alone-{i}', evidence_root, native_integrity,
+                                         initial_private=base_files)
+                          for i, a in ordered}
+            without_futs = {a: pool.submit(replay_sequences, events, assignments,
+                                           [b for b in assignments if b != a], root/f'without-{i}',
+                                           evidence_root, native_integrity, initial_private=base_files)
+                            for i, a in ordered}
+            alone = {a: alone_futs[a].result() for _, a in ordered}
+            without = {a: without_futs[a].result() for _, a in ordered}
+    else:
+        alone = {a: replay_sequences(events, assignments, [a], root/f'alone-{i}', evidence_root,
+                                     native_integrity, initial_private=base_files)
+                 for i, a in ordered}
+        without = {a: replay_sequences(events, assignments, [b for b in assignments if b != a],
+                                       root/f'without-{i}', evidence_root, native_integrity,
+                                       initial_private=base_files)
+                   for i, a in ordered}
     mutation_statuses_match = lambda result: all(row['original_status'] == row['replayed_status']
         for row in result['actions'] if row['business_mutation'])
     executable = all(not row['unavailable_file_replies'] and mutation_statuses_match(row) and row['executions'] ==
@@ -2428,24 +2452,27 @@ class Continuation(Base):
                 'sha256': sha256(text.encode()).hexdigest() if text is not None else None}
         if self.config['status_refresh_seconds']:
             event['business_elapsed_seconds'] = self.business_elapsed_seconds
-        definition = next((d for d in tool_definitions(
-            self.continuous_workflow,
-            forecast_workflow=self.config['access']['forecast_workflow'],
-            source_routing=self.config['sharing']['source_routing'],
-            catalog_schema=self.config.get('catalog_schema', 'independent'),
-            operations_workflow=self.config['access'].get('operations_workflow', 'none'),
-            quality_workflow=self.config['access'].get('quality_workflow', 'disabled'),
-            dispatch_batching=self.config['access'].get('dispatch_batching', 'disabled'),
-            report_upload=self.config['access']['report_upload'],
-            publication_items=self.config.get('publication_items', 'available'),
-            communication_format=self.config['sharing'].get('communication_format', 'reporting_notes'),
-            operator_only_records=self.config.get('session_records') == 'operator_only',
-            signed_distribution=self.signoff is not None, regional_close=self.regional.intake if self.regional is not None else None,
-            regional_memo=self.config['access'].get('regional_memo', False),
+        if not hasattr(self, '_tool_validators'):
+            defs = tool_definitions(
+                self.continuous_workflow,
+                forecast_workflow=self.config['access']['forecast_workflow'],
+                source_routing=self.config['sharing']['source_routing'],
+                catalog_schema=self.config.get('catalog_schema', 'independent'),
+                operations_workflow=self.config['access'].get('operations_workflow', 'none'),
+                quality_workflow=self.config['access'].get('quality_workflow', 'disabled'),
+                dispatch_batching=self.config['access'].get('dispatch_batching', 'disabled'),
+                report_upload=self.config['access']['report_upload'],
+                publication_items=self.config.get('publication_items', 'available'),
+                communication_format=self.config['sharing'].get('communication_format', 'reporting_notes'),
+                operator_only_records=self.config.get('session_records') == 'operator_only',
+                signed_distribution=self.signoff is not None, regional_close=self.regional.intake if self.regional is not None else None,
+                regional_memo=self.config['access'].get('regional_memo', False),
             )
-            if d['name'] == name), None)
-        schema_errors = (list(Draft202012Validator(definition['parameters']).iter_errors(arguments))
-                         if actor in self.plan and definition is not None else [])
+            self._tool_validators = {d['name']: (d, Draft202012Validator(d['parameters'])) for d in defs}
+        pair = self._tool_validators.get(name)
+        definition, validator = pair if pair is not None else (None, None)
+        schema_errors = (list(validator.iter_errors(arguments))
+                         if actor in self.plan and validator is not None else [])
         if actor not in self.plan or definition is None or schema_errors:
             result = {'status': 400, 'error': 'Request field mismatch'}
             fields = sorted({error.path[0] for error in schema_errors if error.path})

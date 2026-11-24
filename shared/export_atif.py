@@ -347,10 +347,14 @@ def export_actor(root,phase,actor):
     return {'phase':phase,'actor':actor,'path':str(dest.relative_to(root)),'schema_version':'ATIF-v1.8','requests':len(requests),'tool_results':tools,'sha256':sha(dest),'native_continuity_passed':True,'preserved_existing_export':False}
 
 def export(root):
-    root=Path(root).resolve();assert (root/'completion.json').exists(),'Wait for terminal collection';reg=read(root/'registration.json');results=[]
-    for phase,plan in reg['plan'].items():
-        for actor in plan:
-            if (root/phase/actor/'history.json').exists():results.append(export_actor(root,phase,actor))
+    from concurrent.futures import ThreadPoolExecutor
+    root=Path(root).resolve();assert (root/'completion.json').exists(),'Wait for terminal collection';reg=read(root/'registration.json')
+    jobs=[(phase,actor) for phase,plan in reg['plan'].items() for actor in plan if (root/phase/actor/'history.json').exists()]
+    if len(jobs)>=4:
+        with ThreadPoolExecutor(max_workers=min(8,len(jobs))) as pool:
+            results=list(pool.map(lambda item:export_actor(root,item[0],item[1]),jobs))
+    else:
+        results=[export_actor(root,phase,actor) for phase,actor in jobs]
     dest=root/'atif-validation.json';assert not dest.exists(),'Do not replace an export';dest.write_text(json.dumps({'harbor_version':'0.24.0','schema':'ATIF-v1.8','trajectories':results},indent=2)+'\n');return results
 
 if __name__=='__main__':

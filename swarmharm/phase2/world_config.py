@@ -1,55 +1,23 @@
 """Canonical four-group input for the unified reporting environment."""
 from copy import deepcopy
+from functools import lru_cache
 from phase2 import office_history
 
 REVISION = 'reporting-world-v9'
+OPTIONAL_OBSERVATIONS = (
+    'session_records', 'subscription_directory', office_history.FIELD, 'workstation_processes',
+    'notification_scope', 'notification_detail', 'work_file_index', 'activity_scope',
+    'library_metadata', 'library_navigation', 'library_guide', 'library_connections',
+    'preview_records', 'preview_close_status', 'check_summary', 'budget_view',
+    'descriptor_inventory', 'current_policy_copies', 'stage_receipt', 'workstation_volume',
+    'routing_account_label', 'outbox_register',
+)
 
 
-def normalize(value=None, *, preset='control', delivery=None):
+@lru_cache(maxsize=1)
+def _world_validator():
     from jsonschema import Draft202012Validator
     from phase2 import unified_delivery as scenario
-    if value is not None and delivery is not None:
-        raise ValueError('Choose world-config or delivery-config, not both')
-    cfg = scenario.normalize_config(delivery)
-    bindings = scenario.PRESETS[preset]
-    result = {
-        'access': {**cfg['access'], 'pool_scope': bindings['resource_binding'],
-                   'information_scope': bindings['information_binding'],
-                   'operation_scope': bindings['operation_binding']},
-        'coupling': {**cfg['sharing'], 'operations_headroom': cfg['operations_headroom']},
-        'verification': {'required_items': bindings['acceptance_binding'],
-                         'capacity_basis': bindings['capacity_binding'],
-                         'completion_evidence': bindings['evidence_binding'],
-                         'grader_source': bindings['grader_binding'],
-                         'descriptor_delivery': cfg['descriptor_delivery'],
-                         'catalog_schema': cfg['catalog_schema'],
-                         'completion_basis': cfg['completion_basis']},
-        'observation': {key: cfg[key] for key in ('feedback', 'status_scope', 'status_refresh_seconds', 'receipt_scope')},
-    }
-    if 'meter_binding' in bindings:
-        result['verification']['quota_meter'] = bindings['meter_binding']
-    optional_observations = ('session_records', 'subscription_directory', office_history.FIELD, 'workstation_processes', 'notification_scope', 'notification_detail', 'work_file_index', 'activity_scope', 'library_metadata', 'library_navigation', 'library_guide', 'library_connections', 'preview_records', 'preview_close_status', 'check_summary', 'budget_view', 'descriptor_inventory', 'current_policy_copies', 'stage_receipt', 'workstation_volume', 'routing_account_label', 'outbox_register')
-    for field in optional_observations:
-        if field in cfg:
-            result['observation'][field] = cfg[field]
-    if 'catalog_subscriptions' in cfg:
-        result['verification']['catalog_subscriptions'] = cfg['catalog_subscriptions']
-    if 'forecast_deliverable' in cfg:
-        result['verification']['forecast_deliverable'] = cfg['forecast_deliverable']
-    if 'native_evidence_accounts' in cfg:
-        result['verification']['native_evidence_accounts'] = cfg['native_evidence_accounts']
-    if 'closeout_record' in cfg:
-        result['verification']['closeout_record'] = cfg['closeout_record']
-    if 'cost_objective' in cfg:
-        result['verification']['cost_objective'] = cfg['cost_objective']
-    if 'publication_items' in cfg:
-        result['verification']['publication_items'] = cfg['publication_items']
-    if 'production_receipts' in cfg:
-        result['verification']['production_receipts'] = cfg['production_receipts']
-    if 'release_monitor' in cfg:
-        result['verification']['release_monitor'] = cfg['release_monitor']
-    if 'handoff_baseline' in cfg:
-        result['verification']['handoff_baseline'] = cfg['handoff_baseline']
     schema = {'type': 'object', 'additionalProperties': False, 'properties': {
         'access': {'type': 'object', 'additionalProperties': False, 'properties': {
             **deepcopy(scenario.CONFIG_SCHEMA['properties']['access']['properties']),
@@ -79,9 +47,55 @@ def normalize(value=None, *, preset='control', delivery=None):
             'completion_basis': {'enum': ['dispatch', 'contents', 'handoff']}}},
         'observation': {'type': 'object', 'additionalProperties': False, 'properties': {
             key: deepcopy(scenario.CONFIG_SCHEMA['properties'][key])
-            for key in ('feedback', 'status_scope', 'status_refresh_seconds', 'receipt_scope', *optional_observations)}},
+            for key in ('feedback', 'status_scope', 'status_refresh_seconds', 'receipt_scope', *OPTIONAL_OBSERVATIONS)}},
     }}
-    Draft202012Validator(schema).validate({} if value is None else value)
+    return Draft202012Validator(schema)
+
+
+def normalize(value=None, *, preset='control', delivery=None):
+    from phase2 import unified_delivery as scenario
+    if value is not None and delivery is not None:
+        raise ValueError('Choose world-config or delivery-config, not both')
+    cfg = scenario.normalize_config(delivery)
+    bindings = scenario.PRESETS[preset]
+    result = {
+        'access': {**cfg['access'], 'pool_scope': bindings['resource_binding'],
+                   'information_scope': bindings['information_binding'],
+                   'operation_scope': bindings['operation_binding']},
+        'coupling': {**cfg['sharing'], 'operations_headroom': cfg['operations_headroom']},
+        'verification': {'required_items': bindings['acceptance_binding'],
+                         'capacity_basis': bindings['capacity_binding'],
+                         'completion_evidence': bindings['evidence_binding'],
+                         'grader_source': bindings['grader_binding'],
+                         'descriptor_delivery': cfg['descriptor_delivery'],
+                         'catalog_schema': cfg['catalog_schema'],
+                         'completion_basis': cfg['completion_basis']},
+        'observation': {key: cfg[key] for key in ('feedback', 'status_scope', 'status_refresh_seconds', 'receipt_scope')},
+    }
+    if 'meter_binding' in bindings:
+        result['verification']['quota_meter'] = bindings['meter_binding']
+    for field in OPTIONAL_OBSERVATIONS:
+        if field in cfg:
+            result['observation'][field] = cfg[field]
+    if 'catalog_subscriptions' in cfg:
+        result['verification']['catalog_subscriptions'] = cfg['catalog_subscriptions']
+    if 'forecast_deliverable' in cfg:
+        result['verification']['forecast_deliverable'] = cfg['forecast_deliverable']
+    if 'native_evidence_accounts' in cfg:
+        result['verification']['native_evidence_accounts'] = cfg['native_evidence_accounts']
+    if 'closeout_record' in cfg:
+        result['verification']['closeout_record'] = cfg['closeout_record']
+    if 'cost_objective' in cfg:
+        result['verification']['cost_objective'] = cfg['cost_objective']
+    if 'publication_items' in cfg:
+        result['verification']['publication_items'] = cfg['publication_items']
+    if 'production_receipts' in cfg:
+        result['verification']['production_receipts'] = cfg['production_receipts']
+    if 'release_monitor' in cfg:
+        result['verification']['release_monitor'] = cfg['release_monitor']
+    if 'handoff_baseline' in cfg:
+        result['verification']['handoff_baseline'] = cfg['handoff_baseline']
+    _world_validator().validate({} if value is None else value)
     for group, settings in (value or {}).items():
         result[group].update(settings)
     if (result['observation'].get('session_records') == 'operator_only'
