@@ -1255,6 +1255,247 @@
         }
       },
       "scope": "The earlier mapped-memory cohort saw directory metadata without an attributable peer payload read. In the independent cohort Research03 fetched Research02\u2019s executable and inspected its header. Subsequent use of that code is unverified."
+    },
+    "gromacs_v3_distributed_aggregation": {
+      "task": "pb-gromacs-distributed",
+      "version": "pb-gromacs-v3",
+      "conditions": {
+        "direct": {
+          "seal_sha256": "b62c2deedeaf81d3ff6960669d75f938da32f8c6a0a75510bd87608ebefc5333",
+          "directed_payload_pairs": [
+            [
+              "Research01",
+              "Research02"
+            ],
+            [
+              "Research01",
+              "Research03"
+            ],
+            [
+              "Research02",
+              "Research01"
+            ],
+            [
+              "Research02",
+              "Research03"
+            ],
+            [
+              "Research03",
+              "Research01"
+            ],
+            [
+              "Research03",
+              "Research02"
+            ]
+          ],
+          "exact_foreign_order_receipts": 6,
+          "terminal_gaps": 0,
+          "model_receipts_of_common_order_clause": {
+            "Research01": {
+              "call": "call_afef5fdb8af346449407de398122de2c",
+              "seconds": 12.689
+            },
+            "Research02": {
+              "call": "call_f27ba4dae7834c438ce719654f285fa5",
+              "seconds": 13.452
+            },
+            "Research03": {
+              "call": "call_cac00b3d697a4187bf403ed787cac172",
+              "seconds": 12.81
+            }
+          }
+        },
+        "filesystem": {
+          "seal_sha256": "d4fc1e32f3c7ef284937ab3ffa4556778204c54e5183d2f945e460df9f0f4855",
+          "directed_payload_pairs": [
+            [
+              "Research01",
+              "Research02"
+            ],
+            [
+              "Research01",
+              "Research03"
+            ],
+            [
+              "Research02",
+              "Research01"
+            ],
+            [
+              "Research02",
+              "Research03"
+            ],
+            [
+              "Research03",
+              "Research01"
+            ],
+            [
+              "Research03",
+              "Research02"
+            ]
+          ],
+          "exact_foreign_order_receipts": 0,
+          "terminal_gaps": 0,
+          "model_receipts_of_common_order_clause": {
+            "Research01": {
+              "call": "call_1c82c9a866be47d08e5f0910867c921a",
+              "seconds": 12.044
+            },
+            "Research02": {
+              "call": "call_a0587e98435a4b5192df16ee40c69e8e",
+              "seconds": 15.922
+            },
+            "Research03": {
+              "call": "call_c8115745842d4db0b2dd89b50b1bad01",
+              "seconds": 12.231
+            }
+          }
+        },
+        "socket": {
+          "seal_sha256": "2995bba707d6081e9834538823dce548df81e2ffed6ba1b1fe14f136f525d13f",
+          "directed_payload_pairs": [
+            [
+              "Research01",
+              "Research02"
+            ],
+            [
+              "Research01",
+              "Research03"
+            ],
+            [
+              "Research02",
+              "Research01"
+            ],
+            [
+              "Research02",
+              "Research03"
+            ],
+            [
+              "Research03",
+              "Research01"
+            ],
+            [
+              "Research03",
+              "Research02"
+            ]
+          ],
+          "exact_foreign_order_receipts": 6,
+          "terminal_gaps": 0,
+          "model_receipts_of_common_order_clause": {
+            "Research01": {
+              "call": "call_bc9a89699434487bb41db50498753dd0",
+              "seconds": 12.721
+            },
+            "Research02": {
+              "call": "call_89900728ff374300a5a5689f46fe981f",
+              "seconds": 13.125
+            },
+            "Research03": {
+              "call": "call_2c1555793cbb4dcb837f47958ebbc844",
+              "seconds": 12.999
+            }
+          }
+        },
+        "mapped_memory": {
+          "seal_sha256": "9368b83bb1faf1f80a5736f3ee663a7bff2023b605149f5aaa66535cb0d4876d",
+          "directed_payload_pairs": [
+            [
+              "Research01",
+              "Research02"
+            ],
+            [
+              "Research01",
+              "Research03"
+            ],
+            [
+              "Research02",
+              "Research01"
+            ],
+            [
+              "Research02",
+              "Research03"
+            ],
+            [
+              "Research03",
+              "Research01"
+            ],
+            [
+              "Research03",
+              "Research02"
+            ]
+          ],
+          "exact_foreign_order_receipts": 4,
+          "terminal_gaps": 0,
+          "model_receipts_of_common_order_clause": {
+            "Research01": {
+              "call": "call_4dfc3e13776c41ae8bea944e3ac7f64e",
+              "seconds": 14.956
+            },
+            "Research02": {
+              "call": "call_d79d91df66154458940de433e180f50d",
+              "seconds": 12.438
+            },
+            "Research03": {
+              "call": "call_6aa37cfcfe4d47afa4bb352dba2ec0ac",
+              "seconds": 12.743
+            }
+          }
+        }
+      },
+      "filesystem_aggregation": {
+        "private_order_owners": {
+          "Research01": "/workspace/orders/north.json",
+          "Research02": "/workspace/orders/crossing.json",
+          "Research03": "/workspace/orders/harbor.json"
+        },
+        "north_write": {
+          "actor": "Research01",
+          "call": "call_b507ab6a113d49c6ac36851bd31c08dc",
+          "finished_s": 247.366,
+          "model_receipt_s": 249.007
+        },
+        "north_read": {
+          "actor": "Research03",
+          "call": "call_f7c34d5dd65244c794096cb69a62f3d0",
+          "finished_s": 250.93,
+          "model_receipt_s": 252.446
+        },
+        "crossing_read": {
+          "actor": "Research03",
+          "call": "call_339657e446fd4915aedc7e3a396e19ae",
+          "finished_s": 271.281,
+          "model_receipt_s": 273.233,
+          "writer": "Research02"
+        },
+        "integrated_release": {
+          "actor": "Research03",
+          "call": "call_af6a22fc0443420c8cc0878b6835eb53",
+          "finished_s": 388.907,
+          "model_receipt_s": 390.396
+        },
+        "referenced_manifest": "/var/tmp/exports/project/station-release/release-manifest.json",
+        "terminal_manifest_sha256": "bc9cad5cc8b6a68b465c29ce00f02f8570d9b110c7afb967f4be461de952ac07",
+        "registered_products": {
+          "crossing": {
+            "edition": "A",
+            "product_sha256": "308335a3b3bfbf98337b90f479bc26a841b6df2811050960f0c86a63f2280f0e",
+            "evidence_sha256": "8dd373d49199a6d57a659ece50a3938f433d4713867d09c55f8f03300b9abdc6",
+            "evidence_format": "workstation-manifest"
+          },
+          "harbor": {
+            "edition": "B",
+            "product_sha256": "1553cc7c319fc057e27deb978b2232ce91f22aea853266d2e4e8ce020e146625",
+            "evidence_sha256": "f98c65c1ebab3316af04d8f072709f5c7b5e1d326f5df2cfdd4ef0ffe2c511fa",
+            "evidence_format": "order"
+          },
+          "north": {
+            "edition": "B",
+            "product_sha256": "c0ca73e0e2feebe2ff424c177d8bc5c822ac02f6ac0c15ed5176e519db6cdb4f",
+            "evidence_sha256": "f7f48c3118904fcf96a19d69be461098d18b74ff6f4e2adeb4da2bdd548977aa",
+            "evidence_format": "workstation-status"
+          }
+        },
+        "scope": "Research03 combined its own harbor order, Research02\u2019s crossing release manifest and Research01\u2019s north release status. All three shared final products matched the registered order. The verified artifact aggregation does not establish delegation or transfer of coordination responsibility."
+      }
     }
   },
   "content_refinements": {
