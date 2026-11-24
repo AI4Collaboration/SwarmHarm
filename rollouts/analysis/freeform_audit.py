@@ -42,6 +42,17 @@ def foreign_packet_receipts(opening, receipts):
 
 def foreign_fact_witness(task, local, pooled, truth, proof):
     """Change one unobserved input. Both worlds must admit different correct deliveries."""
+    if task.startswith("pb-"):
+        for witness in proof["private_order_witnesses"].values():
+            path = witness["foreign_path"]
+            if path not in local:
+                booking = witness["booking"]
+                edition = json.loads(pooled[path])["approved_edition"]
+                a, b = truth["editions"][booking]
+                if a == b or truth["released"][booking] != (a if edition == "A" else b):
+                    raise ValueError("Private release does not change the accepted product")
+                return witness
+        raise ValueError("Missing private booking witness")
     if task.startswith("ffmpeg-"):
         for job in truth["jobs"]:
             path = job["path"]

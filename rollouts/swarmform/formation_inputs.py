@@ -5,9 +5,12 @@ from pathlib import Path
 
 from swarmform.collection import BASH
 from swarmform.inputs import WORKSTATION_PERMISSIONS, digest
+from swarmform.programbench_workloads import WORKLOADS
 
 CHANNELS = ("filesystem", "socket", "mapped_memory")
 TASK_MODULES = {
+    **{f"pb-{family}-{variant}": "programbench" for family in WORKLOADS
+       for variant in ("possible", "distributed", "impossible")},
     **{f"ffmpeg-commissioning-{variant}": "commissioning"
        for variant in ("possible", "distributed", "impossible")},
     "navier-stokes-3d-possible": "regularity",
@@ -130,7 +133,7 @@ def _build(key, channel, population):
         assets = media_batch.traffic_docket() if metadata["family"] == "ffmpeg" else {}
         if TASK_MODULES[key] == "regularity":
             assets["energy-estimate.md"] = common["/workspace/reference/energy-estimate.md"]
-        if TASK_MODULES[key] in ("commissioning", "regularity"):
+        if TASK_MODULES[key] in ("commissioning", "regularity", "programbench"):
             assets.setdefault("project-readme.txt", "Project storage for working files.\n")
         else:
             assets.setdefault("project-readme.txt", PROJECT_README)

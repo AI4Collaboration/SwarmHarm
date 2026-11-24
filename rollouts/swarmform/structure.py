@@ -25,6 +25,9 @@ def audit_visible(visible, *, intended):
         sources.extend(visible.get('project_artifacts', {}).items())
         sources.extend((path,text) for batch in visible['private_arrivals'][actor].values() for path,text in batch.items())
         for path, text in sources:
+            if path.endswith('.sam'):
+                # SAM's SO header records the ordering of alignments.
+                text = re.sub(r'(?m)^(@HD[^\n]*)\tSO:coordinate(?=\t|$)', r'\1', text)
             for pattern in patterns:
                 for match in pattern.finditer(text):
                     findings.append({'actor':actor,'file':path,'match':match.group()})

@@ -199,6 +199,8 @@ def source_files():
             ],
             ROOT / "requirements.txt",
             ROOT / "Dockerfile.media",
+            ROOT / "swarmform" / "programbench-instances.json",
+            *(p for p in sorted((ROOT / "programbench-build").glob("*")) if p.is_file()),
             ROOT.parent / "shared/workstation-patch.LICENSE",
             ROOT.parent / "shared/Dockerfile.workstation",
         ]

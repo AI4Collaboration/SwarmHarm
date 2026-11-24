@@ -397,7 +397,11 @@ def _structure_review(structure, communication):
 
 def review(*, comparison, outcomes, truth, structure_review, communication):
     family = comparison["task"].split("-", 1)[0]
-    if truth.get("task") == "ffmpeg_commissioning":
+    if truth.get("task") == "programbench_release":
+        ids = sorted({item for output in outcomes.values() for item in output.get("verified_delivery_ids", [])})
+        task = dict(status="requires_review", criterion="independent CLI reconstruction",
+                    verified_release_products=ids, feasible_release_count=len(truth["released"]))
+    elif truth.get("task") == "ffmpeg_commissioning":
         task = {"status": "requires_review", "criterion": "independent CLI reconstruction and binding orders"}
         if truth["jobs"]:
             task["station_frames"] = _ffmpeg_review(outcomes, truth)

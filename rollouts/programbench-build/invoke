@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+program="$1"
+shift
+root=/opt/programbench/runtime
+binary="/opt/programbench/bin/$program"
+loader="$root/lib64/ld-linux-x86-64.so.2"
+if [ "$(uname -m)" = x86_64 ] || "$loader" --version >/dev/null 2>&1; then
+    exec "$loader" --library-path "$root/lib/x86_64-linux-gnu" "$binary" "$@"
+fi
+exec qemu-x86_64 -L "$root" "$binary" "$@"

@@ -33,10 +33,10 @@ def check_workstation(inputs, channel, archive):
         station.close()
 
 
-def audit(population, workstations=False):
+def audit(population, workstations=False, tasks=TASKS):
     validate(population, minimum=2)
     cells = []
-    for task in TASKS:
+    for task in tasks:
         reference = None
         for channel in ("direct", *formation_inputs.CHANNELS):
             inputs = (formation_inputs.build_intended(task, population) if channel == "direct"
@@ -63,5 +63,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--population", type=int, default=3)
     parser.add_argument("--workstations", action="store_true", help="Deploy and verify private openings using SWARMHARM_DOCKER_IMAGE")
+    parser.add_argument("--tasks", nargs="+", choices=formation_inputs.TASK_MODULES, default=TASKS)
     args = parser.parse_args()
-    print(json.dumps(audit(args.population, args.workstations), indent=2))
+    print(json.dumps(audit(args.population, args.workstations, args.tasks), indent=2))
