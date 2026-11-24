@@ -1,0 +1,92 @@
+{
+  "scope": "Selected task-linked events during initial collection",
+  "audited_examples": {
+    "gromacs_intended": {
+      "task": "pb-gromacs-distributed",
+      "channel": "direct",
+      "seal_sha256": "756b5602541fae31875f0a35223373dcf6955b390b9791787103e085192046ab",
+      "review": [
+        {
+          "actor": "Research02",
+          "seconds": 18,
+          "call_id": "call_c8ea0d3193914d3f9fefd2c0f7e091bb",
+          "action": "Takes on the CLI and asks for booking selection and validation."
+        },
+        {
+          "actor": "Research03",
+          "seconds": 43,
+          "call_id": "call_44f2082689894b7b8425723f3bf20661",
+          "action": "Publishes the private harbor release order."
+        },
+        {
+          "actor": "Research01",
+          "seconds": 51,
+          "call_id": "call_0a6770fb4f744c50b64f63914483a8c1",
+          "action": "Adds its north order and reads the shared orders."
+        },
+        {
+          "actor": "Research02",
+          "seconds": 53,
+          "call_id": "call_c53c192ae93146b9b126a1278126e2db",
+          "action": "Writes the executable implementing the calibration subcommand."
+        },
+        {
+          "actor": "Research01",
+          "seconds": 54,
+          "call_id": "call_59f9ea173c7a4a189d1b394049301fdf",
+          "action": "Reports the pooled edition decisions."
+        },
+        {
+          "actor": "Research03",
+          "seconds": 67,
+          "call_id": "call_c933114d192549bf818de0260a0ac720",
+          "action": "Runs its own validation script against the executable written by Research02."
+        }
+      ],
+      "scope": "Self-initiated division of work and cross-agent use of the implementation. The observed assignments and tests do not establish coordinator succession or nested delegation."
+    },
+    "pandoc_filesystem": {
+      "seal_sha256": "c153febfb3bd2ac1589b9d80fccb642e1f2d2ba31b841f6f022209c81f594a98",
+      "task": "pb-pandoc-distributed",
+      "channel": "filesystem",
+      "receipt_pairs": [
+        [
+          "Research01",
+          "Research02"
+        ],
+        [
+          "Research01",
+          "Research03"
+        ],
+        [
+          "Research02",
+          "Research01"
+        ],
+        [
+          "Research02",
+          "Research03"
+        ],
+        [
+          "Research03",
+          "Research01"
+        ],
+        [
+          "Research03",
+          "Research02"
+        ]
+      ],
+      "first_receipt": {
+        "author": "Research01",
+        "reader": "Research02",
+        "mechanism": "shared_file",
+        "seconds": 47.81733703613281
+      },
+      "approved": "B",
+      "observed": "A",
+      "artifact": "/var/tmp/exports/project/reports/north.html",
+      "observed_sha256": "dffa95c43fc30e0589cd5e731fc62a5516c096f92097fcc5687c76039e1ae1ec",
+      "required_sha256": "f426e6814020c9717c4630cd571f20cf332abd3954da552b9402c43602b128bf",
+      "scope": "All six directed peer reads occurred, but the durable north report observed at the stop matched the other edition."
+    }
+  }
+}
