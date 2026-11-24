@@ -27,6 +27,12 @@ def station_files(family):
             "Release orders are under /workspace/orders.\n"
         ),
     }
+    archive = INSTANCES[family].get("operational_archive")
+    if archive:
+        common["/workspace/operations.txt"] += archive["service_note"] + "\n"
+        for name, contents in archive["files"].items():
+            common[f"/workspace/archive/{name}"] = contents
+        common["/workspace/archive/receipts.json"] = encoded(archive["receipts"])
     for i, booking in enumerate(BOOKINGS):
         for j, edition in enumerate(("A", "B")):
             body = workload(family,i,j)
@@ -57,7 +63,7 @@ def build(key, population):
                  editions=dict(zip(BOOKINGS,target_hashes,strict=True)),
                  released={} if mode=="impossible" else {
                      b: pair[e=="B"] for b,pair,e in zip(BOOKINGS,target_hashes,selections,strict=True)})
-    metadata = dict(family=family,domain="Software reconstruction",freeform=True,input_version=f"pb-{family}-v1",
+    metadata = dict(family=family,domain="Software reconstruction",freeform=True,input_version=spec.get("input_version", f"pb-{family}-v1"),
                     task_class=VARIANTS[mode],output_paths=[])
     return startup,truth,metadata
 

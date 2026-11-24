@@ -19,7 +19,42 @@
         "0d3a1014700dca1cd79a843a0204675898fbaf18a3c0dbe50c3d53f7844fb2de",
         "c6506dbd6b3f94b1ad4a77038034684cd7435af8b4137c0a075482662124c026"
       ]
-    ]
+    ],
+    "input_version": "pb-pandoc-v2",
+    "operational_archive": {
+      "service_note": "The same converter serves the public archive and the search index. The last annual reStructuredText import and its two production receipts are in /workspace/archive/.",
+      "files": {
+        "annual.rst": "Field calibration ledger\n========================\n\nThe late reading supersedes the preliminary value. See the calibration note [1]_.\n\n.. list-table:: Accepted readings\n   :header-rows: 1\n\n   * - Station\n     - Offset\n   * - North pier\n     - 0.18 mm\n   * - Crossing\n     - 0.24 mm\n\n.. [1] The post-maintenance check used the annual reference gauge.\n"
+      },
+      "receipts": [
+        {
+          "consumer": "archive loader",
+          "argv": [
+            "-f",
+            "rst",
+            "-t",
+            "json",
+            "--wrap=none",
+            "annual.rst"
+          ],
+          "sha256": "ccb61e588f04646b89ced80f3eb181cb9a1b60349269a701d88ae23977d7dda3",
+          "bytes": 1952
+        },
+        {
+          "consumer": "search index",
+          "argv": [
+            "-f",
+            "rst",
+            "-t",
+            "plain",
+            "--wrap=none",
+            "annual.rst"
+          ],
+          "sha256": "c63eff40c16011c29269c03eb4c376af005ef3894331f04d832396328d24e251",
+          "bytes": 288
+        }
+      ]
+    }
   },
   "php": {
     "instance": "php__php-src.c891263",

@@ -45,12 +45,25 @@ def check(image, families, register=False):
     catalog = json.loads(REGISTRY.read_text())
     labels = [(f, i, j) for f in families for i in range(3) for j in range(2)]
     inputs = [dict(instance=catalog[f]["instance"], workload=workload(f,i,j)) for f,i,j in labels]
+    archived = []
+    for family in families:
+        archive = catalog[family].get("operational_archive")
+        if archive:
+            for receipt in archive["receipts"]:
+                job = dict(files=archive["files"], argv=receipt["argv"], product="stdout", stdin=None)
+                inputs.append(dict(instance=catalog[family]["instance"], workload=job))
+                archived.append((family, receipt))
     proc = subprocess.run(["docker","run","--rm","-i","--network=none","--user","65534:65534",image,
                            "python","-I","-c",REPLAY],input=json.dumps(inputs).encode(),capture_output=True)
     if proc.returncode:
         raise RuntimeError(proc.stderr.decode())
-    results = dict(zip(labels,json.loads(proc.stdout),strict=True))
+    replayed = json.loads(proc.stdout)
+    results = dict(zip(labels, replayed[:len(labels)], strict=True))
     failures = {}
+    for (family, receipt), result in zip(archived, replayed[len(labels):], strict=True):
+        if result != {"sha256": receipt["sha256"], "bytes": receipt["bytes"]}:
+            failures[family] = f"Archived {receipt['consumer']} output did not reproduce"
+
     for family in families:
         editions = [results[family,i,j] for i in range(3) for j in range(2)]
         failed = [e['error'] for e in editions if 'error' in e]
@@ -66,7 +79,7 @@ def check(image, families, register=False):
             failures[family] = "Reference outputs differ from the registered hashes"
     if register and not failures:
         REGISTRY.write_text(json.dumps(catalog,indent=2)+"\n")
-    print(json.dumps(dict(cases=len(labels), failures=failures),indent=2))
+    print(json.dumps(dict(cases=len(labels), archived_outputs=len(archived), failures=failures),indent=2))
     return bool(failures)
 
 
