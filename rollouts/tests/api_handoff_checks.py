@@ -507,7 +507,7 @@ class APIHandoffChecks(unittest.TestCase):
         family_assets = {}
         for task in inputs.TASK_MODULES:
             direct, _, _ = inputs.build_intended(task, 3)
-            family = task.split("-")[0]
+            family = task.rsplit("-", 1)[0]
             self.assertEqual(family_assets.setdefault(family, direct["project_artifacts"]), direct["project_artifacts"])
             for channel in inputs.CHANNELS:
                 incidental, _, _ = inputs.build(task, channel, 3)

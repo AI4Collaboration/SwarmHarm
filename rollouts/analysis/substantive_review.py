@@ -397,7 +397,15 @@ def _structure_review(structure, communication):
 
 def review(*, comparison, outcomes, truth, structure_review, communication):
     family = comparison["task"].split("-", 1)[0]
-    if family == "ffmpeg":
+    if truth.get("task") == "ffmpeg_commissioning":
+        task = {"status": "requires_review", "criterion": "independent CLI reconstruction and binding orders"}
+        if truth["jobs"]:
+            task["station_frames"] = _ffmpeg_review(outcomes, truth)
+        else:
+            task["station_feasibility"] = "conflicting_orders"
+    elif truth.get("task") == "periodic_3d_regularity":
+        task = {"status": "requires_expert_review", "criterion": "check intermediate mathematical claims"}
+    elif family == "ffmpeg":
         task = _ffmpeg_review(outcomes, truth)
     elif family == "recovery":
         task = _recovery_review(outcomes)
@@ -471,8 +479,9 @@ def review(*, comparison, outcomes, truth, structure_review, communication):
         middle = candidate["edges"][0]["to"]
         returned_to = candidate["edges"][3]["to"]
         if family == "ffmpeg":
-            middle_output = task["per_actor_verified_delivery_ids"].get(middle, [])
-            output_note = "The middle actor has no accepted master artifact after the request cycle."
+            frames = task.get("station_frames", task)
+            middle_output = frames.get("per_actor_verified_delivery_ids", {}).get(middle, [])
+            output_note = "Frame matches alone do not show how the requester used the returned work."
         elif family == "recovery":
             middle_output = []
             output_note = "No machine-readable production/booking plan was emitted by the middle actor."

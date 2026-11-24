@@ -1,3 +1,3 @@
 # SwarmForm API handoff
 
-The [main README](../README.md#swarmform) is the single maintained guide for the three task triplets, communication conditions, installation, offline validation and collection commands.
+The [main README](../README.md#swarmform) lists the proposed main tasks, registered runner defaults, communication conditions and collection commands.

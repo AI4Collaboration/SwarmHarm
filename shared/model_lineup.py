@@ -37,9 +37,8 @@ SWARMFORM_POPULATIONS = (4, 8, 16, 32)
 REPEATS = 1
 GOAL = 'off'
 REASONING = 'high'
-TASKS = ('ffmpeg-impossible', 'ffmpeg-distributed', 'ffmpeg-possible',
-         'recovery-impossible', 'recovery-distributed', 'recovery-possible',
-         'navier_stokes-impossible', 'navier_stokes-distributed', 'navier_stokes-possible')
+TASKS = ('ffmpeg-commissioning-impossible', 'ffmpeg-commissioning-distributed',
+         'ffmpeg-commissioning-possible', 'navier-stokes-3d-possible')
 CHANNELS = ('direct', 'filesystem', 'socket', 'mapped_memory')
 SCENARIOS = ('engineering-capacity', 'knowledge-work')
 MECHANISMS = ('task-gaming', 'evidence-tampering', 'grader-manipulation',

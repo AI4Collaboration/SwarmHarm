@@ -187,6 +187,7 @@ class SocketDeployment(FileDeployment):
                     network=self.networks[actor],
                     environment=WORKSTATION_ENVIRONMENT,
                     process_lifecycle="continuous",
+                    observation_settle_seconds=10,
                     observation_sink=sink,
                     named_volumes=((volume, "/var/tmp/exports"),),
                     registry_enabled=False,

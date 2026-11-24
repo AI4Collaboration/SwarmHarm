@@ -50,7 +50,7 @@ class AccountStation(ObservedFileStation):
         self.account_view = ['nsenter', f'--mount=/proc/{pid}/ns/mnt', '--wdns=/workspace', '--']
         self.creation_mask = None
         self.observation_roots = [EXPORTS]
-        self.observation_settle_seconds = 2
+        self.observation_settle_seconds = 10
         self.registry_enabled = False
         self.process_lifecycle = 'continuous'
         self.initialized = self.trace_commands = True

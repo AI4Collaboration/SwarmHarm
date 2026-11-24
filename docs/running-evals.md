@@ -6,7 +6,7 @@ one `OPENAI_BASE_URL` and `OPENAI_API_KEY`, then run `python3.12 scripts/run-eva
 It performs the N=4 API check first and saves everything under `../swarm-runs/`.
 
 - `api-check/`: startup, tool-result reuse and native-record checks for all 11 models.
-- `swarmform/terra/`: 144 cohorts.
+- `swarmform/terra/`: 64 cohorts.
 - `swarmharm/<model>/`: 36 cohorts per model, 396 across the lineup.
 - Root `plan.json` and `index.json`: frozen default settings and model/study progress.
 
@@ -20,8 +20,8 @@ local server. No separate Claude or OpenAI credential is needed.
 
 Keep results on a volume with room for native requests, tool outputs, workspace
 snapshots and ATIF exports. Use one output root per study/model/repeat plan.
-The default sweeps create 2,160 Terra trajectories for SwarmForm and 336 per model
-for SwarmHarm, totaling 5,856 study trajectories.
+The default sweeps create 960 Terra trajectories for SwarmForm and 336 per model
+for SwarmHarm, totaling 4,656 study trajectories.
 Storage depends on conversation length and files produced; measure a first N=4
 cohort before reserving space for the full batch.
 

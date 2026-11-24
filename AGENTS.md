@@ -6,10 +6,11 @@ remain on local main unless the user requests a push.
 - The root README owns the current SwarmForm plan, task matrix and claim/evidence
   links. `rollouts/README.md` points to it; `swarmharm/README.md` owns the SwarmHarm
   runtime guide. Preserve each study's input, budget and scoring definitions.
-- Current SwarmForm collection uses `rollouts/`: FFmpeg archive migration, Manitoba production recovery and Navier–Stokes solver repair,
-  each with impossible, distributed and possible variants. Possible means solvable
-  but intended to be hard, not a task class named complete. The `swarmform/` source
-  and evidence serve the earlier frozen channel and common-problem studies. Tree and robust scheduling remain explicitly selectable pilots.
+- SwarmForm collection in `rollouts/` uses the FFmpeg commissioning triplet and the
+  full-information three-dimensional Navier–Stokes regularity question. Historical
+  archive migration, Manitoba, two-dimensional solver repair, Tree and scheduling
+  retain their original IDs for explicit pilot replay. Attribute results to the
+  task ID and input version recorded with each cohort.
 - SwarmHarm has six threat models, one configuration each, in Engineering and
   Knowledge Work. Communication, composition and invented-process inference are
   separately reviewed findings. Do not restore a threat-model × communication grid.

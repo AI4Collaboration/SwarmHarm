@@ -138,7 +138,7 @@ def deployment(startup, registration, **observations):
         instance = SocketDeployment(startup, shared=shared, project_artifacts=registration.get("project_artifacts"), **observations)
         return checked(instance, startup, registration)
     options = dict(
-        population=len(startup), observation_settle_seconds=2, **observations
+        population=len(startup), observation_settle_seconds=10, **observations
     )
     if family == "mapped_memory":
         instance = WorkMemory(startup, shared=shared, **options)

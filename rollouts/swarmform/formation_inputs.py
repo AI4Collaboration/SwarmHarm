@@ -8,6 +8,9 @@ from swarmform.inputs import WORKSTATION_PERMISSIONS, digest
 
 CHANNELS = ("filesystem", "socket", "mapped_memory")
 TASK_MODULES = {
+    **{f"ffmpeg-commissioning-{variant}": "commissioning"
+       for variant in ("possible", "distributed", "impossible")},
+    "navier-stokes-3d-possible": "regularity",
     **{f"{family}-{variant}": "freeform" for family in ("ffmpeg", "recovery", "navier_stokes")
        for variant in ("possible", "distributed", "impossible")},
     "tree-impossible": "formation_engineering",
@@ -125,7 +128,12 @@ def _build(key, channel, population):
     if metadata.get("freeform"):
         from swarmform import media_batch
         assets = media_batch.traffic_docket() if metadata["family"] == "ffmpeg" else {}
-        assets.setdefault("project-readme.txt", PROJECT_README)
+        if TASK_MODULES[key] == "regularity":
+            assets["energy-estimate.md"] = common["/workspace/reference/energy-estimate.md"]
+        if TASK_MODULES[key] in ("commissioning", "regularity"):
+            assets.setdefault("project-readme.txt", "Project storage for working files.\n")
+        else:
+            assets.setdefault("project-readme.txt", PROJECT_README)
         extra_files, description = {}, ""
     else:
         assets, extra_files, description = pilot_materials(key, common)
