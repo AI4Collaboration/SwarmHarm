@@ -19,6 +19,7 @@ import launch_capacity
 from process_control import run_process
 from phase2 import mechanism_inputs
 
+REVIEWABLE_COLLECTION_STATUSES = frozenset({'collected', 'collected_with_limits', 'rollout_limit'})
 RETRYABLE_COLLECTION_STATUSES = frozenset({'collector_error', 'provider_hold', 'observer_hold', 'incomplete'})
 PERMANENT_LOG_MARKERS = ('HTTP Error 401', 'HTTP Error 403', 'Model blocked by guardrail',
                          'Provider not allowed by guardrail', 'Unknown model family',
@@ -240,6 +241,8 @@ def main():
                         help='Run blinded transcript judge after independent review to produce mechanism-verdict.json')
     parser.add_argument('--judge-model', help='Explicit model ID for --judge (defaults to served subject model)')
     parser.add_argument('--startup-concurrency', type=int, default=16)
+    parser.add_argument('--max-actor-seconds', type=int,
+                        help='Optional per-actor wall-clock budget override (useful for N>=64 on slower providers)')
     parser.add_argument('--max-attempts', type=int, default=2,
                         help='Maximum total attempts per planned cell on transient infrastructure/API failures (default: 2)')
     parser.add_argument('--retry-backoff-seconds', type=float, default=10.0,
@@ -327,7 +330,7 @@ def execute_rows(args, rows, root, parser):
                 existing = existing_status(output, require_judge=args.judge)
                 if existing is not None:
                     if (existing['status'] == 'review_incomplete'
-                            and existing.get('collection_status') in ('collected', 'collected_with_limits')):
+                            and existing.get('collection_status') in REVIEWABLE_COLLECTION_STATUSES):
                         print('Resuming pending review steps:', output, flush=True)
                         try:
                             run_post_collection(output, row, args, key, command)
@@ -340,7 +343,7 @@ def execute_rows(args, rows, root, parser):
                         except subprocess.CalledProcessError as error:
                             record.update(existing, returncode=error.returncode, log=str(log))
                     record.update(existing)
-                    if existing['status'] in ('collected', 'collected_with_limits', 'archived'):
+                    if existing['status'] in (*REVIEWABLE_COLLECTION_STATUSES, 'archived'):
                         print('Preserved completed attempt:', output, flush=True)
                         break
                     print('Preserved failed/incomplete attempt:', output, f"({existing['status']})", flush=True)
@@ -351,6 +354,8 @@ def execute_rows(args, rows, root, parser):
                     output.parent.mkdir(parents=True, exist_ok=True)
                     common = ['--output', str(output), '--registration-dir', str(registration), '--key-file', str(key)]
                     variant_args = ['--input-variant', row['input_variant']] if row.get('input_variant') else []
+                    budget_args = (['--max-actor-seconds', str(args.max_actor_seconds)]
+                                   if getattr(args, 'max_actor_seconds', None) else [])
                     run.save(root/'index.json', {'study': 'swarmharm', 'runs': [*records, {**record, 'status': 'running'}]})
                     print('Starting:', output, flush=True)
                     new_attempts += 1
@@ -362,14 +367,14 @@ def execute_rows(args, rows, root, parser):
                                  '--api-base', args.base_url, '--harness', row['harness'],
                                  '--api-protocol', row['api_protocol'], '--served-model', row['served_model'], '--goal-mode', 'off',
                                  '--reasoning-effort', 'high', '-N', str(row['population']),
-                                 '--startup-concurrency', str(row['startup_concurrency']),
+                                 '--startup-concurrency', str(row['startup_concurrency']), *budget_args,
                                  *reusable_controls(records, row, search_roots=search_roots), *common])
                         command(['git', 'add', '--', str(registration)])
                         command(['git', 'commit', '-m', f'Register {registration.name}'])
                         prepared_committed = True
                         command([sys.executable, str(run.HERE/'run.py'), '--phase', 'collect', *common])
                         record['status'] = run.load(completion)['status']
-                        if record['status'] in ('collected', 'collected_with_limits'):
+                        if record['status'] in REVIEWABLE_COLLECTION_STATUSES:
                             run_post_collection(output, row, args, key, command)
                             record['review'] = 'complete'
                     except KeyboardInterrupt:
@@ -385,7 +390,7 @@ def execute_rows(args, rows, root, parser):
                         record.update(status=c_status, returncode=error.returncode, log=str(log))
                     if output.exists():
                         record['raw_bytes'] = sum(p.stat().st_size for p in output.rglob('*') if p.is_file())
-                    if record['status'] in ('collected', 'collected_with_limits') and record.get('review') == 'complete':
+                    if record['status'] in REVIEWABLE_COLLECTION_STATUSES and record.get('review') == 'complete':
                         break
 
                 if (attempt_idx >= args.max_attempts
@@ -395,7 +400,7 @@ def execute_rows(args, rows, root, parser):
                 previous.append({k: record[k] for k in ('output', 'registration', 'status', 'returncode', 'log')
                                  if k in record})
 
-            if record.get('status') not in ('collected', 'collected_with_limits', 'archived') or record.get('review') == 'pending':
+            if record.get('status') not in (*REVIEWABLE_COLLECTION_STATUSES, 'archived') or record.get('review') == 'pending':
                 failures += 1
             records.append(record)
             run.save(root/'index.json', {'study': 'swarmharm', 'runs': records})
