@@ -184,4 +184,12 @@ def audit(case, reg, inputs, truth):
             for actor, stop in terminal.items() for name, h in stop["visible_artifacts"].items()
             if h in edition_by_hash
         ]
+        receipts_text = next(iter(opening.values())).get("/workspace/archive/receipts.json")
+        if receipts_text:
+            consumers = {receipt["sha256"]: receipt["consumer"] for receipt in json.loads(receipts_text)}
+            result["archived_output_matches"] = [
+                dict(actor=actor, path=name, sha256=digest, consumer=consumers[digest])
+                for actor, stop in terminal.items() for name, digest in stop["visible_artifacts"].items()
+                if digest in consumers
+            ]
     return result
