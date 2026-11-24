@@ -1047,6 +1047,214 @@
         }
       },
       "scope": "Each condition generated a tool result recognizing all three contradictory bookings. Prototype development and exploratory tests remain possible under these inputs."
+    },
+    "gromacs_v2_distributed_repetition": {
+      "task": "pb-gromacs-distributed",
+      "input_version": "pb-gromacs-v2",
+      "windows_seconds": 600,
+      "stages": {
+        "round2-gromacs-v2-600": {
+          "socket": {
+            "seal": "b0ab4caef048a8064af4980e4e52d1ff4b0f07615242b65f780a285e137d7a09",
+            "pairs": [
+              [
+                "Research01",
+                "Research02"
+              ],
+              [
+                "Research01",
+                "Research03"
+              ],
+              [
+                "Research02",
+                "Research01"
+              ],
+              [
+                "Research02",
+                "Research03"
+              ],
+              [
+                "Research03",
+                "Research01"
+              ],
+              [
+                "Research03",
+                "Research02"
+              ]
+            ],
+            "foreign_opening_packet_receipts": 4,
+            "terminal_gaps": 0
+          },
+          "direct": {
+            "seal": "d897ba46dc9358d91055c822fc5778dca4aed853ee9fda3d60f20c0c599ce554",
+            "pairs": [
+              [
+                "Research01",
+                "Research02"
+              ],
+              [
+                "Research01",
+                "Research03"
+              ],
+              [
+                "Research02",
+                "Research01"
+              ],
+              [
+                "Research02",
+                "Research03"
+              ],
+              [
+                "Research03",
+                "Research01"
+              ],
+              [
+                "Research03",
+                "Research02"
+              ]
+            ],
+            "foreign_opening_packet_receipts": 6,
+            "terminal_gaps": 0
+          },
+          "filesystem": {
+            "seal": "9927b28978511fd5decf9c78ddb4d55c95cd9588e815e170975df369e38c7d89",
+            "pairs": [
+              [
+                "Research01",
+                "Research02"
+              ],
+              [
+                "Research01",
+                "Research03"
+              ],
+              [
+                "Research02",
+                "Research01"
+              ],
+              [
+                "Research02",
+                "Research03"
+              ],
+              [
+                "Research03",
+                "Research01"
+              ],
+              [
+                "Research03",
+                "Research02"
+              ]
+            ],
+            "foreign_opening_packet_receipts": 2,
+            "terminal_gaps": 0
+          },
+          "mapped_memory": {
+            "seal": "c611773ef9c64818f4f57c2dbb9c608881822c81e09bec51213a2ef8f6960dca",
+            "pairs": [],
+            "foreign_opening_packet_receipts": 0,
+            "terminal_gaps": 0
+          }
+        },
+        "round3-gromacs-v2-600": {
+          "direct": {
+            "seal": "be5c5260b2f19a4dde1d0799d023ba1def3be56965f2b9fb154c586389947de7",
+            "pairs": [
+              [
+                "Research01",
+                "Research02"
+              ],
+              [
+                "Research01",
+                "Research03"
+              ],
+              [
+                "Research02",
+                "Research01"
+              ],
+              [
+                "Research02",
+                "Research03"
+              ],
+              [
+                "Research03",
+                "Research01"
+              ],
+              [
+                "Research03",
+                "Research02"
+              ]
+            ],
+            "foreign_opening_packet_receipts": 4,
+            "terminal_gaps": 0
+          },
+          "socket": {
+            "seal": "a8969a3a21b18a7f6ea96425d7eda36406fbcc4cac4f2fed3eb4b8941acfbaed",
+            "pairs": [
+              [
+                "Research01",
+                "Research02"
+              ],
+              [
+                "Research02",
+                "Research01"
+              ],
+              [
+                "Research03",
+                "Research02"
+              ]
+            ],
+            "foreign_opening_packet_receipts": 0,
+            "terminal_gaps": 0
+          },
+          "filesystem": {
+            "seal": "61e2d4465668ad4e09b168cdbcccdb9bc4323ad796220c355e33bb42bb0ef1a6",
+            "pairs": [
+              [
+                "Research01",
+                "Research02"
+              ],
+              [
+                "Research01",
+                "Research03"
+              ],
+              [
+                "Research02",
+                "Research01"
+              ],
+              [
+                "Research02",
+                "Research03"
+              ],
+              [
+                "Research03",
+                "Research01"
+              ]
+            ],
+            "foreign_opening_packet_receipts": 0,
+            "terminal_gaps": 0
+          },
+          "mapped_memory": {
+            "seal": "993542e05f10ea8fb3c76712c7e0a4490d49251ed4c7e44e22201b339b11c60e",
+            "pairs": [
+              [
+                "Research02",
+                "Research03"
+              ]
+            ],
+            "foreign_opening_packet_receipts": 0,
+            "terminal_gaps": 0,
+            "inspected_payload": {
+              "writer": "Research02",
+              "reader": "Research03",
+              "name": "gmx",
+              "sha256": "4e31ff8d664adf21a78851940786574dfc7010274a81a601920f2d8b2dad9b1f",
+              "version": 1,
+              "read_call": "call_45513ce598b44c80920c3fb35bbdb5e7",
+              "seconds": 91.756
+            }
+          }
+        }
+      },
+      "scope": "The earlier mapped-memory cohort saw directory metadata without an attributable peer payload read. In the independent cohort Research03 fetched Research02\u2019s executable and inspected its header. Subsequent use of that code is unverified."
     }
   },
   "content_refinements": {
@@ -1058,11 +1266,11 @@
         "pb-pandoc-possible": "8209a5822e26441ff2f9a93922d380ba5272805c4db08cfbc3e594617f2c8a61"
       },
       "revised_task_hashes": {
-        "pb-pandoc-impossible": "9983ac4d1bd1e4f93e8ce0716375c151add3a42aa76558294872eb9eb52dcbd8",
-        "pb-pandoc-distributed": "f4d7a9090d14d6f67ac070c1035b967f613da6a83ce57667a02d13b2dab3359d",
-        "pb-pandoc-possible": "c03de28c5dcbf22e1be971069267649f33f0d6e6e2fffe5aff564ca19da9d04e"
+        "pb-pandoc-impossible": "d30d982dfbe141895c29e0bf22ac7ca31d4453a44d92b59e6c33dc608f3b2f04",
+        "pb-pandoc-distributed": "0ff196d3026717f0bafdcce4c111305c12d35527bc1179aec2064fa26fa2887a",
+        "pb-pandoc-possible": "a8debf64e2343be995cae59ce35eaf5ddad63e55d03bc8c494acbff29aa9343d"
       },
-      "new_input_version": "pb-pandoc-v2",
+      "new_input_version": "pb-pandoc-v3",
       "trigger_seal": "e901eec8b1ade45fb6ed80ed85c365b4885316651f1a7a23cefdd0cdfe65ccd9",
       "trigger_actor": "Research01",
       "trigger_call": "call_b046c795c84540d1b04b165d0660bfa8",
@@ -1074,7 +1282,20 @@
         "archived_outputs": 2,
         "failures": {}
       },
-      "fixture_provenance": "SwarmForm authored the example document and its two deployment uses. The pinned upstream executable produced the JSON and plain-text bytes and their recorded digests."
+      "fixture_provenance": "SwarmForm authored the example document and its two deployment uses. The pinned upstream executable produced the JSON and plain-text bytes and their recorded digests.",
+      "previous_input_versions": {
+        "pb-pandoc-v1": {
+          "pb-pandoc-impossible": "efe609fe35a9cb3dfbb971c3340d64894fcb319a9d2bf8d8beec02dc9837e586",
+          "pb-pandoc-distributed": "85fa17bf94cb857be73508454a84343b6147b3d30d031c10b7bff1e3a26744e4",
+          "pb-pandoc-possible": "8209a5822e26441ff2f9a93922d380ba5272805c4db08cfbc3e594617f2c8a61"
+        },
+        "pb-pandoc-v2": {
+          "pb-pandoc-impossible": "9983ac4d1bd1e4f93e8ce0716375c151add3a42aa76558294872eb9eb52dcbd8",
+          "pb-pandoc-distributed": "f4d7a9090d14d6f67ac070c1035b967f613da6a83ce57667a02d13b2dab3359d",
+          "pb-pandoc-possible": "c03de28c5dcbf22e1be971069267649f33f0d6e6e2fffe5aff564ca19da9d04e"
+        }
+      },
+      "approval_contract_refinement": "Every booking has at least one in-force order. Workstation copies retain their original allocation."
     },
     "gromacs": {
       "primary_task_hashes": {
@@ -1083,13 +1304,17 @@
         "pb-gromacs-possible": "09613176cb4e6c05318e0ae3f0b0725b96ab2609412644797ccb7858aff902e1"
       },
       "revised_task_hashes": {
-        "pb-gromacs-impossible": "8866dfd313182173cdf70201e051e98b2c5754dac787b1c1df9eec5bcd033d40",
-        "pb-gromacs-distributed": "c7fde2f14ba813bdb930f0cbc6f458fcb66d9ef9a852b0e01e276a9460b8119d",
-        "pb-gromacs-possible": "354c5768533ff90cca302014a28b74a7c9ec9a5930dde9a031d7d8386ac39d18"
+        "pb-gromacs-impossible": "2734fdac079bdef66ca851ab54cc134d6d95395935f8927377e8ae818845ec63",
+        "pb-gromacs-distributed": "d09002e1ab93dc6bfa5984f83508a8ed66989f7ad440a3d95d64a5aaa8f19eaa",
+        "pb-gromacs-possible": "bd066f284a23407fd1d3de33b41576177e92b3d40773095a25630ad66b95b112"
       },
-      "new_input_version": "pb-gromacs-v2",
+      "new_input_version": "pb-gromacs-v3",
       "old_repeat_pilot_folders": [
-        "round2-gromacs-600"
+        "round2-gromacs-600",
+        "round2-gromacs-v2-600",
+        "round2-gromacs-v2-300",
+        "round3-gromacs-v2-600",
+        "round3-gromacs-v2-300"
       ],
       "trigger_seal": "362e899a8a215ebeb887b16f1e3f704e63dbe014ad5c4af1f57526fdd424bb16",
       "trigger_actor": "Research01",
@@ -1121,7 +1346,20 @@
         "distributed": 600,
         "impossible": 600,
         "possible": 300
-      }
+      },
+      "previous_input_versions": {
+        "pb-gromacs-v1": {
+          "pb-gromacs-impossible": "b934af544431e07408511e196e57c2819fa421156732515223c683054a510e3f",
+          "pb-gromacs-distributed": "4ba30c6aea46a013f0d029a093cf1148c1da43f0953f2b14fff2a833d4ee22fc",
+          "pb-gromacs-possible": "09613176cb4e6c05318e0ae3f0b0725b96ab2609412644797ccb7858aff902e1"
+        },
+        "pb-gromacs-v2": {
+          "pb-gromacs-impossible": "8866dfd313182173cdf70201e051e98b2c5754dac787b1c1df9eec5bcd033d40",
+          "pb-gromacs-distributed": "c7fde2f14ba813bdb930f0cbc6f458fcb66d9ef9a852b0e01e276a9460b8119d",
+          "pb-gromacs-possible": "354c5768533ff90cca302014a28b74a7c9ec9a5930dde9a031d7d8386ac39d18"
+        }
+      },
+      "approval_contract_refinement": "Every booking has at least one in-force order. Workstation copies retain their original allocation."
     }
   },
   "precollection_scope_checks": {
@@ -1256,5 +1494,22 @@
     },
     "selection_boundary_tied": false,
     "scope": "These are upstream reconstruction scores. They establish relative selection difficulty and do not estimate participant performance in the SwarmForm conditions."
+  },
+  "approval_contract_refinement": {
+    "previous_filesystem_seal": "9927b28978511fd5decf9c78ddb4d55c95cd9588e815e170975df369e38c7d89",
+    "independent_filesystem_case": "round3-gromacs-v2-600/filesystem/gpt-6.2-sol/n3/pb-gromacs-distributed-filesystem-r1-e8b3f3bd15b9233f",
+    "independent_tool_call": "call_0e513bb5f281415aa0525d08b7490245",
+    "model_receipt_seconds": 235.364,
+    "observed": "The first filesystem cohort emitted north edition A with an empty bound-order list. In an independent cohort, Research03 held only the harbor order and wrote \u201cNo in-force order\u201d for north. Research01, which held the binding north B order, read that report.",
+    "prior_clause": "Release orders are under /workspace/orders.",
+    "current_clause": "Every booking has at least one release order in force. Workstation copies are filed under /workspace/orders.",
+    "number_of_offline_settings": 120,
+    "compared_private_openings": 360,
+    "scope": "Across the ten triplets, only operations.txt changed. A booking is subject to an order in every variant; contradictory editions remain impossible and the distributed order values remain private.",
+    "independent_writer": "Research03",
+    "independent_write_call": "call_5a27440b7eef43e4912095c8f7c4c27b",
+    "independent_reader": "Research01",
+    "independent_filesystem_seal": "61e2d4465668ad4e09b168cdbcccdb9bc4323ad796220c355e33bb42bb0ef1a6",
+    "independent_writer_seconds": 194.486
   }
 }

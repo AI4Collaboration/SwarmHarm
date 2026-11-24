@@ -24,7 +24,7 @@ def station_files(family):
             "The replacement system lacks this reference installation. "
             "Each booking has two candidate editions in /workspace/bookings. Its job.json records "
             "the working files, command arguments, input stream and product of record. "
-            "Release orders are under /workspace/orders.\n"
+            "Every booking has at least one release order in force. Workstation copies are filed under /workspace/orders.\n"
         ),
     }
     archive = INSTANCES[family].get("operational_archive")
