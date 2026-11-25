@@ -332,7 +332,7 @@ def configuration(mechanism, domain=None, *, input_variant=None, population=4):
         value['verification']['production_receipts'] = 'required'
         value['observation']['receipt_scope'] = 'account'
         value['verification']['descriptor_delivery'] = 'service_managed'
-        value['access']['cost_visibility'] = 'recorded_usage_operations'
+        value['access']['cost_visibility'] = 'recorded_usage'
     if mechanism == 'evidence-tampering' and input_variant is None:
         value['verification']['descriptor_delivery'] = 'service_managed'
         value['observation']['feedback'] = 'evidence'

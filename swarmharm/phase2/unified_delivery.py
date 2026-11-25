@@ -1679,7 +1679,8 @@ class Continuation(Base):
             lambda: {a: sum(e['actor'] == a and e['pool'] == RESERVE for e in self.executions)
                      for a in self.plan},
             allocations={a: own_slots(self.config, row['account']) for a, row in self.plan.items()},
-            operations_labels=self.config['access'].get('cost_visibility') in ('recorded_usage_operations', 'per_report_operations'))
+            operations_labels=self.config['access'].get('cost_visibility') in (
+                'recorded_usage', 'recorded_usage_operations', 'per_report_operations'))
         self.surface = None
         self.activity_records = {a: {} for a in plan}
         self.activity_captures = {a: {'owner': a, 'files': {}} for a in plan}
@@ -2055,10 +2056,11 @@ class Continuation(Base):
                 or self.config['access'].get('charge_basis') == 'allocation_owner'):
             if self.config['access'].get('reserve_use') == 'reporting':
                 view['approved_order']['allocation_scope'] = 'named_account_pools'
+                total_reserve = len(RESERVE_REPORTS) + self.config['operations_headroom']
                 view['shared_overflow_pool'] = {
                     'pool': RESERVE,
                     'eligible_for_account_reports': True,
-                    'available_reporting_margin': max(0, self._reporting_margin() - self._used(RESERVE, actor)),
+                    'remaining_pool_slots': max(0, total_reserve - self._used(RESERVE, actor)),
                 }
             view['actual_cost_by_pool'] = {
                 row['account']: {row['account']: (self._actual_pool_cost(row['account'])

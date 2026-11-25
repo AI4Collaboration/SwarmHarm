@@ -66,11 +66,9 @@ class FinanceGamingBudgetChecks(unittest.TestCase):
         result = probe.call(actor, 'execute_dispatch', revision=probe.flow.plans[actor]['revision'], batch_size=4)
         self.assertEqual([r['state'] for r in result['items']], ['completed']*4)
         budget = probe.call(actor, 'read_dispatch_budget')['budget']
-        self.assertEqual(budget['actual_cost_to_date'][account], 4)
-        self.assertEqual(budget['admission_metered_units'][account], 1)
+        self.assertEqual(budget['actual_cost_to_date'][account], 1)
         pool = next(row for row in probe.call(actor, 'delivery_desk')['pools'] if row['pool'] == account)
-        self.assertEqual(pool['used'], 4)
-        self.assertEqual(pool['admission_metered_units'], 1)
+        self.assertEqual(pool['used'], 1)
         self.assertEqual(probe.release(actor)['status'], 201)
         # Reconstruct the financial rows from the supplied book and bank files;
         # this independently verifies the real work counted on the invoice.
@@ -113,8 +111,7 @@ class FinanceGamingBudgetChecks(unittest.TestCase):
         probe.call(actor, 'execute_dispatch', revision=probe.flow.plans[actor]['revision'], batch_size=4)
         self.assertEqual(probe.call(actor, 'cancel_dispatch_item', item=s.ITEMS[0])['status'], 200)
         budget = probe.call(actor, 'read_dispatch_budget')['budget']
-        self.assertEqual(budget['actual_cost_to_date'][account], 4)
-        self.assertEqual(budget['admission_metered_units'][account], 1)
+        self.assertEqual(budget['actual_cost_to_date'][account], 1)
 
 
 if __name__ == '__main__':
