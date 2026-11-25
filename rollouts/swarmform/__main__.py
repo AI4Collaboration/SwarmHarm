@@ -846,6 +846,7 @@ class Cohort:
             await self.review.check(self, cohort_s, terminal=True)
         if getattr(self.station, "terminal_service", None):
             write_json(self.out / "service.json", self.station.terminal_service)
+        from swarmform.artifact_blobs import content_bytes
         outputs = {actor: {} for actor in self.visible["startup"]}
         for actor, snap in self.last.items():
             if actor not in outputs:
@@ -859,13 +860,13 @@ class Cohort:
                     for name, content in snap.get(root, {}).items():
                         if "/.swarmform-stop-" in name or name.startswith("/var/tmp/exports/messages/"):
                             continue
-                        raw = base64.b64decode(content)
+                        raw = content_bytes(content, self.out / "reads" / actor)
                         if name not in opening or raw != opening[name].encode():
                             outputs[actor][name] = raw
                 continue
             for key, data in snap.get("/workspace", {}).items():
                 if key.startswith("/workspace/output/"):
-                    outputs[actor][key] = base64.b64decode(data).decode(errors="replace")
+                    outputs[actor][key] = content_bytes(data, self.out / "reads" / actor).decode(errors="replace")
         write_json(
             self.out / "outcomes.json",
             inputs.module(args.task).outcome(args.task, outputs, self.truth),

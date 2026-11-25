@@ -1,10 +1,10 @@
 """Replay opening privacy and assess the artifacts visible at the physical stop."""
-import base64
 from collections import defaultdict
 import hashlib
 import json
 from pathlib import PurePosixPath
 
+from swarmform.artifact_blobs import content_bytes
 from channels import events
 from swarmform import freeform, freight, media_batch
 
@@ -153,7 +153,7 @@ def audit(case, reg, inputs, truth):
         alternate_worlds = {actor: foreign_fact_witness(reg["task"], local, pooled, truth, feasibility["task"])
                             for actor,local in opening.items()}
     terminal = {}
-    for obs in events(case / "observations.jsonl.gz"):
+    for obs in events(case / "observations.jsonl.gz", resolve_blobs=False):
         if obs["phase"] != "terminal":
             continue
         actor = obs["actor"]
@@ -164,7 +164,7 @@ def audit(case, reg, inputs, truth):
                 parts = PurePosixPath(name).parts
                 if any(p.startswith(".swarmform-stop-") for p in parts) or name.startswith("/var/tmp/exports/messages/"):
                     continue
-                raw = base64.b64decode(val, validate=True)
+                raw = content_bytes(val, case / "reads" / actor)
                 if name not in opening[actor] or raw != opening[actor][name].encode():
                     changed[name] = raw
         matches = media_batch.matched_artifacts(changed, truth) if reg["task"].startswith("ffmpeg-") else {}

@@ -1,11 +1,13 @@
 """Quiescent snapshots for a continuously running private workstation."""
 
 import base64
+import hashlib
 import json
 import os
 from pathlib import Path
 import signal
 import stat
+import tempfile
 import sys
 import time
 
@@ -121,7 +123,37 @@ def freeze(observe_traced=False, subject_uid=None, settle_seconds=2, *, account_
         raise
 
 
-def snapshot(extra_roots=(), observe_traced=False, subject_uid=None, settle_seconds=2, *, account_view=False):
+BLOB_DIR = Path('/var/log/workstation/.artifacts')
+INLINE_BYTES = 2 * 1024 * 1024
+
+
+def file_value(stream, opened, archive_large):
+    if not archive_large or opened.st_size <= INLINE_BYTES:
+        data = stream.read()
+        return base64.b64encode(data).decode(), len(data)
+    digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+    BLOB_DIR.mkdir(mode=0o700, exist_ok=True)
+    cached = BLOB_DIR / digest
+    if cached.is_file():
+        return {'blob': digest, 'bytes': cached.stat().st_size}, cached.stat().st_size
+    stream.seek(0)
+    with tempfile.NamedTemporaryFile(dir=BLOB_DIR, delete=False) as out:
+        tmp = Path(out.name)
+        fingerprint = hashlib.sha256()
+        try:
+            while block := stream.read(1024 * 1024):
+                out.write(block)
+                fingerprint.update(block)
+            size = out.tell()
+            out.flush()
+            digest = fingerprint.hexdigest()
+            tmp.replace(BLOB_DIR / digest)
+        finally:
+            tmp.unlink(missing_ok=True)
+    return {'blob': digest, 'bytes': size}, size
+
+
+def snapshot(extra_roots=(), observe_traced=False, subject_uid=None, settle_seconds=2, *, account_view=False, archive_large=False):
     if any(root != '/var/tmp/exports' for root in extra_roots):
         raise ValueError('Unknown additional observation root')
     before_freeze = time.monotonic()
@@ -154,7 +186,7 @@ def snapshot(extra_roots=(), observe_traced=False, subject_uid=None, settle_seco
             result['concurrent_roots'] = list(extra_roots)
             result['capture_gaps'] = []
         for root in ('/workspace', '/registry', '/tmp', '/private/tmp', *extra_roots):
-            values, total = {}, 0
+            values = {}
             for folder, dirs, names in os.walk(root, followlinks=False):
                 for name in sorted(set(dirs + names)):
                     path = Path(folder) / name
@@ -176,40 +208,27 @@ def snapshot(extra_roots=(), observe_traced=False, subject_uid=None, settle_seco
                     result['file_metadata'][str(path)] = metadata
                     if kind != 'file':
                         continue
-                    # Published research artifacts need the same capture capacity
-                    # as private work products. The registry retains its smaller
-                    # synchronization limit; root totals remain bounded below.
-                    limit = 2_000_000 if root == '/registry' else 32_000_000
-                    if info.st_size > limit:
-                        raise RuntimeError(f'Workstation file exceeds capture limit: {path} ({info.st_size} > {limit})')
-                    if root in extra_roots:
-                        # Other stations remain live. Bind bytes and metadata to
-                        # one open file, and report instability instead of calling
-                        # the entire shared tree a single point-in-time snapshot.
-                        try:
-                            fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
-                            with os.fdopen(fd, 'rb') as stream:
-                                opened = os.fstat(stream.fileno())
-                                if not stat.S_ISREG(opened.st_mode) or opened.st_size > limit:
-                                    raise ValueError('Shared capture target changed type or size')
-                                data = stream.read(limit + 1)
-                                after = os.fstat(stream.fileno())
-                            if len(data) > limit:
-                                raise ValueError('Shared capture grew beyond its limit')
-                            metadata.update(bytes=opened.st_size, mtime_ns=opened.st_mtime_ns,
+                    try:
+                        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+                        with os.fdopen(fd, 'rb') as stream:
+                            opened = os.fstat(stream.fileno())
+                            if not stat.S_ISREG(opened.st_mode):
+                                raise ValueError('Capture target changed type')
+                            value, size = file_value(stream, opened, archive_large and root != '/registry')
+                            after = os.fstat(stream.fileno())
+                        if root in extra_roots:
+                            metadata.update(bytes=size, mtime_ns=opened.st_mtime_ns,
                                             inode=opened.st_ino, mode=stat.S_IMODE(opened.st_mode),
-                                            stable_during_read=(opened.st_size == after.st_size
+                                            stable_during_read=(size == opened.st_size == after.st_size
                                                 and opened.st_mtime_ns == after.st_mtime_ns
                                                 and opened.st_ctime_ns == after.st_ctime_ns))
-                        except (OSError, ValueError) as error:
-                            result['capture_gaps'].append({'path': str(path), 'reason': str(error)})
-                            continue
-                    else:
-                        data = path.read_bytes()
-                    total += len(data)
-                    if total > 64_000_000:
-                        raise RuntimeError('Workstation root exceeds capture limit')
-                    values[str(path)] = base64.b64encode(data).decode()
+                        if isinstance(value, dict):
+                            metadata['sha256'] = value['blob']
+                        values[str(path)] = value
+                    except (OSError, ValueError) as error:
+                        if root not in extra_roots:
+                            raise
+                        result['capture_gaps'].append({'path': str(path), 'reason': str(error)})
             if root in ('/tmp', '/private/tmp'):
                 result['temporary_files'].update(values)
             else:
@@ -230,4 +249,4 @@ if __name__ == '__main__':
         allowances=[int(arg.split('=',1)[1]) for arg in args if arg.startswith('--settle-seconds=')]
         if len(uids)>1:raise ValueError('Duplicate observed account')
         if len(allowances)>1:raise ValueError('Duplicate settling allowance')
-        print(json.dumps(snapshot([arg for arg in args if arg not in ('--observe-traced', '--account-view') and not arg.startswith(('--subject-uid=','--settle-seconds='))], traced, uids[0] if uids else None, allowances[0] if allowances else 2, account_view='--account-view' in args)))
+        print(json.dumps(snapshot([arg for arg in args if arg not in ('--observe-traced', '--account-view', '--archive-large') and not arg.startswith(('--subject-uid=','--settle-seconds='))], traced, uids[0] if uids else None, allowances[0] if allowances else 2, account_view='--account-view' in args, archive_large='--archive-large' in args)))

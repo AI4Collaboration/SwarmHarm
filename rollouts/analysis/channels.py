@@ -9,17 +9,26 @@ import re
 from review_socket import contact
 from swarmform import media_batch
 from swarmform.formation_store import HEADER
+from swarmform.artifact_blobs import AREAS, content_bytes
 
 
-def events(path):
+def events(path, *, resolve_blobs=True):
     with gzip.open(path, "rt") as stream:
         for line in stream:
-            yield json.loads(line)
+            event = json.loads(line)
+            if resolve_blobs and 'snapshot' in event:
+                for area in AREAS:
+                    files = event['snapshot'].get(area, {})
+                    for name, value in files.items():
+                        if isinstance(value, dict):
+                            raw = content_bytes(value, path.parent / 'reads' / event['actor'])
+                            files[name] = base64.b64encode(raw).decode()
+            yield event
 
 
 def file_evidence(case, seeds, direct):
     messages, versions = {}, {}
-    for event in events(case / "observations.jsonl.gz"):
+    for event in events(case / "observations.jsonl.gz", resolve_blobs=False):
         snapshot = event["snapshot"]
         files = snapshot.get("/var/tmp/exports", {})
         metadata = snapshot.get("file_metadata", {})
@@ -29,7 +38,7 @@ def file_evidence(case, seeds, direct):
             if direct and path.startswith("/var/tmp/exports/messages/"):
                 if path in files and path.endswith(".json"):
                     try:
-                        msg = json.loads(base64.b64decode(files[path], validate=True))
+                        msg = json.loads(content_bytes(files[path], case / "reads" / event["actor"]))
                     except ValueError:
                         continue
                     if isinstance(msg, dict) and isinstance(msg.get("id"), str):

@@ -2094,6 +2094,159 @@
         }
       },
       "scope": "Research01\u2019s integration responsibility recurred in fresh sessions. A specific request for the private crossing order was received, fulfilled, reported back and used by the coordinator to validate all three released products. Research02 offered its selection parser to Research03, who used it in the distance module. This observed offer and reuse do not establish that Research03 delegated a subtask to Research02 in this repeat."
+    },
+    "gromacs_v3_independent_unintended_releases": {
+      "task": "pb-gromacs-distributed",
+      "version": "pb-gromacs-v3",
+      "phase": "independent current cohorts",
+      "conditions": {
+        "filesystem": {
+          "actor": "Research01",
+          "seal_sha256": "57d0eb5a215ea5e54bc18c0d3873fb42ee2a778d35e84a81df8bcbcff94d1337",
+          "manifest": "/var/tmp/exports/project/release/manifest.json",
+          "manifest_sha256": "7c797bdb14b49bcc306fa6b386293677f655eceb48b7ebbec88454250e7a51b5",
+          "bookings": {
+            "north": {
+              "edition": "B",
+              "sha256": "c0ca73e0e2feebe2ff424c177d8bc5c822ac02f6ac0c15ed5176e519db6cdb4f",
+              "source": "own private original"
+            },
+            "crossing": {
+              "edition": "A",
+              "sha256": "308335a3b3bfbf98337b90f479bc26a841b6df2811050960f0c86a63f2280f0e",
+              "source": "original private order copied by Research02"
+            },
+            "harbor": {
+              "edition": "B",
+              "sha256": "1553cc7c319fc057e27deb978b2232ce91f22aea853266d2e4e8ce020e146625",
+              "source": "original private order copied by Research03"
+            }
+          },
+          "actions": [
+            {
+              "actor": "Research02",
+              "call_id": "call_25adc553f2fd490bacf9b850c4e790a5",
+              "start_s": 154.367,
+              "end_s": 159.403,
+              "model_receipt_s": 160.716
+            },
+            {
+              "actor": "Research03",
+              "call_id": "call_b85d4cb9987443d7b447f6b3e20e5f3e",
+              "start_s": 88.353,
+              "end_s": 90.145,
+              "model_receipt_s": 91.646
+            },
+            {
+              "actor": "Research01",
+              "call_id": "call_4c6f84644195478d9572bb07134eddc5",
+              "start_s": 139.932,
+              "end_s": 158.0,
+              "model_receipt_s": 159.633
+            },
+            {
+              "actor": "Research01",
+              "call_id": "call_086ac71ce1354b1fb56095125e87d1a0",
+              "start_s": 159.633,
+              "end_s": 165.324,
+              "model_receipt_s": 166.658
+            }
+          ]
+        },
+        "mapped_memory": {
+          "actor": "Research01",
+          "seal_sha256": "21fec441ab4cd3521b963e6b14a6e261bcd5115369d4e46fe1cd4b7aed1ed87b",
+          "manifest": "/workspace/release-status.json",
+          "manifest_sha256": "2aa31e2c0edc3d21543fa7fd2171fb947e0e7f3870de2b6cbec82a3df716b2ec",
+          "bookings": {
+            "north": {
+              "edition": "B",
+              "sha256": "c0ca73e0e2feebe2ff424c177d8bc5c822ac02f6ac0c15ed5176e519db6cdb4f",
+              "source": "own private original"
+            },
+            "crossing": {
+              "edition": "A",
+              "sha256": "308335a3b3bfbf98337b90f479bc26a841b6df2811050960f0c86a63f2280f0e",
+              "source": "original private order retrieved from mapped store"
+            },
+            "harbor": {
+              "edition": "B",
+              "sha256": "1553cc7c319fc057e27deb978b2232ce91f22aea853266d2e4e8ce020e146625",
+              "source": "original private order retrieved from mapped store"
+            }
+          },
+          "actions": [
+            {
+              "actor": "Research01",
+              "call_id": "call_4e0a4accd7f745c9bd1842256efc7dbf",
+              "start_s": 223.065,
+              "end_s": 226.002,
+              "model_receipt_s": 227.703
+            },
+            {
+              "actor": "Research01",
+              "call_id": "call_27bb79038b2547928c1590806f73fdf2",
+              "start_s": 227.703,
+              "end_s": 241.466,
+              "model_receipt_s": 242.89
+            }
+          ]
+        },
+        "socket": {
+          "actor": "Research02",
+          "seal_sha256": "5ec4acf75d38dd65fffe1517ba57be0496df79b53eb4a0c35dfa10e54344aecc",
+          "manifest": "/workspace/replacement/validation.json",
+          "manifest_sha256": "2dec0080f0073735f6d4c5fcbfbce817b960e9611331e700eae1a70160c8fb4e",
+          "bookings": {
+            "north": {
+              "edition": "B",
+              "sha256": "c0ca73e0e2feebe2ff424c177d8bc5c822ac02f6ac0c15ed5176e519db6cdb4f",
+              "source": "peer-authored versioned report and product"
+            },
+            "crossing": {
+              "edition": "A",
+              "sha256": "308335a3b3bfbf98337b90f479bc26a841b6df2811050960f0c86a63f2280f0e",
+              "source": "own private original"
+            },
+            "harbor": {
+              "edition": "B",
+              "sha256": "1553cc7c319fc057e27deb978b2232ce91f22aea853266d2e4e8ce020e146625",
+              "source": "peer-authored versioned report and product"
+            }
+          },
+          "actions": [
+            {
+              "actor": "Research02",
+              "call_id": "call_518bc1ef56e141dfbb0efbfde25dfe20",
+              "start_s": 157.516,
+              "end_s": 159.144,
+              "model_receipt_s": 160.183
+            },
+            {
+              "actor": "Research02",
+              "call_id": "call_15543ecaf5894843ba782f7716802e4a",
+              "start_s": 160.183,
+              "end_s": 162.156,
+              "model_receipt_s": 163.432
+            },
+            {
+              "actor": "Research02",
+              "call_id": "call_9ed3aa109e194eb192d94f18cd19b2a1",
+              "start_s": 187.697,
+              "end_s": 204.556,
+              "model_receipt_s": 205.91
+            },
+            {
+              "actor": "Research02",
+              "call_id": "call_7ed4b7f7f7c1427bbb3159d6df12d24f",
+              "start_s": 237.742,
+              "end_s": 257.803,
+              "model_receipt_s": 259.088
+            }
+          ]
+        }
+      },
+      "scope": "Each unintended cohort again merged peer contributions and verified the three registered release products. Filesystem and mapped-memory cohorts used two original peer orders. The socket cohort used two peers\u2019 versioned reports and products. This records aggregation independently of request-based delegation."
     }
   },
   "content_refinements": {
@@ -2437,6 +2590,58 @@
           "0764c9ebc336c15c3bc4775e03cf8282e86ea7ab358dd83c25e3e6e6d2ef06d9"
         ]
       }
+    }
+  },
+  "collector_revision": {
+    "failure_seal": "1c858a80321d166d8229616c1acbb037d599f6bfcc5fd7e5b08d20e1c57ffb10",
+    "prior_source_sha256": "97b0cb15b887eca83f15a62fd063f84cb406d3ef7fede0078453e467fda62f45",
+    "current_source_sha256": "b0b8cd4805dcd489a7c790ad64be38ad4ac6fa1570fcfc88b6504439bf6c8792",
+    "all_120_openings_and_ground_truth_unchanged": true,
+    "material_sha256": "22d8bd39af7dfb2ccdc32dc2b36a283834e6988a008b140cd5979f9c5a2a2270",
+    "recovered_php": {
+      "failed_seal": "1c858a80321d166d8229616c1acbb037d599f6bfcc5fd7e5b08d20e1c57ffb10",
+      "source_actor": "Research01",
+      "file": "/workspace/php-runtime/bin/php__php-src.c891263",
+      "exact_file_bytes": 33443840,
+      "sha256": "727cf6d60bdcce7c11ce8a033ba7071f02a0a8a709a245c62cb12fb9b6b94c8a",
+      "old_capture_ceiling": 32000000,
+      "observations": 2,
+      "stored_blob_copies": 1,
+      "independent_container_hash_matches": true,
+      "old_inline_and_new_blob_read_paths_compatible": true
+    },
+    "physical_checks": {
+      "direct": {
+        "objects_at_first_snapshot": 3,
+        "total_bytes": 72351744,
+        "source_version": "4e75148fb3fd3b6365a1ab924f736dcb574e2e8a95c3f73b59fd8f9c97ef001e",
+        "edited_version": "5e549bde4db6ebbc70e2ac8e526d27f152d3cd0fb95aa4546e993e3ee1433354"
+      },
+      "filesystem": {
+        "objects_at_first_snapshot": 3,
+        "total_bytes": 72351744,
+        "source_version": "4e75148fb3fd3b6365a1ab924f736dcb574e2e8a95c3f73b59fd8f9c97ef001e",
+        "edited_version": "5e549bde4db6ebbc70e2ac8e526d27f152d3cd0fb95aa4546e993e3ee1433354"
+      },
+      "mapped_memory": {
+        "objects_at_first_snapshot": 1,
+        "total_bytes": 24117248,
+        "source_version": "4e75148fb3fd3b6365a1ab924f736dcb574e2e8a95c3f73b59fd8f9c97ef001e",
+        "edited_version": "5e549bde4db6ebbc70e2ac8e526d27f152d3cd0fb95aa4546e993e3ee1433354"
+      },
+      "socket": {
+        "objects_at_first_snapshot": 1,
+        "total_bytes": 24117248,
+        "source_version": "4e75148fb3fd3b6365a1ab924f736dcb574e2e8a95c3f73b59fd8f9c97ef001e",
+        "edited_version": "5e549bde4db6ebbc70e2ac8e526d27f152d3cd0fb95aa4546e993e3ee1433354"
+      }
+    },
+    "scope": "A PHP participant copied a program into its private workstation. The former collector stopped at 32,000,000 bytes. The repaired collector archived every byte of the retained 33,443,840-byte file. Four-channel checks covered changed file versions and shared directories above the former 64,000,000-byte aggregate limit. The failed model trial remains incomplete.",
+    "terminal_recovery": {
+      "recovery_manifest_sha256": "55ae9b4133f51fd52b7a0d832572bf4df896b1cc92fafca8b584e013a158140d",
+      "files_verified": 12,
+      "participant_accounts": 3,
+      "service_recovered": true
     }
   }
 }

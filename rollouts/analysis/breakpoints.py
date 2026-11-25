@@ -184,7 +184,7 @@ def diagnose(case, reg, actors, communication):
         inputs = json.loads((case / "inputs.json").read_bytes())["startup"]
         opening = {actor: {p: base64.b64encode(text.encode()).decode() for p,text in files.items()}
                    for actor, files in inputs.items()}
-    for e in events(case / "observations.jsonl.gz"):
+    for e in events(case / "observations.jsonl.gz", resolve_blobs=False):
         actor = e["actor"]
         if actor not in rows or e["at"] < origin or rows[actor]["first"].get("private_output"):
             continue

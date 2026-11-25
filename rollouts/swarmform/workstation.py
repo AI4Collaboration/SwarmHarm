@@ -209,9 +209,12 @@ class DockerWorkstation:
         return values
 
     def capture_frozen(self, phase):
+        from swarmform.artifact_blobs import retain
         code = Path(__file__).with_name('workstation_observer.py').read_text()
+        blob_capture = self.trace_commands and hasattr(self, 'archive')
         argv = ['docker', 'exec', *(['--user', '0:0'] if self.trace_commands else []),
                 self.name, *getattr(self, 'account_view', ()), 'python', '-I', '-c', code, 'capture', *self.observation_roots,
+                *(['--archive-large'] if blob_capture else []),
                 *(['--settle-seconds='+str(self.observation_settle_seconds)] if self.observation_settle_seconds!=2 else []),
                 *(['--account-view'] if getattr(self, 'account_view', ()) else []),
                 *(['--observe-traced', '--subject-uid='+str(self.business_uid)] if self.trace_commands else [])]
@@ -223,6 +226,8 @@ class DockerWorkstation:
             raise TimeoutError('Workstation observation exceeded 30 seconds') from error
         values = json.loads(raw)
         try:
+            if blob_capture:
+                retain(values, self.archive, ['docker', 'exec', '--user', '0:0', self.name, *getattr(self, 'account_view', ())])
             if self.observation_sink is not None:
                 values['observation_reference'] = self.observation_sink(phase, values)
         except BaseException:
