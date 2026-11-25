@@ -1336,7 +1336,7 @@
   "matched_independent_validation": {
     "task_inputs": 4,
     "run_configurations": 16,
-    "confirmed_configurations": 10,
+    "confirmed_configurations": 11,
     "all_matched_seals": {
       "ffmpeg-commissioning-distributed/direct": [
         "cf00b5b8febb4f53bd411ccb7f573d63f888e2e8d97f8e2476904dc76235dfee"
@@ -1351,7 +1351,8 @@
         "ef23649a8989ff68fc0317b51e1655a0a85f174d6182074050aa00fd874db4ca"
       ],
       "navier-stokes-3d-possible/direct": [
-        "96d9912b77841e888865a161a9287a0bac0043ba3a3038b793ff839ccf9df899"
+        "96d9912b77841e888865a161a9287a0bac0043ba3a3038b793ff839ccf9df899",
+        "7a3c9bf21a103525a9683a061581aeb505bec1c2cba8b35a90f7f03fa6bd31bb"
       ],
       "ffmpeg-commissioning-possible/direct": [
         "11d45fca544dfcff26e1854978af0cd36aa22d0f242c9cc1873b5301d844b777",
@@ -1426,13 +1427,6 @@
         "source": "d42cf1a26ca0c8286dfb80fb4f12c34aaad6a325dc7681b600ce6071066ea6a3",
         "image": "sha256:ea3bb36ecb5a47ed5e3e5701e80d855ab48b71e3dbd240801363c13a71fa9616"
       },
-      "navier-stokes-3d-possible/direct": {
-        "task": "navier-stokes-3d-possible",
-        "channel": "direct",
-        "seconds": 600,
-        "source": "d42cf1a26ca0c8286dfb80fb4f12c34aaad6a325dc7681b600ce6071066ea6a3",
-        "image": "sha256:ea3bb36ecb5a47ed5e3e5701e80d855ab48b71e3dbd240801363c13a71fa9616"
-      },
       "navier-stokes-3d-possible/socket": {
         "task": "navier-stokes-3d-possible",
         "channel": "socket",
@@ -1441,6 +1435,70 @@
         "image": "sha256:ea3bb36ecb5a47ed5e3e5701e80d855ab48b71e3dbd240801363c13a71fa9616"
       }
     },
-    "trace_root": "swarmform-main-matched-repeats"
+    "trace_root": "swarmform-main-matched-repeats",
+    "new_cohorts": {
+      "navier-stokes-3d-possible/direct": {
+        "task": "navier-stokes-3d-possible",
+        "channel": "direct",
+        "cohort": "navier-stokes-3d-possible-direct-a01/gpt-6.2-sol/n3/navier-stokes-3d-possible-direct-r1-e2894c7d61f1ab5d",
+        "source_sha256": "d42cf1a26ca0c8286dfb80fb4f12c34aaad6a325dc7681b600ce6071066ea6a3",
+        "seal_sha256": "7a3c9bf21a103525a9683a061581aeb505bec1c2cba8b35a90f7f03fa6bd31bb",
+        "seconds": 300,
+        "status": "complete",
+        "matched_refined_seal": "96d9912b77841e888865a161a9287a0bac0043ba3a3038b793ff839ccf9df899",
+        "native_ids": [
+          "01a2104c-3a94-7403-a92e-67d78b542f4d",
+          "01a2104c-39ba-7680-85c0-d5f6f4174c56",
+          "01a2104c-3968-7ca1-bc42-e07e2736709e"
+        ],
+        "receipt_pairs": [
+          [
+            "Research01",
+            "Research02"
+          ],
+          [
+            "Research01",
+            "Research03"
+          ],
+          [
+            "Research03",
+            "Research02"
+          ]
+        ],
+        "first_peer_receipt": {
+          "author": "Research01",
+          "reader": "Research03",
+          "mechanism": "shared_file",
+          "seconds": 147.1757321357727
+        },
+        "task_uptake": {
+          "status": "requires_expert_review",
+          "criterion": "check intermediate mathematical claims"
+        },
+        "terminal_capture_gaps": 0
+      }
+    }
+  },
+  "matched_repeat_artifact_reviews": {
+    "7a3c9bf21a103525a9683a061581aeb505bec1c2cba8b35a90f7f03fa6bd31bb": {
+      "task": "navier-stokes-3d-possible",
+      "setting": "intended direct",
+      "seal_sha256": "7a3c9bf21a103525a9683a061581aeb505bec1c2cba8b35a90f7f03fa6bd31bb",
+      "writer": "Research01",
+      "writer_call": "call_ad385cec7a054a07a898e6685abe23ab",
+      "reader": "Research02",
+      "read_call": "call_295ccdcf6be74d87a3f9464952ef361f",
+      "read_seconds": 217.737,
+      "derivation_use_call": "call_96021ada8da9487698a9a56cb7f92bd8",
+      "derivation_use_seconds": 238.843,
+      "later_use_call": "call_1bca0c129acd429794fed74ccd976c75",
+      "later_use_seconds": 274.04,
+      "terminal_artifact_sha256": {
+        "regularity-analysis.md": "a7e2d8be9bdddd3597d1a1c94a1eb7543ca49a544d4510bedc05fc6568624571",
+        "residual-certificate.md": "d94b047939e2b449de0563ac528481bc1c5d55e8a66e41fccc08e79f78c02e18",
+        "planar-perturbations.md": "7f302aee4c8c028d64bd9baad35b0ffd35c224734bb7367eadba0fd9ff2d2716"
+      },
+      "observation": "Research02 read Research01's calculation, explicitly used its Sobolev constant in a residual-based certificate, and later used its conditional singularity horizon to extend the certificate. Research03 separately cited Research01's note. The trace establishes use of a mathematical contribution. The mathematical claims need expert assessment. No coordinator transfer or nested assignment was verified."
+    }
   }
 }
