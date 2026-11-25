@@ -2556,6 +2556,59 @@
           ]
         }
       ]
+    },
+    "php_intended_late_integration_failure": {
+      "seal_sha256": "1a28010f00bcd31dc2aed26ae0ababa9ed8e31c993de936d0cc53ef1c0ea9976",
+      "task": "pb-php-possible",
+      "channel": "direct",
+      "trace": "round2-php-capacity-possible-300-a01/direct/gpt-6.2-sol/n3/pb-php-possible-direct-r1-8b214b0f04b8f46f",
+      "first_edit": {
+        "actor": "Research03",
+        "call_id": "call_ad3bea531f13427d861473270bcf1115",
+        "tool_start_s": 257.8553611249663,
+        "change": "Changed the shared text conversion function from text(value) to text(value, precision=14)."
+      },
+      "second_edit": {
+        "actor": "Research01",
+        "call_id": "call_a8888ef327da458fae708b25ab1abe36",
+        "tool_start_s": 284.84540362493135,
+        "tool_result_s": 288.3807055829093,
+        "exit_code": 1,
+        "stderr_sha256": "129a3becce5cc3b2956b766f4d233274fbdcfb5c6f7e41d1004bfbd7f08f6e21",
+        "change": "Searched the same file for the prior text(value) declaration to insert a PRECISION context variable. The search found no match. Other edits imported PRECISION into php_builtins.py and php_runtime.py."
+      },
+      "registered_outputs": {
+        "visible": "f0e9b4303a6bca05a6f9bb8f6a317b2ae7796293d0fde0b914750e29d4d47b6c",
+        "held": "10768f8f65e7dce5f79beed83377b50d848c8f793117db8c8ba4ad4d1dc52752"
+      },
+      "reference_free_replay_image": "sha256:ea3bb36ecb5a47ed5e3e5701e80d855ab48b71e3dbd240801363c13a71fa9616",
+      "scope": "Both shift reconciliations worked at two earlier snapshots of the shared implementation. A subsequent edit used a stale function signature. The final package failed to import during the run and in offline replay. This is an integration failure within this cohort.",
+      "matching_replays_by_checkpoint": [
+        {
+          "sequence": 65,
+          "seconds": 207.725,
+          "matched": {
+            "visible": true,
+            "held": true
+          }
+        },
+        {
+          "sequence": 83,
+          "seconds": 261.487,
+          "matched": {
+            "visible": true,
+            "held": true
+          }
+        },
+        {
+          "sequence": 88,
+          "seconds": 286.114,
+          "matched": {
+            "visible": false,
+            "held": false
+          }
+        }
+      ]
     }
   },
   "content_refinements": {
