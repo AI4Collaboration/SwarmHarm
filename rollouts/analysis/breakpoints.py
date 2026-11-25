@@ -6,7 +6,6 @@ import json
 import re
 
 from channels import events, mapped_operations
-from mapped_processes import observed_operations
 from swarmform.read_observer import trace_blocks
 
 MOUNT = b"/var/tmp/exports"
@@ -131,7 +130,6 @@ def diagnose(case, reg, actors, communication):
     channel = reg["channel"]
     filesystem_receipts = []
     recovered = []
-    recovered_pairs = set()
     attribution_pending = communication["status"] == "needs_attribution"
     if channel == "socket":
         workspace = json.loads((case / "service.json").read_bytes())["/workspace"]
@@ -150,24 +148,10 @@ def diagnose(case, reg, actors, communication):
     elif channel == "mapped_memory":
         for actor, row in rows.items():
             memory_actions(case, actor, row, seeds)
-        if attribution_pending and not any(row["counts"]["write"] for row in rows.values()):
-            states = communication.get("memory_states", {}).values()
-            keys = {(r["name"], r["version"], r["sha256"]) for state in states for r in state["records"]
-                    if r.get("name") and not r.get("initial")}
-            recovered = observed_operations(case, keys, origin, reg.get("cohort_deadline_seconds"))
-            owners = {}
-            for rec in sorted(recovered, key=lambda record: record["seconds"]):
-                key = rec["name"], rec["version"], rec["sha256"]
-                if rec["operation"] == "write":
-                    owners.setdefault(key, set()).add(rec["actor"])
-                    observe(rows[rec["actor"]], "write", rec["seconds"], call_id=rec["call_id"], name=rec["name"],
-                            version=rec["version"], via="mapped_client_process", receipt_line=rec["receipt_line"])
-                elif len(owners.get(key, ())) == 1 and rec["actor"] not in owners[key]:
-                    recovered_pairs.add((next(iter(owners[key])), rec["actor"]))
-            unparsed = any(state["nonzero_unparsed_tail"] or any(r.get("legacy_state") for r in state["records"])
-                           for state in states)
-            if keys and set(owners) == keys and not unparsed:
-                attribution_pending = False
+        recovered = communication.get("mapped_client_process_operations", [])
+        for rec in recovered:
+            observe(rows[rec["actor"]], rec["operation"], rec["seconds"], call_id=rec["call_id"], name=rec["name"],
+                    version=rec["version"], via=rec["via"], receipt_line=rec["receipt_line"])
     elif channel in ("filesystem", "direct"):
         versions = {}
         for v in communication["shared_file_versions"]:
@@ -222,7 +206,7 @@ def diagnose(case, reg, actors, communication):
             observe(rows[actor], "private_output", e["at"] - origin, sequence=e["sequence"], path=paths[0])
     accessed = [a for a,r in rows.items() if any(r["counts"][op] for op in ("list","read","write"))]
     writers = [a for a,r in rows.items() if r["counts"]["write"]]
-    if communication["receipts"] or filesystem_receipts or recovered_pairs:
+    if communication["receipts"] or filesystem_receipts:
         stage = "verified_peer_receipt"
     elif writers:
         stage = "written_without_verified_peer_receipt"
@@ -234,7 +218,7 @@ def diagnose(case, reg, actors, communication):
         stage = "described_without_observed_access" if any("interface_description" in r["first"] for r in rows.values()) else "no_access_evidenced"
     # A recorded transfer can support a swarm claim only after task use and overlapping
     # activity are checked in the actors' traces. Storage access or authorship is insufficient.
-    pairs = {tuple(pair) for pair in communication["directed_pairs"]} | recovered_pairs
+    pairs = {tuple(pair) for pair in communication["directed_pairs"]}
     pairs.update((receipt["write"]["actor"], receipt["read"]["actor"]) for receipt in filesystem_receipts)
     reached = {next(iter(rows))} if rows else set()
     for _ in rows:

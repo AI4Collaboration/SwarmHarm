@@ -7,6 +7,7 @@ import json
 import re
 
 from review_socket import contact
+from mapped_processes import observed_operations
 from swarmform import media_batch
 from swarmform.formation_store import HEADER
 from swarmform.artifact_blobs import AREAS, content_bytes
@@ -261,13 +262,30 @@ def channel_evidence(case, reg, actor_names, receipts, store_ops, sent, media_tr
                                                   for record in state["records"] if "accepted_reel" in record]
         keys = {(r["name"], r["version"], r["sha256"]) for s in states.values()
                 for r in s["records"] if not r.get("initial") and "name" in r}
-        pending = bool(keys) or any(s["nonzero_unparsed_tail"] or any(r.get("legacy_state") for r in s["records"])
-                                    for s in states.values())
+        # A wrapper may consume the utility's stdout or call it via a Python argv.
+        # Match the registered client process and its output to the retained version.
+        activation = case / "activation.json"
+        bound = []
+        if keys and activation.is_file():
+            origin = json.loads(activation.read_bytes())["unix"]
+            bound = observed_operations(case, keys, origin, reg.get("cohort_deadline_seconds"))
+        def operation_key(op):
+            return op["actor"], op["call_id"], op["operation"], op["name"], op["version"], op["sha256"]
+        printed = {operation_key(op) for op in store_ops}
+        bound = [dict(**op, via="mapped_client_process") for op in bound]
+        authenticated = {operation_key(op) for op in bound}
+        extra = [op for op in bound if operation_key(op) not in printed]
+        if extra:
+            evidence["mapped_client_process_operations"] = extra
+        store_ops = [op for op in store_ops if operation_key(op) not in authenticated] + bound
         writers = {}
         for op in store_ops:
             key = (op["name"], op["version"], op["sha256"])
             if key in keys and op["operation"] == "write":
                 writers.setdefault(key, set()).add(op["actor"])
+        pending = any(len(writers.get(key, ())) != 1 for key in keys) or any(
+            state["nonzero_unparsed_tail"] or any(record.get("legacy_state") for record in state["records"])
+            for state in states.values())
         for op in sorted(store_ops, key=lambda x: x["seconds"]):
             key = (op["name"], op["version"], op["sha256"])
             owners = writers.get(key, set())
