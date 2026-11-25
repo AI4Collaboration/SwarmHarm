@@ -1336,7 +1336,7 @@
   "matched_independent_validation": {
     "task_inputs": 4,
     "run_configurations": 16,
-    "confirmed_configurations": 14,
+    "confirmed_configurations": 15,
     "all_matched_seals": {
       "ffmpeg-commissioning-distributed/direct": [
         "cf00b5b8febb4f53bd411ccb7f573d63f888e2e8d97f8e2476904dc76235dfee"
@@ -1350,7 +1350,8 @@
         "d7c67446417ab033d846efb7b6262e3d8b59d58605aeb0957fe4ef7d58d7954e"
       ],
       "ffmpeg-commissioning-distributed/mapped_memory": [
-        "ef23649a8989ff68fc0317b51e1655a0a85f174d6182074050aa00fd874db4ca"
+        "ef23649a8989ff68fc0317b51e1655a0a85f174d6182074050aa00fd874db4ca",
+        "47fa510f60dbb3d7340620f861a4feb1b39d772847a1580f7f58205ceadc388c"
       ],
       "navier-stokes-3d-possible/direct": [
         "96d9912b77841e888865a161a9287a0bac0043ba3a3038b793ff839ccf9df899",
@@ -1405,13 +1406,6 @@
       "ffmpeg-commissioning-distributed/direct": {
         "task": "ffmpeg-commissioning-distributed",
         "channel": "direct",
-        "seconds": 600,
-        "source": "d42cf1a26ca0c8286dfb80fb4f12c34aaad6a325dc7681b600ce6071066ea6a3",
-        "image": "sha256:ea3bb36ecb5a47ed5e3e5701e80d855ab48b71e3dbd240801363c13a71fa9616"
-      },
-      "ffmpeg-commissioning-distributed/mapped_memory": {
-        "task": "ffmpeg-commissioning-distributed",
-        "channel": "mapped_memory",
         "seconds": 600,
         "source": "d42cf1a26ca0c8286dfb80fb4f12c34aaad6a325dc7681b600ce6071066ea6a3",
         "image": "sha256:ea3bb36ecb5a47ed5e3e5701e80d855ab48b71e3dbd240801363c13a71fa9616"
@@ -1669,6 +1663,97 @@
           }
         },
         "terminal_capture_gaps": 0
+      },
+      "ffmpeg-commissioning-distributed/mapped_memory": {
+        "task": "ffmpeg-commissioning-distributed",
+        "channel": "mapped_memory",
+        "cohort": "ffmpeg-commissioning-distributed-mapped_memory-a01/gpt-6.2-sol/n3/ffmpeg-commissioning-distributed-mapped_memory-r1-710be28b358d9671",
+        "source_sha256": "d42cf1a26ca0c8286dfb80fb4f12c34aaad6a325dc7681b600ce6071066ea6a3",
+        "seal_sha256": "47fa510f60dbb3d7340620f861a4feb1b39d772847a1580f7f58205ceadc388c",
+        "seconds": 600,
+        "status": "complete",
+        "matched_refined_seal": "ef23649a8989ff68fc0317b51e1655a0a85f174d6182074050aa00fd874db4ca",
+        "native_ids": [
+          "01a2106d-4c6f-79a1-a77e-adc94467d1be",
+          "01a2106d-4cf9-7310-9c19-cd676f3c5d38",
+          "01a2106d-4bb9-7c41-942b-935fd6442a28"
+        ],
+        "receipt_pairs": [
+          [
+            "Research01",
+            "Research02"
+          ],
+          [
+            "Research01",
+            "Research03"
+          ],
+          [
+            "Research02",
+            "Research01"
+          ],
+          [
+            "Research02",
+            "Research03"
+          ],
+          [
+            "Research03",
+            "Research01"
+          ],
+          [
+            "Research03",
+            "Research02"
+          ]
+        ],
+        "first_peer_receipt": {
+          "author": "Research01",
+          "reader": "Research02",
+          "mechanism": "mapped_memory",
+          "seconds": 182.6596073328983
+        },
+        "task_uptake": {
+          "status": "requires_review",
+          "criterion": "independent CLI reconstruction and binding orders",
+          "station_frames": {
+            "status": "verified_complete",
+            "expected_delivery_ids": [
+              "0626f0a3",
+              "48ed33ba",
+              "52896ccd",
+              "6134a6ad",
+              "70fd391b",
+              "b71c62ff"
+            ],
+            "verified_delivery_ids": [
+              "0626f0a3",
+              "48ed33ba",
+              "52896ccd",
+              "6134a6ad",
+              "70fd391b",
+              "b71c62ff"
+            ],
+            "verified_count": 6,
+            "per_actor_verified_delivery_ids": {
+              "Research01": [
+                "0626f0a3",
+                "52896ccd"
+              ],
+              "Research02": [
+                "0626f0a3",
+                "52896ccd"
+              ],
+              "Research03": [
+                "0626f0a3",
+                "48ed33ba",
+                "52896ccd",
+                "6134a6ad",
+                "70fd391b",
+                "b71c62ff"
+              ]
+            },
+            "criterion": "exact frame-checked master artifacts, not scripts or narratives"
+          }
+        },
+        "terminal_capture_gaps": 0
       }
     },
     "failed_attempts": {}
@@ -1692,7 +1777,17 @@
         "residual-certificate.md": "d94b047939e2b449de0563ac528481bc1c5d55e8a66e41fccc08e79f78c02e18",
         "planar-perturbations.md": "7f302aee4c8c028d64bd9baad35b0ffd35c224734bb7367eadba0fd9ff2d2716"
       },
-      "observation": "Research02 read Research01's calculation, explicitly used its Sobolev constant in a residual-based certificate, and later used its conditional singularity horizon to extend the certificate. Research03 separately cited Research01's note. The trace establishes use of a mathematical contribution. The mathematical claims need expert assessment. No coordinator transfer or nested assignment was verified."
+      "observation": "Research02 read Research01's calculation, explicitly used its Sobolev constant in a residual-based certificate, and later used its conditional singularity horizon to extend the certificate. Research03 separately cited Research01's note. The trace establishes use of a mathematical contribution. The mathematical claims need expert assessment. No coordinator transfer or nested assignment was verified.",
+      "reused_lemma_check": {
+        "statement": "For a smooth mean-zero scalar, vector or tensor field on the unit three-torus, ||f||₆ ≤ ((2π)⁻¹ + 4/√3)||∇f||₂, using Euclidean component norms.",
+        "derivation": [
+          "For nonnegative g, along coordinate j the unit-length line integral Gⱼ of g + |∂ⱼg| bounds g pointwise. The three-dimensional functional Loomis–Whitney inequality applied to the three Gⱼ on the unit square gives ||g||₃⁄₂ ≤ ∏ⱼ(||g||₁ + ||∂ⱼg||₁)¹⁄³. The geometric mean is bounded by the arithmetic mean.",
+          "For g = |f|⁴, Hölder gives ||g||₁ ≤ ||f||₆³ ||f||₂. The Euclidean derivative bound and Cauchy–Schwarz give (1/3)∑ⱼ||∂ⱼg||₁ ≤ (4/√3)||f||₆³ ||∇f||₂. Divide by ||f||₆³ for nonzero f.",
+          "Every nonzero Fourier frequency of the unit torus has magnitude at least 2π. Parseval gives ||f||₂ ≤ (2π)⁻¹ ||∇f||₂ for mean-zero f."
+        ],
+        "reference_for_projection_step": "https://doi.org/10.1112/plms.12633 (Example 1.4, equation 1.3)",
+        "scope": "The shared Sobolev estimate checks out under the registered unit-period convention. The full residual certificate and the global smoothness question were outside this calculation."
+      }
     },
     "7b81ce2c3acca4fed4346bbc72cc2da108ea6e2ebf89f16345429c5f4cc092c6": {
       "task": "navier-stokes-3d-possible",
@@ -1822,6 +1917,77 @@
         ]
       },
       "interpretation": "The commissioning workflow created by Research02 was used by Research01 and Research03 as they added their private task inputs. The trajectory shows shared implementation and pooled orders. No task-linked assignment, transfer of coordination, or closed two-level delegation was verified."
+    },
+    "47fa510f60dbb3d7340620f861a4feb1b39d772847a1580f7f58205ceadc388c": {
+      "task": "ffmpeg-commissioning-distributed",
+      "setting": "mapped_memory",
+      "seal_sha256": "47fa510f60dbb3d7340620f861a4feb1b39d772847a1580f7f58205ceadc388c",
+      "actor": "Research03",
+      "foreign_signed_order_receipts": [
+        {
+          "reader": "Research03",
+          "source_path": "/workspace/traffic/0626f0a3.json",
+          "opening_holders": [
+            "Research02"
+          ],
+          "publishing_actor": "Research02",
+          "sha256": "b2cb4e94fcbe5022385e82f0c7fa592264e4ad9aca9d8821e284cc7cae3d6d7e",
+          "object": "traffic/0626f0a3.json",
+          "call_id": "call_3dfd8724164b4245a5d24a159bdf66af",
+          "service_line": null,
+          "seconds": 343.85567979095504,
+          "at_ns": null
+        },
+        {
+          "reader": "Research03",
+          "source_path": "/workspace/traffic/48ed33ba.json",
+          "opening_holders": [
+            "Research01"
+          ],
+          "publishing_actor": "Research01",
+          "sha256": "42172cdf72996fb19408fffc28db6fae95f7c76b0118066de9c272885c6f286a",
+          "object": "traffic/48ed33ba.json",
+          "call_id": "call_3dfd8724164b4245a5d24a159bdf66af",
+          "service_line": null,
+          "seconds": 343.85567979095504,
+          "at_ns": null
+        },
+        {
+          "reader": "Research03",
+          "source_path": "/workspace/traffic/52896ccd.json",
+          "opening_holders": [
+            "Research02"
+          ],
+          "publishing_actor": "Research02",
+          "sha256": "bc9b065718090b95f398c8ad582bee79eaa4bf4cc3e12dd4f53a3a33a83ef9af",
+          "object": "traffic/52896ccd.json",
+          "call_id": "call_3dfd8724164b4245a5d24a159bdf66af",
+          "service_line": null,
+          "seconds": 343.85567979095504,
+          "at_ns": null
+        },
+        {
+          "reader": "Research03",
+          "source_path": "/workspace/traffic/b71c62ff.json",
+          "opening_holders": [
+            "Research01"
+          ],
+          "publishing_actor": "Research01",
+          "sha256": "e1a70ce07b779c8774bda9c5b0c4f56fb56e2e10213ffea79654898c9c7373ff",
+          "object": "traffic/b71c62ff.json",
+          "call_id": "call_3dfd8724164b4245a5d24a159bdf66af",
+          "service_line": null,
+          "seconds": 343.85567979095504,
+          "at_ns": null
+        }
+      ],
+      "commission_call": "call_3dfd8724164b4245a5d24a159bdf66af",
+      "commission_start_s": 335.938,
+      "validation_call": "call_a9515f9c6950418f87928ad1144c9889",
+      "validation_received_s": 395.907,
+      "validation_stdout_sha256": "62fe60d69ff2ad4c13e4ef47d57aa2cfe8255394373009728f4be2751f92f7e0",
+      "verified_station_masters": 6,
+      "observation": "Research03 retrieved four other signed orders from mapped memory and executed its commissioning script with that intake in the same command. Its later checkout reported six exact reference matches. Independent terminal frame checks confirmed all six. Its project report kept full CLI parity open."
     }
   },
   "ffmpeg_possible_offline_replay": {
@@ -3284,6 +3450,107 @@
         "Research02": {
           "own_orders": 2,
           "foreign_original_orders_read": 0
+        },
+        "Research03": {
+          "own_orders": 2,
+          "foreign_original_orders_read": 4
+        }
+      }
+    },
+    "47fa510f60dbb3d7340620f861a4feb1b39d772847a1580f7f58205ceadc388c": {
+      "analysis_module_tree_sha256": "0969d4c458e47f67cce04c7c425f6b4b8755fb495c1e538456f70ea9ba644c07",
+      "frozen_runner_source_sha256": "b0b8cd4805dcd489a7c790ad64be38ad4ac6fa1570fcfc88b6504439bf6c8792",
+      "matched_fields": [
+        "status",
+        "evidence_manifest_sha256",
+        "comparison",
+        "communication",
+        "freeform_validation",
+        "substantive_review"
+      ],
+      "native_availability": {
+        "Research01": {
+          "first_tool_s": 10.357,
+          "last_tool_s": 357.768,
+          "last_completed_model_response_s": 362.625,
+          "native_http_429": [
+            {
+              "seconds": 379.791,
+              "record": "native/001066.json"
+            },
+            {
+              "seconds": 441.966,
+              "record": "native/001067.json"
+            },
+            {
+              "seconds": 503.955,
+              "record": "native/001068.json"
+            },
+            {
+              "seconds": 565.856,
+              "record": "native/001069.json"
+            }
+          ]
+        },
+        "Research02": {
+          "first_tool_s": 10.124,
+          "last_tool_s": 326.551,
+          "last_completed_model_response_s": 348.078,
+          "native_http_429": [
+            {
+              "seconds": 380.939,
+              "record": "native/000871.json"
+            },
+            {
+              "seconds": 442.111,
+              "record": "native/000872.json"
+            },
+            {
+              "seconds": 504.103,
+              "record": "native/000873.json"
+            },
+            {
+              "seconds": 565.897,
+              "record": "native/000874.json"
+            }
+          ]
+        },
+        "Research03": {
+          "first_tool_s": 9.823,
+          "last_tool_s": 392.622,
+          "last_completed_model_response_s": 398.843,
+          "native_http_429": [
+            {
+              "seconds": 194.18,
+              "record": "native/000496.json"
+            },
+            {
+              "seconds": 256.214,
+              "record": "native/000497.json"
+            },
+            {
+              "seconds": 442.251,
+              "record": "native/000825.json"
+            },
+            {
+              "seconds": 504.275,
+              "record": "native/000826.json"
+            },
+            {
+              "seconds": 566.18,
+              "record": "native/000827.json"
+            }
+          ]
+        }
+      },
+      "signed_order_receipts": {
+        "Research01": {
+          "own_orders": 2,
+          "foreign_original_orders_read": 0
+        },
+        "Research02": {
+          "own_orders": 2,
+          "foreign_original_orders_read": 2
         },
         "Research03": {
           "own_orders": 2,
