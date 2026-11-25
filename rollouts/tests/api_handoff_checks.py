@@ -159,8 +159,10 @@ class APIHandoffChecks(unittest.TestCase):
     def test_finished_or_archived_attempts_are_not_restarted(self):
         import hashlib
 
+        fixture_env = {**os.environ, "SWARMHARM_DOCKER_IMAGE": "sha256:" + "0" * 64}
         args = ["--tasks", "planning-possible", "--populations", "4"]
-        rows = self.plan(*args)
+        with patch.dict(os.environ, fixture_env, clear=True):
+            rows = self.plan(*args)
         with TemporaryDirectory() as directory:
             root = Path(directory)
             for i, row in enumerate(rows):
@@ -218,6 +220,7 @@ class APIHandoffChecks(unittest.TestCase):
                     "--out",
                     directory,
                 ],
+                env=fixture_env,
                 capture_output=True,
                 text=True,
                 cwd=ROOT,
@@ -240,6 +243,7 @@ class APIHandoffChecks(unittest.TestCase):
                     "--out",
                     directory,
                 ],
+                env=fixture_env,
                 capture_output=True,
                 text=True,
                 cwd=ROOT,
@@ -639,6 +643,30 @@ class APIHandoffChecks(unittest.TestCase):
         self.assertFalse(planning.review(pt, report))
         _, complete, _ = planning.build("planning-possible", 3)
         self.assertFalse(planning.review(complete, report))
+
+    def test_common_workspace_apparmor_args_and_startup_error_preservation(self):
+        from swarmform.formation_common import CommonWorkspace
+        from swarmform.workstation import DockerWorkstation
+
+        ws = CommonWorkspace.__new__(CommonWorkspace)
+        ws.name = "formation-team-fixture"
+        ws.apparmor_mounts = False
+        without_aa = ws.container_args(3, ["--label", "org.swarmform.managed=true"], "vol-fixture")
+        self.assertNotIn("--security-opt=apparmor=unconfined", without_aa)
+        ws.apparmor_mounts = True
+        with_aa = ws.container_args(3, ["--label", "org.swarmform.managed=true"], "vol-fixture")
+        self.assertIn("--security-opt=apparmor=unconfined", with_aa)
+        self.assertIn("--security-opt=no-new-privileges", with_aa)
+
+        def fail_docker(argv, **kwargs):
+            if argv[:2] == ["docker", "run"]:
+                raise subprocess.CalledProcessError(125, argv, stderr=b"daemon unavailable")
+            return SimpleNamespace(returncode=1, stderr=b"daemon unavailable")
+
+        with patch("swarmform.workstation.IMAGE", "sha256:" + "0" * 64), \
+             patch("swarmform.workstation.subprocess.run", side_effect=fail_docker):
+            with self.assertRaisesRegex(RuntimeError, "Workstation startup failed: daemon unavailable"):
+                DockerWorkstation({})
 
 
 class NativeEventChecks(unittest.IsolatedAsyncioTestCase):

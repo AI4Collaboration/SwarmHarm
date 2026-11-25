@@ -23,7 +23,8 @@ WORKLOADS = {'engineering': 'engineering_input', 'fulfillment': 'fulfillment_inp
 DOCKER_TESTS = {'swarmform_deployment', 'swarmform_read_observer', 'swarmform_runtime',
                 'swarmform_workstation_retention', 'workstation_patch', 'structure_native',
                 'swarmform_domain', 'native_harness', 'swarmform_collection', 'research_latency',
-                'live', 'collector', 'native_goal', 'query_gateway', 'unified_runtime'}
+                'live', 'collector', 'native_goal', 'query_gateway', 'unified_runtime',
+                'review', 'continuous_reporting', 'delivery_receipt', 'swarmform_archive_native'}
 
 
 def uses_docker(stem):
@@ -255,7 +256,9 @@ def select_checks(files, full=False):
     if any(uses_docker(stem) for stem in tests):
         docker = True
     if tests & {'native_goal', 'structure_native', 'swarmform_collection',
-                'unified_runtime', 'continuous_collect'}:
+                'unified_runtime', 'continuous_collect', 'local_source',
+                'unified_delivery', 'continuous_reporting', 'native_context',
+                'swarmform_archive_native'}:
         harnesses.add('codex')
     if 'native_harness' in tests:
         # This suite validates all three registrations and uses real Codex

@@ -206,6 +206,55 @@ class BatchPlanChecks(unittest.TestCase):
             self.assertEqual(len(rec['prior_attempts']), 1)
             self.assertEqual(rec['prior_attempts'][0]['status'], 'collector_error')
             self.assertTrue(Path(rec['prior_attempts'][0]['output']).is_dir())
+            self.assertFalse(batch.is_retryable_attempt({'status': 'rollout_limit'}, Path(directory)/'missing.log'))
+
+    def test_execute_rows_supplies_fallback_git_identity_when_unconfigured(self):
+        import os
+        with TemporaryDirectory() as directory:
+            root = Path(directory)/'out'
+            fake_regs = Path(directory)/'regs'; fake_regs.mkdir()
+            empty_home = Path(directory)/'empty-home'; empty_home.mkdir()
+            key = Path(directory)/'key'; key.write_text('secret\n')
+            args = SimpleNamespace(
+                populations=[4], repeats=1, scenarios=['knowledge-work'],
+                mechanisms=['task-gaming'], model='openai/gpt-6.1-sol',
+                served_model='openai/gpt-6.1-sol', api_protocol='chat-completions',
+                base_url='http://localhost:8000/v1', startup_concurrency=4,
+                coupling='coupled', input_variant=None, judge=False,
+                judge_model=None, max_attempts=1, retry_backoff_seconds=0.0,
+                key_file=key, out=root)
+            rows = list(batch.cases(args, 'fixed-source'))
+            seen_envs = []
+
+            def fake_run_process(argv, **kwargs):
+                seen_envs.append(kwargs.get('env', {}))
+                cmd = ' '.join(map(str, argv))
+                out_idx = argv.index('--output') + 1 if '--output' in argv else None
+                out_dir = Path(argv[out_idx]) if out_idx else None
+                if '--phase prepare' in cmd:
+                    out_dir.mkdir(parents=True, exist_ok=True)
+                elif '--phase collect' in cmd:
+                    (out_dir/'completion.json').write_text('{"status":"collected"}')
+                    (out_dir/'evidence-manifest.json').write_text('{}')
+                elif 'export_atif.py' in cmd:
+                    Path(argv[-1], 'atif-validation.json').write_text('{}')
+                elif 'review.py' in cmd:
+                    (out_dir/'independent-review.json').write_text('{}')
+                return 0, None
+
+            clean_env = {k: v for k, v in os.environ.items() if not k.startswith('GIT_')}
+            clean_env.update(HOME=str(empty_home), GIT_CONFIG_NOSYSTEM='1', GIT_CONFIG_GLOBAL='/dev/null')
+            with patch.dict(os.environ, clean_env, clear=True), \
+                 patch.object(batch, 'run_process', side_effect=fake_run_process), \
+                 patch.object(batch, 'reap_dead_owner_resources'), \
+                 patch.object(batch.run, 'REGISTRATIONS', fake_regs), \
+                 patch.object(batch.subprocess, 'check_output', return_value=''):
+                rc = batch.execute_rows(args, rows, root, SimpleNamespace(error=self.fail))
+            self.assertEqual(rc, 0)
+            self.assertTrue(seen_envs)
+            for env in seen_envs:
+                self.assertEqual(env.get('GIT_AUTHOR_NAME'), 'SwarmHarm Runner')
+                self.assertEqual(env.get('GIT_COMMITTER_NAME'), 'SwarmHarm Runner')
 
 
 if __name__ == '__main__':

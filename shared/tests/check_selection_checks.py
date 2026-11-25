@@ -23,12 +23,21 @@ class CheckSelectionChecks(unittest.TestCase):
         self.assertEqual(plan['harnesses'], [])
 
     def test_reporting_collectors_share_the_docker_concurrency_limit(self):
-        for stem in ('build_record_collector', 'codex_notice_collector', 'continuous_collect'):
+        for stem in ('build_record_collector', 'codex_notice_collector', 'continuous_collect',
+                     'review', 'continuous_reporting', 'delivery_receipt'):
             with self.subTest(stem=stem):
                 self.assertTrue(ENTRY['uses_docker'](stem))
-                plan = select([f'swarmharm/tests/{stem}_checks.py'])
+                root = 'swarmharm'
+                plan = select([f'{root}/tests/{stem}_checks.py'])
                 self.assertTrue(plan['docker'])
         self.assertFalse(ENTRY['uses_docker']('domain_runtime'))
+        for path in ('swarmharm/tests/local_source_checks.py',
+                     'swarmharm/tests/unified_delivery_checks.py',
+                     'swarmform/tests/native_context_checks.py',
+                     'swarmform/tests/swarmform_archive_native_checks.py'):
+            with self.subTest(path=path):
+                self.assertIn('codex', select([path])['harnesses'])
+        self.assertTrue(select(['swarmform/tests/swarmform_archive_native_checks.py'])['docker'])
 
     def test_reporting_observation_changes_select_reporting_contracts(self):
         for name in ('unified_delivery', 'world_config'):

@@ -117,7 +117,6 @@ def execute(args, expected, config):
             raise RuntimeError('Output has a different plan; use --out for a new run')
         write(root/'plan.json', expected)
         env = dict(os.environ, OPENAI_BASE_URL=expected['api_base'],
-                   SWARMHARM_NATIVE_CODEX=str(REPO/'shared/codex/node_modules/.bin/codex'),
                    SWARMHARM_HARBOR_ENV=str(Path(config['python']).parent.parent))
         if args.key_file:
             env['OPENAI_API_KEY_FILE'] = str(args.key_file)
@@ -174,7 +173,6 @@ def execute(args, expected, config):
                 max_nets = max(int(os.environ.get('SWARMHARM_MAX_WORKSTATION_NETWORKS', '16')), max(study_pops) + 24)
                 study_env = dict(env, SWARMHARM_DOCKER_IMAGE=config['images'][study],
                                  SWARMHARM_SANDBOX='docker', SWARMHARM_HARBOR_ENV=str(Path(python).parent.parent),
-                                 SWARMHARM_NATIVE_CODEX=str(REPO/'shared/codex/node_modules/.bin/codex'),
                                  SWARMHARM_MAX_WORKSTATION_NETWORKS=str(max_nets))
                 with log_path.open('a') as log:
                     cmd = batch_command(python, study, model, expected['api_base'], output,

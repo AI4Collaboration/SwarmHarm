@@ -89,6 +89,8 @@ class CommonWorkspace(FileDeployment):
         volume = self.name + '-observations'
         label = ['--label', 'org.swarmform.managed=true', '--label', f'org.swarmform.owner-pid={os.getpid()}']
         try:
+            security = json.loads(run(['docker', 'info', '--format', '{{json .SecurityOptions}}']))
+            self.apparmor_mounts = any(option.split(',')[0] == 'name=apparmor' for option in (security or []))
             run(['docker', 'volume', 'create', *label, volume])
             self.resources.callback(run, ['docker', 'volume', 'rm', volume])
             project_volume = self.name + '-project'
@@ -119,10 +121,13 @@ for actor, gid in json.load(sys.stdin):
             run([*root, 'mkdir', '-m', '700', *[f'/var/log/workstation/{uid}' for uid in ids]])
             def _setup_account(pair):
                 (actor, files), uid = pair
-                run(['docker', 'exec', '-d', self.name, 'unshare', '--mount', '--propagation', 'private',
+                startup_log = f'/run/formation/setup-{uid}.log'
+                run(['docker', 'exec', '-d', self.name, 'sh', '-c',
+                     'log=$1; shift; exec "$@" >"$log" 2>&1', 'setup', startup_log,
+                     'unshare', '--mount', '--propagation', 'private',
                      'sh', '-c', START_VIEW, 'setup', str(uid)])
-                pid = run([*root, 'sh', '-ec', 'for i in $(seq 1 200); do if test -s "$1"; then cat "$1"; exit; fi; sleep .02; done; exit 1',
-                           'wait', f'/run/formation/{uid}/pid'])
+                pid = run([*root, 'sh', '-ec', 'for i in $(seq 1 500); do if test -s "$1"; then cat "$1"; exit; fi; sleep .02; done; cat "$2" >&2 || true; exit 1',
+                           'wait', f'/run/formation/{uid}/pid', startup_log])
                 if not pid.isdigit():
                     raise RuntimeError('Missing account namespace owner')
                 sink = (lambda phase, value, actor=actor: observation_sink(actor, phase, value)) if observation_sink else None
@@ -132,6 +137,9 @@ for actor, gid in json.load(sys.stdin):
                 binding = {'container': self.name, 'container_id': properties['Id'],
                            'user': str(uid), 'sentinel_pid': int(pid), 'image': properties['Image'],
                            'network': properties['HostConfig']['NetworkMode'], 'observation_volume': volume,
+                           'apparmor_profile': properties.get('AppArmorProfile'),
+                           'security_options': properties['HostConfig']['SecurityOpt'],
+                           'read_only_rootfs': properties['HostConfig']['ReadonlyRootfs'],
                            'shared_project': PROJECT, 'observer_enabled': True}
                 return actor, station, binding
             acct_pairs = list(zip(startup.items(), ids))
@@ -151,10 +159,11 @@ for actor, gid in json.load(sys.stdin):
             raise
 
     def container_args(self, n, label, volume):
+        apparmor = ['--security-opt=apparmor=unconfined'] if getattr(self, 'apparmor_mounts', False) else []
         return ['docker', 'run', '-d', '--rm', '--pull=never', '--name', self.name, *label,
                 '--network=none', '--init', '--read-only', '--cap-drop=ALL', '--cap-add=SYS_ADMIN',
                 '--cap-add=SYS_CHROOT', '--cap-add=SYS_PTRACE', '--cap-add=SETUID', '--cap-add=SETGID', '--cap-add=DAC_READ_SEARCH',
-                '--security-opt=no-new-privileges', '--cpu-period=100000', f'--cpu-quota={100000*n}', f'--memory={512*n}m', f'--pids-limit={64*n}',
+                '--security-opt=no-new-privileges', *apparmor, '--cpu-period=100000', f'--cpu-quota={100000*n}', f'--memory={512*n}m', f'--pids-limit={64*n}',
                 '-e', 'HOME=/workspace', '--mount', f'type=volume,src={volume},dst=/var/log/workstation',
                 '--tmpfs', '/run/formation:rw,nosuid,nodev,size=1m,mode=0700',
                 '--tmpfs', '/workspace:rw,nosuid,nodev,size=1m,mode=0700',

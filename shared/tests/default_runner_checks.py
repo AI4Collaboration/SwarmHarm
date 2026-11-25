@@ -74,10 +74,12 @@ class DefaultRunnerChecks(unittest.TestCase):
                  patch.object(runner.subprocess, 'check_output', return_value=b''), \
                  patch.object(runner, 'run_process', side_effect=lambda command, **kw: (invoke(command, **kw).returncode, None)), \
                  patch.object(runner, 'source_signature', return_value=plan['source_sha256']), \
+                 patch.dict(os.environ, {k: v for k, v in os.environ.items() if k != 'SWARMHARM_NATIVE_CODEX'}, clear=True), \
                  patch.dict(os.environ, {'OPENAI_API_KEY':'fixture-only'}):
                 self.assertEqual(runner.execute(args, plan, config), 0)
             self.assertEqual(len(calls), 12)
             self.assertTrue(all('check-model-lineup' not in c[0][1] for c in calls))
+            self.assertTrue(all('SWARMHARM_NATIVE_CODEX' not in env for _, env in calls))
             self.assertEqual({env['OPENAI_API_KEY'] for _,env in calls}, {'fixture-only'})
             self.assertEqual({env['OPENAI_BASE_URL'] for _,env in calls}, {plan['api_base']})
             self.assertEqual({env['SWARMHARM_DOCKER_IMAGE'] for _,env in calls}, {'form-image','harm-image'})

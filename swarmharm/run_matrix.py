@@ -209,7 +209,7 @@ def run_post_collection(output, row, args, key, runner):
 
 def is_retryable_attempt(record, log_path):
     status = record.get('status')
-    if status in ('collected', 'collected_with_limits', 'archived', 'archive_missing', 'operator_interrupted'):
+    if status in (*REVIEWABLE_COLLECTION_STATUSES, 'archived', 'archive_missing', 'operator_interrupted'):
         return False
     if log_path.is_file():
         tail = log_path.read_text(errors='replace')[-8000:]
@@ -282,8 +282,12 @@ def main():
 def execute_rows(args, rows, root, parser):
     if (root/'plan.json').exists() and run.load(root/'plan.json') != rows:
         parser.error('This output root contains a different plan; choose a fresh --out')
-    for identity in ('GIT_AUTHOR_IDENT', 'GIT_COMMITTER_IDENT'):
-        subprocess.run(['git', 'var', identity], cwd=run.REPO, check=True, stdout=subprocess.DEVNULL)
+    git_env = dict(os.environ)
+    for role in ('AUTHOR', 'COMMITTER'):
+        if subprocess.run(['git', 'var', f'GIT_{role}_IDENT'], cwd=run.REPO, env=git_env,
+                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode:
+            git_env[f'GIT_{role}_NAME'] = 'SwarmHarm Runner'
+            git_env[f'GIT_{role}_EMAIL'] = 'runner@swarmharm.invalid'
     run.save(root/'plan.json', rows)
     model_slug = re.sub(r'[^\w.-]+', '-', args.model).strip('.-') or 'model'
     group = hashlib.sha256(str(root).encode()).hexdigest()[:8]
@@ -322,7 +326,7 @@ def execute_rows(args, rows, root, parser):
 
                 def command(argv):
                     with log.open('a') as stream:
-                        code, sig = run_process(argv, cwd=run.REPO, stdout=stream, stderr=subprocess.STDOUT)
+                        code, sig = run_process(argv, cwd=run.REPO, env=git_env, stdout=stream, stderr=subprocess.STDOUT)
                     if sig:
                         raise KeyboardInterrupt(f'Interrupted by {sig}')
                     if code != 0:

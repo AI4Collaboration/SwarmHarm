@@ -10,7 +10,7 @@ case "$state/" in "$repo/"*)
     echo 'Runtime state inside the repository must be ignored by Git' >&2; exit 1;
   };;
 esac
-for cmd in python3.12 node npm docker codex; do command -v "$cmd" >/dev/null || { echo "Install $cmd first" >&2; exit 1; }; done
+for cmd in python3.12 node npm docker; do command -v "$cmd" >/dev/null || { echo "Install $cmd first" >&2; exit 1; }; done
 node -e 'const [a,b]=process.versions.node.split(".").map(Number); if(a<22||(a===22&&b<19))process.exit(1)' || { echo 'Node >=22.19 required' >&2; exit 1; }
 docker info >/dev/null
 runtime=${SWARMHARM_HARBOR_ENV:-"$state/harbor-0.24.0"}
@@ -23,6 +23,11 @@ fi
 "$runtime/bin/python" -m pip install -r "$repo/shared/python-requirements.txt"
 harnesses=" codex ${SWARMHARM_HARNESSES:-} $* "
 case "$harnesses" in *" all "*) harnesses=" codex claude pi ";; esac
+case "$harnesses" in *" codex "*)
+  command -v codex >/dev/null || npm install --global @openai/codex@0.169.0 --no-fund --no-audit || {
+    echo 'Install codex first (e.g. npm install --global @openai/codex@0.169.0)' >&2; exit 1;
+  };;
+esac
 for adapter in claude pi; do
   case "$harnesses" in *" $adapter "*) npm ci --prefix "$repo/shared/$adapter" --no-fund --no-audit;; esac
 done

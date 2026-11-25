@@ -333,26 +333,34 @@ class NativeHarnessChecks(unittest.TestCase):
                     codex_gateway.codex_binary()
 
     def test_npm_codex_launcher_resolves_to_the_native_process(self):
-        with tempfile.TemporaryDirectory() as directory:
-            packages = Path(directory) / 'node_modules/@openai'
-            launcher = packages / 'codex/bin/codex.js'
-            launcher.parent.mkdir(parents=True)
-            launcher.write_text('fixture launcher')
-            for system, machine, package, triple in (
-                ('Darwin', 'arm64', 'darwin-arm64', 'aarch64-apple-darwin'),
-                ('Darwin', 'x86_64', 'darwin-x64', 'x86_64-apple-darwin'),
-                ('Linux', 'aarch64', 'linux-arm64', 'aarch64-unknown-linux-musl'),
-                ('Linux', 'x86_64', 'linux-x64', 'x86_64-unknown-linux-musl'),
-            ):
-                binary = packages / f'codex-{package}/vendor/{triple}/bin/codex'
-                with self.subTest(platform=package), patch.dict('os.environ', {'SWARMHARM_NATIVE_CODEX': str(launcher)}), \
-                        patch.object(codex_gateway.platform, 'system', return_value=system), \
-                        patch.object(codex_gateway.platform, 'machine', return_value=machine):
-                    with self.assertRaisesRegex(RuntimeError, 'package is missing'):
-                        codex_gateway.codex_binary()
-                    binary.parent.mkdir(parents=True)
-                    binary.write_text('fixture executable')
-                    self.assertEqual(codex_gateway.codex_binary(), str(binary.resolve()))
+        for layout in ('nested', 'hoisted', 'bundled'):
+            with tempfile.TemporaryDirectory() as directory:
+                packages = Path(directory) / 'node_modules/@openai'
+                pkg_root = packages / 'codex'
+                launcher = pkg_root / 'bin/codex.js'
+                launcher.parent.mkdir(parents=True)
+                launcher.write_text('fixture launcher')
+                for system, machine, package, triple in (
+                    ('Darwin', 'arm64', 'darwin-arm64', 'aarch64-apple-darwin'),
+                    ('Darwin', 'x86_64', 'darwin-x64', 'x86_64-apple-darwin'),
+                    ('Linux', 'aarch64', 'linux-arm64', 'aarch64-unknown-linux-musl'),
+                    ('Linux', 'x86_64', 'linux-x64', 'x86_64-unknown-linux-musl'),
+                ):
+                    vendor = {
+                        'nested': pkg_root / f'node_modules/@openai/codex-{package}/vendor',
+                        'hoisted': packages / f'codex-{package}/vendor',
+                        'bundled': pkg_root / 'vendor',
+                    }[layout]
+                    binary = vendor / f'{triple}/bin/codex'
+                    with self.subTest(layout=layout, platform=package), patch.dict('os.environ', {'SWARMHARM_NATIVE_CODEX': str(launcher)}), \
+                            patch.object(codex_gateway.platform, 'system', return_value=system), \
+                            patch.object(codex_gateway.platform, 'machine', return_value=machine):
+                        with self.assertRaisesRegex(RuntimeError, 'package is missing'):
+                            codex_gateway.codex_binary()
+                        binary.parent.mkdir(parents=True, exist_ok=True)
+                        binary.write_text('fixture executable')
+                        self.assertEqual(codex_gateway.codex_binary(), str(binary.resolve()))
+                        binary.unlink()
 
     def test_malformed_call_does_not_block_a_valid_retry_or_count_as_execution(self):
         import threading

@@ -54,10 +54,16 @@ def codex_binary():
             raise RuntimeError('Unsupported native Codex platform')
         triple = ('aarch64' if arch == 'arm64' else 'x86_64') + (
             '-apple-darwin' if system == 'darwin' else '-unknown-linux-musl')
-        executable = executable.parents[2] / f'codex-{system}-{arch}' / 'vendor' / triple / 'bin/codex'
-        if not executable.is_file():
+        package = executable.parent.parent
+        platform_package = f'codex-{system}-{arch}'
+        vendors = (package / 'node_modules/@openai' / platform_package / 'vendor',
+                   package.parent / platform_package / 'vendor',
+                   package / 'vendor')
+        executable = next((vendor / triple / 'bin/codex' for vendor in vendors
+                           if (vendor / triple / 'bin/codex').is_file()), None)
+        if executable is None:
             raise RuntimeError('Native Codex package is missing; repair the Codex installation on PATH')
-    return str(executable)
+    return str(executable.resolve())
 
 
 def cli_identity():

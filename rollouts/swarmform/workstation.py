@@ -159,7 +159,10 @@ class DockerWorkstation:
             self.pause()
             self.initialized = True
         except subprocess.CalledProcessError as error:
-            self.close()
+            try:
+                self.close()
+            except RuntimeError:
+                pass
             detail = (error.stderr or b"").decode("utf-8", errors="replace").strip()
             raise RuntimeError(f"Workstation startup failed: {detail or str(error)}") from error
         except BaseException:
