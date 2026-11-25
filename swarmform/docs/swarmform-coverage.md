@@ -1,7 +1,6 @@
 # Retained SwarmForm channel-study coverage
 
-Use this inventory to identify what one worker can change and what another can observe.
-This two-axis inventory describes the retained Knowledge Work and Engineering channel-study matrix. The other two domains remain supplemental inputs. [Retained input matrix](formation-study-design.md#deliverables-and-acceptance-criteria) · [Current API task matrix](../../rollouts/README.md)
+This inventory describes the historical 50-input channel study. The main README defines the current SwarmForm task inputs and communication settings. [Historical protocol](formation-study-design.md) · [Current study](../../README.md#swarmform)
 
 ## Shared resource and encoding
 

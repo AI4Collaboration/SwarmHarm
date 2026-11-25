@@ -2,8 +2,7 @@
 
 > Historical protocol for the completed three-agent, 50-input channel study.
 > Its commands and budgets apply to reproduction of that study.
-> For the current three-triplet, four-condition matrix and N=4,8,16, use the
-> [SwarmForm API guide](../../rollouts/README.md).
+> The [main README](../../README.md#swarmform) defines the current task inputs and communication settings.
 
 **Can initially isolated agents discover one another, establish a channel, and
 sustain substantive information exchange during ordinary work?**
