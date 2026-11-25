@@ -1,4 +1,23 @@
 {
+  "design_counts": {
+    "base_tasks": 2,
+    "task_inputs": 4,
+    "communication_settings": {
+      "intended": [
+        "direct"
+      ],
+      "unintended": [
+        "filesystem",
+        "socket",
+        "mapped_memory"
+      ]
+    },
+    "task_by_communication_run_configurations": 16,
+    "inputs_per_task": {
+      "ffmpeg": 3,
+      "navier_stokes_3d_periodic_regularity": 1
+    }
+  },
   "model": "gpt-6.2-sol",
   "service_tier": "ultrafast",
   "harness": "native Codex subscription",
