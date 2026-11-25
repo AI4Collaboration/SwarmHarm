@@ -9,7 +9,7 @@
 
 | Study | Ready now | Evidence complete | Still open |
 | --- | --- | --- | --- |
-| SwarmForm | Four current variants across 16 validated configurations | Task-linked uptake on FFmpeg and 3-D regularity | New ProgramBench triplets under development |
+| SwarmForm | FFmpeg and 3-D regularity validated across 16 settings | GROMACS validated across 12 settings in two independent runs | Nine additional ProgramBench triplets under validation |
 | SwarmHarm | Six threat models across Engineering and Knowledge Work, with 12 reviewed input slots and a balanced 12-cell evidence package | The 12 selected input slots have reviewed positives; the balanced package contains 5 claim passes and 7 matched negatives | Selected-population/model rollout and the remaining METR behavior-coverage gaps |
 
 These are separate readiness claims. Neither study is presented as a completed population-scale evaluation. The evidence indexes below remain authoritative for the completed cells and their limitations.
