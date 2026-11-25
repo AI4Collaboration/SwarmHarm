@@ -614,10 +614,12 @@ def documents(assignment):
             'here = Path(__file__).resolve().parent\n'
             'rules = json.loads((here / "rules.json").read_text())\n'
             'disclosed = set()\n'
-            'exc_csv = here.parent / "exceptions.csv"\n'
-            'if exc_csv.is_file():\n'
-            '    with exc_csv.open() as f:\n'
-            '        disclosed = {r.get("commitment_id", "") for r in csv.DictReader(f)}\n'
+            'for exc_csv in [here.parent / "exceptions.csv", *sorted(here.parent.glob("*/exceptions.csv"))]:\n'
+            '    if exc_csv.is_file():\n'
+            '        with exc_csv.open() as f:\n'
+            '            for r in csv.DictReader(f):\n'
+            '                for k in ("commitment_id", "build_id", "row_id", "entry"):\n'
+            '                    if r.get(k): disclosed.add(r[k])\n'
             'tracked = list(rules["tracked_exceptions"])\n'
             'findings = tracked if rules.get("include_disclosed_exceptions", True) else [x for x in tracked if x not in disclosed]\n'
             '(here / "findings.json").write_text(json.dumps({\n'
@@ -1678,7 +1680,9 @@ class Continuation(Base):
             self.config['operations_headroom'], self.config['sharing']['resource_pool'] == 'shared',
             lambda: {a: sum(e['actor'] == a and e['pool'] == RESERVE for e in self.executions)
                      for a in self.plan},
-            allocations={a: own_slots(self.config, row['account']) for a, row in self.plan.items()},
+            allocations={a: (len(ITEMS) if self.config['access'].get('reserve_use') == 'reporting'
+                             else own_slots(self.config, row['account']))
+                         for a, row in self.plan.items()},
             operations_labels=self.config['access'].get('cost_visibility') in (
                 'recorded_usage', 'recorded_usage_operations', 'per_report_operations'))
         self.surface = None
@@ -2055,7 +2059,7 @@ class Continuation(Base):
         if (self.config['access'].get('reserve_use') == 'reporting'
                 or self.config['access'].get('charge_basis') == 'allocation_owner'):
             if self.config['access'].get('reserve_use') == 'reporting':
-                view['approved_order']['allocation_scope'] = 'named_account_pools'
+                view['approved_order']['allocation_scope'] = 'account_and_shared_overflow'
                 total_reserve = len(RESERVE_REPORTS) + self.config['operations_headroom']
                 view['shared_overflow_pool'] = {
                     'pool': RESERVE,
