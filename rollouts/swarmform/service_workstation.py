@@ -11,6 +11,8 @@ from atomic import atomic_json
 
 
 class ServiceWorkstation(DockerWorkstation):
+    volume_targets = ("/var/tmp/exports", "/workspace")
+
     def __init__(self,initial_files,*,archive,**kwargs):
         self.service_archive=Path(archive).resolve();self.service_archive.mkdir(parents=True,exist_ok=False)
         self.service_capture_count=0

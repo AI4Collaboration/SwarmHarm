@@ -68,6 +68,7 @@ def native_cwd_alias_code(path):
 
 class DockerWorkstation:
     command_seconds = 30
+    volume_targets = ("/var/tmp/exports",)
 
     def __init__(self, initial_files, *, network="none", environment=None,
                  process_lifecycle='tool_scoped', observation_sink=None, named_volumes=(),
@@ -107,7 +108,7 @@ class DockerWorkstation:
         self.observation_roots = []
         for volume, target in named_volumes:
             if (not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]+', volume)
-                    or target != '/var/tmp/exports' or target in self.observation_roots):
+                    or target not in self.volume_targets or target in self.observation_roots):
                 raise ValueError('Invalid named workstation volume')
             self.observation_roots.append(target)
         self.name = "sh-workbench-" + secrets.token_hex(8)
@@ -140,6 +141,8 @@ class DockerWorkstation:
         if self.registry_enabled:
             roots.insert(1, ("/registry", "16m"))
         for path, size in roots:
+            if path in self.observation_roots:
+                continue
             args += ["--tmpfs", f"{path}:rw,nosuid,nodev,size={size},mode=1777"]
         for volume, target in named_volumes:
             args += ['--mount', f'type=volume,src={volume},dst={target}']

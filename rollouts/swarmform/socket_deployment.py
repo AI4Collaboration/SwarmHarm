@@ -137,7 +137,7 @@ class SocketDeployment(FileDeployment):
             self.service = ServiceWorkstation(
                 {p: base64.b64encode(t.encode()).decode() for p, t in initial.items()},
                 archive=Path(observation_archive) / "_service",
-                named_volumes=((self.service_volume, "/var/tmp/exports"),),
+                named_volumes=((self.service_volume, "/workspace"),),
                 network=first,
                 process_lifecycle="continuous",
                 environment=WORKSTATION_ENVIRONMENT,
