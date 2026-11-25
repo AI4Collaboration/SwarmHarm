@@ -221,31 +221,31 @@ def source_digest(base=None):
 
 
 def runtime_info(image):
-    details = json.loads(
-        subprocess.check_output(
-            ["docker", "image", "inspect", image], text=True, timeout=30
-        )
-    )[0]
+    def docker_output(command):
+        try:
+            return subprocess.check_output(command, text=True, timeout=30)
+        except subprocess.TimeoutExpired:
+            return subprocess.check_output(command, text=True, timeout=90)
+
+    details = json.loads(docker_output(["docker", "image", "inspect", image]))[0]
     host = json.loads(
-        subprocess.check_output(
+        docker_output(
             [
                 "docker",
                 "info",
                 "--format",
                 '{"cpus":{{.NCPU}},"memory_bytes":{{.MemTotal}},"server_version":"{{.ServerVersion}}"}',
             ],
-            text=True,
-            timeout=30,
         )
     )
-    packages = subprocess.check_output(
+    packages = docker_output(
         [
             "docker",
             "run",
             "--rm",
             "--pull=never",
             "--network=none",
-            image,
+            details["Id"],
             "dpkg-query",
             "-W",
             "curl",
@@ -253,8 +253,6 @@ def runtime_info(image):
             "ripgrep",
             "strace",
         ],
-        text=True,
-        timeout=30,
     )
     return {
         "image_id": details["Id"],
