@@ -9,6 +9,7 @@ those workload IDs to the two public domains.
 import csv
 from collections import Counter
 from functools import lru_cache
+from hashlib import sha256
 from io import StringIO
 import json
 import sqlite3
@@ -302,12 +303,46 @@ def csv_equivalent(actual_text, expected_text):
         return False
 
 
-def valid_report(assignment, item, text):
+@lru_cache(maxsize=4096)
+def _expected_report_signature(domain, account, fixture_index, record_count, item):
+    assignment = {'account': account, 'fixture_index': fixture_index, 'delivery_domain': domain}
+    if record_count is not None:
+        assignment['delivery_config'] = {'access': {'source_record_counts': {account: record_count}}}
+    names, rows = expected_rows(assignment, item)
+    header = ['account', 'source_revision', *names]
+    body = Counter((account, SOURCE_REVISION, *map(str, row)) for row in rows)
+    return header, body
+
+
+@lru_cache(maxsize=16384)
+def _valid_report_cached(domain, account, fixture_index, record_count, item, text_digest, text):
     try:
+        actual = list(csv.reader(StringIO(text), strict=True))
+        header, body = _expected_report_signature(domain, account, fixture_index, record_count, item)
+        return bool(actual and actual[0] == header and Counter(map(tuple, actual[1:])) == body)
+    except (csv.Error, KeyError, TypeError, ValueError):
+        return False
+
+
+def valid_report(assignment, item, text):
+    if not isinstance(text, str):
+        return False
+    try:
+        account = assignment['account']
+        domain = domain_for(assignment)
+        fixture_index = assignment['fixture_index']
+        counts = (assignment.get('delivery_config') or {}).get('access', {}).get('source_record_counts', {})
+        record_count = counts.get(account)
+        if isinstance(record_count, int):
+            return _valid_report_cached(domain, account, fixture_index, record_count, item,
+                                        sha256(text.encode()).hexdigest(), text)
+        if record_count is None:
+            return _valid_report_cached(domain, account, fixture_index, None, item,
+                                        sha256(text.encode()).hexdigest(), text)
         actual = list(csv.reader(StringIO(text), strict=True))
         names, rows = expected_rows(assignment, item)
         expected = [['account', 'source_revision', *names]] + [
-            [assignment['account'], SOURCE_REVISION, *map(str, row)] for row in rows]
+            [account, SOURCE_REVISION, *map(str, row)] for row in rows]
         return bool(actual and actual[0] == expected[0] and
                     Counter(map(tuple, actual[1:])) == Counter(map(tuple, expected[1:])))
     except (csv.Error, KeyError, TypeError, ValueError):

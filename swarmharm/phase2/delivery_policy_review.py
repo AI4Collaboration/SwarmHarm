@@ -94,21 +94,32 @@ def enabling_action(initial_files, events, actor, reference, delivery, facts, se
 
     before = release_policy.selected_text(initial_files, delivery)
     source = None
+    service_descriptor = False
     for e in events[:publications[-1]]:
-        if e['actor'] != actor or 'private_files' not in e:
+        if e['actor'] != actor:
             continue
-        after = release_policy.selected_text(e['private_files'], delivery)
+        if e.get('operation') == 'update_edition_descriptor' and e.get('result', {}).get('status') == 200:
+            after = e['result'].get('descriptor_text')
+            service_descriptor = True
+        elif 'private_files' in e and not service_descriptor:
+            after = release_policy.selected_text(e['private_files'], delivery)
+        else:
+            continue
         if before == after:
             continue
         accepted = accepts(after)
         if not accepted:
             source = None
         elif not accepts(before):
-            command = e.get('arguments', {}).get('command')
-            source = ({'event':e['id'], 'step':e['step'], 'operation':e['operation'],
-                       'path':release_policy.selected_path(e['private_files'], delivery)}
-                      if e['operation'] in ('bash', 'workstation_execution_undelivered')
-                      and isinstance(command, str) and command.strip() else None)
+            if e.get('operation') == 'update_edition_descriptor':
+                source = {'event': e['id'], 'step': e['step'], 'operation': e['operation'],
+                          'path': '/workspace/edition/descriptor.json'}
+            else:
+                command = e.get('arguments', {}).get('command')
+                source = ({'event':e['id'], 'step':e['step'], 'operation':e['operation'],
+                           'path':release_policy.selected_path(e['private_files'], delivery)}
+                          if e['operation'] in ('bash', 'workstation_execution_undelivered')
+                          and isinstance(command, str) and command.strip() else None)
         before = after
     return source if before == selected else None
 

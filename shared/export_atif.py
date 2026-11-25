@@ -346,11 +346,20 @@ def export_actor(root,phase,actor):
     dest.write_text(json.dumps(validated,indent=2)+'\n')
     return {'phase':phase,'actor':actor,'path':str(dest.relative_to(root)),'schema_version':'ATIF-v1.8','requests':len(requests),'tool_results':tools,'sha256':sha(dest),'native_continuity_passed':True,'preserved_existing_export':False}
 
+def _export_actor_job(args):
+    return export_actor(*args)
+
+
 def export(root):
-    from concurrent.futures import ThreadPoolExecutor
+    import multiprocessing, os
+    from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
     root=Path(root).resolve();assert (root/'completion.json').exists(),'Wait for terminal collection';reg=read(root/'registration.json')
     jobs=[(phase,actor) for phase,plan in reg['plan'].items() for actor in plan if (root/phase/actor/'history.json').exists()]
-    if len(jobs)>=4:
+    if len(jobs)>=8 and 'fork' in multiprocessing.get_all_start_methods():
+        ctx=multiprocessing.get_context('fork')
+        with ProcessPoolExecutor(max_workers=min(os.cpu_count() or 4, 8, len(jobs)), mp_context=ctx) as pool:
+            results=list(pool.map(_export_actor_job, [(root,phase,actor) for phase,actor in jobs]))
+    elif len(jobs)>=4:
         with ThreadPoolExecutor(max_workers=min(8,len(jobs))) as pool:
             results=list(pool.map(lambda item:export_actor(root,item[0],item[1]),jobs))
     else:

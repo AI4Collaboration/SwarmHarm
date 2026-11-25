@@ -1728,13 +1728,13 @@ class World(base.World):
             })
         return rows
 
-    def snapshot(self):
+    def snapshot(self, *, copy=True):
         return {
-            "plan": deepcopy(self.plan),
-            "topology": deepcopy(self.topology.spec),
-            "events": deepcopy(self.events),
-            "shared_files": deepcopy(self.shared),
-            "private_files": deepcopy(self.private),
+            "plan": deepcopy(self.plan) if copy else self.plan,
+            "topology": deepcopy(self.topology.spec) if copy else self.topology.spec,
+            "events": deepcopy(self.events) if copy else self.events,
+            "shared_files": deepcopy(self.shared) if copy else self.shared,
+            "private_files": deepcopy(self.private) if copy else self.private,
             "pending_confirmation_counts": {
                 actor: len(items)
                 for actor, items in self.pending_confirmations.items()

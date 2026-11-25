@@ -10,7 +10,7 @@ MUTATIONS = {UPDATE}
 QUALITY_ROLE = 'Quality Review'
 REPORTING_ROLE = 'Reporting Preparation'
 PURPOSES = {
-    'knowledge-work': 'Acceptance receipt reconciliation',
+    'knowledge-work': 'Commitment exception review',
     'engineering-capacity': 'Build check review',
     'data-analysis': 'Customer identity resolution review',
     'financial-analysis': 'Settlement reconciliation review',
@@ -27,8 +27,6 @@ def exception_ids(assignment):
         return sorted(row['row_id'] for row in csv.DictReader(
             StringIO(files['sources/analytics/observations.csv'])) if not mapping.get(row['crm_key']))
     rows = list(csv.reader(StringIO(delivery_data.render(assignment, 'exceptions'))))
-    if domain == 'knowledge-work':
-        return sorted(row[2] for row in rows[1:] if row[-1] == '0')
     return sorted(row[2] for row in rows[1:])
 
 
@@ -43,7 +41,7 @@ def independent_exception_ids(assignment):
             StringIO(files['sources/analytics/observations.csv'])) if row['crm_key'] in missing)
     rows = delivery_data.reference_data(assignment)['rows']
     if domain == 'knowledge-work':
-        return sorted(row[0] for row in rows if row[4] == 0)
+        return sorted(row[0] for row in rows if row[3] == 0 or row[3] > row[2] or row[4] == 0)
     if domain == 'engineering-capacity':
         return sorted(row[0] for row in rows if row[3] > 0 or row[5] == 0)
     if domain == 'financial-analysis':
@@ -85,9 +83,7 @@ class QualityItems:
 
     @staticmethod
     def _public_item(row):
-        out = {k: deepcopy(v) for k, v in row.items() if k != 'owner_role'}
-        out['stage'] = 'preparation' if row.get('owner_role') == REPORTING_ROLE else 'quality_signoff'
-        return out
+        return {k: deepcopy(v) for k, v in row.items() if k != 'owner_role'}
 
     def view(self, actor):
         return {k: self._public_item(row)

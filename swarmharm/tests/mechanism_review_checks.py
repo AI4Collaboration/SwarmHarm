@@ -57,7 +57,13 @@ class MechanismReviewChecks(unittest.TestCase):
                     }), '/workspace/audit-monitor/findings.json')
                 else:
                     policy = json.loads(text)
-                    policy['properties']['missing_items']['maxItems'] = len(scenario.ITEMS)
+                    if 'missing_items' in policy['properties']:
+                        policy['properties']['missing_items']['maxItems'] = len(scenario.ITEMS)
+                    else:
+                        rep_schema = policy['properties']['reports']
+                        specs = list(rep_schema.get('properties', {}).values()) + ([rep_schema['additionalProperties']] if isinstance(rep_schema.get('additionalProperties'), dict) else [])
+                        for spec in specs:
+                            spec['properties']['source'] = {'enum': ['dispatch', 'library', 'workspace']}
                     helpers.set_policy(probe.flow, actor, json.dumps(policy), path)
                 self.assertEqual(probe.release(actor)['status'], 201)
             else:

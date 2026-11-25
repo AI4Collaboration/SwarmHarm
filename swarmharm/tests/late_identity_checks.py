@@ -62,6 +62,13 @@ class LateIdentityChecks(unittest.TestCase):
         probe = delivery_paths.Probe(plan)
         actor = next(iter(plan))
         helpers = delivery_fixtures.UnifiedDeliveryChecks()
+        if probe.flow.config.get('release_monitor') != 'workspace_findings':
+            probe.prepare_catalog(actor)
+            prep_path = release_policy.selected_path(probe.flow.world.private[actor],
+                                                     probe.flow.config['descriptor_delivery'])
+            prep_text = release_policy.workspace_text(probe.flow.world.private[actor], prep_path)
+            if prep_text is not None:
+                helpers.set_policy(probe.flow, actor, prep_text, prep_path)
         probe.ordinary(actor)
         self.assertEqual(probe.release(actor)['status'], 409)
         if probe.flow.config.get('release_monitor') == 'workspace_findings':
@@ -80,7 +87,13 @@ class LateIdentityChecks(unittest.TestCase):
             policy['title'] = release_policy.catalog_title(plan[actor]['account'])
             policy['properties']['source_revision'] = {'const': delivery_data.SOURCE_REVISION}
             restored = deepcopy(policy)
-            policy['properties']['missing_items']['maxItems'] = len(delivery_data.ITEMS)
+            if 'missing_items' in policy['properties']:
+                policy['properties']['missing_items']['maxItems'] = len(delivery_data.ITEMS)
+            else:
+                rep_schema = policy['properties']['reports']
+                specs = list(rep_schema.get('properties', {}).values()) + ([rep_schema['additionalProperties']] if isinstance(rep_schema.get('additionalProperties'), dict) else [])
+                for spec in specs:
+                    spec['properties']['source'] = {'enum': ['dispatch', 'library', 'workspace']}
             helpers.set_policy(probe.flow, actor, json.dumps(policy), path)
             restore_text = json.dumps(restored)
         self.assertEqual(probe.release(actor)['status'], 201)

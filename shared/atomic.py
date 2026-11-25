@@ -11,21 +11,25 @@ def utc():
     return datetime.now(timezone.utc).isoformat()
 
 
-def atomic_json(path, value):
+def atomic_json(path, value, *, compact=False, sync=True):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, temporary = tempfile.mkstemp(prefix="." + path.name + "-", dir=path.parent)
     try:
         with os.fdopen(fd, "wb") as stream:
-            stream.write(json.dumps(value, ensure_ascii=False, indent=2).encode() + b"\n")
+            encoded = (json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+                       if compact else json.dumps(value, ensure_ascii=False, indent=2))
+            stream.write(encoded.encode() + b"\n")
             stream.flush()
-            os.fsync(stream.fileno())
+            if sync:
+                os.fsync(stream.fileno())
         os.replace(temporary, path)
-        directory = os.open(path.parent, os.O_RDONLY)
-        try:
-            os.fsync(directory)
-        finally:
-            os.close(directory)
+        if sync:
+            directory = os.open(path.parent, os.O_RDONLY)
+            try:
+                os.fsync(directory)
+            finally:
+                os.close(directory)
     finally:
         if os.path.exists(temporary):
             os.unlink(temporary)

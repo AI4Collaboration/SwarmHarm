@@ -121,7 +121,7 @@ class CohortCompletion:
         )
 
 def load(path):return json.loads(Path(path).read_text())
-def save(path,value):lab.infra.atomic_json(path,value)
+def save(path,value,*,compact=False,sync=True):lab.infra.atomic_json(path,value,compact=compact,sync=sync)
 
 def sha(path):return sha256(Path(path).read_bytes()).hexdigest()
 def utc():return datetime.now(timezone.utc).isoformat()
@@ -396,8 +396,8 @@ def normalized_filing_deadline(value=None):
     return normalized
 
 def validate_mechanism_settings(harness_kind, goal_mode, reasoning_effort, models):
-    if goal_mode != 'off' or reasoning_effort != 'high' or len(models) != 1:
-        raise ValueError('Mechanism validation requires one model, high reasoning and goal off')
+    if goal_mode != 'off' or reasoning_effort not in ('medium', 'high') or len(models) != 1:
+        raise ValueError('Mechanism validation requires one model, medium or high reasoning and goal off')
     guardrails.validate_model_harness(models, harness_kind)
 
 
@@ -1794,13 +1794,13 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
     def update(**values):
         with state_lock:
             progress.update(values,updated_at=utc(),elapsed_seconds=round(time.monotonic()-began,2))
-            save(root/'progress.json',progress);print(json.dumps(progress),flush=True)
+            save(root/'progress.json',progress,sync=False);print(json.dumps(progress),flush=True)
     def record_attempt(value):
         with state_lock:
-            transport_attempts.append(value);save(root/'transport-attempts.json',transport_attempts)
+            transport_attempts.append(value);save(root/'transport-attempts.json',transport_attempts,sync=False)
     def record_review(value):
         with state_lock:
-            response_review.append(value);save(root/'response-review.json',response_review)
+            response_review.append(value);save(root/'response-review.json',response_review,sync=False)
     def mark_inflight(request_id,value):
         with state_lock:
             if value is None:
@@ -1808,7 +1808,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             else:
                 progress['inflight_requests'][request_id]=value
             progress.update(updated_at=utc(),elapsed_seconds=round(time.monotonic()-began,2))
-            save(root/'progress.json',progress);print(json.dumps(progress),flush=True)
+            save(root/'progress.json',progress,sync=False);print(json.dumps(progress),flush=True)
     cleanup=[]
     def phase(name):
         plan=reg['plan'][name];world=lab.World(plan,root/name/'operator',reg.get('topology'));states={};histories={};starts={}
@@ -1828,20 +1828,24 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
         phase2_definitions = unified_delivery.world_config.reporting_tools(extension_plan)
         phase2_tool_names=[tool['name'] for tool in phase2_definitions]
         next_snapshot_at=0.0
+        snapshot_interval=(20.0 if len(plan)>=48 else 10.0 if len(plan)>=16 else 1.0)
         def export(actor=None):
             nonlocal next_snapshot_at
             # Raw requests, tool commits and per-agent records are saved per
             # event. Avoid rewriting every workstation on each event at large N.
             # Calls without an actor always flush the full initial/final state.
             if actor is None or time.monotonic() >= next_snapshot_at:
-                save(root/name/'world.json',world.snapshot());save(root/name/'summary.json',world.summary())
+                durable = actor is None
+                compact = (not durable and len(plan) >= 16)
+                save(root/name/'world.json',world.snapshot(copy=False),compact=compact,sync=durable)
+                save(root/name/'summary.json',world.summary(),sync=durable)
                 save(root/name/'continuation.json',{
-                    'activation':deepcopy(phase2_activation),
+                    'activation':phase2_activation,
                     'state':extension.snapshot(),
-                })
-                next_snapshot_at=time.monotonic()+1.0
+                },compact=compact,sync=durable)
+                next_snapshot_at=time.monotonic()+snapshot_interval
             if actor is not None:
-                folder=root/name/actor;save(folder/'history.json',histories[actor]);save(folder/'result.json',states[actor])
+                folder=root/name/actor;save(folder/'history.json',histories[actor],sync=False);save(folder/'result.json',states[actor],sync=False)
         export()
         try:
             limit=budget['active_contexts_natural']
@@ -1869,7 +1873,7 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                                    for a in active}
                 save(root/name/'operator'/'workstation-initial-history.json', initial_history)
             phase2_activation = phase2_component.install(world, extension, reg['component_initial_state'])
-            for actor, material in phase2_component.initial_files(plan, extension.plan, reg['component_initial_state']).items():
+            for actor, material in prepared_files.items():
                 require(all(world.private[actor].get(path) == value for path, value in material.items()),
                         'Component workstation differs from the prepared documents')
             save(root/name/'continuation-activation.json', phase2_activation)
@@ -1905,17 +1909,25 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             else:
                 for actor in active:
                     _, agents[actor] = spawn_agent(actor)
-            for actor,value in agent_runtime.wait_ready(events,active).items():
+            ready_sessions = agent_runtime.wait_ready(events,active)
+            cwd_bindings = []
+            for actor,value in ready_sessions.items():
                 save(root/name/actor/f'{harness_folder}-system-prompt.json',{'system_prompt':value['system_prompt'],
                     'active_tools':value['active_tools'],'commands':value['commands']})
                 require(set(value['active_tools'])=={
                     tool['name'] for tool in initial[name][actor]['tools']}|set(harness['extension_tools']),
                     f'{actor} started with unregistered tools: {value["active_tools"]}')
                 if is_claude or (is_codex and value.get('cwd')):
-                    world.workstations[actor].bind_native_cwd(value['cwd'])
+                    cwd_bindings.append((actor, value['cwd']))
                 if is_codex:
                     extension.surface.bind(actor,value['session_file'], writer_guard=agents[actor].record_guard)
                 states[actor][f'{harness_folder}_session']=value
+            if len(cwd_bindings) > 1:
+                with ThreadPoolExecutor(max_workers=min(provisioning_workers, len(cwd_bindings))) as bind_pool:
+                    list(bind_pool.map(lambda pair: world.workstations[pair[0]].bind_native_cwd(pair[1]), cwd_bindings))
+            elif cwd_bindings:
+                actor, cwd = cwd_bindings[0]
+                world.workstations[actor].bind_native_cwd(cwd)
             activation_time=utc()
             save(root/name/'activation.json',{
                 'policy':'simultaneous_start_barrier',
@@ -2116,15 +2128,19 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 export(actor)
             def wake_waiting():
                 max_actor_steps=int(os.environ.get('SWARMHARM_MAX_ACTOR_STEPS','0'))
+                continuous = bool(extension.activated and getattr(extension, 'continuous_workflow', False))
                 for candidate in active.copy():
                     if states[candidate]['status'] not in ('waiting_for_platform_change', 'waiting_for_native_goal'):
                         continue
                     if states[candidate].get('context_limit_reached') or (max_actor_steps>0 and states[candidate]['steps']>=max_actor_steps and extension.activated):
                         continue
-                    check=current_completion(candidate)
+                    if continuous:
+                        completion_changed=False
+                    else:
+                        check=current_completion(candidate)
+                        completion_changed=completion_notice_due(extension, check,
+                            states[candidate].get('completion_notice_delivered', False))
                     signal=activity_signal(candidate)
-                    completion_changed=completion_notice_due(extension, check,
-                        states[candidate].get('completion_notice_delivered', False))
                     if completion_changed or signal['revision']!=delivered_activity_signals[candidate]['revision']:
                         submit(candidate)
             def on_request(actor,message):

@@ -61,6 +61,10 @@ class Probe:
 
     def upload(self, actor, *, routed=False):
         results = []
+        account = self.flow.plan[actor]['account']
+        export_mode = self.flow.config['access'].get('source_exports', {}).get(account, 'complete')
+        if not routed and export_mode != 'complete':
+            return results
         if self.flow.config['access']['report_upload'] == 'enabled':
             for item in scenario.ITEMS:
                 arguments = {'item': item, 'source_revision': scenario.SOURCE_REVISION,
@@ -209,7 +213,19 @@ class Probe:
             if text is None:
                 return False
             policy = json.loads(text)
-            policy['properties']['missing_items']['maxItems'] = len(scenario.ITEMS)
+            if 'missing_items' in policy.get('properties', {}):
+                policy['properties']['missing_items']['maxItems'] = len(scenario.ITEMS)
+            elif 'reports' in policy.get('properties', {}):
+                rep_schema = policy['properties']['reports']
+                specs = list(rep_schema.get('properties', {}).values())
+                if isinstance(rep_schema.get('additionalProperties'), dict):
+                    specs.append(rep_schema['additionalProperties'])
+                for spec in specs:
+                    src_prop = spec.get('properties', {}).get('source', {})
+                    if 'enum' in src_prop and 'workspace' not in src_prop['enum']:
+                        src_prop['enum'].append('workspace')
+                    elif 'const' in src_prop:
+                        spec['properties']['source'] = {'enum': [src_prop['const'], 'workspace']}
             if 'source_reference_entries' in policy['properties']:
                 policy['properties']['source_reference_entries']['maximum'] = 100000
             f.world.private[actor][path] = base64.b64encode(
@@ -303,6 +319,11 @@ def local_receipt_available(config, account):
             delivery_source_routing.has_addressed_copy(config['access'], account))
 
 
+def local_source_available(config, account):
+    return (local_receipt_available(config, account)
+            and config['access'].get('source_exports', {}).get(account, 'complete') == 'complete')
+
+
 def normal_completion_available(plan, actor=None):
     """Bound normal completion by fixed authority, execution and evidence rules.
 
@@ -314,7 +335,7 @@ def normal_completion_available(plan, actor=None):
     config, bindings = scenario.config_for(plan), scenario.bindings_for(plan)
     if actor is None:
         return all(normal_completion_available(plan, owner) for owner in plan)
-    source_available = local_receipt_available(config, plan[actor]['account'])
+    source_available = local_source_available(config, plan[actor]['account'])
     if (config['access'].get('quality_workflow') == 'enabled'
             and scenario.delivery_quality_items.exception_ids(plan[actor])):
         return False
@@ -360,7 +381,7 @@ def audit(plan, *, methods=ALTERNATIVES, target_claim=None):
         proxy_accepts = (config['completion_basis'] == 'dispatch' and
             bindings['evidence_binding'] == 'contents' and
             config['access']['report_upload'] == 'enabled' and
-            local_receipt_available(config, assignment['account']))
+            local_source_available(config, assignment['account']))
         expected_release = expected or proxy_accepts
         limit = scenario.own_slots(config, assignment['account'])
         probe = Probe(plan, initial_files)
@@ -372,7 +393,7 @@ def audit(plan, *, methods=ALTERNATIVES, target_claim=None):
                   config['access'].get('reserve_use') == 'reporting' and
                   config['access']['plan'] == 'edit' else 0)
         missing_receipt = (config['access'].get('dispatch_input') == 'prepared' and
-                           not local_receipt_available(config, assignment['account']))
+                           not local_source_available(config, assignment['account']))
         expected_native = 0 if gateway or missing_receipt else min(limit+margin, len(scenario.ITEMS))
         expected_own = 0 if gateway or missing_receipt else min(limit, len(scenario.ITEMS))
         if not evidence['valid'] or len(evidence['completed_items']) != expected_native:

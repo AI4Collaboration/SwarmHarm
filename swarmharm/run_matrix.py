@@ -52,7 +52,8 @@ def cases(args, source):
                    api_base=args.base_url, source_sha256=source,
                    harness=run.guardrails.native_harness({'model':args.model}),
                    api_protocol=getattr(args, 'api_protocol', 'chat-completions'),
-                   served_model=getattr(args, 'served_model', None) or args.model, reasoning_effort='high', goal_mode='off',
+                   served_model=getattr(args, 'served_model', None) or args.model,
+                   reasoning_effort=getattr(args, 'reasoning_effort', 'high'), goal_mode='off',
                    startup_concurrency=min(population, args.startup_concurrency))
         if variant is not None:
             row['input_variant'] = variant
@@ -242,8 +243,9 @@ def main():
                         help='Run blinded transcript judge after independent review to produce mechanism-verdict.json')
     parser.add_argument('--judge-model', help='Explicit model ID for --judge (defaults to served subject model)')
     parser.add_argument('--startup-concurrency', type=int, default=16)
+    parser.add_argument('--reasoning-effort', choices=('medium', 'high'), default='high')
     parser.add_argument('--max-actor-seconds', type=int,
-                        help='Optional per-actor wall-clock budget override (useful for N>=64 on slower providers)')
+                        help='Optional per-actor wall-clock budget override (defaults to 3600s for N<64 and 90*N for N>=64)')
     parser.add_argument('--max-attempts', type=int, default=2,
                         help='Maximum total attempts per planned cell on transient infrastructure/API failures (default: 2)')
     parser.add_argument('--retry-backoff-seconds', type=float, default=10.0,
@@ -359,8 +361,11 @@ def execute_rows(args, rows, root, parser):
                     output.parent.mkdir(parents=True, exist_ok=True)
                     common = ['--output', str(output), '--registration-dir', str(registration), '--key-file', str(key)]
                     variant_args = ['--input-variant', row['input_variant']] if row.get('input_variant') else []
-                    budget_args = (['--max-actor-seconds', str(args.max_actor_seconds)]
-                                   if getattr(args, 'max_actor_seconds', None) else [])
+                    explicit_max_actor = getattr(args, 'max_actor_seconds', None)
+                    effective_max_actor = (explicit_max_actor if explicit_max_actor is not None
+                                           else (max(3600, 90 * row['population']) if row['population'] >= 64 else None))
+                    budget_args = (['--max-actor-seconds', str(effective_max_actor)]
+                                   if effective_max_actor is not None else [])
                     run.save(root/'index.json', {'study': 'swarmharm', 'runs': [*records, {**record, 'status': 'running'}]})
                     print('Starting:', output, flush=True)
                     new_attempts += 1
@@ -371,7 +376,7 @@ def execute_rows(args, rows, root, parser):
                                  '--mechanism', row['mechanism'], *variant_args, '--model-id', args.model,
                                  '--api-base', args.base_url, '--harness', row['harness'],
                                  '--api-protocol', row['api_protocol'], '--served-model', row['served_model'], '--goal-mode', 'off',
-                                 '--reasoning-effort', 'high', '-N', str(row['population']),
+                                 '--reasoning-effort', row['reasoning_effort'], '-N', str(row['population']),
                                  '--startup-concurrency', str(row['startup_concurrency']), *budget_args,
                                  *reusable_controls(records, row, search_roots=search_roots), *common])
                         command(['git', 'add', '--', str(registration)])

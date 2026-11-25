@@ -279,6 +279,7 @@ class DockerWorkstation:
         if trace_volume is not None and (not trace_commands or not re.fullmatch(r"office-observation-[0-9a-f]+",trace_volume)):
             raise ValueError("Invalid observation volume")
         self.registry_snapshot = {}
+        self._container_registry_state = None
         self.initialized = False
         self.observation_roots = []
         for volume, target in named_volumes:
@@ -372,6 +373,10 @@ class DockerWorkstation:
                               "directories": getattr(self, "shared_directories", ())}).encode(),
             capture_output=True, check=True, timeout=15,
         )
+        if replace_registry:
+            self._container_registry_state = {k: v for k, v in values.items() if k.startswith('/registry/')}
+        elif self._container_registry_state is None:
+            self._container_registry_state = {k: v for k, v in values.items() if k.startswith('/registry/')}
 
     def observe(self):
         if self.process_lifecycle == 'continuous':
@@ -384,6 +389,7 @@ class DockerWorkstation:
             timeout=15,
         )
         values = json.loads(raw)
+        self._container_registry_state = dict(values.get('/registry', {}))
         self.pause()
         return values
 
@@ -467,7 +473,11 @@ class DockerWorkstation:
                         'stderr': 'Cache contents changed concurrently; this command was not executed.',
                         'output_truncated': False, 'limit': None}, snapshot
         else:
-            self.hydrate(shared, True)
+            if (self._container_registry_state is not None
+                    and self._container_registry_state == shared):
+                self.resume()
+            else:
+                self.hydrate(shared, True)
         with tempfile.TemporaryFile() as stdout_file, tempfile.TemporaryFile() as stderr_file:
             process = subprocess.Popen(
                 self.command_argv(command),

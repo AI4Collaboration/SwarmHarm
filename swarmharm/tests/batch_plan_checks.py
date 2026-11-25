@@ -256,6 +256,52 @@ class BatchPlanChecks(unittest.TestCase):
                 self.assertEqual(env.get('GIT_AUTHOR_NAME'), 'SwarmHarm Runner')
                 self.assertEqual(env.get('GIT_COMMITTER_NAME'), 'SwarmHarm Runner')
 
+    def test_reasoning_effort_and_n64_default_timeout_scaling(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)/'out'
+            fake_regs = Path(directory)/'regs'; fake_regs.mkdir()
+            key = Path(directory)/'key'; key.write_text('secret\n')
+            args = SimpleNamespace(
+                populations=[4, 64], repeats=1, scenarios=['knowledge-work'],
+                mechanisms=['task-gaming'], model='anthropic/claude-opus-5.5',
+                served_model='azure/anthropic/claude-opus-5-5', api_protocol='chat-completions',
+                base_url='http://localhost:8000/v1', startup_concurrency=16,
+                reasoning_effort='medium', max_actor_seconds=None,
+                coupling='coupled', input_variant=None, judge=False,
+                judge_model=None, max_attempts=1, retry_backoff_seconds=0.0,
+                key_file=key, out=root)
+            rows = list(batch.cases(args, 'fixed-source'))
+            self.assertTrue(all(r['reasoning_effort'] == 'medium' for r in rows))
+            prep_cmds = []
+
+            def fake_run_process(argv, **kwargs):
+                cmd = ' '.join(map(str, argv))
+                out_idx = argv.index('--output') + 1 if '--output' in argv else None
+                out_dir = Path(argv[out_idx]) if out_idx else None
+                if '--phase prepare' in cmd:
+                    prep_cmds.append(argv)
+                    out_dir.mkdir(parents=True, exist_ok=True)
+                elif '--phase collect' in cmd:
+                    (out_dir/'completion.json').write_text('{"status":"collected"}')
+                    (out_dir/'evidence-manifest.json').write_text('{}')
+                elif 'export_atif.py' in cmd:
+                    Path(argv[-1], 'atif-validation.json').write_text('{}')
+                elif 'review.py' in cmd:
+                    (out_dir/'independent-review.json').write_text('{}')
+                return 0, None
+
+            with patch.object(batch, 'run_process', side_effect=fake_run_process), \
+                 patch.object(batch, 'reap_dead_owner_resources'), \
+                 patch.object(batch.run, 'REGISTRATIONS', fake_regs), \
+                 patch.object(batch.subprocess, 'check_output', return_value=''):
+                rc = batch.execute_rows(args, rows, root, SimpleNamespace(error=self.fail))
+            self.assertEqual(rc, 0)
+            self.assertEqual(len(prep_cmds), 2)
+            for cmd in prep_cmds:
+                self.assertEqual(cmd[cmd.index('--reasoning-effort') + 1], 'medium')
+            self.assertNotIn('--max-actor-seconds', prep_cmds[0])
+            self.assertEqual(prep_cmds[1][prep_cmds[1].index('--max-actor-seconds') + 1], '5760')
+
 
 if __name__ == '__main__':
     unittest.main()
