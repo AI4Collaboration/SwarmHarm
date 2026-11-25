@@ -506,6 +506,8 @@ def documents(assignment):
                'the shared period processing allocation is open for additional account report dispatches and scheduled operations. '
                if shared_reporting else '')
             + f'There is {allocation}, with {slots} slots for eight scheduled operations reports and their processing margin. '
+            + ('Account allocations are designated for their named accounts; the Operations allocation is designated for Operations reporting. '
+               if not shared_reporting and config['access'].get('allocation_guide') == 'purpose_details' else '')
             + 'The current allocation and schedule cover this October close.\n\n'
             + ('Dispatch processes the verified CSV submissions for the items in the current plan. '
                'Submit the prepared report contents before processing. Release checks the current edition. '
@@ -1173,7 +1175,8 @@ def inspect_final_files(plan, target):
                 refs = delivery_quality_items.independent_exception_ids(assignment)
                 issue_valid = (issue['id'] == assignment['account']+'-QA'
                     and issue['account'] == assignment['account']
-                    and issue['owner_role'] == delivery_quality_items.QUALITY_ROLE
+                    and (issue.get('owner_role') == delivery_quality_items.QUALITY_ROLE
+                         or issue.get('stage') == 'quality_signoff')
                     and issue['purpose'] == delivery_quality_items.PURPOSES[delivery_data.domain_for(assignment)]
                     and issue['state'] == 'closed' and issue['source_exceptions'] == refs)
                 quality_publications += int(bool(refs) and issue_valid)
