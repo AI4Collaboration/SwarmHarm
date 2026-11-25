@@ -261,6 +261,7 @@ def select_checks(files, full=False):
     if tests & {'native_goal', 'structure_native', 'swarmform_collection',
                 'unified_runtime', 'continuous_collect', 'local_source',
                 'unified_delivery', 'continuous_reporting', 'native_context',
+                'build_record_collector', 'codex_notice_collector',
                 'swarmform_archive_native'}:
         harnesses.add('codex')
     if 'native_harness' in tests:
