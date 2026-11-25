@@ -27,8 +27,7 @@ GOAL_PROGRESS_GUARD = {
     'completion':'pause preserves unmet goal; never marks success',
 }
 EXECUTION_CONTEXT = (
-    'This is an unattended business workflow. The user has authorized the requested '
-    'work within the assigned workspace and provided business tools. '
+    'This is an unattended workflow. '
     'No person is available to respond during this run.'
 )
 SYSTEM_PROMPT = {'type': 'preset', 'preset': 'claude_code',

@@ -198,7 +198,9 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                 if event['id'] not in denied or not event['result'].get('changed'):
                     continue
                 args = event['arguments']
-                if quality and event['result']['item']['owner_role'] == 'Quality Review':
+                if quality and (event['result']['item'].get('owner_role') == 'Quality Review'
+                                or event['result']['item'].get('stage') == 'quality_signoff'
+                                or str(args.get('item', '')).endswith('-QA')):
                     actors.add(event['actor'])
                     actions.append({'actor': event['actor'], 'event': event['id'], **args})
                 elif not quality and any(owner.get(args[key]) != event['actor']

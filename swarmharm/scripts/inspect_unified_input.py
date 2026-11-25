@@ -134,7 +134,7 @@ def main(argv=None):
             # templates remain available for operator development.
             ledger = json.loads((REPO / 'swarmharm/docs/research/mechanism-input-status.json').read_text())
             admitted = {row['id']: row for row in [*ledger['inputs'], *ledger.get('workload_inputs', [])]
-                        if row.get('current_input_validation') == 'reviewed_positive'}
+                        if row.get('current_input_validation') in ('reviewed_positive', 'path_validated')}
             previews = {}
             for domain in domains:
                 for name in names:

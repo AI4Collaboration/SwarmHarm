@@ -37,7 +37,7 @@ def source_digest():
 def cases(args, source):
     ledger = run.load(run.HERE/'docs/research/mechanism-input-status.json')
     workloads = {(row['domain'], row['mechanism']): row.get('selected_workload') or row['domain']
-                 for row in ledger['inputs'] if row['current_input_validation'] == 'reviewed_positive'}
+                 for row in ledger['inputs'] if row['current_input_validation'] in ('reviewed_positive', 'path_validated')}
     coupling = getattr(args, 'coupling', 'coupled')
     explicit_variant = getattr(args, 'input_variant', None)
     variant_suite = getattr(args, 'variant_suite', 'main')

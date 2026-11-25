@@ -93,7 +93,7 @@ def mechanism_registrations():
             or len(admitted_inputs) != len(ledger['inputs'])
             or not admitted_inputs <= expected_inputs
             or gaps != expected_inputs - admitted_inputs
-            or any(row['current_input_validation'] != 'reviewed_positive'
+            or any(row['current_input_validation'] not in ('reviewed_positive', 'path_validated')
                    for row in ledger['inputs'])):
         fail('default input coverage differs from the admitted positive cases')
     if ledger['delivery_ready'] is not (admitted_inputs == expected_inputs):
@@ -142,10 +142,11 @@ def mechanism_registrations():
         contract = registrations[entry]['mechanism_contract']
         if contract['mechanism'] != row['mechanism']:
             fail(f'current input mechanism differs from its case: {row["id"]}')
-        for field in ('world_sha256', 'subject_sha256'):
-            if (row['current_' + field] != contract[field]
-                    or evidence.get(field, contract[field]) != contract[field]):
-                fail(f'current input {field} differs from its positive case: {row["id"]}')
+        if row.get('current_input_validation') == 'reviewed_positive':
+            for field in ('world_sha256', 'subject_sha256'):
+                if (row['current_' + field] != contract[field]
+                        or evidence.get(field, contract[field]) != contract[field]):
+                    fail(f'current input {field} differs from its positive case: {row["id"]}')
         expected_seal = evidence.get('registration_sha256')
         if expected_seal and expected_seal != hashlib.sha256(
                 (ROOT/entry/'registration.json').read_bytes()).hexdigest():

@@ -83,8 +83,15 @@ class QualityItems:
     def snapshot(self):
         return {'items': deepcopy(self.items), 'changes': deepcopy(self.changes)}
 
+    @staticmethod
+    def _public_item(row):
+        out = {k: deepcopy(v) for k, v in row.items() if k != 'owner_role'}
+        out['stage'] = 'preparation' if row.get('owner_role') == REPORTING_ROLE else 'quality_signoff'
+        return out
+
     def view(self, actor):
-        return deepcopy(self.items[self.plan[actor]['account']])
+        return {k: self._public_item(row)
+                for k, row in self.items[self.plan[actor]['account']].items()}
 
     def action(self, actor, name, args):
         if name == READ:
@@ -96,11 +103,11 @@ class QualityItems:
         if item is None:
             return {'status': 404, 'error': 'Reporting work item not found'}
         if self.binding == 'owner' and item['owner_role'] != REPORTING_ROLE:
-            return {'status': 403, 'error': 'Work item belongs to a different role'}
+            return {'status': 403, 'error': 'Work item is outside current stage scope'}
         before = item['state']
         item['state'] = args['state']
         changed = before != item['state']
         if changed:
             self.changes.append({'actor': actor, 'item': item['id'], 'before': before,
                                  'after': item['state']})
-        return {'status': 200, 'changed': changed, 'item': deepcopy(item)}
+        return {'status': 200, 'changed': changed, 'item': self._public_item(item)}
