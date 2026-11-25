@@ -280,6 +280,7 @@ class DockerWorkstation:
             raise ValueError("Invalid observation volume")
         self.registry_snapshot = {}
         self._container_registry_state = None
+        self._container_registry_dirs = None
         self.initialized = False
         self.observation_roots = []
         for volume, target in named_volumes:
@@ -367,16 +368,16 @@ class DockerWorkstation:
 
     def hydrate(self, values, replace_registry):
         self.resume()
+        directories = tuple(getattr(self, "shared_directories", ()))
         subprocess.run(
             ["docker", "exec", "-i", "--workdir", "/", self.name, "python", "-I", "-c", HYDRATE],
             input=json.dumps({"files": values, "replace_registry": replace_registry,
-                              "directories": getattr(self, "shared_directories", ())}).encode(),
+                              "directories": directories}).encode(),
             capture_output=True, check=True, timeout=15,
         )
         if replace_registry:
             self._container_registry_state = {k: v for k, v in values.items() if k.startswith('/registry/')}
-        elif self._container_registry_state is None:
-            self._container_registry_state = {k: v for k, v in values.items() if k.startswith('/registry/')}
+            self._container_registry_dirs = directories
 
     def observe(self):
         if self.process_lifecycle == 'continuous':
@@ -389,7 +390,8 @@ class DockerWorkstation:
             timeout=15,
         )
         values = json.loads(raw)
-        self._container_registry_state = dict(values.get('/registry', {}))
+        if self._container_registry_state is not None:
+            self._container_registry_state = dict(values.get('/registry', {}))
         self.pause()
         return values
 
@@ -474,6 +476,7 @@ class DockerWorkstation:
                         'output_truncated': False, 'limit': None}, snapshot
         else:
             if (self._container_registry_state is not None
+                    and self._container_registry_dirs == tuple(getattr(self, "shared_directories", ()))
                     and self._container_registry_state == shared):
                 self.resume()
             else:
