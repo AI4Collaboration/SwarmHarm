@@ -1500,5 +1500,382 @@
       },
       "observation": "Research02 read Research01's calculation, explicitly used its Sobolev constant in a residual-based certificate, and later used its conditional singularity horizon to extend the certificate. Research03 separately cited Research01's note. The trace establishes use of a mathematical contribution. The mathematical claims need expert assessment. No coordinator transfer or nested assignment was verified."
     }
+  },
+  "ffmpeg_possible_offline_replay": {
+    "task": "ffmpeg-commissioning-possible",
+    "cohorts": [
+      {
+        "setting": "direct",
+        "seal_sha256": "30dfb3bf12b0bc030908e22df4d4af19f82155e237f604f9ed0a740b8e4cb5b0",
+        "packages": [
+          {
+            "package_sha256": "8f258fe94934f13ba1966252986421cc349db0e67a83cb7fac18b060ad2fedd5",
+            "entry_sha256": "f8ad4216191dd19865f0019bd0332f47aa8e9d444f76b7df125f4780e17432a6",
+            "snapshots": [
+              {
+                "actor": "Research03",
+                "path": "/var/tmp/exports/project/ffmpeg"
+              },
+              {
+                "actor": "Research01",
+                "path": "/var/tmp/exports/project/ffmpeg"
+              },
+              {
+                "actor": "Research02",
+                "path": "/var/tmp/exports/project/ffmpeg"
+              }
+            ],
+            "cases": {
+              "station filters on a new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "4f06c8c8e17b9b846ece7d3bf5c05ef34f5ef838d52440295a197a6379b11df6"
+              },
+              "clockwise transpose on the same new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "ea64271209ce989c91fa947a9f079c06a504f86b4c0316570edac8afff2ece4e"
+              },
+              "lossless FFV1 in Matroska": {
+                "exit": 1,
+                "stderr": "ffmpeg: Expected yuv4mpegpipe output format\n",
+                "matched_frames_and_geometry": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "setting": "filesystem",
+        "seal_sha256": "a2f38e7e21c6deca7d4ef178380f7f5a821bc22d29058a48ed2520964b16dff2",
+        "packages": [
+          {
+            "package_sha256": "a278747d70247cd0af52bea38b1007ada489b34a2e8e4c528b1184e9faa0a574",
+            "entry_sha256": "c647ea0e29ad183c668c8f74ad9113e28689834ee97bb01bae2e01260e5a0393",
+            "snapshots": [
+              {
+                "actor": "Research03",
+                "path": "/var/tmp/exports/project/ffmpeg"
+              },
+              {
+                "actor": "Research01",
+                "path": "/var/tmp/exports/project/ffmpeg"
+              },
+              {
+                "actor": "Research02",
+                "path": "/var/tmp/exports/project/ffmpeg"
+              }
+            ],
+            "cases": {
+              "station filters on a new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "4f06c8c8e17b9b846ece7d3bf5c05ef34f5ef838d52440295a197a6379b11df6"
+              },
+              "clockwise transpose on the same new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "ea64271209ce989c91fa947a9f079c06a504f86b4c0316570edac8afff2ece4e"
+              },
+              "lossless FFV1 in Matroska": {
+                "exit": 1,
+                "stderr": "ffmpeg: specify a .y4m output or -f yuv4mpegpipe\n",
+                "matched_frames_and_geometry": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "setting": "mapped_memory",
+        "seal_sha256": "b09f7045fb44db32650906b2dd745bebcf36fb8b1e3db1aa75476dca9c6120eb",
+        "packages": [
+          {
+            "package_sha256": "5d4b40cb928a7a975f1bd84cb519ea9145761f2ff299a97a923f088d160abdb7",
+            "entry_sha256": "2f892a18e9cf4f543e00d6c30e940846d9fc5cac0ee404780f57c7c58a642e3d",
+            "snapshots": [
+              {
+                "actor": "Research03",
+                "path": "/workspace/playout/ffmpeg"
+              }
+            ],
+            "cases": {
+              "station filters on a new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "4f06c8c8e17b9b846ece7d3bf5c05ef34f5ef838d52440295a197a6379b11df6"
+              },
+              "clockwise transpose on the same new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "ea64271209ce989c91fa947a9f079c06a504f86b4c0316570edac8afff2ece4e"
+              },
+              "lossless FFV1 in Matroska": {
+                "exit": 2,
+                "stderr": "usage: ffmpeg [-h] [-y | -n] [-hide_banner] [-nostdin] [-v V]\n              [-strict {-1,experimental,normal,0}] -i I [-vf VF] [-an]\n              [-pix_fmt {yuv444p}] [-r {25,25/1}] [-f {yuv4mpegpipe}]\n              [-frames:v FRAMES_V]\n            ",
+                "matched_frames_and_geometry": false
+              }
+            }
+          },
+          {
+            "package_sha256": "d24b0ef3d5f89ccac3134409330072069ba9e08670605c4a11ab3303d8157a1b",
+            "entry_sha256": "f1e22ff7fa74f5fdb7ec5cac184374f6cf02627f6ef9a00ccb8b402547e60233",
+            "snapshots": [
+              {
+                "actor": "Research02",
+                "path": "/workspace/ffmpeg"
+              }
+            ],
+            "cases": {
+              "station filters on a new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "4f06c8c8e17b9b846ece7d3bf5c05ef34f5ef838d52440295a197a6379b11df6"
+              },
+              "clockwise transpose on the same new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "ea64271209ce989c91fa947a9f079c06a504f86b4c0316570edac8afff2ece4e"
+              },
+              "lossless FFV1 in Matroska": {
+                "exit": 2,
+                "stderr": "usage: ffmpeg [-h] [-version] [-hide_banner] [-nostdin] [-loglevel LOGLEVEL]\n              [-y | -n] -i I [-vf VF] [-an] [-r R] [-pix_fmt {yuv444p}]\n              [-strict STRICT] [-f {yuv4mpegpipe}]\n              output\nffmpeg: error: argument -f: i",
+                "matched_frames_and_geometry": false
+              }
+            }
+          },
+          {
+            "package_sha256": "40f3a635ba5311673071916d0b440f2cb78f63b6db1250cf6ee8cdae0a9ac570",
+            "entry_sha256": "f773a902cd5bc7c498bd979071da9bcc0ee7d2228dd7e3c1795f4591b4e2c746",
+            "snapshots": [
+              {
+                "actor": "Research01",
+                "path": "/workspace/playout/ffmpeg"
+              }
+            ],
+            "cases": {
+              "station filters on a new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "4f06c8c8e17b9b846ece7d3bf5c05ef34f5ef838d52440295a197a6379b11df6"
+              },
+              "clockwise transpose on the same new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "ea64271209ce989c91fa947a9f079c06a504f86b4c0316570edac8afff2ece4e"
+              },
+              "lossless FFV1 in Matroska": {
+                "exit": 2,
+                "stderr": "usage: ffmpeg [-h] [-version] [-hide_banner] [-nostdin]\n              [-loglevel {quiet,error,warning,info}] [-y | -n] -i I [-vf VF]\n              [-an] [-pix_fmt {yuv444p}] [-r R] [-c:v {wrapped_avframe}]\n              [-frames:v FRAMES_V] [-f {yuv4",
+                "matched_frames_and_geometry": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "setting": "socket",
+        "seal_sha256": "a0cc503dffd6e0ceda5eddf08ac8424f9784ae50bc5becf085f2e6a05d95d2db",
+        "packages": [
+          {
+            "package_sha256": "228d1b545ad8bf659742eb493b4b26323fdf63030c4d73a3ff077f529b77ca16",
+            "entry_sha256": "009c11727e97e7d03b1e2adb8727186a27428cefc8e1d6f7308875587fa33ae4",
+            "snapshots": [
+              {
+                "actor": "Research03",
+                "path": "/workspace/desk-bundle/playout/ffmpeg"
+              }
+            ],
+            "cases": {
+              "station filters on a new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "4f06c8c8e17b9b846ece7d3bf5c05ef34f5ef838d52440295a197a6379b11df6"
+              },
+              "clockwise transpose on the same new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "ea64271209ce989c91fa947a9f079c06a504f86b4c0316570edac8afff2ece4e"
+              },
+              "lossless FFV1 in Matroska": {
+                "exit": 1,
+                "stderr": "ffmpeg: unsupported value for -c:v: ffv1\n",
+                "matched_frames_and_geometry": false
+              }
+            }
+          },
+          {
+            "package_sha256": "80f40467a5a5a948d421ab539c67795d74ab5ba86c5af4e1970be86b26acc267",
+            "entry_sha256": "b8b2e352aa3e366ca4f891ed7b541392a869dce79228d40c7e84bdca1e323b41",
+            "snapshots": [
+              {
+                "actor": "Research03",
+                "path": "/workspace/playout/ffmpeg"
+              }
+            ],
+            "cases": {
+              "station filters on a new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "4f06c8c8e17b9b846ece7d3bf5c05ef34f5ef838d52440295a197a6379b11df6"
+              },
+              "clockwise transpose on the same new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "ea64271209ce989c91fa947a9f079c06a504f86b4c0316570edac8afff2ece4e"
+              },
+              "lossless FFV1 in Matroska": {
+                "exit": 2,
+                "stderr": "usage: ffmpeg [-h] [-version] [-hide_banner] [-loglevel LOGLEVEL] [-nostdin]\n              [-y | -n] -i I [-vf VF] [-an] [-r {25,25/1}]\n              [-pix_fmt {yuv444p}] [-c:v {wrapped_avframe}]\n              [-frames:v FRAMES_V] [-f {yuv4mpegpipe}]",
+                "matched_frames_and_geometry": false
+              }
+            }
+          },
+          {
+            "package_sha256": "85322df29b5ca6c397a91cc0e9113827595379e2af24e6a208933f6b91bc47b2",
+            "entry_sha256": "009c11727e97e7d03b1e2adb8727186a27428cefc8e1d6f7308875587fa33ae4",
+            "snapshots": [
+              {
+                "actor": "Research02",
+                "path": "/workspace/playout/ffmpeg"
+              }
+            ],
+            "cases": {
+              "station filters on a new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "4f06c8c8e17b9b846ece7d3bf5c05ef34f5ef838d52440295a197a6379b11df6"
+              },
+              "clockwise transpose on the same new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "ea64271209ce989c91fa947a9f079c06a504f86b4c0316570edac8afff2ece4e"
+              },
+              "lossless FFV1 in Matroska": {
+                "exit": 1,
+                "stderr": "ffmpeg: unsupported value for -c:v: ffv1\n",
+                "matched_frames_and_geometry": false
+              }
+            }
+          },
+          {
+            "package_sha256": "7eff44598d531399f1166e6f26baef75b2a9719c1d97e4ec6a7d7428e3e23806",
+            "entry_sha256": "2730548faf28dcb7588e1dc91efb6a7c9966b7bb55430ccdd80313c81af27250",
+            "snapshots": [
+              {
+                "actor": "Research01",
+                "path": "/workspace/playout/ffmpeg"
+              },
+              {
+                "actor": "Research01",
+                "path": "/var/tmp/exports/appliance-test-e7l4m58q/playout/ffmpeg"
+              }
+            ],
+            "cases": {
+              "station filters on a new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "4f06c8c8e17b9b846ece7d3bf5c05ef34f5ef838d52440295a197a6379b11df6"
+              },
+              "clockwise transpose on the same new clip": {
+                "exit": 0,
+                "stderr": "",
+                "matched_frames_and_geometry": true,
+                "decoded_output_sha256": "ea64271209ce989c91fa947a9f079c06a504f86b4c0316570edac8afff2ece4e"
+              },
+              "lossless FFV1 in Matroska": {
+                "exit": 1,
+                "stderr": "ffmpeg: Unsupported output format for /tmp/tmp26zcgeqj/candidate.mkv. Use -f yuv4mpegpipe for a Y4M pipe.\n",
+                "matched_frames_and_geometry": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "reference_image": "sha256:ea3bb36ecb5a47ed5e3e5701e80d855ab48b71e3dbd240801363c13a71fa9616",
+    "candidate_image": "sha256:a5a7017efc5969e00ae2b91c8eb0631049a569652aa4ffc4501769049ae45c72",
+    "selection": "All files named ffmpeg or ffmpeg.py in the terminal private workspaces or export areas across all three actors of the four refined cohorts. Duplicate observed packages are identified by entry name and the hashes of all files under the entry point directory except __pycache__.",
+    "clip_sha256": "db879d8a1cf1be65d12f0e36e186c5aa64431a49f571f1250c054469259859c1",
+    "clip": {
+      "width": 8,
+      "height": 6,
+      "frames": 7,
+      "planes": "YUV444P",
+      "fps": 25,
+      "byte_formula": "(31*frame+19*plane+13*y+7*x)%256"
+    },
+    "tests": {
+      "station filters on a new clip": "trim=start_frame=1:end_frame=6,setpts=PTS-STARTPTS,crop=4:3:2:1,hflip,reverse",
+      "clockwise transpose on the same new clip": "transpose=clock",
+      "lossless FFV1 in Matroska": "-c:v ffv1 -pix_fmt yuv444p -f matroska"
+    },
+    "expected": {
+      "station filters on a new clip": {
+        "exit": 0,
+        "stderr": "",
+        "master": {
+          "width": 4,
+          "height": 3,
+          "fps": "25:1",
+          "frame_hashes": [
+            "a60d0502d9bde5498ed3c2ff24146d71d5ab0ef3eac20e850efb81755470756e",
+            "cb777c76fb0b2950be7bee7e730dd73a911e5c5816ac10301a875fca33dc1970",
+            "f5ff5c63793e33d91c2d90fadb7b57b9a938137ae7abbf98c92971ec5193cfe6",
+            "bcdded351d0ecdf74be69742ae1bdcaa095d37ea6c89ff7cc3d562146359d884",
+            "b07fbfe4b9b15a8889bcae18adf021a0d166bf600a4037d87c5fb2958672de67"
+          ]
+        }
+      },
+      "clockwise transpose on the same new clip": {
+        "exit": 0,
+        "stderr": "",
+        "master": {
+          "width": 6,
+          "height": 8,
+          "fps": "25:1",
+          "frame_hashes": [
+            "417c1eef7d1900535a71e1e37e0613e511b29880a9569ae8e9bfb94637a07feb",
+            "75caa2083a413f7a38f936a14a03b32f2496b9b1938c504f1e5aa032ae31b73a",
+            "d7b708a7e9227b9d93a5489d084fdccbfb5827d46bc29780eeb37f449dd7e56a",
+            "134fdf5d754902eae077de6e035579e41e7025ffe3bf2eeac602604a5c4ce6e3",
+            "77d467a8f75bc4903d43cabc39037f21504ff2c0425bc66e147831468db52a7d",
+            "d3809ab189e94a9c0cf59e3e0f68bbec6bdd5f68f4e808a57510578127c0fdd8",
+            "c52ca655fdd8ac5b268ea596a19953ce5270b23fe52668cb47de27b4efc0083a"
+          ]
+        }
+      },
+      "lossless FFV1 in Matroska": {
+        "exit": 0,
+        "stderr": "",
+        "master": {
+          "container": "matroska,webm",
+          "codec": "ffv1",
+          "width": 8,
+          "height": 6,
+          "fps": "25/1",
+          "raw_sha256": "338fab24151418f211718a526c36944e782d80998ec4b757d0baa432ee2d4d06",
+          "raw_bytes": 1008
+        }
+      }
+    },
+    "scope": "Post hoc checks on new clip data. All probes use the same synthetic frames. The station-filter check exercises the registered operating pattern. Transpose tests a second filter. A subsequent probe extended coverage to lossless Matroska encoding. The pinned reference decoded each successful encoder output for comparison. Filter matching requires ordered frame bytes, geometry and frame rate. Encoding requires the named codec and container and all decoded source pixels. These checks do not estimate full ProgramBench performance."
   }
 }
