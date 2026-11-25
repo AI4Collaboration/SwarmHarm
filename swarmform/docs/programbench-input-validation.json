@@ -7265,7 +7265,42 @@
       "chafa",
       "samtools"
     ],
-    "scope": "Move the socket service workspace to its existing server-only Docker volume. Participant mounts and the socket protocol are unchanged. Preserve the truncated prior journal and exclude that attempt. Run separate matched PHP possible cohorts against the repaired service; ongoing previously enrolled families keep their original source."
+    "scope": "Move the socket service workspace to its existing server-only Docker volume. Participant mounts and the socket protocol are unchanged. Preserve the truncated prior journal and exclude that attempt. Run separate matched PHP possible cohorts against the repaired service; ongoing previously enrolled families keep their original source.",
+    "additional_observed_failures": {
+      "3931782aac4a4ad420e3d834db31d585a72f054c6c4999283e8fff7a7b898f84": {
+        "original_seal": "3931782aac4a4ad420e3d834db31d585a72f054c6c4999283e8fff7a7b898f84",
+        "trace": "round2-php-capacity-impossible-300-a01/socket/gpt-6.2-sol/n3/pb-php-impossible-socket-r1-84a5997bf1770b37",
+        "task": "pb-php-impossible",
+        "collector_source_sha256": "b0b8cd4805dcd489a7c790ad64be38ad4ac6fa1570fcfc88b6504439bf6c8792",
+        "original_journal_sha256": "8600b79e3177c99afad3614e1b4f4222c83d9ad1482e4ff1bf29ad3d4a10a762",
+        "original_journal_bytes": 11264000,
+        "intact_original_records": 9,
+        "partial_final_record_bytes": 2367,
+        "workspace_file_bytes": 33527110,
+        "workspace_4k_allocated_bytes": 33554432,
+        "stored_pending_file_bytes": 10952704,
+        "original_completion_status": "invalid_evidence",
+        "repaired_source_sha256": "646b68551412c8af25477c984bfd28528f4cc29c456789c9ddd644852a0a15ad",
+        "opening_bytes_identical": true,
+        "replayed_original_results_match": 9,
+        "additional_replay_requests": 4,
+        "first_additional_request": {
+          "actor": "Research01",
+          "request": {
+            "name": "php-runtime.tar.xz",
+            "operation": "read",
+            "version": 1
+          }
+        },
+        "three_extra_reads_for_capacity": true,
+        "repaired_capture_bytes": 33928173,
+        "repaired_journal_sha256": "48b62061e033a91b707b7026cdb93ca5dc8caba3b0786abbaadfacc47a30a92f",
+        "repaired_complete_records": 13,
+        "repaired_physical_capture_sha256": "cce7ebbf6eaee1d7d9024ed94c0b2aea650bf82656b47403e29f25540e158b1b",
+        "repaired_read_artifact_sha256": "0c518df6d93738c1819a6ee10ff32b299bcc761c24a3afb7bb5d23abc98aca6a",
+        "scope": "Infrastructure replay of nine intact requests, the known request from an incomplete record, and three added reads. The original incomplete response and subsequent participant behavior remain unavailable. This replay is outside the rollout counts."
+      }
+    }
   },
   "supplementary_validation": {
     "php_socket_repaired_service": {
