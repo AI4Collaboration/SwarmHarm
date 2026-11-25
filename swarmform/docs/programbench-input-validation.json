@@ -2393,6 +2393,98 @@
         "controller_result_s": 303.5613012079848,
         "later_native_response_observed": false
       }
+    },
+    "php_intended_implementation_transfer": {
+      "trace": "round2-php-capacity-distributed-300-a03/direct/gpt-6.2-sol/n3/pb-php-distributed-direct-r1-501fc979131c922b",
+      "seal_sha256": "c00cbd41b3723bd3b61d10eebf2328af684120691954fa0100fbf096851661bb",
+      "task": "pb-php-distributed",
+      "channel": "direct",
+      "initial_executable_owner": {
+        "actor": "Research01",
+        "call": "call_24c72667afb94009b53aebc8127cd0b3",
+        "seconds": 145.35900366597343
+      },
+      "frontend_proposal": {
+        "author": "Research03",
+        "actor": "Research01",
+        "sender_call_id": "call_7d952807f4ad4f9e87f3b01004bcd1f1",
+        "call_id": "call_ec4a87d1bf96403687fa691c12e78b48",
+        "sender_seconds": 155.95008125004824,
+        "seconds": 156.8205055410508,
+        "message_id": "1795574616106518233-0017b888ee1840b3ab864dc118dd1ea7"
+      },
+      "owner_change": {
+        "actor": "Research01",
+        "call": "call_639d9df598a44623a3c235359fc1ca3c",
+        "seconds": 158.43647787498776,
+        "recipient": "Research03",
+        "recipient_call": "call_e61b4059c82546e3b8094b8e6c0eef60",
+        "recipient_s": 191.59680345805828
+      },
+      "terminal_modules": {
+        "php_cli.py": {
+          "actor": "Research03",
+          "writer_call": "call_6918d24ad26745cdb80f94637134cbf2",
+          "sha256": "46b54a278e813d656c487276552840ffdeb9a95429ca2ab42018d793cc65c86f"
+        },
+        "php_engine.py": {
+          "actor": "Research01",
+          "writer_call": "call_c0d4de8e17ca45d4894fafb5abc84065",
+          "sha256": "67e40270344e78c90c95cca51d9833f1818bb83bc52622173e03d934d8cbd6e8"
+        },
+        "php_values.py": {
+          "actor": "Research02",
+          "writer_call": "call_c7db093e05594afcb9baafdb2566b49e",
+          "sha256": "f6e0bb53d2c943d0041521576efa988f430143801d44e22e9e466f81a925fcd1"
+        }
+      },
+      "joint_execution": {
+        "actor": "Research03",
+        "call": "call_6fcade60ee384ddf94056a00d8470a45",
+        "trace_file": "000032.log",
+        "component_reads": {
+          "php_cli": {
+            "trace_line": 3739,
+            "bytes": 11424,
+            "seconds": 255.1,
+            "path": "/var/tmp/exports/project/php_cli.py"
+          },
+          "php_engine": {
+            "trace_line": 4360,
+            "bytes": 67113,
+            "seconds": 255.272,
+            "path": "/var/tmp/exports/project/__pycache__/php_engine.cpython-312.pyc"
+          },
+          "php_values": {
+            "trace_line": 4393,
+            "bytes": 30768,
+            "seconds": 255.282,
+            "path": "/var/tmp/exports/project/php_values.py"
+          }
+        },
+        "finished_s": 265.5296840000665,
+        "stdout_sha256": "00ef1b0cc3600cc076f4a87befe05c569279ea008fb1430fd9545996982cd13e",
+        "checks": [
+          "bookings/crossing/A: OK",
+          "bookings/crossing/B: OK",
+          "bookings/harbor/A: OK",
+          "bookings/harbor/B: OK",
+          "bookings/north/A: OK",
+          "bookings/north/B: OK",
+          "archive: OK",
+          "changed order and totals: OK",
+          "numeric dock names and negative totals: OK",
+          "empty load: OK",
+          "weeks across New Year and leap day: OK",
+          "lint file: OK",
+          "lint stdin: OK",
+          "missing file: OK",
+          "stdin: OK",
+          "inline: OK",
+          "version: OK"
+        ]
+      },
+      "assessment": "Research01 initially claimed the executable, then accepted Research03\u2019s offer to implement the CLI front end. Research01 supplied the engine and Research02 the value and date semantics. Research03 ran the assembled program on 17 differential checks. The engine was read through Python\u2019s ordinary bytecode cache. The observed responsibility change concerned implementation. A change of coordinator remains unverified."
     }
   },
   "content_refinements": {
