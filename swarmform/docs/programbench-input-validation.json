@@ -12331,9 +12331,24 @@
               [
                 "Research02",
                 "Research03"
+              ],
+              [
+                "Research03",
+                "Research01"
               ]
             ],
-            "terminal_capture_gaps": 0
+            "terminal_capture_gaps": 0,
+            "earlier_receipt_pairs": [
+              [
+                "Research02",
+                "Research01"
+              ],
+              [
+                "Research02",
+                "Research03"
+              ]
+            ],
+            "mapped_analysis_revision": "463ad8b286511c65c0978e67f7886eb673202e3eb2c0ae5147367b1835fe51d1"
           }
         },
         "independent": {
@@ -12472,10 +12487,21 @@
                 "Research01"
               ]
             ],
-            "terminal_capture_gaps": 0
+            "terminal_capture_gaps": 0,
+            "mapped_analysis_revision": "463ad8b286511c65c0978e67f7886eb673202e3eb2c0ae5147367b1835fe51d1"
           }
         }
       }
     }
+  },
+  "mapped_memory_analysis": {
+    "commit": "41332b95e57646b45ca853587992c692de32b547",
+    "analyzer_tree_sha256": "463ad8b286511c65c0978e67f7886eb673202e3eb2c0ae5147367b1835fe51d1",
+    "updated_modules": {
+      "rollouts/analysis/channels.py": "b659c92d5664f2c3162035f5f7cb9465b9f32181b2e21ed15d76e854dcc5f2bf",
+      "rollouts/analysis/breakpoints.py": "5fd781ef5d3feb7e936e73a7667b9430a93a7806c6f4a16e2901a04ffcd77c25",
+      "rollouts/analysis/mapped_processes.py": "c30ce79fb067b307a2480faa2ba2597bf7eb4970a024151771b2cf392b114846"
+    },
+    "scope": "Shared mapped-memory posthoc receipt attribution on sealed trajectories. Cohort registrations and participant inputs are unchanged."
   }
 }
