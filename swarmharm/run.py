@@ -2772,8 +2772,8 @@ if __name__=='__main__':
                    help='Number of concurrent reporting workstations (default 3, minimum 2).')
     p.add_argument('--active-contexts',type=int,help='Simultaneously active contexts; defaults to and must equal population in a canonical run.')
     p.add_argument('--provider-concurrency',type=int,help='Concurrent provider requests; defaults to active contexts without changing the active agent cohort.')
-    p.add_argument('--startup-concurrency',type=int,default=8,
-        help='Concurrent workstation creation (default 8); use 128 to provision a 128-agent cohort together. All N agents run concurrently after readiness.')
+    p.add_argument('--startup-concurrency',type=int,default=16,
+        help='Concurrent workstation creation (default 16); use 128 to provision a 128-agent cohort together. All N agents run concurrently after readiness.')
     p.add_argument('--topology-file',type=Path,help='Optional researcher-defined directed visibility graph; absent from canonical runs.')
     p.add_argument('--cue-condition',choices=(schedule.DEFAULT_CUE_CONDITION,),
         default=schedule.DEFAULT_CUE_CONDITION, help=argparse.SUPPRESS)

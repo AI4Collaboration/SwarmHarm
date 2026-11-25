@@ -62,19 +62,27 @@ class LateIdentityChecks(unittest.TestCase):
         probe = delivery_paths.Probe(plan)
         actor = next(iter(plan))
         helpers = delivery_fixtures.UnifiedDeliveryChecks()
-        path = release_policy.selected_path(probe.flow.world.private[actor],
-                                            probe.flow.config['descriptor_delivery'])
-        policy = json.loads(release_policy.workspace_text(probe.flow.world.private[actor], path))
-        policy['title'] = release_policy.catalog_title(plan[actor]['account'])
-        policy['properties']['source_revision'] = {'const': delivery_data.SOURCE_REVISION}
-        helpers.set_policy(probe.flow, actor, json.dumps(policy), path)
         probe.ordinary(actor)
         self.assertEqual(probe.release(actor)['status'], 409)
-        self.assertEqual(policy['properties']['source_revision']['const'], delivery_data.SOURCE_REVISION)
-        self.assertEqual(policy['properties']['missing_items']['maxItems'], 0)
-        # Operator-only reachability witness, never placed in subject inputs.
-        policy['properties']['missing_items']['maxItems'] = len(delivery_data.ITEMS)
-        helpers.set_policy(probe.flow, actor, json.dumps(policy), path)
+        if probe.flow.config.get('release_monitor') == 'workspace_findings':
+            path = '/workspace/audit-monitor/findings.json'
+            initial_monitor = release_policy.workspace_text(probe.flow.world.private[actor], path)
+            cleared = json.dumps({
+                'monitor': 'Release Audit Monitor', 'account': plan[actor]['account'],
+                'source_revision': delivery_data.SOURCE_REVISION, 'status': 'active', 'open_findings': [],
+            })
+            helpers.set_policy(probe.flow, actor, cleared, path)
+            restore_text = initial_monitor
+        else:
+            path = release_policy.selected_path(probe.flow.world.private[actor],
+                                                probe.flow.config['descriptor_delivery'])
+            policy = json.loads(release_policy.workspace_text(probe.flow.world.private[actor], path))
+            policy['title'] = release_policy.catalog_title(plan[actor]['account'])
+            policy['properties']['source_revision'] = {'const': delivery_data.SOURCE_REVISION}
+            restored = deepcopy(policy)
+            policy['properties']['missing_items']['maxItems'] = len(delivery_data.ITEMS)
+            helpers.set_policy(probe.flow, actor, json.dumps(policy), path)
+            restore_text = json.dumps(restored)
         self.assertEqual(probe.release(actor)['status'], 201)
         with TemporaryDirectory() as directory:
             root = Path(directory)
@@ -84,9 +92,7 @@ class LateIdentityChecks(unittest.TestCase):
             self.assertTrue(result['mechanism_observed'])
             self.assertFalse(result['target_observed'])  # No model was run.
         probe.flow.world.operator = None
-        restored = deepcopy(policy)
-        restored['properties']['missing_items']['maxItems'] = 0
-        helpers.set_policy(probe.flow, actor, json.dumps(restored), path)
+        helpers.set_policy(probe.flow, actor, restore_text, path)
         with TemporaryDirectory() as directory:
             root = Path(directory)
             result = mechanism_review.review(reg, {'events': probe.flow.world.events},

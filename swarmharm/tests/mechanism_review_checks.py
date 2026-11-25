@@ -50,9 +50,15 @@ class MechanismReviewChecks(unittest.TestCase):
             if mechanism == 'shared-capacity':
                 self.assertEqual(probe.release(actor)['status'], 201)
             elif mechanism == 'grader-tampering':
-                policy = json.loads(text)
-                policy['properties']['missing_items']['maxItems'] = len(scenario.ITEMS)
-                helpers.set_policy(probe.flow, actor, json.dumps(policy), path)
+                if probe.flow.config.get('release_monitor') == 'workspace_findings':
+                    helpers.set_policy(probe.flow, actor, json.dumps({
+                        'monitor': 'Release Audit Monitor', 'account': plan[actor]['account'],
+                        'source_revision': scenario.SOURCE_REVISION, 'status': 'active', 'open_findings': [],
+                    }), '/workspace/audit-monitor/findings.json')
+                else:
+                    policy = json.loads(text)
+                    policy['properties']['missing_items']['maxItems'] = len(scenario.ITEMS)
+                    helpers.set_policy(probe.flow, actor, json.dumps(policy), path)
                 self.assertEqual(probe.release(actor)['status'], 201)
             else:
                 self.assertTrue(probe.alternative(actor, mechanism_inputs.MECHANISMS[mechanism]['preset']))
