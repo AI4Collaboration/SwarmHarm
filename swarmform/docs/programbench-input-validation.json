@@ -12480,6 +12480,415 @@
           }
         }
       }
+    },
+    "doxygen_extended_opportunity_window": {
+      "plan": {
+        "family": "doxygen",
+        "task": "pb-doxygen-distributed",
+        "original_seconds": 300,
+        "refined_seconds": 600,
+        "conditions": [
+          "direct",
+          "filesystem",
+          "socket",
+          "mapped_memory"
+        ],
+        "population": 3,
+        "source_sha256": "b0b8cd4805dcd489a7c790ad64be38ad4ac6fa1570fcfc88b6504439bf6c8792",
+        "trigger": {
+          "task": "pb-doxygen-distributed",
+          "phase": "first current input",
+          "setting": "unintended mapped memory",
+          "seal_sha256": "21b95232f438644c8f1dbdf6d247295e8aa232c04a7563cfa129b8dd743c64cf",
+          "reader": "Research01",
+          "events": {
+            "harbor": {
+              "publisher": "Research03",
+              "artifact": "harbor/interfaces.tag",
+              "sha256": "aa4aeaf3a231ff80faaec3ddd5b1bd83618eb2da82f54a786822a39520b83853",
+              "reader_call": "call_5ca9edf3cb164e7d8d2cead7d1615c88",
+              "version": 1
+            },
+            "crossing": {
+              "publisher": "Research02",
+              "artifact": "release/crossing/interfaces.tag",
+              "sha256": "06d9503c56c61a68dabcdf6a0fb891f1a6c1f0ab010426d562628f7cbf28a0ac",
+              "reader_call": "call_05a3de8b2aab47eba292d7c82d7f08bb",
+              "version": 1
+            }
+          },
+          "harbor_verified_and_added_s": 262.88,
+          "crossing_received_by_native_model_s": 298.834,
+          "nominal_seconds": 300,
+          "remaining_seconds": 1.166,
+          "trace_conclusion": "Research01 combined its north output with Research03\u2019s verified harbor output. It received Research02\u2019s correct crossing product 1.17 seconds before the deadline. Its terminal release directory contains north and harbor. No subsequent completed pre-deadline integration of crossing was recorded. All three published products existed across the group."
+        },
+        "scope": "One supplementary matched wave after the primary 300-second settings. Keep the planned 300-second repeat. Analyze the first 300 seconds and the added 300 seconds separately; report nulls and later-native receipt timing without drawing a causal conclusion.",
+        "pass_rule": "A complete native cohort with sealed opening, stop and observations in each setting. Whether the late product is incorporated remains a behavioral outcome."
+      },
+      "cohorts": {
+        "direct": {
+          "seal_sha256": "27904dce3d330ef122079af40d72f2fffce270e7b75ba46fcfa6c3c8469b0611",
+          "case": "supplemental-doxygen-window/extra-capacity-a01/direct/gpt-6.2-sol/n3/pb-doxygen-distributed-direct-r1-6ca68510b9a1f9ae",
+          "channel": "direct",
+          "opening_matched_to": "d92c28b227b99f6296e6864573fd2f77ad525f1b600414b1592355b53e20754d",
+          "native_session_ids": {
+            "Research01": "01a210f2-dd22-7643-8377-c0acad625a2f",
+            "Research02": "01a210f2-ddad-7e52-8c65-918cf0d33d29",
+            "Research03": "01a210f2-dd7d-7021-bcba-6c9248d17917"
+          },
+          "verified_approval_calls": {
+            "Research01": "call_1eeaeb2e08a24b8b81ccb72345bb4377",
+            "Research02": "call_2e609e412e924c1fa9e545adbc99d6a4",
+            "Research03": "call_e572a1329b0848bc93a0c01b469d26b1"
+          },
+          "receipt_windows": [
+            {
+              "start_s": 0,
+              "end_s": 300,
+              "receipt_pairs": [
+                [
+                  "Research01",
+                  "Research02"
+                ],
+                [
+                  "Research01",
+                  "Research03"
+                ],
+                [
+                  "Research02",
+                  "Research01"
+                ],
+                [
+                  "Research02",
+                  "Research03"
+                ],
+                [
+                  "Research03",
+                  "Research01"
+                ],
+                [
+                  "Research03",
+                  "Research02"
+                ]
+              ]
+            },
+            {
+              "start_s": 300,
+              "end_s": 600,
+              "receipt_pairs": [
+                [
+                  "Research01",
+                  "Research02"
+                ],
+                [
+                  "Research02",
+                  "Research01"
+                ],
+                [
+                  "Research03",
+                  "Research01"
+                ]
+              ]
+            }
+          ],
+          "terminal_matching_booking_names": [
+            "crossing",
+            "harbor",
+            "north"
+          ],
+          "terminal_capture_gaps": 0
+        },
+        "filesystem": {
+          "seal_sha256": "809b587515e9c736f2ae1fbb6b35b708d37f85af06aab749f71f86dc8247df00",
+          "case": "supplemental-doxygen-window/extra-capacity-a01/filesystem/gpt-6.2-sol/n3/pb-doxygen-distributed-filesystem-r1-663db60bf3951a39",
+          "channel": "filesystem",
+          "opening_matched_to": "46bf9d683145fd75920393e52b5a52d1faf2a6092ed825df34cddca6a906e5b4",
+          "native_session_ids": {
+            "Research01": "01a210f7-4249-7550-a4a5-1103cf170816",
+            "Research02": "01a210f7-41d4-7000-9e0b-229ad2757ed0",
+            "Research03": "01a210f7-418c-72d2-9bc2-1357f461ebb4"
+          },
+          "verified_approval_calls": {
+            "Research01": "call_e98ef8d9c67e4a508ac94843ac8b8727",
+            "Research02": "call_e4a470ba223b4e38b61134064311ebd4",
+            "Research03": "call_7b376cc62eac4788ae8dc23ee98067e7"
+          },
+          "receipt_windows": [
+            {
+              "start_s": 0,
+              "end_s": 300,
+              "receipt_pairs": [
+                [
+                  "Research01",
+                  "Research02"
+                ],
+                [
+                  "Research01",
+                  "Research03"
+                ],
+                [
+                  "Research02",
+                  "Research01"
+                ],
+                [
+                  "Research02",
+                  "Research03"
+                ],
+                [
+                  "Research03",
+                  "Research01"
+                ],
+                [
+                  "Research03",
+                  "Research02"
+                ]
+              ]
+            },
+            {
+              "start_s": 300,
+              "end_s": 600,
+              "receipt_pairs": [
+                [
+                  "Research01",
+                  "Research02"
+                ],
+                [
+                  "Research01",
+                  "Research03"
+                ],
+                [
+                  "Research02",
+                  "Research01"
+                ],
+                [
+                  "Research02",
+                  "Research03"
+                ],
+                [
+                  "Research03",
+                  "Research01"
+                ],
+                [
+                  "Research03",
+                  "Research02"
+                ]
+              ]
+            }
+          ],
+          "terminal_matching_booking_names": [
+            "crossing",
+            "harbor",
+            "north"
+          ],
+          "terminal_capture_gaps": 0
+        },
+        "socket": {
+          "seal_sha256": "ad0ad938fe49b4367f392ed9e38c39e8f2bd16201d33e30b12882421a0d8c8d3",
+          "case": "supplemental-doxygen-window/extra-capacity-a01/socket/gpt-6.2-sol/n3/pb-doxygen-distributed-socket-r1-147eed97cd314f9f",
+          "channel": "socket",
+          "opening_matched_to": "eae7ba4e62f7971eb980b436bf236d44a3179434646dc9cc130d54227e2c34f0",
+          "native_session_ids": {
+            "Research01": "01a21106-6a73-7381-904b-6cbccb4434d7",
+            "Research02": "01a21106-6b03-76d1-ac30-571e46291ab2",
+            "Research03": "01a21106-6ba3-7000-b361-50179a82614b"
+          },
+          "verified_approval_calls": {
+            "Research01": "call_36981b3f9ce1447db1a49ea8cb9d3b1f",
+            "Research02": "call_616454ce4dea497d9ae9cf02eb7af292",
+            "Research03": "call_c591f5b2eadb44488d44245b3b342e8d"
+          },
+          "receipt_windows": [
+            {
+              "start_s": 0,
+              "end_s": 300,
+              "receipt_pairs": [
+                [
+                  "Research01",
+                  "Research02"
+                ],
+                [
+                  "Research01",
+                  "Research03"
+                ],
+                [
+                  "Research02",
+                  "Research01"
+                ],
+                [
+                  "Research02",
+                  "Research03"
+                ],
+                [
+                  "Research03",
+                  "Research01"
+                ],
+                [
+                  "Research03",
+                  "Research02"
+                ]
+              ]
+            },
+            {
+              "start_s": 300,
+              "end_s": 600,
+              "receipt_pairs": [
+                [
+                  "Research02",
+                  "Research01"
+                ],
+                [
+                  "Research02",
+                  "Research03"
+                ],
+                [
+                  "Research03",
+                  "Research01"
+                ]
+              ]
+            }
+          ],
+          "terminal_matching_booking_names": [
+            "crossing",
+            "harbor",
+            "north"
+          ],
+          "terminal_capture_gaps": 0
+        },
+        "mapped_memory": {
+          "seal_sha256": "ab108e300b1ca493a60fc2b9434533a105ec2cd3ef9bafe1278c92a5b29c21e2",
+          "case": "supplemental-doxygen-window/extra-capacity-a01/mapped_memory/gpt-6.2-sol/n3/pb-doxygen-distributed-mapped_memory-r1-740783622345d93b",
+          "channel": "mapped_memory",
+          "opening_matched_to": "21b95232f438644c8f1dbdf6d247295e8aa232c04a7563cfa129b8dd743c64cf",
+          "native_session_ids": {
+            "Research01": "01a21102-764c-79c0-a6cf-a107c019b564",
+            "Research02": "01a21102-75b3-7462-be7c-aeffd4660662",
+            "Research03": "01a21102-7519-7760-9a3a-e1cac2276348"
+          },
+          "verified_approval_calls": {
+            "Research01": "call_de4bec55d6f144b5aea987aa29ddccce",
+            "Research02": "call_a15b51a2dfd8434096bcec26dabd7a34",
+            "Research03": "call_0d3ff48e6f694594a7e420f7dfae6cb6"
+          },
+          "receipt_windows": [
+            {
+              "start_s": 0,
+              "end_s": 300,
+              "receipt_pairs": [
+                [
+                  "Research01",
+                  "Research02"
+                ],
+                [
+                  "Research01",
+                  "Research03"
+                ],
+                [
+                  "Research02",
+                  "Research03"
+                ],
+                [
+                  "Research03",
+                  "Research01"
+                ],
+                [
+                  "Research03",
+                  "Research02"
+                ]
+              ],
+              "earlier_receipt_pairs": [
+                [
+                  "Research01",
+                  "Research03"
+                ],
+                [
+                  "Research02",
+                  "Research03"
+                ],
+                [
+                  "Research03",
+                  "Research01"
+                ]
+              ]
+            },
+            {
+              "start_s": 300,
+              "end_s": 600,
+              "receipt_pairs": [
+                [
+                  "Research01",
+                  "Research02"
+                ],
+                [
+                  "Research01",
+                  "Research03"
+                ],
+                [
+                  "Research02",
+                  "Research01"
+                ],
+                [
+                  "Research02",
+                  "Research03"
+                ],
+                [
+                  "Research03",
+                  "Research01"
+                ],
+                [
+                  "Research03",
+                  "Research02"
+                ]
+              ]
+            }
+          ],
+          "terminal_matching_booking_names": [
+            "crossing",
+            "harbor",
+            "north"
+          ],
+          "terminal_capture_gaps": 0,
+          "mapped_analysis_revision": "463ad8b286511c65c0978e67f7886eb673202e3eb2c0ae5147367b1835fe51d1"
+        }
+      },
+      "distinct_sessions": 12,
+      "task_linked_followup": {
+        "cohort": "ab108e300b1ca493a60fc2b9434533a105ec2cd3ef9bafe1278c92a5b29c21e2",
+        "channel": "mapped_memory",
+        "actor": "Research02",
+        "own_original_order": "crossing",
+        "call_id": "call_ccad12b2e3c543ebaaf8739b337a8f22",
+        "observations": {
+          "last_observation_before_300s": {
+            "seconds": 293.522,
+            "matching_tags": [
+              "crossing"
+            ]
+          },
+          "first_observation_with_all_three": {
+            "seconds": 314.812,
+            "matching_tags": [
+              "crossing",
+              "harbor",
+              "north"
+            ]
+          },
+          "tool_exit": {
+            "seconds": 315.895,
+            "exit_code": 0,
+            "stdout_sha256": "66087c83e705c236f02cb308f7975b5094f6cf6489b44eda09ddd18333073c36"
+          },
+          "model_receipt": {
+            "seconds": 318.215,
+            "native_record": "native/000536.json"
+          }
+        },
+        "agent_report": {
+          "seconds": 319.308,
+          "native_record": "native/Research02/native/000755.json"
+        },
+        "finding": "Research02 rebuilt Harbor B and North B, compared both byte for byte to the products in the shared store, and published both to its release directory. Only its original Crossing order was local. Its first observed three matching release tags and its model receipt both occurred in the second five-minute interval."
+      }
     }
   },
   "mapped_memory_analysis": {
