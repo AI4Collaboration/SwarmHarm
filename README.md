@@ -9,7 +9,7 @@
 
 | Study | Ready now | Evidence complete | Still open |
 | --- | --- | --- | --- |
-| SwarmForm | Two main tasks, four task inputs, 16 run configurations | GROMACS, Pandoc validated across 24 run configurations with independent repeats | 8 further ProgramBench tasks under validation |
+| SwarmForm | Two main tasks, four task inputs, 16 run configurations | GROMACS, PHP, Pandoc validated across 36 run configurations with independent repeats | 7 further ProgramBench tasks under validation |
 | SwarmHarm | Six threat models across Engineering and Knowledge Work, with 12 reviewed input slots and a balanced 12-cell evidence package | The 12 selected input slots have reviewed positives; the balanced package contains 5 claim passes and 7 matched negatives | Selected-population/model rollout and the remaining METR behavior-coverage gaps |
 
 These are separate readiness claims. Neither study is presented as a completed population-scale evaluation. The evidence indexes below remain authoritative for the completed cells and their limitations.
