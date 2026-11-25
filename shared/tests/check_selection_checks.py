@@ -202,11 +202,16 @@ class CheckSelectionChecks(unittest.TestCase):
             self.assertEqual(plan['harnesses'], [])
 
     def test_shared_workstation_and_full_checks_keep_runtime_coverage(self):
-        for plan in (select(['shared/workstation.py']), select([], full=True)):
+        # SwarmForm evidence is sealed: shared runtime changes regress only the
+        # active SwarmHarm study, while an explicit --full sweep still covers all.
+        sealed, complete = select(['shared/workstation.py']), select([], full=True)
+        for plan in (sealed, complete):
             self.assertTrue(plan['docker'])
             self.assertEqual(plan['harnesses'], ['claude', 'codex', 'pi'])
-            self.assertIn('tests.swarmform_collection_checks', plan['tests'])
             self.assertIn('tests.review_checks', plan['tests'])
+        self.assertNotIn('tests.swarmform_collection_checks', sealed['tests'])
+        self.assertIn('tests.swarmform_collection_checks', complete['tests'])
+        self.assertIn('tests.unified_delivery_checks', sealed['tests'])
 
     def test_delivery_archive_edits_keep_business_checks_without_native_sessions(self):
         for helper in ('delivery_archive', 'delivered_outcome'):

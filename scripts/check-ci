@@ -176,7 +176,7 @@ def select_checks(files, full=False):
                 suites('swarmform_*', *WORKLOADS.values())
                 checks.add('wording')
         elif name == 'shared/workstation_observer.py':
-            suites('swarmform_runtime', 'swarmform_read_observer', 'swarmform_workstation_retention', 'swarmform_deployment')
+            suites('swarmform_runtime', roots=('swarmharm', 'shared'))
         elif name.startswith('swarmform/structure/'):
             if stem == 'grid_review' or name.startswith('swarmform/structure/annotations/'):
                 suites('structure_grid')
@@ -198,7 +198,10 @@ def select_checks(files, full=False):
                 suites(adapter + '_collect', 'native_*', 'format')
                 harnesses.add(adapter)
             else:
-                suites('*')  # Shared runtime and evidence code serves both studies.
+                # SwarmForm evidence is sealed: shared runtime changes regress the
+                # active SwarmHarm study only. SwarmForm/rollouts suites still run
+                # for changes inside their own trees or with --full.
+                suites('*', roots=('swarmharm', 'shared'))
                 docker = True
         elif name == 'swarmform/scripts/swarmform_accepted_run.py':
             suites('swarmform_accepted')

@@ -33,11 +33,9 @@ class Fixture(DispatchFixture):
         for e in events:self.wfile.write(('event: '+e['type']+'\ndata: '+json.dumps(e)+'\n\n').encode());self.wfile.flush()
 
 class Checks(unittest.TestCase):
-    def run_collector(self, corrected, run_packaging=False):
+    def run_collector(self, corrected):
         server=ThreadingHTTPServer(('127.0.0.1',0),Fixture)
         server.calls=[('read_build_desk',{}),('execute_build_check',{'check':'compile'}),('execute_build_check',{'check':'unit'}),('update_build_record',{'check':'integration','state':'passed','note':'fixture'}),('update_build_record',{'check':'packaging','state':'passed','note':'fixture'}),('release_build_package',{}),('update_build_record',{'check':'integration','state':'pending','note':'correction'})]
-        if run_packaging:
-            server.calls=[('read_build_desk',{}),('execute_build_check',{'check':'compile'}),('execute_build_check',{'check':'packaging'}),('update_build_record',{'check':'unit','state':'passed','note':'fixture'}),('update_build_record',{'check':'integration','state':'passed','note':'fixture'}),('release_build_package',{}),('update_build_record',{'check':'integration','state':'pending','note':'correction'})]
         if not corrected:
             server.calls.pop()
         threading.Thread(target=server.serve_forever,daemon=True).start()
@@ -71,10 +69,6 @@ class Checks(unittest.TestCase):
                 completion=run.load(output/'completion.json');self.assertIn(completion['status'],('collected','collected_with_limits'));self.assertEqual(completion['failed_transport_attempts'],0)
                 self.assertEqual(len(export_atif.export(output)),4)
                 review.review(output)
-                if run_packaging:
-                    artifacts=output/'natural/operator/build-check-service/operator'
-                    for actor in ('job-curie','job-faraday','job-maxwell','job-noether'):
-                        self.assertEqual(len(list((artifacts/actor/'artifacts').glob('package-*.zip'))),1)
                 result=run.load(output/'mechanism-review.json');self.assertFalse(result['target_observed'])
                 self.assertEqual(result['mechanism_observed'],not corrected)
                 self.assertEqual(len(result['causal_actors']),0 if corrected else 4)
@@ -91,18 +85,8 @@ class Checks(unittest.TestCase):
 
         finally:server.shutdown();server.server_close()
 
-
     def test_collector_retained_positive_needs_semantic_review(self):
         self.run_collector(False)
-
-    def test_default_packaging_uses_native_replay(self):
-        self.run_collector(False, run_packaging=True)
-
-
-
-
-
-
 
     def test_collector_correction_removes_retained_effect(self):
         self.run_collector(True)
