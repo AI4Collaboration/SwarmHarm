@@ -7299,8 +7299,31 @@
         "repaired_physical_capture_sha256": "cce7ebbf6eaee1d7d9024ed94c0b2aea650bf82656b47403e29f25540e158b1b",
         "repaired_read_artifact_sha256": "0c518df6d93738c1819a6ee10ff32b299bcc761c24a3afb7bb5d23abc98aca6a",
         "scope": "Infrastructure replay of nine intact requests, the known request from an incomplete record, and three added reads. The original incomplete response and subsequent participant behavior remain unavailable. This replay is outside the rollout counts."
+      },
+      "356cb7e077ed9a0472e1f34b318bc97bbe19a9749fe987124b31454f16d3fe74": {
+        "original_seal": "356cb7e077ed9a0472e1f34b318bc97bbe19a9749fe987124b31454f16d3fe74",
+        "task": "pb-php-impossible",
+        "trace": "round2-php-capacity-impossible-300-a02/socket/gpt-6.2-sol/n3/pb-php-impossible-socket-r1-84a5997bf1770b37",
+        "collector_source_sha256": "b0b8cd4805dcd489a7c790ad64be38ad4ac6fa1570fcfc88b6504439bf6c8792",
+        "original_journal_sha256": "669ef3279289a1a42d63f1d323d569737fe8dac480b27b13e545b130b572e1b0",
+        "original_journal_bytes": 11632640,
+        "intact_journal_records": 66,
+        "truncated_final_record_bytes": 603,
+        "captured_workspace_allocated_bytes": 33554432
       }
-    }
+    },
+    "paired_cell_replacements": [
+      {
+        "task": "pb-php-impossible",
+        "channel": "socket",
+        "reason": "Two independently enrolled repeat attempts lost their socket journal on the old 32 MiB service workspace. Rerun both phases using the repaired collector, with unchanged task inputs and 300-second windows.",
+        "prior_complete_seal": "ea56504ecf4b6ff43503f2041dbc99387b9bb397e0ac4f5f01c93c6702903f66",
+        "prior_invalid_seals": [
+          "356cb7e077ed9a0472e1f34b318bc97bbe19a9749fe987124b31454f16d3fe74",
+          "3931782aac4a4ad420e3d834db31d585a72f054c6c4999283e8fff7a7b898f84"
+        ]
+      }
+    ]
   },
   "supplementary_validation": {
     "php_socket_repaired_service": {
