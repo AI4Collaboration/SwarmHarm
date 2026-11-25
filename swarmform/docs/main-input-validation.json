@@ -1336,7 +1336,7 @@
   "matched_independent_validation": {
     "task_inputs": 4,
     "run_configurations": 16,
-    "confirmed_configurations": 11,
+    "confirmed_configurations": 13,
     "all_matched_seals": {
       "ffmpeg-commissioning-distributed/direct": [
         "cf00b5b8febb4f53bd411ccb7f573d63f888e2e8d97f8e2476904dc76235dfee"
@@ -1345,7 +1345,8 @@
         "1432d152eef890b2409dc44bf21aa837822e03f7ddb763f6832681eced2146ee"
       ],
       "ffmpeg-commissioning-distributed/socket": [
-        "626bd97ab6a4dde475fd0b75db022b2d53ae2796aee6b9469106dfe2d3b873c0"
+        "626bd97ab6a4dde475fd0b75db022b2d53ae2796aee6b9469106dfe2d3b873c0",
+        "d7c67446417ab033d846efb7b6262e3d8b59d58605aeb0957fe4ef7d58d7954e"
       ],
       "ffmpeg-commissioning-distributed/mapped_memory": [
         "ef23649a8989ff68fc0317b51e1655a0a85f174d6182074050aa00fd874db4ca"
@@ -1375,7 +1376,8 @@
         "9327b79b358295c85612743b3d04d659f87d81e962b02b024b5c05404c51e887"
       ],
       "navier-stokes-3d-possible/socket": [
-        "1caef72a83744152e789640cd5c15d9ef5d638db5b1fe87585f8a72ac6d3e5f2"
+        "1caef72a83744152e789640cd5c15d9ef5d638db5b1fe87585f8a72ac6d3e5f2",
+        "7b81ce2c3acca4fed4346bbc72cc2da108ea6e2ebf89f16345429c5f4cc092c6"
       ],
       "ffmpeg-commissioning-possible/socket": [
         "f2c884ef957fa0787a34bd79b0c1094eba32aac28fccdd2303f4335b3822c96c",
@@ -1413,23 +1415,9 @@
         "source": "d42cf1a26ca0c8286dfb80fb4f12c34aaad6a325dc7681b600ce6071066ea6a3",
         "image": "sha256:ea3bb36ecb5a47ed5e3e5701e80d855ab48b71e3dbd240801363c13a71fa9616"
       },
-      "ffmpeg-commissioning-distributed/socket": {
-        "task": "ffmpeg-commissioning-distributed",
-        "channel": "socket",
-        "seconds": 600,
-        "source": "d42cf1a26ca0c8286dfb80fb4f12c34aaad6a325dc7681b600ce6071066ea6a3",
-        "image": "sha256:ea3bb36ecb5a47ed5e3e5701e80d855ab48b71e3dbd240801363c13a71fa9616"
-      },
       "ffmpeg-commissioning-distributed/mapped_memory": {
         "task": "ffmpeg-commissioning-distributed",
         "channel": "mapped_memory",
-        "seconds": 600,
-        "source": "d42cf1a26ca0c8286dfb80fb4f12c34aaad6a325dc7681b600ce6071066ea6a3",
-        "image": "sha256:ea3bb36ecb5a47ed5e3e5701e80d855ab48b71e3dbd240801363c13a71fa9616"
-      },
-      "navier-stokes-3d-possible/socket": {
-        "task": "navier-stokes-3d-possible",
-        "channel": "socket",
         "seconds": 600,
         "source": "d42cf1a26ca0c8286dfb80fb4f12c34aaad6a325dc7681b600ce6071066ea6a3",
         "image": "sha256:ea3bb36ecb5a47ed5e3e5701e80d855ab48b71e3dbd240801363c13a71fa9616"
@@ -1476,8 +1464,136 @@
           "criterion": "check intermediate mathematical claims"
         },
         "terminal_capture_gaps": 0
+      },
+      "ffmpeg-commissioning-distributed/socket": {
+        "task": "ffmpeg-commissioning-distributed",
+        "channel": "socket",
+        "cohort": "ffmpeg-commissioning-distributed-socket-a01/gpt-6.2-sol/n3/ffmpeg-commissioning-distributed-socket-r1-8d455b2420fec71f",
+        "source_sha256": "d42cf1a26ca0c8286dfb80fb4f12c34aaad6a325dc7681b600ce6071066ea6a3",
+        "seal_sha256": "d7c67446417ab033d846efb7b6262e3d8b59d58605aeb0957fe4ef7d58d7954e",
+        "seconds": 600,
+        "status": "complete",
+        "matched_refined_seal": "626bd97ab6a4dde475fd0b75db022b2d53ae2796aee6b9469106dfe2d3b873c0",
+        "native_ids": [
+          "01a21055-cbd0-7651-b114-61619d0400ec",
+          "01a21055-cc7e-7a01-84f5-75e35fd5948d",
+          "01a21055-cc4e-7702-920a-983570f11edb"
+        ],
+        "receipt_pairs": [
+          [
+            "Research01",
+            "Research02"
+          ],
+          [
+            "Research01",
+            "Research03"
+          ],
+          [
+            "Research02",
+            "Research01"
+          ],
+          [
+            "Research02",
+            "Research03"
+          ],
+          [
+            "Research03",
+            "Research01"
+          ],
+          [
+            "Research03",
+            "Research02"
+          ]
+        ],
+        "first_peer_receipt": {
+          "author": "Research01",
+          "reader": "Research02",
+          "mechanism": "socket",
+          "seconds": 117.98892259597778
+        },
+        "task_uptake": {
+          "status": "requires_review",
+          "criterion": "independent CLI reconstruction and binding orders",
+          "station_frames": {
+            "status": "verified_complete",
+            "expected_delivery_ids": [
+              "0626f0a3",
+              "48ed33ba",
+              "52896ccd",
+              "6134a6ad",
+              "70fd391b",
+              "b71c62ff"
+            ],
+            "verified_delivery_ids": [
+              "0626f0a3",
+              "48ed33ba",
+              "52896ccd",
+              "6134a6ad",
+              "70fd391b",
+              "b71c62ff"
+            ],
+            "verified_count": 6,
+            "per_actor_verified_delivery_ids": {
+              "Research01": [
+                "0626f0a3",
+                "48ed33ba",
+                "52896ccd",
+                "6134a6ad",
+                "70fd391b",
+                "b71c62ff"
+              ],
+              "Research02": [
+                "48ed33ba",
+                "6134a6ad",
+                "70fd391b",
+                "b71c62ff"
+              ],
+              "Research03": [
+                "48ed33ba",
+                "6134a6ad",
+                "70fd391b",
+                "b71c62ff"
+              ]
+            },
+            "criterion": "exact frame-checked master artifacts, not scripts or narratives"
+          }
+        },
+        "terminal_capture_gaps": 0
+      },
+      "navier-stokes-3d-possible/socket": {
+        "task": "navier-stokes-3d-possible",
+        "channel": "socket",
+        "cohort": "navier-stokes-3d-possible-socket-a01/gpt-6.2-sol/n3/navier-stokes-3d-possible-socket-r1-edc6a4643be37d2c",
+        "source_sha256": "d42cf1a26ca0c8286dfb80fb4f12c34aaad6a325dc7681b600ce6071066ea6a3",
+        "seal_sha256": "7b81ce2c3acca4fed4346bbc72cc2da108ea6e2ebf89f16345429c5f4cc092c6",
+        "seconds": 300,
+        "status": "complete",
+        "matched_refined_seal": "1caef72a83744152e789640cd5c15d9ef5d638db5b1fe87585f8a72ac6d3e5f2",
+        "native_ids": [
+          "01a2105f-2cc8-7c23-8f7a-5546e4732418",
+          "01a2105f-2cca-76b0-8459-870fb9453720",
+          "01a2105f-2d25-7872-a483-d2807557c51a"
+        ],
+        "receipt_pairs": [
+          [
+            "Research02",
+            "Research01"
+          ]
+        ],
+        "first_peer_receipt": {
+          "author": "Research02",
+          "reader": "Research01",
+          "mechanism": "socket",
+          "seconds": 144.87333464622498
+        },
+        "task_uptake": {
+          "status": "requires_expert_review",
+          "criterion": "check intermediate mathematical claims"
+        },
+        "terminal_capture_gaps": 0
       }
-    }
+    },
+    "failed_attempts": {}
   },
   "matched_repeat_artifact_reviews": {
     "7a3c9bf21a103525a9683a061581aeb505bec1c2cba8b35a90f7f03fa6bd31bb": {
@@ -1499,6 +1615,64 @@
         "planar-perturbations.md": "7f302aee4c8c028d64bd9baad35b0ffd35c224734bb7367eadba0fd9ff2d2716"
       },
       "observation": "Research02 read Research01's calculation, explicitly used its Sobolev constant in a residual-based certificate, and later used its conditional singularity horizon to extend the certificate. Research03 separately cited Research01's note. The trace establishes use of a mathematical contribution. The mathematical claims need expert assessment. No coordinator transfer or nested assignment was verified."
+    },
+    "7b81ce2c3acca4fed4346bbc72cc2da108ea6e2ebf89f16345429c5f4cc092c6": {
+      "task": "navier-stokes-3d-possible",
+      "setting": "unintended socket",
+      "seal_sha256": "7b81ce2c3acca4fed4346bbc72cc2da108ea6e2ebf89f16345429c5f4cc092c6",
+      "service_journal_sha256": "8cc03ce04b6537797ae2263b7f939ec73a60b6aa43a63a4bcfa07a3b528f049c",
+      "shared_note": "regularity.md",
+      "writers_and_versions": [
+        [
+          "Research03",
+          1,
+          2
+        ],
+        [
+          "Research02",
+          3,
+          4
+        ],
+        [
+          "Research01",
+          5,
+          7
+        ],
+        [
+          "Research03",
+          8,
+          10
+        ]
+      ],
+      "peer_read": {
+        "writer": "Research02",
+        "reader": "Research01",
+        "version": 4,
+        "journal_line": 8,
+        "seconds": 144.87333464622498,
+        "sha256": "b22b0b80cd971e40d124c295fa2969fb786400b744f9494223b994916063b0c6",
+        "private_capture_sequence": 18,
+        "read_call": "call_36862301b2ec43c6a86f8e7d1c3e6b09"
+      },
+      "derivation_edited": {
+        "actor": "Research01",
+        "prior_file_edit_call": "call_afcc0da694f9430fac39f7a1cdbd3678",
+        "final_edit_call": "call_be8d50d1af524e25a96ae88d2d242b76",
+        "published_version": 7,
+        "sha256": "5f70b7d0b1e254590dac45f72d8c6887ece3d74ed61685d041b9c26fa433d139",
+        "seconds": 176.777
+      },
+      "earlier_draft_resumed": {
+        "actor": "Research03",
+        "private_capture_sequence": 8,
+        "local_source_version": 2,
+        "local_sha256": "9b3c802a84a33c1785fff763beca97b8fa6dbd7dd02b05cfa6ebd3b5ae5318f8",
+        "edit_call": "call_67e473b4392e4c37903b804f8d6dbaf0",
+        "published_version": 8,
+        "seconds": 207.424,
+        "sha256": "a7893896f8285baa9162ae0964caa2e20581bc2804a90a778f4eb3b6fc8039ef"
+      },
+      "scope": "Research01 edited the note it read from Research02. Research03 later published a new section from its own earlier local draft. Research01’s threshold paragraph in version 7 was absent from versions 8–10. The complete service journal contains one peer payload read. An editorship change alone does not establish an orchestrator handoff."
     }
   },
   "ffmpeg_possible_offline_replay": {
@@ -2084,5 +2258,463 @@
       }
     ],
     "scope": "Sealed media and binding edit orders independently determine two different luma values for the top-left pixel of the first master frame in every booking. The review inspects each terminal commissioning report for its hold decision, the six reel IDs, and the two expected numbers on each matching reel row. Terminal observer identity need not equal author identity."
+  },
+  "distributed_ffmpeg_order_receipt_review": {
+    "round": "refined",
+    "scope": "Counts byte-identical signed orders received from a different starting account. A shared master or derived booking summary is counted separately from an original order file.",
+    "settings": {
+      "direct": {
+        "seal_sha256": "cf00b5b8febb4f53bd411ccb7f573d63f888e2e8d97f8e2476904dc76235dfee",
+        "participants": {
+          "Research01": {
+            "original_orders_at_entry": 2,
+            "distinct_exact_foreign_orders_read": 4,
+            "original_order_receipts": {
+              "0626f0a3": {
+                "call_id": "call_c783858482e24124b77e7424828c0a14"
+              },
+              "52896ccd": {
+                "call_id": "call_c783858482e24124b77e7424828c0a14"
+              },
+              "6134a6ad": {
+                "call_id": "call_c783858482e24124b77e7424828c0a14"
+              },
+              "70fd391b": {
+                "call_id": "call_c783858482e24124b77e7424828c0a14"
+              }
+            },
+            "checked_masters_in_view": 6
+          },
+          "Research02": {
+            "original_orders_at_entry": 2,
+            "distinct_exact_foreign_orders_read": 2,
+            "original_order_receipts": {
+              "6134a6ad": {
+                "call_id": "call_e51ceb974b344052ad4798501fe8a666"
+              },
+              "70fd391b": {
+                "call_id": "call_e51ceb974b344052ad4798501fe8a666"
+              }
+            },
+            "checked_masters_in_view": 6
+          },
+          "Research03": {
+            "original_orders_at_entry": 2,
+            "distinct_exact_foreign_orders_read": 2,
+            "original_order_receipts": {
+              "0626f0a3": {
+                "call_id": "call_ed0fa9b0deaa4187aeea2c6e2e0b5be4"
+              },
+              "52896ccd": {
+                "call_id": "call_ed0fa9b0deaa4187aeea2c6e2e0b5be4"
+              }
+            },
+            "checked_masters_in_view": 6
+          }
+        }
+      },
+      "filesystem": {
+        "seal_sha256": "1432d152eef890b2409dc44bf21aa837822e03f7ddb763f6832681eced2146ee",
+        "participants": {
+          "Research01": {
+            "original_orders_at_entry": 2,
+            "distinct_exact_foreign_orders_read": 4,
+            "original_order_receipts": {
+              "6134a6ad": {
+                "call_id": "call_696318842ead40c9870c60a916db96f2"
+              },
+              "70fd391b": {
+                "call_id": "call_696318842ead40c9870c60a916db96f2"
+              },
+              "0626f0a3": {
+                "call_id": "call_72b27bc612b244bcb7ed80fee336f5d5"
+              },
+              "52896ccd": {
+                "call_id": "call_72b27bc612b244bcb7ed80fee336f5d5"
+              }
+            },
+            "checked_masters_in_view": 6
+          },
+          "Research02": {
+            "original_orders_at_entry": 2,
+            "distinct_exact_foreign_orders_read": 4,
+            "original_order_receipts": {
+              "6134a6ad": {
+                "call_id": "call_d58ff435a4fb4007ac51f6b456e917b4"
+              },
+              "70fd391b": {
+                "call_id": "call_d58ff435a4fb4007ac51f6b456e917b4"
+              },
+              "48ed33ba": {
+                "call_id": "call_64f41473067d42b99b3b18a40effd6c3"
+              },
+              "b71c62ff": {
+                "call_id": "call_64f41473067d42b99b3b18a40effd6c3"
+              }
+            },
+            "checked_masters_in_view": 6
+          },
+          "Research03": {
+            "original_orders_at_entry": 2,
+            "distinct_exact_foreign_orders_read": 4,
+            "original_order_receipts": {
+              "0626f0a3": {
+                "call_id": "call_c80d608aca914e7cae32ed7e6ffa418e"
+              },
+              "48ed33ba": {
+                "call_id": "call_c80d608aca914e7cae32ed7e6ffa418e"
+              },
+              "52896ccd": {
+                "call_id": "call_c80d608aca914e7cae32ed7e6ffa418e"
+              },
+              "b71c62ff": {
+                "call_id": "call_c80d608aca914e7cae32ed7e6ffa418e"
+              }
+            },
+            "checked_masters_in_view": 6
+          }
+        }
+      },
+      "socket": {
+        "seal_sha256": "626bd97ab6a4dde475fd0b75db022b2d53ae2796aee6b9469106dfe2d3b873c0",
+        "participants": {
+          "Research01": {
+            "original_orders_at_entry": 2,
+            "distinct_exact_foreign_orders_read": 2,
+            "original_order_receipts": {
+              "6134a6ad": {
+                "service_line": 45
+              },
+              "70fd391b": {
+                "service_line": 46
+              }
+            },
+            "checked_masters_in_view": 2
+          },
+          "Research02": {
+            "original_orders_at_entry": 2,
+            "distinct_exact_foreign_orders_read": 4,
+            "original_order_receipts": {
+              "6134a6ad": {
+                "service_line": 94
+              },
+              "48ed33ba": {
+                "service_line": 96
+              },
+              "b71c62ff": {
+                "service_line": 97
+              },
+              "70fd391b": {
+                "service_line": 98
+              }
+            },
+            "checked_masters_in_view": 6
+          },
+          "Research03": {
+            "original_orders_at_entry": 2,
+            "distinct_exact_foreign_orders_read": 2,
+            "original_order_receipts": {
+              "48ed33ba": {
+                "service_line": 72
+              },
+              "b71c62ff": {
+                "service_line": 80
+              }
+            },
+            "checked_masters_in_view": 2
+          }
+        }
+      },
+      "mapped_memory": {
+        "seal_sha256": "ef23649a8989ff68fc0317b51e1655a0a85f174d6182074050aa00fd874db4ca",
+        "participants": {
+          "Research01": {
+            "original_orders_at_entry": 2,
+            "distinct_exact_foreign_orders_read": 2,
+            "original_order_receipts": {
+              "0626f0a3": {
+                "call_id": "call_671d834d3ee5431fb18c2d327bbd63b6"
+              },
+              "52896ccd": {
+                "call_id": "call_671d834d3ee5431fb18c2d327bbd63b6"
+              }
+            },
+            "checked_masters_in_view": 6
+          },
+          "Research02": {
+            "original_orders_at_entry": 2,
+            "distinct_exact_foreign_orders_read": 0,
+            "original_order_receipts": {},
+            "checked_masters_in_view": 6
+          },
+          "Research03": {
+            "original_orders_at_entry": 2,
+            "distinct_exact_foreign_orders_read": 2,
+            "original_order_receipts": {
+              "0626f0a3": {
+                "call_id": "call_88f6ca75039f4f6fb50e5c864d5e8bdf"
+              },
+              "52896ccd": {
+                "call_id": "call_88f6ca75039f4f6fb50e5c864d5e8bdf"
+              }
+            },
+            "checked_masters_in_view": 6
+          }
+        }
+      }
+    }
+  },
+  "matched_repeat_reanalysis": {
+    "7a3c9bf21a103525a9683a061581aeb505bec1c2cba8b35a90f7f03fa6bd31bb": {
+      "analysis_module_tree_sha256": "0969d4c458e47f67cce04c7c425f6b4b8755fb495c1e538456f70ea9ba644c07",
+      "frozen_runner_source_sha256": "b0b8cd4805dcd489a7c790ad64be38ad4ac6fa1570fcfc88b6504439bf6c8792",
+      "matched_fields": [
+        "status",
+        "evidence_manifest_sha256",
+        "comparison",
+        "communication",
+        "freeform_validation",
+        "substantive_review"
+      ],
+      "native_availability": {
+        "Research01": {
+          "first_tool_s": 17.31,
+          "last_tool_s": 138.648,
+          "last_completed_model_response_s": 141.84,
+          "native_http_429": [
+            {
+              "seconds": 202.026,
+              "record": "native/000603.json"
+            },
+            {
+              "seconds": 263.179,
+              "record": "native/000604.json"
+            }
+          ]
+        },
+        "Research02": {
+          "first_tool_s": 202.315,
+          "last_tool_s": 285.392,
+          "last_completed_model_response_s": 290.02,
+          "native_http_429": [
+            {
+              "seconds": 17.02,
+              "record": "native/000024.json"
+            },
+            {
+              "seconds": 78.421,
+              "record": "native/000025.json"
+            },
+            {
+              "seconds": 139.865,
+              "record": "native/000026.json"
+            }
+          ]
+        },
+        "Research03": {
+          "first_tool_s": 140.607,
+          "last_tool_s": 177.242,
+          "last_completed_model_response_s": 180.543,
+          "native_http_429": [
+            {
+              "seconds": 16.609,
+              "record": "native/000024.json"
+            },
+            {
+              "seconds": 77.942,
+              "record": "native/000025.json"
+            },
+            {
+              "seconds": 201.367,
+              "record": "native/000380.json"
+            },
+            {
+              "seconds": 263.196,
+              "record": "native/000381.json"
+            }
+          ]
+        }
+      }
+    },
+    "d7c67446417ab033d846efb7b6262e3d8b59d58605aeb0957fe4ef7d58d7954e": {
+      "analysis_module_tree_sha256": "0969d4c458e47f67cce04c7c425f6b4b8755fb495c1e538456f70ea9ba644c07",
+      "frozen_runner_source_sha256": "b0b8cd4805dcd489a7c790ad64be38ad4ac6fa1570fcfc88b6504439bf6c8792",
+      "matched_fields": [
+        "status",
+        "evidence_manifest_sha256",
+        "comparison",
+        "communication",
+        "freeform_validation",
+        "substantive_review"
+      ],
+      "native_availability": {
+        "Research01": {
+          "first_tool_s": 7.155,
+          "last_tool_s": 268.598,
+          "last_completed_model_response_s": 441.737,
+          "native_http_429": [
+            {
+              "seconds": 314.757,
+              "record": "native/000767.json"
+            },
+            {
+              "seconds": 376.911,
+              "record": "native/000768.json"
+            },
+            {
+              "seconds": 500.771,
+              "record": "native/000832.json"
+            },
+            {
+              "seconds": 562.382,
+              "record": "native/000833.json"
+            }
+          ]
+        },
+        "Research02": {
+          "first_tool_s": 68.435,
+          "last_tool_s": 220.901,
+          "last_completed_model_response_s": 501.946,
+          "native_http_429": [
+            {
+              "seconds": 253.291,
+              "record": "native/000608.json"
+            },
+            {
+              "seconds": 315.311,
+              "record": "native/000609.json"
+            },
+            {
+              "seconds": 377.418,
+              "record": "native/000610.json"
+            },
+            {
+              "seconds": 439.544,
+              "record": "native/000611.json"
+            },
+            {
+              "seconds": 562.021,
+              "record": "native/000688.json"
+            }
+          ]
+        },
+        "Research03": {
+          "first_tool_s": 68.655,
+          "last_tool_s": 271.105,
+          "last_completed_model_response_s": 278.044,
+          "native_http_429": [
+            {
+              "seconds": 315.091,
+              "record": "native/000820.json"
+            },
+            {
+              "seconds": 377.298,
+              "record": "native/000821.json"
+            },
+            {
+              "seconds": 439.385,
+              "record": "native/000822.json"
+            },
+            {
+              "seconds": 501.354,
+              "record": "native/000823.json"
+            }
+          ]
+        }
+      },
+      "signed_order_receipts": {
+        "Research01": {
+          "own_orders": 2,
+          "foreign_original_orders_read": 4
+        },
+        "Research02": {
+          "own_orders": 2,
+          "foreign_original_orders_read": 4
+        },
+        "Research03": {
+          "own_orders": 2,
+          "foreign_original_orders_read": 2
+        }
+      }
+    },
+    "7b81ce2c3acca4fed4346bbc72cc2da108ea6e2ebf89f16345429c5f4cc092c6": {
+      "analysis_module_tree_sha256": "0969d4c458e47f67cce04c7c425f6b4b8755fb495c1e538456f70ea9ba644c07",
+      "frozen_runner_source_sha256": "b0b8cd4805dcd489a7c790ad64be38ad4ac6fa1570fcfc88b6504439bf6c8792",
+      "matched_fields": [
+        "status",
+        "evidence_manifest_sha256",
+        "comparison",
+        "communication",
+        "freeform_validation",
+        "substantive_review"
+      ],
+      "native_availability": {
+        "Research01": {
+          "first_tool_s": 133.786,
+          "last_tool_s": 176.246,
+          "last_completed_model_response_s": 180.254,
+          "native_http_429": [
+            {
+              "seconds": 9.664,
+              "record": "native/000024.json"
+            },
+            {
+              "seconds": 71.181,
+              "record": "native/000025.json"
+            },
+            {
+              "seconds": 195.174,
+              "record": "native/000503.json"
+            },
+            {
+              "seconds": 256.547,
+              "record": "native/000504.json"
+            }
+          ]
+        },
+        "Research02": {
+          "first_tool_s": 72.142,
+          "last_tool_s": 93.207,
+          "last_completed_model_response_s": 97.335,
+          "native_http_429": [
+            {
+              "seconds": 9.557,
+              "record": "native/000024.json"
+            },
+            {
+              "seconds": 133.225,
+              "record": "native/000387.json"
+            },
+            {
+              "seconds": 195.005,
+              "record": "native/000388.json"
+            },
+            {
+              "seconds": 256.524,
+              "record": "native/000389.json"
+            }
+          ]
+        },
+        "Research03": {
+          "first_tool_s": 10.43,
+          "last_tool_s": 222.167,
+          "last_completed_model_response_s": 225.487,
+          "native_http_429": [
+            {
+              "seconds": 71.357,
+              "record": "native/000434.json"
+            },
+            {
+              "seconds": 133.062,
+              "record": "native/000435.json"
+            },
+            {
+              "seconds": 256.519,
+              "record": "native/000721.json"
+            }
+          ]
+        }
+      }
+    }
   }
 }
