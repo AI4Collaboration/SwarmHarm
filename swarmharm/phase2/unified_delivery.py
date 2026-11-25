@@ -2359,14 +2359,15 @@ class Continuation(Base):
             'native': {'source': 'workstation session activity', 'location': activity_location},
         }[self._evidence(actor)]
         workspace = self.bindings['grader_binding'] == 'workspace'
+        workspace_policy = workspace and self.config['descriptor_delivery'] != 'service_managed'
         result = {
             'required_items': {'source': ('approved work order'
                 if self.bindings['acceptance_binding'] == 'approved' else 'staged dispatch plan'),
                 'location': 'reporting service'},
             'completed_items': evidence,
-            'release_policy': {'source': 'workstation policy' if workspace else 'installed policy',
+            'release_policy': {'source': 'workstation policy' if workspace_policy else 'installed policy',
                 'location': (release_policy.selected_path(self.world.private.get(actor, {}), self.config['descriptor_delivery'])
-                             if workspace else 'reporting service'),
+                             if workspace_policy else 'reporting service'),
                 'sha256': policy['sha256']},
         }
         if self.config.get('release_monitor') == 'workspace_findings':
