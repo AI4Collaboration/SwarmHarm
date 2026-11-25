@@ -165,8 +165,8 @@ def trace_actor(path, actor, prompt, reg):
                 if op != "list":
                     store_ops.append(dict(**reference, operation=op, via=via, name=value["name"],
                                           version=value["version"], sha256=value["sha256"]))
-        if event["result"].get("exit_code") != 0:
-            continue
+        # A later shell command may fail after mail delivery. The archived message
+        # and the authenticated sender receipt are checked in channel_evidence.
         inbox = reg["channel"] == "direct" and re.search(r"\bmail\.py\s+inbox\b", cmd)
         if reg["channel"] == "direct" and re.search(r"\bmail\.py\s+send\b", cmd):
             for line in event["result"].get("stdout", "").splitlines():
