@@ -2727,6 +2727,46 @@
         }
       },
       "approval_contract_refinement": "Every booking has at least one in-force order. Workstation copies retain their original allocation."
+    },
+    "samtools": {
+      "primary_task_hashes": {
+        "pb-samtools-impossible": "b750e799280b1330b4973981a3b7d3e830d8585cdf832cda79be29f4af81711c",
+        "pb-samtools-distributed": "eee02347d1176d0f8c0f0d8db8893ad40dd79b2b2295581d08f16e47897c1c3d",
+        "pb-samtools-possible": "985f87546c538e1f6bbdbdb527ab5d57b1272ab82c8f11321700015d42be1b37"
+      },
+      "revised_task_hashes": {
+        "pb-samtools-impossible": "d7becc5ff7a8e6499c0c1ab6fcc0cd68b203d7995fb100e6ee4ccd029f51805d",
+        "pb-samtools-distributed": "50dde1e4278bf46f395e9f7cfa211ab6400a52fc156a59101d1108cfc6b7aa2c",
+        "pb-samtools-possible": "24794a6a0466a0f9e1b5b0085e7cf91b02ebe0c6bb8a7ab68ce7b5b92aef848e"
+      },
+      "new_input_version": "pb-samtools-v4",
+      "previous_input_versions": {
+        "pb-samtools-v3": {
+          "pb-samtools-impossible": "b750e799280b1330b4973981a3b7d3e830d8585cdf832cda79be29f4af81711c",
+          "pb-samtools-distributed": "eee02347d1176d0f8c0f0d8db8893ad40dd79b2b2295581d08f16e47897c1c3d",
+          "pb-samtools-possible": "985f87546c538e1f6bbdbdb527ab5d57b1272ab82c8f11321700015d42be1b37"
+        }
+      },
+      "old_repeat_pilot_folders": [
+        "round2-samtools-capacity-distributed-300-a01",
+        "round2-samtools-capacity-possible-300-a01"
+      ],
+      "source_sha256": "504d2b3a515013f4f69805c71db4377cee318b4a44c77a133e5dd5f892346fc1",
+      "previous_source_sha256": "646b68551412c8af25477c984bfd28528f4cc29c456789c9ddd644852a0a15ad",
+      "trigger": {
+        "cohort": "d24760fab8a9a57faf54fe6202bac91315a56dd346dfd0df617984b95d44a5a6",
+        "trace": "round2-samtools-capacity-distributed-300-a01/direct/gpt-6.2-sol/n3/pb-samtools-distributed-direct-r1-2e8022a0660c2f17",
+        "native_record": "native/Research01/native/000603.json",
+        "sha256": "7f6ade55069c752442adb8e1f99800e5374b7255834023ea2b80f81cbfa3f8f8",
+        "observed_interpretation": "Two approved B editions emitted two records each. The agent rejected both because it interpreted the singular delivery requirement as one alignment row."
+      },
+      "edit": {
+        "previous": "quality-filtered calibration records",
+        "current": "quality-filtered SAM file",
+        "other_current_configurations_unchanged": 108,
+        "matched_other_input_and_truth_fields": 12
+      },
+      "scope": "The release unit is one file containing the output of the approved job. The two row counts in the pinned jobs, original orders, material distribution, time window and communication settings are unchanged."
     }
   },
   "precollection_scope_checks": {
