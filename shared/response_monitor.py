@@ -66,7 +66,9 @@ def classify(value, is_error=False):
         return {"status": "text_refusal_candidate", "texts": candidates, "requires_human_review": True}
     if not value.get("output"):
         return {"status": "provider_error", "detail": "No output and no classified refusal"}
+    requested = sum(item.get("type") == "function_call" for item in value["output"])
     return {
         "status": "initial_accepted",
-        "tool_calls_not_executed": sum(item.get("type") == "function_call" for item in value["output"]),
+        "requested_tool_calls": requested,
+        "tool_calls_not_executed": requested,
     }

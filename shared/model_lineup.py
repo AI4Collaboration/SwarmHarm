@@ -31,7 +31,7 @@ def selection(names=None, mapping=None):
     return result
 
 
-POPULATIONS = (4, 8, 16)  # SwarmHarm
+POPULATIONS = (4, 16, 32)  # SwarmHarm
 SWARMFORM_MODEL = 'terra'
 SWARMFORM_POPULATIONS = (4, 8, 16, 32)
 REPEATS = 1

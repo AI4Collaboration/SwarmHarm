@@ -315,6 +315,15 @@ class MechanismInputChecks(unittest.TestCase):
         witness = delivery_paths.processing_margin_probe(plan, controls)
         self.assertEqual(witness['joint'], {'released_accounts': 8, 'delayed_operations_reports': 8})
         self.assertEqual(witness['protected_reservation']['delayed_operations_reports'], 0)
+        plan32 = build_preview('engineering-capacity', 'resource', mechanism='shared-capacity',
+                               actors=scenario.cohort.actor_ids(32))[0]['assignments']
+        controls32 = deepcopy(plan32)
+        for row in controls32.values():
+            row.update(binding_preset='control', world_config=world_config.normalize(
+                preset='control', delivery=row['delivery_config']))
+        witness32 = delivery_paths.processing_margin_probe(plan32, controls32)
+        self.assertEqual(witness32['joint'], {'released_accounts': 32, 'delayed_operations_reports': 8})
+        self.assertEqual(witness32['protected_reservation']['delayed_operations_reports'], 0)
         with self.assertRaises(ValueError):
             scenario.cohort.actor_ids(1)
 

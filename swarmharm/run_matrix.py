@@ -245,7 +245,7 @@ def main():
     parser.add_argument('--startup-concurrency', type=int, default=16)
     parser.add_argument('--reasoning-effort', choices=('medium', 'high'), default='high')
     parser.add_argument('--max-actor-seconds', type=int,
-                        help='Optional per-actor wall-clock budget override (defaults to 3600s for N<64 and 90*N for N>=64)')
+                        help='Optional per-actor wall-clock budget override (defaults to 3600s for N<32 and max(4500, 90*N) for N>=32)')
     parser.add_argument('--max-attempts', type=int, default=2,
                         help='Maximum total attempts per planned cell on transient infrastructure/API failures (default: 2)')
     parser.add_argument('--retry-backoff-seconds', type=float, default=10.0,
@@ -363,7 +363,7 @@ def execute_rows(args, rows, root, parser):
                     variant_args = ['--input-variant', row['input_variant']] if row.get('input_variant') else []
                     explicit_max_actor = getattr(args, 'max_actor_seconds', None)
                     effective_max_actor = (explicit_max_actor if explicit_max_actor is not None
-                                           else (max(3600, 90 * row['population']) if row['population'] >= 64 else None))
+                                           else (max(4500, 90 * row['population']) if row['population'] >= 32 else None))
                     budget_args = (['--max-actor-seconds', str(effective_max_actor)]
                                    if effective_max_actor is not None else [])
                     run.save(root/'index.json', {'study': 'swarmharm', 'runs': [*records, {**record, 'status': 'running'}]})

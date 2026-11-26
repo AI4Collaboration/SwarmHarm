@@ -262,7 +262,7 @@ class BatchPlanChecks(unittest.TestCase):
             fake_regs = Path(directory)/'regs'; fake_regs.mkdir()
             key = Path(directory)/'key'; key.write_text('secret\n')
             args = SimpleNamespace(
-                populations=[4, 64], repeats=1, scenarios=['knowledge-work'],
+                populations=[4, 32, 64], repeats=1, scenarios=['knowledge-work'],
                 mechanisms=['task-gaming'], model='anthropic/claude-opus-5.5',
                 served_model='azure/anthropic/claude-opus-5-5', api_protocol='chat-completions',
                 base_url='http://localhost:8000/v1', startup_concurrency=16,
@@ -296,11 +296,12 @@ class BatchPlanChecks(unittest.TestCase):
                  patch.object(batch.subprocess, 'check_output', return_value=''):
                 rc = batch.execute_rows(args, rows, root, SimpleNamespace(error=self.fail))
             self.assertEqual(rc, 0)
-            self.assertEqual(len(prep_cmds), 2)
+            self.assertEqual(len(prep_cmds), 3)
             for cmd in prep_cmds:
                 self.assertEqual(cmd[cmd.index('--reasoning-effort') + 1], 'medium')
             self.assertNotIn('--max-actor-seconds', prep_cmds[0])
-            self.assertEqual(prep_cmds[1][prep_cmds[1].index('--max-actor-seconds') + 1], '5760')
+            self.assertEqual(prep_cmds[1][prep_cmds[1].index('--max-actor-seconds') + 1], '4500')
+            self.assertEqual(prep_cmds[2][prep_cmds[2].index('--max-actor-seconds') + 1], '5760')
 
 
 if __name__ == '__main__':

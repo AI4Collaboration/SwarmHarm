@@ -71,7 +71,7 @@ OPENROUTER_CATALOG='https://openrouter.ai/api/v1/models'
 AXONHUB_CATALOG=f'{AXONHUB_API_BASE}/models'
 AXONHUB_KEY_FILE=None
 BUDGET={'request_timeout_seconds':300,'max_transport_attempts_per_request':3,'transport_retry_backoff_seconds':2,
-        'max_output_tokens_per_response':16384,
+        'max_output_tokens_per_response':32768,
         'max_actor_seconds':harbor_input.ACTOR_TIMEOUT_SECONDS,'max_batch_seconds':4500,'provider_concurrency':4,
         'scenario_timeout_seconds':30,'active_contexts_natural':4}
 RETRYABLE_HTTP_STATUS={408,409,425,429,500,502,503,504}|set(range(520,531))
@@ -2141,6 +2141,12 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                         completion_changed=completion_notice_due(extension, check,
                             states[candidate].get('completion_notice_delivered', False))
                     signal=activity_signal(candidate)
+                    if (continuous and extension.complete(candidate)
+                            and signal.get('case_revisions') == delivered_activity_signals[candidate].get('case_revisions')):
+                        delivered_activity_signals[candidate] = signal
+                        if candidate in cohort_completion.finals:
+                            cohort_completion.finals[candidate]['revision'] = signal['revision']
+                        continue
                     if completion_changed or signal['revision']!=delivered_activity_signals[candidate]['revision']:
                         submit(candidate)
             def on_request(actor,message):
@@ -2410,7 +2416,14 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                 if check['complete'] and extension.activated:
                     cohort_completion.returned(actor,step,attempt_text,
                         delivered_activity_signals[actor]['revision'])
-                attempt={'step':step,'at':utc(),'text':attempt_text,'completion_state':check}
+                compact_check = {
+                    k: (sha256(json.dumps(v, sort_keys=True).encode()).hexdigest()
+                        if k == 'actor_business_state' else v)
+                    for k, v in check.items()
+                }
+                if 'actor_business_state' in check:
+                    compact_check['actor_business_state_sha256'] = compact_check.pop('actor_business_state')
+                attempt={'step':step,'at':utc(),'text':attempt_text,'completion_state':compact_check}
                 state['completion_attempts'].append(attempt)
                 signal=activity_signal(actor)
                 goal_continuation=(component_workflow.subject_goal.continuation(
@@ -2446,9 +2459,18 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
                     wait(actor)
                 elif goal_continuation is not None:
                     submit(actor,goal_continuation=goal_continuation)
-                elif signal['revision']!=delivered_activity_signals[actor]['revision']:
+                elif (signal['revision']!=delivered_activity_signals[actor]['revision']
+                      and not (extension.activated and getattr(extension, 'continuous_workflow', False)
+                               and extension.complete(actor)
+                               and signal.get('case_revisions') == delivered_activity_signals[actor].get('case_revisions'))):
                     if not submit(actor):wait(actor)
                 else:
+                    if (extension.activated and getattr(extension, 'continuous_workflow', False)
+                            and extension.complete(actor)
+                            and signal.get('case_revisions') == delivered_activity_signals[actor].get('case_revisions')):
+                        delivered_activity_signals[actor] = signal
+                        if actor in cohort_completion.finals:
+                            cohort_completion.finals[actor]['revision'] = signal['revision']
                     wait(actor)
                     update(waiting_workers=sum(value['status']=='waiting_for_platform_change' for value in states.values()),
                         inflight_workers=len(running))
@@ -2670,9 +2692,13 @@ def collect(root,registration_dir,offline_adapter_test=False,offline_transport_t
             save(root/name/'actors.json',states)
             # The last live progress event precedes session shutdown.
             with state_lock:
+                released_workers = (sum(1 for a in states if extension.activated and extension.complete(a))
+                                    if extension.activated else 0)
                 progress.update(termination_reason=termination_reason,
                     active_workers=0, waiting_workers=0, ready_workers=0, inflight_workers=0,
-                    completed_workers=sum(state['status']=='completed' for state in states.values()))
+                    completed_workers=sum(state['status']=='completed' for state in states.values()),
+                    released_workers=released_workers,
+                    quiescent_workers=sum(state['status']=='quiescent' for state in states.values()))
         return states,world.summary()
     def preflight(provider,model):
         """One tool round trip through the registered harness and authentication."""

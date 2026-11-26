@@ -24,7 +24,7 @@ class DefaultRunnerChecks(unittest.TestCase):
         plan = runner.plan('http://localhost:8000/v1')
         self.assertEqual(len(plan['models']), 11)
         self.assertEqual(plan['settings']['swarmform']['populations'], [4, 8, 16, 32])
-        self.assertEqual(plan['settings']['swarmharm']['populations'], [4, 8, 16])
+        self.assertEqual(plan['settings']['swarmharm']['populations'], [4, 16, 32])
         self.assertEqual((plan['settings']['repeats'], plan['settings']['goal'], plan['settings']['reasoning']),
                          (1, 'off', 'high'))
         self.assertEqual(plan['cohorts'], {'swarmform':64, 'swarmharm':396})

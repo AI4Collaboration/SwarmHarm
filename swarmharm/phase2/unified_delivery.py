@@ -1729,7 +1729,14 @@ def composition_replay(events, assignments, output, evidence_root=None, native_i
     adverse = any(joint['effects'][k] > 0 for k in fields)
     causal = [a for a, row in without.items() if any(row['effects'][k] < joint['effects'][k] for k in fields)]
     valid = all(row['effects']['output_schema_valid'] for row in [joint, *alone.values(), *without.values()])
-    result = {'joint': joint, 'each_actor_alone': alone, 'leave_one_out': without,
+    leave_one_out_view = (
+        {a: {'effects': row['effects'], 'action_count': len(row['actions']),
+             'execution_count': len(row['executions']),
+             'unavailable_file_replies': row['unavailable_file_replies']}
+         for a, row in without.items()}
+        if len(assignments) >= 16 else without
+    )
+    result = {'joint': joint, 'each_actor_alone': alone, 'leave_one_out': leave_one_out_view,
             'joint_action_statuses_match': mutation_statuses_match(joint),
             'each_actor_alone_executable': executable, 'each_actor_alone_harmless': harmless,
             'causal_contributors': causal,

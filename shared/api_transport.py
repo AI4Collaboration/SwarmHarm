@@ -31,6 +31,25 @@ _UPSTREAM_SEMAPHORE = threading.BoundedSemaphore(_UPSTREAM_LIMIT)
 _MAX_TPM = max(0, int(os.environ.get('SWARMHARM_MAX_TPM', '7500000')))
 _TPM_LOCK = threading.Lock()
 _TOKEN_WINDOW = deque()
+_COOLDOWN_LOCK = threading.Lock()
+_COOLDOWN_UNTIL = 0.0
+
+
+def _wait_cooldown():
+    with _COOLDOWN_LOCK:
+        remaining = _COOLDOWN_UNTIL - time.monotonic()
+    if remaining > 0:
+        time.sleep(remaining + random.uniform(0, min(1.5, remaining * 0.25 + 0.1)))
+
+
+def _note_rate_limit(delay_seconds):
+    global _COOLDOWN_UNTIL
+    if delay_seconds <= 0:
+        return
+    until = time.monotonic() + delay_seconds
+    with _COOLDOWN_LOCK:
+        if until > _COOLDOWN_UNTIL:
+            _COOLDOWN_UNTIL = until
 
 
 def _strip_unsupported_schema_keywords(value, *, strip_strict=False):
@@ -317,7 +336,7 @@ class ChatBridge:
         self.served_model = served_model or model; self.timeout = timeout
         self.fallback = fallback if fallback is not None else resolve_axonhub_fallback(self.upstream, self.key)
         self.max_attempts = max(1, int(max_attempts if max_attempts is not None
-                                       else os.environ.get('SWARMHARM_BRIDGE_MAX_ATTEMPTS', '6')))
+                                       else os.environ.get('SWARMHARM_BRIDGE_MAX_ATTEMPTS', '4')))
         self.retry_backoff = float(retry_backoff)
         self.folder = Path(folder); self.folder.mkdir(parents=True, exist_ok=True)
         self.token = secrets.token_urlsafe(32); self.cache = {}
@@ -389,6 +408,7 @@ class ChatBridge:
                         payload_bytes = json.dumps(route_req).encode()
                         for attempt in range(1, bridge.max_attempts + 1):
                             _pace_tpm()
+                            _wait_cooldown()
                             req = urllib.request.Request(
                                 route_base + '/chat/completions',
                                 data=payload_bytes,
@@ -438,9 +458,16 @@ class ChatBridge:
                                     if raw_ra:
                                         try: retry_after = float(raw_ra)
                                         except ValueError: pass
-                                base_delay = 12.0 if error.code == 429 else bridge.retry_backoff * (2 ** (attempt - 1))
-                                delay = min(45.0, (retry_after + 1.0) if retry_after is not None
-                                            else base_delay + random.uniform(0, 1.0))
+                                if retry_after is not None:
+                                    pad = min(bridge.retry_backoff, 1.0) if retry_after < 1.0 else random.uniform(0.5, 2.0)
+                                    delay = min(60.0, retry_after + pad)
+                                elif error.code == 429:
+                                    cap = min(60.0, max(bridge.retry_backoff, 4.0) * (2 ** (attempt - 1)))
+                                    delay = random.uniform(cap * 0.5, cap)
+                                else:
+                                    delay = min(45.0, bridge.retry_backoff * (2 ** (attempt - 1)) + random.uniform(0, 0.5))
+                                if error.code == 429 and bridge.retry_backoff >= 0.5:
+                                    _note_rate_limit(min(delay, 30.0))
                                 retries.append({'attempt': attempt, 'status': error.code, 'sleep_s': round(delay, 3)})
                                 try: error.close()
                                 except Exception: pass

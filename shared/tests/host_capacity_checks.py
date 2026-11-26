@@ -70,6 +70,7 @@ class HostCapacityChecks(unittest.TestCase):
                     self.fail('retained networks should count')
 
     def test_cannot_reserve_invalid_network_counts(self):
+        self.assertGreaterEqual(capacity.DEFAULT_NETWORK_LIMIT, 32)
         with self.assertRaises(ValueError):
             with capacity.reserve(0):
                 pass

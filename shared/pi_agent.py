@@ -37,9 +37,9 @@ SETTINGS = {
     'compaction': {'enabled': False},
     'cacheWarming': 'off',
     'enableInstallTelemetry': False,
-    # Pi's agent retry with extended backoff spanning multi-minute RPM windows.
+    # Pi's agent retry stays bounded so it does not multiply ChatBridge retries on 429 bursts.
     # Provider SDK retries stay off, so every attempt passes through Pi and is recorded.
-    'retry': {'enabled': True, 'maxRetries': 6, 'baseDelayMs': 3000, 'maxAgentDelayMs': 60000,
+    'retry': {'enabled': True, 'maxRetries': 2, 'baseDelayMs': 3000, 'maxAgentDelayMs': 30000,
               'provider': {'maxRetries': 0}},
 }
 COMPAT = {

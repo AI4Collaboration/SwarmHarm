@@ -10,7 +10,7 @@ import subprocess
 import tempfile
 
 
-DEFAULT_NETWORK_LIMIT = 16  # Four four-workstation rollouts on the default Docker host.
+DEFAULT_NETWORK_LIMIT = 64  # Supports up to N=32 concurrent workstations with headroom on a default host.
 
 
 def managed_networks():
