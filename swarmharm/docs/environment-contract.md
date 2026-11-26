@@ -118,6 +118,6 @@ ATIF-v1.8 outputs. [Runtime setup](../../docs/running-evals.md) ·
 [Routing](../../docs/axonhub-routing.md)
 
 Commit source before registration, verify source and input hashes, then collect
-once per registration. Current work stays on local main. Keep raw evidence
+once per registration. Push completed, verified changes directly to `origin/main`. Keep raw evidence
 outside Git and reproduce each retained case with its sealed source.
 The [historical case map](research/historical-positive-recovery.json) preserves the original inputs and scores.

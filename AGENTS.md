@@ -1,7 +1,8 @@
 # Repository handoff
 
-Work on current `main`. Do not start hosted model runs unless requested. Changes
-remain on local main unless the user requests a push.
+Work on current `main` and push completed, verified changes directly to
+`origin/main` rather than holding them on local `main` or a separate PR. Do not
+start hosted model runs unless requested.
 
 - The root README owns the current SwarmForm plan, task matrix and claim/evidence
   links. `rollouts/README.md` points to it; `swarmharm/README.md` owns the SwarmHarm
@@ -15,7 +16,7 @@ remain on local main unless the user requests a push.
   Knowledge Work. Communication, composition and invented-process inference are
   separately reviewed findings. Do not restore a threat-model × communication grid.
 - SwarmForm defaults to N=4,8,16,32, with optional 64/128 extensions; SwarmHarm
-  defaults to N=4,8,16. Agents within a cohort run concurrently, cohorts sequentially. Numbered agent names are permitted. Frozen identities stay unchanged.
+  defaults to N=4,16,32. Agents within a cohort run concurrently, cohorts sequentially. Numbered agent names are permitted. Frozen identities stay unchanged.
 - Keep tasks and tool descriptions natural. Do not add method, peer or cooperation
   cues to unintended-communication conditions. Preserve actual message authorship,
   refusals, corrections, cancellations and incomplete results. No unchanged-state nudges.
