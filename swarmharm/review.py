@@ -1542,8 +1542,29 @@ def review(root, destination=None):
     result['communication']['evidence_file'] = 'communication-evidence.json'
     result['communication']['evidence_sha256'] = digest(root/'communication-evidence.json')
     from phase2 import claim_evidence
+    mechanism = None
+    if 'mechanism_contract' in registration:
+        validation_path = root/'atif-validation.json'
+        rows = load(validation_path).get('trajectories', []) if validation_path.is_file() else []
+        native_validated = (len(rows) == len(registration['phase2']['assignments'])
+            and {row.get('actor') for row in rows} == set(registration['phase2']['assignments'])
+            and all(row.get('phase') == 'natural' and row.get('schema_version') == 'ATIF-v1.8'
+                    and row.get('native_continuity_passed') is True
+                    and row.get('requests', 0) > 0
+                    and digest(root/row['path']) == row.get('sha256') for row in rows))
+        from phase2 import mechanism_review
+        if is_build_record:
+            from phase2.build_record.production_review import mechanical_review
+            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
+        else:
+            mechanism = mechanism_review.review(registration, world, integrated,
+                root/'natural', native_validated=native_validated)
+        mechanism['collection_complete'] = collection_complete
+        mechanism['input_behavior_validated'] &= collection_complete and not any(
+            result[key] for key in ('provider_errors', 'budget_timeouts', 'provider_filters'))
+        save(root/'mechanism-review.json', mechanism)
     action = (integrated['build_record_action'] if is_build_record else
-              claim_evidence.action_monitor(root, registration, integrated))
+              claim_evidence.action_monitor(root, registration, integrated, mechanism_review=mechanism))
     save(root/'action-monitor.json', action)
     if is_build_record:
         from phase2.build_record.semantic_packet import packet as build_packet
@@ -1561,27 +1582,7 @@ def review(root, destination=None):
         'claim_verdict': 'claim-verdict.json',
         'same_trajectory_outcomes': True,
     }
-    if 'mechanism_contract' in registration:
-        validation_path = root/'atif-validation.json'
-        rows = load(validation_path).get('trajectories', []) if validation_path.is_file() else []
-        native_validated = (len(rows) == len(registration['phase2']['assignments'])
-            and {row.get('actor') for row in rows} == set(registration['phase2']['assignments'])
-            and all(row.get('phase') == 'natural' and row.get('schema_version') == 'ATIF-v1.8'
-                    and row.get('native_continuity_passed') is True
-                    and row.get('requests', 0) > 0
-                    and digest(root/row['path']) == row.get('sha256') for row in rows))
-    if 'mechanism_contract' in registration:
-        from phase2 import mechanism_review
-        if is_build_record:
-            from phase2.build_record.production_review import mechanical_review
-            mechanism = mechanical_review(root, registration, world, integrated, native_validated)
-        else:
-            mechanism = mechanism_review.review(registration, world, integrated,
-                root/'natural', native_validated=native_validated)
-        mechanism['collection_complete'] = collection_complete
-        mechanism['input_behavior_validated'] &= collection_complete and not any(
-            result[key] for key in ('provider_errors', 'budget_timeouts', 'provider_filters'))
-        save(root/'mechanism-review.json', mechanism)
+    if mechanism is not None:
         result['mechanism'] = mechanism
         result['claim_measurement'].update(primary_verdict='mechanism-verdict.json',
             mechanism_action_review='mechanism-review.json', claim_verdict_role='auxiliary')

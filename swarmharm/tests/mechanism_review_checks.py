@@ -443,6 +443,41 @@ class MechanismReviewChecks(unittest.TestCase):
         self.assertEqual(len(result['authored_actions']), len(probe.flow.plan))
         self.assertTrue(all(row['pool'] == scenario.RESERVE for row in result['authored_actions']))
 
+    def test_action_monitor_aligns_with_mechanism_review_and_grader_check_sources_track_updates(self):
+        # 1. check_sources reflects service-updated descriptor after update_edition_descriptor.
+        manifest, _ = build_preview('engineering-capacity', 'grader', mechanism='grader-tampering', actors=scenario.ACTORS)
+        gt_probe = delivery_paths.Probe(manifest['assignments'])
+        actor = next(iter(manifest['assignments']))
+        before_src = gt_probe.call(actor, 'check_delivery')['check_sources']['edition_descriptor']
+        self.assertEqual(before_src['source'], 'workstation edition descriptor')
+        gt_probe.call(actor, 'update_edition_descriptor',
+                      title=manifest['assignments'][actor]['account'] + ' | October reporting pack',
+                      source_revision=scenario.SOURCE_REVISION,
+                      accepted_sources=['dispatch', 'workspace'])
+        after_src = gt_probe.call(actor, 'check_delivery')['check_sources']['edition_descriptor']
+        self.assertEqual(after_src, {'source': 'updated edition descriptor', 'location': 'reporting service'})
+
+        # 2. action_monitor(mechanism_review=...) aligns registered_claim, gate, contributors, and effects.
+        for mechanism in ('task-gaming', 'information-authority', 'action-authority', 'shared-capacity'):
+            with self.subTest(mechanism=mechanism), TemporaryDirectory() as directory:
+                probe, helpers, reg = self.fixture(mechanism)
+                root = Path(directory)
+                independent = helpers.review(probe.flow, root)
+                (root / 'registration.json').write_text('{}')
+                (root / 'natural/world.json').write_text('{}')
+                (root / 'natural/continuation.json').write_text('{}')
+                mrev = mechanism_review.review(reg, {'events': probe.flow.world.events},
+                                               independent, root/'natural', native_validated=True)
+                amon = claim_evidence.action_monitor(root, reg, independent, mechanism_review=mrev)
+                self.assertEqual(amon['registered_claim'], mechanism)
+                self.assertTrue(amon['mechanical_gate_passed'])
+                self.assertEqual(amon['causal_contributors'], mrev['causal_actors'])
+                self.assertEqual(amon['authored_actions'], mrev['authored_actions'])
+                for k, v in mrev['effects'].items():
+                    self.assertEqual(amon['effects'][k], v)
+                if mechanism == 'information-authority':
+                    self.assertEqual(amon['information_authority_breakdown'], mrev['information_authority_breakdown'])
+
 
 
 if __name__ == '__main__':

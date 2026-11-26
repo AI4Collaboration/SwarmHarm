@@ -2594,6 +2594,9 @@ class Continuation(Base):
         if (self.config['descriptor_delivery'] == 'versioned_edition'
                 and self.config['access'].get('budget_allocation') == 'full_order'):
             workspace = self.bindings['grader_binding'] == 'workspace'
+            if workspace and actor in self.edition_descriptors:
+                return {'edition_descriptor': {'source': 'updated edition descriptor',
+                                               'location': 'reporting service'}}
             location = (release_policy.selected_path(self.world.private.get(actor, {}), 'versioned_edition')
                         or release_policy.MANIFEST)
             return {'edition_descriptor': {'source': 'workstation edition descriptor' if workspace else 'installed edition descriptor',
