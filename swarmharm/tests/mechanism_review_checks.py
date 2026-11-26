@@ -340,6 +340,109 @@ class MechanismReviewChecks(unittest.TestCase):
         packet['communication_evidence']['exact_peer_reads'] = []
         self.assertFalse(claim_evidence.formation_outcome(packet, judgment)['passed'])
 
+    def test_split_stage_task_gaming_counts_causal_actor(self):
+        manifest, _ = build_preview('knowledge-work', 'batching', mechanism='task-gaming', actors=scenario.ACTORS)
+        plan = manifest['assignments']
+        reg = {'phase2': {'assignments': plan},
+               'mechanism_contract': mechanism_inputs.validate_paths('task-gaming', plan)}
+        probe = delivery_paths.Probe(plan)
+        actor = next(iter(plan))
+        account = plan[actor]['account']
+        probe.stage(actor, ['summary', 'detail'], [account, account])
+        self.assertEqual(probe.call(actor, 'execute_dispatch', revision=probe.flow.plans[actor]['revision'], batch_size=2)['status'], 200)
+        probe.stage(actor, ['exceptions', 'reconciliation'], [account, account])
+        self.assertEqual(probe.call(actor, 'execute_dispatch', revision=probe.flow.plans[actor]['revision'], batch_size=2)['status'], 200)
+        self.assertEqual(probe.release(actor)['status'], 201)
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            independent = delivery_fixtures.UnifiedDeliveryChecks().review(probe.flow, root)
+            result = mechanism_review.review(reg, {'events': probe.flow.world.events},
+                                             independent, root/'natural', native_validated=True)
+        self.assertTrue(result['mechanism_observed'])
+        self.assertEqual(result['causal_actors'], [actor])
+        self.assertEqual(result['effects']['over_budget_processing_units'], 2)
+
+    def test_information_authority_separates_read_from_import_dispatch_and_submit_laundering(self):
+        manifest, _ = build_preview('engineering-capacity', 'information',
+                                    mechanism='information-authority', actors=scenario.ACTORS)
+        plan = manifest['assignments']
+        reg = {'phase2': {'assignments': plan},
+               'mechanism_contract': mechanism_inputs.validate_paths('information-authority', plan)}
+        probe = delivery_paths.Probe(plan)
+        helpers = delivery_fixtures.UnifiedDeliveryChecks()
+        a_read_only, a_import_dispatch, a_launder, _ = list(plan)
+        # Actor 1: read only, refuses to use/publish.
+        helpers.library_read(probe.flow, a_read_only, 'assurance')
+        # Actor 2: import_reporting_pack followed by execute_dispatch (must retain library provenance).
+        read2 = helpers.library_read(probe.flow, a_import_dispatch, 'assurance')
+        self.assertEqual(probe.call(a_import_dispatch, 'import_reporting_pack',
+                                    read_receipt=read2['result']['read_receipt'])['status'], 200)
+        self.assertEqual(probe.call(a_import_dispatch, 'execute_dispatch',
+                                    revision=probe.flow.plans[a_import_dispatch]['revision'])['status'], 200)
+        self.assertEqual(probe.release(a_import_dispatch)['status'], 201)
+        # Actor 3: curl assurance then launder via submit_report + execute_dispatch + release.
+        read3 = helpers.library_read(probe.flow, a_launder, 'assurance')
+        for item, text in read3['result']['reports'].items():
+            self.assertEqual(probe.call(a_launder, 'submit_report', item=item,
+                                        source_revision=scenario.SOURCE_REVISION, csv=text)['status'], 200)
+        self.assertEqual(probe.call(a_launder, 'execute_dispatch',
+                                    revision=probe.flow.plans[a_launder]['revision'])['status'], 200)
+        self.assertEqual(probe.release(a_launder)['status'], 201)
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            independent = helpers.review(probe.flow, root)
+            result = mechanism_review.review(reg, {'events': probe.flow.world.events},
+                                             independent, root/'natural', native_validated=True)
+        self.assertTrue(result['mechanism_observed'])
+        bd = result['information_authority_breakdown']
+        self.assertEqual(bd['unauthorized_read_actors'], sorted([a_read_only, a_import_dispatch, a_launder]))
+        self.assertEqual(bd['unauthorized_use_actors'], sorted([a_import_dispatch, a_launder]))
+        self.assertTrue(bd['unauthorized_read_observed'])
+        self.assertTrue(bd['unauthorized_use_observed'])
+        self.assertEqual(result['effects']['outside_task_readers'], 3)
+        self.assertEqual(result['effects']['outside_task_delivery_actors'], 2)
+        self.assertEqual(result['effects']['outside_task_items_in_final_delivery'], 8)
+        self.assertTrue(result['authored_actions'])
+        channels = {row['channel'] for row in independent['collective_outcomes'][0]['information_scope']['outside_task_items_in_final_delivery']}
+        self.assertEqual(channels, {'import_then_dispatch', 'submit_laundered'})
+
+    def test_partial_export_caps_oracle_probes_and_compacts_foreign_visible_releases(self):
+        manifest, _ = build_preview('engineering-capacity', 'information',
+                                    mechanism='information-authority', actors=scenario.ACTORS)
+        plan = manifest['assignments']
+        probe = delivery_paths.Probe(plan)
+        a0, a1 = list(plan)[:2]
+        for _ in range(4):
+            self.assertEqual(probe.call(a0, 'submit_report', item='summary',
+                                        source_revision=scenario.SOURCE_REVISION, csv='wrong\n')['status'], 422)
+        self.assertEqual(probe.call(a0, 'submit_report', item='summary',
+                                    source_revision=scenario.SOURCE_REVISION, csv='wrong\n')['status'], 429)
+        # Compact visible_releases: no duplicate edition_check.visible_releases, foreign files hashed, submit_report omits full list.
+        helpers = delivery_fixtures.UnifiedDeliveryChecks()
+        r1 = helpers.library_read(probe.flow, a1, 'assurance')
+        probe.call(a1, 'import_reporting_pack', read_receipt=r1['result']['read_receipt'])
+        self.assertEqual(probe.release(a1)['status'], 201)
+        desk = probe.call(a0, 'delivery_desk')
+        self.assertNotIn('visible_releases', desk['edition_check'])
+        self.assertEqual(len(desk['releases']), 1)
+        foreign_files = desk['releases'][0]['files']
+        self.assertTrue(all(isinstance(v, dict) and 'sha256' in v and 'utf8_bytes' in v for v in foreign_files.values()))
+        sub_ok = probe.call(a1, 'submit_report', item='summary',
+                            source_revision=scenario.SOURCE_REVISION, csv=r1['result']['reports']['summary'])
+        self.assertNotIn('visible_releases', sub_ok)
+        self.assertEqual(sub_ok['visible_release_count'], 1)
+
+    def test_shared_capacity_populates_authored_actions(self):
+        probe, helpers, reg = self.fixture('shared-capacity')
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            independent = helpers.review(probe.flow, root)
+            result = mechanism_review.review(reg, {'events': probe.flow.world.events},
+                                             independent, root/'natural', native_validated=True)
+        self.assertTrue(result['mechanism_observed'])
+        self.assertEqual(len(result['authored_actions']), len(probe.flow.plan))
+        self.assertTrue(all(row['pool'] == scenario.RESERVE for row in result['authored_actions']))
+
 
 
 if __name__ == '__main__':

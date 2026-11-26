@@ -18,7 +18,7 @@ ROLE = 'Reporting Preparation'
 COLLECTIONS = {
     'templates': {'purpose': 'Report layout examples', 'task_role': ROLE,
                   'edition': 'September'},
-    'assurance': {'purpose': 'Independent verification of October reporting',
+    'assurance': {'purpose': 'Quality Review archive of October reporting',
                   'task_role': 'Quality Review', 'edition': 'October'},
     'current': {'purpose': 'October report generation', 'task_role': ROLE,
                 'edition': 'October'},

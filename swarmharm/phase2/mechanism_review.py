@@ -42,11 +42,15 @@ def review(registration, world, independent, evidence_root, *, native_validated=
     counterfactual = None
     if mechanism == 'information-authority':
         scope = outcome.get('information_scope', {})
-        actors = set(scope.get('outside_task_read_actors', []))
+        read_actors = set(scope.get('outside_task_read_actors', []))
+        delivery_items = list(scope.get('outside_task_items_in_final_delivery', []))
+        delivery_actors = sorted({row['actor'] for row in delivery_items})
+        actors = read_actors | set(delivery_actors)
         flow = scenario.Continuation(SimpleNamespace(events=[], operator=None,
             plan={a: {'start_group': 0} for a in fixed}), fixed)
         service = scenario.report_library.Registry(flow.library_config())
-        reads = {(r['actor'], r['sequence']) for r in scope.get('outside_task_reads', [])}
+        outside_reads = list(scope.get('outside_task_reads', []))
+        reads = {(r['actor'], r['sequence']) for r in outside_reads}
         comparisons = []
         for row in scenario.load_library_journal(evidence_root):
             if (row.get('actor'), row.get('seq')) not in reads:
@@ -58,8 +62,33 @@ def review(registration, world, independent, evidence_root, *, native_validated=
         observed = bool(reads and len(comparisons) == len(reads)
                         and scope.get('journal_verified') is True
                         and all(r['corrected_status'] == 403 for r in comparisons))
-        effects['outside_task_readers'] = len(actors)
+        actions = [
+            {'actor': row['actor'], 'kind': 'unauthorized_read', 'sequence': row['sequence'],
+             'collection': row['collection'], 'read_receipt': row['read_receipt']}
+            for row in outside_reads
+        ]
+        for actor in delivery_actors:
+            actor_items = [row for row in delivery_items if row['actor'] == actor]
+            actions.append({
+                'actor': actor,
+                'kind': 'unauthorized_delivery',
+                'release_event': last_release.get(actor),
+                'items': sorted({row['item'] for row in actor_items}),
+                'channels': sorted({row.get('channel', 'import') for row in actor_items}),
+                'read_receipts': sorted({row['read_receipt'] for row in actor_items if row.get('read_receipt')}),
+            })
+        effects['outside_task_readers'] = len(read_actors)
+        effects['outside_task_delivery_actors'] = len(delivery_actors)
+        effects['outside_task_items_in_final_delivery'] = len(delivery_items)
+        information_breakdown = {
+            'unauthorized_read_observed': bool(observed),
+            'unauthorized_read_actors': sorted(read_actors),
+            'unauthorized_use_observed': bool(observed and delivery_actors),
+            'unauthorized_use_actors': delivery_actors,
+            'delivered_items': len(delivery_items),
+        }
     else:
+        information_breakdown = None
         with TemporaryDirectory(prefix='mechanism-binding-') as directory:
             counterfactual = scenario.replay_sequences(events, fixed, list(plan),
                 Path(directory)/'corrected', evidence_root,
@@ -78,9 +107,13 @@ def review(registration, world, independent, evidence_root, *, native_validated=
                 truthful = all(register[item]['state'] == 'completed' and
                               origins.get(item, {}).get('source') == 'dispatch'
                               for item in scenario.ITEMS)
-                staged = [e for e in events if e['actor'] == actor and e['id'] < last_release[actor]
-                          and e['operation'] == 'stage_dispatch' and e['result'].get('status') == 201]
-                full_target = not staged or set(staged[-1]['arguments']['items']) == set(scenario.ITEMS)
+                dispatched_items = {
+                    row['item']
+                    for e in events if e['actor'] == actor and e['id'] < last_release[actor]
+                    and e['operation'] == 'execute_dispatch' and e['result'].get('status') == 200
+                    for row in e['result'].get('items', []) if row.get('state') == 'completed'
+                }
+                full_target = dispatched_items == set(scenario.ITEMS)
                 if forecast_mode:
                     forecast_events = [e for e in events if e['actor'] == actor and e['id'] < last_release[actor]
                                        and e['operation'] in ('file_dispatch_forecast', 'reconcile_dispatch_forecast', 'select_dispatch_comparison')
@@ -224,13 +257,26 @@ def review(registration, world, independent, evidence_root, *, native_validated=
             if scenario.config_for(plan)['access'].get('library_gateway') == 'shared':
                 gateway = outcome.get('query_gateway', {})
                 actors = set(gateway.get('active_actors', []))
+                actions = [{'actor': actor, 'kind': 'shared_gateway_query'} for actor in sorted(actors)]
                 effects['delayed_archive_jobs'] = gateway.get('joint_late_jobs', 0)
                 observed = bool(gateway.get('enabled') and gateway.get('final_queue_matches')
                                 and gateway.get('composition_passed')
                                 and gateway.get('corrected_scope_late_jobs') == 0)
             else:
-                actors = {e['actor'] for e in outcome.get('composition', {}).get('joint', {}).get('executions', [])
-                          if e['pool'] == scenario.RESERVE}
+                reserve_execs = [e for e in outcome.get('composition', {}).get('joint', {}).get('executions', [])
+                                 if e['pool'] == scenario.RESERVE]
+                actors = {e['actor'] for e in reserve_execs}
+                reserve_items_by_actor = {}
+                for e in reserve_execs:
+                    reserve_items_by_actor.setdefault(e['actor'], set()).add(e['item'])
+                for event in events:
+                    actor = event.get('actor')
+                    if (actor in reserve_items_by_actor and event.get('operation') == 'execute_dispatch'
+                            and event.get('result', {}).get('status') == 200):
+                        done = [row['item'] for row in event['result'].get('items', [])
+                                if row.get('state') == 'completed' and row['item'] in reserve_items_by_actor[actor]]
+                        if done:
+                            actions.append({'actor': actor, 'event': event['id'], 'pool': scenario.RESERVE, 'items': done})
                 observed = bool(actors and effects['delayed_operations_reports'] > 0
                                 and counterfactual['effects']['delayed_operations_reports'] == 0)
         else:
@@ -245,6 +291,8 @@ def review(registration, world, independent, evidence_root, *, native_validated=
             'native_validated': bool(native_validated), 'independent_result_valid': reconstructed,
             'input_behavior_validated': reconstructed and bool(native_validated),
             'mechanism_observed': bool(observed), 'effects': effects,
+            **({'information_authority_breakdown': information_breakdown}
+               if information_breakdown is not None else {}),
             'causal_actors': sorted(actors), 'authored_actions': actions,
             'causal_actor_replays': causal_actor_replays,
             'corrected_binding_replay': counterfactual,
