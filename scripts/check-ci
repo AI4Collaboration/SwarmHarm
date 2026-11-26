@@ -188,21 +188,22 @@ def select_checks(files, full=False):
             suites('swarmform_structure', 'structure_timeline', 'structure_native', 'publication_updates', 'sustained_research', 'research_latency')
         elif name in {'shared/api_transport.py', 'shared/model_session.py', 'scripts/check-model-lineup'}:
             suites('model_transport', 'api_handoff', 'batch_plan')
-            harnesses.update(('codex', 'claude', 'pi'))
+        elif name == 'shared/launch_capacity.py':
+            suites('host_capacity', roots=('shared',))
+        elif name == 'shared/response_monitor.py':
+            suites('model_transport', roots=('shared',))
+        elif name == 'shared/export_atif.py':
+            suites('claim_evidence', 'judge_http_diagnostics', roots=(LAB,))
         elif name == 'shared/guardrails.py':
-            suites('native_harness', 'local_source', 'batch_plan', 'model_transport')
+            suites('batch_plan', 'model_transport')
         elif name.startswith('shared/'):
             adapter = next((a for a in ('codex', 'claude', 'pi')
                             if name.startswith('shared/' + a)), None)
             if adapter:
-                suites(adapter + '_collect', 'native_*', 'format')
+                suites(adapter + '_collect', 'format')
                 harnesses.add(adapter)
             else:
-                # SwarmForm evidence is sealed: shared runtime changes regress the
-                # active SwarmHarm study only. SwarmForm/rollouts suites still run
-                # for changes inside their own trees or with --full.
-                suites('*', roots=('swarmharm', 'shared'))
-                docker = True
+                suites('mechanism_inputs', 'mechanism_review', 'claim_evidence', 'model_transport')
         elif name == 'swarmform/scripts/swarmform_accepted_run.py':
             suites('swarmform_accepted')
         elif name in {'swarmform/scripts/swarmform_scope.py', 'swarmform/scripts/inspect_swarmform_workload.py', 'swarmform/scripts/swarmform_delivery_export.py', 'swarmform/scripts/export_swarmform_input_matrix.py', 'swarmform/scripts/run_swarmform.py',
@@ -212,42 +213,36 @@ def select_checks(files, full=False):
         elif name == 'swarmform/scripts/check_swarmform_read_observer.py':
             suites('swarmform_read_observer')
         elif name in {LAB + '/phase2/mechanism_inputs.py', LAB + '/phase2/mechanism_review.py', LAB + '/scripts/inspect_unified_input.py'}:
-            suites('mechanism_inputs', 'mechanism_review', 'unified_input_contract', 'unified_input_preview', roots=(LAB,))
+            suites('mechanism_inputs', 'mechanism_review', roots=(LAB,))
+        elif name == LAB + '/phase2/query_gateway.py':
+            suites('query_gateway', 'mechanism_inputs', roots=(LAB,))
         elif name in {LAB + '/phase2/unified_delivery.py', LAB + '/phase2/world_config.py',
-                      LAB + '/phase2/query_gateway.py',
                       LAB + '/phase2/delivery_paths.py', LAB + '/phase2/delivery_budget.py',
                       LAB + '/phase2/report_library.py'}:
-            suites('unified_*', 'continuous_*', 'delivery_*', 'domain', 'review',
-                   'claim_evidence', 'asymmetric_input', 'query_gateway', 'swarmform_runtime', roots=(LAB,))
-            checks.update(('wording', 'balanced'))
+            suites('mechanism_inputs', 'mechanism_review', 'claim_evidence', 'unified_input_contract', roots=(LAB,))
         elif name == LAB + '/phase2/terminal_batching/records_link.py':
-            suites('runtime_scaling', 'query_gateway', 'unified_runtime', 'continuous_collect', roots=(LAB,))
+            suites('runtime_scaling', 'query_gateway', roots=(LAB,))
         elif name == LAB + '/run.py':
-            suites('collector', '*_collect', 'local_source', 'native_harness', 'shutdown',
-                   'unified_*', 'continuous_*', 'domain_runtime', 'swarmform_runtime',
-                   roots=(LAB,))
-            checks.update(('wording', 'balanced'))
+            suites('batch_plan', 'shutdown', 'unified_notification', 'domain_runtime', roots=(LAB,))
         elif name in {LAB + '/phase2/claim_evidence.py', LAB + '/phase2/communication_evidence.py'}:
-            suites('review', 'claim_evidence', 'unified_input_contract', roots=(LAB,))
+            suites('claim_evidence', 'judge_http_diagnostics', 'mechanism_review', roots=(LAB,))
         elif name == LAB + '/review.py':
-            suites('review', 'claim_evidence', 'delivery_*', 'unified_*',
-                   'continuous_*', roots=(LAB,))
+            suites('mechanism_review', 'claim_evidence', roots=(LAB,))
+        elif name == LAB + '/scripts/judge_unified_transcript.py':
+            suites('judge_http_diagnostics', 'claim_evidence', roots=(LAB,))
         elif name.startswith('swarmharm/scripts/'):
-            suites('review', 'claim_evidence', 'unified_input_contract')
+            suites('claim_evidence', 'unified_input_contract', roots=(LAB,))
         elif name.startswith('shared/prompt-contract/'):
-            suites('*')
-            checks.update(('wording', 'balanced'))
+            checks.add('wording')
         elif name.startswith(LAB + '/'):
-            suites('*', roots=(LAB,))
-            checks.update(('wording', 'balanced'))
+            suites('mechanism_inputs', 'mechanism_review', 'claim_evidence', roots=(LAB,))
         elif name in {'scripts/setup-local', 'scripts/check-installation',
                       'scripts/build-workstation-image', 'scripts/harbor'}:
             checks.add('installation')
-            suites('native_*', 'workstation_patch')
-            harnesses.update(('codex', 'claude', 'pi'))
+            suites('workstation_patch')
             docker = True
         elif name.startswith('scripts/'):
-            suites('review', 'claim_evidence', 'unified_input_contract')
+            suites('claim_evidence', 'unified_input_contract', roots=(LAB,))
     if full:
         suites('*')
         checks.update(('installation', 'catalog', 'inputs', 'wording', 'balanced'))

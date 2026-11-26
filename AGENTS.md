@@ -1,8 +1,8 @@
 # Repository handoff
 
-Work on current `main` and push completed, verified changes directly to
-`origin/main` rather than holding them on local `main` or a separate PR. Do not
-start hosted model runs unless requested.
+Work directly on `main` (do not create feature or `cursor/*` branches or
+separate PRs) and push completed, verified changes directly to `origin/main`.
+Do not start hosted model runs unless requested.
 
 - The root README owns the current SwarmForm plan, task matrix and claim/evidence
   links. `rollouts/README.md` points to it; `swarmharm/README.md` owns the SwarmHarm
@@ -25,9 +25,11 @@ start hosted model runs unless requested.
   their own evidence; software fixtures do not establish model behavior.
 - Never overwrite or repeat an existing attempt. Preserve partial records and error
   reasons. Store credentials and raw or compressed trajectories outside Git.
-- Use `scripts/check-ci` for change-selected checks. Inspect `--plan` when needed;
-  run necessary checks once and rerun only after a relevant change or failure.
-  Documentation edits do not require Docker or replaying historical studies.
+- Use `scripts/check-ci` for minimalist change-selected checks (keep checks
+  fast and narrowly scoped; reserve `--full` for explicit full regressions).
+  Inspect `--plan` when needed; run necessary checks once and rerun only after
+  a relevant change or failure. Documentation edits do not require Docker or
+  replaying historical studies.
 - For native SwarmHarm, commit source, prepare and commit the fresh registration,
   then collect once. Local source retention does not require a push. Use each old
   case's sealed code and runtime for reproduction, not compatibility branches in

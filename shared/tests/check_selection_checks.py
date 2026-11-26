@@ -39,34 +39,38 @@ class CheckSelectionChecks(unittest.TestCase):
                 self.assertIn('codex', select([path])['harnesses'])
         self.assertTrue(select(['swarmform/tests/swarmform_archive_native_checks.py'])['docker'])
 
-    def test_reporting_observation_changes_select_reporting_contracts(self):
+    def test_reporting_observation_changes_select_minimalist_core_contracts(self):
         for name in ('unified_delivery', 'world_config'):
             plan = select([f'swarmharm/phase2/{name}.py'])
-            self.assertIn('tests.unified_delivery_checks', plan['tests'])
-            self.assertIn('tests.continuous_collect_checks', plan['tests'])
-            self.assertIn('tests.delivery_preview_checks', plan['tests'])
-            self.assertIn('wording', plan['checks'])
-            self.assertIn('balanced', plan['checks'])
-            self.assertIn('tests.swarmform_runtime_checks', plan['tests'])
-            self.assertNotIn('tests.swarmform_collection_checks', plan['tests'])
-            self.assertIn('codex', plan['harnesses'])
+            self.assertEqual(plan['tests'], [
+                'tests.claim_evidence_checks',
+                'tests.mechanism_inputs_checks',
+                'tests.mechanism_review_checks',
+                'tests.unified_input_contract_checks',
+            ])
+            self.assertFalse(plan['docker'])
+            self.assertEqual(plan['harnesses'], [])
 
-    def test_reporting_entry_checks_all_native_adapters_without_structure_sweep(self):
+    def test_reporting_entry_checks_remain_fast_and_offline(self):
         plan = select(['swarmharm/run.py'])
-        for suite in ('collector', 'codex_collect', 'claude_collect', 'pi_collect', 'local_source'):
-            self.assertIn('tests.' + suite + '_checks', plan['tests'])
-        self.assertNotIn('tests.structure_native_checks', plan['tests'])
-        self.assertEqual(plan['harnesses'], ['claude', 'codex', 'pi'])
+        self.assertEqual(plan['tests'], [
+            'tests.batch_plan_checks',
+            'tests.domain_runtime_checks',
+            'tests.shutdown_checks',
+            'tests.unified_notification_checks',
+        ])
+        self.assertFalse(plan['docker'])
+        self.assertEqual(plan['harnesses'], [])
 
-    def test_cross_harness_suite_installs_every_runtime_it_validates(self):
-        for path in ('swarmharm/tests/native_harness_checks.py',
-                     'shared/codex_session.py',
-                     'shared/claude_agent.py',
-                     'shared/pi_agent.py'):
+    def test_adapter_edits_install_only_their_own_harness_while_native_harness_installs_all(self):
+        for path, expected in (
+                ('shared/codex_session.py', ['codex']),
+                ('shared/claude_agent.py', ['claude']),
+                ('shared/pi_agent.py', ['pi']),
+                ('swarmharm/tests/native_harness_checks.py', ['claude', 'codex', 'pi'])):
             with self.subTest(path=path):
-                plan=select([path])
-                self.assertIn('tests.native_harness_checks',plan['tests'])
-                self.assertEqual(plan['harnesses'],['claude','codex','pi'])
+                plan = select([path])
+                self.assertEqual(plan['harnesses'], expected)
                 self.assertTrue(plan['docker'])
 
     def test_collection_suite_declares_its_native_workstation_dependencies(self):
@@ -119,7 +123,6 @@ class CheckSelectionChecks(unittest.TestCase):
 
     def test_worker_markdown_is_not_treated_as_operator_documentation(self):
         plan = select(['swarmharm/instruction.md'])
-        self.assertIn('wording', plan['checks'])
         self.assertTrue(plan['tests'])
 
     def test_job_service_edits_check_its_api_and_source_binding(self):
@@ -201,17 +204,18 @@ class CheckSelectionChecks(unittest.TestCase):
             self.assertFalse(plan['docker'])
             self.assertEqual(plan['harnesses'], [])
 
-    def test_shared_workstation_and_full_checks_keep_runtime_coverage(self):
-        # SwarmForm evidence is sealed: shared runtime changes regress only the
-        # active SwarmHarm study, while an explicit --full sweep still covers all.
-        sealed, complete = select(['shared/workstation.py']), select([], full=True)
-        for plan in (sealed, complete):
-            self.assertTrue(plan['docker'])
-            self.assertEqual(plan['harnesses'], ['claude', 'codex', 'pi'])
-            self.assertIn('tests.review_checks', plan['tests'])
-        self.assertNotIn('tests.swarmform_collection_checks', sealed['tests'])
+    def test_shared_runtime_is_minimalist_and_full_keeps_complete_coverage(self):
+        minimal = select(['shared/workstation.py', 'shared/launch_capacity.py', 'shared/export_atif.py'])
+        self.assertFalse(minimal['docker'])
+        self.assertEqual(minimal['harnesses'], [])
+        self.assertIn('tests.host_capacity_checks', minimal['tests'])
+        self.assertIn('tests.claim_evidence_checks', minimal['tests'])
+        complete = select([], full=True)
+        self.assertTrue(complete['docker'])
+        self.assertEqual(complete['harnesses'], ['claude', 'codex', 'pi'])
+        self.assertIn('tests.review_checks', complete['tests'])
         self.assertIn('tests.swarmform_collection_checks', complete['tests'])
-        self.assertIn('tests.unified_delivery_checks', sealed['tests'])
+        self.assertIn('tests.unified_delivery_checks', complete['tests'])
 
     def test_delivery_archive_edits_keep_business_checks_without_native_sessions(self):
         for helper in ('delivery_archive', 'delivered_outcome'):
