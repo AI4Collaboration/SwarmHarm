@@ -28,8 +28,8 @@ DOCKER_TESTS = {'swarmform_deployment', 'swarmform_read_observer', 'swarmform_ru
 
 
 def uses_docker(stem):
-    # Collector and transport suites create per-agent networks as well as containers.
-    return stem in DOCKER_TESTS or stem.endswith(('_collector', '_transport', '_collect'))
+    # Collector suites create per-agent networks as well as containers.
+    return stem in DOCKER_TESTS or stem.endswith(('_collector', '_collect'))
 
 
 def git(*args, root=ROOT):
