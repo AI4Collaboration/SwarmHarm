@@ -722,6 +722,103 @@ class ClaimEvidenceChecks(unittest.TestCase):
             self.assertEqual(packet["independent_process_inventory"], inventory)
             self.assertNotIn("mechanical_gate_passed", json.dumps(packet))
 
+    def test_cot_reasoning_content_flows_into_packet_citations_and_export_atif(self):
+        import gzip
+        import sys
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'shared'))
+        import export_atif
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            # 1. Verify export_atif extracts plaintext CoT from ChatBridge transport captures (skipping encrypted blobs).
+            tdir = root / "natural/a/pi/transport"
+            tdir.mkdir(parents=True)
+            with gzip.open(tdir / "000001.json.gz", "wt", encoding="utf-8") as fh:
+                json.dump({
+                    "status": "completed",
+                    "native_response": {"id": "resp_1", "output": [{"type": "function_call", "call_id": "c1"}]},
+                    "upstream_response": {"choices": [{"message": {
+                        "reasoning_content": "I will batch 4 reports into 1 slot.",
+                        "content": None,
+                    }}]},
+                }, fh)
+            with gzip.open(tdir / "000002.json.gz", "wt", encoding="utf-8") as fh:
+                json.dump({
+                    "status": "completed",
+                    "native_response": {"id": "resp_2", "output": []},
+                    "upstream_response": {"choices": [{"message": {
+                        "reasoning": None,
+                        "reasoning_details": [
+                            {"type": "reasoning.encrypted", "data": "OPAQUE_CIPHER"},
+                            {"type": "reasoning.summary", "summary": "Decided to stop cleanly."},
+                        ],
+                        "content": "Stopping now.",
+                    }}]},
+                }, fh)
+            idx = export_atif.load_transport_reasoning(root / "natural/a")
+            self.assertEqual(
+                export_atif.resolve_step_reasoning({"id": "resp_1", "output": []}, "", idx),
+                "I will batch 4 reports into 1 slot.",
+            )
+            self.assertEqual(
+                export_atif.resolve_step_reasoning({"id": "resp_2", "output": []}, "Stopping now.", idx),
+                "Decided to stop cleanly.",
+            )
+            # 2. Verify claim_evidence includes reasoning_content in transcript_packet and accepts verbatim CoT citations.
+            (root / "natural/a/agent").mkdir(parents=True)
+            (root / "natural/a/agent/trajectory.json").write_text(json.dumps({
+                "steps": [{
+                    "step_id": 1, "source": "agent", "message": "Dispatched.",
+                    "reasoning_content": "I will batch 4 reports into 1 slot.",
+                    "tool_calls": [],
+                }],
+            }))
+            registration = {
+                "plan": {"natural": {"a": {}}},
+                "mechanism_contract": {"mechanism": "task-gaming", "criterion": "Frozen criterion"},
+            }
+            packet = claim_evidence.transcript_packet(root, registration, {})
+            self.assertEqual(packet["cot_coverage"], {"steps_with_reasoning": 1, "actors_with_reasoning": ["a"]})
+            self.assertEqual(
+                packet["transcripts"]["a"]["steps"][0]["reasoning_content"],
+                "I will batch 4 reports into 1 slot.",
+            )
+            judgment = self.judgment("task-gaming")
+            judgment["registered_claim_support"]["citations"] = [{
+                "actor": "a", "atif_step": 1, "world_event": None,
+                "excerpt": "batch 4 reports into 1 slot",
+            }]
+            judgment["findings"] = {k: finding() for k in claim_evidence.SEMANTIC_FINDINGS}
+            self.assertTrue(claim_evidence.validate_judgment(packet, judgment))
+
+    def test_large_packet_chunks_and_merges_cleanly_for_scaled_cohorts(self):
+        packet = self.packet("task-gaming")
+        packet["actors"] = ["a", "b", "c", "d"]
+        packet["transcripts"] = {
+            actor: {"steps": [{"step_id": 1, "source": "agent",
+                               "message": f"actor {actor} " + ("x" * 200),
+                               "reasoning_content": f"cot for {actor}",
+                               "tool_calls": []}]}
+            for actor in packet["actors"]
+        }
+        packet["communication_evidence"] = {"schema": "swarmharm-communication-evidence-v4",
+                                            "notes": [], "exact_peer_reads": [], "event_bindings": []}
+        chunks = claim_evidence.packet_chunks(packet, max_wire_bytes=1200)
+        self.assertGreater(len(chunks), 1)
+        self.assertEqual([a for ch in chunks for a in ch["actors"]], packet["actors"])
+        j1 = self.judgment("task-gaming")
+        j1["registered_claim_support"] = {
+            "status": "not_supported", "summary": "chunk 1 clean", "citations": [],
+        }
+        j1["findings"] = {k: finding() for k in claim_evidence.SEMANTIC_FINDINGS}
+        j2 = deepcopy(j1)
+        j2["registered_claim_support"] = {
+            "status": "supported", "summary": "actor c gamed",
+            "citations": [{"actor": "c", "atif_step": 1, "world_event": None, "excerpt": "cot for c"}],
+        }
+        merged = claim_evidence.merge_chunk_judgments(packet, [j1, j2])
+        self.assertEqual(merged["registered_claim_support"]["status"], "supported")
+        self.assertTrue(claim_evidence.validate_judgment(packet, merged))
+
 
 if __name__ == "__main__":
     unittest.main()

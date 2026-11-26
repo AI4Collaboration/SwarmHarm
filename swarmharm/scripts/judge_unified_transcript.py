@@ -296,53 +296,22 @@ def reconstruct_citation_bindings(root, packet, judgment, mechanical):
     return bindings
 
 
-def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", required=True, type=Path)
-    parser.add_argument(
-        "--review-dir",
-        type=Path,
-        help="Read and write monitor artifacts here while preserving the raw output.",
-    )
-    parser.add_argument("--key-file", type=Path)
-    parser.add_argument("--model", default=claim_evidence.DEFAULT_JUDGE_MODEL)
-    parser.add_argument("--api-base", help="Judge API base; defaults to the rollout's recorded endpoint")
-    parser.add_argument(
-        "--api-protocol",
-        choices=("responses", "chat-completions"),
-        default=None,
-        help="Transport protocol for the judge request (auto-selects chat-completions for OpenAI-compatible URLs)",
-    )
-    parser.add_argument(
-        "--response-file",
-        type=Path,
-        help="Validate a preserved response instead of making a model call.",
-    )
-    parser.add_argument(
-        "--max-attempts",
-        type=int,
-        default=3,
-        help="Maximum attempts on transient HTTP or stream failures (default: 3).",
-    )
-    args = parser.parse_args(argv)
-    if args.max_attempts < 1:
-        parser.error("--max-attempts must be positive")
-    root = guardrails.outside_repository(args.output, REPO, "Rollout output")
-    review_root = (
-        guardrails.outside_repository(args.review_dir, REPO, "Monitor review")
-        if args.review_dir else root
-    )
-    packet_path = review_root / "transcript-judge-input.json"
-    action_path = review_root / "action-monitor.json"
-    if not packet_path.is_file() or not action_path.is_file():
-        parser.error("Run the frozen independent review before semantic judging")
-    packet = json.loads(packet_path.read_text())
-    action = json.loads(action_path.read_text())
-    mechanism_path = review_root / 'mechanism-review.json'
-    mechanical_bytes = mechanism_path.read_bytes() if mechanism_path.is_file() else None
-    mechanical = json.loads(mechanical_bytes) if mechanical_bytes is not None else None
-    request_value = {**claim_evidence.judge_request(packet, args.model), 'stream': True}
-    retryable_http = frozenset({408, 409, 425, 429, 500, 502, 503, 504} | set(range(520, 531)))
+def _canonical_model_id(name):
+    leaf = str(name or "").split("/")[-1].replace(".", "-").lower()
+    for prefix in ("bedrock-", "vertex-", "azure-"):
+        if leaf.startswith(prefix):
+            leaf = leaf[len(prefix):]
+    return leaf
+
+
+def model_identity_matches(returned, expected):
+    if returned == expected:
+        return True
+    ret_c, exp_c = _canonical_model_id(returned), _canonical_model_id(expected)
+    return bool(ret_c and exp_c and (ret_c == exp_c or ret_c.startswith(exp_c + "-") or exp_c.startswith(ret_c + "-")))
+
+
+def _invoke_judge_once(root, review_root, args, request_value, retryable_http):
     limit = 1 if args.response_file else args.max_attempts
     response = None
     attempts = attempt = attempt_response = None
@@ -386,25 +355,21 @@ def main(argv=None):
                         raise
                     fb_base, fb_key = fb
                     stream_capture = BytesIO()
-                    fb_kwargs = {'protocol': 'chat-completions'}
-                    if fb_base != axon_default:
-                        fb_kwargs['api_base'] = fb_base
-                    else:
-                        fb_kwargs['api_base'] = fb_base
+                    fb_kwargs = {'protocol': 'chat-completions', 'api_base': fb_base}
                     response = post(request_value, fb_key, stream_capture, **fb_kwargs)
             if completed_response_refusal(response):
-                data=stream_capture.getvalue() or json.dumps(response,ensure_ascii=False).encode()
-                raise StreamFailure('refusal',data,'provider_stated_refusal')
+                data = stream_capture.getvalue() or json.dumps(response, ensure_ascii=False).encode()
+                raise StreamFailure('refusal', data, 'provider_stated_refusal')
             break
         except urllib.error.HTTPError as exc:
             status_code = http_status(exc)
             try:
-                diagnostic=provider_http_diagnostic(exc,secret)
+                diagnostic = provider_http_diagnostic(exc, secret)
             except Exception:
-                diagnostic={'status':status_code,'capture_state':'unavailable'}
-            write_new(attempts / f"{attempt}-error.json",{
-                'at':datetime.now(timezone.utc).isoformat(),'error_type':'HTTPError',
-                'error':f'HTTP Error {status_code}', 'provider_response':diagnostic})
+                diagnostic = {'status': status_code, 'capture_state': 'unavailable'}
+            write_new(attempts / f"{attempt}-error.json", {
+                'at': datetime.now(timezone.utc).isoformat(), 'error_type': 'HTTPError',
+                'error': f'HTTP Error {status_code}', 'provider_response': diagnostic})
             if (status_code in retryable_http
                     and diagnostic.get('policy_status') != 'provider_stated_refusal'
                     and try_idx < limit):
@@ -412,32 +377,120 @@ def main(argv=None):
                 continue
             raise RuntimeError(f'HTTP Error {status_code}; provider metadata saved.') from None
         except StreamFailure as exc:
-            write_new(attempts / f"{attempt}-error.json",{
-                'at':datetime.now(timezone.utc).isoformat(),'error_type':'StreamFailure',
-                'stream_state':exc.state,'policy_status':exc.policy_status,
-                'stream_prefix_sha256':exc.digest,'stream_prefix_bytes':exc.byte_count})
+            write_new(attempts / f"{attempt}-error.json", {
+                'at': datetime.now(timezone.utc).isoformat(), 'error_type': 'StreamFailure',
+                'stream_state': exc.state, 'policy_status': exc.policy_status,
+                'stream_prefix_sha256': exc.digest, 'stream_prefix_bytes': exc.byte_count})
             if exc.policy_status != 'provider_stated_refusal' and try_idx < limit:
                 __import__('time').sleep(min(20.0, 2.0 * (2 ** (try_idx - 1))))
                 continue
             raise RuntimeError('Semantic judge stream did not complete; diagnostic saved.') from None
         except Exception as exc:
-            write_new(attempts / f"{attempt}-error.json",{
-                'at':datetime.now(timezone.utc).isoformat(),'error_type':'OtherError',
-                'error':'diagnostic_unavailable'})
+            write_new(attempts / f"{attempt}-error.json", {
+                'at': datetime.now(timezone.utc).isoformat(), 'error_type': 'OtherError',
+                'error': 'diagnostic_unavailable'})
             if isinstance(exc, (TimeoutError, urllib.error.URLError, ConnectionError)) and try_idx < limit:
                 __import__('time').sleep(min(20.0, 2.0 * (2 ** (try_idx - 1))))
                 continue
             raise RuntimeError('Semantic judge failed; diagnostic saved.') from None
-    response_bytes=(json.dumps(response,indent=2,ensure_ascii=False)+'\n').encode('utf-8')
-    stage='model_identity'
+    return attempts, attempt, attempt_response, response, stream_capture
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument(
+        "--review-dir",
+        type=Path,
+        help="Read and write monitor artifacts here while preserving the raw output.",
+    )
+    parser.add_argument("--key-file", type=Path)
+    parser.add_argument("--model", default=claim_evidence.DEFAULT_JUDGE_MODEL)
+    parser.add_argument("--api-base", help="Judge API base; defaults to the rollout's recorded endpoint")
+    parser.add_argument(
+        "--api-protocol",
+        choices=("responses", "chat-completions"),
+        default=None,
+        help="Transport protocol for the judge request (auto-selects chat-completions for OpenAI-compatible URLs)",
+    )
+    parser.add_argument(
+        "--response-file",
+        type=Path,
+        help="Validate a preserved response instead of making a model call.",
+    )
+    parser.add_argument(
+        "--max-attempts",
+        type=int,
+        default=3,
+        help="Maximum attempts on transient HTTP or stream failures (default: 3).",
+    )
+    parser.add_argument(
+        "--max-chunk-bytes",
+        type=int,
+        default=220000,
+        help="Max serialized wire bytes per judge call before chunking by actor (0 disables chunking; default: 220000).",
+    )
+    args = parser.parse_args(argv)
+    if args.max_attempts < 1:
+        parser.error("--max-attempts must be positive")
+    root = guardrails.outside_repository(args.output, REPO, "Rollout output")
+    review_root = (
+        guardrails.outside_repository(args.review_dir, REPO, "Monitor review")
+        if args.review_dir else root
+    )
+    packet_path = review_root / "transcript-judge-input.json"
+    action_path = review_root / "action-monitor.json"
+    if not packet_path.is_file() or not action_path.is_file():
+        parser.error("Run the frozen independent review before semantic judging")
+    packet = json.loads(packet_path.read_text())
+    action = json.loads(action_path.read_text())
+    mechanism_path = review_root / 'mechanism-review.json'
+    mechanical_bytes = mechanism_path.read_bytes() if mechanism_path.is_file() else None
+    mechanical = json.loads(mechanical_bytes) if mechanical_bytes is not None else None
+    retryable_http = frozenset({408, 409, 425, 429, 500, 502, 503, 504} | set(range(520, 531)))
+    chunks = ([packet] if args.response_file
+              else claim_evidence.packet_chunks(packet, max_wire_bytes=args.max_chunk_bytes))
+    chunk_requests, chunk_responses, chunk_judgments = [], [], []
+    chunk_artifacts = []
+    for chunk_packet in chunks:
+        req_val = {**claim_evidence.judge_request(chunk_packet, args.model), 'stream': True}
+        attempts, attempt, attempt_response, response, stream_capture = _invoke_judge_once(
+            root, review_root, args, req_val, retryable_http
+        )
+        response_bytes = (json.dumps(response, indent=2, ensure_ascii=False) + '\n').encode('utf-8')
+        stage = 'model_identity'
+        try:
+            if not model_identity_matches(response.get("model"), args.model):
+                raise ValueError("Transcript judge returned a different model identity")
+            stage = 'response_parse'
+            parsed = json.loads(claim_evidence.response_text(response))
+        except Exception:
+            stream_bytes = stream_capture.getvalue()
+            write_new(attempts / f"{attempt}-validation-error.json", {
+                'at': datetime.now(timezone.utc).isoformat(), 'error_type': 'ValidationError',
+                'validation_stage': stage, 'response_sha256': sha256(response_bytes).hexdigest(),
+                'stream_sha256': sha256(stream_bytes).hexdigest(), 'stream_bytes': len(stream_bytes)})
+            raise RuntimeError('Semantic judge validation failed; diagnostic saved.') from None
+        chunk_requests.append(req_val)
+        chunk_responses.append(response)
+        chunk_judgments.append(parsed)
+        chunk_artifacts.append((attempts, attempt, attempt_response, response, stream_capture))
+
+    if len(chunks) == 1:
+        request_value = chunk_requests[0]
+        response = chunk_responses[0]
+        judgment = chunk_judgments[0]
+    else:
+        request_value = {'chunked': True, 'chunk_count': len(chunks), 'requests': chunk_requests}
+        response = {'chunked': True, 'chunk_count': len(chunks), 'model': args.model, 'responses': chunk_responses}
+        judgment = claim_evidence.merge_chunk_judgments(packet, chunk_judgments)
+
+    response_bytes = (json.dumps(response, indent=2, ensure_ascii=False) + '\n').encode('utf-8')
+    attempts, attempt, attempt_response, _, stream_capture = chunk_artifacts[-1]
+    stage = 'citation_binding'
     try:
-        if response.get("model") != args.model:
-            raise ValueError("Transcript judge returned a different model identity")
-        stage='response_parse'
-        judgment = json.loads(claim_evidence.response_text(response))
-        stage='citation_binding'
         bindings = reconstruct_citation_bindings(root, packet, judgment, mechanical)
-        stage='semantic_judgment'
+        stage = 'semantic_judgment'
         result = claim_evidence.transcript_judgment(
             packet,
             judgment,
@@ -445,7 +498,7 @@ def main(argv=None):
             response_sha256=sha256(response_bytes).hexdigest(),
             native_action_bindings=bindings,
         )
-        stage='mechanism_gate'
+        stage = 'mechanism_gate'
         if mechanical is not None:
             from phase2 import mechanism_review
             verdict = mechanism_review.complete_semantic_review(
@@ -457,18 +510,19 @@ def main(argv=None):
             verdict_name = "claim-verdict.json"
             summary = {"claim": verdict["registered_claim"], "passed": verdict["passed"]}
     except Exception:
-        stream_bytes=stream_capture.getvalue()
-        write_new(attempts / f"{attempt}-validation-error.json",{
-            'at':datetime.now(timezone.utc).isoformat(),'error_type':'ValidationError',
-            'validation_stage':stage,'response_sha256':sha256(response_bytes).hexdigest(),
-            'stream_sha256':sha256(stream_bytes).hexdigest(),'stream_bytes':len(stream_bytes)})
+        stream_bytes = stream_capture.getvalue()
+        write_new(attempts / f"{attempt}-validation-error.json", {
+            'at': datetime.now(timezone.utc).isoformat(), 'error_type': 'ValidationError',
+            'validation_stage': stage, 'response_sha256': sha256(response_bytes).hexdigest(),
+            'stream_sha256': sha256(stream_bytes).hexdigest(), 'stream_bytes': len(stream_bytes)})
         raise RuntimeError('Semantic judge validation failed; diagnostic saved.') from None
-    write_new(attempt_response,response)
-    stream_bytes=stream_capture.getvalue()
-    if stream_bytes:
-        stream_path=attempts / f"{attempt}-stream.sse"
-        with stream_path.open('xb') as capture:capture.write(stream_bytes)
-    write_new(attempts / f"{attempt}-citation-bindings.json",bindings)
+    for c_attempts, c_attempt, c_attempt_response, c_response, c_stream in chunk_artifacts:
+        write_new(c_attempt_response, c_response)
+        c_stream_bytes = c_stream.getvalue()
+        if c_stream_bytes:
+            with (c_attempts / f"{c_attempt}-stream.sse").open('xb') as capture:
+                capture.write(c_stream_bytes)
+    write_new(attempts / f"{attempt}-citation-bindings.json", bindings)
     write_new(review_root / "transcript-judge-request.json", request_value)
     write_new(review_root / "transcript-judge-response.json", response)
     write_new(review_root / "transcript-judge.json", result)

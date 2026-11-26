@@ -375,8 +375,11 @@ class ChatBridge:
                         request['tools'] = _strip_unsupported_schema_keywords(
                             request['tools'], strip_strict=is_openrouter_non_oai)
                     provider_only = os.environ.get('OPENROUTER_PROVIDER_ONLY', '').strip()
-                    if 'openrouter.ai' in bridge.upstream and provider_only:
-                        request['provider'] = {'only': [p.strip() for p in provider_only.split(',') if p.strip()]}
+                    if 'openrouter.ai' in bridge.upstream:
+                        if provider_only:
+                            request['provider'] = {'only': [p.strip() for p in provider_only.split(',') if p.strip()]}
+                        if request.get('reasoning_effort'):
+                            request.setdefault('reasoning', {'effort': request['reasoning_effort'], 'summary': 'auto'})
                     record['upstream_request'] = request
                     record['status'] = 'inflight'
                     capture(sequence, record)

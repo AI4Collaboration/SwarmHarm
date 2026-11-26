@@ -1,5 +1,5 @@
 """Export registered Pi, Claude and Codex actors to validated ATIF-v1.8 trajectories."""
-import argparse,hashlib,json,sys
+import argparse,gzip,hashlib,json,sys
 import re
 from pathlib import Path
 from harbor.models.trajectories import Trajectory
@@ -8,6 +8,103 @@ from codex_evidence import native_evidence as codex_native_evidence
 
 def read(p):return json.loads(Path(p).read_text())
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+
+def extract_reasoning_text(message):
+    """Extract plaintext CoT/reasoning from an upstream Chat Completions message."""
+    if not isinstance(message, dict):
+        return ''
+    for key in ('reasoning_content', 'reasoning'):
+        value = message.get(key)
+        if isinstance(value, str) and value.strip():
+            return value
+    parts = []
+    for block in message.get('thinking_blocks') or []:
+        if isinstance(block, dict) and isinstance(block.get('thinking'), str) and block['thinking'].strip():
+            parts.append(block['thinking'])
+    if parts:
+        return '\n'.join(parts)
+    for item in message.get('reasoning_details') or []:
+        if not isinstance(item, dict):
+            continue
+        kind = item.get('type', '')
+        if 'encrypted' in kind:
+            continue
+        for field in ('text', 'summary', 'content'):
+            val = item.get(field)
+            if isinstance(val, str) and val.strip():
+                parts.append(val)
+                break
+    return '\n'.join(parts)
+
+def extract_native_output_reasoning(output):
+    """Extract plaintext reasoning summaries from native Responses/Messages output items."""
+    parts = []
+    for item in output or []:
+        if not isinstance(item, dict):
+            continue
+        if item.get('type') == 'reasoning':
+            for entry in item.get('summary') or []:
+                if isinstance(entry, dict) and isinstance(entry.get('text'), str) and entry['text'].strip():
+                    parts.append(entry['text'])
+            for field in ('text', 'content'):
+                val = item.get(field)
+                if isinstance(val, str) and val.strip():
+                    parts.append(val)
+        elif item.get('type') == 'thinking' and isinstance(item.get('thinking'), str) and item['thinking'].strip():
+            parts.append(item['thinking'])
+    return '\n'.join(parts)
+
+def load_transport_reasoning(folder):
+    """Index plaintext CoT from ChatBridge transport captures by response id, call ids, and text."""
+    by_id, by_call, by_text = {}, {}, {}
+    for subdir in ('pi', 'claude', 'codex'):
+        tdir = Path(folder) / subdir / 'transport'
+        if not tdir.is_dir():
+            continue
+        for path in sorted(tdir.glob('*.json.gz')):
+            try:
+                with gzip.open(path, 'rt', encoding='utf-8') as handle:
+                    record = json.load(handle)
+            except (OSError, ValueError):
+                continue
+            if record.get('status') != 'completed':
+                continue
+            choices = (record.get('upstream_response') or {}).get('choices') or []
+            if not choices or not isinstance(choices[0], dict):
+                continue
+            reasoning = extract_reasoning_text(choices[0].get('message'))
+            if not reasoning:
+                continue
+            native = record.get('native_response') or {}
+            if isinstance(native.get('id'), str) and native['id']:
+                by_id[native['id']] = reasoning
+            for block in (native.get('output') or native.get('content') or []):
+                if not isinstance(block, dict):
+                    continue
+                cid = block.get('call_id') or (block.get('id') if block.get('type') == 'tool_use' else None)
+                if isinstance(cid, str) and cid:
+                    by_call[cid] = reasoning
+            msg_text = (choices[0].get('message') or {}).get('content')
+            if isinstance(msg_text, str) and msg_text.strip():
+                by_text.setdefault(msg_text.strip(), []).append(reasoning)
+    return by_id, by_call, by_text
+
+def resolve_step_reasoning(response, text, transport_index):
+    """Match captured CoT to one exported agent step."""
+    direct = extract_native_output_reasoning(response.get('output'))
+    if direct:
+        return direct
+    by_id, by_call, by_text = transport_index
+    rid = response.get('id')
+    if isinstance(rid, str) and rid in by_id:
+        return by_id[rid]
+    for item in response.get('output', []):
+        if item.get('type') == 'function_call' and item.get('call_id') in by_call:
+            return by_call[item['call_id']]
+    key = (text or '').strip()
+    if key and key in by_text and by_text[key]:
+        return by_text[key].pop(0)
+    return ''
 def platform_record_for_request(folder,label,item):
     """Bind a platform update to its own request, even when its text repeats."""
     path=folder/'trace'/f'{label}-platform-update.json'
@@ -162,6 +259,8 @@ def export_actor(root,phase,actor):
                  if isinstance(harness['system_prompt'],dict) else 'controller custom system prompt; SDK-internal additions unobservable')
                 if is_sdk else 'provider request'})
     last_agent=None;prompt_tools=[tool['name'] for tool in initial_tools]
+    transport_reasoning=load_transport_reasoning(folder)
+    cot_steps=0
     for request_index,reqpath in enumerate(requests):
         req=read(reqpath);label=reqpath.name.split('.')[0];extension_outputs=[]
         respath=reqpath.with_name(label+'.response.json')
@@ -210,6 +309,10 @@ def export_actor(root,phase,actor):
         output=response.get('output',[]);calls=[v for v in output if v['type']=='function_call']
         text='\n'.join(text_of(v.get('content',[])) for v in output if v['type']=='message')
         step={'model_name':response.get('model',req['model']),'reasoning_effort':(req.get('reasoning') or {}).get('effort'),'llm_call_count':1,'extra':{'native_request':str(reqpath.relative_to(folder)),'native_response':str(respath.relative_to(folder)),'native_status':response.get('status'),'transport_attempts':len(list((folder/'trace'/'transport-attempts'/label).glob('*.request.json')))}}
+        reasoning_text=resolve_step_reasoning(response,text,transport_reasoning)
+        if reasoning_text:
+            step['reasoning_content']=reasoning_text
+            cot_steps+=1
         usage=response.get('usage') or {}
         if usage:step['metrics']={k:v for k,v in {'prompt_tokens':usage.get('input_tokens'),'completion_tokens':usage.get('output_tokens'),'cached_tokens':(usage.get('input_tokens_details') or {}).get('cached_tokens')}.items() if v is not None}
         expected.extend(output);observations=[]
@@ -279,7 +382,7 @@ def export_actor(root,phase,actor):
     assert exp_hist==saved_hist,'Saved native history mismatch'
     hashes['history.json']=sha(folder/'history.json')
     model=first['model'];state=read(folder/'result.json')
-    value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,'trajectory_id':phase+':'+actor+':primary','agent':{'name':'SwarmHarm rollout collector (Pi SDK)','version':'2.0','model_name':model,'tool_definitions':all_tool_definitions},'steps':steps,'extra':{'phase':phase,'study_mode':study_mode,'actor':actor,'phase2_tools_seen':phase2_tools_seen,'native_status':state['status'],'completion_attempts':len(state.get('completion_attempts',[])),'extension_continuations':len(state.get('extension_continuations',[])),'harness_rejected_tool_calls':len(state.get('harness_rejected_tool_calls',[])),'pi_session_file':(state.get('pi_session') or {}).get('session_file'),'conversion':'Native records are the exact provider request payloads and completed Responses objects. Pi rebuilds prior items on each request, so continuity is checked on the model-visible meaning of each item. The Pi system prompt is the first input item. Controller platform updates and harness or extension inputs are retained as separate input steps. Observations of tools run inside Pi extensions come from the next native request. Pi re-renders its system prompt when the active tools change; each new version is retained as a system step. Opaque reasoning remains only in raw records.','source_sha256':hashes,'missing_response_records':missing,'uncommitted_response_records':uncommitted,'independent_review':'../../../independent-review.json'}}
+    value={'schema_version':'ATIF-v1.8','session_id':phase+':'+actor,'trajectory_id':phase+':'+actor+':primary','agent':{'name':'SwarmHarm rollout collector (Pi SDK)','version':'2.0','model_name':model,'tool_definitions':all_tool_definitions},'steps':steps,'extra':{'phase':phase,'study_mode':study_mode,'actor':actor,'phase2_tools_seen':phase2_tools_seen,'cot_steps_captured':cot_steps,'native_status':state['status'],'completion_attempts':len(state.get('completion_attempts',[])),'extension_continuations':len(state.get('extension_continuations',[])),'harness_rejected_tool_calls':len(state.get('harness_rejected_tool_calls',[])),'pi_session_file':(state.get('pi_session') or {}).get('session_file'),'conversion':'Native records are the exact provider request payloads and completed Responses objects. Pi rebuilds prior items on each request, so continuity is checked on the model-visible meaning of each item. The Pi system prompt is the first input item. Controller platform updates and harness or extension inputs are retained as separate input steps. Observations of tools run inside Pi extensions come from the next native request. Pi re-renders its system prompt when the active tools change; each new version is retained as a system step. Plaintext reasoning/CoT captured from native or bridge transport records is preserved in step.reasoning_content.','source_sha256':hashes,'missing_response_records':missing,'uncommitted_response_records':uncommitted,'independent_review':'../../../independent-review.json'}}
     if is_claude:
         route='AxonHub' if harness.get('authentication')=='axonhub' else 'subscription'
         value['agent']['name']='SwarmHarm rollout collector (Claude Agent SDK / '+route+')'

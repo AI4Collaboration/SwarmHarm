@@ -304,4 +304,65 @@ class Checks(unittest.TestCase):
                            api_base='https://example.invalid/v1', protocol='chat-completions')
             self.assertEqual(caught.exception.policy_status, 'provider_stated_refusal')
 
+    def test_model_identity_matching_and_chunked_judge_execution(self):
+        self.assertTrue(judge.model_identity_matches('claude-sonnet-5-5-20261101', 'aws/anthropic/bedrock-claude-sonnet-5-5'))
+        self.assertTrue(judge.model_identity_matches('openai/gpt-6.1-sol-20261101', 'openai/gpt-6.1-sol'))
+        self.assertFalse(judge.model_identity_matches('anthropic/claude-opus-5.5', 'openai/gpt-6.1-sol'))
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'natural').mkdir()
+            (root / 'natural/world.json').write_text(json.dumps({'events': []}))
+            (root / 'registration.json').write_text(json.dumps({
+                'api_protocol': 'chat-completions', 'harness': {'kind': 'codex'},
+            }))
+            for actor in ('a', 'b'):
+                (root / 'natural' / actor / 'agent').mkdir(parents=True)
+                (root / 'natural' / actor / 'agent/trajectory.json').write_text(json.dumps({'steps': []}))
+            packet = {
+                'schema': judge.claim_evidence.PACKET_SCHEMA,
+                'registered_claim': 'task-gaming',
+                'registered_semantic_criterion': 'criterion',
+                'full_mechanism_criterion': 'criterion',
+                'actors': ['a', 'b'],
+                'transcripts': {
+                    'a': {'steps': [{'step_id': 1, 'source': 'agent', 'message': 'a ' + 'x' * 500, 'reasoning_content': 'cot a'}]},
+                    'b': {'steps': [{'step_id': 1, 'source': 'agent', 'message': 'b ' + 'y' * 500, 'reasoning_content': 'cot b'}]},
+                },
+                'communication_evidence': {'schema': 'swarmharm-communication-evidence-v4',
+                                           'notes': [], 'exact_peer_reads': [], 'event_bindings': []},
+            }
+            (root / 'transcript-judge-input.json').write_text(json.dumps(packet))
+            (root / 'action-monitor.json').write_text(json.dumps({'registered_claim': 'task-gaming'}))
+            (root / 'mechanism-review.json').write_text(json.dumps({
+                'mechanism': 'task-gaming', 'criterion': 'criterion', 'semantic_criterion': 'criterion',
+                'causal_actors': ['b'], 'input_behavior_validated': True, 'mechanism_observed': True,
+            }))
+            key = root / 'key'; key.write_text('secret')
+            calls = []
+            def fake_post(req_val, secret, capture, **kw):
+                idx = len(calls)
+                calls.append(req_val)
+                findings = {k: {'supported': False, 'summary': 'no', 'actors': [], 'citations': []}
+                            for k in judge.claim_evidence.SEMANTIC_FINDINGS}
+                if idx == 0:
+                    body = {'review_complete': True,
+                            'registered_claim_support': {'status': 'not_supported', 'summary': 'a clean', 'citations': []},
+                            'findings': findings, 'limitations': []}
+                else:
+                    body = {'review_complete': True,
+                            'registered_claim_support': {'status': 'supported', 'summary': 'b gamed',
+                                                         'citations': [{'actor': 'b', 'atif_step': 1, 'world_event': None, 'excerpt': 'cot b'}]},
+                            'findings': findings, 'limitations': []}
+                return {'status': 'completed', 'model': 'openai/gpt-6.1-sol-20261101',
+                        'output': [{'type': 'message', 'role': 'assistant',
+                                    'content': [{'type': 'output_text', 'text': json.dumps(body)}]}]}
+            with patch.object(judge, 'post', side_effect=fake_post):
+                rc = judge.main(['--output', str(root), '--key-file', str(key),
+                                 '--model', 'openai/gpt-6.1-sol', '--max-chunk-bytes', '1200'])
+            self.assertEqual(rc, 0)
+            self.assertEqual(len(calls), 2)
+            verdict = json.loads((root / 'mechanism-verdict.json').read_text())
+            self.assertTrue(verdict['target_observed'])
+            self.assertEqual(verdict['semantic_status'], 'supported')
+
 if __name__=='__main__':unittest.main()
