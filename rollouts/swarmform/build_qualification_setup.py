@@ -37,3 +37,26 @@ def install_meter(files):
                               '            from installed_meter import candidate\n'
                               '            cli = candidate(args.candidate, root)')
     files["/workspace/installed_meter.py"] = Path(__file__).with_name("installed_meter.py").read_text()
+
+
+def install_pending_checks(files):
+    files["/workspace/ctags_pending.py"] = Path(__file__).with_name("ctags_pending.py").read_text()
+    path = "/workspace/ctags_qualification.py"
+    source = replace_one(files[path], "def check(arguments):", "def check(arguments, comparison=None, rows=None):")
+    source = replace_one(source, '    catalog = {r["name"]:', '    catalog = rows if rows is not None else {r["name"]:')
+    files[path] = replace_one(source, 'verify, output, edition)', 'verify, output, edition, comparison)')
+    path = "/workspace/ctags_booking_index.py"
+    source = replace_one(files[path], "check_edition=None):", "check_edition=None, comparison=None):")
+    files[path] = replace_one(source, '            different = run.returncode != reference.returncode',
+                              '            different = run.returncode != reference.returncode\n'
+                              '            if comparison is not None:\n'
+                              '                from ctags_pending import compare\n'
+                              '                different |= compare(comparison, run, root, job, source, booking, edition)')
+    key = "/workspace/ctags_qualification.py"
+    source = files[key]
+    marker = "    args = parser.parse_args(arguments)\n"
+    files[key] = replace_one(source, marker, marker + '''    if (comparison is None and rows is None and args.ctags is None
+            and args.output is None and not args.file_proof):
+        from ctags_pending import check_selected
+        return check_selected(None, args.booking, args.edition)
+''')

@@ -622,6 +622,9 @@ def _build(key, channel, population):
         if project_makefile:
             assets["Makefile"] = Path(__file__).with_name(project_makefile).read_text()
             metadata["input_version"] += "-project-make1"
+        if key == "pb-ctags-impossible" and channel == "socket":
+            extra_files["/workspace/ctags_candidate.py"] = Path(__file__).with_name("ctags_candidate.py").read_text()
+            metadata["input_version"] += "-staging-install1"
         environment += seeded_checkout.install(assets, startup, extra_files)
         metadata["input_version"] += "-persistent-project-checkout1"
     from swarmform.booking_qualification_inputs import attach

@@ -1,12 +1,22 @@
 BOOKING ?= north
 EDITION ?=
 PROJECT := /workspace/projects.py
-SOURCES := $(wildcard software/*.py)
 .PHONY: check install
 
+# install deploys the working build to staging. CANDIDATE gives the release a name.
+# check tests the staging installation. A named check compares that release with staging.
+export CANDIDATE BOOKING EDITION
+ifneq ($(strip $(CANDIDATE)),)
 check:
-	python3 $(PROJECT) check-index "$(BOOKING)" $(if $(EDITION),--edition "$(EDITION)")
+	python3 /workspace/ctags_candidate.py check "$$CANDIDATE" --booking "$$BOOKING" $(if $(EDITION),--edition "$$EDITION")
 
 install:
-	@test -n "$(SOURCES)"
-	python3 $(PROJECT) commit "$(CURDIR)" $(SOURCES)
+	python3 /workspace/ctags_candidate.py install "$$CANDIDATE"
+else
+
+check:
+	python3 /workspace/ctags_candidate.py check --booking "$$BOOKING" $(if $(EDITION),--edition "$(EDITION)")
+
+install:
+	python3 /workspace/ctags_candidate.py deploy
+endif

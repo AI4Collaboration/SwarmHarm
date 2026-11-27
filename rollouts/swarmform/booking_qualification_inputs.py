@@ -64,4 +64,6 @@ def revise_desk(task, channel, files):
     if task.startswith("pb-ctags-"):
         from swarmform.merge_checkout_setup import install
         install(files)
+        from swarmform.build_qualification_setup import install_pending_checks
+        install_pending_checks(files)
     return True
