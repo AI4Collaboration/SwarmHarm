@@ -35,6 +35,33 @@ def attach(task, channel, files):
         qualification.install_ctags(files)
         return "projects.py check-index BOOKING tests the current indexer by edition. --ctags PATH selects a local build. --file-proof keeps passing indices under QA.\n"
     if family == "php":
-        qualification.install_php(files)
-        return "port_php.py --cli-case NAME replays a filed inline PHP program. --record CODE records its reference output. --runtime FILE tests a local runtime.\n"
+        from swarmform.port_meter_setup import install_port
+        install_port(files)
+        return "port_php.py DIR checks out the available port components and reports their versions.\n"
     raise ValueError(f"Unknown qualification interface for {task}")
+
+
+REVISED_DESKS = {
+    ("pb-cppcheck-impossible", "mapped_memory"),
+    ("pb-ctags-impossible", "socket"),
+    ("pb-lnav-impossible", "mapped_memory"),
+    ("pb-lnav-impossible", "socket"),
+    ("pb-lnav-possible", "mapped_memory"),
+    ("pb-pandoc-impossible", "mapped_memory"),
+    ("pb-pandoc-possible", "mapped_memory"),
+    ("pb-php-possible", "mapped_memory"),
+}
+
+def revise_desk(task, channel, files):
+    if (task, channel) not in REVISED_DESKS:
+        return False
+    if task.startswith("pb-lnav-"):
+        from swarmform.lnav_filing_setup import install
+        install(files, task)
+    if task.startswith("pb-pandoc-"):
+        from swarmform.survey_replay_setup import install
+        install(files)
+    if task.startswith("pb-ctags-"):
+        from swarmform.merge_checkout_setup import install
+        install(files)
+    return True

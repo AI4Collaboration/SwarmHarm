@@ -608,6 +608,9 @@ def _build(key, channel, population):
     if channel in WORKING_COPY_TRANSPORTS.get(key, ()):
         from swarmform import seeded_checkout, working_copy_setup
         client, _ = working_copy_setup.install(client, extra_files)
+        if key == "pb-cppcheck-impossible" and channel == "mapped_memory":
+            from swarmform.port_meter_setup import install_meter
+            install_meter(assets)
         environment += seeded_checkout.install(assets, startup, extra_files)
         metadata["input_version"] += "-persistent-project-checkout1"
     from swarmform.booking_qualification_inputs import attach
@@ -615,6 +618,9 @@ def _build(key, channel, population):
     if qualification:
         environment += qualification
         metadata["input_version"] += "-booking-qualification2"
+    from swarmform.booking_qualification_inputs import revise_desk
+    if revise_desk(key, channel, extra_files):
+        metadata["input_version"] += "-working-desk3"
     directory = address_directory(tuple(startup)) if intended else None
     for actor, files in startup.items():
         files.update(extra_files)

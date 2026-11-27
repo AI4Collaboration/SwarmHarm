@@ -37,12 +37,3 @@ def install_meter(files):
                               '            from installed_meter import candidate\n'
                               '            cli = candidate(args.candidate, root)')
     files["/workspace/installed_meter.py"] = Path(__file__).with_name("installed_meter.py").read_text()
-
-
-def install_php(files):
-    name = "/workspace/port_php.py"
-    files["/workspace/port_cli_case.py"] = Path(__file__).with_name("port_cli_case.py").read_text()
-    files[name] = replace_one(files[name], "def main():\n", 'def main():\n'
-                              '    if sys.argv[1:2] == ["--cli-case"]:\n'
-                              '        from port_cli_case import main as cli_case\n'
-                              '        return cli_case(sys.argv[2:])\n')
