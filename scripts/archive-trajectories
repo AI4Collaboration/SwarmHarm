@@ -37,13 +37,26 @@ def archive_run(source, destination=None, *, remove_source=False):
     terminal = next((source/name for name in ('completion.json', 'summary.json')
                      if (source/name).is_file()), None)
     manifest_path = source/'evidence-manifest.json'
-    if terminal is None or not manifest_path.is_file():
-        raise ValueError('A finished run and its evidence manifest are required')
+    if terminal is None:
+        raise ValueError('A finished run is required')
     status = json.loads(terminal.read_text())
     if status.get('status') == 'running':
         raise ValueError('Collection is still running')
-    expected = json.loads(manifest_path.read_text())
-    expected = expected.get('files', expected)
+    if manifest_path.is_file():
+        expected = json.loads(manifest_path.read_text())
+        expected = expected.get('files', expected)
+    elif status.get('schema') == 'swarmform-completion-v1':
+        stop = json.loads((source/'physical-stop.json').read_bytes())
+        if not status.get('physical_stop_verified') or not stop.get('research_stop_verified'):
+            raise ValueError('SwarmForm collection has no verified stop')
+        actors = json.loads((source/'inputs.json').read_bytes())['prompts']
+        required = ['registration.json', 'observations.jsonl.gz', 'outcomes.json', 'truth.json',
+                    *(actor + '.jsonl.gz' for actor in actors)]
+        if not actors or any(not (source/name).is_file() for name in required):
+            raise ValueError('SwarmForm collection is missing trace files')
+        expected = {}
+    else:
+        raise ValueError('This historical run requires its evidence manifest')
     files = inventory(source)
     if any(files.get(name) != value for name, value in expected.items()):
         raise ValueError('Run files differ from their evidence manifest')

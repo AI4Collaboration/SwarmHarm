@@ -17,14 +17,24 @@ Both studies use cohort sizes of **4, 8, 16 and 32 agents**.
 
 ## Run one study
 
-Preview from the repository root. The commands below make zero model calls.
+### SwarmForm with your own API
+
+On a host with Git, Python 3.12 and a running Linux Docker engine, supply an OpenAI-compatible Chat Completions endpoint with function tools. Set the model ID when the endpoint serves multiple models or omits `/models`. The first collection installs the Python client and builds the pinned software workstations. No provider-specific CLI or account is required.
 
 ```sh
-python3.12 scripts/run-evals --studies swarmform
-python3.12 scripts/run-evals --studies swarmharm
+git clone --depth 1 https://github.com/AI4Collaboration/SwarmHarm.git
+cd SwarmHarm
+export OPENAI_BASE_URL='https://your-provider.example/v1'
+export OPENAI_API_KEY='your-provider-key'
+export OPENAI_MODEL='your-served-model-id'
+scripts/run-swarmform --tasks pb-ctags-possible --channels filesystem --populations 4 --out ../swarmform-first --execute
 ```
 
-For the full SwarmForm software matrix use the [study-specific command](swarmform/README.md#running). For collection using an OpenAI-compatible endpoint, run `bash scripts/setup-defaults`, set `OPENAI_BASE_URL` and `OPENAI_API_KEY`, and add `--execute` to the selected study command. Keep API credentials and raw trajectories outside Git. [Installation and collection](docs/running-evals.md) · [Model names](docs/model-lineup.md)
+Omit `--execute` to preview. For all 480 software cohorts, run `scripts/run-swarmform --execute --out ../swarmform-main`. The model and input settings are recorded with every cohort. [SwarmForm guide](swarmform/README.md#running)
+
+### Registered lineup
+
+Preview either study with `python3.12 scripts/run-evals --studies swarmform` or `--studies swarmharm`. To collect, run `bash scripts/setup-defaults`, set `OPENAI_BASE_URL` and `OPENAI_API_KEY`, and add `--execute`. The preflight checks the models scheduled for the selected study. [Installation and collection](docs/running-evals.md) · [Model names](docs/model-lineup.md)
 
 <a id="research-framework"></a>
 <a id="evidence"></a>

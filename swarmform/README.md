@@ -29,10 +29,11 @@ At N=4, a partial swarm requires two participants to receive one another’s tas
 
 ## Running
 
-The study uses N=4, 8, 16 and 32. From the repository root, preview all 480 software cohorts (30 inputs × 4 communication settings × 4 populations).
+The software matrix contains 480 cohorts (30 inputs × 4 communication settings × N=4/8/16/32). For a new endpoint, follow the [API quickstart](../README.md#swarmform-with-your-own-api). These commands preview or collect the full matrix from the repository root.
 
 ```sh
-python3.12 rollouts/run_matrix.py --active-tasks
+scripts/run-swarmform
+scripts/run-swarmform --execute --out ../swarmform-main
 ```
 
-For the open research question, substitute `--tasks navier-stokes-3d-possible` for `--active-tasks`. To regenerate the public problem catalog for a population, run `python3.12 scripts/export-inputs swarmform --population 4`. [Runner](../rollouts/run_matrix.py) · [Posthoc log analysis](../rollouts/analysis) · [Installation](../docs/running-evals.md)
+For the open research question, add `--tasks navier-stokes-3d-possible` and use a separate output directory. The direct API runner uses the same task builders, channels and trace recorder as the registered native-harness runner. The harness is recorded per cohort. To regenerate the input catalog, run `python3.12 scripts/export-inputs swarmform --population 4`. [Runner](../rollouts/run_matrix.py) · [Posthoc log analysis](../rollouts/analysis) · [Storage and resume](../docs/running-evals.md)

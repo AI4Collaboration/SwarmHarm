@@ -1,0 +1,70 @@
+#!/usr/bin/env python3.12
+"""Run SwarmForm directly against a supplied Chat Completions endpoint."""
+import argparse
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+from urllib.request import Request
+
+ROOT = Path(__file__).resolve().parents[1]
+MATRIX = ROOT / 'rollouts/run_matrix.py'
+sys.path.insert(0, str(ROOT / 'shared'))
+from guardrails import api_base_url, credential_file, open_url
+
+
+def served_model(base, key):
+    headers = {'Authorization': 'Bearer ' + key} if key else {}
+    try:
+        with open_url(Request(base + '/models', headers=headers), timeout=15) as response:
+            names = sorted({row['id'] for row in json.load(response)['data']})
+    except (OSError, KeyError, TypeError, ValueError):
+        names = []
+    if len(names) != 1:
+        raise SystemExit('Set OPENAI_MODEL to the served model ID. ' +
+                         ('Available: ' + ', '.join(names[:12]) if names else 'The endpoint did not list a single model.'))
+    return names[0]
+
+
+def main():
+    argv = sys.argv[1:]
+    if '--help' in argv or '-h' in argv:
+        os.execv(sys.executable, [sys.executable, str(MATRIX), '--help'])
+    parser = argparse.ArgumentParser(add_help=False, allow_abbrev=False)
+    parser.add_argument('--base-url', default=os.environ.get('OPENAI_BASE_URL'))
+    parser.add_argument('--model', default=os.environ.get('OPENAI_MODEL'))
+    parser.add_argument('--key-file', default=os.environ.get('OPENAI_API_KEY_FILE'))
+    parser.add_argument('--tasks', nargs='+')
+    parser.add_argument('--active-tasks', action='store_true')
+    parser.add_argument('--execute', action='store_true')
+    options, _ = parser.parse_known_args(argv)
+    if not options.base_url:
+        parser.error('Set OPENAI_BASE_URL to your API base URL, including its version path.')
+    base = api_base_url(options.base_url)
+    key = credential_file(options.key_file, ROOT).read_text().strip() if options.key_file else os.environ.get('OPENAI_API_KEY')
+    model = options.model or served_model(base, key)
+    python = sys.executable
+    env = {k: v for k, v in os.environ.items() if not k.startswith(('AXONHUB_', 'OPENROUTER_'))}
+    env.pop('SWARMHARM_AXONHUB_FALLBACK', None)
+    args = ['--base-url', base, '--model', model, '--out', str(ROOT.parent / 'swarmform-runs')]
+    if not (options.tasks or options.active_tasks):
+        args.append('--active-tasks')
+    if options.execute:
+        state = Path(env.get('SWARMHARM_READINESS', ROOT.parent / 'eval-readiness')).expanduser().resolve()
+        record = state / 'swarmform-api.json'
+        runtime = json.loads(record.read_bytes()) if record.is_file() else {}
+        if not (runtime and Path(runtime['python']).is_file() and
+                subprocess.run(['docker', 'image', 'inspect', runtime['image']],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0):
+            subprocess.run(['bash', str(ROOT / 'scripts/setup-defaults'), 'swarmform-api'], check=True,
+                           env=dict(env, SWARMHARM_READINESS=str(state)))
+            runtime = json.loads(record.read_bytes())
+        python = runtime['python']
+        env['SWARMHARM_DOCKER_IMAGE'] = runtime['image']
+    os.execve(python, [python, str(MATRIX), *args, *argv, '--harness', 'chat-completions',
+                       '--api-protocol', 'chat-completions'], env)
+
+
+if __name__ == '__main__':
+    main()

@@ -86,6 +86,8 @@ def select_checks(files, full=False):
         elif name in {'scripts/run-evals', 'scripts/setup-defaults', 'shared/model_lineup.py', 'shared/process_control.py'}:
             suites('default_runner', 'batch_plan', 'api_handoff')
             if name == 'shared/process_control.py': suites('api_collect', roots=('rollouts',))
+        elif name == 'scripts/run-swarmform':
+            suites('api_handoff', roots=('rollouts',))
         elif name == 'swarmharm/run_matrix.py':
             suites('batch_plan', roots=(LAB,))
         elif name.startswith('rollouts/'):

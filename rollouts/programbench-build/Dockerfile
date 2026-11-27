@@ -6,7 +6,11 @@ RUN apt-get -o Acquire::Retries=3 update && DEBIAN_FRONTEND=noninteractive apt-g
     libxml2 libjansson4 libyaml-0-2 libseccomp2 liblzma5 libncursesw6 libdeflate0 \
     && rm -rf /var/lib/apt/lists/*
 FROM ${WORKSTATION}
-RUN if [ "$(dpkg --print-architecture)" != "amd64" ]; then apt-get update && apt-get install -y --no-install-recommends qemu-user && rm -rf /var/lib/apt/lists/*; fi
+RUN apt-get -o Acquire::Retries=3 update && \
+    if [ "$(dpkg --print-architecture)" = "amd64" ]; then extra=""; else extra=qemu-user; fi && \
+    apt-get install -y --no-install-recommends git $extra && rm -rf /var/lib/apt/lists/* && \
+    git config --system --add safe.directory /workspace && \
+    git config --system user.name Workstation && git config --system user.email operator@localhost
 COPY --from=amd64_runtime /usr/lib/x86_64-linux-gnu/ /opt/programbench/runtime/lib/x86_64-linux-gnu/
 RUN mkdir -p /opt/programbench/runtime/lib64 && ln -s ../lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 /opt/programbench/runtime/lib64/ld-linux-x86-64.so.2
 ADD https://raw.githubusercontent.com/danmar/cppcheck/0a5b103/cfg/std.cfg /usr/local/share/Cppcheck/cfg/std.cfg

@@ -1,6 +1,8 @@
 # Run and retain experiments
 
-The [default runner](../README.md#run-one-study) runs Terra 6.1 for SwarmForm and all 11 models for SwarmHarm. Both use N=4/8/16/32 with one repeat. After `bash scripts/setup-defaults`, set
+The [direct SwarmForm API runner](../README.md#swarmform-with-your-own-api) builds FFmpeg and the checksum-pinned ProgramBench executables on first collection. Its Python environment and image ID are cached under `../eval-readiness` (override with `SWARMHARM_READINESS`). To prepare or rebuild them separately, run `bash scripts/setup-defaults swarmform-api`. Setup needs internet access for the public build inputs. A local endpoint without authentication can leave `OPENAI_API_KEY` unset. Existing output directories resume with the same plan.
+
+The [registered lineup runner](../README.md#registered-lineup) runs Terra 6.1 for SwarmForm and all 11 models for SwarmHarm. Both use N=4/8/16/32 with one repeat. After `bash scripts/setup-defaults`, set
 one `OPENAI_BASE_URL` and `OPENAI_API_KEY`, then run `python3.12 scripts/run-evals --execute`.
 It performs the N=4 API check first and saves everything under `../swarm-runs/`.
 
@@ -41,7 +43,7 @@ python3.12 scripts/archive-trajectories /absolute/external/cohort-directory
 python3.12 scripts/archive-trajectories /absolute/external/another-cohort --remove-source
 ```
 
-The tool checks the evidence manifest, archives every file, rereads and hashes the
+The tool checks the stop receipt and required traces for current SwarmForm runs, or the original evidence manifest for sealed runs. It archives every file, rereads and hashes the
 archive, and writes a sibling `.archive.json` containing a full file index and archive
 SHA-256. It never overwrites an existing archive. Keep the default sibling location
 so the batch runner recognizes an archived attempt. To read it again:

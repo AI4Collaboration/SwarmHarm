@@ -42,7 +42,7 @@ agent's compressed transport records retain both request formats, the upstream
 response, returned model ID and request ID. The adapter never changes models or
 silently retries with another provider.
 
-Follow the [default-run instructions](../README.md#run-the-default-experiment).
+Follow the [default-run instructions](../README.md#registered-lineup).
 The N=4 API check runs automatically before the full experiment.
 
 Use `OPENAI_API_KEY_FILE` instead of `OPENAI_API_KEY` if preferred. If your provider

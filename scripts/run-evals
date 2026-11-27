@@ -43,6 +43,10 @@ def plan(base, mapping=None, *, names=None, studies=None, populations=None):
         for study in ('swarmform', 'swarmharm'):
             if settings[study]['models']:
                 settings[study]['populations'] = list(populations)
+    scheduled = set(settings['swarmform']['models']) | set(settings['swarmharm']['models'])
+    models = [model for model in models if model['name'] in scheduled]
+    if not models:
+        raise ValueError('No registered model for the selected study. Use scripts/run-swarmform for an arbitrary served model.')
     sf_pops = settings['swarmform']['populations']
     sh_pops = settings['swarmharm']['populations']
     return dict(settings=settings, models=models, api_base=base,
@@ -141,8 +145,7 @@ def execute(args, expected, config):
                 write(root/'index.json', dict(api_check='running', batches=[]))
                 command = [python, str(REPO/'scripts/check-model-lineup'), '--base-url', expected['api_base'],
                            '--population', '4', '--out', str(check), '--execute']
-                if getattr(args, 'models', None):
-                    command += ['--models', *selected_names]
+                command += ['--models', *selected_names]
                 if args.model_map: command += ['--model-map', str(args.model_map)]
                 with (root/'api-check.log').open('a') as log:
                     code, interrupted = run_process(command, cwd=REPO, env=env, stdout=log, stderr=subprocess.STDOUT)
@@ -213,7 +216,10 @@ def main():
         parser.error('--populations requires integers >= 2')
     if args.model_map: args.model_map = args.model_map.expanduser().resolve()
     base = resolve_api_base(args.base_url, allow_axonhub_default=True)
-    expected = plan(base, args.model_map, names=args.models, studies=args.studies, populations=args.populations)
+    try:
+        expected = plan(base, args.model_map, names=args.models, studies=args.studies, populations=args.populations)
+    except ValueError as error:
+        parser.error(str(error))
     if not args.execute:
         print(json.dumps(expected, indent=2)); return 0
     if args.key_file: args.key_file = credential_file(args.key_file, REPO)

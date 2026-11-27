@@ -25,6 +25,23 @@ class ArchiveChecks(unittest.TestCase):
         (root/'evidence-manifest.json').write_text(json.dumps(archive.inventory(root)))
         return root
 
+    def test_current_swarmform_trace_can_be_archived_without_a_legacy_manifest(self):
+        with TemporaryDirectory() as directory:
+            root = self.fixture(directory)
+            (root/'evidence-manifest.json').unlink()
+            (root/'summary.json').write_text(json.dumps(dict(schema='swarmform-completion-v1',
+                                                              complete=True, physical_stop_verified=True)))
+            (root/'physical-stop.json').write_text('{"research_stop_verified": true}')
+            (root/'inputs.json').write_text('{"prompts": {"actor": []}}')
+            for name in ('observations.jsonl.gz', 'outcomes.json', 'truth.json'):
+                (root/name).touch()
+            with self.assertRaisesRegex(ValueError, 'missing trace'):
+                archive.archive_run(root, remove_source=True)
+            (root/'actor.jsonl').rename(root/'actor.jsonl.gz')
+            row = archive.archive_run(root, remove_source=True)
+            self.assertTrue(Path(row['archive']).is_file())
+            self.assertFalse(root.exists())
+
     def test_archive_and_remove_keeps_every_original_byte(self):
         with TemporaryDirectory() as directory:
             root = self.fixture(directory)
