@@ -53,7 +53,7 @@ def plan(base, mapping=None, *, names=None, studies=None, populations=None):
 
 def batch_command(python, study, model, base, output, *, populations=None, judge=False, judge_model=None):
     script = 'rollouts/run_matrix.py' if study == 'swarmform' else 'swarmharm/run_matrix.py'
-    resolved_pops = populations or (defaults.SWARMFORM_POPULATIONS if study == 'swarmform' else defaults.POPULATIONS)
+    resolved_pops = populations or defaults.POPULATIONS
     args = [python, str(REPO/script), '--model', model['model'], '--served-model', model['served_model'],
             '--base-url', base, '--populations', *map(str, resolved_pops),
             '--repeats', str(defaults.REPEATS), '--api-protocol', 'chat-completions',
@@ -201,7 +201,7 @@ def main():
     parser.add_argument('--studies', nargs='+', choices=('swarmform', 'swarmharm'),
                         help='Optional study subset (default: both)')
     parser.add_argument('--populations', nargs='+', type=int,
-                        help='Optional population list override (e.g. 4 16 64)')
+                        help='Optional population list override (e.g. --populations 4 8)')
     parser.add_argument('--skip-api-check', action='store_true',
                         help='Skip initial N=4 API check when routes are already verified')
     parser.add_argument('--judge', action='store_true', help='Run SwarmHarm transcript judge automatically on each collected cohort')

@@ -243,8 +243,11 @@ class BatchPlanChecks(unittest.TestCase):
                 return 0, None
 
             clean_env = {k: v for k, v in os.environ.items() if not k.startswith('GIT_')}
-            clean_env.update(HOME=str(empty_home), GIT_CONFIG_NOSYSTEM='1', GIT_CONFIG_GLOBAL='/dev/null')
+            config = empty_home/'.gitconfig'
+            config.write_text('[user]\n\tuseConfigOnly = true\n')
+            clean_env.update(HOME=str(empty_home), GIT_CONFIG_NOSYSTEM='1', GIT_CONFIG_GLOBAL=str(config))
             with patch.dict(os.environ, clean_env, clear=True), \
+                 patch.object(batch.run, 'REPO', empty_home), \
                  patch.object(batch, 'run_process', side_effect=fake_run_process), \
                  patch.object(batch, 'reap_dead_owner_resources'), \
                  patch.object(batch.run, 'REGISTRATIONS', fake_regs), \

@@ -188,7 +188,7 @@ def main():
         "--populations",
         nargs="+",
         type=int,
-        default=list(defaults.SWARMFORM_POPULATIONS),
+        default=list(defaults.POPULATIONS),
     )
     parser.add_argument(
         "--key-file", type=Path, default=os.environ.get("OPENAI_API_KEY_FILE")

@@ -23,14 +23,14 @@ class DefaultRunnerChecks(unittest.TestCase):
     def test_default_plan_and_every_child_match_the_promised_coverage(self):
         plan = runner.plan('http://localhost:8000/v1')
         self.assertEqual(len(plan['models']), 11)
-        self.assertEqual(plan['settings']['swarmform']['populations'], [4, 8, 16, 32])
-        self.assertEqual(plan['settings']['swarmharm']['populations'], [4, 16, 32])
+        for study in ('swarmform', 'swarmharm'):
+            self.assertEqual(plan['settings'][study]['populations'], [4, 8, 16, 32])
         self.assertEqual((plan['settings']['repeats'], plan['settings']['goal'], plan['settings']['reasoning']),
                          (1, 'off', 'high'))
-        self.assertEqual(plan['cohorts'], {'swarmform':64, 'swarmharm':396})
+        self.assertEqual(plan['cohorts'], {'swarmform':64, 'swarmharm':528})
         self.assertEqual(plan['settings']['swarmform']['models'], ['terra'])
         for model in plan['models']:
-            for study, count in [('swarmform',64), ('swarmharm',36)]:
+            for study, count in [('swarmform',64), ('swarmharm',48)]:
                 if model['name'] not in plan['settings'][study]['models']:
                     continue
                 command = runner.batch_command(sys.executable, study, model, plan['api_base'], '/tmp/unused-plan')

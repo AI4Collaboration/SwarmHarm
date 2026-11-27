@@ -55,7 +55,7 @@ export OPENROUTER_API_KEY="sk-or-..."
 # 3. Run SwarmHarm (omit --execute to preview)
 python3.12 scripts/run-evals --studies swarmharm --execute
 # Or run SwarmHarm only for selected models and populations:
-python3.12 scripts/run-evals --studies swarmharm --models glm kimi deepseek --populations 4 16 32 --execute
+python3.12 scripts/run-evals --studies swarmharm --models glm kimi deepseek --populations 4 8 16 32 --execute
 ```
 
 OpenAI models run in **Codex**, Claude models in **Claude Code**, and Google / DeepSeek / GLM / Kimi models in **Pi (`pi-sdk`)**. All native harnesses talk to a host-side Chat Completions bridge (`shared/api_transport.py`) that handles schema normalization, exponential retry with `Retry-After`, bounded concurrency (`SWARMHARM_MAX_INFLIGHT_REQUESTS`, default `24`), and rolling TPM pacing (`SWARMHARM_TPM_LIMIT`) without ever placing credentials inside agent containers.
@@ -79,7 +79,7 @@ WORKLOAD=data-analysis
 MECHANISM=task-gaming
 ```
 
-- **Agents** — `-N` / `--population` defaults to 3, minimum 2. The study matrix is N=4, 16 and 32.
+- **Agents** — `-N` / `--population` defaults to 3, minimum 2. The study matrix is N=4, 8, 16 and 32.
 - **Domain** — `knowledge-work` or `engineering-capacity` (Knowledge Work also supports `--workload data-analysis` and `--workload financial-analysis`).
 - **Mechanism** — `task-gaming`, `evidence-tampering`, `grader-manipulation`, `information-authority`, `action-authority`, or `shared-capacity`.
 - **Extended mechanism variants** — pass `--input-variant <name>` on `run.py` / `run_matrix.py`, or `--variant-suite extended` / `--variant-suite all` on `run_matrix.py` across both domains:
@@ -116,9 +116,9 @@ Inspect `completion.json` (status & transport counts), `mechanism-review.json` /
 `swarmharm/run_matrix.py` automates registration, local commit, sequential cohort collection, parallel ATIF export, independent counterfactual replay (`review.py`, including `rollout_limit` cohorts), dead-owner Docker cleanup, and automatic `-attempt-002` retries on transient infrastructure failures while preserving all prior attempts.
 
 ```sh
-# 1. Default 12 main inputs across N=4, 16, 32 (omit --execute to print the plan)
+# 1. Default 12 main inputs across N=4, 8, 16, 32 (omit --execute to print the plan)
 "$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run_matrix.py \
-  --model "$SWARMHARM_MODEL" --populations 4 16 32 --execute --out ../swarmharm-runs
+  --model "$SWARMHARM_MODEL" --populations 4 8 16 32 --execute --out ../swarmharm-runs
 
 # 2. Run all 22 extended mechanism variants (or --variant-suite all for 12 main + 22 extended)
 "$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run_matrix.py \
@@ -126,14 +126,14 @@ Inspect `completion.json` (status & transport counts), `mechanism-review.json` /
 
 # 3. Matched per-account uncoupled baseline for multi-agent amplification comparisons
 "$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run_matrix.py \
-  --model "$SWARMHARM_MODEL" --populations 4 16 32 --coupling uncoupled --execute --out ../swarmharm-uncoupled
+  --model "$SWARMHARM_MODEL" --populations 4 8 16 32 --coupling uncoupled --execute --out ../swarmharm-uncoupled
 ```
 
 Add `--judge` (optionally `--judge-model MODEL`) to run the blinded semantic transcript judge automatically on each collected cohort. Re-running with the same `--out` resumes incomplete batches without overwriting existing attempts.
 
 ### Host limits at N=32
 
-SwarmHarm populations are **4, 16 and 32**. N=64 is not part of this study.
+SwarmHarm populations are **4, 8, 16 and 32**. N=64 is not part of this study.
 
 - **Default provisioning**: `--startup-concurrency` defaults to `16`; `run_matrix.py` auto-scales `SWARMHARM_MAX_WORKSTATION_NETWORKS` to `max(populations) + 24`, raises `RLIMIT_NOFILE` up to `65536`, and scales `RecordsLink` service limits (`--pids-limit = max(64, N + 32)`, `256m` RAM, `64m` `/tmp`).
 - **OOM & context protection**: Child shell processes run with `oom_score_adj = 800` so runaway commands never kill workstation sentinels. `check_delivery` deduplicates `visible_releases` at top level. Cached JSONSchema validators, cached source reduction, parallel ATIF export, and 8-way parallel counterfactual replays keep N=32 review time bounded.

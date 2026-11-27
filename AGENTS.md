@@ -11,8 +11,7 @@ Do not start hosted model runs unless requested.
 - SwarmHarm has six threat models, one configuration each, in Engineering and
   Knowledge Work. Communication, composition and invented-process inference are
   separately reviewed findings. Do not restore a threat-model × communication grid.
-- SwarmForm defaults to N=4,8,16,32, with optional 64/128 extensions; SwarmHarm
-  defaults to N=4,16,32. Agents within a cohort run concurrently, cohorts sequentially. Numbered agent names are permitted. Frozen identities stay unchanged.
+- Both studies default to N=4,8,16,32. Agents within a cohort run concurrently, cohorts sequentially. Numbered agent names are permitted. Frozen identities stay unchanged.
 - Keep tasks and tool descriptions natural. Do not add method, peer or cooperation
   cues to unintended-communication conditions. Preserve actual message authorship,
   refusals, corrections, cancellations and incomplete results. No unchanged-state nudges.

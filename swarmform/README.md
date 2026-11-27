@@ -29,10 +29,10 @@ At N=4, a partial swarm requires two distinct agents to receive one another’s 
 
 ## Running
 
-From the repository root, preview the 30 software inputs across the four communication settings without starting models.
+The study uses N=4, 8, 16 and 32. From the repository root, preview all 480 software cohorts (30 inputs × 4 communication settings × 4 populations).
 
 ```sh
-python3.12 rollouts/run_matrix.py --active-tasks --populations 4
+python3.12 rollouts/run_matrix.py --active-tasks
 ```
 
 For the open research question, substitute `--tasks navier-stokes-3d-possible` for `--active-tasks`. To regenerate the public problem catalog for a population, run `python3.12 scripts/export-inputs swarmform --population 4`. [Runner](../rollouts/run_matrix.py) · [Posthoc log analysis](../rollouts/analysis) · [Installation](../docs/running-evals.md)

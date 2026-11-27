@@ -7,6 +7,8 @@
 
 <a id="swarmform"></a>
 
+Both studies use cohort sizes of **4, 8, 16 and 32 agents**.
+
 **SwarmForm** pairs each software problem with three information conditions. A separate choice selects direct communication, shared files, mapped memory or a socket-backed project store. [Environment source](rollouts/swarmform/formation_inputs.py) · [Latest formation results](swarmform/docs/formation-readiness.json)
 
 <a id="swarmharm"></a>

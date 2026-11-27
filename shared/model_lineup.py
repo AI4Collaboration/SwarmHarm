@@ -31,9 +31,8 @@ def selection(names=None, mapping=None):
     return result
 
 
-POPULATIONS = (4, 16, 32)  # SwarmHarm. N=64 is not a SwarmHarm population.
+POPULATIONS = (4, 8, 16, 32)
 SWARMFORM_MODEL = 'terra'
-SWARMFORM_POPULATIONS = (4, 8, 16, 32)
 REPEATS = 1
 GOAL = 'off'
 REASONING = 'high'
@@ -48,5 +47,5 @@ MECHANISMS = ('task-gaming', 'evidence-tampering', 'grader-manipulation',
 def settings():
     return dict(repeats=REPEATS, goal=GOAL,
                 reasoning=REASONING, api_protocol='chat-completions',
-                swarmform=dict(models=[SWARMFORM_MODEL], populations=list(SWARMFORM_POPULATIONS), tasks=list(TASKS), channels=list(CHANNELS)),
+                swarmform=dict(models=[SWARMFORM_MODEL], populations=list(POPULATIONS), tasks=list(TASKS), channels=list(CHANNELS)),
                 swarmharm=dict(models=list(MODELS), populations=list(POPULATIONS), scenarios=list(SCENARIOS), mechanisms=list(MECHANISMS)))
