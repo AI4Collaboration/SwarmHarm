@@ -23,6 +23,31 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class APIHandoffChecks(unittest.TestCase):
+    def test_programbench_blob_redirect_strips_cross_origin_authorization(self):
+        import importlib.util
+        from urllib.request import Request
+
+        path = ROOT / "rollouts/programbench-build/build.py"
+        spec = importlib.util.spec_from_file_location("programbench_build", path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        handler = module.StripAuthRedirect()
+        req = Request(
+            "https://registry-1.docker.io/v2/programbench/demo/blobs/sha256:abc",
+            headers={"Authorization": "Bearer secret-token", "Accept": "*/*"},
+        )
+        cross = handler.redirect_request(
+            req, None, 302, "Found", {},
+            "https://docker-images-prod.s3.dualstack.us-east-1.amazonaws.com/blob?X-Amz-Signature=1",
+        )
+        self.assertIsNone(cross.get_header("Authorization"))
+        self.assertEqual(cross.get_header("Accept"), "*/*")
+        same = handler.redirect_request(
+            req, None, 302, "Found", {},
+            "https://registry-1.docker.io/v2/programbench/demo/blobs/sha256:def",
+        )
+        self.assertEqual(same.get_header("Authorization"), "Bearer secret-token")
+
     def test_provider_context_is_bounded_without_pruning_local_history(self):
         import httpx
         from swarmform.__main__ import API_CONTEXT_BYTES, bounded_chat_request

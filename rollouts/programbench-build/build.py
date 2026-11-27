@@ -8,9 +8,22 @@ import shutil
 import subprocess
 import tarfile
 import tempfile
-from urllib.request import Request, urlopen
+from urllib.parse import urlsplit
+from urllib.request import HTTPRedirectHandler, Request, build_opener, urlopen
 
 HERE = Path(__file__).resolve().parent
+
+
+class StripAuthRedirect(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        redirected = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if redirected is not None:
+            old, new = urlsplit(req.full_url), urlsplit(redirected.full_url)
+            if (new.scheme, new.netloc) != (old.scheme, old.netloc):
+                for store in (redirected.headers, redirected.unredirected_hdrs):
+                    for key in [k for k in store if k.lower() == "authorization"]:
+                        del store[key]
+        return redirected
 
 
 def download(spec, dest):
@@ -21,8 +34,9 @@ def download(spec, dest):
     with urlopen(auth,timeout=30) as resp:
         token=json.load(resp)["token"]
     uri = f"https://registry-1.docker.io/v2/{repository}/blobs/{spec['executable_layer']}"
+    opener = build_opener(StripAuthRedirect())
     with tempfile.TemporaryFile() as layer:
-        with urlopen(Request(uri,headers={"Authorization":"Bearer "+token}),timeout=90) as resp:
+        with opener.open(Request(uri,headers={"Authorization":"Bearer "+token}),timeout=90) as resp:
             shutil.copyfileobj(resp,layer)
         layer.seek(0)
         if "sha256:"+hashlib.file_digest(layer,"sha256").hexdigest() != spec["executable_layer"]:
