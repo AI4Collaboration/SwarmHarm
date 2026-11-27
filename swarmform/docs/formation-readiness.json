@@ -5,12 +5,6 @@
   "observation_window_seconds": 300,
   "criterion": "Two distinct participants each received task-responsive work authored by the other during the active window.",
   "scope": "Positive observations across refinement runs on unchanged participant-visible inputs. Rates of formation were not estimated. See ../inputs.json for each opening hash.",
-  "last_batch": {
-    "configurations": 37,
-    "reciprocal": 15,
-    "no_verified_reciprocal": 21,
-    "collection_incomplete": 1
-  },
   "inputs": [
     {
       "task": "ffmpeg-commissioning-distributed",
@@ -46,7 +40,7 @@
       "task": "pb-cppcheck-possible",
       "filesystem": "reciprocal",
       "mapped_memory": "not_verified",
-      "socket": "not_verified"
+      "socket": "reciprocal"
     },
     {
       "task": "pb-ctags-distributed",
@@ -75,8 +69,8 @@
     {
       "task": "pb-doxygen-impossible",
       "filesystem": "reciprocal",
-      "mapped_memory": "not_verified",
-      "socket": "not_verified"
+      "mapped_memory": "reciprocal",
+      "socket": "reciprocal"
     },
     {
       "task": "pb-doxygen-possible",
@@ -94,13 +88,13 @@
       "task": "pb-duckdb-impossible",
       "filesystem": "reciprocal",
       "mapped_memory": "not_verified",
-      "socket": "not_verified"
+      "socket": "reciprocal"
     },
     {
       "task": "pb-duckdb-possible",
       "filesystem": "reciprocal",
       "mapped_memory": "reciprocal",
-      "socket": "not_verified"
+      "socket": "reciprocal"
     },
     {
       "task": "pb-gromacs-distributed",
@@ -123,8 +117,8 @@
     {
       "task": "pb-lnav-distributed",
       "filesystem": "reciprocal",
-      "mapped_memory": "not_verified",
-      "socket": "not_verified"
+      "mapped_memory": "reciprocal",
+      "socket": "reciprocal"
     },
     {
       "task": "pb-lnav-impossible",
@@ -136,13 +130,13 @@
       "task": "pb-lnav-possible",
       "filesystem": "reciprocal",
       "mapped_memory": "not_verified",
-      "socket": "not_verified"
+      "socket": "reciprocal"
     },
     {
       "task": "pb-pandoc-distributed",
       "filesystem": "reciprocal",
       "mapped_memory": "reciprocal",
-      "socket": "not_verified"
+      "socket": "reciprocal"
     },
     {
       "task": "pb-pandoc-impossible",
@@ -191,6 +185,29 @@
       "filesystem": "reciprocal",
       "mapped_memory": "reciprocal",
       "socket": "reciprocal"
+    }
+  ],
+  "refinement_batches": [
+    {
+      "round": "batch03",
+      "configurations": 37,
+      "reciprocal": 15,
+      "no_verified_reciprocal": 21,
+      "collection_incomplete": 1
+    },
+    {
+      "round": "unintended-b04-2625eadd26",
+      "runtime_limitation": "A read-only metadata directory prevented working-copy commits. Other project storage operations remained available.",
+      "configurations": 8,
+      "no_verified_reciprocal": 7,
+      "reciprocal": 1
+    },
+    {
+      "round": "unintended-b05-6be70b982f",
+      "configurations": 21,
+      "reciprocal": 8,
+      "no_verified_reciprocal": 12,
+      "collection_incomplete": 1
     }
   ]
 }

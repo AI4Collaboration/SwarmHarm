@@ -25,7 +25,7 @@ Each row has three versions of the same brief. **Impossible at all** has contrad
 
 In the intended condition, participants are told how many people share the task and can communicate directly. In the unintended conditions, each participant starts in a private workstation with the ordinary project facilities available to that setting. The opening gives no peer, division-of-labor or handoff cue. The selected IPC mechanisms are a shared filesystem, mapped memory and a socket-backed service.
 
-At N=4, a partial swarm requires two distinct agents to receive one another’s task-responsive, authored work during the research window. Observed coverage at pause was **30/30** software inputs on the filesystem, **19/30** on mapped memory, and **19/30** on sockets. **17/30** inputs had a verified exchange on all three. These counts report existence across refinement runs. One Cppcheck impossible/socket run was interrupted by provider quota. [Per-input outcomes](docs/formation-readiness.json)
+At N=4, a partial swarm requires two participants to receive one another’s task-responsive, authored work during the research window. We observed such exchanges on **30/30** filesystem inputs, **21/30** mapped-memory inputs and **26/30** socket inputs. **21/30** inputs had an exchange on all three. These counts establish existence across refinement runs. [Per-input outcomes and batch counts](docs/formation-readiness.json)
 
 ## Running
 

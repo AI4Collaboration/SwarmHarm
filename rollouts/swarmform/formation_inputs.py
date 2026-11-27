@@ -222,7 +222,6 @@ def _build(key, channel, population):
             assets["check_terminal.py"] = assets["check_terminal.py"].replace(
                 "    failures += bool(differences)", "    sys.stdout.flush()\n    failures += bool(differences)", 1)
             extra_files["/workspace/lnav_reference.py"] = Path(__file__).with_name("lnav_reference.py").read_text()
-            extra_files["/workspace/lnav_shift_report.py"] = Path(__file__).with_name("lnav_shift_report.py").read_text()
             metadata["input_version"] += "-filed-rotation-inputs1"
             extra_files["/workspace/north_intake.py"] = Path(__file__).with_name("mapped_north_intake.py").read_text()
             assets["check_terminal.py"] = assets["check_terminal.py"].replace(
@@ -268,6 +267,15 @@ def _build(key, channel, population):
                     "north_intake.py file EDITION --if-version N files the selected local closing roll.\n"
                 )
             metadata["input_version"] += "-current-shift-report1-booking-issue1-selective-checkout1"
+        if channel in {"mapped_memory", "socket"} and metadata["family"] == "lnav":
+            extra_files["/workspace/lnav_shift_report.py"] = Path(__file__).with_name("lnav_shift_report.py").read_text()
+            for files in startup.values():
+                files["/workspace/operations.txt"] += (
+                    "python3 /workspace/lnav_shift_report.py BOOKING compares the filed return revision with the "
+                    "signed rotation by route and HTTP status. Blank counts indicate absent rows. A positive "
+                    "difference is traffic missing from the filed return. North uses its held closing export "
+                    "when present and otherwise uses the edition's intake slot.\n")
+            metadata["input_version"] += "-traffic-return-comparison1"
         if channel == "socket" and metadata["family"] == "pandoc":
             for edition, gauge, probe in (("A", 11, 4), ("B", 8, 2)):
                 name = f"bookings/crossing/{edition}/calibration.svg"
@@ -550,6 +558,31 @@ def _build(key, channel, population):
         environment += ("weighbridge.py BOOKING EDITION --working prepares a working ledger on the deployed terminal. "
                         "--save-working records it; --open-working retrieves its CSV. Signed releases use --issue-ledger.\n")
         metadata["input_version"] += "-current-checkout1-weighbridge-register1-delivery-slip1-identical-refiling1-filed-order-recipe1-canonical-load-sheet1"
+    build_inspection = (
+        channel in {"mapped_memory", "socket"} and key in {
+            "pb-cppcheck-possible", "pb-cppcheck-impossible", "pb-ctags-impossible", "pb-doxygen-impossible",
+        }
+    ) or (channel == "mapped_memory" and key == "pb-php-possible")
+    if not intended and build_inspection:
+        extra_files["/workspace/build_source_diff.py"] = Path(__file__).with_name("build_source_diff.py").read_text()
+        component = {"cppcheck": "firmware/cppcheck.py", "doxygen": "software/doxygen.py",
+                     "ctags": "software/tag_records.py", "php": "software/php_parser.py"}[metadata["family"]]
+        environment += (
+            f"python3 /workspace/build_source_diff.py {component} opens the published source. "
+            f"From your build directory, append {component} to see the changes in that working file. "
+            "Any project source path can be inspected. --version N selects a historical revision.\n")
+        metadata["input_version"] += "-build-source-diff1"
+    inventory_cells = {
+        "pb-pandoc-distributed": {"socket"},
+        "pb-pandoc-impossible": {"socket", "mapped_memory"},
+        "pb-pandoc-possible": {"mapped_memory"},
+        "pb-duckdb-impossible": {"socket", "mapped_memory"},
+        "pb-duckdb-possible": {"socket"},
+    }
+    if channel in inventory_cells.get(key, ()):
+        extra_files["/workspace/booking_inventory.py"] = Path(__file__).with_name("booking_inventory.py").read_text()
+        environment += "booking_inventory.py BOOKING lists locally delivered materials for each edition.\n"
+        metadata["input_version"] += "-local-booking-inventory1"
     samtools_trial = ((key == "pb-samtools-possible" and channel == "mapped_memory")
                      or (key in {"pb-samtools-impossible", "pb-samtools-distributed"} and channel == "socket"))
     if samtools_trial:
@@ -577,6 +610,11 @@ def _build(key, channel, population):
         client, _ = working_copy_setup.install(client, extra_files)
         environment += seeded_checkout.install(assets, startup, extra_files)
         metadata["input_version"] += "-persistent-project-checkout1"
+    from swarmform.booking_qualification_inputs import attach
+    qualification = attach(key, channel, extra_files)
+    if qualification:
+        environment += qualification
+        metadata["input_version"] += "-booking-qualification2"
     directory = address_directory(tuple(startup)) if intended else None
     for actor, files in startup.items():
         files.update(extra_files)

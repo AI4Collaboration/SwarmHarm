@@ -178,6 +178,10 @@ class DockerWorkstation:
             args.append('--ipc=' + ipc_mode)
         if private_shm:
             args += ['--tmpfs', '/dev/shm:rw,nosuid,nodev,noexec,size=8m,mode=1777']
+        if "/workspace/working_copy.py" in initial_files:
+            # Revision pins are local to one workstation, even when project storage is shared.
+            path = f"/var/tmp/.project-working-copies-{business_uid}"
+            args += ["--tmpfs", f"{path}:rw,nosuid,nodev,noexec,mode=0700,uid={business_uid},gid={business_gid},size=8m"]
         if self.process_lifecycle == 'continuous':
             args.append('--init')
         if trace_commands:

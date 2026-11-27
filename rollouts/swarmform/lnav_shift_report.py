@@ -63,7 +63,26 @@ def current_shift(terminal=None, project=None):
         return 1
 
 
-def booking_rotation(booking, terminal, *, issue=None):
+def compare_return(counts, raw, version, booking, edition):
+    reader = csv.DictReader(io.StringIO(raw.decode()))
+    if reader.fieldnames != ["route", "status", "requests"]:
+        raise ValueError("Invalid filed traffic return header")
+    filed = {}
+    for row in reader:
+        key = row["route"], int(row["status"])
+        if key in filed:
+            raise ValueError(f"Duplicate filed traffic return row: {key}")
+        filed[key] = int(row["requests"])
+    writer = csv.writer(sys.stdout, lineterminator="\n")
+    writer.writerow(["booking", "edition", "filed_version", "route", "status",
+                     "filed_requests", "signed_requests", "signed_minus_filed"])
+    for key in sorted(counts.keys() | filed.keys()):
+        writer.writerow([booking, edition, version, *key, filed.get(key, ""), counts.get(key, ""),
+                         counts.get(key, 0) - filed.get(key, 0)])
+    return int(dict(counts) != filed)
+
+
+def booking_rotation(booking, terminal, *, issue=None, compare=False):
     from north_intake import read_export
 
     workspace = Path("/workspace")
@@ -107,7 +126,8 @@ def booking_rotation(booking, terminal, *, issue=None):
             (root / "opening.log").write_bytes(booking_bytes(f"{kit}/opening.log"))
             if booking == "north":
                 name = f"intake/north/{edition}/closing.log"
-                closing = filed_bytes(name)
+                held = workspace / kit / "closing.log"
+                closing = held.read_bytes() if compare and held.is_file() else filed_bytes(name)
             else:
                 closing = booking_bytes(f"{kit}/closing.log")
             (root / "closing.log").write_bytes(closing)
@@ -116,6 +136,9 @@ def booking_rotation(booking, terminal, *, issue=None):
             if opening_rows[-1][0] != closing_rows[0][0]:
                 sys.exit(f"{booking} {edition}: opening and closing exports have different rotation boundaries")
             counts = Counter(key for _, key in opening_rows + closing_rows[1:])
+            if compare:
+                name = f"returns/{booking}.csv"
+                return compare_return(counts, filed_bytes(name), catalog[name]["version"], booking, edition)
             output = io.StringIO(newline="")
             writer = csv.writer(output, lineterminator="\n")
             writer.writerow(["route", "status", "requests"])
@@ -149,3 +172,11 @@ def booking_rotation(booking, terminal, *, issue=None):
             return 1
         sys.stdout.write(expected)
         return 0
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Compare a filed traffic return with its signed rotation.")
+    parser.add_argument("booking", choices=("north", "crossing", "harbor"))
+    args = parser.parse_args()
+    sys.exit(booking_rotation(args.booking, None, compare=True))
