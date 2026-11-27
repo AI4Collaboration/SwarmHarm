@@ -15,16 +15,12 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 LAB = 'swarmharm'
 # Each study runs its own tests from its own folder; shared/ holds the common runtime.
-TEST_ROOTS = ('swarmform', 'swarmharm', 'shared', 'rollouts')
+TEST_ROOTS = ('swarmharm', 'shared', 'rollouts')
 SELF = {'scripts/check-ci', 'scripts/check-push', 'scripts/pre-push',
         '.github/workflows/checks.yml'}
-WORKLOADS = {'engineering': 'engineering_input', 'fulfillment': 'fulfillment_input',
-             'settlement': 'settlement_input', 'knowledge': 'knowledge_input'}
-DOCKER_TESTS = {'swarmform_deployment', 'swarmform_read_observer', 'swarmform_runtime',
-                'swarmform_workstation_retention', 'workstation_patch', 'structure_native',
-                'swarmform_domain', 'native_harness', 'swarmform_collection', 'research_latency',
-                'live', 'collector', 'native_goal', 'query_gateway', 'unified_runtime',
-                'review', 'continuous_reporting', 'delivery_receipt', 'swarmform_archive_native'}
+DOCKER_TESTS = {'swarmform_runtime', 'workstation_patch', 'native_harness', 'live', 'collector',
+                'native_goal', 'query_gateway', 'unified_runtime', 'review', 'continuous_reporting',
+                'delivery_receipt'}
 
 
 def uses_docker(stem):
@@ -79,10 +75,10 @@ def select_checks(files, full=False):
         elif (name in {'swarmharm/README.md', 'swarmharm/phase1/README.md',
                        'swarmharm/phase2/README.md'} or
                 name.startswith(('docs/', 'swarmform/docs/', 'swarmharm/docs/')) or '/registrations/' in name or (
-                path.suffix == '.md' and not name.startswith(('swarmform/swarmform/', 'swarmform/structure/', 'swarmharm/', 'shared/')))):
-            if name == 'swarmform/docs/live-rollout-status.json' or (
-                    '/registrations/' in name and path.suffix != '.md'):
-                checks.add('inputs')
+                path.suffix == '.md' and not name.startswith(('swarmharm/', 'shared/')))):
+            continue
+        elif name in {'swarmform/inputs.json', 'scripts/export-inputs'}:
+            checks.add('catalog')
         elif name == 'scripts/check_dataset_admission_contract.py':
             checks.add('inventory')
         elif name == 'scripts/archive-trajectories':
@@ -93,6 +89,8 @@ def select_checks(files, full=False):
         elif name == 'swarmharm/run_matrix.py':
             suites('batch_plan', roots=(LAB,))
         elif name.startswith('rollouts/'):
+            if name.startswith('rollouts/swarmform/'):
+                checks.add('catalog')
             suites('api_handoff', 'portable_runtime', roots=('rollouts',))
             if name in {'rollouts/swarmform/__main__.py', 'rollouts/swarmform/workstation.py', 'rollouts/swarmform/workstation_observer.py',
                         'rollouts/swarmform/file_deployment.py', 'rollouts/swarmform/socket_deployment.py',
@@ -102,90 +100,8 @@ def select_checks(files, full=False):
             checks.add('format')
         elif name == 'swarmharm/scripts/check_balanced_study.py':
             checks.add('balanced')
-        elif name.startswith('swarmform/scripts/') and ('witness' in stem or
-                stem.startswith('check_swarmform_') and stem not in {
-                    'check_swarmform_catalog', 'check_swarmform_inputs', 'check_swarmform_read_observer'}):
-            suites('swarmform_input_runner')
-            if stem == 'swarmform_witness_solvers':
-                suites(*WORKLOADS.values())
-        elif name.startswith('swarmform/swarmform/'):
-            if stem == 'decoder_base':
-                suites('engineering_input')
-                checks.update(('catalog', 'wording'))
-            elif stem in WORKLOADS:
-                suites(WORKLOADS[stem], 'swarmform_domain')
-                checks.update(('catalog', 'wording'))
-            elif stem in {'input_catalog', 'domain_inputs', 'inputs'} or stem.endswith('_inputs'):
-                suites('swarmform_registration', 'swarmform_input_runner', 'swarmform_domain')
-                checks.update(('catalog', 'wording'))
-            elif stem == 'collection':
-                suites('swarmform_collection', 'swarmform_registration', 'publication_updates', 'sustained_research')
-            elif stem in {'structure', 'structure_collection', 'publication_updates', 'sustained_research', 'research_preview'}:
-                suites('swarmform_structure', 'structure_timeline', 'structure_native', 'publication_updates', 'sustained_research', 'research_latency')
-            elif stem in {'research_timing', 'publication_observer'}:
-                suites('research_latency', 'structure_native', 'sustained_research')
-            elif stem == 'file_deployment':
-                suites('swarmform_deployment', 'swarmform_collection', 'swarmform_registration', 'structure_native', 'research_latency')
-            elif stem == 'actor_evidence':
-                suites('swarmform_actor_evidence')
-            elif stem == 'endpoint_service':
-                suites('swarmform_delivery_state', 'swarmform_package', 'swarmform_domain',
-                       'swarmform_registration', 'swarmform_job_service')
-                checks.update(('inputs', 'catalog', 'wording'))
-            elif stem in {'endpoint_deployment', 'endpoint_unix'}:
-                suites('swarmform_registration', 'swarmform_input_runner', 'swarmform_collection')
-                checks.update(('inputs', 'catalog', 'wording'))
-            elif stem == 'network_observer':
-                suites('swarmform_input_runner')
-            elif stem == 'job_service':
-                suites('swarmform_job_service', 'swarmform_registration')
-                checks.add('wording')
-            elif stem == 'job_deployment':
-                suites('swarmform_job_service', 'swarmform_service_cleanup',
-                       'swarmform_registration', 'swarmform_input_runner', 'swarmform_collection')
-                checks.update(('inputs', 'catalog', 'wording'))
-            elif stem == 'deployments':
-                suites('swarmform_registration', 'swarmform_input_runner', 'swarmform_collection')
-                checks.update(('inputs', 'catalog', 'wording'))
-            elif stem == 'archive_deployment':
-                suites('swarmform_archive_policy', 'swarmform_archive_outcome',
-                       'swarmform_registration', 'swarmform_input_runner', 'swarmform_collection')
-                checks.update(('inputs', 'catalog', 'wording'))
-            elif stem in {'base_archive', 'profile_archive'}:
-                suites('swarmform_archive_policy', 'swarmform_archive_outcome')
-                checks.add('wording')
-            elif stem in {'archive_client', 'job_client', 'endpoint_client', 'endpoint_inventory', 'endpoint_release_notes'}:
-                suites('swarmform_job_service', 'swarmform_input_runner', 'swarmform_registration')
-                checks.add('wording')
-            elif stem in {'service_workstation', 'service_capture'}:
-                suites('swarmform_service_capture')
-            elif stem == 'publication_coverage':
-                suites('knowledge_input', 'swarmform_package')
-            elif stem in {'report_package', 'package_delivery'}:
-                suites('swarmform_package')
-            elif stem in {'delivery_archive', 'delivered_outcome'}:
-                suites('swarmform_package', 'swarmform_domain', 'swarmform_delivery_state',
-                       'swarmform_archive_outcome')
-            elif stem == 'ipc_deployment':
-                suites('swarmform_registration', 'swarmform_input_runner', 'swarmform_collection')
-                checks.update(('inputs', 'catalog', 'wording'))
-            elif stem in {'ipc_status', 'ipc_queue', 'ipc_processor', 'ipc_policy'}:
-                suites('swarmform_input_runner', 'swarmform_registration')
-                checks.add('wording')
-            else:
-                suites('swarmform_*', *WORKLOADS.values())
-                checks.add('wording')
         elif name == 'shared/workstation_observer.py':
             suites('swarmform_runtime', roots=('swarmharm', 'shared'))
-        elif name.startswith('swarmform/structure/'):
-            if stem == 'grid_review' or name.startswith('swarmform/structure/annotations/'):
-                suites('structure_grid')
-            elif stem in {'communication_inventory','artifact_use_timeline','exact_source_use','shared_content_inventory','source_pool_review','common_problem_review'}:
-                suites('structure_observations')
-            else:
-                suites('structure_business' if stem=='business_review' else 'structure_timeline', 'swarmform_structure')
-        elif name == 'swarmform/scripts/run_swarmform_structure.py':
-            suites('swarmform_structure', 'structure_timeline', 'structure_native', 'publication_updates', 'sustained_research', 'research_latency')
         elif name in {'shared/api_transport.py', 'shared/model_session.py', 'scripts/check-model-lineup'}:
             suites('model_transport', 'api_handoff', 'batch_plan')
         elif name == 'shared/launch_capacity.py':
@@ -204,14 +120,6 @@ def select_checks(files, full=False):
                 harnesses.add(adapter)
             else:
                 suites('mechanism_inputs', 'mechanism_review', 'claim_evidence', 'model_transport')
-        elif name == 'swarmform/scripts/swarmform_accepted_run.py':
-            suites('swarmform_accepted')
-        elif name in {'swarmform/scripts/swarmform_scope.py', 'swarmform/scripts/inspect_swarmform_workload.py', 'swarmform/scripts/swarmform_delivery_export.py', 'swarmform/scripts/export_swarmform_input_matrix.py', 'swarmform/scripts/run_swarmform.py',
-                      'swarmform/scripts/check_swarmform_catalog.py', 'swarmform/scripts/check_swarmform_inputs.py'}:
-            suites('swarmform_registration', 'swarmform_input_runner', 'swarmform_ledger', 'swarmform_accepted')
-            checks.update(('catalog', 'inputs'))
-        elif name == 'swarmform/scripts/check_swarmform_read_observer.py':
-            suites('swarmform_read_observer')
         elif name in {LAB + '/phase2/mechanism_inputs.py', LAB + '/phase2/mechanism_review.py', LAB + '/scripts/inspect_unified_input.py'}:
             suites('mechanism_inputs', 'mechanism_review', roots=(LAB,))
         elif name == LAB + '/phase2/query_gateway.py':
@@ -245,7 +153,7 @@ def select_checks(files, full=False):
             suites('claim_evidence', 'unified_input_contract', roots=(LAB,))
     if full:
         suites('*')
-        checks.update(('installation', 'catalog', 'inputs', 'wording', 'balanced'))
+        checks.update(('installation', 'catalog', 'wording', 'balanced'))
         docker = True
         harnesses.update(('codex', 'claude', 'pi'))
     if 'format' in tests:
@@ -253,11 +161,9 @@ def select_checks(files, full=False):
         checks.add('format')
     if any(uses_docker(stem) for stem in tests):
         docker = True
-    if tests & {'native_goal', 'structure_native', 'swarmform_collection',
-                'unified_runtime', 'continuous_collect', 'local_source',
-                'unified_delivery', 'continuous_reporting', 'native_context',
-                'build_record_collector', 'codex_notice_collector',
-                'swarmform_archive_native'}:
+    if tests & {'native_goal', 'unified_runtime', 'continuous_collect', 'local_source',
+                'unified_delivery', 'continuous_reporting', 'build_record_collector',
+                'codex_notice_collector'}:
         harnesses.add('codex')
     if 'native_harness' in tests:
         # This suite validates all three registrations and uses real Codex
@@ -266,12 +172,12 @@ def select_checks(files, full=False):
     for adapter in ('codex', 'claude', 'pi'):
         if adapter + '_collect' in tests:
             harnesses.add(adapter)
-    order = ('syntax', 'inventory', 'inputs', 'catalog', 'wording', 'balanced', 'format', 'installation')
+    order = ('syntax', 'inventory', 'catalog', 'wording', 'balanced', 'format', 'installation')
     return {'files': sorted(files), 'full': full,
             'checks': [c for c in order if c in checks],
             'tests': ['tests.' + t + '_checks' for t in sorted(tests)],
             'docker': docker, 'harnesses': sorted(harnesses),
-            'dependencies': bool(checks - {'syntax', 'inventory'} or tests - {'check_selection'})}
+            'dependencies': bool(checks - {'syntax', 'inventory', 'catalog'} or tests - {'check_selection'})}
 
 
 def syntax(files):
@@ -314,8 +220,7 @@ def main(argv=None):
         parser.error('Selected checks need these harnesses: scripts/setup-local ' + ' '.join(missing))
     commands = {
         'inventory': ['scripts/check_dataset_admission_contract.py'],
-        'inputs': ['swarmform/scripts/check_swarmform_inputs.py', '--inventory-only'],
-        'catalog': ['swarmform/scripts/check_swarmform_catalog.py'],
+        'catalog': ['scripts/export-inputs', 'swarmform', '--check'],
         'wording': ['shared/prompt-contract/checks.py'],
         'balanced': ['swarmharm/scripts/check_balanced_study.py'],
         'format': ['scripts/check_format_contract.py', LAB],

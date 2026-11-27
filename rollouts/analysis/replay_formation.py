@@ -628,7 +628,7 @@ def replay(case, report):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("case", type=Path, help="Archived cohort directory containing evidence-manifest.json")
-    parser.add_argument("--report", type=Path, default=Path(__file__).resolve().parents[2] / "swarmform/docs/n4-formation.json")
+    parser.add_argument("--report", type=Path, required=True, help="Formation review report for the archived cohort")
     parser.add_argument("--filenames", action="store_true", help="Replay the independent filename choices in a primary shared-file cohort")
     parser.add_argument("--socket-stages", action="store_true", help="Replay socket reads, subsequent publications and returns")
     args = parser.parse_args()

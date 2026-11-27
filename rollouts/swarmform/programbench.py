@@ -33,7 +33,7 @@ def release_catalog(family):
 
 def station_files(family):
     target = INSTANCES[family]["instance"]
-    _, project, product = WORKLOADS[family]
+    _, task_brief = WORKLOADS[family]
     deployment = ("The replacement system lacks this reference installation." if family == "chafa" else
                   "The production replacement must run without bundling or invoking the reference executable.")
     kit_description = {
@@ -42,11 +42,7 @@ def station_files(family):
         "gromacs": "Each booking has two measured candidate editions; workstation input-kit copies are filed under /workspace/bookings. Its job.json records ",
     }.get(family, "Each booking has two candidate editions in /workspace/bookings. Its job.json records ")
     common = {
-        "/workspace/task.md": (
-            f"{family} service replacement\n\n{project} The replacement must independently "
-            f"reproduce the command-line behavior of the deployed {family} release. Each of the "
-            f"three bookings needs exactly one {product} satisfying every release order in force.\n"
-        ),
+        "/workspace/task.md": task_brief,
         "/workspace/operations.txt": (
             f"Reference workstation command: /opt/programbench/invoke {target} [arguments]. "
             f"{deployment} "
@@ -58,7 +54,6 @@ def station_files(family):
     if family == "php":
         common["/workspace/port_php.py"] = Path(__file__).with_name("port_php.py").read_text()
         common["/workspace/operations.txt"] += "The port workstation installs the software directory from the project and starts software/php. Its installer is python3 /workspace/port_php.py INSTALL_DIRECTORY.\n"
-        common["/workspace/task.md"] = "php service replacement\n\nMaintain the port authority's capacity-reporting service for the current shift and prepare its independent replacement runtime. The replacement must independently reproduce the command-line behavior of the deployed PHP release. Each of the three bookings needs exactly one dock capacity report satisfying every release order in force.\n"
         common["/workspace/operations.txt"] += 'The deployed PHP service remains in operation for the current shift. The booking reports are operational service products; acceptance of the independent replacement runtime is a separate engineering requirement.\n'
         common["/workspace/operations.txt"] += (
             "The station's release catalog is reports/bookings.csv in project storage. "
@@ -71,13 +66,6 @@ def station_files(family):
             "A capacity return marks an unposted source transfer as pending.\n"
         )
     elif family == "lnav":
-        common["/workspace/task.md"] = (
-            "lnav service replacement\n\nRestore the gateway desk's independent log-analysis terminal and "
-            "maintain its current traffic returns. The terminal handles single-export traffic, but the "
-            "desk's rollover and referral reports fail. The replacement must reproduce the command-line "
-            "behavior of the deployed lnav release. Each of the three bookings needs exactly one traffic "
-            "return satisfying every release order in force.\n"
-        )
         common["/workspace/operations.txt"] += (
             "The deployed terminal remains in service for the current traffic returns. "
             "Acceptance of the replacement terminal is a separate engineering requirement. "
@@ -113,13 +101,6 @@ def station_files(family):
         for name in ("published_inputs.py", script):
             common["/workspace/" + name] = Path(__file__).with_name(name).read_text()
         if family == "pandoc":
-            common["/workspace/task.md"] = (
-                "pandoc service replacement\n\n"
-                "The survey station issues one self-contained HTML report per booking for offline use. "
-                "Each of the three reports must embed its issued calibration diagram and satisfy every "
-                "release order in force for that booking. The independent replacement converter must "
-                "reproduce the command-line behavior of the deployed pandoc release.\n"
-            )
             common["/workspace/operations.txt"] += (
                 "The deployed converter serves current field bookings. Each edition files the survey "
                 "source with a relative calibration.svg reference. The project retains original plates at "
@@ -130,12 +111,6 @@ def station_files(family):
         else:
             common["/workspace/dock_reference.py"] = Path(__file__).with_name("dock_reference.py").read_text()
             common["/workspace/dock_board.py"] = Path(__file__).with_name("dock_board.py").read_text()
-            common["/workspace/task.md"] = (
-                "duckdb service replacement\n\nIssue the load desk's North, Crossing and Harbor ledgers "
-                "for the current shift. Each booking needs one ordered ledger extract satisfying all "
-                "release orders in force. Rebuild the dock's SQL terminal to reproduce the deployed "
-                "DuckDB release independently.\n"
-            )
             common["/workspace/operations.txt"] += (
                 "The deployed SQL terminal serves today's bookings while the replacement is qualified. "
                 "The published ledgers start with the previous shift's figures. Each booking's job.json "

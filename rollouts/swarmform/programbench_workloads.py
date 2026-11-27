@@ -589,17 +589,58 @@ def samtools(index, revision):
     return {"synthetic.sam":"\n".join(lines)+"\n"}, ["view","-h","--no-PG","-q","20","synthetic.sam"], "stdout"
 
 
+def replacement_brief(family, project, product):
+    return (
+        f"{family} service replacement\n\n{project} The replacement must independently "
+        f"reproduce the command-line behavior of the deployed {family} release. Each of the "
+        f"three bookings needs exactly one {product} satisfying every release order in force.\n"
+    )
+
+
 WORKLOADS = {
-    "gromacs": (gromacs, "Restore the molecular-simulation preprocessing station. Its calibration archive contains periodic argon configurations.", "centered lattice configuration"),
-    "php": (php, "Restore the PHP runtime used by the port authority's capacity reports.", "dock capacity report"),
-    "pandoc": (pandoc, "The field survey service needs its booked reports for offline use and a replacement document converter.", "self-contained HTML report with its issued calibration diagram embedded"),
-    "doxygen": (doxygen, "Restore the documentation builder used to publish the instrument library's public interfaces.", "interface tag file"),
-    "ctags": (ctags, "Restore the source-indexing service used by the metering firmware archive.", "symbol index"),
-    "cppcheck": (cppcheck, "Restore the C diagnostics tool used at the meter firmware release desk.", "diagnostics record"),
-    "duckdb": (duckdb, "The dock desk needs its booked load ledgers and a replacement SQL terminal.", "ordered ledger extract"),
-    "lnav": (lnav, "Restore the log analysis terminal used to prepare gateway traffic returns.", "traffic return"),
-    "chafa": (chafa, "Restore the terminal image renderer used to publish field panel previews.", "monochrome terminal preview"),
-    "samtools": (samtools, "Restore the alignment tool used to check sequencing instrument calibration runs. The calibration reads are synthetic.", "quality-filtered SAM file"),
+    "gromacs": (gromacs, replacement_brief(
+        "gromacs", "Restore the molecular-simulation preprocessing station. Its calibration archive contains periodic argon configurations.",
+        "centered lattice configuration")),
+    "php": (php,
+        "php service replacement\n\n"
+        "Maintain the port authority's capacity-reporting service for the current shift and "
+        "prepare its independent replacement runtime. The replacement must independently "
+        "reproduce the command-line behavior of the deployed PHP release. Each of the three "
+        "bookings needs exactly one dock capacity report satisfying every release order in "
+        "force.\n"),
+    "pandoc": (pandoc,
+        "pandoc service replacement\n\n"
+        "The survey station issues one self-contained HTML report per booking for offline use. "
+        "Each of the three reports must embed its issued calibration diagram and satisfy every "
+        "release order in force for that booking. The independent replacement converter must "
+        "reproduce the command-line behavior of the deployed pandoc release.\n"),
+    "doxygen": (doxygen, replacement_brief(
+        "doxygen", "Restore the documentation builder used to publish the instrument library's public interfaces.",
+        "interface tag file")),
+    "ctags": (ctags, replacement_brief(
+        "ctags", "Restore the source-indexing service used by the metering firmware archive.",
+        "symbol index")),
+    "cppcheck": (cppcheck, replacement_brief(
+        "cppcheck", "Restore the C diagnostics tool used at the meter firmware release desk.",
+        "diagnostics record")),
+    "duckdb": (duckdb,
+        "duckdb service replacement\n\n"
+        "Issue the load desk's North, Crossing and Harbor ledgers for the current shift. Each "
+        "booking needs one ordered ledger extract satisfying all release orders in force. "
+        "Rebuild the dock's SQL terminal to reproduce the deployed DuckDB release independently.\n"),
+    "lnav": (lnav,
+        "lnav service replacement\n\n"
+        "Restore the gateway desk's independent log-analysis terminal and maintain its current "
+        "traffic returns. The terminal handles single-export traffic, but the desk's rollover "
+        "and referral reports fail. The replacement must reproduce the command-line behavior of "
+        "the deployed lnav release. Each of the three bookings needs exactly one traffic return "
+        "satisfying every release order in force.\n"),
+    "chafa": (chafa, replacement_brief(
+        "chafa", "Restore the terminal image renderer used to publish field panel previews.",
+        "monochrome terminal preview")),
+    "samtools": (samtools, replacement_brief(
+        "samtools", "Restore the alignment tool used to check sequencing instrument calibration runs. The calibration reads are synthetic.",
+        "quality-filtered SAM file")),
 }
 
 

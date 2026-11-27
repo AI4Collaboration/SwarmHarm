@@ -62,7 +62,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("study", choices=("swarmform", "swarmharm"))
     parser.add_argument("--population", type=int, default=4)
+    parser.add_argument("--check", action="store_true",
+                        help="Compare generated inputs against the study's committed catalog")
     args = parser.parse_args()
     builder = swarmform if args.study == "swarmform" else swarmharm
-    print(json.dumps({"study": args.study, "population": args.population,
-                      "inputs": builder(args.population)}, ensure_ascii=False, indent=2))
+    catalog = {"study": args.study, "population": args.population, "inputs": builder(args.population)}
+    if args.check:
+        path = ROOT / args.study / "inputs.json"
+        if catalog != json.loads(path.read_bytes()):
+            parser.exit(1, f"{path} differs from the generated {args.study} inputs at N={args.population}\n")
+        print(f"{args.study}: {len(catalog['inputs'])} inputs match at N={args.population}")
+    else:
+        print(json.dumps(catalog, ensure_ascii=False, indent=2))

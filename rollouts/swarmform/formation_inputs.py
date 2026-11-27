@@ -50,7 +50,8 @@ authoritative.
 
 def add_task_selection(parser, default):
     group = parser.add_mutually_exclusive_group()
-    group.add_argument("--tasks", nargs="+", choices=TASK_MODULES, default=default)
+    group.add_argument("--tasks", nargs="+", choices=TASK_MODULES, default=default, metavar="TASK",
+                       help="Select task IDs from swarmform/inputs.json or a historical registration.")
     group.add_argument("--active-tasks", dest="tasks", action="store_const", const=ACTIVE_TASKS,
                        help="Select the 30 software inputs in the main matrix (10 matched triplets).")
 

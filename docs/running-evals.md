@@ -53,8 +53,7 @@ tar -xzf /absolute/external/cohort-directory.tar.gz -C /absolute/external/restor
 
 Do not put trajectories in Git. Publish reviewed bundles and their indexes through
 a data store or Release when requested. Original scores and frozen source stay with
-historical cases. [Accepted input Release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-accepted-inputs)
-contains the completed native SwarmForm input packages and image checksums.
+historical cases. The earlier SwarmForm channel study published its native input packages and image checksums separately. [Historical release](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-accepted-inputs) · [Current SwarmForm inputs](../swarmform/inputs.json)
 
 ## Resume and inspect
 

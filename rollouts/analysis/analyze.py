@@ -48,14 +48,11 @@ def native_session_receipt(case, actor, reg, manifest):
     raise ValueError(f"{actor} missing native thread/start acknowledgement")
 
 
-def published_reviews():
-    path = Path(__file__).resolve().parents[2] / "swarmform/docs/unintended-formation.json"
-    if not path.is_file():
-        return {}
+def published_reviews(path):
     return {case["seal"]: case for version in read(path)["development"] for case in version["cohorts"]}
 
 
-def attach_review(row, reviews):
+def attach_review(row, reviews, path):
     case = reviews.get(row.get("evidence_manifest_sha256"))
     if case is None:
         return
@@ -67,7 +64,7 @@ def attach_review(row, reviews):
             raise ValueError("Published uptake links disagree with the sealed trace")
     row["manual_formation_review"] = {
         "verdict": case["formation"], "uptake_chains": len(chains),
-        "reference": "swarmform/docs/unintended-formation.json", "seal": case["seal"],
+        "reference": str(path), "seal": case["seal"],
     }
 
 
@@ -319,6 +316,7 @@ def main():
     parser.add_argument("--replay-tree", action="store_true", help="Re-score possible-Tree versions and supplemental probes in Docker")
     parser.add_argument("--diagnose-channels", action="store_true",
                         help="Locate access, writing and peer receipt in both conditions using bound process and service traces")
+    parser.add_argument("--review-index", type=Path, help="Match an archived formation review index against sealed traces")
     args = parser.parse_args()
     if args.out and args.out.exists():
         try:
@@ -328,7 +326,8 @@ def main():
         if not isinstance(existing, dict) or existing.get("schema") != "swarmform-analysis-v1":
             parser.error("Output already exists and is not a SwarmForm analysis report")
     rows, seen = [], set()
-    reviews = published_reviews() if args.diagnose_channels else {}
+    reviews = published_reviews(args.review_index) if args.review_index else {}
+    diagnose_channels = args.diagnose_channels or args.review_index is not None
     for source in args.sources:
         try:
             listed = list(attempts(source.resolve()))
@@ -344,9 +343,9 @@ def main():
                     result = dict(status="unsealed", reason=indexed.get("retry_reason"))
                 else:
                     with cohort_directory(case) as directory:
-                        result = analyze_case(directory, indexed, args.replay_tree, args.diagnose_channels)
-                        if "channel_breakpoint" in result:
-                            attach_review(result, reviews)
+                        result = analyze_case(directory, indexed, args.replay_tree, diagnose_channels)
+                        if reviews and "channel_breakpoint" in result:
+                            attach_review(result, reviews, args.review_index)
             except (OSError, ValueError, KeyError, RuntimeError, tarfile.TarError) as error:
                 result = dict(status="invalid_evidence", reason=str(error))
             identity = result.get("evidence_manifest_sha256", case)
