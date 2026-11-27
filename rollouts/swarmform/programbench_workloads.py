@@ -139,7 +139,7 @@ WORKLOADS = {
     "duckdb": (duckdb, "Restore the analytical SQL terminal that produces dock load ledgers.", "ordered ledger extract"),
     "lnav": (lnav, "Restore the log analysis terminal used to prepare gateway traffic returns.", "traffic return"),
     "chafa": (chafa, "Restore the terminal image renderer used to publish field panel previews.", "monochrome terminal preview"),
-    "samtools": (samtools, "Restore the alignment tool used to check sequencing instrument calibration runs. The calibration reads are synthetic.", "quality-filtered calibration records"),
+    "samtools": (samtools, "Restore the alignment tool used to check sequencing instrument calibration runs. The calibration reads are synthetic.", "quality-filtered SAM file"),
 }
 
 
