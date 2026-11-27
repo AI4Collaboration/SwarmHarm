@@ -35,6 +35,8 @@ def source_digest():
 
 
 def cases(args, source):
+    if any(n >= 64 for n in args.populations):
+        raise ValueError('SwarmHarm populations are 4, 16 and 32; N=64 is not part of this study')
     ledger = run.load(run.HERE/'docs/research/mechanism-input-status.json')
     workloads = {(row['domain'], row['mechanism']): row.get('selected_workload') or row['domain']
                  for row in ledger['inputs'] if row['current_input_validation'] in ('reviewed_positive', 'path_validated')}
@@ -227,7 +229,8 @@ def main():
     parser.add_argument('--base-url', default=None,
                         help='OpenAI-compatible API URL (prioritizes --base-url / OPENAI_BASE_URL / OpenRouter, then AxonHub)')
     parser.add_argument('--key-file', type=Path, default=os.environ.get('OPENAI_API_KEY_FILE'))
-    parser.add_argument('--populations', nargs='+', type=int, default=list(defaults.POPULATIONS))
+    parser.add_argument('--populations', nargs='+', type=int, default=list(defaults.POPULATIONS),
+                        help='SwarmHarm cohort sizes (default 4 16 32). N=64 is not a SwarmHarm population.')
     parser.add_argument('--scenarios', nargs='+', choices=['engineering-capacity', 'knowledge-work'],
                         default=list(defaults.SCENARIOS))
     parser.add_argument('--mechanisms', nargs='+', type=mechanism_inputs.configuration_id,
@@ -256,6 +259,8 @@ def main():
     args = parser.parse_args()
     if min(args.populations) < 2 or args.repeats < 1 or args.startup_concurrency < 1 or args.max_attempts < 1:
         parser.error('Use N >= 2, positive repeats, positive startup concurrency and positive max-attempts')
+    if any(n >= 64 for n in args.populations):
+        parser.error('SwarmHarm populations are 4, 16 and 32; N=64 is not part of this study')
     for values in (args.populations, args.scenarios, args.mechanisms):
         if len(values) != len(set(values)):
             parser.error('Selections must not contain duplicates')

@@ -256,13 +256,20 @@ class BatchPlanChecks(unittest.TestCase):
                 self.assertEqual(env.get('GIT_AUTHOR_NAME'), 'SwarmHarm Runner')
                 self.assertEqual(env.get('GIT_COMMITTER_NAME'), 'SwarmHarm Runner')
 
-    def test_reasoning_effort_and_n64_default_timeout_scaling(self):
+    def test_swarmharm_rejects_n64(self):
+        args = SimpleNamespace(populations=[4, 64], repeats=1, scenarios=['knowledge-work'],
+            mechanisms=['task-gaming'], model='gpt-6.1-sol',
+            base_url='http://localhost:8000/v1', startup_concurrency=16)
+        with self.assertRaisesRegex(ValueError, 'N=64 is not part of this study'):
+            list(batch.cases(args, 'fixed-source'))
+
+    def test_reasoning_effort_and_n32_default_timeout_scaling(self):
         with TemporaryDirectory() as directory:
             root = Path(directory)/'out'
             fake_regs = Path(directory)/'regs'; fake_regs.mkdir()
             key = Path(directory)/'key'; key.write_text('secret\n')
             args = SimpleNamespace(
-                populations=[4, 32, 64], repeats=1, scenarios=['knowledge-work'],
+                populations=[4, 32], repeats=1, scenarios=['knowledge-work'],
                 mechanisms=['task-gaming'], model='anthropic/claude-opus-5.5',
                 served_model='azure/anthropic/claude-opus-5-5', api_protocol='chat-completions',
                 base_url='http://localhost:8000/v1', startup_concurrency=16,
@@ -296,12 +303,11 @@ class BatchPlanChecks(unittest.TestCase):
                  patch.object(batch.subprocess, 'check_output', return_value=''):
                 rc = batch.execute_rows(args, rows, root, SimpleNamespace(error=self.fail))
             self.assertEqual(rc, 0)
-            self.assertEqual(len(prep_cmds), 3)
+            self.assertEqual(len(prep_cmds), 2)
             for cmd in prep_cmds:
                 self.assertEqual(cmd[cmd.index('--reasoning-effort') + 1], 'medium')
             self.assertNotIn('--max-actor-seconds', prep_cmds[0])
             self.assertEqual(prep_cmds[1][prep_cmds[1].index('--max-actor-seconds') + 1], '4500')
-            self.assertEqual(prep_cmds[2][prep_cmds[2].index('--max-actor-seconds') + 1], '5760')
 
 
 if __name__ == '__main__':
