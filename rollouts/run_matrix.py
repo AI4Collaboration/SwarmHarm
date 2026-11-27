@@ -214,6 +214,8 @@ def main():
     parser.add_argument("--review-model", default=None, help=argparse.SUPPRESS)
     parser.add_argument("--seconds", type=int, default=600, help="Per-request transport timeout")
     parser.add_argument("--repeats", type=int, default=defaults.REPEATS)
+    parser.add_argument("--max-attempts", type=int, default=2,
+                        help="Maximum new attempts per cohort on transient provider failures (default: 2)")
     parser.add_argument(
         "--execute", action="store_true", help="Run planned rows sequentially"
     )
@@ -226,9 +228,10 @@ def main():
     resolve_harness(args)
     if not (
         1 <= args.seconds <= 600 and args.repeats >= 1 and min(args.populations) >= 1
+        and args.max_attempts >= 1
     ):
         parser.error(
-            "Use N >= 1, repeats >= 1 and a request timeout of 1 to 600 seconds"
+            "Use N >= 1, repeats >= 1, max-attempts >= 1 and a request timeout of 1 to 600 seconds"
         )
     horizon_s = args.cohort_seconds or checkpoint.COHORT_SECONDS
     if not 0 <= args.entry_window_seconds < horizon_s:
@@ -327,7 +330,7 @@ def execute_rows(args, rows, parser):
                 record.update(resume_details(summary))
                 if record.get("retry_reason") in ("operator_interrupt", "provider_rejected"):
                     break
-            if interrupted or not record.get("retry_reason") or new_attempts >= 2:
+            if interrupted or not record.get("retry_reason") or new_attempts >= getattr(args, "max_attempts", 2):
                 break
             previous.append({key: value for key, value in record.items()
                              if key in ("output", "status", "retry_reason", "retry_not_before", "log", "archive")})

@@ -2,13 +2,14 @@
 import asyncio
 from datetime import timezone
 from email.utils import parsedate_to_datetime
+import json
 import math
 import random
 import time
 
 
 ATTEMPTS = 7
-TRANSIENT_STATUS = {408, 429, 500, 502, 503, 504, 529}
+TRANSIENT_STATUS = {408, 409, 425, 429, 500, 502, 503, 504, *range(520, 531)}
 
 
 class ProviderUnavailable(RuntimeError):
@@ -16,6 +17,16 @@ class ProviderUnavailable(RuntimeError):
         self.failure = failure
         super().__init__(f"Provider remained unavailable after {failure['attempt']} attempts "
                          f"({failure['status'] or failure['error_type']})")
+
+
+class ProviderResponseError(RuntimeError):
+    """Structured error or malformed payload inside an HTTP 200 provider body."""
+    def __init__(self, message, *, status=None, code=None, response=None, transient=False):
+        super().__init__(message)
+        self.status = status
+        self.code = code
+        self.response = response
+        self.transient = transient
 
 
 def retry_delay(headers, attempt):
@@ -45,20 +56,35 @@ def retry_delay(headers, attempt):
 def provider_rejected(error):
     import httpx
 
-    if getattr(error, 'code', None) == 'insufficient_quota':
+    if getattr(error, 'code', None) in ('insufficient_quota', 'insufficient_credits'):
         return True
     response = getattr(error, 'response', None)
-    if response is None:
+    status = getattr(error, 'status', None)
+    if status is None and response is not None:
+        status = response.status_code
+    if status is None:
         return False
-    if response.status_code in (401, 403):
+    if status in (401, 402, 403):
         return True
-    if response.status_code == 429:
+    if status == 429 and response is not None:
         try:
             detail = response.json().get('error', {})
         except (ValueError, AttributeError, httpx.ResponseNotRead):
             return False
-        return isinstance(detail, dict) and detail.get('code') == 'insufficient_quota'
+        return isinstance(detail, dict) and detail.get('code') in ('insufficient_quota', 'insufficient_credits')
     return False
+
+
+def _transient_http_400(response):
+    import httpx
+
+    if response is None or response.status_code != 400:
+        return False
+    try:
+        text = response.text.lower()
+    except (AttributeError, httpx.ResponseNotRead):
+        return False
+    return 'rejected by the upstream model' in text
 
 
 async def retry_request(send, record_failure):
@@ -70,16 +96,21 @@ async def retry_request(send, record_failure):
             return await send(attempt)
         except Exception as error:
             response = getattr(error, 'response', None)
-            status = response.status_code if response is not None else None
+            status = getattr(error, 'status', None)
+            if status is None and response is not None:
+                status = response.status_code
             # A provider may open SSE with HTTP 200, then emit a structured rate-limit error.
             code = getattr(error, 'code', None)
             if provider_rejected(error):
                 raise
-            if status is None and (code in ('rate_limit_exceeded', 'rate_limit_error', 'rate_limited')
-                                   or getattr(error, 'type', None) == 'rate_limit_error'):
+            if status in (None, 200) and (code in ('rate_limit_exceeded', 'rate_limit_error', 'rate_limited')
+                                          or getattr(error, 'type', None) == 'rate_limit_error'):
                 status = 429
             transport = isinstance(error, network_errors) or isinstance(error.__cause__, network_errors)
-            if status not in TRANSIENT_STATUS and not (status is None and transport):
+            transient = (bool(getattr(error, 'transient', False))
+                         or isinstance(error, json.JSONDecodeError)
+                         or _transient_http_400(response))
+            if status not in TRANSIENT_STATUS and not transient and not (status is None and transport):
                 raise
             headers = response.headers if response is not None else {}
             delay = retry_delay(headers, attempt)

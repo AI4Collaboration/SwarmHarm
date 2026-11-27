@@ -347,6 +347,136 @@ class APIHandoffChecks(unittest.TestCase):
         with TemporaryDirectory() as directory:
             asyncio.run(exercise(Path(directory)))
 
+    def test_openrouter_transient_bodies_retry_and_402_is_provider_rejected(self):
+        import time
+        import httpx
+        from run_matrix import resume_details
+        from swarmform.__main__ import Cohort
+
+        async def check_transient(out):
+            seen = 0
+
+            def respond(request):
+                nonlocal seen
+                seen += 1
+                if seen == 1:
+                    return httpx.Response(200, json={"error": {"code": 502, "message": "Upstream provider error"}})
+                if seen == 2:
+                    return httpx.Response(200, json={"choices": []})
+                if seen == 3:
+                    return httpx.Response(200, content=b"{truncated", headers={"content-type": "application/json"})
+                if seen == 4:
+                    return httpx.Response(522, text="Cloudflare timeout")
+                if seen == 5:
+                    return httpx.Response(400, json={"error": {"message": "Request rejected by the upstream model"}})
+                cohort.stop("cohort_deadline")
+                return httpx.Response(200, json={
+                    "choices": [{"message": {"role": "assistant", "content": "ok"}, "finish_reason": "stop"}],
+                    "usage": {"total_tokens": 5},
+                })
+
+            args = SimpleNamespace(task="planning-possible", channel="direct", population=2,
+                                   model="fixture", base_url="http://localhost/v1")
+            async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+                cohort = Cohort(args, client, out)
+                cohort.start = time.monotonic()
+                actor = next(iter(cohort.visible["startup"]))
+                with patch("swarmform.provider_retry.retry_delay", return_value=0):
+                    await cohort.participant(actor)
+                self.assertEqual(seen, 6)
+                self.assertEqual(cohort.errors, {})
+                with gzip.open(out / f"{actor}.jsonl.gz", "rt") as stream:
+                    retries = [json.loads(line) for line in stream if json.loads(line)["kind"] == "provider_retry"]
+                self.assertEqual(len(retries), 5)
+
+        async def check_402(out, payload_response):
+            calls = 0
+
+            def respond(request):
+                nonlocal calls
+                calls += 1
+                return payload_response
+
+            args = SimpleNamespace(task="planning-possible", channel="direct", population=2,
+                                   model="fixture", base_url="http://localhost/v1")
+            async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+                cohort = Cohort(args, client, out)
+                cohort.start = time.monotonic()
+                actor = next(iter(cohort.visible["startup"]))
+                await cohort.participant(actor)
+                self.assertEqual(calls, 1)
+                self.assertEqual(cohort.reason, "provider_rejected")
+                summary = {
+                    "complete": False,
+                    "physical_stop_verified": True,
+                    "reason": cohort.reason,
+                    "errors": cohort.errors,
+                    "usage": cohort.usage,
+                    "pending_provider_errors": cohort.pending_provider_errors,
+                }
+                self.assertEqual(resume_details(summary)["retry_reason"], "provider_rejected")
+
+        with TemporaryDirectory() as folder:
+            out = Path(folder) / "transient"
+            out.mkdir()
+            asyncio.run(check_transient(out))
+        with TemporaryDirectory() as folder:
+            out = Path(folder) / "http402"
+            out.mkdir()
+            asyncio.run(check_402(
+                out,
+                httpx.Response(402, json={"error": {"code": 402, "message": "Insufficient credits"}}),
+            ))
+        with TemporaryDirectory() as folder:
+            out = Path(folder) / "body402"
+            out.mkdir()
+            asyncio.run(check_402(
+                out,
+                httpx.Response(200, json={"error": {"code": 402, "message": "Insufficient credits"}}),
+            ))
+
+    def test_max_attempts_configures_in_process_retries_without_changing_plan(self):
+        import argparse
+        import hashlib
+        from run_matrix import execute_rows
+
+        default_plan = self.plan("--tasks", "planning-possible", "--populations", "3")[:1]
+        custom_plan = self.plan("--tasks", "planning-possible", "--populations", "3", "--max-attempts", "3")[:1]
+        self.assertEqual(default_plan, custom_plan)
+
+        launched = []
+
+        def collect(command, **kwargs):
+            path = Path(command[-1])
+            launched.append(path)
+            path.mkdir()
+            success = len(launched) == 3
+            summary = {"complete": success, "physical_stop_verified": True, "usage": {"Research01": {}},
+                       "reason": "cohort_deadline" if success else "provider_unavailable"}
+            (path / "summary.json").write_text(json.dumps(summary))
+            (path / "Research01.jsonl.gz").write_bytes(gzip.compress(b"{}\n"))
+            (path / "evidence-manifest.json").write_text(json.dumps(
+                {f.name: hashlib.sha256(f.read_bytes()).hexdigest() for f in path.iterdir()}))
+            return (0 if success else 1), None
+
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            args = SimpleNamespace(out=root, model="local-test-model", max_attempts=3)
+            with patch("run_matrix.cohort_command", side_effect=lambda a, r, d: ["fixture", str(d)]), \
+                 patch("run_matrix.run_process", side_effect=collect):
+                self.assertEqual(execute_rows(args, default_plan, argparse.ArgumentParser()), 0)
+            self.assertEqual(len(launched), 3)
+            self.assertTrue(launched[2].name.endswith("-attempt-003"))
+
+    def test_native_participant_classifies_provider_errors_for_resume(self):
+        from swarmform.native_participant import _classify_native_error
+
+        self.assertEqual(_classify_native_error(RuntimeError("HTTP Error 402: Payment Required")), "provider_rejected")
+        self.assertEqual(_classify_native_error(RuntimeError("usageLimitExceeded")), "provider_rejected")
+        self.assertEqual(_classify_native_error(RuntimeError("HTTP Error 429: Too Many Requests")), "provider_unavailable")
+        self.assertEqual(_classify_native_error(RuntimeError("HTTP Error 522: Connection timed out")), "provider_unavailable")
+        self.assertEqual(_classify_native_error(ValueError("Provider must return positive token usage")), "participant_error")
+
     def test_rate_limited_matrix_preserves_failed_attempt_and_resumes_once(self):
         import argparse
         import hashlib

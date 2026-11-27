@@ -20,7 +20,7 @@ from urllib.parse import urlsplit
 
 from . import formation_inputs as inputs
 from . import checkpoint, tool_archive
-from .provider_retry import ATTEMPTS, ProviderUnavailable, provider_rejected, retry_request
+from .provider_retry import ATTEMPTS, ProviderResponseError, ProviderUnavailable, provider_rejected, retry_request
 from .formation_common import CommonWorkspace
 from .formation_deployment import deployment
 from .participant_stop import ParticipantStop
@@ -307,6 +307,7 @@ class Cohort:
         self.lock = threading.Lock()
         self._trace_locks = {actor: threading.Lock() for actor in actors}
         self._inflight_sem = asyncio.Semaphore(request_limit(args.population))
+        self._cooldown_until = 0.0
         self.usage = {}
         self.returns = {}
         self.stopping = asyncio.Event()
@@ -551,6 +552,19 @@ class Cohort:
                 async def send(attempt, *, fallback=None):
                     base = fallback[0] if fallback else self.args.base_url
                     headers = {"Authorization": "Bearer " + fallback[1]} if fallback else {}
+                    while True:
+                        remaining = getattr(self, "_cooldown_until", 0.0) - time.monotonic()
+                        if remaining <= 0 or not self.active():
+                            break
+                        if self.deadline is not None:
+                            remaining = min(remaining, max(0.0, self.deadline - time.monotonic()))
+                            if remaining <= 0:
+                                break
+                        try:
+                            await asyncio.wait_for(self.stopping.wait(), timeout=remaining)
+                            raise asyncio.CancelledError
+                        except asyncio.TimeoutError:
+                            pass
                     async with self._inflight_sem:
                         if not self.active():
                             raise asyncio.CancelledError
@@ -565,10 +579,35 @@ class Cohort:
                                                            json=request, headers=headers)
                             reply.raise_for_status()
                             data = reply.json()
+                            if isinstance(data, dict) and isinstance(data.get("error"), dict):
+                                err = data["error"]
+                                code = err.get("code")
+                                numeric = (code if type(code) is int
+                                           else int(code) if isinstance(code, str) and code.isdigit() else None)
+                                non_retryable = numeric in (400, 401, 402, 403, 404, 422) and not (
+                                    numeric == 400 and "rejected by the upstream model" in json.dumps(err).lower()
+                                )
+                                raise ProviderResponseError(
+                                    f"Provider error ({code}): {str(err.get('message') or err)[:400]}",
+                                    status=numeric,
+                                    code=code if isinstance(code, str) else None,
+                                    response=reply,
+                                    transient=not non_retryable,
+                                )
+                            if not isinstance(data, dict) or not isinstance(data.get("choices"), list) or not data["choices"]:
+                                raise ProviderResponseError(
+                                    "Provider returned empty or malformed choices",
+                                    response=reply,
+                                    transient=True,
+                                )
                     return data, decision
 
                 def record_failure(failure):
                     self.pending_provider_errors[actor] = failure
+                    if failure.get("status") == 429 and failure.get("delay_seconds", 0) > 0:
+                        until = time.monotonic() + min(failure["delay_seconds"], 30.0)
+                        if until > getattr(self, "_cooldown_until", 0.0):
+                            self._cooldown_until = until
                     self.trace(actor, "provider_retry", **failure)
 
                 try:
@@ -667,7 +706,7 @@ class Cohort:
                         body = None
                     if isinstance(body, dict) and isinstance(body.get("error"), dict):
                         message = str(body["error"].get("message") or "")
-                        if self.args._api_key:
+                        if getattr(self.args, "_api_key", None):
                             message = message.replace(self.args._api_key, "[redacted]")
                         detail = {"provider_code": body["error"].get("code"), "provider_message": message[:1024]}
                 self.trace(actor, "http_error", status=response.status_code,

@@ -10,6 +10,25 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "shared"))
 import model_session
 
 
+def _classify_native_error(error):
+    text = str(error).lower()
+    if any(marker in text for marker in (
+        "usagelimitexceeded", "insufficient_quota", "insufficient_credits",
+        "http error 401", "http error 402", "http error 403",
+        "status 401", "status 402", "status 403", "401 unauthorized", "402 payment", "403 forbidden",
+    )):
+        return "provider_rejected"
+    if any(marker in text for marker in (
+        "http error 429", "status 429", "rate_limit", "too many requests",
+        "http error 500", "http error 502", "http error 503", "http error 504",
+        "http error 520", "http error 521", "http error 522", "http error 524", "http error 529",
+        "status 500", "status 502", "status 503", "status 504", "status 529",
+        "timed out", "connection reset", "service unavailable", "bad gateway", "gateway timeout",
+    )):
+        return "provider_unavailable"
+    return "participant_error"
+
+
 async def participate(cohort, actor):
     args = cohort.args
     events = queue.Queue()
@@ -149,7 +168,7 @@ async def participate(cohort, actor):
         raise
     except Exception as error:
         cohort.errors[actor] = f"{type(error).__name__}: {error}"
-        cohort.stop("participant_error")
+        cohort.stop(_classify_native_error(error))
     finally:
         if agent is not None:
             # The coordinator can cancel a participant that is already closing
