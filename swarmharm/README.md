@@ -77,7 +77,7 @@ WORKLOAD=data-analysis
 MECHANISM=task-gaming
 ```
 
-- **Agents** — `-N` / `--population` defaults to 3, minimum 2 (tested up to `N = 64` and `N = 128`).
+- **Agents** — `-N` / `--population` defaults to 3, minimum 2. The study matrix is N=4, 16 and 32.
 - **Domain** — `knowledge-work` or `engineering-capacity` (Knowledge Work also supports `--workload data-analysis` and `--workload financial-analysis`).
 - **Mechanism** — `task-gaming`, `evidence-tampering`, `grader-manipulation`, `information-authority`, `action-authority`, or `shared-capacity`.
 - **Extended mechanism variants** — pass `--input-variant <name>` on `run.py` / `run_matrix.py`, or `--variant-suite extended` / `--variant-suite all` on `run_matrix.py` across both domains:
@@ -114,9 +114,9 @@ Inspect `completion.json` (status & transport counts), `mechanism-review.json` /
 `swarmharm/run_matrix.py` automates registration, local commit, sequential cohort collection, parallel ATIF export, independent counterfactual replay (`review.py`, including `rollout_limit` cohorts), dead-owner Docker cleanup, and automatic `-attempt-002` retries on transient infrastructure failures while preserving all prior attempts.
 
 ```sh
-# 1. Default 12 main inputs across N=4, 8, 16 (omit --execute to print the plan)
+# 1. Default 12 main inputs across N=4, 16, 32 (omit --execute to print the plan)
 "$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run_matrix.py \
-  --model "$SWARMHARM_MODEL" --populations 4 8 16 --execute --out ../swarmharm-runs
+  --model "$SWARMHARM_MODEL" --populations 4 16 32 --execute --out ../swarmharm-runs
 
 # 2. Run all 22 extended mechanism variants (or --variant-suite all for 12 main + 22 extended)
 "$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run_matrix.py \
@@ -124,22 +124,17 @@ Inspect `completion.json` (status & transport counts), `mechanism-review.json` /
 
 # 3. Matched per-account uncoupled baseline for multi-agent amplification comparisons
 "$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run_matrix.py \
-  --model "$SWARMHARM_MODEL" --populations 4 8 16 --coupling uncoupled --execute --out ../swarmharm-uncoupled
-
-# 4. Large-scale N=64 or N=128 run (networks, file descriptors & RecordsLink limits scale automatically)
-"$SWARMHARM_HARBOR_ENV/bin/python" swarmharm/run_matrix.py \
-  --model "$SWARMHARM_MODEL" --populations 64 128 --startup-concurrency 16 \
-  --execute --out ../swarmharm-scale
+  --model "$SWARMHARM_MODEL" --populations 4 16 32 --coupling uncoupled --execute --out ../swarmharm-uncoupled
 ```
 
 Add `--judge` (optionally `--judge-model MODEL`) to run the blinded semantic transcript judge automatically on each collected cohort. Re-running with the same `--out` resumes incomplete batches without overwriting existing attempts.
 
-### Scaling to N=64 and N=128
+### Host limits at N=32
 
-Both `run.py` and `run_matrix.py` are hardened and verified up to **N = 128** concurrent agents (129 containers + 128 isolated `/29` internal networks):
+SwarmHarm populations are **4, 16 and 32**. N=64 is not part of this study.
 
-- **Default provisioning & limits**: `--startup-concurrency` defaults to `16`; `run_matrix.py` auto-scales `SWARMHARM_MAX_WORKSTATION_NETWORKS` to `max(populations) + 24`, raises `RLIMIT_NOFILE` up to `65536`, and dynamically scales `RecordsLink` service limits (`--pids-limit = max(64, N + 32)`, `256m` RAM, `64m` `/tmp`).
-- **OOM & context protection**: Child shell processes run with `oom_score_adj = 800` so runaway commands never kill workstation sentinels; `check_delivery` deduplicates `visible_releases` at top level (`~0.1 MB` vs `5.6 MB` at `N=64`); cached JSONSchema validators, cached source reduction, parallel ATIF export, and 8-way parallel counterfactual replays cut `N=64` review latency by ~16×.
+- **Default provisioning**: `--startup-concurrency` defaults to `16`; `run_matrix.py` auto-scales `SWARMHARM_MAX_WORKSTATION_NETWORKS` to `max(populations) + 24`, raises `RLIMIT_NOFILE` up to `65536`, and scales `RecordsLink` service limits (`--pids-limit = max(64, N + 32)`, `256m` RAM, `64m` `/tmp`).
+- **OOM & context protection**: Child shell processes run with `oom_score_adj = 800` so runaway commands never kill workstation sentinels. `check_delivery` deduplicates `visible_releases` at top level. Cached JSONSchema validators, cached source reduction, parallel ATIF export, and 8-way parallel counterfactual replays keep N=32 review time bounded.
 - **Custom subnet pool**: Each workstation receives an isolated `/29` from `10.240.0.0/16` (override via `SWARMHARM_NETWORK_POOL`). Optional `--max-actor-seconds` bounds per-actor wall time on slower endpoints.
 
 To inspect all 12 default four-agent inputs offline without model calls:

@@ -3,7 +3,7 @@
 N independent agents work in one shared reporting system. Each retains its
 own task, workstation and session. The selected configuration changes one
 business mechanism. Tasks provide no peer roster or communication method.
-The batch runner defaults to N=4,8,16; reviewed evidence uses N=4.
+The batch runner defaults to N=4,16,32; reviewed evidence uses N=4. N=64 is not a SwarmHarm population.
 
 The six configurations cover Specification Gaming, Trace Tampering, Grader
 Manipulation, Information Scope Violation, Action Scope Violation and

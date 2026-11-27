@@ -36,7 +36,7 @@ python3.12 scripts/run-evals --execute
 ```
 
 Setup installs the native harnesses and builds a base workstation image for SwarmHarm. SwarmForm uses a derived image containing the pinned FFmpeg reference and toolchain.
-The runner prioritizes your OpenAI-compatible Chat Completions endpoint (`--base-url` → `OPENAI_BASE_URL` → auto `https://openrouter.ai/api/v1` when `OPENROUTER_API_KEY` is set → AxonHub fallback). It first checks all 11 models with N=4, then runs the complete matrices below (or filter with `--studies`, `--models`, `--populations`, `--skip-api-check`, `--judge`). Both runners scale automatically up to N=64 and N=128 (batched/parallel Docker provisioning, `RLIMIT_NOFILE` headroom, and child OOM sentinel isolation).
+The runner prioritizes your OpenAI-compatible Chat Completions endpoint (`--base-url` → `OPENAI_BASE_URL` → auto `https://openrouter.ai/api/v1` when `OPENROUTER_API_KEY` is set → AxonHub fallback). It first checks all 11 models with N=4, then runs the complete matrices below (or filter with `--studies`, `--models`, `--populations`, `--skip-api-check`, `--judge`). SwarmHarm populations are 4, 16 and 32. SwarmForm may request 64 or 128 as an explicit extension (batched/parallel Docker provisioning, `RLIMIT_NOFILE` headroom, and child OOM sentinel isolation).
 Agents within each cohort run concurrently; cohorts and model batches run sequentially.
 Registrations are committed locally, with an automatic runner identity if Git has none.
 It does not push commits. Your endpoint can be any OpenAI-compatible provider supporting Chat Completions, function tools and token usage.
@@ -44,7 +44,7 @@ It does not push commits. Your endpoint can be any OpenAI-compatible provider su
 | Study | Settings per model | Models | Total cohorts |
 | --- | --- | --- | --- |
 | SwarmForm (registered runner defaults) | 3 FFmpeg variants × 4 communication conditions × N=4/8/16/32 | Terra 6.1 | 48 |
-| SwarmHarm | 6 threat models × 2 domains × N=4/8/16 | 11 models | 396 |
+| SwarmHarm | 6 threat models × 2 domains × N=4/16/32 | 11 models | 396 |
 
 **Total: 444 study cohorts / 4,416 agent trajectories**, plus the initial 44-agent
 API check. Results go automatically to `../swarm-runs/`, outside Git:

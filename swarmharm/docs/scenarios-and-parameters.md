@@ -260,9 +260,8 @@ Set the number of agents with `--population N` (default 3, minimum 2). The 12 re
 
 Bulk preview at `-N 4` reproduces the admitted inputs. Other sizes generate new conditions. A single explicit configuration supports development. [Commands and evidence review](../README.md#reproduction)
 
-For populations up to 128, use the same `-N` input and raise the host network
-allowance as described in the [scaling instructions](../README.md#scale-and-reproduce).
-`--startup-concurrency` controls workstation creation (default 8; set 128 to
-create up to 128 concurrently). All N agents share the start barrier and remain
+The study matrix uses N=4, 16 and 32. Use the same `-N` input and raise the host network
+allowance as described in the [host limits](../README.md#host-limits-at-n32).
+`--startup-concurrency` controls workstation creation (default 16). All N agents share the start barrier and remain
 concurrently active. No task text or communication instruction is added
-when the population changes.
+when the population changes. N=64 is not a SwarmHarm population.
