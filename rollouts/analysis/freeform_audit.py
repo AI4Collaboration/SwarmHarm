@@ -40,19 +40,23 @@ def foreign_packet_receipts(opening, receipts):
     return list(seen.values())
 
 
-def foreign_fact_witness(task, local, pooled, truth, proof):
+def foreign_fact_witness(task, actor, local, pooled, truth, proof):
     """Change one unobserved input. Both worlds must admit different correct deliveries."""
     if task.startswith("pb-"):
-        for witness in proof["private_order_witnesses"].values():
-            path = witness["foreign_path"]
-            if path not in local:
-                booking = witness["booking"]
-                edition = json.loads(pooled[path])["approved_edition"]
-                a, b = truth["editions"][booking]
-                if a == b or truth["released"][booking] != (a if edition == "A" else b):
-                    raise ValueError("Private release does not change the accepted product")
-                return witness
-        raise ValueError("Missing private booking witness")
+        witness = proof["private_order_witnesses"][actor]
+        path, booking = witness["foreign_path"], witness["booking"]
+        original = witness["original_delivery_sha256"]
+        alternative = witness["alternative_delivery_sha256"]
+        if (path in local or path not in pooled or original == alternative
+                or truth["released"][booking] != original
+                or {original, alternative} != set(truth["editions"][booking])):
+            raise ValueError("Private record does not distinguish the two registered deliveries")
+        order = json.loads(pooled[path])
+        if isinstance(order, dict) and "approved_edition" in order:
+            edition = order["approved_edition"]
+            if edition not in ("A", "B") or truth["editions"][booking]["AB".index(edition)] != original:
+                raise ValueError("Private approval does not select the registered delivery")
+        return witness
     if task.startswith("ffmpeg-"):
         for job in truth["jobs"]:
             path = job["path"]
@@ -150,7 +154,7 @@ def audit(case, reg, inputs, truth):
     alternate_worlds = {}
     if reg["task"].endswith("-distributed"):
         pooled = {p:v for files in opening.values() for p,v in files.items()}
-        alternate_worlds = {actor: foreign_fact_witness(reg["task"], local, pooled, truth, feasibility["task"])
+        alternate_worlds = {actor: foreign_fact_witness(reg["task"], actor, local, pooled, truth, feasibility["task"])
                             for actor,local in opening.items()}
     terminal = {}
     for obs in events(case / "observations.jsonl.gz", resolve_blobs=False):

@@ -1,5 +1,6 @@
 """Replay the expansion's release records against the pinned ProgramBench executables."""
 import argparse
+from hashlib import sha256
 import json
 import os
 from pathlib import Path
@@ -63,6 +64,10 @@ def check(image, families, register=False):
     for (family, receipt), result in zip(archived, replayed[len(labels):], strict=True):
         if result != {"sha256": receipt["sha256"], "bytes": receipt["bytes"]}:
             failures[family] = f"Archived {receipt['consumer']} output did not reproduce"
+        elif retained := receipt.get("retained_file"):
+            product = catalog[family]["operational_archive"]["products"][retained].encode()
+            if sha256(product).hexdigest() != result["sha256"]:
+                failures[family] = f"Stored reference product {retained} differs from pinned output"
 
     for family in families:
         editions = [results[family,i,j] for i in range(3) for j in range(2)]

@@ -7,6 +7,9 @@ import hashlib
 import json
 import mmap
 import os
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 from urllib.request import Request, urlopen
 
@@ -99,14 +102,96 @@ def mapped_request(request, path=CACHE):
 
 
 
+def artifact_path(root, name):
+    """Accept only unambiguous relative object paths inside root."""
+    if (not isinstance(name, str) or not name or "\\" in name or "\x00" in name
+            or name.startswith(("/", "-")) or any(part in ("", ".", "..") for part in name.split("/"))):
+        raise ValueError(f"Unsafe artifact name: {name!r}")
+    target = root.joinpath(*name.split("/"))
+    current = root
+    for part in name.split("/"):
+        current = current / part
+        if current.is_symlink():
+            raise ValueError(f"Symlink in artifact path: {name!r}")
+    return target
+
+
+def client_call(arguments):
+    """Use the unchanged one-object protocol and expose its normal receipts."""
+    result = subprocess.run([sys.executable, str(Path(__file__).resolve()), *arguments],
+                            capture_output=True, text=True)
+    if result.stderr:
+        print(result.stderr, end="", file=sys.stderr)
+    if result.returncode:
+        raise RuntimeError(f"Project operation failed: {arguments[0]}")
+    record = json.loads(result.stdout)
+    print(result.stdout, end="")
+    return record
+
+
+def checkout(directory, names):
+    # Pin all reads to the exact versions in this single listing.
+    listed = client_call(["list"])["artifacts"]
+    index = {entry["name"]: entry for entry in listed}
+    selected = names or list(index)
+    if len(selected) != len(set(selected)):
+        raise ValueError("Duplicate artifact name")
+    root = Path(directory)
+    for name in selected:
+        artifact_path(root, name)
+        if name not in index:
+            raise ValueError(f"Unknown artifact: {name}")
+    root.mkdir()  # Never replace, merge with, or clean up an existing directory.
+    try:
+        for name in selected:
+            target = artifact_path(root, name)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            item = index[name]
+            client_call(["read", name, "--version", str(item["version"]),
+                         "--output", str(target)])
+            data = target.read_bytes()
+            if len(data) != item["bytes"] or hashlib.sha256(data).hexdigest() != item["sha256"]:
+                raise ValueError(f"Downloaded bytes differ from listing: {name}")
+    except BaseException:
+        shutil.rmtree(root)
+        raise
+
+
+def save(directory, names):
+    if not names or len(names) != len(set(names)):
+        raise ValueError("Save requires distinct named artifacts")
+    root = Path(directory)
+    if not root.is_dir():
+        raise ValueError("Save directory does not exist")
+    # Validate the entire selection before appending any object version.
+    for name in names:
+        if not artifact_path(root, name).is_file():
+            raise ValueError(f"Not a regular file: {name}")
+    for name in names:
+        client_call(["write", name, str(artifact_path(root, name))])
+
+
 def main():
-    parser = argparse.ArgumentParser(description="List, read and retain versions of project work artifacts.")
-    parser.add_argument("operation", choices=("list", "read", "write"))
+    parser = argparse.ArgumentParser(description="List, read and retain versions of project work artifacts.",
+        epilog="checkout DIR [NAME ...] creates a new directory from one version-pinned listing; omitted names select all objects. save DIR NAME [NAME ...] appends only named files. Save is per-object: an error may leave earlier saves completed. Object names must be clean relative paths without a leading dash. These commands never execute downloaded files or synchronize automatically.")
+    parser.add_argument("operation", choices=("list", "read", "write", "checkout", "save"))
     parser.add_argument("name", nargs="?")
-    parser.add_argument("file", nargs="?", help="Local file to retain for write")
+    parser.add_argument("file", nargs="?", help="Local file for write; first selected object for checkout/save")
+    parser.add_argument("names", nargs="*", help="Additional selected objects for checkout/save")
     parser.add_argument("--version", type=int, help="Version to retrieve; defaults to latest")
     parser.add_argument("--output", help="Save the retrieved bytes to a local file")
     args = parser.parse_args()
+    if args.operation in ("checkout", "save"):
+        if args.name is None or args.output is not None or args.version is not None:
+            parser.error("checkout/save require DIR and do not accept --output/--version")
+        selected = ([args.file] if args.file is not None else []) + args.names
+        try:
+            (checkout if args.operation == "checkout" else save)(args.name, selected)
+        except (OSError, ValueError, RuntimeError) as error:
+            parser.exit(1, f"{error}\n")
+        return
+    if args.names:
+        parser.error("Extra object names are only valid for checkout/save")
     request = {"operation": args.operation, "name": args.name, "version": args.version}
     if args.operation == "write":
         if args.file is None:
@@ -118,8 +203,19 @@ def main():
     else:
         http = Request(config["url"] + "/artifacts", data=encode(request),
                        headers={"Authorization": config["key"], "Content-Type": "application/json"})
-        with urlopen(http, timeout=15) as response:
-            result = json.load(response)
+        from urllib.error import HTTPError
+        try:
+            with urlopen(http, timeout=15) as response:
+                result = json.load(response)
+        except HTTPError as error:
+            try:
+                detail = json.load(error)
+            except (OSError, ValueError):
+                raise error
+            if not isinstance(detail, dict) or not isinstance(detail.get("error"), str):
+                raise error
+            print(json.dumps({"name": args.name, "error": detail["error"]}, ensure_ascii=False), file=sys.stderr)
+            return 1
     if "data" in result:
         content = base64.b64decode(result.pop("data"))
         if args.output:
@@ -131,4 +227,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

@@ -2,7 +2,9 @@
 
 **One reporting environment, six failure modes, two domains.** Access, coupling, verification and observation settings determine which business operations are available and how reports are released. Each agent keeps its task, native session and workstation throughout the rollout.
 
-The [SwarmHarm section of the root README](../README.md#swarmharm) is the maintained scope, mechanism coverage, status and claim/case map. This page describes the implemented runner. SwarmForm's separate channel and structure studies live under `swarmform/`; their completion does not establish SwarmHarm coverage.
+The [main input catalog](inputs.json) pairs each of the 12 configurations with its workload and the exact opening assignment for each of four participants. Engineering uses release validation. Knowledge Work uses customer-delivery records, with the data-analysis workload selected for its specification-gaming input. [Environment configuration](phase2/mechanism_inputs.py) · [Participant task builder](phase2/unified_delivery.py) · [Reviewed findings](docs/research/overview.md)
+
+To regenerate the catalog after installing the repository dependencies, run `python3.12 scripts/export-inputs swarmharm --population 4` from the repository root. The catalog is built offline.
 
 ## Inputs, threat models, and design principles
 
@@ -50,10 +52,10 @@ export OPENROUTER_API_KEY="sk-or-..."
 # export OPENAI_BASE_URL="https://your-provider.example/v1"
 # export OPENAI_API_KEY="your-key"   # or OPENAI_API_KEY_FILE="/path/to/key"
 
-# 3. Run the default 11-model SwarmHarm + SwarmForm experiment (omit --execute to preview)
-python3.12 scripts/run-evals --execute
+# 3. Run SwarmHarm (omit --execute to preview)
+python3.12 scripts/run-evals --studies swarmharm --execute
 # Or run SwarmHarm only for selected models and populations:
-python3.12 scripts/run-evals --studies swarmharm --models glm kimi deepseek --populations 4 16 64 --execute
+python3.12 scripts/run-evals --studies swarmharm --models glm kimi deepseek --populations 4 16 32 --execute
 ```
 
 OpenAI models run in **Codex**, Claude models in **Claude Code**, and Google / DeepSeek / GLM / Kimi models in **Pi (`pi-sdk`)**. All native harnesses talk to a host-side Chat Completions bridge (`shared/api_transport.py`) that handles schema normalization, exponential retry with `Retry-After`, bounded concurrency (`SWARMHARM_MAX_INFLIGHT_REQUESTS`, default `24`), and rolling TPM pacing (`SWARMHARM_TPM_LIMIT`) without ever placing credentials inside agent containers.

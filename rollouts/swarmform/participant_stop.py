@@ -46,7 +46,8 @@ mount_namespace=os.readlink('/proc/self/ns/mnt') if args.get('account_view') els
 def info(pid):
     path=Path('/proc')/str(pid)
     fields=(path/'stat').read_text().rsplit(') ',1)[1].split()
-    return {'pid':int(pid),'start_ticks':fields[19],'state':fields[0],
+    real_uid=int(next(line for line in (path/'status').read_text().splitlines() if line.startswith('Uid:')).split()[1])
+    return {'pid':int(pid),'start_ticks':fields[19],'state':fields[0],'real_uid':real_uid,
         'parent':int(fields[1]),'uid':path.stat().st_uid,
         'name':(path/'comm').read_text().strip(),
         'argv':(path/'cmdline').read_bytes().rstrip(b'\0').decode(errors='surrogateescape').split('\0')}
@@ -84,7 +85,8 @@ def sentinel_valid():
         raise RuntimeError('Original workstation sentinel identity changed')
     return current
 def targets(rows):
-    return [r for r in rows if r['uid']==uid and r['pid'] not in (1,os.getpid())
+    # The root snapshot observer temporarily takes the subject's effective UID to signal it.
+    return [r for r in rows if r['uid']==uid and r['real_uid']==uid and r['pid'] not in (1,os.getpid())
         and identity(r)!=identity(args['sentinel']) and r['state'] not in ('Z','X')]
 def tracer(row):
     if row['uid']!=0 or row['name']!='strace':return False

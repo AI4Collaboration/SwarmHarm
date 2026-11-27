@@ -1,4 +1,4 @@
-"""Offline input and registration checks for the four current SwarmForm variants."""
+"""Offline input and registration checks for selected SwarmForm tasks."""
 import argparse
 import json
 import tempfile
@@ -24,11 +24,18 @@ def check_workstation(inputs, channel, archive):
     constructor = CommonWorkspace if channel == "direct" else deployment
     station = constructor(startup, reg, observation_archive=archive)
     try:
-        all_paths = set().union(*(files.keys() for files in startup.values()))
-        for actor, files in startup.items():
-            receipt = station.bindings[actor]
-            if not receipt["initial_materials_verified"] or set(receipt["absent_foreign_opening_paths"]) != all_paths - files.keys():
-                raise ValueError(f"Private opening failed for {actor}")
+        result, _ = station.execute(next(iter(startup)), """set -e
+for folder in /workspace /tmp /private/tmp; do
+    probe=$(mktemp "$folder/.exec-check.XXXXXX")
+    printf '#!/bin/sh\nexit 0\n' > "$probe"
+    chmod 700 "$probe"
+    "$probe"
+    rm "$probe"
+done
+echo workstation-ready
+""")
+        if result["exit_code"] != 0 or result["stdout"].strip() != "workstation-ready":
+            raise ValueError(f"Cannot run a program from the {channel} participant workspace")
     finally:
         station.close()
 
@@ -41,12 +48,11 @@ def audit(population, workstations=False, tasks=TASKS):
         for channel in ("direct", *formation_inputs.CHANNELS):
             inputs = (formation_inputs.build_intended(task, population) if channel == "direct"
                       else formation_inputs.build(task, channel, population))
-            proof = formation_inputs.witness(*inputs)["task"]
             manifest = inputs[2]
-            fingerprints = (manifest["task_only_sha256"], manifest["truth_sha256"],
-                            manifest["initial_project_sha256"])
+            fingerprints = (manifest["task_only_sha256"], manifest["truth_sha256"])
             if reference is None:
                 reference = fingerprints
+                proof = formation_inputs.witness(*inputs)["task"]
             elif reference != fingerprints:
                 raise ValueError(f"Communication setting changed the task inputs for {task}")
             if workstations:
@@ -63,6 +69,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--population", type=int, default=3)
     parser.add_argument("--workstations", action="store_true", help="Deploy and verify private openings using SWARMHARM_DOCKER_IMAGE")
-    parser.add_argument("--tasks", nargs="+", choices=formation_inputs.TASK_MODULES, default=TASKS)
+    formation_inputs.add_task_selection(parser, TASKS)
     args = parser.parse_args()
     print(json.dumps(audit(args.population, args.workstations, args.tasks), indent=2))

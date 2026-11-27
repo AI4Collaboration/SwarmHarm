@@ -1,4 +1,4 @@
-"""Analyze sealed SwarmForm cohorts offline. Accept run_matrix output roots or individual cohorts."""
+"""Analyze completed SwarmForm cohorts offline. Accept run_matrix output roots or individual cohorts."""
 import argparse
 import base64
 from collections import Counter
@@ -14,7 +14,7 @@ import tempfile
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from atomic import atomic_json
 from channels import channel_evidence, events, trace_actor
-from run_matrix import archived_evidence, sealed_summary
+from run_matrix import archived_evidence, finalized_summary
 from swarmform.inputs import digest
 
 
@@ -25,8 +25,8 @@ def read(path):
 def native_session_receipt(case, actor, reg, manifest):
     folder = case / "native" / actor
     for name in ("thread.json", "session.jsonl", "export-status.json"):
-        if (folder / name).relative_to(case).as_posix() not in manifest:
-            raise ValueError(f"{actor} missing sealed native {name}")
+        if not (folder / name).is_file() or (manifest is not None and (folder / name).relative_to(case).as_posix() not in manifest):
+            raise ValueError(f"{actor} missing native {name}")
     status = read(folder / "export-status.json")
     thread_id = read(folder / "thread.json")["thread"]["id"]
     if not (status["thread_retained"] and status["session_retained"] and (folder / "session.jsonl").stat().st_size):
@@ -39,7 +39,7 @@ def native_session_receipt(case, actor, reg, manifest):
             pending = message["id"]
         elif pending is not None and row["direction"] == "server" and message.get("id") == pending:
             receipt = message.get("result", {})
-            if (record.relative_to(case).as_posix() not in manifest or receipt.get("thread", {}).get("id") != thread_id
+            if ((manifest is not None and record.relative_to(case).as_posix() not in manifest) or receipt.get("thread", {}).get("id") != thread_id
                     or receipt.get("model") != reg["model"].removeprefix("openai/")
                     or reg.get("service_tier") and receipt.get("serviceTier") != reg["service_tier"]):
                 raise ValueError(f"{actor} native thread/start differs from registration or export")
@@ -157,13 +157,13 @@ def task_score(result):
 
 
 def analyze_case(case, indexed, replay_tree, diagnose_channels=False):
-    summary = sealed_summary(case)
+    summary = finalized_summary(case)
     if summary is None:
-        raise ValueError("Missing seal or evidence checksum mismatch")
+        raise ValueError("Missing final summary or invalid legacy evidence seal")
     if not (summary["complete"] and summary.get("physical_stop_verified")):
         return dict(status="incomplete", reason=summary.get("reason"), errors=summary.get("errors"))
     if not read(case / "physical-stop.json").get("research_stop_verified"):
-        raise ValueError("Physical stop receipt disagrees with the sealed summary")
+        raise ValueError("Physical stop receipt disagrees with the final summary")
     reg = read(case / "registration.json")
     inputs, truth, outcomes = (read(case / name) for name in ("inputs.json", "truth.json", "outcomes.json"))
     actors = inputs["prompts"]
@@ -174,9 +174,11 @@ def analyze_case(case, indexed, replay_tree, diagnose_channels=False):
     if reg["channel"] == "direct":
         required.add("bindings.json")
     seal = case / "evidence-manifest.json"
-    manifest = read(seal)
-    if not required <= manifest.keys() or reg["population"] != len(actors) or set(actors) != set(outcomes):
-        raise ValueError("Sealed evidence is missing required study or participant data")
+    legacy = summary.get("schema") != "swarmform-completion-v1"
+    manifest = read(seal) if legacy else None
+    missing = any(not (case / name).is_file() for name in required) or (legacy and not required <= manifest.keys())
+    if missing or reg["population"] != len(actors) or set(actors) != set(outcomes):
+        raise ValueError("Evidence is missing required study or participant data")
     if digest(inputs) != reg["manifest"]["worker_visible_sha256"] or digest(truth) != reg["manifest"]["truth_sha256"]:
         raise ValueError("Archived inputs differ from their registration")
     for key in ("task", "channel", "population", "model", "source_sha256", "harness",
@@ -197,7 +199,9 @@ def analyze_case(case, indexed, replay_tree, diagnose_channels=False):
     if len(session_ids) != len(set(session_ids)):
         raise ValueError("Multiple participants have the same native thread")
     reviews = []
-    for file in (name for name in manifest if name.startswith("review-") and name.endswith(".json")):
+    review_files = (name for name in manifest if name.startswith("review-") and name.endswith(".json")) if legacy else (
+        path.name for path in case.glob("review-*.json"))
+    for file in review_files:
         review = read(case / file)
         reviews.append(dict(file=file, **{k: review[k] for k in (
             "cutoff_s", "status", "verdict", "reviewed_actions", "total_actions") if k in review}))
@@ -208,16 +212,16 @@ def analyze_case(case, indexed, replay_tree, diagnose_channels=False):
         "personal_budget_targets", "per_actor_limits", "cohort_deadline_seconds", "review_interval_seconds",
         "review_model", "review_patterns", "max_inflight_requests")}
     comparison["task_class"] = reg["manifest"]["task_class_id"]
-    comparison["domain"] = reg["manifest"]["domain"]
     comparison["input_version"] = reg["manifest"]["version"]
     comparison["truth_sha256"] = reg["manifest"]["truth_sha256"]
     row = dict(status="complete", comparison=comparison, replicate=indexed.get("replicate"),
-               evidence_manifest_sha256=hashlib.sha256(seal.read_bytes()).hexdigest(),
                stop_reason=summary["reason"], research_seconds=summary["research_seconds"],
                participants=participants, communication=channel_evidence(case, reg, actors, receipts, operations, sent,
                     media_truth=truth if reg["task"].startswith("ffmpeg-") and "jobs" in truth else None),
                reviews=sorted(reviews, key=lambda r: r["cutoff_s"]))
-    if reg["manifest"].get("task_metadata", {}).get("freeform"):
+    if legacy:
+        row["evidence_manifest_sha256"] = hashlib.sha256(seal.read_bytes()).hexdigest()
+    if legacy and (case / "feasibility.json").is_file() and reg["manifest"].get("task_metadata", {}).get("freeform"):
         from freeform_audit import audit
         row["freeform_validation"] = audit(case, reg, inputs, truth)
     if diagnose_channels and reg["condition"] in ("intended", "unintended"):
@@ -310,7 +314,7 @@ def summarize(rows):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("sources", nargs="+", type=Path, help="Batch directory, sealed cohort, or .archive.json")
+    parser.add_argument("sources", nargs="+", type=Path, help="Batch directory, completed cohort, or .archive.json")
     parser.add_argument("--out", type=Path, help="Write report JSON (default: stdout)")
     parser.add_argument("--replay-tree", action="store_true", help="Re-score possible-Tree versions and supplemental probes in Docker")
     parser.add_argument("--diagnose-channels", action="store_true",
@@ -334,9 +338,9 @@ def main():
             if args.out and args.out.resolve().is_relative_to(case.resolve()):
                 parser.error("Choose an output outside the cohort evidence directory")
             try:
-                if indexed.get("status") == "running" and not (case / "evidence-manifest.json").is_file():
+                if indexed.get("status") == "running" and not (case / "summary.json").is_file():
                     result = dict(status="running")
-                elif indexed.get("status") == "incomplete" and case.is_dir() and not (case / "evidence-manifest.json").exists():
+                elif indexed.get("status") == "incomplete" and case.is_dir() and not (case / "summary.json").exists():
                     result = dict(status="unsealed", reason=indexed.get("retry_reason"))
                 else:
                     with cohort_directory(case) as directory:

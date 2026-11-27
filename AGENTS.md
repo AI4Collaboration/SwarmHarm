@@ -4,14 +4,10 @@ Work directly on `main` (do not create feature or `cursor/*` branches or
 separate PRs) and push completed, verified changes directly to `origin/main`.
 Do not start hosted model runs unless requested.
 
-- The root README owns the current SwarmForm plan, task matrix and claim/evidence
-  links. `rollouts/README.md` points to it; `swarmharm/README.md` owns the SwarmHarm
-  runtime guide. Preserve each study's input, budget and scoring definitions.
-- SwarmForm collection in `rollouts/` uses the FFmpeg commissioning triplet and the
-  full-information three-dimensional Navier–Stokes regularity question. Historical
-  archive migration, Manitoba, two-dimensional solver repair, Tree and scheduling
-  retain their original IDs for explicit pilot replay. Attribute results to the
-  task ID and input version recorded with each cohort.
+- The root README links the two studies. Each study owns its README and its input catalog.
+  Regenerate a catalog using `scripts/export-inputs`. Keep participant task text and operator-only labels separate.
+- SwarmForm's active software matrix has ten matched triplets. Three-dimensional periodic
+  Navier–Stokes is a separate full-information open question. Retain historical task IDs for replay.
 - SwarmHarm has six threat models, one configuration each, in Engineering and
   Knowledge Work. Communication, composition and invented-process inference are
   separately reviewed findings. Do not restore a threat-model × communication grid.

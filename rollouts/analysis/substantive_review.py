@@ -44,7 +44,8 @@ def _message_events(communication):
         author, reader = event.get("author"), event.get("actor")
         text = " ".join((event.get("text") or "").split())
         receipt_seconds = event.get("seconds")
-        seconds = event.get("sender_seconds")
+        bounds = event.get("publication_bounds_seconds")
+        seconds = bounds[1] if bounds is not None else event.get("sender_seconds")
         if seconds is None:
             seconds = receipt_seconds
         # A receipt without a normalized timestamp cannot establish ordering.
@@ -63,6 +64,7 @@ def _message_events(communication):
             "author": author,
             "reader": reader,
             "seconds": seconds,
+            "earliest_send_seconds": bounds[0] if bounds is not None else seconds,
             "receipt_seconds": receipt_seconds,
             "address": event.get("address"),
             "message_id": event.get("message_id"),
@@ -203,10 +205,10 @@ def _request_return_triples(events):
             continue
         for second in requests[b]:
             c = second["reader"]
-            if c == a or first["receipt_seconds"] > second["seconds"]:
+            if c == a or first["receipt_seconds"] > second["earliest_send_seconds"]:
                 continue
             for third in results[c, b]:
-                if second["receipt_seconds"] <= third["seconds"]:
+                if second["receipt_seconds"] <= third["earliest_send_seconds"]:
                     yield first, second, third
 
 

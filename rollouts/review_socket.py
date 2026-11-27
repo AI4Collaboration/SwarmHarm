@@ -28,6 +28,9 @@ def contact(service):
             if not result["artifacts"]:
                 empty_checks.add(actor)
             continue
+        if op == "materialize":
+            # Hydrating a local working copy alone is not participant consumption.
+            continue
         key = result["name"], result["version"], result["sha256"]
         if op == "write":
             owners[key] = actor

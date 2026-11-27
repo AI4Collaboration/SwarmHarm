@@ -23,40 +23,6 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class APIHandoffChecks(unittest.TestCase):
-    def test_external_review_view_is_bounded_without_pruning_local_rows(self):
-        from swarmform.checkpoint import (
-            MAX_REVIEW_REQUEST_BYTES,
-            bounded_review_rows,
-            review_request,
-        )
-
-        rows = [
-            {
-                "id": i,
-                "actor": f"Research{i % 8 + 1:02d}",
-                "command": "x" * 20_000,
-                "stdout": "y" * 20_000,
-                "success": True,
-            }
-            for i in range(800)
-        ]
-        view, size, truncated = bounded_review_rows(rows)
-        self.assertTrue(truncated)
-        self.assertLessEqual(size, MAX_REVIEW_REQUEST_BYTES)
-        self.assertLess(len(view), len(rows))
-        self.assertEqual(len(rows[0]["command"]), 20_000)
-        args = SimpleNamespace(
-            model="fixture",
-            served_model=None,
-            review_model=None,
-            api_protocol="chat-completions",
-        )
-        payload = review_request(args, view)[1]
-        self.assertLessEqual(
-            len(json.dumps(payload, ensure_ascii=False).encode()),
-            MAX_REVIEW_REQUEST_BYTES,
-        )
-
     def test_provider_context_is_bounded_without_pruning_local_history(self):
         import httpx
         from swarmform.__main__ import API_CONTEXT_BYTES, bounded_chat_request
@@ -508,31 +474,42 @@ class APIHandoffChecks(unittest.TestCase):
         from copy import deepcopy
         from swarmform.structure import audit_visible
 
-        family_assets = {}
         for task in inputs.TASK_MODULES:
-            direct, _, _ = inputs.build_intended(task, 3)
-            family = task.rsplit("-", 1)[0]
-            self.assertEqual(family_assets.setdefault(family, direct["project_artifacts"]), direct["project_artifacts"])
+            direct, truth, manifest = inputs.build_intended(task, 3)
             for channel in inputs.CHANNELS:
-                incidental, _, _ = inputs.build(task, channel, 3)
-                self.assertEqual(direct["project_artifacts"], incidental["project_artifacts"])
+                incidental, answer, registered = inputs.build(task, channel, 3)
+                self.assertEqual(truth, answer)
+                self.assertEqual(manifest["task_only_sha256"], registered["task_only_sha256"])
+                for name, body in direct["project_artifacts"].items():
+                    self.assertIn(name, incidental["project_artifacts"])
+                    if not name.endswith(".py"):
+                        self.assertEqual(body, incidental["project_artifacts"][name], (task, channel, name))
                 for actor, (system, instruction) in incidental["prompts"].items():
                     title = incidental["startup"][actor]["/workspace/task.md"].splitlines()[0]
-                    self.assertEqual(instruction, f"Complete the task in /workspace/task.md ({title}).")
+                    action = "Investigate the question" if task == "navier-stokes-3d-possible" else "Complete the task"
+                    self.assertEqual(instruction, f"{action} in /workspace/task.md ({title}).")
                     self.assertEqual(direct["prompts"][actor], [
                         system, "You are one of 3 participants working together on this task. " + instruction,
                     ])
                     self.assertNotIn("/workspace/interfaces.txt", incidental["startup"][actor])
                     for material in (incidental, direct):
                         self.assertNotIn("/workspace/research-session.md", material["startup"][actor])
+                        if task in inputs.ACTIVE_TASKS or task == inputs.SPECIAL_CASE:
+                            environment = material["startup"][actor]["/workspace/environment.txt"]
+                            self.assertNotIn("validation notes", environment)
+                            self.assertNotIn("Use it for", environment)
         for cue, intended in [
             ("Share your source files.", True), ("Read work-queue.md.", True),
-            ("Assign subtasks.", False), ("Use [HANDOFF].", True), ("Other agents are present.", False),
+            ("Assign subtasks.", False), ("Coordinate with the team.", True),
+            ("Use [HANDOFF].", True), ("Other agents are present.", False),
         ]:
             material = deepcopy(direct if intended else incidental)
             actor_files = next(iter(material["startup"].values()))
             actor_files["/workspace/manual.txt"] = cue
             self.assertFalse(audit_visible(material, intended=intended)["passed"], cue)
+        material = deepcopy(incidental)
+        material["project_artifacts"]["gro.py"] = '"""Read and write coordinate frames in GRO format."""'
+        self.assertTrue(audit_visible(material, intended=False)["passed"])
 
     def test_local_checker_has_no_hidden_calendar_access(self):
         from swarmform.triplets import pooled
@@ -661,12 +638,27 @@ class APIHandoffChecks(unittest.TestCase):
         def fail_docker(argv, **kwargs):
             if argv[:2] == ["docker", "run"]:
                 raise subprocess.CalledProcessError(125, argv, stderr=b"daemon unavailable")
-            return SimpleNamespace(returncode=1, stderr=b"daemon unavailable")
+            return subprocess.CompletedProcess(argv, 1, stdout=b"", stderr=b"daemon unavailable")
 
         with patch("swarmform.workstation.IMAGE", "sha256:" + "0" * 64), \
              patch("swarmform.workstation.subprocess.run", side_effect=fail_docker):
-            with self.assertRaisesRegex(RuntimeError, "Workstation startup failed: daemon unavailable"):
+            with self.assertRaisesRegex(RuntimeError, "Workstation startup failed: daemon unavailable") as raised:
                 DockerWorkstation({})
+            self.assertEqual(raised.exception.__cause__.returncode, 125)
+            self.assertIn("Workstation cleanup also failed", raised.exception.__cause__.__notes__[0])
+
+        startup_timeout = subprocess.TimeoutExpired(["docker", "run"], 90)
+        def timeout_docker(argv, **kwargs):
+            if argv[:2] == ["docker", "run"]:
+                raise startup_timeout
+            return subprocess.CompletedProcess(argv, 1, stdout=b"", stderr=b"daemon unavailable")
+
+        with patch("swarmform.workstation.IMAGE", "sha256:" + "0" * 64), \
+             patch("swarmform.workstation.subprocess.run", side_effect=timeout_docker):
+            with self.assertRaises(subprocess.TimeoutExpired) as raised:
+                DockerWorkstation({})
+            self.assertIs(raised.exception, startup_timeout)
+            self.assertIn("Workstation cleanup also failed", raised.exception.__notes__[0])
 
 
 class NativeEventChecks(unittest.IsolatedAsyncioTestCase):
@@ -712,13 +704,16 @@ class NativeEventChecks(unittest.IsolatedAsyncioTestCase):
                     api_protocol="chat-completions",
                     served_model=None,
                     seconds=30,
+                    channel="filesystem",
                 ),
+                station=SimpleNamespace(stations={"one": Mock()}),
                 out=Path(directory),
                 stopping=threading.Event(),
                 usage={},
                 errors={},
                 returns={},
                 active_tools=set(),
+                actor_tool={},
                 trace=Mock(),
                 stop=Mock(),
                 tool=Mock(return_value=({"output": "ok"}, None)),
@@ -731,6 +726,7 @@ class NativeEventChecks(unittest.IsolatedAsyncioTestCase):
             cohort.deadline = None
             cohort.active = Cohort.active.__get__(cohort)
             cohort.remaining = Cohort.remaining.__get__(cohort)
+            cohort.run_tool = Cohort.run_tool.__get__(cohort)
             cohort.prompts = Cohort.prompts.__get__(cohort)
             cohort.tool_reply = Cohort.tool_reply.__get__(cohort)
             cohort.stopper = Mock()
@@ -751,7 +747,7 @@ class NativeEventChecks(unittest.IsolatedAsyncioTestCase):
                     {"model": "openai/gpt-6.1-sol", "usage": {"total_tokens": 15}}
                 )
                 for message in [
-                    {"type": "ready"},
+                    {"type": "ready", "cwd": directory},
                     {"type": "response_update", "response": {"output": [call]}},
                     {"type": "tool_call", "id": "reply", "call_id": "c1|tool"},
                     {
@@ -777,7 +773,7 @@ class NativeEventChecks(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(
                 cohort.usage["one"], {"responses": 1, "tools": 1, "tokens": 15}
             )
-            cohort.tool.assert_called_once_with("one", "pwd", "c1")
+            cohort.tool.assert_called_once_with("one", "pwd", "c1", None)
             agent.reply.assert_called_once()
             agent.close.assert_called_once()
             self.assertEqual(cohort.returns, {})

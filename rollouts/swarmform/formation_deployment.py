@@ -13,10 +13,12 @@ from atomic import atomic_json
 from swarmform.memory_capture import capture_memory
 from swarmform.file_deployment import FileDeployment, install_project_files
 from swarmform.socket_deployment import SocketDeployment, command
-from swarmform.workstation import IMAGE
+from swarmform.workstation import IMAGE, remove_workstation
 
 
 class WorkMemory(FileDeployment):
+    pipeline_mapped_archives = True
+
     def __init__(self, startup, *, shared, observation_archive, **kwargs):
         self.memory_archive = Path(observation_archive) / "_memory"
         self.archive_root = Path(observation_archive).parent
@@ -41,7 +43,7 @@ class WorkMemory(FileDeployment):
                         "org.swarmform.owner-pid=" + str(os.getpid()),
                         "--network=none",
                         "--ipc=shareable",
-                        "--shm-size=128m",
+                        f"--shm-size={32 * max(4, len(startup))}m",
                         "--read-only",
                         "--user",
                         "65534:65534",
@@ -74,6 +76,7 @@ class WorkMemory(FileDeployment):
             rows_by_name = ({r["Name"].lstrip("/"): r for r in json.loads(command(["docker", "inspect", *names]).stdout)}
                             if names else {})
             for actor, station in self.stations.items():
+                station.pipeline_mapped_archives = True
                 row = rows_by_name[station.name]
                 self.bindings[actor].update(
                     channel_family="mapped_memory",
@@ -88,11 +91,7 @@ class WorkMemory(FileDeployment):
 
     def _remove_anchor(self):
         if self.anchor:
-            result = subprocess.run(
-                ["docker", "rm", "-f", self.anchor], capture_output=True, timeout=30
-            )
-            if result.returncode and b"No such container" not in result.stderr:
-                raise RuntimeError("Memory namespace cleanup failed")
+            remove_workstation(self.anchor)
             self.anchor = None
 
     def close(self):

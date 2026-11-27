@@ -19,7 +19,7 @@ from guardrails import resolve_api_base
 from process_control import run_process
 
 from swarmform.__main__ import CHANNELS, ROOT, request_limit, resolve_harness, source_digest, write_json
-from swarmform.formation_inputs import TASK_MODULES
+from swarmform.formation_inputs import add_task_selection
 from swarmform import checkpoint
 
 
@@ -42,8 +42,20 @@ def sealed_summary(directory):
         return None
 
 
+def finalized_summary(directory):
+    try:
+        summary = json.loads((directory / "summary.json").read_bytes())
+    except (OSError, ValueError):
+        return None
+    if isinstance(summary, dict) and summary.get("schema") == "swarmform-completion-v1":
+        if type(summary.get("complete")) is bool and type(summary.get("physical_stop_verified")) is bool:
+            return summary
+        return None
+    return sealed_summary(directory)
+
+
 def completed_evidence(directory):
-    summary = sealed_summary(directory)
+    summary = finalized_summary(directory)
     return bool(summary and summary.get("complete") and summary.get("physical_stop_verified"))
 
 
@@ -51,6 +63,12 @@ def resume_details(summary):
     if not summary or summary.get("complete") or not summary.get("physical_stop_verified"):
         return {}
     reason = summary.get("reason")
+    # Older Codex cohorts recorded the native quota rejection as a participant error.
+    if reason == "participant_error" and any(
+        "Codex error: usageLimitExceeded (native/" in str(error)
+        for error in summary.get("errors", {}).values()
+    ):
+        reason = "provider_rejected"
     if reason not in ("operator_interrupt", "provider_unavailable", "provider_rejected"):
         return {}
     if set(summary.get("errors", {})) - set(summary.get("usage", {})):
@@ -127,7 +145,7 @@ def cases(args):
                            if getattr(args, "harness", "chat-completions") == "chat-completions" else {}),
                         thinking_level=getattr(args, "thinking_level", None),
                         **({"service_tier": args.service_tier} if getattr(args, "service_tier", None) else {}),
-                        **checkpoint.registration(args),
+                        **checkpoint.cohort_registration(args),
                         entry_window_seconds=getattr(args, "entry_window_seconds", 0),
                         **({"closed_mail_receipts": True} if getattr(args, "closed_mail_receipts", False) and channel == "direct" else {}),
                         **({"enforce_personal_limits": True} if getattr(args, "enforce_personal_limits", False) else {}),
@@ -175,9 +193,7 @@ def main():
     parser.add_argument(
         "--key-file", type=Path, default=os.environ.get("OPENAI_API_KEY_FILE")
     )
-    parser.add_argument(
-        "--tasks", nargs="+", choices=TASK_MODULES, default=list(defaults.TASKS)
-    )
+    add_task_selection(parser, list(defaults.TASKS))
     parser.add_argument("--channels", nargs="+", choices=CHANNELS, default=list(CHANNELS),
                         help="Limit collection to these communication conditions")
     parser.add_argument("--entry-window-seconds", type=int, default=0,
@@ -186,7 +202,7 @@ def main():
     parser.add_argument("--closed-mail-receipts", action="store_true",
                         help="Mark directed sends to a permanently closed direct-mail session")
     parser.add_argument("--cohort-seconds", type=int, default=None)
-    parser.add_argument("--review-interval-seconds", type=int, default=None)
+    parser.add_argument("--review-interval-seconds", type=int, default=None, help=argparse.SUPPRESS)
     parser.add_argument("--enforce-personal-limits", action="store_true")
     parser.add_argument("--max-responses", type=int, default=None)
     parser.add_argument("--max-tools", type=int, default=None)
@@ -195,7 +211,7 @@ def main():
                         help="Native reasoning effort; opt in for compatible Chat Completions endpoints")
     parser.add_argument("--service-tier", choices=("priority", "ultrafast"),
                         help="Request this tier only on an endpoint that supports it")
-    parser.add_argument("--review-model", default=None)
+    parser.add_argument("--review-model", default=None, help=argparse.SUPPRESS)
     parser.add_argument("--seconds", type=int, default=600, help="Per-request transport timeout")
     parser.add_argument("--repeats", type=int, default=defaults.REPEATS)
     parser.add_argument(
@@ -285,7 +301,7 @@ def execute_rows(args, rows, parser):
             log = directory.with_name(directory.name + ".log")
             archive_index = directory.with_name(directory.name + ".archive.json")
             if directory.exists():
-                summary = sealed_summary(directory)
+                summary = finalized_summary(directory)
                 complete = summary and summary.get("complete") and summary.get("physical_stop_verified")
                 record.update(status="complete" if complete else "incomplete", **resume_details(summary))
             elif archive_index.exists():
@@ -305,12 +321,10 @@ def execute_rows(args, rows, parser):
                 directory.parent.mkdir(parents=True, exist_ok=True)
                 with log.open("x") as stream:
                     code, interrupted = run_process(command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT)
-                record.update(status="complete" if code == 0 and not interrupted else "incomplete",
-                              returncode=code, log=str(log))
-                if directory.exists():
-                    record["raw_bytes"] = sum(p.stat().st_size for p in directory.rglob("*") if p.is_file())
-                if record["status"] == "incomplete":
-                    record.update(resume_details(sealed_summary(directory)))
+                summary = finalized_summary(directory)
+                complete = summary and summary["complete"] and summary.get("physical_stop_verified")
+                record.update(status="complete" if complete else "incomplete", returncode=code, log=str(log))
+                record.update(resume_details(summary))
                 if record.get("retry_reason") in ("operator_interrupt", "provider_rejected"):
                     break
             if interrupted or not record.get("retry_reason") or new_attempts >= 2:
@@ -326,10 +340,6 @@ def execute_rows(args, rows, parser):
 
 
 def cohort_command(args, row, directory):
-    if source_digest() != row["source_sha256"]:
-        raise RuntimeError(
-            "Source changed during the batch; use a fresh output root"
-        )
     command = [
         sys.executable,
         "-m",
@@ -366,8 +376,6 @@ def cohort_command(args, row, directory):
         command.append("--closed-mail-receipts")
     if args.cohort_seconds:
         command.extend(["--cohort-seconds", str(args.cohort_seconds)])
-    if args.review_interval_seconds:
-        command.extend(["--review-interval-seconds", str(args.review_interval_seconds)])
     if row.get("enforce_personal_limits"):
         command.append("--enforce-personal-limits")
     for flag, key in (("--max-responses", "max_responses"), ("--max-tools", "max_tools"), ("--max-tokens", "max_tokens")):
@@ -377,8 +385,6 @@ def cohort_command(args, row, directory):
         command.extend(["--thinking-level", args.thinking_level])
     if row.get("service_tier"):
         command.extend(["--service-tier", row["service_tier"]])
-    if getattr(args, "review_model", None):
-        command.extend(["--review-model", args.review_model])
     if args.revision:
         command.extend(["--revision", args.revision])
     if args.key_file:

@@ -29,10 +29,12 @@ def booking_time(index):
     return f"{17 + index // 2:02d}:{30 * (index % 2):02d}"
 
 
-def traffic_docket():
+def traffic_docket(*, reserve_masters=False):
     rows = ["reel,air_time_utc,airing_status,source_locator,edition_locator,master_locator"]
     for index, (title, *_) in enumerate(SPECS):
-        rows.append(f"{reel_id(title)},{booking_time(index)},booked,,,")
+        reel, airtime = reel_id(title), booking_time(index)
+        master = f"{reel}-{airtime.replace(':', '')}-master.y4m" if reserve_masters else ""
+        rows.append(f"{reel},{airtime},booked,,,{master}")
     return {"traffic-docket.csv": "\n".join(rows) + "\n"}
 
 

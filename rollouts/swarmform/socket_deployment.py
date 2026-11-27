@@ -65,11 +65,16 @@ class SocketDeployment(FileDeployment):
     service_url = "http://projects:8080"
     service_alias = "projects"
 
-    def service_files(self, accounts):
+    def service_files(self, accounts, startup):
+        # Install the trusted server implementation matching the registered participant client.
+        revision_client = (Path(__file__).parent / "manuscript_store.py").read_text()
+        checked_revisions = all(files.get("/workspace/projects.py") == revision_client for files in startup.values())
+        store = revision_client if checked_revisions else Path(__file__).with_name("formation_store.py").read_text()
+        managed_client = all("/workspace/socket_worktree.py" in files for files in startup.values())
+        if managed_client:
+            store += "\n" + Path(__file__).with_name("socket_worktree_store.py").read_text()
         return {
-            "/workspace/formation_store.py": Path(__file__)
-            .with_name("formation_store.py")
-            .read_text(),
+            "/workspace/formation_store.py": store,
             "/workspace/formation_service.py": Path(__file__)
             .with_name("formation_service.py")
             .read_text(),
@@ -89,6 +94,7 @@ class SocketDeployment(FileDeployment):
         self.resources = ExitStack()
         self._res_lock = threading.Lock()
         self.closed = False
+        self.retirement_error = None
         self.stations = {}
         self.volumes = {}
         self.locks = {a: threading.RLock() for a in startup}
@@ -121,7 +127,7 @@ class SocketDeployment(FileDeployment):
             else:
                 created_nets = [_make_net(p) for p in net_items]
             self.networks = dict(created_nets)
-            initial = self.service_files(accounts)
+            initial = self.service_files(accounts, startup)
             if project_artifacts:
                 from swarmform.formation_store import apply
                 state = {"objects": {}}
@@ -138,13 +144,14 @@ class SocketDeployment(FileDeployment):
                 {p: base64.b64encode(t.encode()).decode() for p, t in initial.items()},
                 archive=Path(observation_archive) / "_service",
                 named_volumes=((self.service_volume, "/workspace"),),
+                fresh_project_root="/workspace",
                 network=first,
                 process_lifecycle="continuous",
                 environment=WORKSTATION_ENVIRONMENT,
                 registry_enabled=False,
             )
             # Added before the station callbacks: their removal happens first.
-            self.resources.callback(self._close_service)
+            self.resources.callback(self.service.retire)
             command(["docker", "network", "disconnect", first, self.service.name])
             for network in self.networks.values():
                 command(
@@ -190,6 +197,7 @@ class SocketDeployment(FileDeployment):
                     observation_settle_seconds=10,
                     observation_sink=sink,
                     named_volumes=((volume, "/var/tmp/exports"),),
+                    fresh_project_root="/var/tmp/exports",
                     registry_enabled=False,
                     **extra,
                 )
@@ -306,8 +314,11 @@ class SocketDeployment(FileDeployment):
                     raise RuntimeError(
                         "Socket workstations unexpectedly share " + namespace
                     )
-        except BaseException:
-            self.close()
+        except BaseException as error:
+            try:
+                self.close()
+            except Exception as cleanup_error:
+                error.add_note(f"Socket cleanup also failed: {cleanup_error}")
             raise
 
     def _retained_service(self):
@@ -330,7 +341,7 @@ class SocketDeployment(FileDeployment):
             return
         FileDeployment._remove_volume(self, name)
 
-    def _close_service(self):
+    def _drain_service(self):
         if getattr(self, "service", None) is None:
             return
         if not self.service.closed and self.service.initialized:
@@ -360,11 +371,18 @@ class SocketDeployment(FileDeployment):
                     raise RuntimeError("Socket request handlers did not close")
                 time.sleep(0.05)
             self.terminal_service = self.service.observe()
-        self.service.close()
+            self.service.capture_terminal()
 
     def close(self):
         if not self.closed:
+            if getattr(self, "retirement_error", None) is not None:
+                raise self.retirement_error
             self.capture_terminal()
-            self._close_service()
-            self.resources.close()
+            self._drain_service()
+            try:
+                self.resources.close()
+            except BaseException as error:
+                # ExitStack consumed the callbacks even when retirement failed.
+                self.retirement_error = error
+                raise
             self.closed = True

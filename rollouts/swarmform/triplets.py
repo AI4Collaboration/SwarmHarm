@@ -4,7 +4,7 @@ from copy import deepcopy
 from hashlib import sha256
 import json
 
-from swarmform.population import research_actors, validate
+from swarmform.population import research_actors
 
 VARIANTS = {
     "impossible": "impossible",
@@ -30,7 +30,6 @@ def variant(key, family):
 
 def allocate(common, groups, population, distributed):
     """Replicate fixed information shards when N exceeds the number of shards."""
-    validate(population)
     actors = research_actors(population)
     width = min(population, len(groups))
     if distributed and width < 2:

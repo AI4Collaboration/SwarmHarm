@@ -117,7 +117,7 @@ class APICollectChecks(unittest.TestCase):
                     key_file=key_file,
                     out=out,
                 )
-                with patch.object(checkpoint, "INTERVAL_SECONDS", 5), patch.object(checkpoint, "COHORT_SECONDS", 25):
+                with patch.object(checkpoint, "COHORT_SECONDS", 25):
                     self.assertEqual(asyncio.run(collect(args)), 0)
                 summary = json.loads((out / "summary.json").read_text())
                 self.assertEqual(
@@ -132,8 +132,7 @@ class APICollectChecks(unittest.TestCase):
                 self.assertTrue(summary["physical_stop_verified"])
                 self.assertEqual(summary["reason"], "cohort_deadline")
                 self.assertEqual(summary["research_seconds"], 25)
-                self.assertEqual(set(summary["structure_reviews"]), {"5", "10", "15", "20", "25"})
-                self.assertEqual(summary["structure_reviews"]["25"], "no_match")
+                self.assertEqual(summary["structure_reviews"], {})
                 self.assertGreater(len(observed), 8)
                 self.assertLessEqual(
                     max(len(json.dumps(request).encode()) for _, request in observed),
@@ -172,11 +171,8 @@ class APICollectChecks(unittest.TestCase):
                             self.assertEqual(events[i-1]["body"], events[i+1]["body"])
                             self.assertEqual(events[i+1]["attempt"], 2)
                 self.assertEqual([event["status"] for event in retries], [429])
-                manifest = json.loads((out / "evidence-manifest.json").read_text())
-                for name, expected in manifest.items():
-                    self.assertEqual(
-                        hashlib.sha256((out / name).read_bytes()).hexdigest(), expected
-                    )
+                self.assertEqual(summary["schema"], "swarmform-completion-v1")
+                self.assertTrue((out / "physical-stop.json").is_file())
 
                 async def escaped_failure(self, actor):
                     raise OSError("uncaught participant exit")
@@ -274,6 +270,12 @@ class APICollectChecks(unittest.TestCase):
                         command, cwd=root, stdout=log, stderr=log
                     )
                     try:
+                        # Provisioning precedes participant activation and can take longer on a busy Docker host.
+                        setup_deadline = time.monotonic() + 300
+                        while not any(out.glob("**/activation.json")):
+                            if process.poll() is not None or time.monotonic() >= setup_deadline:
+                                self.fail("Collector exited or timed out before cohort activation")
+                            time.sleep(0.05)
                         deadline = time.monotonic() + 45
                         active = False
                         while time.monotonic() < deadline and process.poll() is None:
@@ -305,11 +307,8 @@ class APICollectChecks(unittest.TestCase):
                 self.assertFalse(summary["complete"])
                 self.assertEqual(summary["reason"], "operator_interrupt")
                 self.assertTrue(summary["physical_stop_verified"])
-                manifest = json.loads((run / "evidence-manifest.json").read_text())
-                for name, expected in manifest.items():
-                    self.assertEqual(
-                        hashlib.sha256((run / name).read_bytes()).hexdigest(), expected
-                    )
+                self.assertEqual(summary["schema"], "swarmform-completion-v1")
+                self.assertTrue((run / "physical-stop.json").is_file())
                 events = []
                 for path in run.glob("Research*.jsonl.gz"):
                     with gzip.open(path, "rt") as stream:

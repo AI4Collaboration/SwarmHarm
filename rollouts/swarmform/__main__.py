@@ -11,7 +11,6 @@ import json
 import os
 from pathlib import Path
 import resource
-import shutil
 import signal
 import sys
 import subprocess
@@ -20,7 +19,7 @@ import time
 from urllib.parse import urlsplit
 
 from . import formation_inputs as inputs
-from . import checkpoint
+from . import checkpoint, tool_archive
 from .provider_retry import ATTEMPTS, ProviderUnavailable, provider_rejected, retry_request
 from .formation_common import CommonWorkspace
 from .formation_deployment import deployment
@@ -134,7 +133,7 @@ def arguments():
     run.add_argument("--cohort-seconds", type=int, default=None,
                      help="Override total cohort horizon in seconds (default 1800)")
     run.add_argument("--review-interval-seconds", type=int, default=None,
-                     help="Override structure-review interval in seconds (default 300)")
+                     help=argparse.SUPPRESS)
     run.add_argument("--enforce-personal-limits", action="store_true",
                      help="Retire an individual participant when its personal allowance reaches zero")
     run.add_argument("--max-responses", type=int, default=None)
@@ -143,7 +142,7 @@ def arguments():
     run.add_argument("--max-tokens", type=int, default=None)
     run.add_argument("--thinking-level", choices=("low", "medium", "high"))
     run.add_argument("--service-tier", choices=("priority", "ultrafast"))
-    run.add_argument("--review-model", default=None)
+    run.add_argument("--review-model", default=None, help=argparse.SUPPRESS)
     run.add_argument("--task", choices=inputs.TASK_MODULES, required=True)
     run.add_argument("--channel", choices=CHANNELS, required=True)
     run.add_argument("--out", type=Path, required=True)
@@ -190,6 +189,7 @@ def source_files():
         [
             *ROOT.glob("*.py"),
             *ROOT.glob("swarmform/*.py"),
+            *ROOT.glob("swarmform/*.mk"),
             *sorted((ROOT.parent / "shared").glob("*.py")),
             *[
                 p
@@ -207,20 +207,21 @@ def source_files():
     )
 
 
-def source_digest(base=None):
+def source_digest(base=None, *, copy_to=None):
     digest = hashlib.sha256()
     for path in source_files():
         relative = path.relative_to(ROOT.parent)
+        data = (Path(base) / relative if base else path).read_bytes()
+        if copy_to is not None:
+            target = copy_to / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(data)
         digest.update(relative.as_posix().encode() + b"\0")
-        digest.update(
-            hashlib.sha256(
-                (Path(base) / relative if base else path).read_bytes()
-            ).digest()
-        )
+        digest.update(hashlib.sha256(data).digest())
     return digest.hexdigest()
 
 
-def runtime_info(image):
+def runtime_info(image, station_name):
     def docker_output(command):
         try:
             return subprocess.check_output(command, text=True, timeout=30)
@@ -228,6 +229,14 @@ def runtime_info(image):
             return subprocess.check_output(command, text=True, timeout=90)
 
     details = json.loads(docker_output(["docker", "image", "inspect", image]))[0]
+    station = json.loads(docker_output(["docker", "container", "inspect", station_name]))[0]
+    if station["Image"] != details["Id"] or not station["HostConfig"]["ReadonlyRootfs"]:
+        raise ValueError("Package probe requires the registered image and a read-only station root")
+    protected = (Path("/usr/bin/dpkg-query"), Path("/var/lib/dpkg"))
+    for mount in station["Mounts"]:
+        target = Path(mount["Destination"])
+        if any(target == path or target in path.parents or path in target.parents for path in protected):
+            raise ValueError("A station mount shadows the image package query or its database")
     host = json.loads(
         docker_output(
             [
@@ -238,27 +247,18 @@ def runtime_info(image):
             ],
         )
     )
-    packages = docker_output(
-        [
-            "docker",
-            "run",
-            "--rm",
-            "--pull=never",
-            "--network=none",
-            details["Id"],
-            "dpkg-query",
-            "-W",
-            "curl",
-            "procps",
-            "ripgrep",
-            "strace",
-        ],
-    )
+    names = ("curl", "procps", "ripgrep", "strace")
+    output = docker_output(["docker", "exec", "--user", "65534:65534", station["Id"],
+                            "/usr/bin/dpkg-query", "--admindir=/var/lib/dpkg", "-W", *names])
+    rows = [line.split("\t") for line in output.splitlines()]
+    if (len(rows) != len(names) or any(len(row) != 2 or not row[1].strip() for row in rows)
+            or {row[0] for row in rows} != set(names)):
+        raise ValueError("The station package query did not return all requested versions")
     return {
         "image_id": details["Id"],
         "architecture": details["Architecture"],
         "host": host,
-        "packages": dict(line.split("\t", 1) for line in packages.splitlines()),
+        "packages": dict(rows),
     }
 
 
@@ -300,7 +300,6 @@ class Cohort:
         window = getattr(args, "entry_window_seconds", 0)
         self.entry_offsets = {actor: index * window / max(1, len(actors) - 1)
                               for index, actor in enumerate(actors)}
-        self.review = checkpoint.Review()
         self.interrupted = False
         self.last = {}
         self.window_open = None
@@ -315,6 +314,8 @@ class Cohort:
         self.errors = {}
         self.pending_provider_errors = {}
         self.active_tools = set()
+        self.actor_tool = {}
+        self.command_archives = {actor: {} for actor in actors}
         self.snapshot_count = 0
         self.targets = {
             "responses": getattr(args, "max_responses", None) or PERSONAL_TARGETS["responses"],
@@ -432,16 +433,25 @@ class Cohort:
             self.stopping.set()
 
     def trace(self, actor, kind, **fields):
-        with self.lock:
-            at = time.monotonic() - self.start
-            self.review.record(actor, kind, at, fields)
+        at = time.monotonic() - self.start
         t_locks = getattr(self, "_trace_locks", None)
         t_lock = t_locks[actor] if t_locks and actor in t_locks else self.lock
         with t_lock:
             emit(self.out / (actor + ".jsonl.gz"), {"kind": kind, "s": at, **fields})
         return at
 
-    def tool(self, actor, cmd, call_id):
+    def tool(self, actor, cmd, call_id, notify=None):
+        published = False
+
+        def publish(result, observation, path, started):
+            nonlocal published
+            self.command_archives[actor][str(path)] = None
+            self.trace(actor, tool_archive.PENDING, call_id=call_id, result=result,
+                       observation=observation, expected_receipt=str(path), started_traces=started)
+            published = True
+            notify(result)
+
+        token = tool_archive.on_result.set(publish if notify else None)
         with command_binding(actor=actor, call_id=call_id):
             try:
                 if "\x00" in cmd:
@@ -449,22 +459,56 @@ class Cohort:
                     snapshot = {}
                 else:
                     result, snapshot = self.station.execute(actor, cmd)
-                self.trace(
-                    actor,
-                    "tool_result",
-                    call_id=call_id,
-                    result=result,
-                    observation=snapshot.get("observation_reference"),
-                    command_observation=snapshot.get("command_observation"),
-                    timing=snapshot.get("workstation_service_timing"),
-                )
+                if published:
+                    ref = snapshot["command_observation"]
+                    self.command_archives[actor][ref["path"]] = (ref["sha256"], snapshot.get("workstation_service_timing"))
+                else:
+                    self.trace(actor, "tool_result", call_id=call_id, result=result,
+                               observation=snapshot.get("observation_reference"),
+                               command_observation=snapshot.get("command_observation"),
+                               timing=snapshot.get("workstation_service_timing"))
                 return result, snapshot
             except Exception as error:
                 self.trace(actor, "tool_error", call_id=call_id, error=str(error))
                 raise
+            finally:
+                tool_archive.on_result.reset(token)
+
+    async def run_tool(self, actor, command, call_id):
+        early_result = self.args.channel in ("mapped_memory", "socket")
+        # Keep a second command out of the workstation until its predecessor's
+        # evidence is safe. The provider can read the result and think meanwhile.
+        prior = self.actor_tool.get(actor)
+        if early_result and prior and not getattr(self.station, "pipeline_mapped_archives", False):
+            await asyncio.shield(prior)
+            if not self.active():
+                raise asyncio.CancelledError
+        loop = asyncio.get_running_loop()
+        ready = loop.create_future()
+
+        def deliver(result):
+            if not ready.done():
+                ready.set_result(result)
+
+        notify = (lambda result: loop.call_soon_threadsafe(deliver, result)) if early_result else None
+        task = asyncio.create_task(asyncio.to_thread(self.tool, actor, command, call_id, notify))
+        self.active_tools.add(task)
+        if early_result:
+            self.actor_tool[actor] = task
+        task.add_done_callback(lambda done: self.tool_completed(done, actor, call_id))
+        try:
+            if early_result:
+                done, _ = await asyncio.wait((task, ready), return_when=asyncio.FIRST_COMPLETED)
+                if task not in done:
+                    return ready.result()
+            return (await asyncio.shield(task))[0]
+        finally:
+            ready.cancel()
 
     def tool_completed(self, task, actor, call_id):
         self.active_tools.discard(task)
+        if self.actor_tool.get(actor) is task:
+            del self.actor_tool[actor]
         if not task.cancelled() and (error := task.exception()) is not None:
             self.errors[f"tool_{actor}_{call_id}"] = repr(error)
             self.stop("tool_error")
@@ -538,9 +582,6 @@ class Cohort:
                     data, decision = await retry_request(lambda attempt: send(attempt, fallback=fallback),
                                                          record_failure)
                 self.pending_provider_errors.pop(actor, None)
-                with self.lock:
-                    for call_id, stdout in checkpoint.delivered_outputs(messages):
-                        self.review.receipt(actor, call_id, decision, stdout)
                 self.trace(actor, "response", body=data, request_s=decision)
                 choice = data["choices"][0]
                 msg = choice["message"]
@@ -592,16 +633,9 @@ class Cohort:
                         self.trace(
                             actor, "tool_start", call_id=call["id"], command=command, decision_s=decision
                         )
-                        task = asyncio.create_task(
-                            asyncio.to_thread(self.tool, actor, command, call["id"])
-                        )
-                        self.active_tools.add(task)
-                        task.add_done_callback(
-                            lambda completed, actor=actor, call_id=call["id"]: (
-                                self.tool_completed(completed, actor, call_id)
-                            )
-                        )
-                        result, snapshot = await asyncio.shield(task)
+                        result = await self.run_tool(actor, command, call["id"])
+                        if not self.active():
+                            return
                     messages.append(
                         {
                             "role": "tool",
@@ -651,21 +685,18 @@ class Cohort:
             "freeform": self.manifest["task_metadata"].get("freeform", False),
         }
         reg["closed_mail_receipts"] = bool(getattr(args, "closed_mail_receipts", False) and args.channel == "direct")
-        from swarmform.workstation import IMAGE
+        from swarmform.workstation import HostCleanupError, IMAGE
         import platform
         import httpx
         from .inputs import digest
 
         starts = self.entry_offsets
-        registered_source = source_digest()
+        registered_source = source_digest(copy_to=self.out / "code")
         expected = getattr(args, "expected_source_sha256", None)
         if expected is not None and expected != registered_source:
             raise RuntimeError(
                 "Source differs from the batch plan; no participants started"
             )
-        write_json(
-            self.out / "runtime.json", await asyncio.to_thread(runtime_info, IMAGE)
-        )
         write_json(
             self.out / "registration.json",
             {
@@ -688,7 +719,7 @@ class Cohort:
                 "thinking_level": getattr(args, "thinking_level", None),
                 "service_tier": getattr(args, "service_tier", None),
                 "observation_policy": "post_tool_and_terminal_v1",
-                "review_request_attempts": ATTEMPTS,
+                "review_request_attempts": 0,
                 **({"participant_request_attempts": ATTEMPTS, "max_inflight_requests": request_limit(args.population)}
                    if getattr(args, "harness", "chat-completions") == "chat-completions" else {}),
                 "source_sha256": registered_source,
@@ -705,22 +736,11 @@ class Cohort:
                 "budget_mode": "enforced" if self.enforce_limits else "advisory",
                 "personal_budget_targets": self.actor_targets or self.targets,
                 "per_actor_limits": (self.actor_targets or self.targets) if self.enforce_limits else None,
-                **checkpoint.registration(args),
+                **checkpoint.cohort_registration(args),
             },
         )
         write_json(self.out / "inputs.json", self.visible)
         write_json(self.out / "truth.json", self.truth)
-        for path in source_files():
-            target = self.out / "code" / path.relative_to(ROOT.parent)
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(path, target)
-        registered = json.loads((self.out / "registration.json").read_text())
-        if source_digest(self.out / "code") != registered["source_sha256"]:
-            raise RuntimeError(
-                "Source changed during preparation; no participants started"
-            )
-        if self.manifest["task_metadata"].get("freeform"):
-            write_json(self.out / "feasibility.json", inputs.witness(self.visible, self.truth, self.manifest))
         constructor = CommonWorkspace if args.channel == "direct" else deployment
         self.station = await asyncio.to_thread(
             constructor,
@@ -732,7 +752,6 @@ class Cohort:
         self.stopper = stopper = ParticipantStop(self.station)
         workers = []
         watch = None
-        reviewer = None
         horizon = 0
         receipt = {"research_stop_verified": False}
         try:
@@ -758,6 +777,8 @@ class Cohort:
             )
             arm_receipt = await asyncio.to_thread(stopper.arm)
             write_json(self.out / "stop-armed.json", arm_receipt)
+            station_name = next(iter(self.station.stations.values())).name
+            write_json(self.out / "runtime.json", await asyncio.to_thread(runtime_info, IMAGE, station_name))
             cohort_s = getattr(args, "cohort_seconds", None) or checkpoint.COHORT_SECONDS
             self.start = time.monotonic()
             self.deadline = self.start + cohort_s
@@ -771,27 +792,21 @@ class Cohort:
                 for actor, offset in starts.items()
             ]
             group = asyncio.gather(*workers, return_exceptions=True)
-            reviewer = asyncio.create_task(self.review.monitor(self))
             watch = asyncio.create_task(self.stopping.wait())
             done, _ = await asyncio.wait(
-                [group, watch, reviewer],
+                [group, watch],
                 timeout=max(0, self.deadline - time.monotonic()),
                 return_when=asyncio.FIRST_COMPLETED,
             )
-            if reviewer in done and reviewer.exception() is not None:
-                self.errors["review_monitor"] = repr(reviewer.exception())
-                self.stop("review_monitor_error")
             if not done or time.monotonic() >= self.deadline:
                 self.stop("cohort_deadline")
-            if self.reason in ("cohort_deadline", "observed_structure"):
+            if self.reason == "cohort_deadline":
                 for actor in self.usage:
                     self.returns.setdefault(actor, self.reason)
             horizon = min(time.monotonic(), self.deadline) - self.start
         finally:
             self.window_open = False
             self.stopping.set()
-            if reviewer:
-                reviewer.cancel()
             if watch:
                 watch.cancel()
             for worker in workers:
@@ -806,8 +821,6 @@ class Cohort:
             results = await asyncio.gather(*workers, return_exceptions=True)
             for actor in self.returns:
                 self.trace(actor, "participant_finished", reason=self.reason, usage=dict(self.usage[actor]))
-            if reviewer:
-                await asyncio.gather(reviewer, return_exceptions=True)
             for actor, result in zip(self.visible["startup"], results):
                 if isinstance(result, BaseException) and not isinstance(
                     result, asyncio.CancelledError
@@ -823,11 +836,17 @@ class Cohort:
                     self.errors[f"tool_{index}"] = str(result)
             try:
                 if receipt["research_stop_verified"]:
+                    if args.channel in ("mapped_memory", "socket"):
+                        for actor, joins in self.command_archives.items():
+                            if joins:
+                                await asyncio.to_thread(tool_archive.finish, self.out / (actor + ".jsonl.gz"), joins)
                     await asyncio.to_thread(self.station.close)
                 else:
                     self.errors["shutdown"] = (
                         "Participant stop unverified; original resources retained"
                     )
+            except HostCleanupError as error:
+                self.errors["host_cleanup"] = repr(error)
             except Exception as error:
                 self.errors["capture"] = repr(error)
             if self.errors:
@@ -839,9 +858,6 @@ class Cohort:
                         "instructions": "Keep these Docker resources until all terminal observations are exported.",
                     },
                 )
-        if self.reason in ("cohort_deadline", "all_finished"):
-            cohort_s = getattr(args, "cohort_seconds", None) or checkpoint.COHORT_SECONDS
-            await self.review.check(self, cohort_s, terminal=True)
         if getattr(self.station, "terminal_service", None):
             write_json(self.out / "service.json", self.station.terminal_service)
         from swarmform.artifact_blobs import content_bytes
@@ -885,7 +901,7 @@ class Cohort:
                 folder = self.out / "native" / actor
                 if not all((folder / name).is_file() for name in ("thread.json", "session.jsonl", "export-status.json")):
                     self.errors["export_" + actor] = "Missing native session or final thread export"
-                    if self.reason in ("cohort_deadline", "all_finished", "observed_structure"):
+                    if self.reason in ("cohort_deadline", "all_finished"):
                         self.reason = "participant_cleanup_error"
         passed = (
             bool(receipt["research_stop_verified"])
@@ -898,12 +914,11 @@ class Cohort:
             "research_seconds": horizon,
             "usage": self.usage,
             "finished": self.returns,
-            "structure_reviews": self.review.results,
+            "structure_reviews": {},
             "pending_provider_errors": self.pending_provider_errors,
             "errors": self.errors,
             "physical_stop_verified": receipt["research_stop_verified"],
         }
-        write_json(self.out / "summary.json", summary)
         return summary
 
 
@@ -935,7 +950,7 @@ def validate_endpoint(url):
 
 @contextmanager
 def stopping_signals(cohort):
-    """Stop participants and seal evidence before a CLI interrupt returns."""
+    """Stop participants and finalize the summary before a CLI interrupt returns."""
     loop = asyncio.get_running_loop()
     previous = {}
 
@@ -1029,14 +1044,16 @@ async def collect(args):
                 summary = {
                     "complete": False,
                     "reason": "collection_error",
-                    "errors": {"collector": f"{type(error).__name__}: {error}"},
+                    "errors": {"collector": "\n".join(
+                        [f"{type(error).__name__}: {error}", *getattr(error, "__notes__", ())]
+                    )},
                     "physical_stop_verified": bool(
                         stop.exists()
                         and json.loads(stop.read_text()).get("research_stop_verified")
                     ),
                 }
-                write_json(out / "summary.json", summary)
-            seal_evidence(out)
+    summary["schema"] = "swarmform-completion-v1"
+    write_json(out / "summary.json", summary)
     print(json.dumps(summary, indent=2))
     return 0 if summary["complete"] else 1
 

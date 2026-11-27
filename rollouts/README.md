@@ -1,3 +1,3 @@
-# SwarmForm API handoff
+# SwarmForm runner
 
-The [main README](../README.md#swarmform) lists the current main tasks, registered runner defaults, communication conditions and collection commands.
+[Current inputs and tasks](../swarmform/README.md) · [Exact task text and opening hashes](../swarmform/inputs.json) · [Runner](run_matrix.py)

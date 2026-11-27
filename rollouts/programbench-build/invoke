@@ -8,4 +8,16 @@ loader="$root/lib64/ld-linux-x86-64.so.2"
 if [ "$(uname -m)" = x86_64 ] || "$loader" --version >/dev/null 2>&1; then
     exec "$loader" --library-path "$root/lib/x86_64-linux-gnu" "$binary" "$@"
 fi
+if [ "$program" = tstack__lnav.ee34494 ]; then
+    # /tmp is private to this workstation. An inherited lock expires on exit.
+    slots=/tmp/programbench-lnav
+    mkdir -p "$slots/0" "$slots/1" "$slots/2" "$slots/3"
+    for slot in 0 1 2 3; do
+        exec 9<"$slots/$slot"
+        if flock -n 9; then
+            exec qemu-x86_64 -L "$root" "$binary" "$@"
+        fi
+    done
+    exec flock --no-fork "$slots/$(($$ % 4))" qemu-x86_64 -L "$root" "$binary" "$@"
+fi
 exec qemu-x86_64 -L "$root" "$binary" "$@"

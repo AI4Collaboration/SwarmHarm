@@ -8,7 +8,6 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "shared"))
 import model_session
-from .checkpoint import output_text
 
 
 async def participate(cohort, actor):
@@ -62,22 +61,18 @@ async def participate(cohort, actor):
                 return
             kind = message["type"]
             event_time = cohort.trace(actor, "native_event", event=message)
+            if kind == "native_transport_error" and message.get("code") == "usageLimitExceeded":
+                cohort.errors[actor] = "Codex subscription quota exhausted (usageLimitExceeded)"
+                cohort.stop("provider_rejected")
+                return
             if kind == "ready":
+                if args.harness == "codex":
+                    await asyncio.to_thread(cohort.station.stations[actor].bind_native_cwd, message["cwd"])
+                    if not cohort.active():
+                        return
                 prompt_start = event_time
                 agent.prompt(*cohort.prompts(actor))
             elif kind == "request" and args.api_protocol in ("native", "subscription"):
-                payload = message.get("payload", {})
-                # Pi exposes the provider request; SDK controllers expose their input projection.
-                # Use only tool outputs explicitly present in the current request history.
-                items = payload.get("input", [])
-                if isinstance(items, list):
-                    with cohort.lock:
-                        for item in reversed(items):
-                            if item.get("type") == "function_call" or item.get("role") == "assistant":
-                                break
-                            if item.get("type") == "function_call_output":
-                                cohort.review.receipt(actor, item.get("call_id"), event_time,
-                                                      output_text(item.get("output")))
                 prompt_start = event_time
             elif kind in ("transport_response", "provider_response", "response_update"):
                 response = (
@@ -131,18 +126,9 @@ async def participate(cohort, actor):
                         command=arguments["command"],
                         decision_s=prompt_start,
                     )
-                    task = asyncio.create_task(
-                        asyncio.to_thread(
-                            cohort.tool, actor, arguments["command"], call_id
-                        )
-                    )
-                    cohort.active_tools.add(task)
-                    task.add_done_callback(
-                        lambda done, call_id=call_id: cohort.tool_completed(
-                            done, actor, call_id
-                        )
-                    )
-                    result, _ = await asyncio.shield(task)
+                    result = await cohort.run_tool(actor, arguments["command"], call_id)
+                    if not cohort.active():
+                        return
                 result = cohort.tool_reply(actor, result)
                 agent.reply(message["id"], output=json.dumps(result))
                 if getattr(cohort, "allowance_exhausted", lambda _: False)(actor):

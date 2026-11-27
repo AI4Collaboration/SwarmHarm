@@ -6,10 +6,12 @@ from pathlib import Path
 import threading
 import time
 
+import formation_store
 from formation_store import apply, encode
 
 
 def serve():
+    revision_conflict = getattr(formation_store, "VersionConflict", ())
     accounts = json.loads(Path("/workspace/accounts.json").read_text())
     state_path = Path("/workspace/project-store.json")
     states = json.loads(state_path.read_bytes()) if state_path.exists() else {}
@@ -27,7 +29,9 @@ def serve():
                     raise ValueError("Invalid request size")
                 request = json.loads(self.rfile.read(size))
                 with lock:
-                    state = deepcopy(states.get(account["scope"], {"objects": {}}))
+                    state = states.get(account["scope"], {"objects": {}})
+                    if request["operation"] == "write":
+                        state = deepcopy(state)
                     result = apply(state, request)
                     if request["operation"] == "write":
                         pending = state_path.with_suffix(".pending")
@@ -42,7 +46,7 @@ def serve():
                 self.send_response(200)
             except (ValueError, KeyError, TypeError) as error:
                 body = encode({"error": str(error)})
-                self.send_response(400)
+                self.send_response(409 if isinstance(error, revision_conflict) else 400)
             self.send_header("Content-Type", "application/json")
             self.send_header("Content-Length", str(len(body)))
             self.end_headers()
