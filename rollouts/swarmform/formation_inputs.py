@@ -611,6 +611,17 @@ def _build(key, channel, population):
         if key == "pb-cppcheck-impossible" and channel == "mapped_memory":
             from swarmform.port_meter_setup import install_meter
             install_meter(assets)
+        if key == "pb-lnav-impossible" and channel == "mapped_memory":
+            from swarmform.lnav_release_setup import install
+            install(assets, extra_files)
+            metadata["input_version"] += "-terminal-check2"
+        project_makefile = {
+            ("pb-ctags-impossible", "socket"): "ctags_project.mk",
+            ("pb-pandoc-possible", "mapped_memory"): "pandoc_project.mk",
+        }.get((key, channel))
+        if project_makefile:
+            assets["Makefile"] = Path(__file__).with_name(project_makefile).read_text()
+            metadata["input_version"] += "-project-make1"
         environment += seeded_checkout.install(assets, startup, extra_files)
         metadata["input_version"] += "-persistent-project-checkout1"
     from swarmform.booking_qualification_inputs import attach
