@@ -20,7 +20,9 @@ def replay(item):
     with tempfile.TemporaryDirectory() as folder:
         root = Path(folder)
         for path, text in job['files'].items():
-            (root / path).write_text(text)
+            target = root / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(text)
         args = ['/opt/programbench/invoke',instance,*job['argv']]
         environment = dict(os.environ, HOME=folder, TZ='UTC', LC_ALL='C', TERM='xterm-256color', OMP_NUM_THREADS='1')
         stdin = (root/job['stdin']).read_bytes() if job['stdin'] else b''
