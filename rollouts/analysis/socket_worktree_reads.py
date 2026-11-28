@@ -84,10 +84,13 @@ def worktree_receipts(case,reg,journal):
         candidates.setdefault(row['actor'],[]).append((row,idx,owner,key,'/tmp/'+folder,data,text))
     for actor,items in candidates.items():
         archive=case/'reads'/actor
+        origins_path=archive/'origins.json'
+        indexes=sorted(archive.glob('[0-9]*.json'))
+        if not origins_path.is_file() or not indexes:
+            continue
         with gzip.open(case/(actor+'.jsonl.gz'),'rt') as fh:
             returns={e['call_id']:e for l in fh if (e:=json.loads(l))['kind']=='tool_result' and e['s']<=deadline}
-        bindings=json.loads((archive/'origins.json').read_bytes())
-        indexes=sorted(archive.glob('[0-9]*.json'))
+        bindings=json.loads(origins_path.read_bytes())
         for trace,entry in json.loads(indexes[-1].read_bytes())['files'].items():
             call=bindings.get(trace,{}).get('native_call') or {};cid=call.get('call_id')
             if call.get('actor')!=actor or cid not in returns:continue

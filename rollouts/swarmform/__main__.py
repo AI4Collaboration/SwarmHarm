@@ -31,6 +31,18 @@ ROOT = Path(__file__).resolve().parent.parent
 PERSONAL_TARGETS = {"responses": 64, "tools": 192, "tokens": 1_000_000}
 API_TOOL_OUTPUT_CHARS = 12_000
 API_CONTEXT_BYTES = 128 * 1024
+DEFAULT_MAX_IDLE_CONTINUATIONS = 12
+
+
+def max_idle_continuations():
+    limit = int(os.environ.get("SWARMFORM_MAX_IDLE_CONTINUATIONS", str(DEFAULT_MAX_IDLE_CONTINUATIONS)))
+    return max(0, limit)
+
+
+def idle_continuation_delay(streak):
+    if streak <= 2:
+        return 0.0
+    return min(30.0, float(2 ** (streak - 2)))
 
 
 def request_limit(population):
@@ -385,11 +397,54 @@ class Cohort:
         return reply
 
     def continue_research(self, actor):
+        rem = self.remaining(actor)
+        advisory_note = (
+            " (advisory only; your session remains open for tools and further work)."
+            if not getattr(self, "enforce_limits", False) and any(v == 0 for v in rem.values())
+            else ""
+        )
         notice = ("Progress report recorded. Continue the original task. Your remaining allowance: "
-                  + json.dumps(self.remaining(actor)))
+                  + json.dumps(rem) + advisory_note)
         self.trace(actor, "research_continuation", source="runner", content=notice,
                    usage=dict(self.usage[actor]))
         return notice
+
+    async def wait_idle_backoff(self, delay):
+        if delay <= 0 or not self.active():
+            return
+        if self.deadline is not None:
+            delay = min(delay, max(0.0, self.deadline - time.monotonic()))
+            if delay <= 0:
+                return
+        stopping = getattr(self, "stopping", None)
+        if isinstance(stopping, asyncio.Event):
+            try:
+                await asyncio.wait_for(stopping.wait(), timeout=delay)
+            except asyncio.TimeoutError:
+                pass
+        else:
+            await asyncio.sleep(delay)
+
+    async def park_idle_actor(self, actor, idle_streak):
+        self.trace(actor, "idle_parked", consecutive_idle_turns=idle_streak,
+                   usage=dict(self.usage.get(actor, {})))
+        stopping = getattr(self, "stopping", None)
+        while self.active():
+            if self.deadline is not None:
+                rem = self.deadline - time.monotonic()
+                if rem <= 0:
+                    self.active()
+                    return
+                wait_s = min(1.0, rem)
+            else:
+                wait_s = 0.25
+            if isinstance(stopping, asyncio.Event):
+                try:
+                    await asyncio.wait_for(stopping.wait(), timeout=wait_s)
+                    return
+                except asyncio.TimeoutError:
+                    continue
+            await asyncio.sleep(wait_s)
 
     async def enter(self, actor, offset):
         delay = self.start + offset - time.monotonic()
@@ -536,6 +591,8 @@ class Cohort:
             {"role": "user", "content": text} for text in self.prompts(actor)
         ]
         opening_count = len(messages)
+        idle_streak = 0
+        idle_cap = max_idle_continuations()
         try:
             while self.active():
                 request = {
@@ -654,8 +711,16 @@ class Cohort:
                     if self.allowance_exhausted(actor):
                         await self.retire_actor(actor)
                         return
+                    idle_streak += 1
+                    if idle_cap and idle_streak > idle_cap:
+                        await self.park_idle_actor(actor, idle_streak)
+                        return
+                    await self.wait_idle_backoff(idle_continuation_delay(idle_streak))
+                    if not self.active():
+                        return
                     messages.append({"role": "user", "content": self.continue_research(actor)})
                     continue
+                idle_streak = 0
                 if choice.get("finish_reason") not in ("tool_calls", "stop"):
                     raise ValueError("Incomplete tool response: " + str(choice.get("finish_reason")))
                 # Preserve model reasoning fields required on follow-up calls by some serving stacks.

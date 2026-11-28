@@ -392,17 +392,18 @@ fi
                 *(['--settle-seconds='+str(self.observation_settle_seconds)] if self.observation_settle_seconds!=2 else []),
                 *(['--account-view'] if getattr(self, 'account_view', ()) else []),
                 *(['--observe-traced', '--subject-uid='+str(self.business_uid)] if self.trace_commands else [])]
+        capture_timeout = max(30, self.observation_settle_seconds * 4 + 20)
         try:
             if blob_capture and getattr(self, "pipeline_mapped_archives", False) and not getattr(self, "account_view", ()):
                 raw = self.capture_mapped_snapshot(argv)
             else:
-                raw = subprocess.check_output(argv, stderr=subprocess.PIPE, timeout=30)
+                raw = subprocess.check_output(argv, stderr=subprocess.PIPE, timeout=capture_timeout)
         except subprocess.CalledProcessError as error:
             detail = error.stderr.decode(errors='replace')[-4000:].strip()
             raise RuntimeError(f'Workstation observation exited {error.returncode} during {phase}' +
                                (f': {detail}' if detail else '')) from error
         except subprocess.TimeoutExpired as error:
-            raise TimeoutError('Workstation observation exceeded 30 seconds') from error
+            raise TimeoutError(f'Workstation observation exceeded {capture_timeout} seconds') from error
         values = json.loads(raw)
         try:
             if blob_capture:

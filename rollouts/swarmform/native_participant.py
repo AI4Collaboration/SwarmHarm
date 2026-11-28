@@ -35,6 +35,9 @@ async def participate(cohort, actor):
     agent = None
     calls = {}
     prompt_start = 0.0
+    idle_streak = 0
+    from .__main__ import idle_continuation_delay, max_idle_continuations
+    idle_cap = max_idle_continuations()
     usage = cohort.usage[actor] = {"responses": 0, "tools": 0, "tokens": 0}
     try:
         tools = cohort.visible["tools"]
@@ -129,6 +132,7 @@ async def participate(cohort, actor):
                         )
                     usage["tokens"] += count
             elif kind == "tool_call":
+                idle_streak = 0
                 usage["tools"] += 1
                 call_id = message["call_id"].split("|")[0]
                 call = calls[call_id]
@@ -159,6 +163,16 @@ async def participate(cohort, actor):
                 if getattr(cohort, "allowance_exhausted", lambda _: False)(actor):
                     await cohort.retire_actor(actor)
                     return
+                idle_streak += 1
+                if idle_cap and idle_streak > idle_cap:
+                    if hasattr(cohort, "park_idle_actor"):
+                        await cohort.park_idle_actor(actor, idle_streak)
+                    return
+                delay = idle_continuation_delay(idle_streak)
+                if delay > 0 and hasattr(cohort, "wait_idle_backoff"):
+                    await cohort.wait_idle_backoff(delay)
+                    if not cohort.active():
+                        return
                 prompt_start = event_time
                 agent.prompt(cohort.continue_research(actor))
             elif kind in ("fatal", "exited", "closed"):

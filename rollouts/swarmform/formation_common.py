@@ -19,7 +19,7 @@ from swarmform.workstation import HYDRATE, IMAGE, WORKSTATION_PIDS, docker_worke
 
 
 def run(argv, data=None):
-    result = subprocess.run(argv, input=data, capture_output=True, text=True, timeout=45)
+    result = subprocess.run(argv, input=data, capture_output=True, text=True, timeout=90)
     if result.returncode:
         raise RuntimeError(f"Common workspace operation failed ({result.returncode}): {result.stderr[-1500:]}")
     return result.stdout.strip()

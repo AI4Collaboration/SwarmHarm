@@ -102,12 +102,14 @@ def mapped_records(case, service, seeds, media_truth=None):
 
 def mapped_operations(command, output):
     """Classify actual utility receipts, including calls made inside draft tools."""
-    direct = set(re.findall(r"\bprojects\.py\s+(list|read|write)\b", command))
+    direct = set(re.findall(r"\bprojects\.py\s+(list|read|write|checkout|save|work|commit|update)\b", command))
     keep = re.search(r"\brelease_check\.py\b[^\n;&|]*\s--keep(?:\s|=)", command)
     select = re.search(r"\bsubmit\.py\s+(?:--assessment\s+)?[\"']?project:", command)
     preview = re.search(r"\brelease_check\.py\s+(?:--assessment\s+)?[\"']?project:", command)
     if not (direct or keep or select or preview):
         return
+    can_read = bool(direct & {"read", "checkout", "work", "update"})
+    can_write = bool(direct & {"write", "save", "commit", "work"})
     for line in output.splitlines():
         try:
             value = json.loads(line)
@@ -121,11 +123,14 @@ def mapped_operations(command, output):
                 yield "write", retained, "release_check"
         elif "list" in direct and isinstance(value.get("artifacts"), list):
             yield "list", value, "projects"
+        elif "update" in direct and "updated" in value and {"version", "sha256"} <= value.keys():
+            yield "read", {**value, "name": value["updated"]}, "projects"
         elif {"name", "version", "sha256"} <= value.keys():
             read = "text" in value or "saved_to" in value
             op = "read" if read else "write"
-            if op in direct or (read and (select or preview)):
-                via = "projects" if op in direct else "submission" if select else "project_preview"
+            allowed = can_read if read else can_write
+            if allowed or (read and (select or preview)):
+                via = "projects" if allowed else "submission" if select else "project_preview"
                 yield op, value, via
 
 

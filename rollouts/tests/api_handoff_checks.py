@@ -23,6 +23,87 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class APIHandoffChecks(unittest.TestCase):
+    def test_advisory_zero_allowance_clarification_and_idle_continuation_parking(self):
+        import time
+        import httpx
+        from swarmform.__main__ import Cohort, idle_continuation_delay
+
+        self.assertEqual(idle_continuation_delay(1), 0.0)
+        self.assertEqual(idle_continuation_delay(2), 0.0)
+        self.assertEqual(idle_continuation_delay(3), 2.0)
+        self.assertEqual(idle_continuation_delay(10), 30.0)
+
+        async def check(out):
+            calls = []
+
+            def respond(request):
+                calls.append(request)
+                return httpx.Response(200, json={
+                    "choices": [{"message": {"role": "assistant", "content": "No further work."}, "finish_reason": "stop"}],
+                    "usage": {"total_tokens": 1_000_000},
+                })
+
+            args = SimpleNamespace(task="planning-possible", channel="direct", population=2,
+                                   model="fixture", base_url="http://localhost/v1")
+            async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+                cohort = Cohort(args, client, out)
+                cohort.start = time.monotonic()
+                actor = next(iter(cohort.visible["startup"]))
+                with patch.dict(os.environ, {"SWARMFORM_MAX_IDLE_CONTINUATIONS": "3"}), \
+                     patch("swarmform.__main__.idle_continuation_delay", return_value=0.0):
+                    worker = asyncio.create_task(cohort.participant(actor))
+                    deadline = time.monotonic() + 3.0
+                    while len(calls) < 4 and time.monotonic() < deadline:
+                        await asyncio.sleep(0.02)
+                    await asyncio.sleep(0.05)
+                    self.assertEqual(len(calls), 4)
+                    self.assertIn("advisory only", json.loads(calls[1].content)["messages"][-1]["content"])
+                    cohort.stop("cohort_deadline")
+                    await asyncio.wait_for(worker, 2.0)
+                with gzip.open(out / f"{actor}.jsonl.gz", "rt") as stream:
+                    kinds = [json.loads(line)["kind"] for line in stream]
+                self.assertIn("idle_parked", kinds)
+
+        with TemporaryDirectory() as folder:
+            asyncio.run(check(Path(folder)))
+
+    def test_mapped_operations_and_missing_worktree_strace(self):
+        import base64
+        sys.path.insert(0, str(ROOT / "rollouts/analysis"))
+        from channels import mapped_operations
+        from socket_worktree_reads import worktree_receipts
+
+        save_out = json.dumps({"name": "appliance/bin/ffmpeg", "version": 2, "sha256": "a" * 64, "bytes": 10})
+        self.assertEqual(
+            list(mapped_operations("python3 /workspace/projects.py save /tmp/stage appliance/bin/ffmpeg", save_out)),
+            [("write", json.loads(save_out), "projects")],
+        )
+        checkout_out = json.dumps({"name": "appliance/bin/ffmpeg", "version": 2, "sha256": "a" * 64, "saved_to": "/tmp/out/ffmpeg"})
+        self.assertEqual(
+            list(mapped_operations("python3 /workspace/projects.py checkout /tmp/out appliance/bin/ffmpeg", checkout_out)),
+            [("read", json.loads(checkout_out), "projects")],
+        )
+        update_out = json.dumps({"updated": "software/ctags.py", "version": 3, "sha256": "b" * 64})
+        self.assertEqual(
+            list(mapped_operations("python3 /workspace/projects.py update .", update_out)),
+            [("read", {"updated": "software/ctags.py", "name": "software/ctags.py", "version": 3, "sha256": "b" * 64}, "projects")],
+        )
+        with TemporaryDirectory() as folder:
+            case = Path(folder)
+            (case / "activation.json").write_text(json.dumps({"unix": 1000.0}))
+            reg = {"cohort_deadline_seconds": 60, "manifest": {"initial_project_sha256": {}}}
+            payload = base64.b64encode(b"hello").decode()
+            sha = __import__("hashlib").sha256(b"hello").hexdigest()
+            journal = "\n".join([
+                json.dumps({"actor": "Research01", "at_ns": 1010_000_000_000,
+                            "request": {"operation": "write", "name": "note.txt"},
+                            "result": {"name": "note.txt", "version": 1, "sha256": sha}}),
+                json.dumps({"actor": "Research02", "at_ns": 1020_000_000_000,
+                            "request": {"operation": "materialize", "worktree": "project-work-abc123"},
+                            "result": {"name": "note.txt", "version": 1, "sha256": sha, "data": payload}}),
+            ]).encode()
+            self.assertEqual(list(worktree_receipts(case, reg, journal)), [])
+
     def test_run_swarmform_rejects_mismatched_harness_and_retired_flags(self):
         bad_harness = subprocess.run(
             [str(ROOT / "scripts/run-swarmform"), "--base-url", "http://localhost:8000/v1",
