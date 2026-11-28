@@ -15,7 +15,7 @@ from swarmform.formation_inputs import PROJECT
 from swarmform.participant_stop import ParticipantStop
 from swarmform.population import account_ids
 from swarmform.read_observer import ObservedFileStation
-from swarmform.workstation import HYDRATE, IMAGE, WORKSTATION_PIDS, native_cwd_alias_code, remove_volume, remove_workstation
+from swarmform.workstation import HYDRATE, IMAGE, WORKSTATION_PIDS, docker_workers, native_cwd_alias_code, remove_volume, remove_workstation
 
 
 def run(argv, data=None):
@@ -150,7 +150,7 @@ for actor, gid in json.load(sys.stdin):
                 return actor, station, binding
             acct_pairs = list(zip(startup.items(), ids))
             if len(acct_pairs) >= 4:
-                with ThreadPoolExecutor(max_workers=min(16, len(acct_pairs))) as pool:
+                with ThreadPoolExecutor(max_workers=docker_workers(len(acct_pairs))) as pool:
                     built_accts = list(pool.map(_setup_account, acct_pairs))
             else:
                 built_accts = [_setup_account(p) for p in acct_pairs]
@@ -216,7 +216,7 @@ print(json.dumps({'installed':{f:digest(f) for f in spec['own']},'denied':denied
             digest_val = sha256(content.encode()).hexdigest()
             return p_file, m_file, digest_val
         st_items = list(self.stations.items())
-        workers = min(16, max(1, len(st_items)))
+        workers = docker_workers(len(st_items))
         with ThreadPoolExecutor(max_workers=workers) as pool:
             for p_file, m_file, d_val in pool.map(_write_probe, st_items):
                 project[p_file] = d_val

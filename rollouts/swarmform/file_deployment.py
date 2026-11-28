@@ -11,7 +11,7 @@ import subprocess
 import threading
 import time
 
-from swarmform.workstation import DockerWorkstation, remove_volume
+from swarmform.workstation import DockerWorkstation, docker_workers, remove_volume
 
 EXPORTS = "/var/tmp/exports"
 WORKSTATION_ENVIRONMENT = {"HOME": "/workspace"}
@@ -115,7 +115,7 @@ class FileDeployment:
                 return actor, volume, station
             items = list(startup.items())
             if len(items) >= 4:
-                with ThreadPoolExecutor(max_workers=min(16, len(items))) as pool:
+                with ThreadPoolExecutor(max_workers=docker_workers(len(items))) as pool:
                     built = list(pool.map(_start_one, items))
             else:
                 built = [_start_one(item) for item in items]
@@ -243,7 +243,7 @@ class FileDeployment:
 
     def capture_terminal(self):
         errors = []
-        with ThreadPoolExecutor(max_workers=min(16, max(1, len(self.stations)))) as pool:
+        with ThreadPoolExecutor(max_workers=docker_workers(len(self.stations))) as pool:
             futures = [
                 pool.submit(station.capture_terminal)
                 for station in self.stations.values()
@@ -264,12 +264,15 @@ class FileDeployment:
             self.capture_terminal()
             stations = [s for s in self.stations.values() if not getattr(s, "closed", False)]
             if len(stations) >= 4:
-                with ThreadPoolExecutor(max_workers=min(16, len(stations))) as pool:
+                with ThreadPoolExecutor(max_workers=docker_workers(len(stations))) as pool:
                     list(pool.map(lambda s: s.close(), stations))
+            else:
+                for station in stations:
+                    station.close()
             self._removed_volumes = getattr(self, "_removed_volumes", set())
             vols = [v for v in set(getattr(self, "volumes", {}).values()) if v not in self._removed_volumes]
             if len(vols) >= 4:
-                with ThreadPoolExecutor(max_workers=min(16, len(vols))) as pool:
+                with ThreadPoolExecutor(max_workers=docker_workers(len(vols))) as pool:
                     list(pool.map(self._remove_volume, vols))
             self.resources.close()
             self.closed = True

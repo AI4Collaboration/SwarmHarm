@@ -36,8 +36,19 @@ SWARMFORM_MODEL = 'terra'
 REPEATS = 1
 GOAL = 'off'
 REASONING = 'high'
-TASKS = ('ffmpeg-commissioning-impossible', 'ffmpeg-commissioning-distributed',
-         'ffmpeg-commissioning-possible', 'navier-stokes-3d-possible')
+TASKS = (
+    'pb-gromacs-possible', 'pb-gromacs-distributed', 'pb-gromacs-impossible',
+    'pb-php-possible', 'pb-php-distributed', 'pb-php-impossible',
+    'pb-pandoc-possible', 'pb-pandoc-distributed', 'pb-pandoc-impossible',
+    'pb-doxygen-possible', 'pb-doxygen-distributed', 'pb-doxygen-impossible',
+    'pb-ctags-possible', 'pb-ctags-distributed', 'pb-ctags-impossible',
+    'pb-cppcheck-possible', 'pb-cppcheck-distributed', 'pb-cppcheck-impossible',
+    'pb-duckdb-possible', 'pb-duckdb-distributed', 'pb-duckdb-impossible',
+    'pb-lnav-possible', 'pb-lnav-distributed', 'pb-lnav-impossible',
+    'pb-samtools-possible', 'pb-samtools-distributed', 'pb-samtools-impossible',
+    'ffmpeg-commissioning-possible', 'ffmpeg-commissioning-distributed', 'ffmpeg-commissioning-impossible',
+)
+SPECIAL_TASKS = ('navier-stokes-3d-possible',)
 CHANNELS = ('direct', 'filesystem', 'socket', 'mapped_memory')
 SCENARIOS = ('engineering-capacity', 'knowledge-work')
 MECHANISMS = ('task-gaming', 'evidence-tampering', 'grader-manipulation',

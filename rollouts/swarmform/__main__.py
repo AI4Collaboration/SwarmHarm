@@ -131,7 +131,7 @@ def arguments():
     run.add_argument("--closed-mail-receipts", action="store_true",
                      help="Mark addressed mail to a permanently closed session on its send receipt")
     run.add_argument("--cohort-seconds", type=int, default=None,
-                     help="Override total cohort horizon in seconds (default 1800)")
+                     help="Override total cohort horizon in seconds (default 600 for software tasks, 1800 for navier-stokes-3d-possible)")
     run.add_argument("--review-interval-seconds", type=int, default=None,
                      help=argparse.SUPPRESS)
     run.add_argument("--enforce-personal-limits", action="store_true",
@@ -158,7 +158,7 @@ def arguments():
         "--revision", help="Operator-reported deployment or checkpoint revision"
     )
     args = parser.parse_args()
-    horizon_s = args.cohort_seconds or checkpoint.COHORT_SECONDS
+    horizon_s = args.cohort_seconds or checkpoint.default_cohort_seconds(args.task)
     if not 0 <= args.entry_window_seconds < horizon_s:
         parser.error("Entry offsets must precede the common cohort deadline.")
     if args.population < 1 or (args.population == 1 and
@@ -268,24 +268,26 @@ def write_json(path, value):
     atomic_json(path, value)
 
 
-def emit(path, value):
+def emit_bytes(path, payload):
     with path.open("ab") as raw:
         offset = raw.tell()
         try:
             with gzip.GzipFile(
                 fileobj=raw, mode="wb", compresslevel=1, mtime=0
             ) as stream:
-                stream.write(
-                    (
-                        json.dumps(value, ensure_ascii=False, separators=(",", ":"))
-                        + "\n"
-                    ).encode()
-                )
+                stream.write(payload)
             raw.flush()
             os.fsync(raw.fileno())
         except BaseException:
             raw.truncate(offset)
             raise
+
+
+def emit(path, value):
+    emit_bytes(
+        path,
+        (json.dumps(value, ensure_ascii=False, separators=(",", ":")) + "\n").encode(),
+    )
 
 
 class Cohort:
@@ -305,6 +307,7 @@ class Cohort:
         self.window_open = None
         self.deadline = None
         self.lock = threading.Lock()
+        self._obs_lock = threading.Lock()
         self._trace_locks = {actor: threading.Lock() for actor in actors}
         self._inflight_sem = asyncio.Semaphore(request_limit(args.population))
         self._cooldown_until = 0.0
@@ -401,17 +404,22 @@ class Cohort:
         await self.participant(actor)
 
     def snapshot(self, actor, phase, value):
-        with self.lock:
+        encoded_snapshot = json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+        with getattr(self, "_obs_lock", self.lock):
             sequence = self.snapshot_count + 1
-            emit(
-                self.out / "observations.jsonl.gz",
+            header = json.dumps(
                 {
                     "sequence": sequence,
                     "actor": actor,
                     "phase": phase,
                     "at": time.time(),
-                    "snapshot": value,
                 },
+                ensure_ascii=False,
+                separators=(",", ":"),
+            )[:-1]
+            emit_bytes(
+                self.out / "observations.jsonl.gz",
+                (header + ',"snapshot":' + encoded_snapshot + "}\n").encode(),
             )
             self.snapshot_count = sequence
             if (
@@ -775,7 +783,7 @@ class Cohort:
                 "budget_mode": "enforced" if self.enforce_limits else "advisory",
                 "personal_budget_targets": self.actor_targets or self.targets,
                 "per_actor_limits": (self.actor_targets or self.targets) if self.enforce_limits else None,
-                **checkpoint.cohort_registration(args),
+                **checkpoint.cohort_registration(args, task=args.task),
             },
         )
         write_json(self.out / "inputs.json", self.visible)
@@ -818,7 +826,7 @@ class Cohort:
             write_json(self.out / "stop-armed.json", arm_receipt)
             station_name = next(iter(self.station.stations.values())).name
             write_json(self.out / "runtime.json", await asyncio.to_thread(runtime_info, IMAGE, station_name))
-            cohort_s = getattr(args, "cohort_seconds", None) or checkpoint.COHORT_SECONDS
+            cohort_s = getattr(args, "cohort_seconds", None) or checkpoint.default_cohort_seconds(args.task)
             self.start = time.monotonic()
             self.deadline = self.start + cohort_s
             self.window_open = True
@@ -1034,7 +1042,7 @@ async def collect(args):
     validate_endpoint(args.base_url)
     _ensure_open_file_headroom()
     asyncio.get_running_loop().set_default_executor(
-        ThreadPoolExecutor(max_workers=max(32, args.population + 8))
+        ThreadPoolExecutor(max_workers=max(64, args.population * 2 + 16))
     )
     key = None
     if getattr(args, "api_protocol", "chat-completions") == "subscription":
@@ -1067,7 +1075,9 @@ async def collect(args):
         timeout=args.seconds,
         follow_redirects=False,
         limits=httpx.Limits(
-            max_connections=args.population + 1, max_keepalive_connections=args.population + 1
+            max_connections=max(32, args.population * 2),
+            max_keepalive_connections=max(32, args.population * 2),
+            keepalive_expiry=60.0,
         ),
     ) as client:
         cohort = Cohort(args, client, out)

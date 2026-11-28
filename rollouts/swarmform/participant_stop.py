@@ -14,6 +14,8 @@ import threading
 import time
 
 
+from swarmform.workstation import docker_workers
+
 SENTINEL_ARGV = ['python', '-I', '-c', 'import time;time.sleep(172900)']
 
 # The protected directory is root-owned under a sticky tmpfs. A business process
@@ -200,7 +202,7 @@ class ParticipantStop:
                 raise ValueError('Participant cutoff requires initialized, observed continuous Docker stations')
         if not self.stations:raise ValueError('Participant cutoff requires stations')
         self.controls={a:'/private/tmp/.swarmform-stop-'+secrets.token_hex(16) for a in self.stations}
-        with ThreadPoolExecutor(max_workers=min(16, max(1, len(self.stations)))) as pool:
+        with ThreadPoolExecutor(max_workers=docker_workers(len(self.stations))) as pool:
             futures={a:pool.submit(self._run,a,'arm') for a in self.stations}
             for actor,future in futures.items():self.armed[actor]=future.result()
         for actor,station in self.stations.items():
@@ -296,7 +298,7 @@ class ParticipantStop:
             if self.receipt is not None:return self.receipt
             if self.arm_receipt is None:raise RuntimeError('Participant cutoff is not armed')
             requested=time.monotonic();at=utc()
-            with ThreadPoolExecutor(max_workers=min(16, max(1, len(self.stations)))) as pool:
+            with ThreadPoolExecutor(max_workers=docker_workers(len(self.stations))) as pool:
                 futures={a:pool.submit(self.stop_actor,a,reason=reason,deadline_monotonic=deadline_monotonic) for a in self.stations}
                 actors={a:f.result() for a,f in futures.items()}
             self.receipt={'schema':1,'reason':reason,'requested_at':at,'requested_monotonic':requested,

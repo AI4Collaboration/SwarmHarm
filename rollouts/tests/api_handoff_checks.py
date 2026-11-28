@@ -200,15 +200,115 @@ class APIHandoffChecks(unittest.TestCase):
     def test_default_matrix_and_task_material_match_across_channels(self):
         rows = self.plan()
         self.assertTrue(all(r["harness"] == "chat-completions" and r["thinking_level"] is None for r in rows))
-        task_count = len({row["task"] for row in rows})
-        self.assertEqual(len(rows), task_count * len(CHANNELS) * 4)
+        tasks = {row["task"] for row in rows}
+        self.assertEqual(tasks, set(inputs.ACTIVE_TASKS))
+        self.assertEqual(len(tasks), 30)
+        self.assertEqual(len(rows), 30 * len(CHANNELS) * 4)
+        self.assertTrue(all(r["cohort_deadline_seconds"] == 600 for r in rows))
         self.assertEqual(
             list(dict.fromkeys(r["population"] for r in rows)), [4, 8, 16, 32]
         )
         self.assertEqual(
             sum(row["population"] for row in rows),
-            task_count * len(CHANNELS) * sum((4, 8, 16, 32)),
+            len(tasks) * len(CHANNELS) * sum((4, 8, 16, 32)),
         )
+        ns_rows = self.plan("--tasks", inputs.SPECIAL_CASE, "--populations", "4")
+        self.assertEqual(len(ns_rows), 4)
+        self.assertTrue(all(r["cohort_deadline_seconds"] == 1800 for r in ns_rows))
+        override = self.plan("--tasks", inputs.SPECIAL_CASE, "--populations", "4", "--cohort-seconds", "300")
+        self.assertTrue(all(r["cohort_deadline_seconds"] == 300 for r in override))
+
+    def test_parallel_cohorts_respect_agent_cap_and_keep_plan_invariant(self):
+        import argparse
+        import time
+        from run_matrix import execute_rows
+
+        default_plan = self.plan("--tasks", "pb-ctags-possible", "--populations", "4")
+        parallel_plan = self.plan(
+            "--tasks", "pb-ctags-possible", "--populations", "4",
+            "--concurrency", "4", "--max-concurrent-agents", "8",
+        )
+        self.assertEqual(default_plan, parallel_plan)
+
+        lock = threading.Lock()
+        active = 0
+        peak = 0
+
+        def collect(command, **kwargs):
+            nonlocal active, peak
+            path = Path(command[-1])
+            with lock:
+                active += 1
+                peak = max(peak, active)
+            time.sleep(0.08)
+            path.mkdir()
+            (path / "summary.json").write_text(json.dumps({
+                "schema": "swarmform-completion-v1",
+                "complete": True,
+                "physical_stop_verified": True,
+                "reason": "cohort_deadline",
+                "usage": {"Research01": {"responses": 1, "tools": 0, "tokens": 10}},
+            }))
+            with lock:
+                active -= 1
+            return 0, None
+
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            args = SimpleNamespace(
+                out=root, model="local-test-model", concurrency=4, max_concurrent_agents=8,
+            )
+            with patch("run_matrix.cohort_command", side_effect=lambda a, r, d: ["fixture", str(d)]), \
+                 patch("run_matrix.run_process", side_effect=collect):
+                self.assertEqual(execute_rows(args, default_plan, argparse.ArgumentParser()), 0)
+            self.assertEqual(peak, 2)
+            runs = json.loads((root / "index.json").read_text())["runs"]
+            self.assertEqual(len(runs), 4)
+            self.assertEqual([r["channel"] for r in runs], [r["channel"] for r in default_plan])
+            self.assertTrue(all(r["status"] == "complete" for r in runs))
+
+    def test_socket_close_at_n2_closes_stations_before_retiring_service_and_networks(self):
+        from swarmform.socket_deployment import SocketDeployment
+
+        order = []
+        dep = SocketDeployment.__new__(SocketDeployment)
+        dep.closed = False
+        dep.retirement_error = None
+        dep._res_lock = threading.Lock()
+        dep.capture_terminal = lambda: order.append("capture")
+        dep._drain_service = lambda: order.append("drain")
+
+        def make_station(name):
+            st = Mock(closed=False)
+            def close():
+                st.closed = True
+                order.append("station:" + name)
+            st.close.side_effect = close
+            return st
+
+        dep.stations = {"a": make_station("a"), "b": make_station("b")}
+        svc = Mock(closed=False)
+        def retire():
+            svc.closed = True
+            order.append("service:retire")
+        svc.retire.side_effect = retire
+        dep.service = svc
+        dep.networks = {"a": "net-a", "b": "net-b"}
+        dep.volumes = {"a": "vol-a", "b": "vol-b"}
+        dep.service_volume = "vol-svc"
+        dep.resources = Mock()
+        dep.resources.close.side_effect = lambda: order.append("resources:close")
+
+        with patch("swarmform.socket_deployment.remove_network", side_effect=lambda n: order.append("net:" + n)), \
+             patch("swarmform.file_deployment.remove_volume", side_effect=lambda v: order.append("vol:" + v)):
+            dep.close()
+
+        self.assertTrue(dep.closed)
+        self.assertLess(order.index("station:a"), order.index("service:retire"))
+        self.assertLess(order.index("station:b"), order.index("service:retire"))
+        for item in ("net:net-a", "net:net-b", "vol:vol-a", "vol:vol-b", "vol:vol-svc"):
+            self.assertLess(order.index("service:retire"), order.index(item))
+        self.assertEqual(order[-1], "resources:close")
 
     def test_finished_or_archived_attempts_are_not_restarted(self):
         import hashlib

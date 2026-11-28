@@ -12,6 +12,19 @@ import tempfile
 import time
 
 WORKSTATION_PIDS = 128
+_OBSERVER_CODE = None
+
+
+def _observer_code():
+    global _OBSERVER_CODE
+    if _OBSERVER_CODE is None:
+        _OBSERVER_CODE = Path(__file__).with_name('workstation_observer.py').read_text()
+    return _OBSERVER_CODE
+
+
+def docker_workers(count):
+    limit = int(os.environ.get("SWARMFORM_DOCKER_CONCURRENCY", "32"))
+    return max(1, min(max(1, limit), count))
 
 IMAGE = os.environ.get("SWARMHARM_DOCKER_IMAGE")
 if IMAGE is not None and not re.fullmatch(r"sha256:[0-9a-f]{64}", IMAGE):
@@ -66,6 +79,8 @@ class HostCleanupError(RuntimeError):
 
 def _remove_docker_resource(kind, argv, missing, pending):
     """A Docker removal or volume detach can outlive the client acknowledgement."""
+    missing = (missing,) if isinstance(missing, bytes) else missing
+    pending = (pending,) if isinstance(pending, bytes) else pending
     deadline = time.monotonic() + 90
     while (remaining := deadline - time.monotonic()) > 0:
         try:
@@ -73,9 +88,9 @@ def _remove_docker_resource(kind, argv, missing, pending):
         except subprocess.TimeoutExpired:
             continue
         error = (result.stderr or b"").lower()
-        if result.returncode == 0 or missing in error:
+        if result.returncode == 0 or any(token in error for token in missing):
             return
-        if pending not in error:
+        if not any(token in error for token in pending):
             raise HostCleanupError(f"Docker could not remove {argv[-1]}: {error.decode(errors='replace').strip()}")
         time.sleep(min(1, remaining))
     # The last rm may still have succeeded. Only a resource-specific absence
@@ -87,10 +102,12 @@ def _remove_docker_resource(kind, argv, missing, pending):
         raise HostCleanupError(f"Docker removal and inspection timed out for {kind} {name}") from error
     detail = (probe.stderr or b"").decode(errors="replace").strip()
     absent = {
-        "container": f"Error response from daemon: No such container: {name}",
-        "volume": f"Error response from daemon: get {name}: no such volume",
+        "container": (f"Error response from daemon: No such container: {name}",),
+        "volume": (f"Error response from daemon: get {name}: no such volume",),
+        "network": (f"Error response from daemon: network {name} not found",
+                    f"Error response from daemon: No such network: {name}"),
     }[kind]
-    if probe.returncode == 1 and detail == absent:
+    if probe.returncode == 1 and detail in absent:
         return
     raise HostCleanupError(f"Docker did not confirm removal of {kind} {name}: {detail or 'still present'}")
 
@@ -101,6 +118,15 @@ def remove_workstation(name):
 
 def remove_volume(name):
     _remove_docker_resource("volume", ["docker", "volume", "rm", name], b"no such volume", b"is in use")
+
+
+def remove_network(name):
+    _remove_docker_resource(
+        "network",
+        ["docker", "network", "rm", name],
+        (b"no such network", b"not found"),
+        (b"has active endpoints", b"in use"),
+    )
 
 
 def native_cwd_alias_code(path):
@@ -357,7 +383,7 @@ fi
 
     def capture_frozen(self, phase, *, resume_inline=False):
         from swarmform.artifact_blobs import retain
-        code = Path(__file__).with_name('workstation_observer.py').read_text()
+        code = _observer_code()
         blob_capture = self.trace_commands and hasattr(self, 'archive')
         argv = ['docker', 'exec', *(['--user', '0:0'] if self.trace_commands else []),
                 self.name, *getattr(self, 'account_view', ()), 'python', '-I', '-c', code, 'capture', *self.observation_roots,
@@ -391,7 +417,7 @@ fi
     def resume_captured(self, values):
         if values.get('inline_resume_completed') is True:
             return
-        code = Path(__file__).with_name('workstation_observer.py').read_text()
+        code = _observer_code()
         subprocess.run(
             ['docker', 'exec', '-i', *(['--user', '0:0'] if self.trace_commands else []),
              self.name, *getattr(self, 'account_view', ()), 'python', '-I', '-c', code, 'resume'],
@@ -462,7 +488,11 @@ fi
                     if stdout_file.tell() + stderr_file.tell() > 2_000_000:
                         limited = "output limit"
                         break
-                    time.sleep(0.05)
+                    try:
+                        process.wait(timeout=0.05)
+                        break
+                    except subprocess.TimeoutExpired:
+                        pass
                 if limited:
                     process.kill()
                 process.wait(timeout=5)

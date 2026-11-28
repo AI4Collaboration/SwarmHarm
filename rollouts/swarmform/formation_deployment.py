@@ -13,7 +13,7 @@ from atomic import atomic_json
 from swarmform.memory_capture import capture_memory
 from swarmform.file_deployment import FileDeployment, install_project_files
 from swarmform.socket_deployment import SocketDeployment, command
-from swarmform.workstation import IMAGE, remove_workstation
+from swarmform.workstation import IMAGE, docker_workers, remove_workstation
 
 
 class WorkMemory(FileDeployment):
@@ -193,7 +193,7 @@ for name, data in json.load(sys.stdin).items():
             return actor, expected, missing
         items = list(startup.items())
         if len(items) >= 4:
-            with ThreadPoolExecutor(max_workers=min(16, len(items))) as pool:
+            with ThreadPoolExecutor(max_workers=docker_workers(len(items))) as pool:
                 verified = list(pool.map(_verify_one, items))
         else:
             verified = [_verify_one(item) for item in items]

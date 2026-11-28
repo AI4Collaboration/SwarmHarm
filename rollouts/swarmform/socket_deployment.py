@@ -13,7 +13,7 @@ import threading
 import time
 from swarmform.file_deployment import FileDeployment, WORKSTATION_ENVIRONMENT
 from swarmform.read_observer import ObservedFileStation
-from swarmform.workstation import IMAGE
+from swarmform.workstation import IMAGE, docker_workers, remove_network
 from swarmform.service_workstation import ServiceWorkstation
 
 
@@ -122,7 +122,7 @@ class SocketDeployment(FileDeployment):
                 return actor, network
             net_items = list(planned_nets.items())
             if len(net_items) >= 4:
-                with ThreadPoolExecutor(max_workers=min(16, len(net_items))) as pool:
+                with ThreadPoolExecutor(max_workers=docker_workers(len(net_items))) as pool:
                     created_nets = list(pool.map(_make_net, net_items))
             else:
                 created_nets = [_make_net(p) for p in net_items]
@@ -206,7 +206,7 @@ class SocketDeployment(FileDeployment):
                 return actor, volume, station
             st_items = list(startup.items())
             if len(st_items) >= 4:
-                with ThreadPoolExecutor(max_workers=min(16, len(st_items))) as pool:
+                with ThreadPoolExecutor(max_workers=docker_workers(len(st_items))) as pool:
                     built = list(pool.map(_start_station, st_items))
             else:
                 built = [_start_station(item) for item in st_items]
@@ -224,7 +224,7 @@ class SocketDeployment(FileDeployment):
             def _fetch_ns(station_name):
                 return station_name, json.loads(command(["docker", "exec", station_name, "python", "-I", "-c", namespace_code]).stdout)
             if len(st_names) >= 4:
-                with ThreadPoolExecutor(max_workers=min(16, len(st_names))) as pool:
+                with ThreadPoolExecutor(max_workers=docker_workers(len(st_names))) as pool:
                     ns_by_name = dict(pool.map(_fetch_ns, st_names))
             else:
                 ns_by_name = dict(_fetch_ns(n) for n in st_names)
@@ -334,7 +334,7 @@ class SocketDeployment(FileDeployment):
                 {"kind": "network", "name": name}
             ]
             return
-        command(["docker", "network", "rm", name])
+        remove_network(name)
         if removed is not None:
             with getattr(self, "_res_lock", threading.Lock()):
                 removed.add(name)
@@ -389,8 +389,11 @@ class SocketDeployment(FileDeployment):
                 try:
                     stations = [s for s in self.stations.values() if not getattr(s, "closed", False)]
                     if len(stations) >= 4:
-                        with ThreadPoolExecutor(max_workers=min(16, len(stations))) as pool:
+                        with ThreadPoolExecutor(max_workers=docker_workers(len(stations))) as pool:
                             list(pool.map(lambda s: s.close(), stations))
+                    else:
+                        for station in stations:
+                            station.close()
                     service = getattr(self, "service", None)
                     if service is not None and not service.closed:
                         service.retire()
@@ -403,7 +406,7 @@ class SocketDeployment(FileDeployment):
                         if svc_vol and svc_vol not in self._removed_volumes:
                             vols.append(svc_vol)
                         if len(nets) + len(vols) >= 4:
-                            with ThreadPoolExecutor(max_workers=min(16, len(nets) + len(vols))) as pool:
+                            with ThreadPoolExecutor(max_workers=docker_workers(len(nets) + len(vols))) as pool:
                                 jobs = [pool.submit(self._remove_network, n) for n in nets]
                                 jobs += [pool.submit(self._remove_volume, v) for v in vols]
                                 for job in jobs:

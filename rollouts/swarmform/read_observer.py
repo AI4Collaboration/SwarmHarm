@@ -21,7 +21,7 @@ from swarmform.strace_timing import FORMAT, HOST_CLOCK, current_command, legacy_
 
 TRACE_ROOT = "/var/log/workstation"
 CHUNK_BYTES = 1024 * 1024
-_PRUNE_POOL = ThreadPoolExecutor(max_workers=16, thread_name_prefix="swarmform-prune")
+_PRUNE_POOL = ThreadPoolExecutor(max_workers=32, thread_name_prefix="swarmform-prune")
 
 
 READ_LOGS = r"""
