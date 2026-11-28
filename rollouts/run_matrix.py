@@ -150,7 +150,7 @@ def cases(args):
                            if getattr(args, "harness", "chat-completions") == "chat-completions" else {}),
                         thinking_level=getattr(args, "thinking_level", None),
                         **({"service_tier": args.service_tier} if getattr(args, "service_tier", None) else {}),
-                        **checkpoint.cohort_registration(args, task=task),
+                        **checkpoint.cohort_registration(args, task=task, population=population),
                         entry_window_seconds=getattr(args, "entry_window_seconds", 0),
                         **({"closed_mail_receipts": True} if getattr(args, "closed_mail_receipts", False) and channel == "direct" else {}),
                         **({"enforce_personal_limits": True} if getattr(args, "enforce_personal_limits", False) else {}),
@@ -244,8 +244,9 @@ def main():
             "Use N >= 1, repeats >= 1, max-attempts >= 1, concurrency >= 1 and a request timeout of 1 to 600 seconds"
         )
     min_horizon = min(
-        args.cohort_seconds or checkpoint.default_cohort_seconds(task)
+        args.cohort_seconds or checkpoint.default_cohort_seconds(task, pop)
         for task in args.tasks
+        for pop in args.populations
     )
     if not 0 <= args.entry_window_seconds < min_horizon:
         parser.error("Entry offsets must precede the common cohort deadline.")

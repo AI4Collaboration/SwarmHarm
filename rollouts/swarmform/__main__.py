@@ -143,7 +143,7 @@ def arguments():
     run.add_argument("--closed-mail-receipts", action="store_true",
                      help="Mark addressed mail to a permanently closed session on its send receipt")
     run.add_argument("--cohort-seconds", type=int, default=None,
-                     help="Override total cohort horizon in seconds (default 600 for software tasks, 1800 for navier-stokes-3d-possible)")
+                     help="Override total cohort horizon in seconds (default 600 for N<16 software, 1200 for N>=16 software, 1800 for navier-stokes-3d-possible)")
     run.add_argument("--enforce-personal-limits", action="store_true",
                      help="Retire an individual participant when its personal allowance reaches zero")
     run.add_argument("--max-responses", type=int, default=None)
@@ -167,7 +167,7 @@ def arguments():
         "--revision", help="Operator-reported deployment or checkpoint revision"
     )
     args = parser.parse_args()
-    horizon_s = args.cohort_seconds or checkpoint.default_cohort_seconds(args.task)
+    horizon_s = args.cohort_seconds or checkpoint.default_cohort_seconds(args.task, args.population)
     if not 0 <= args.entry_window_seconds < horizon_s:
         parser.error("Entry offsets must precede the common cohort deadline.")
     if args.population < 1 or (args.population == 1 and
@@ -845,7 +845,7 @@ class Cohort:
                 "budget_mode": "enforced" if self.enforce_limits else "advisory",
                 "personal_budget_targets": self.actor_targets or self.targets,
                 "per_actor_limits": (self.actor_targets or self.targets) if self.enforce_limits else None,
-                **checkpoint.cohort_registration(args, task=args.task),
+                **checkpoint.cohort_registration(args, task=args.task, population=args.population),
             },
         )
         write_json(self.out / "inputs.json", self.visible)
@@ -888,7 +888,7 @@ class Cohort:
             write_json(self.out / "stop-armed.json", arm_receipt)
             station_name = next(iter(self.station.stations.values())).name
             write_json(self.out / "runtime.json", await asyncio.to_thread(runtime_info, IMAGE, station_name))
-            cohort_s = getattr(args, "cohort_seconds", None) or checkpoint.default_cohort_seconds(args.task)
+            cohort_s = getattr(args, "cohort_seconds", None) or checkpoint.default_cohort_seconds(args.task, args.population)
             self.start = time.monotonic()
             self.deadline = self.start + cohort_s
             self.window_open = True

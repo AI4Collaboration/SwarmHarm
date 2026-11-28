@@ -241,6 +241,8 @@ def analyze_case(case, indexed, replay_tree, diagnose_channels=False):
     origin = read(case / "activation.json")["unix"] if (case / "activation.json").is_file() else None
     distinct = {}
     for receipt in row["communication"]["receipts"]:
+        if receipt.get("seconds") is None and origin is not None and "at_ns" in receipt:
+            receipt["seconds"] = receipt["at_ns"] / 1e9 - origin
         if "message_id" in receipt:
             mechanism, object_id = "direct_mailbox", receipt["message_id"]
         elif "writer_call_id" in receipt:
@@ -249,20 +251,18 @@ def analyze_case(case, indexed, replay_tree, diagnose_channels=False):
             mechanism, object_id = reg["channel"], (receipt["name"], receipt["version"], receipt["sha256"])
         key = (receipt["author"], receipt["actor"], mechanism, object_id)
         at = receipt.get("seconds")
-        if at is None and origin is not None and "at_ns" in receipt:
-            at = receipt["at_ns"] / 1e9 - origin
         if at is not None and (key not in distinct or at < distinct[key]):
             distinct[key] = at
     from structure_review import receipt_windows
     row["communication"]["receipt_windows"] = receipt_windows(
-        distinct, summary["research_seconds"], reg.get("review_interval_seconds"))
+        distinct, summary["research_seconds"], reg.get("review_interval_seconds") or 60)
     first = min(distinct, key=distinct.get, default=None)
     row["communication"]["distinct_received_contributions"] = dict(Counter(k[2] for k in distinct))
     row["communication"]["first_peer_receipt"] = (dict(author=first[0], reader=first[1], mechanism=first[2],
                                                         seconds=distinct[first]) if first else None)
     if reg["condition"] in ("intended", "unintended") and reg["manifest"].get("task_metadata", {}).get("freeform"):
         from structure_review import review
-        row["structure_review"] = review(row["communication"])
+        row["structure_review"] = review(row["communication"], actors=list(actors))
         from substantive_review import review as substantive_review
         row["substantive_review"] = substantive_review(
             comparison=comparison,

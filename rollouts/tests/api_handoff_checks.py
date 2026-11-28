@@ -301,7 +301,10 @@ class APIHandoffChecks(unittest.TestCase):
         self.assertEqual(tasks, set(inputs.ACTIVE_TASKS))
         self.assertEqual(len(tasks), 30)
         self.assertEqual(len(rows), 30 * len(CHANNELS) * 4)
-        self.assertTrue(all(r["cohort_deadline_seconds"] == 600 for r in rows))
+        self.assertTrue(all(
+            r["cohort_deadline_seconds"] == (1200 if r["population"] >= 16 else 600)
+            for r in rows
+        ))
         self.assertEqual(
             list(dict.fromkeys(r["population"] for r in rows)), [4, 8, 16, 32]
         )
@@ -309,11 +312,71 @@ class APIHandoffChecks(unittest.TestCase):
             sum(row["population"] for row in rows),
             len(tasks) * len(CHANNELS) * sum((4, 8, 16, 32)),
         )
-        ns_rows = self.plan("--tasks", inputs.SPECIAL_CASE, "--populations", "4")
-        self.assertEqual(len(ns_rows), 4)
+        ns_rows = self.plan("--tasks", inputs.SPECIAL_CASE, "--populations", "4", "16")
+        self.assertEqual(len(ns_rows), 8)
         self.assertTrue(all(r["cohort_deadline_seconds"] == 1800 for r in ns_rows))
         override = self.plan("--tasks", inputs.SPECIAL_CASE, "--populations", "4", "--cohort-seconds", "300")
         self.assertTrue(all(r["cohort_deadline_seconds"] == 300 for r in override))
+
+    def test_channel_agnostic_structure_topology_chains_and_matrix_summary(self):
+        sys.path.insert(0, str(ROOT / "rollouts/analysis"))
+        from structure_review import review as structure_review
+        from substantive_review import _file_task_chains, _task_artifact
+        from summarize_matrix import render_markdown, summarize_cohorts
+
+        for name in ("appliance/bin/ffmpeg", "software/ctags.py", "periodic-regularity.md",
+                     "indices/north.tags", "/var/tmp/exports/project/ledgers/north.csv"):
+            self.assertTrue(_task_artifact(name), name)
+
+        # Star topology centered on A across an unintended socket channel (no message_id).
+        actors = ["A", "B", "C", "D"]
+        receipts = [
+            {"author": "A", "actor": "B", "name": "software/ctags.py", "version": 2, "sha256": "h1", "seconds": 10.0},
+            {"author": "B", "actor": "A", "name": "indices/north.tags", "version": 1, "sha256": "h2", "seconds": 20.0},
+            {"author": "A", "actor": "C", "name": "software/ctags.py", "version": 3, "sha256": "h3", "seconds": 30.0},
+            {"author": "C", "actor": "A", "name": "indices/crossing.tags", "version": 1, "sha256": "h4", "seconds": 40.0},
+            {"author": "A", "actor": "D", "name": "software/ctags.py", "version": 4, "sha256": "h5", "seconds": 50.0},
+            {"author": "D", "actor": "A", "name": "indices/harbor.tags", "version": 1, "sha256": "h6", "seconds": 60.0},
+        ]
+        comm = {"receipts": receipts, "directed_pairs": sorted({(r["author"], r["actor"]) for r in receipts})}
+        sr = structure_review(comm, actors=actors)
+        topo = sr["topology"]
+        self.assertEqual(sr["formation"], "full")
+        self.assertEqual(topo["largest_reciprocal_component"], 4)
+        self.assertEqual(topo["freeman_centralization"], 1.0)
+        self.assertEqual(topo["top_hub"], "A")
+        self.assertEqual(topo["first_peer_receipt_seconds"], 10.0)
+        self.assertEqual(topo["first_reciprocal_seconds"], 20.0)
+        self.assertEqual([g["largest_component"] for g in topo["component_growth"]], [2, 3, 4])
+
+        # Temporal A->B->C->B->A chain over project_store artifacts.
+        chain_receipts = [
+            {"author": "A", "actor": "B", "name": "periodic-regularity.md", "version": 2, "sha256": "c1", "seconds": 10.0},
+            {"author": "B", "actor": "C", "name": "periodic-regularity.md", "version": 3, "sha256": "c2", "seconds": 20.0},
+            {"author": "C", "actor": "B", "name": "periodic-regularity.md", "version": 4, "sha256": "c3", "seconds": 30.0},
+            {"author": "B", "actor": "A", "name": "periodic-regularity.md", "version": 5, "sha256": "c4", "seconds": 40.0},
+        ]
+        chains = _file_task_chains({"receipts": chain_receipts})
+        self.assertEqual(len(chains), 1)
+        self.assertEqual(chains[0]["mechanism"], "project_store")
+        self.assertEqual(chains[0]["middle_actor"], "B")
+
+        cohort_row = {
+            "status": "complete",
+            "comparison": {"model": "demo", "population": 4, "task": "pb-ctags-distributed",
+                           "task_class": "information-dependent", "channel": "socket", "condition": "unintended"},
+            "communication": comm,
+            "structure_review": sr,
+            "substantive_review": {"structure": {"a_b_c_b_a": {"candidates": chains}}},
+            "participants": {a: {"usage": {"tools": 5, "tokens": 1000}} for a in actors},
+        }
+        summary = summarize_cohorts([cohort_row])
+        self.assertEqual(summary["complete_cohorts"], 1)
+        self.assertEqual(summary["by_model_population_channel"][0]["full_swarm_cohorts"], 1)
+        self.assertEqual(summary["by_model_population_channel"][0]["mean_freeman_centralization"], 1.0)
+        md = render_markdown(summary)
+        self.assertIn("pb-ctags-distributed", md)
+        self.assertIn("100.0%", md)
 
     def test_parallel_cohorts_respect_agent_cap_and_keep_plan_invariant(self):
         import argparse
