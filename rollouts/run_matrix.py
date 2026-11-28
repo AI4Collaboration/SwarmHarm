@@ -216,6 +216,8 @@ def main():
     parser.add_argument("--repeats", type=int, default=defaults.REPEATS)
     parser.add_argument("--max-attempts", type=int, default=2,
                         help="Maximum new attempts per cohort on transient provider failures (default: 2)")
+    parser.add_argument("--archive", action="store_true",
+                        help="Verify, compress and remove raw directories for completed cohorts automatically")
     parser.add_argument(
         "--execute", action="store_true", help="Run planned rows sequentially"
     )
@@ -328,6 +330,16 @@ def execute_rows(args, rows, parser):
                 complete = summary and summary["complete"] and summary.get("physical_stop_verified")
                 record.update(status="complete" if complete else "incomplete", returncode=code, log=str(log))
                 record.update(resume_details(summary))
+                if complete and getattr(args, "archive", False):
+                    archived = subprocess.run(
+                        [sys.executable, str(ROOT.parent / "scripts/archive-trajectories"),
+                         str(directory), "--remove-source"],
+                        cwd=ROOT.parent, capture_output=True, text=True,
+                    )
+                    if archived.returncode == 0:
+                        record.update(archived_evidence(archive_index))
+                    else:
+                        record["archive_error"] = (archived.stderr or archived.stdout).strip()[-500:]
                 if record.get("retry_reason") in ("operator_interrupt", "provider_rejected"):
                     break
             if interrupted or not record.get("retry_reason") or new_attempts >= getattr(args, "max_attempts", 2):

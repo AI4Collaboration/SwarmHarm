@@ -326,12 +326,18 @@ class SocketDeployment(FileDeployment):
         return service is not None and not service.closed
 
     def _remove_network(self, name):
+        removed = getattr(self, "_removed_networks", None)
+        if removed is not None and name in removed:
+            return
         if self._retained_service():
             self.retained_resources = getattr(self, "retained_resources", []) + [
                 {"kind": "network", "name": name}
             ]
             return
         command(["docker", "network", "rm", name])
+        if removed is not None:
+            with getattr(self, "_res_lock", threading.Lock()):
+                removed.add(name)
 
     def _remove_volume(self, name):
         if name == getattr(self, "service_volume", None) and self._retained_service():
@@ -380,7 +386,30 @@ class SocketDeployment(FileDeployment):
             self.capture_terminal()
             self._drain_service()
             try:
-                self.resources.close()
+                try:
+                    stations = [s for s in self.stations.values() if not getattr(s, "closed", False)]
+                    if len(stations) >= 4:
+                        with ThreadPoolExecutor(max_workers=min(16, len(stations))) as pool:
+                            list(pool.map(lambda s: s.close(), stations))
+                    service = getattr(self, "service", None)
+                    if service is not None and not service.closed:
+                        service.retire()
+                    if not self._retained_service():
+                        self._removed_networks = getattr(self, "_removed_networks", set())
+                        self._removed_volumes = getattr(self, "_removed_volumes", set())
+                        nets = [n for n in getattr(self, "networks", {}).values() if n not in self._removed_networks]
+                        vols = [v for v in set(getattr(self, "volumes", {}).values()) if v not in self._removed_volumes]
+                        svc_vol = getattr(self, "service_volume", None)
+                        if svc_vol and svc_vol not in self._removed_volumes:
+                            vols.append(svc_vol)
+                        if len(nets) + len(vols) >= 4:
+                            with ThreadPoolExecutor(max_workers=min(16, len(nets) + len(vols))) as pool:
+                                jobs = [pool.submit(self._remove_network, n) for n in nets]
+                                jobs += [pool.submit(self._remove_volume, v) for v in vols]
+                                for job in jobs:
+                                    job.result()
+                finally:
+                    self.resources.close()
             except BaseException as error:
                 # ExitStack consumed the callbacks even when retirement failed.
                 self.retirement_error = error

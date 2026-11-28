@@ -23,6 +23,69 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class APIHandoffChecks(unittest.TestCase):
+    def test_programbench_recipe_sha256_is_stable_and_detects_edits(self):
+        import importlib.util
+        import shutil
+
+        path = ROOT / "rollouts/programbench-build/build.py"
+        spec = importlib.util.spec_from_file_location("programbench_build", path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        baseline = module.recipe_sha256(ROOT)
+        self.assertEqual(baseline, module.recipe_sha256(ROOT))
+        with TemporaryDirectory() as tmp:
+            mirror = Path(tmp)
+            for rel in module.RECIPE_FILES:
+                dst = mirror / rel
+                dst.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(ROOT / rel, dst)
+            self.assertEqual(module.recipe_sha256(mirror), baseline)
+            target = mirror / "rollouts/requirements.txt"
+            target.write_text(target.read_text() + "\n# changed\n")
+            self.assertNotEqual(module.recipe_sha256(mirror), baseline)
+
+    def test_archive_flag_compacts_completed_cohort_without_changing_plan(self):
+        import argparse
+        from run_matrix import execute_rows
+
+        default_plan = self.plan("--tasks", "planning-possible", "--populations", "3")[:1]
+        archive_plan = self.plan("--tasks", "planning-possible", "--populations", "3", "--archive")[:1]
+        self.assertEqual(default_plan, archive_plan)
+
+        launched = []
+
+        def collect(command, **kwargs):
+            path = Path(command[-1])
+            launched.append(path)
+            path.mkdir()
+            (path / "summary.json").write_text(json.dumps({
+                "schema": "swarmform-completion-v1",
+                "complete": True,
+                "physical_stop_verified": True,
+                "reason": "cohort_deadline",
+                "usage": {"Research01": {"responses": 1, "tools": 0, "tokens": 10}},
+            }))
+            (path / "physical-stop.json").write_text('{"research_stop_verified": true}')
+            (path / "registration.json").write_text('{"model": "local-test-model", "population": 1}')
+            (path / "inputs.json").write_text('{"prompts": {"Research01": []}}')
+            for name in ("observations.jsonl.gz", "outcomes.json", "truth.json", "Research01.jsonl.gz"):
+                (path / name).write_bytes(gzip.compress(b"{}\n") if name.endswith(".gz") else b"{}")
+            return 0, None
+
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            args = SimpleNamespace(out=root, model="local-test-model", archive=True)
+            with patch("run_matrix.cohort_command", side_effect=lambda a, r, d: ["fixture", str(d)]), \
+                 patch("run_matrix.run_process", side_effect=collect):
+                self.assertEqual(execute_rows(args, default_plan, argparse.ArgumentParser()), 0)
+                self.assertEqual(execute_rows(args, default_plan, argparse.ArgumentParser()), 0)
+            self.assertEqual(len(launched), 1)
+            self.assertFalse(launched[0].exists())
+            self.assertTrue(launched[0].with_suffix(".tar.gz").is_file())
+            self.assertTrue(launched[0].with_name(launched[0].name + ".archive.json").is_file())
+            run = json.loads((root / "index.json").read_text())["runs"][0]
+            self.assertEqual(run["status"], "archived")
+
     def test_programbench_blob_redirect_strips_cross_origin_authorization(self):
         import importlib.util
         from urllib.request import Request

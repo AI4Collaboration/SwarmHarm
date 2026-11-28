@@ -9,14 +9,15 @@ mode=${1:-all}
 
 case "$mode" in
   swarmform-api)
-    runtime="$state/swarmform-api"
-    python3.12 -m venv "$runtime"
-    "$runtime/bin/python" -m pip install -r "$repo/rollouts/requirements.txt"
+    command -v docker >/dev/null || { echo 'Install and start a Linux Docker engine first.' >&2; exit 1; }
     case "$(docker info --format '{{.Architecture}}')" in
       arm64|aarch64) platform=linux/arm64 ;;
       amd64|x86_64) platform=linux/amd64 ;;
       *) echo 'An ARM64 or AMD64 Linux Docker engine is required.' >&2; exit 1 ;;
     esac
+    runtime="$state/swarmform-api"
+    python3.12 -m venv "$runtime"
+    "$runtime/bin/python" -m pip install -q -r "$repo/rollouts/requirements.txt"
     provenance="$state/workstation-$(date +%Y%m%dT%H%M%S)-$$.json"
     "$runtime/bin/python" "$repo/scripts/build-workstation-image" --platform "$platform" --output "$provenance"
     harm_image=$("$runtime/bin/python" -c 'import json,sys; print(json.load(open(sys.argv[1]))["image"])' "$provenance")
@@ -36,11 +37,15 @@ docker build --build-arg "WORKSTATION=$base_tag" -t swarmform-media:360a402 - < 
 "$runtime/bin/python" "$repo/rollouts/programbench-build/build.py" --workstation swarmform-media:360a402 --tag swarmform-programbench:ten
 form_image=$(docker image inspect --format '{{.Id}}' swarmform-programbench:ten)
 docker run --rm --network none "$form_image" /opt/reference/ffmpeg -version
-"$runtime/bin/python" - "$state" "$mode" "$runtime" "$harm_image" "$form_image" <<'PY'
-import json, os, pathlib, sys, tempfile
-state, mode, runtime, harm, form = sys.argv[1:]
+"$runtime/bin/python" - "$repo" "$state" "$mode" "$runtime" "$harm_image" "$form_image" <<'PY'
+import importlib.util, json, os, pathlib, sys, tempfile
+repo, state, mode, runtime, harm, form = sys.argv[1:]
+spec = importlib.util.spec_from_file_location('pb_build', pathlib.Path(repo) / 'rollouts/programbench-build/build.py')
+pb_build = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(pb_build)
 python = str(pathlib.Path(runtime).resolve() / 'bin/python')
-filename, config = (('swarmform-api.json', {'python': python, 'image': form}) if mode == 'swarmform-api'
+filename, config = (('swarmform-api.json', {'python': python, 'image': form, 'recipe_sha256': pb_build.recipe_sha256(repo)})
+                    if mode == 'swarmform-api'
                     else ('default-runner.json', {'python': python, 'images': {'swarmharm': harm, 'swarmform': form}}))
 with tempfile.NamedTemporaryFile(mode='w', dir=state, delete=False) as handle:
     json.dump(config, handle)

@@ -149,12 +149,18 @@ class FileDeployment:
         return name
 
     def _remove_volume(self, name):
+        removed = getattr(self, "_removed_volumes", None)
+        if removed is not None and name in removed:
+            return
         if any(
             not station.closed and self.volumes.get(actor) == name
             for actor, station in self.stations.items()
         ):
             return
         remove_volume(name)
+        if removed is not None:
+            with getattr(self, "_res_lock", threading.Lock()):
+                removed.add(name)
 
     def inspect_bindings(self, shared):
         result = {}
@@ -260,6 +266,11 @@ class FileDeployment:
             if len(stations) >= 4:
                 with ThreadPoolExecutor(max_workers=min(16, len(stations))) as pool:
                     list(pool.map(lambda s: s.close(), stations))
+            self._removed_volumes = getattr(self, "_removed_volumes", set())
+            vols = [v for v in set(getattr(self, "volumes", {}).values()) if v not in self._removed_volumes]
+            if len(vols) >= 4:
+                with ThreadPoolExecutor(max_workers=min(16, len(vols))) as pool:
+                    list(pool.map(self._remove_volume, vols))
             self.resources.close()
             self.closed = True
 

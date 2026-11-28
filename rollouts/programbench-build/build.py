@@ -12,6 +12,26 @@ from urllib.parse import urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener, urlopen
 
 HERE = Path(__file__).resolve().parent
+RECIPE_FILES = (
+    "shared/Dockerfile.workstation",
+    "shared/workstation_patch.py",
+    "shared/workstation-patch.LICENSE",
+    "rollouts/requirements.txt",
+    "rollouts/Dockerfile.media",
+    "rollouts/programbench-build/Dockerfile",
+    "rollouts/programbench-build/invoke",
+    "rollouts/swarmform/programbench-instances.json",
+)
+
+
+def recipe_sha256(repo=None):
+    root = Path(repo) if repo else HERE.parents[1]
+    digest = hashlib.sha256()
+    for relative in RECIPE_FILES:
+        data = (root / relative).read_bytes()
+        digest.update(relative.encode() + b"\0")
+        digest.update(hashlib.sha256(data).digest())
+    return digest.hexdigest()
 
 
 class StripAuthRedirect(HTTPRedirectHandler):
@@ -67,7 +87,7 @@ def main():
             shutil.copy2(HERE/name,work/name)
         executables=work/"executables"
         executables.mkdir()
-        with ThreadPoolExecutor(max_workers=3) as pool:
+        with ThreadPoolExecutor(max_workers=min(6, len(instances))) as pool:
             list(pool.map(lambda spec: download(spec,executables),instances.values()))
         build = ["docker", "build", "-t", args.tag]
         if args.workstation:
