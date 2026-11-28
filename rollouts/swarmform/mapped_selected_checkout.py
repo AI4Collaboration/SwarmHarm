@@ -35,7 +35,6 @@ def checkout(directory, names, listing):
     with ExitStack() as handles:
         root_fd = os.open(root, directory_flags)
         handles.callback(os.close, root_fd)
-        # Serialize simultaneous checkout attempts at this exact directory inode.
         fcntl.flock(root_fd, fcntl.LOCK_EX)
         if owned(root.lstat()) != owned(os.fstat(root_fd)):
             raise ValueError(f"Checkout directory changed: {root}")
@@ -102,7 +101,7 @@ def checkout(directory, names, listing):
                     elif (current.st_size,current.st_mtime_ns)==(original.st_size,original.st_mtime_ns):
                         os.unlink(leaf,dir_fd=parent)
                 except OSError:
-                    # A concurrent private addition or replacement belongs to its creator.
+                    # Leave any replaced or non-empty entries untouched during rollback.
                     pass
             if made_root:
                 try:

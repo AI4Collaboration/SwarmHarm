@@ -33,8 +33,7 @@ def filed_records(select):
     with TemporaryDirectory() as raw:
         directory = Path(raw) / "records"
         names = [row["name"] for row in rows]
-        # The named checkout takes its own version-pinned listing. Keep the
-        # first listing authoritative when a concurrent filing changes a name.
+        # Keep the initial listing versions authoritative if checkout returns newer revisions.
         result = subprocess.run([sys.executable, CLIENT, "checkout", str(directory), *names],
                                 stdout=subprocess.PIPE)
         checked = {}
