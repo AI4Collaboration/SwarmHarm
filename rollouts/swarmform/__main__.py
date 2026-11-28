@@ -981,7 +981,7 @@ class Cohort:
                 opening = self.visible["startup"][actor]
                 for root in ("/workspace", "/var/tmp/exports", "temporary_files"):
                     for name, content in snap.get(root, {}).items():
-                        if "/.swarmform-stop-" in name or name.startswith("/var/tmp/exports/messages/"):
+                        if "/.swarmform-stop-" in name or "/.session-gate-" in name or name.startswith("/var/tmp/exports/messages/"):
                             continue
                         raw = content_bytes(content, self.out / "reads" / actor)
                         if name not in opening or raw != opening[name].encode():

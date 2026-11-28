@@ -31,7 +31,7 @@ control=Path(sys.argv[1])
 with (control/'launch.lock').open('rb') as lock:
     fcntl.flock(lock,fcntl.LOCK_SH)
     if sys.argv[2]=='--closed' or (control/'stopped').exists():
-        print('The research period has closed.',file=sys.stderr)
+        print('The session has closed.',file=sys.stderr)
         raise SystemExit(125)
     os.execvp(sys.argv[3],sys.argv[3:])
 '''
@@ -201,7 +201,7 @@ class ParticipantStop:
                     or not station.initialized or station.closed):
                 raise ValueError('Participant cutoff requires initialized, observed continuous Docker stations')
         if not self.stations:raise ValueError('Participant cutoff requires stations')
-        self.controls={a:'/private/tmp/.swarmform-stop-'+secrets.token_hex(16) for a in self.stations}
+        self.controls={a:'/private/tmp/.session-gate-'+secrets.token_hex(16) for a in self.stations}
         with ThreadPoolExecutor(max_workers=docker_workers(len(self.stations))) as pool:
             futures={a:pool.submit(self._run,a,'arm') for a in self.stations}
             for actor,future in futures.items():self.armed[actor]=future.result()

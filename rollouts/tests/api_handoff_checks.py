@@ -925,6 +925,9 @@ class APIHandoffChecks(unittest.TestCase):
         material = deepcopy(incidental)
         material["project_artifacts"]["gro.py"] = '"""Read and write coordinate frames in GRO format."""'
         self.assertTrue(audit_visible(material, intended=False)["passed"])
+        from swarmform import participant_stop
+        self.assertNotIn("swarmform", participant_stop.LAUNCH_GUARD.lower())
+        self.assertNotIn("swarmform", Path(participant_stop.__file__).read_text().split("self.controls=", 1)[1].splitlines()[0].lower())
 
     def test_local_checker_has_no_hidden_calendar_access(self):
         from swarmform.triplets import pooled

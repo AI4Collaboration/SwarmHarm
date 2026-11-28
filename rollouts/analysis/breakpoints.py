@@ -220,7 +220,7 @@ def diagnose(case, reg, actors, communication):
         else:
             paths = sorted(path for area in ("/workspace", "temporary_files")
                            for path, payload in snapshot.get(area, {}).items()
-                           if opening[actor].get(path) != payload and "/.swarmform-stop-" not in path
+                           if opening[actor].get(path) != payload and "/.swarmform-stop-" not in path and "/.session-gate-" not in path
                            and "/__pycache__/" not in path)
         if paths:
             observe(rows[actor], "private_output", e["at"] - origin, sequence=e["sequence"], path=paths[0])

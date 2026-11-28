@@ -166,7 +166,7 @@ def audit(case, reg, inputs, truth):
         for area in ("/workspace", "/var/tmp/exports", "temporary_files"):
             for name, val in snapshot.get(area, {}).items():
                 parts = PurePosixPath(name).parts
-                if any(p.startswith(".swarmform-stop-") for p in parts) or name.startswith("/var/tmp/exports/messages/"):
+                if any(p.startswith((".swarmform-stop-", ".session-gate-")) for p in parts) or name.startswith("/var/tmp/exports/messages/"):
                     continue
                 raw = content_bytes(val, case / "reads" / actor)
                 if name not in opening[actor] or raw != opening[actor][name].encode():
