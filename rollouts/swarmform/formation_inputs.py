@@ -166,10 +166,13 @@ def _build(key, channel, population):
                        f"{location}\nInternet and package installation are unavailable.\n")
         if channel == "socket" and key in ACTIVE_TASKS:
             environment += "Project work command: python3 /workspace/projects.py work PATH [PATH ...] -- COMMAND [ARG ...] opens the named project files for a command and saves its changes on successful exit.\n"
-        if channel == "mapped_memory" and key in ACTIVE_TASKS and TASK_MODULES[key] == "programbench":
+        if channel == "mapped_memory" and key in ACTIVE_TASKS:
             environment += 'Files under /workspace are local to this workstation. A checkout is a snapshot of the selected project revisions.\n'
-            environment += "The project file utility accepts `python3 /workspace/projects.py work PATH [PATH ...] -- COMMAND [ARG ...]` to open current cache versions and save changes to the named files on successful exit.\n"
-        metadata = {**metadata, "input_version": metadata["input_version"] + "-brief2"}
+            environment += "The project file utility accepts `python3 /workspace/projects.py work PATH [PATH ...] -- COMMAND [ARG ...]` to open current project revisions and save changes to the named files on successful exit.\n"
+        if channel in {"mapped_memory", "socket"} and key == SPECIAL_CASE:
+            environment += "Files under /workspace are local to this workstation. Use /workspace/projects.py to retain project revisions.\n"
+        metadata = {**metadata, "input_version": metadata["input_version"] + "-brief2" + (
+            "-store-locality1" if channel in {"mapped_memory", "socket"} and key == SPECIAL_CASE else "")}
     else:
         environment = FILE_ENV if file_interface else CLIENT_ENV
     common = next(iter(startup.values()))
@@ -405,7 +408,7 @@ def _build(key, channel, population):
                 client = client.replace("from urllib.request import Request, urlopen\n", "", 1)
                 client = client.replace("        http = Request(", "        from urllib.request import Request, urlopen\n        http = Request(", 1)
                 metadata["input_version"] += "-lazy-http1"
-            if channel == "mapped_memory" and key in ACTIVE_TASKS and TASK_MODULES[key] == "programbench":
+            if channel == "mapped_memory" and key in ACTIVE_TASKS:
                 extra_files["/workspace/formation_store.py"] = client
                 client = Path(__file__).with_name("mapped_worktree.py").read_text()
                 if metadata["family"] in {"lnav", "pandoc"}:
@@ -469,7 +472,7 @@ def _build(key, channel, population):
                 extra_files["/workspace/ctags_socket_commands.py"] = Path(__file__).with_name("ctags_socket_commands.py").read_text()
                 client = 'if __name__ == "__main__":\n    from ctags_socket_commands import dispatch\n    dispatch()\n\n' + client
                 metadata["input_version"] += "-signed-index-commands1"
-            if channel == "socket" and TASK_MODULES[key] == "commissioning":
+            if channel in {"socket", "mapped_memory"} and TASK_MODULES[key] == "commissioning":
                 package = json.loads(assets["appliance-install.json"])["package"]
                 for station in startup.values():
                     station["/workspace/archive/engineering-note.txt"] += (

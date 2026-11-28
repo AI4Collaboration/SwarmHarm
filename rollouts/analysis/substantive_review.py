@@ -5,6 +5,7 @@ communication-only evidence.  A receipt or message cycle never counts as a
 handoff unless a task artifact is produced and subsequently used.
 """
 
+from bisect import bisect_left
 from collections import defaultdict
 
 
@@ -161,59 +162,92 @@ def _file_task_chains(communication):
     the prior reader observed the artifact.
     """
     files = sorted(_filesystem_receipts(communication), key=lambda r: r["read_seconds"])
-    # Deduplicate to the earliest read per (writer, reader, path, sha256) to keep
-    # large N=16/32 project-store traces fast without losing distinct handoffs.
     earliest = {}
     for record in files:
         key = (record["writer"], record["reader"], record["path"], record["sha256"])
         if key not in earliest:
             earliest[key] = record
-    files = list(earliest.values())[:400]
-    by_writer, by_pair = defaultdict(list), defaultdict(list)
-    for record in files:
-        by_writer[record["writer"]].append(record)
+    unique = list(earliest.values())
+    # Index each directed pair by write_seconds and precompute the suffix
+    # minimum read_seconds so finding the earliest valid next hop is O(log E)
+    # without truncating late return reads in large N=16/32 runs.
+    by_pair = defaultdict(list)
+    for record in unique:
         by_pair[record["writer"], record["reader"]].append(record)
+    pair_index = {}
+    by_writer_targets = defaultdict(set)
+    for pair, records in by_pair.items():
+        records.sort(key=lambda r: (r["write_seconds"], r["read_seconds"]))
+        writes = [r["write_seconds"] for r in records]
+        best = [None] * len(records)
+        cur = records[-1]
+        best[-1] = cur
+        for i in range(len(records) - 2, -1, -1):
+            if records[i]["read_seconds"] <= cur["read_seconds"]:
+                cur = records[i]
+            best[i] = cur
+        pair_index[pair] = (writes, best)
+        by_writer_targets[pair[0]].add(pair[1])
+
+    def earliest_after(writer, reader, not_before):
+        indexed = pair_index.get((writer, reader))
+        if indexed is None:
+            return None
+        writes, best = indexed
+        pos = bisect_left(writes, not_before)
+        return best[pos] if pos < len(best) else None
+
+    # For each directed pair (A, B), the earliest read dominates all later A→B reads.
+    first_by_pair = {}
+    for record in unique:
+        pair = (record["writer"], record["reader"])
+        if pair not in first_by_pair:
+            first_by_pair[pair] = record
+
     chains = []
     seen = set()
-    for first in files:
+    for (a, b), first in sorted(first_by_pair.items(), key=lambda kv: kv[1]["read_seconds"]):
         if len(chains) >= 32:
             break
-        for second in by_writer[first["reader"]]:
-            if second["write_seconds"] < first["read_seconds"]:
+        if a not in by_writer_targets.get(b, ()):
+            continue
+        for c in sorted(by_writer_targets.get(b, ())):
+            if c in (a, b):
                 continue
-            if second["reader"] in (first["writer"], first["reader"]):
+            second = earliest_after(b, c, first["read_seconds"])
+            if second is None:
                 continue
-            for third in by_pair[second["reader"], second["writer"]]:
-                if third["write_seconds"] < second["read_seconds"]:
-                    continue
-                for fourth in by_pair[third["reader"], first["writer"]]:
-                    if fourth["write_seconds"] < third["read_seconds"]:
-                        continue
-                    edges = [
-                        [first["writer"], first["reader"], first["read_seconds"]],
-                        [second["writer"], second["reader"], second["read_seconds"]],
-                        [third["writer"], third["reader"], third["read_seconds"]],
-                        [fourth["writer"], fourth["reader"], fourth["read_seconds"]],
-                    ]
-                    key = tuple(tuple(edge) for edge in edges)
-                    if key in seen:
-                        continue
-                    seen.add(key)
-                    chains.append({
-                        "edges": edges,
-                        "seconds": [first["read_seconds"], second["read_seconds"],
-                                    third["read_seconds"], fourth["read_seconds"]],
-                        "request_evidence": [first, second],
-                        "result_evidence": [third, fourth],
-                        "c_to_b_artifact_receipts": [third],
-                        "b_to_a_artifact_receipts": [fourth],
-                        "middle_actor": first["reader"],
-                        "requester": first["writer"],
-                        "leaf_actor": second["reader"],
-                        "mechanism": first["mechanism"],
-                    })
-                    if len(chains) >= 32:
-                        return chains
+            third = earliest_after(c, b, second["read_seconds"])
+            if third is None:
+                continue
+            fourth = earliest_after(b, a, third["read_seconds"])
+            if fourth is None:
+                continue
+            edges = [
+                [first["writer"], first["reader"], first["read_seconds"]],
+                [second["writer"], second["reader"], second["read_seconds"]],
+                [third["writer"], third["reader"], third["read_seconds"]],
+                [fourth["writer"], fourth["reader"], fourth["read_seconds"]],
+            ]
+            key = tuple(tuple(edge) for edge in edges)
+            if key in seen:
+                continue
+            seen.add(key)
+            chains.append({
+                "edges": edges,
+                "seconds": [first["read_seconds"], second["read_seconds"],
+                            third["read_seconds"], fourth["read_seconds"]],
+                "request_evidence": [first, second],
+                "result_evidence": [third, fourth],
+                "c_to_b_artifact_receipts": [third],
+                "b_to_a_artifact_receipts": [fourth],
+                "middle_actor": first["reader"],
+                "requester": first["writer"],
+                "leaf_actor": second["reader"],
+                "mechanism": first["mechanism"],
+            })
+            if len(chains) >= 32:
+                return chains
     return chains
 
 
