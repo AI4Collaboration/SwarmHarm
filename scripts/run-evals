@@ -29,9 +29,11 @@ def source_signature():
 
 
 def plan(base, mapping=None, *, names=None, studies=None, populations=None,
-         scenarios=None, mechanisms=None, coupling='coupled'):
+         scenarios=None, mechanisms=None, coupling='coupled', reasoning_effort=None):
     models = defaults.selection(names=names, mapping=mapping)
     settings = defaults.settings()
+    if reasoning_effort is not None:
+        settings['reasoning'] = reasoning_effort
     if names is not None:
         selected = [m['name'] for m in models]
         settings['swarmharm']['models'] = selected
@@ -65,7 +67,7 @@ def plan(base, mapping=None, *, names=None, studies=None, populations=None,
 
 
 def batch_command(python, study, model, base, output, *, populations=None, judge=False, judge_model=None,
-                  scenarios=None, mechanisms=None, coupling='coupled',
+                  scenarios=None, mechanisms=None, coupling='coupled', reasoning_effort=None,
                   concurrency=None, max_concurrent_agents=None, cohort_seconds=None, archive=False):
     script = 'rollouts/run_matrix.py' if study == 'swarmform' else 'swarmharm/run_matrix.py'
     resolved_pops = populations or defaults.POPULATIONS
@@ -86,6 +88,8 @@ def batch_command(python, study, model, base, output, *, populations=None, judge
     else:
         args += ['--scenarios', *(scenarios or defaults.SCENARIOS),
                  '--mechanisms', *(mechanisms or defaults.MECHANISMS)]
+        if reasoning_effort is not None:
+            args += ['--reasoning-effort', reasoning_effort]
         if coupling != 'coupled':
             args += ['--coupling', coupling]
         if judge:
@@ -215,6 +219,7 @@ def execute(args, expected, config):
                                         scenarios=expected['settings']['swarmharm'].get('scenarios'),
                                         mechanisms=expected['settings']['swarmharm'].get('mechanisms'),
                                         coupling=expected['settings']['swarmharm'].get('coupling', 'coupled'),
+                                        reasoning_effort=getattr(args, 'reasoning_effort', None),
                                         judge=getattr(args, 'judge', False),
                                         judge_model=getattr(args, 'judge_model', None),
                                         concurrency=getattr(args, 'concurrency', None),
@@ -250,6 +255,8 @@ def main():
                         help='Optional SwarmHarm mechanism subset')
     parser.add_argument('--coupling', choices=('coupled', 'uncoupled'), default='coupled',
                         help='SwarmHarm coupling mode (coupled default, or matched uncoupled baseline)')
+    parser.add_argument('--reasoning-effort', choices=('medium', 'high'), default=None,
+                        help='Override SwarmHarm reasoning effort (use medium to match the collected N=4,8,16,32 bucket)')
     parser.add_argument('--skip-api-check', action='store_true',
                         help='Skip initial N=4 API check when routes are already verified')
     parser.add_argument('--judge', action='store_true', help='Run SwarmHarm transcript judge automatically on each collected cohort')
@@ -273,7 +280,8 @@ def main():
     base = resolve_api_base(args.base_url, allow_axonhub_default=True)
     try:
         expected = plan(base, args.model_map, names=args.models, studies=args.studies, populations=args.populations,
-                        scenarios=args.scenarios, mechanisms=args.mechanisms, coupling=args.coupling)
+                        scenarios=args.scenarios, mechanisms=args.mechanisms, coupling=args.coupling,
+                        reasoning_effort=args.reasoning_effort)
     except ValueError as error:
         parser.error(str(error))
     if not args.execute:

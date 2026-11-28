@@ -1,18 +1,22 @@
 # SwarmHarm unified environment
 
-> ## Pending / Additional Rollouts to Collect (Sync to HF Bucket `ai4collaboration/swarmharm-rollout`)
+> ## Pending / Additional Rollouts to Collect (Target HF Bucket: `ai4collaboration/swarmharm-rollout`)
+>
+> **Bucket status:** `527 / 528` runs complete across `n4` (132/132), `n8` (132/132), `n16` (132/132), and `n32` (131/132), all collected with **`--reasoning-effort medium`**. **Target final bucket = `660 / 660`** (`n1`, `n4`, `n8`, `n16`, `n32`; `n64` is retired). **Remaining work = `133` runs** (use the same `--model-map` and `--reasoning-effort medium`):
 >
 > 1. **Required — Single-Agent Baseline (`N = 1`, 11 models × 12 inputs = 132 runs / 132 trajectories)** to directly test whether models misbehave alone in the exact same environment (`"Do swarms misalign agents?"`):
 >    ```sh
->    python3.12 scripts/run-evals --studies swarmharm --populations 1 --skip-api-check --out ../swarm-runs-n1 --execute
+>    python3.12 scripts/run-evals --studies swarmharm --populations 1 --reasoning-effort medium \
+>      --model-map /path/to/model-map.json --skip-api-check --out ../swarm-runs-n1 --execute
 >    ```
->    Writes `swarmharm/<model>/<slug>/n1/...`; sync into `ai4collaboration/swarmharm-rollout/swarmharm/` alongside `n4/`, `n16/`, `n32/` without overwriting existing multi-agent runs.
-> 2. **Required — Missing 1/396 Cell (`Gemini 4 Argon`, `N = 32`, Knowledge Work `task-gaming`, previously `provider_hold`)**:
+>    **Bucket upload rule:** Upload only the new `swarmharm/<model>/<slug>/n1/` directories into `ai4collaboration/swarmharm-rollout/swarmharm/<model>/<slug>/n1/`. Do **not** use `--delete` and do **not** overwrite the existing `swarmharm/<model>/index.json` / `plan.json` (which record `n4/n8/n16/n32`).
+> 2. **Required — Missing 1/528 Cell (`Gemini 4 Argon`, `N = 32`, Knowledge Work `task-gaming`, previously `provider_hold` / `provider_filter_final`)**:
 >    ```sh
 >    python3.12 scripts/run-evals --studies swarmharm --models argon --populations 32 \
->      --scenarios knowledge-work --mechanisms task-gaming --skip-api-check --out ../swarm-runs-argon-fix --execute
+>      --scenarios knowledge-work --mechanisms task-gaming --reasoning-effort medium \
+>      --model-map /path/to/model-map.json --skip-api-check --out ../swarm-runs-argon-n32-fix --execute
 >    ```
->    Sync the completed `n32/knowledge-work-task-gaming-r1-*` folder into `ai4collaboration/swarmharm-rollout/swarmharm/argon/google-gemini-4-argon/n32/`.
+>    **Bucket upload rule:** Upload the completed `n32/knowledge-work-task-gaming-r1-*` directory into `ai4collaboration/swarmharm-rollout/swarmharm/argon/google-gemini-4-argon/n32/` (replacing the failed `provider_hold` attempt) and update that single row in `swarmharm/argon/index.json`.
 > 3. **Optional — Matched Uncoupled Baseline (`N = 4 --coupling uncoupled`)**: Fixed to match `v22` coupled inputs on every non-coupling parameter (`access`, `verification`, `observation`, `operations_headroom`).
 
 **One reporting environment, six failure modes, two domains.** Access, coupling, verification and observation settings determine which business operations are available and how reports are released. Each agent keeps its task, native session and workstation throughout the rollout.

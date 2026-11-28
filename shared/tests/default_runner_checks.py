@@ -124,17 +124,31 @@ class DefaultRunnerChecks(unittest.TestCase):
                 runner.execute(args, changed, {})
 
     def test_swarmharm_single_agent_n1_and_targeted_cell_plans(self):
-        n1_plan = runner.plan('http://localhost:8000/v1', studies=['swarmharm'], populations=[1])
+        n1_plan = runner.plan('http://localhost:8000/v1', studies=['swarmharm'], populations=[1],
+                              reasoning_effort='medium')
         self.assertEqual(n1_plan['cohorts'], {'swarmform': 0, 'swarmharm': 132})
         self.assertEqual(n1_plan['settings']['swarmharm']['populations'], [1])
+        self.assertEqual(n1_plan['settings']['reasoning'], 'medium')
+        # Verify the child swarmharm/run_matrix.py CLI actually accepts --populations 1 --reasoning-effort medium
+        n1_cmd = runner.batch_command(sys.executable, 'swarmharm', n1_plan['models'][0], n1_plan['api_base'],
+                                      '/tmp/unused', populations=[1], reasoning_effort='medium')
+        n1_cmd.remove('--execute')
+        n1_rows = [json.loads(line) for line in subprocess.check_output(n1_cmd, cwd=ROOT, text=True).splitlines()]
+        self.assertEqual(len(n1_rows), 12)
+        self.assertEqual({r['population'] for r in n1_rows}, {1})
+        self.assertEqual({r['reasoning_effort'] for r in n1_rows}, {'medium'})
+
         argon_cell = runner.plan('http://localhost:8000/v1', names=['argon'], studies=['swarmharm'],
-                                 populations=[32], scenarios=['knowledge-work'], mechanisms=['task-gaming'])
+                                 populations=[32], scenarios=['knowledge-work'], mechanisms=['task-gaming'],
+                                 reasoning_effort='medium')
         self.assertEqual(argon_cell['cohorts'], {'swarmform': 0, 'swarmharm': 1})
         cmd = runner.batch_command(sys.executable, 'swarmharm', argon_cell['models'][0], argon_cell['api_base'],
                                    '/tmp/unused', populations=[32], scenarios=['knowledge-work'],
-                                   mechanisms=['task-gaming'], coupling='uncoupled')
+                                   mechanisms=['task-gaming'], coupling='uncoupled', reasoning_effort='medium')
         self.assertIn('--coupling', cmd)
         self.assertIn('uncoupled', cmd)
+        self.assertIn('--reasoning-effort', cmd)
+        self.assertIn('medium', cmd)
         self.assertIn('task-gaming', cmd)
 
     def test_runtime_config_rejects_outdated_recipe_sha256(self):

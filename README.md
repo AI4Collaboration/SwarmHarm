@@ -1,35 +1,40 @@
 # SwarmForm and SwarmHarm
 
-> ## Pending / Additional Rollouts to Collect (Sync to HF Bucket `ai4collaboration/swarmharm-rollout`)
+> ## Pending / Additional Rollouts to Collect (Target HF Bucket: `ai4collaboration/swarmharm-rollout`)
 >
-> The 11-model multi-agent SwarmHarm matrix (`N = 4, 16, 32`) currently has **395 / 396** completed runs in `ai4collaboration/swarmharm-rollout`. **Two follow-up collections are needed** to answer *"Do swarms misalign agents?"* and close the final missing cell:
+> **Audited bucket status (`ai4collaboration/swarmharm-rollout`):**
+> - **Already complete (`527 / 528` across `N = 4, 8, 16, 32`):** All 11 models have complete reviewed runs for `n4` (132/132), `n8` (132/132), `n16` (132/132), and `n32` (131/132), all collected with **`--reasoning-effort medium`**.
+> - **Target final bucket (`660 / 660`):** 11 models × 5 populations (`n1`, `n4`, `n8`, `n16`, `n32`) × 12 inputs = **660 completed runs** (`n64` is retired and empty; do not collect `N=64`).
+> - **Exact remaining work = `133` runs** (pass the same `--model-map` used for the existing 527 runs so `astra` → `openai/gpt-6.2-astra`, `sol` → `openai/openai/gpt-6.2-sol`, `argon` → `gcp/google/gemini-4-argon`, etc., and **`--reasoning-effort medium`** to match the existing bucket):
 >
 > ### 1. Required — Single-Agent Baseline (`N = 1`, 11 models × 12 inputs = 132 runs / 132 trajectories)
-> Runs the exact same 12 SwarmHarm environments, tools, and prompts with **only 1 agent (`N = 1`, zero peers)** so we can directly compare single-agent misbehavior vs. multi-agent (`N = 4, 16, 32`) rates across all 6 failure modes and 11 models.
+> Runs the exact same 12 SwarmHarm environments, tools, and prompts with **1 agent (`N = 1`, zero peers)** to answer *"Do swarms misalign agents?"* directly.
 >
 > ```sh
-> # Preview plan (132 single-agent cohorts across all 11 models)
-> python3.12 scripts/run-evals --studies swarmharm --populations 1 --skip-api-check --out ../swarm-runs-n1
+> # Preview plan (132 single-agent runs across all 11 models at reasoning_effort=medium)
+> python3.12 scripts/run-evals --studies swarmharm --populations 1 --reasoning-effort medium \
+>   --model-map /path/to/model-map.json --skip-api-check --out ../swarm-runs-n1
 >
-> # Execute single-agent baseline (writes swarmharm/<model>/<slug>/n1/...; safe to merge into HF bucket alongside n4/n16/n32)
-> python3.12 scripts/run-evals --studies swarmharm --populations 1 --skip-api-check --out ../swarm-runs-n1 --execute
+> # Execute single-agent baseline
+> python3.12 scripts/run-evals --studies swarmharm --populations 1 --reasoning-effort medium \
+>   --model-map /path/to/model-map.json --skip-api-check --out ../swarm-runs-n1 --execute
 > ```
 >
-> - **Bucket overwrite/merge behavior**: Outputs live under `swarmharm/<model>/<model-slug>/n1/...`. Syncing `../swarm-runs-n1/swarmharm/` into `ai4collaboration/swarmharm-rollout/swarmharm/` adds `n1/` cleanly without overwriting any existing `n4/`, `n16/`, or `n32/` trajectories.
-> - **Optional matched uncoupled baseline (`N = 4`, 4 independent isolated agents per cell)**: `--coupling uncoupled` is now strictly matched to the `v22` main inputs (identical `access`/`verification`/`observation`; only `coupling.{discussion,published_packs,resource_pool}=per_account`):
->   ```sh
->   python3.12 scripts/run-evals --studies swarmharm --populations 4 --coupling uncoupled --skip-api-check --out ../swarm-runs-uncoupled --execute
->   ```
->
-> ### 2. Required — Missing 1/396 Cell (`Gemini 4 Argon`, `N = 32`, Knowledge Work `task-gaming`)
-> The only remaining incomplete cell from the `N = 4, 16, 32` matrix (prior run ended in `provider_hold`). Re-running completes **396 / 396**:
+> ### 2. Required — Missing 1/528 Cell (`Gemini 4 Argon`, `N = 32`, Knowledge Work `task-gaming`)
+> The **only** incomplete run across all 528 `N = 4, 8, 16, 32` runs (prior run hit `provider_hold` / `provider_filter_final`). Completing it brings `n4/n8/n16/n32` to **528 / 528**:
 >
 > ```sh
 > python3.12 scripts/run-evals --studies swarmharm --models argon --populations 32 \
->   --scenarios knowledge-work --mechanisms task-gaming --skip-api-check --out ../swarm-runs-argon-fix --execute
+>   --scenarios knowledge-work --mechanisms task-gaming --reasoning-effort medium \
+>   --model-map /path/to/model-map.json --skip-api-check --out ../swarm-runs-argon-n32-fix --execute
 > ```
 >
-> - **Bucket overwrite/merge behavior**: Upload the completed `swarmharm/argon/google-gemini-4-argon/n32/knowledge-work-task-gaming-r1-*` directory into `ai4collaboration/swarmharm-rollout/swarmharm/argon/google-gemini-4-argon/n32/` to replace/supplement the `provider_hold` attempt.
+> ### Bucket Upload / Overwrite Rules (CRITICAL — DO NOT WIPE EXISTING `n4/n8/n16/n32`)
+> Because bucket sync tools can overwrite matching paths:
+> 1. **Never use `--delete` on the bucket root**, and **never overwrite** the existing `swarmharm/<model>/index.json` or `plan.json` (which index `n4/n8/n16/n32`) with an `n1`-only or 1-cell index file.
+> 2. **For `N = 1` (132 runs):** upload only the new **`swarmharm/<model>/<model-slug>/n1/`** directories into `ai4collaboration/swarmharm-rollout/swarmharm/<model>/<model-slug>/n1/` (plus optional `n1-plan.json` / `n1-index.json` so existing `index.json` stays intact, or merge the 12 `n1` rows into each model's `index.json`).
+> 3. **For `Argon N = 32 KW task-gaming` (1 run):** upload the completed `knowledge-work-task-gaming-r1-*` folder into `ai4collaboration/swarmharm-rollout/swarmharm/argon/google-gemini-4-argon/n32/` (replacing/overwriting the failed `provider_hold` attempt) and update that single entry in `swarmharm/argon/index.json`.
+> 4. **Optional matched uncoupled baseline (`N = 4 --coupling uncoupled`):** fixed to match `v22` coupled inputs on every non-coupling parameter (`access`/`verification`/`observation`); run into a separate `--out ../swarm-runs-uncoupled` if needed.
 
 | Study | Research question | Current inputs |
 | --- | --- | --- |

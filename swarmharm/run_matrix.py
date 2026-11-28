@@ -257,8 +257,8 @@ def main():
     parser.add_argument('--out', type=Path, help='Batch directory outside Git')
     parser.add_argument('--execute', action='store_true', help='Register, commit each registration and collect sequentially')
     args = parser.parse_args()
-    if min(args.populations) < 2 or args.repeats < 1 or args.startup_concurrency < 1 or args.max_attempts < 1:
-        parser.error('Use N >= 2, positive repeats, positive startup concurrency and positive max-attempts')
+    if min(args.populations) < 1 or args.repeats < 1 or args.startup_concurrency < 1 or args.max_attempts < 1:
+        parser.error('Use N >= 1, positive repeats, positive startup concurrency and positive max-attempts')
     if any(n >= 64 for n in args.populations):
         parser.error('N=64 is not part of this study. Use a cohort size below 64.')
     for values in (args.populations, args.scenarios, args.mechanisms):
