@@ -90,6 +90,8 @@ def batch_command(python, study, model, base, output, *, populations=None, judge
                  '--mechanisms', *(mechanisms or defaults.MECHANISMS)]
         if reasoning_effort is not None:
             args += ['--reasoning-effort', reasoning_effort]
+        if concurrency is not None:
+            args += ['--concurrency', str(concurrency)]
         if coupling != 'coupled':
             args += ['--coupling', coupling]
         if judge:
@@ -209,7 +211,9 @@ def execute(args, expected, config):
                 write(root/'index.json', dict(api_check=api_check_state, batches=[*records, record]))
                 print(f"Running {study} / {model['name']}; records: {output}", flush=True)
                 study_pops = expected['settings'][study]['populations']
-                max_nets = max(int(os.environ.get('SWARMHARM_MAX_WORKSTATION_NETWORKS', '16')), max(study_pops) + 24)
+                study_conc = max(1, int(getattr(args, 'concurrency', 1) or 1))
+                max_nets = max(int(os.environ.get('SWARMHARM_MAX_WORKSTATION_NETWORKS', '16')),
+                               max(study_pops) * study_conc + 24)
                 study_env = dict(env, SWARMHARM_DOCKER_IMAGE=config['images'][study],
                                  SWARMHARM_SANDBOX='docker', SWARMHARM_HARBOR_ENV=str(Path(python).parent.parent),
                                  SWARMHARM_MAX_WORKSTATION_NETWORKS=str(max_nets))
@@ -261,7 +265,8 @@ def main():
                         help='Skip initial N=4 API check when routes are already verified')
     parser.add_argument('--judge', action='store_true', help='Run SwarmHarm transcript judge automatically on each collected cohort')
     parser.add_argument('--judge-model', help='Explicit judge model ID when --judge is enabled')
-    parser.add_argument('--concurrency', '-j', type=int, default=None, help='Run up to this many SwarmForm cohorts concurrently')
+    parser.add_argument('--concurrency', '-j', type=int, default=None,
+                        help='Run up to this many cohorts concurrently (e.g. -j 12 for SwarmHarm N=1 single-agent baselines)')
     parser.add_argument('--max-concurrent-agents', type=int, default=None, help='Cap simultaneous SwarmForm agents across parallel cohorts')
     parser.add_argument('--cohort-seconds', type=int, default=None, help='Override SwarmForm cohort horizon in seconds')
     parser.add_argument('--archive', action='store_true', help='Auto-archive completed SwarmForm cohorts')

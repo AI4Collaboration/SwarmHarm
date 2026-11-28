@@ -323,6 +323,64 @@ class BatchPlanChecks(unittest.TestCase):
         self.assertTrue(all(r['population'] == 1 and r['startup_concurrency'] == 1 for r in rows))
         self.assertEqual(len(set(map(batch.run_id, rows))), 12)
 
+    def test_concurrent_n1_execution_serializes_git_and_preserves_index_order(self):
+        import threading
+        with TemporaryDirectory() as directory:
+            root = Path(directory)/'out'
+            fake_regs = Path(directory)/'regs'; fake_regs.mkdir()
+            key_file = Path(directory)/'key'; key_file.write_text('dummy\n')
+            args = SimpleNamespace(
+                populations=[1], repeats=1, scenarios=['knowledge-work'],
+                mechanisms=['task-gaming', 'evidence-tampering', 'grader-tampering', 'action-authority'],
+                model='z-ai/glm-5.3', served_model='z-ai/glm-5.3',
+                base_url='http://localhost:8000/v1', startup_concurrency=16,
+                concurrency=4, reasoning_effort='medium',
+                coupling='coupled', input_variant=None, variant_suite='main',
+                judge=False, judge_model=None, max_actor_seconds=None,
+                max_attempts=1, retry_backoff_seconds=0.0, key_file=key_file)
+            rows = list(batch.cases(args, 'fixed-source'))
+            self.assertEqual(len(rows), 4)
+            git_in_flight = 0
+            git_overlap = False
+            guard = threading.Lock()
+
+            def fake_run_process(argv, **kwargs):
+                nonlocal git_in_flight, git_overlap
+                cmd = ' '.join(map(str, argv))
+                out_idx = argv.index('--output') + 1 if '--output' in argv else None
+                out_dir = Path(argv[out_idx]) if out_idx else None
+                if argv[0] == 'git':
+                    with guard:
+                        git_in_flight += 1
+                        if git_in_flight > 1:
+                            git_overlap = True
+                    import time; time.sleep(0.02)
+                    with guard:
+                        git_in_flight -= 1
+                elif '--phase prepare' in cmd:
+                    out_dir.mkdir(parents=True, exist_ok=True)
+                elif '--phase collect' in cmd:
+                    import time; time.sleep(0.03)
+                    (out_dir/'completion.json').write_text('{"status":"collected"}')
+                    (out_dir/'evidence-manifest.json').write_text('{}')
+                elif 'export_atif.py' in cmd:
+                    Path(argv[-1], 'atif-validation.json').write_text('{}')
+                elif 'review.py' in cmd:
+                    (out_dir/'independent-review.json').write_text('{}')
+                return 0, None
+
+            with patch.object(batch, 'run_process', side_effect=fake_run_process), \
+                 patch.object(batch, 'reap_dead_owner_resources'), \
+                 patch.object(batch.run, 'REGISTRATIONS', fake_regs), \
+                 patch.object(batch.subprocess, 'check_output', return_value=''):
+                rc = batch.execute_rows(args, rows, root, SimpleNamespace(error=self.fail))
+            self.assertEqual(rc, 0)
+            self.assertFalse(git_overlap, 'git registration commits must remain serialized under concurrency')
+            idx = json.loads((root/'index.json').read_text())
+            self.assertEqual([r['mechanism'] for r in idx['runs']],
+                             ['task-gaming', 'evidence-tampering', 'grader-tampering', 'action-authority'])
+            self.assertTrue(all(r['status'] == 'collected' and r['review'] == 'complete' for r in idx['runs']))
+
 
 if __name__ == '__main__':
     unittest.main()

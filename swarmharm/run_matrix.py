@@ -1,5 +1,6 @@
 """Single-model SwarmHarm component. Use scripts/run-evals for the full default lineup."""
 import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from contextlib import contextmanager
 import fcntl
 import hashlib
@@ -11,6 +12,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 
 import run
@@ -246,6 +248,8 @@ def main():
                         help='Run blinded transcript judge after independent review to produce mechanism-verdict.json')
     parser.add_argument('--judge-model', help='Explicit model ID for --judge (defaults to served subject model)')
     parser.add_argument('--startup-concurrency', type=int, default=16)
+    parser.add_argument('--concurrency', '-j', type=int, default=1,
+                        help='Run up to this many cohorts concurrently (e.g. -j 12 for N=1 single-agent baselines; prepare/git commits stay serialized)')
     parser.add_argument('--reasoning-effort', choices=('medium', 'high'), default='high')
     parser.add_argument('--max-actor-seconds', type=int,
                         help='Optional per-actor wall-clock budget override (defaults to 3600s for N<32 and max(4500, 90*N) for N>=32)')
@@ -257,8 +261,8 @@ def main():
     parser.add_argument('--out', type=Path, help='Batch directory outside Git')
     parser.add_argument('--execute', action='store_true', help='Register, commit each registration and collect sequentially')
     args = parser.parse_args()
-    if min(args.populations) < 1 or args.repeats < 1 or args.startup_concurrency < 1 or args.max_attempts < 1:
-        parser.error('Use N >= 1, positive repeats, positive startup concurrency and positive max-attempts')
+    if min(args.populations) < 1 or args.repeats < 1 or args.startup_concurrency < 1 or args.max_attempts < 1 or args.concurrency < 1:
+        parser.error('Use N >= 1, positive repeats, positive startup concurrency, positive concurrency and positive max-attempts')
     if any(n >= 64 for n in args.populations):
         parser.error('N=64 is not part of this study. Use a cohort size below 64.')
     for values in (args.populations, args.scenarios, args.mechanisms):
@@ -278,7 +282,7 @@ def main():
     if subprocess.check_output(['git', 'status', '--porcelain'], cwd=run.REPO, text=True).strip():
         parser.error('Commit source changes before collecting')
     root = args.out.resolve()
-    needed_nets = max(args.populations) + 24
+    needed_nets = max(args.populations) * max(1, args.concurrency) + 24
     current_nets = int(os.environ.get('SWARMHARM_MAX_WORKSTATION_NETWORKS', str(launch_capacity.DEFAULT_NETWORK_LIMIT)))
     if current_nets < needed_nets:
         os.environ['SWARMHARM_MAX_WORKSTATION_NETWORKS'] = str(needed_nets)
@@ -310,72 +314,95 @@ def execute_rows(args, rows, root, parser):
             temporary_key = key = Path(stream.name)
     key = key.expanduser().resolve()
     search_roots = [root, root.parent, root.parent.parent]
-    failures = 0
-    try:
-        for row in rows:
-            name = run_id(row)
-            base_output = root/model_slug/f"n{row['population']}"/name
-            base_reg_name = f"batch-{group}-{name}"
-            previous = []
-            new_attempts = 0
-            interrupted = False
-            attempt_idx = 0
-            while True:
-                attempt_idx += 1
-                suffix = '' if attempt_idx == 1 else f'-attempt-{attempt_idx:03d}'
-                output = base_output.with_name(name + suffix)
-                registration = run.REGISTRATIONS/(base_reg_name + suffix)
-                log = output.with_name(output.name + '.log')
-                record = {**row, 'output': str(output), 'registration': str(registration)}
-                if previous:
-                    record['prior_attempts'] = list(previous)
-                completion = output/'completion.json'
+    concurrency = max(1, int(getattr(args, 'concurrency', 1) or 1))
+    git_lock = threading.Lock()
+    state_lock = threading.Lock()
+    stop_event = threading.Event()
+    record_slots = [None] * len(rows)
+    running_slots = {}
 
-                def command(argv):
-                    with log.open('a') as stream:
-                        code, sig = run_process(argv, cwd=run.REPO, env=git_env, stdout=stream, stderr=subprocess.STDOUT)
-                    if sig:
-                        raise KeyboardInterrupt(f'Interrupted by {sig}')
-                    if code != 0:
-                        raise subprocess.CalledProcessError(code, argv)
+    def save_index():
+        snapshot = []
+        for idx, slot in enumerate(record_slots):
+            if slot is not None:
+                snapshot.append(slot)
+            elif idx in running_slots:
+                snapshot.append(running_slots[idx])
+        run.save(root/'index.json', {'study': 'swarmharm', 'runs': snapshot})
 
-                existing = existing_status(output, require_judge=args.judge)
-                if existing is not None:
-                    if (existing['status'] == 'review_incomplete'
-                            and existing.get('collection_status') in REVIEWABLE_COLLECTION_STATUSES):
-                        print('Resuming pending review steps:', output, flush=True)
-                        try:
-                            run_post_collection(output, row, args, key, command)
-                            existing = existing_status(output, require_judge=args.judge)
-                            record['resumed_review'] = True
-                        except KeyboardInterrupt:
-                            interrupted = True
-                            record.update(existing, status='operator_interrupted')
-                            break
-                        except subprocess.CalledProcessError as error:
-                            record.update(existing, returncode=error.returncode, log=str(log))
-                    record.update(existing)
-                    if existing['status'] in (*REVIEWABLE_COLLECTION_STATUSES, 'archived'):
-                        print('Preserved completed attempt:', output, flush=True)
-                        break
-                    print('Preserved failed/incomplete attempt:', output, f"({existing['status']})", flush=True)
-                else:
-                    if new_attempts > 0 and args.retry_backoff_seconds > 0:
-                        time.sleep(args.retry_backoff_seconds)
-                    reap_dead_owner_resources()
-                    output.parent.mkdir(parents=True, exist_ok=True)
-                    common = ['--output', str(output), '--registration-dir', str(registration), '--key-file', str(key)]
-                    variant_args = ['--input-variant', row['input_variant']] if row.get('input_variant') else []
-                    explicit_max_actor = getattr(args, 'max_actor_seconds', None)
-                    effective_max_actor = (explicit_max_actor if explicit_max_actor is not None
-                                           else (max(4500, 90 * row['population']) if row['population'] >= 32 else None))
-                    budget_args = (['--max-actor-seconds', str(effective_max_actor)]
-                                   if effective_max_actor is not None else [])
-                    run.save(root/'index.json', {'study': 'swarmharm', 'runs': [*records, {**record, 'status': 'running'}]})
-                    print('Starting:', output, flush=True)
-                    new_attempts += 1
-                    prepared_committed = False
+    def run_single_row(idx, row):
+        if stop_event.is_set():
+            return None, False
+        name = run_id(row)
+        base_output = root/model_slug/f"n{row['population']}"/name
+        base_reg_name = f"batch-{group}-{name}"
+        previous = []
+        new_attempts = 0
+        interrupted = False
+        attempt_idx = 0
+        while True:
+            attempt_idx += 1
+            suffix = '' if attempt_idx == 1 else f'-attempt-{attempt_idx:03d}'
+            output = base_output.with_name(name + suffix)
+            registration = run.REGISTRATIONS/(base_reg_name + suffix)
+            log = output.with_name(output.name + '.log')
+            record = {**row, 'output': str(output), 'registration': str(registration)}
+            if previous:
+                record['prior_attempts'] = list(previous)
+            completion = output/'completion.json'
+
+            def command(argv):
+                with log.open('a') as stream:
+                    code, sig = run_process(argv, cwd=run.REPO, env=git_env, stdout=stream, stderr=subprocess.STDOUT)
+                if sig:
+                    raise KeyboardInterrupt(f'Interrupted by {sig}')
+                if code != 0:
+                    raise subprocess.CalledProcessError(code, argv)
+
+            existing = existing_status(output, require_judge=args.judge)
+            if existing is not None:
+                if (existing['status'] == 'review_incomplete'
+                        and existing.get('collection_status') in REVIEWABLE_COLLECTION_STATUSES):
+                    print('Resuming pending review steps:', output, flush=True)
                     try:
+                        run_post_collection(output, row, args, key, command)
+                        existing = existing_status(output, require_judge=args.judge)
+                        record['resumed_review'] = True
+                    except KeyboardInterrupt:
+                        interrupted = True
+                        record.update(existing, status='operator_interrupted')
+                        break
+                    except subprocess.CalledProcessError as error:
+                        record.update(existing, returncode=error.returncode, log=str(log))
+                record.update(existing)
+                if existing['status'] in (*REVIEWABLE_COLLECTION_STATUSES, 'archived'):
+                    print('Preserved completed attempt:', output, flush=True)
+                    break
+                print('Preserved failed/incomplete attempt:', output, f"({existing['status']})", flush=True)
+            else:
+                if new_attempts > 0 and args.retry_backoff_seconds > 0:
+                    time.sleep(args.retry_backoff_seconds)
+                if concurrency == 1:
+                    reap_dead_owner_resources()
+                output.parent.mkdir(parents=True, exist_ok=True)
+                common = ['--output', str(output), '--registration-dir', str(registration), '--key-file', str(key)]
+                variant_args = ['--input-variant', row['input_variant']] if row.get('input_variant') else []
+                explicit_max_actor = getattr(args, 'max_actor_seconds', None)
+                effective_max_actor = (explicit_max_actor if explicit_max_actor is not None
+                                       else (max(4500, 90 * row['population']) if row['population'] >= 32 else None))
+                budget_args = (['--max-actor-seconds', str(effective_max_actor)]
+                               if effective_max_actor is not None else [])
+                with state_lock:
+                    running_slots[idx] = {**record, 'status': 'running'}
+                    save_index()
+                print('Starting:', output, flush=True)
+                new_attempts += 1
+                prepared_committed = False
+                try:
+                    with git_lock:
+                        if stop_event.is_set():
+                            return None, False
+                        known_records = [r for r in record_slots if r is not None]
                         command([sys.executable, str(run.HERE/'run.py'), '--phase', 'prepare',
                                  '--source-retention', 'local', '--scenario', row['scenario'], '--workload', row['workload'],
                                  '--mechanism', row['mechanism'], *variant_args, '--model-id', args.model,
@@ -383,45 +410,76 @@ def execute_rows(args, rows, root, parser):
                                  '--api-protocol', row['api_protocol'], '--served-model', row['served_model'], '--goal-mode', 'off',
                                  '--reasoning-effort', row['reasoning_effort'], '-N', str(row['population']),
                                  '--startup-concurrency', str(row['startup_concurrency']), *budget_args,
-                                 *reusable_controls(records, row, search_roots=search_roots), *common])
+                                 *reusable_controls(known_records, row, search_roots=search_roots), *common])
                         command(['git', 'add', '--', str(registration)])
                         command(['git', 'commit', '-m', f'Register {registration.name}'])
                         prepared_committed = True
-                        command([sys.executable, str(run.HERE/'run.py'), '--phase', 'collect', *common])
-                        record['status'] = run.load(completion)['status']
-                        if record['status'] in REVIEWABLE_COLLECTION_STATUSES:
-                            run_post_collection(output, row, args, key, command)
-                            record['review'] = 'complete'
-                    except KeyboardInterrupt:
-                        if not prepared_committed:
-                            cleanup_uncommitted_registration(registration)
-                        interrupted = True
-                        record.update(status='operator_interrupted', log=str(log))
-                        break
-                    except subprocess.CalledProcessError as error:
-                        if not prepared_committed:
-                            cleanup_uncommitted_registration(registration)
-                        c_status = run.load(completion).get('status') if completion.is_file() else 'command_failed'
-                        record.update(status=c_status, returncode=error.returncode, log=str(log))
-                    if output.exists():
-                        record['raw_bytes'] = sum(p.stat().st_size for p in output.rglob('*') if p.is_file())
-                    if record['status'] in REVIEWABLE_COLLECTION_STATUSES and record.get('review') == 'complete':
-                        break
-
-                if (attempt_idx >= args.max_attempts
-                        or new_attempts >= args.max_attempts
-                        or not is_retryable_attempt(record, log)):
+                    command([sys.executable, str(run.HERE/'run.py'), '--phase', 'collect', *common])
+                    record['status'] = run.load(completion)['status']
+                    if record['status'] in REVIEWABLE_COLLECTION_STATUSES:
+                        run_post_collection(output, row, args, key, command)
+                        record['review'] = 'complete'
+                except KeyboardInterrupt:
+                    if not prepared_committed:
+                        cleanup_uncommitted_registration(registration)
+                    interrupted = True
+                    record.update(status='operator_interrupted', log=str(log))
                     break
-                previous.append({k: record[k] for k in ('output', 'registration', 'status', 'returncode', 'log')
-                                 if k in record})
+                except subprocess.CalledProcessError as error:
+                    if not prepared_committed:
+                        cleanup_uncommitted_registration(registration)
+                    c_status = run.load(completion).get('status') if completion.is_file() else 'command_failed'
+                    record.update(status=c_status, returncode=error.returncode, log=str(log))
+                if output.exists():
+                    record['raw_bytes'] = sum(p.stat().st_size for p in output.rglob('*') if p.is_file())
+                if record['status'] in REVIEWABLE_COLLECTION_STATUSES and record.get('review') == 'complete':
+                    break
 
-            if record.get('status') not in (*REVIEWABLE_COLLECTION_STATUSES, 'archived') or record.get('review') == 'pending':
-                failures += 1
-            records.append(record)
-            run.save(root/'index.json', {'study': 'swarmharm', 'runs': records})
-            if interrupted:
+            if (attempt_idx >= args.max_attempts
+                    or new_attempts >= args.max_attempts
+                    or not is_retryable_attempt(record, log)):
+                break
+            previous.append({k: record[k] for k in ('output', 'registration', 'status', 'returncode', 'log')
+                             if k in record})
+
+        with state_lock:
+            running_slots.pop(idx, None)
+            record_slots[idx] = record
+            save_index()
+        if interrupted:
+            stop_event.set()
+        return record, interrupted
+
+    failures = 0
+    try:
+        if concurrency == 1:
+            for idx, row in enumerate(rows):
+                record, interrupted = run_single_row(idx, row)
+                if record is None:
+                    continue
+                if record.get('status') not in (*REVIEWABLE_COLLECTION_STATUSES, 'archived') or record.get('review') == 'pending':
+                    failures += 1
+                if interrupted:
+                    return 1
+                # A partial registration must be inspected before another preparation.
+                if subprocess.check_output(['git', 'status', '--porcelain'], cwd=run.REPO, text=True).strip():
+                    print('Stopped after an incomplete registration; see the batch index.', file=sys.stderr)
+                    return 1
+        else:
+            reap_dead_owner_resources()
+            any_interrupted = False
+            with ThreadPoolExecutor(max_workers=concurrency) as pool:
+                futures = [pool.submit(run_single_row, idx, row) for idx, row in enumerate(rows)]
+                for future in as_completed(futures):
+                    record, interrupted = future.result()
+                    if interrupted:
+                        any_interrupted = True
+                    if record is not None and (
+                            record.get('status') not in (*REVIEWABLE_COLLECTION_STATUSES, 'archived')
+                            or record.get('review') == 'pending'):
+                        failures += 1
+            if any_interrupted:
                 return 1
-            # A partial registration must be inspected before another preparation.
             if subprocess.check_output(['git', 'status', '--porcelain'], cwd=run.REPO, text=True).strip():
                 print('Stopped after an incomplete registration; see the batch index.', file=sys.stderr)
                 return 1
