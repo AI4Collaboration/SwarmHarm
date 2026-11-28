@@ -19,11 +19,13 @@ def _classify_native_error(error):
     )):
         return "provider_rejected"
     if any(marker in text for marker in (
-        "http error 429", "status 429", "rate_limit", "too many requests",
+        "http error 429", "status 429", "rate_limit", "rate limit", "too many requests",
         "http error 500", "http error 502", "http error 503", "http error 504",
         "http error 520", "http error 521", "http error 522", "http error 524", "http error 529",
         "status 500", "status 502", "status 503", "status 504", "status 529",
-        "timed out", "connection reset", "service unavailable", "bad gateway", "gateway timeout",
+        "timed out", "connection reset", "connection closed", "broken pipe", "incomplete read",
+        "service unavailable", "temporarily unavailable", "overloaded", "bad gateway",
+        "gateway timeout", "upstream provider error",
     )):
         return "provider_unavailable"
     return "participant_error"
@@ -116,6 +118,10 @@ async def participate(cohort, actor):
                     usage["responses"] += 1
                     tokens = response.get("usage") or {}
                     count = tokens.get("total_tokens")
+                    if count is None:
+                        parts = [tokens.get(k) for k in ("prompt_tokens", "completion_tokens")]
+                        if all(type(value) is int and value >= 0 for value in parts):
+                            count = sum(parts)
                     if count is None and args.api_protocol in ("native", "subscription"):
                         fields = (
                             "input_tokens",
@@ -135,24 +141,31 @@ async def participate(cohort, actor):
                 idle_streak = 0
                 usage["tools"] += 1
                 call_id = message["call_id"].split("|")[0]
-                call = calls[call_id]
-                arguments = json.loads(call["arguments"])
-                if call["name"] != "bash" or not isinstance(
-                    arguments.get("command"), str
-                ):
+                call = calls.get(call_id)
+                tool_name = (call.get("name") if isinstance(call, dict) else None) or message.get("name")
+                raw_args = (call.get("arguments") if isinstance(call, dict) else None)
+                if raw_args is None:
+                    raw_args = message.get("arguments")
+                try:
+                    arguments = raw_args if isinstance(raw_args, dict) else json.loads(raw_args)
+                    command = arguments.get("command") if isinstance(arguments, dict) else None
+                except (ValueError, TypeError):
+                    command = None
+                if tool_name != "bash" or not isinstance(command, str):
                     result = {"error": "Expected the bash tool with a string command"}
                 else:
                     cohort.trace(
                         actor,
                         "tool_start",
                         call_id=call_id,
-                        command=arguments["command"],
+                        command=command,
                         decision_s=prompt_start,
                     )
-                    result = await cohort.run_tool(actor, arguments["command"], call_id)
+                    result = await cohort.run_tool(actor, command, call_id)
                     if not cohort.active():
                         return
-                result = cohort.tool_reply(actor, result)
+                formatter = getattr(cohort, "api_tool_reply", cohort.tool_reply)
+                result = formatter(actor, result)
                 agent.reply(message["id"], output=json.dumps(result))
                 if getattr(cohort, "allowance_exhausted", lambda _: False)(actor):
                     await cohort.retire_actor(actor)

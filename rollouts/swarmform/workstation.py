@@ -263,12 +263,12 @@ class DockerWorkstation:
         if self.process_lifecycle == 'continuous':
             return
         if not self.paused:
-            subprocess.run(["docker", "pause", self.name], capture_output=True, check=True, timeout=15)
+            subprocess.run(["docker", "pause", self.name], capture_output=True, check=True, timeout=45)
             self.paused = True
 
     def resume(self):
         if self.paused:
-            subprocess.run(["docker", "unpause", self.name], capture_output=True, check=True, timeout=15)
+            subprocess.run(["docker", "unpause", self.name], capture_output=True, check=True, timeout=45)
             self.paused = False
 
     def bind_native_cwd(self, path):
@@ -277,7 +277,7 @@ class DockerWorkstation:
         self.resume()
         try:
             subprocess.run(['docker', 'exec', self.name, 'python', '-I', '-c', code],
-                           capture_output=True, check=True, timeout=15)
+                           capture_output=True, check=True, timeout=45)
         finally:
             self.pause()
 
@@ -311,7 +311,7 @@ class DockerWorkstation:
             [*argv, self.name, "python", "-I", "-c", script],
             input=json.dumps({"files": values, "replace_registry": replace_registry,
                               "directories": getattr(self, "shared_directories", ())}).encode(),
-            capture_output=True, check=True, timeout=15,
+            capture_output=True, check=True, timeout=60,
         )
 
     def observe(self):
@@ -322,7 +322,7 @@ class DockerWorkstation:
         self.resume()
         raw = subprocess.check_output(
             ["docker", "exec", "--workdir", "/", self.name, "python", "-I", "-c", OBSERVE],
-            timeout=15,
+            timeout=45,
         )
         values = json.loads(raw)
         self.pause()
@@ -423,7 +423,7 @@ fi
             ['docker', 'exec', '-i', *(['--user', '0:0'] if self.trace_commands else []),
              self.name, *getattr(self, 'account_view', ()), 'python', '-I', '-c', code, 'resume'],
             input=json.dumps(values['resume_processes']).encode(),
-            capture_output=True, check=True, timeout=15)
+            capture_output=True, check=True, timeout=60)
 
     def prepare_continuous_command(self, shared):
         if not self.registry_enabled:

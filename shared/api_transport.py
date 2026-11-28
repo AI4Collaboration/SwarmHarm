@@ -24,9 +24,9 @@ from guardrails import api_base_url, open_url, resolve_axonhub_fallback
 
 VERSION = 'chat-completions-bridge-v1'
 RETRYABLE_HTTP_STATUS = frozenset({408, 409, 425, 429, 500, 502, 503, 504} | set(range(520, 531)))
-NON_RETRYABLE_ERROR_CODES = frozenset({400, 401, 403, 404, 422})
+NON_RETRYABLE_ERROR_CODES = frozenset({400, 401, 402, 403, 404, 422})
 NVIDIA_BYOK_PREFIXES = ('deepseek/', 'z-ai/', 'moonshotai/')
-_UPSTREAM_LIMIT = max(1, int(os.environ.get('SWARMHARM_MAX_INFLIGHT_REQUESTS', '24')))
+_UPSTREAM_LIMIT = max(1, int(os.environ.get('SWARMHARM_MAX_INFLIGHT_REQUESTS', '32')))
 _UPSTREAM_SEMAPHORE = threading.BoundedSemaphore(_UPSTREAM_LIMIT)
 _MAX_TPM = max(0, int(os.environ.get('SWARMHARM_MAX_TPM', '7500000')))
 _TPM_LOCK = threading.Lock()
@@ -303,11 +303,21 @@ def messages_reply(data, model, tool_schemas=None):
         content.append({'type': 'text', 'text': text_content(message['content'])})
     for call in message.get('tool_calls') or []:
         name = call['function']['name']
-        raw_args = call['function']['arguments']
+        raw_args = call['function'].get('arguments')
         if tool_schemas and name in tool_schemas:
             raw_args = coerce_tool_arguments(raw_args, tool_schemas[name])
+        parsed_input = {}
+        if isinstance(raw_args, dict):
+            parsed_input = raw_args
+        elif isinstance(raw_args, str) and raw_args.strip():
+            try:
+                loaded = json.loads(raw_args)
+                if isinstance(loaded, dict):
+                    parsed_input = loaded
+            except ValueError:
+                parsed_input = {}
         content.append({'type': 'tool_use', 'id': call['id'], 'name': name,
-                        'input': json.loads(raw_args)})
+                        'input': parsed_input})
     usage = data.get('usage') or {}
     return {'id': 'msg_' + uuid.uuid4().hex, 'type': 'message', 'role': 'assistant',
             'model': model, 'content': content, 'stop_sequence': None,
@@ -426,11 +436,15 @@ class ChatBridge:
                                 if isinstance(resp_data, dict) and isinstance(resp_data.get('error'), dict):
                                     err_obj = resp_data['error']
                                     code = err_obj.get('code')
-                                    transient_400 = (code == 400 and 'rejected by the upstream model'
+                                    numeric = (code if type(code) is int
+                                               else int(code) if isinstance(code, str) and code.isdigit() else None)
+                                    transient_400 = (numeric == 400 and 'rejected by the upstream model'
                                                      in json.dumps(err_obj).lower())
-                                    if (code in NON_RETRYABLE_ERROR_CODES and not transient_400) or attempt == bridge.max_attempts:
+                                    if (numeric in NON_RETRYABLE_ERROR_CODES and not transient_400) or attempt == bridge.max_attempts:
                                         raise ValueError('Upstream provider error: ' + json.dumps(err_obj)[:400])
                                     delay = min(45.0, bridge.retry_backoff * (2 ** (attempt - 1)) + random.uniform(0, 0.5))
+                                    if numeric == 429 and bridge.retry_backoff >= 0.5:
+                                        _note_rate_limit(min(delay, 30.0))
                                     retries.append({'attempt': attempt, 'upstream_error_code': code, 'sleep_s': round(delay, 3)})
                                     time.sleep(delay)
                                     continue
@@ -501,9 +515,16 @@ class ChatBridge:
                         if isinstance(pt, int) and isinstance(ct, int):
                             usage_dict['total_tokens'] = pt + ct
                     record['upstream_response'] = data
-                    canonical = lambda name: str(name).split('/')[-1].replace('.', '-').lower()
-                    returned_model = canonical(data.get('model'))
-                    expected_models = {canonical(bridge.model), canonical(bridge.served_model)}
+                    def _canonical_model(name):
+                        text = str(name or '').split('/')[-1].lower()
+                        for prefix in ('global.', 'us.', 'eu.', 'ap.', 'anthropic.', 'bedrock-', 'vertex-'):
+                            if text.startswith(prefix):
+                                text = text[len(prefix):]
+                        if ':' in text:
+                            text = text.split(':', 1)[0]
+                        return text.replace('.', '-')
+                    returned_model = _canonical_model(data.get('model'))
+                    expected_models = {_canonical_model(bridge.model), _canonical_model(bridge.served_model)}
                     if not any(returned_model == exp or returned_model.startswith(exp + '-') or exp.startswith(returned_model + '-')
                                for exp in expected_models if exp):
                         raise ValueError('Provider returned a different model: ' + str(data.get('model')))

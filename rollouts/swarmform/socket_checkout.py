@@ -18,7 +18,7 @@ def socket_checkout_call(arguments):
                       data=store.encode({"operation": operation, "name": name, "version": version}),
                       headers={"Authorization": config["key"], "Content-Type": "application/json"})
     try:
-        with urlopen(request, timeout=15) as response:
+        with urlopen(request, timeout=45) as response:
             result = json.load(response)
     except HTTPError as error:
         try:

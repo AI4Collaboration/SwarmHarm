@@ -213,6 +213,70 @@ class TransportChecks(unittest.TestCase):
             p_srv.shutdown(); p_srv.server_close()
             f_srv.shutdown(); f_srv.server_close()
 
+    def test_messages_reply_malformed_args_402_failfast_and_bedrock_canonical_model(self):
+        # Malformed or empty tool arguments must not crash messages_reply with JSONDecodeError.
+        malformed = {'choices': [{'message': {'tool_calls': [
+            {'id': 'c1', 'type': 'function', 'function': {'name': 'bash', 'arguments': '{"command": "echo'}},
+            {'id': 'c2', 'type': 'function', 'function': {'name': 'bash', 'arguments': ''}},
+        ]}, 'finish_reason': 'tool_calls'}], 'usage': {'prompt_tokens': 4, 'completion_tokens': 2}}
+        msg = messages_reply(malformed, 'anthropic/claude-opus-5.5')
+        self.assertEqual([b['input'] for b in msg['content']], [{}, {}])
+
+        # HTTP 200 JSON 402 fails fast without retrying, while Bedrock/Azure prefixes match canonical model.
+        calls = []
+
+        class Upstream(BaseHTTPRequestHandler):
+            def log_message(self, *args): pass
+
+            def do_POST(self):
+                calls.append(1)
+                status, payload = self.server.queue.pop(0)
+                raw = json.dumps(payload).encode()
+                self.send_response(status); self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(raw))); self.end_headers()
+                self.wfile.write(raw)
+
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Upstream)
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                bridge = ChatBridge(f'http://127.0.0.1:{server.server_port}/v1', 'key',
+                                    'anthropic/claude-sonnet-5.5', tmp,
+                                    served_model='aws/anthropic/bedrock-claude-sonnet-5-5',
+                                    max_attempts=4, retry_backoff=0.01)
+                try:
+                    # 1. Bedrock returned model ID matches registered sonnet 5.5
+                    server.queue = [(200, {'model': 'anthropic.claude-sonnet-5-5-20260929-v1:0',
+                                           'choices': [{'message': {'content': 'ok'}, 'finish_reason': 'stop'}],
+                                           'usage': {'prompt_tokens': 5, 'completion_tokens': 2, 'total_tokens': 7}})]
+                    req = urllib.request.Request(
+                        bridge.base + '/messages',
+                        data=json.dumps({'model': 'anthropic/claude-sonnet-5.5',
+                                         'messages': [{'role': 'user', 'content': 'hi'}]}).encode(),
+                        headers={'x-api-key': bridge.token, 'Content-Type': 'application/json'})
+                    reply = json.load(urllib.request.urlopen(req, timeout=10))
+                    self.assertEqual(reply['content'][0]['text'], 'ok')
+
+                    # 2. HTTP 200 JSON error code 402 fails fast in 1 attempt (never retries)
+                    calls.clear()
+                    server.queue = [(200, {'error': {'code': 402, 'message': 'Insufficient credits'}})]
+                    with self.assertRaises(urllib.error.HTTPError) as ctx:
+                        urllib.request.urlopen(req, timeout=10)
+                    self.assertEqual(ctx.exception.code, 422)
+                    self.assertEqual(len(calls), 1)
+
+                    # 3. Wrong model family (opus instead of sonnet) is strictly rejected
+                    server.queue = [(200, {'model': 'anthropic.claude-opus-5-5-20260929-v1:0',
+                                           'choices': [{'message': {'content': 'wrong'}, 'finish_reason': 'stop'}],
+                                           'usage': {'prompt_tokens': 5, 'completion_tokens': 2, 'total_tokens': 7}})]
+                    with self.assertRaises(urllib.error.HTTPError) as ctx:
+                        urllib.request.urlopen(req, timeout=10)
+                    self.assertEqual(ctx.exception.code, 422)
+                finally:
+                    bridge.close()
+        finally:
+            server.shutdown(); server.server_close()
+
 
 if __name__ == '__main__':
     unittest.main()

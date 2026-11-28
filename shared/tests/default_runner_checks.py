@@ -171,6 +171,40 @@ class DefaultRunnerChecks(unittest.TestCase):
                 (state / 'default-runner.json').write_text(json.dumps(config))
                 self.assertEqual(runner.runtime_config()['recipe_sha256'], config['recipe_sha256'])
 
+    def test_swarmform_multi_model_tasks_channels_and_harness_selection(self):
+        multi = runner.plan(
+            'http://localhost:8000/v1',
+            names=['opus', 'sol', 'argon'],
+            studies=['swarmform'],
+            populations=[4, 16],
+            tasks=['ffmpeg-commissioning-distributed', 'navier-stokes-3d-possible'],
+            channels=['filesystem', 'socket'],
+            reasoning_effort='medium',
+            swarmform_harness='chat-completions',
+        )
+        self.assertEqual([m['name'] for m in multi['models']], ['opus', 'sol', 'argon'])
+        self.assertEqual(multi['settings']['swarmform']['models'], ['opus', 'sol', 'argon'])
+        self.assertEqual(multi['cohorts'], {'swarmform': 3 * 2 * 2 * 2, 'swarmharm': 0})
+        cmd = runner.batch_command(
+            sys.executable, 'swarmform', multi['models'][0], multi['api_base'], '/tmp/unused',
+            populations=[4, 16], tasks=multi['settings']['swarmform']['tasks'],
+            channels=multi['settings']['swarmform']['channels'],
+            reasoning_effort='medium', swarmform_harness='chat-completions', max_attempts=3,
+        )
+        cmd.remove('--execute')
+        self.assertIn('--thinking-level', cmd)
+        self.assertIn('medium', cmd)
+        self.assertIn('--max-attempts', cmd)
+        rows = [json.loads(line) for line in subprocess.check_output(cmd, cwd=ROOT, text=True).splitlines()]
+        self.assertEqual(len(rows), 8)
+        self.assertEqual({r['harness'] for r in rows}, {'chat-completions'})
+        self.assertEqual({r['thinking_level'] for r in rows}, {'medium'})
+        self.assertEqual({r['channel'] for r in rows}, {'filesystem', 'socket'})
+
+        all_sf = runner.plan('http://localhost:8000/v1', studies=['swarmform'], all_swarmform_models=True)
+        self.assertEqual(len(all_sf['settings']['swarmform']['models']), 11)
+        self.assertEqual(all_sf['cohorts'], {'swarmform': 11 * 480, 'swarmharm': 0})
+
 
 if __name__ == '__main__':
     unittest.main()

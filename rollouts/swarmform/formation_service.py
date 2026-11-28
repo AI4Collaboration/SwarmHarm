@@ -1,5 +1,4 @@
 """Server-only persistence and observer receipts for the project artifact service."""
-from copy import deepcopy
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
@@ -31,7 +30,11 @@ def serve():
                 with lock:
                     state = states.get(account["scope"], {"objects": {}})
                     if request["operation"] == "write":
-                        state = deepcopy(state)
+                        objects = dict(state.get("objects", {}))
+                        target = request.get("name")
+                        if isinstance(target, str) and target in objects:
+                            objects[target] = list(objects[target])
+                        state = {**state, "objects": objects}
                     result = apply(state, request)
                     if request["operation"] == "write":
                         pending = state_path.with_suffix(".pending")

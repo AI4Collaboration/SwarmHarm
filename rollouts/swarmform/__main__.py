@@ -604,6 +604,12 @@ class Cohort:
                 }
                 if getattr(self.args, "thinking_level", None):
                     request["reasoning_effort"] = self.args.thinking_level
+                if "openrouter.ai" in str(getattr(self.args, "base_url", "") or "").lower():
+                    provider_only = os.environ.get("OPENROUTER_PROVIDER_ONLY", "").strip()
+                    if provider_only:
+                        request["provider"] = {"only": [p.strip() for p in provider_only.split(",") if p.strip()]}
+                    if request.get("reasoning_effort"):
+                        request.setdefault("reasoning", {"effort": request["reasoning_effort"], "summary": "auto"})
                 if getattr(self.args, "service_tier", None):
                     request["service_tier"] = self.args.service_tier
                 if getattr(self.args, "stream_responses", False):
@@ -701,11 +707,41 @@ class Cohort:
                 calls = msg.get("tool_calls") or []
                 if not self.active():
                     return
+                finish_reason = choice.get("finish_reason")
+                if finish_reason == "length":
+                    self.trace(actor, "response_truncated", had_tool_calls=bool(calls),
+                               usage=dict(self.usage[actor]))
+                    # Drop any incomplete tool_calls so OpenAI message history stays valid.
+                    kept = {k: v for k, v in msg.items() if v is not None and k != "tool_calls"}
+                    if kept.get("content") is not None:
+                        messages.append(kept)
+                    if self.allowance_exhausted(actor):
+                        await self.retire_actor(actor)
+                        return
+                    idle_streak += 1
+                    if idle_cap and idle_streak > idle_cap:
+                        await self.park_idle_actor(actor, idle_streak)
+                        return
+                    await self.wait_idle_backoff(idle_continuation_delay(idle_streak))
+                    if not self.active():
+                        return
+                    rem = self.remaining(actor)
+                    advisory_note = (
+                        " (advisory only; your session remains open for tools and further work)."
+                        if not getattr(self, "enforce_limits", False) and any(v == 0 for v in rem.values())
+                        else ""
+                    )
+                    messages.append({
+                        "role": "user",
+                        "content": "Previous response reached the output length limit. Continue the original task. "
+                                   "Your remaining allowance: " + json.dumps(rem) + advisory_note,
+                    })
+                    continue
                 if not calls:
-                    if choice.get("finish_reason") != "stop":
+                    if finish_reason != "stop":
                         raise ValueError(
                             "Incomplete model response: "
-                            + str(choice.get("finish_reason"))
+                            + str(finish_reason)
                         )
                     messages.append({k: v for k, v in msg.items() if v is not None})
                     if self.allowance_exhausted(actor):
@@ -721,8 +757,8 @@ class Cohort:
                     messages.append({"role": "user", "content": self.continue_research(actor)})
                     continue
                 idle_streak = 0
-                if choice.get("finish_reason") not in ("tool_calls", "stop"):
-                    raise ValueError("Incomplete tool response: " + str(choice.get("finish_reason")))
+                if finish_reason not in ("tool_calls", "stop"):
+                    raise ValueError("Incomplete tool response: " + str(finish_reason))
                 # Preserve model reasoning fields required on follow-up calls by some serving stacks.
                 messages.append({k: v for k, v in msg.items() if v is not None})
                 for call in calls:
@@ -1005,13 +1041,12 @@ class Cohort:
                     self.errors[actor] = "No model response recorded before cohort deadline"
                     if self.reason == "cohort_deadline":
                         self.reason = "participant_error"
-        if getattr(args, "harness", None) == "codex":
+        if getattr(args, "harness", None) == "codex" and self.reason in ("cohort_deadline", "all_finished"):
             for actor in self.visible["startup"]:
                 folder = self.out / "native" / actor
                 if not all((folder / name).is_file() for name in ("thread.json", "session.jsonl", "export-status.json")):
                     self.errors["export_" + actor] = "Missing native session or final thread export"
-                    if self.reason in ("cohort_deadline", "all_finished"):
-                        self.reason = "participant_cleanup_error"
+                    self.reason = "participant_cleanup_error"
         passed = (
             bool(receipt["research_stop_verified"])
             and not self.errors

@@ -205,7 +205,7 @@ def main():
                        headers={"Authorization": config["key"], "Content-Type": "application/json"})
         from urllib.error import HTTPError
         try:
-            with urlopen(http, timeout=15) as response:
+            with urlopen(http, timeout=45) as response:
                 result = json.load(response)
         except HTTPError as error:
             try:

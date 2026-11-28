@@ -207,7 +207,7 @@ class ObservedFileStation(FileStation):
             ],
             capture_output=True,
             check=True,
-            timeout=20,
+            timeout=45,
         )
         try:
             super().__init__(
@@ -224,7 +224,7 @@ class ObservedFileStation(FileStation):
             self.observer_version = subprocess.check_output(
                 ["docker", "exec", self.name, "strace", "--version"],
                 text=True,
-                timeout=10,
+                timeout=30,
             ).splitlines()[0]
         except BaseException:
             self.close()

@@ -136,7 +136,7 @@ def main():
         http = Request(config["url"] + "/artifacts", data=encode(request),
                        headers={"Authorization": config["key"], "Content-Type": "application/json"})
         try:
-            with urlopen(http, timeout=15) as response:
+            with urlopen(http, timeout=45) as response:
                 result = json.load(response)
         except HTTPError as error:
             if error.code != 409:

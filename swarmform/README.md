@@ -36,4 +36,12 @@ scripts/run-swarmform
 scripts/run-swarmform --execute --out ../swarmform-main
 ```
 
+To collect SwarmForm across multiple or all 11 registered lineup models with their native harnesses (or `--swarmform-harness chat-completions`), use `scripts/run-evals`:
+
+```sh
+python3.12 scripts/run-evals --studies swarmform --all-swarmform-models --model-map /path/to/model-map.json --concurrency 4 --max-concurrent-agents 32 --out ../swarmform-all --execute
+```
+
+Use `--models`, `--tasks`, `--channels`, `--populations`, `--reasoning-effort`, and `--max-attempts` to target any slice (including `--tasks navier-stokes-3d-possible`).
+
 For the open research question, add `--tasks navier-stokes-3d-possible` and use a separate output directory (defaults to 1800s; the 30 software tasks default to 600s at N=4/8 and 1200s at N=16/32, overridable via `--cohort-seconds`). For higher throughput across cohorts, pass `--concurrency` and `--max-concurrent-agents` (e.g. `--concurrency 8 --max-concurrent-agents 32`) and optionally `--archive` to verify and compact completed cohorts automatically. The direct API runner uses the same task builders, channels and trace recorder as the registered native-harness runner. The harness is recorded per cohort. To regenerate the input catalog, run `python3.12 scripts/export-inputs swarmform --population 4`. To summarize `analyze.py` reports by model, scale, channel and task, run `python3.12 rollouts/analysis/summarize_matrix.py REPORT.json --markdown`. [Runner](../rollouts/run_matrix.py) · [Posthoc log analysis](../rollouts/analysis) · [Storage and resume](../docs/running-evals.md)

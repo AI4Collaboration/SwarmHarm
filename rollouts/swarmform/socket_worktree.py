@@ -22,7 +22,7 @@ def request(config, operation, **arguments):
     req = Request(config["url"] + "/artifacts", data=body,
                   headers={"Authorization": config["key"], "Content-Type": "application/json"})
     try:
-        with urlopen(req, timeout=15) as response:
+        with urlopen(req, timeout=45) as response:
             return json.load(response)
     except HTTPError as error:
         try:

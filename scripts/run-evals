@@ -29,15 +29,21 @@ def source_signature():
 
 
 def plan(base, mapping=None, *, names=None, studies=None, populations=None,
-         scenarios=None, mechanisms=None, coupling='coupled', reasoning_effort=None):
+         scenarios=None, mechanisms=None, coupling='coupled', reasoning_effort=None,
+         tasks=None, channels=None, all_swarmform_models=False, swarmform_harness='native'):
     models = defaults.selection(names=names, mapping=mapping)
     settings = defaults.settings()
     if reasoning_effort is not None:
         settings['reasoning'] = reasoning_effort
+    if all_swarmform_models:
+        settings['swarmform']['models'] = list(defaults.MODELS)
     if names is not None:
         selected = [m['name'] for m in models]
         settings['swarmharm']['models'] = selected
-        settings['swarmform']['models'] = [n for n in settings['swarmform']['models'] if n in selected]
+        if studies is not None and 'swarmform' in studies:
+            settings['swarmform']['models'] = selected
+        else:
+            settings['swarmform']['models'] = [n for n in settings['swarmform']['models'] if n in selected]
     if studies is not None:
         for study in ('swarmform', 'swarmharm'):
             if study not in studies:
@@ -46,6 +52,12 @@ def plan(base, mapping=None, *, names=None, studies=None, populations=None,
         for study in ('swarmform', 'swarmharm'):
             if settings[study]['models']:
                 settings[study]['populations'] = list(populations)
+    if tasks is not None and settings['swarmform']['models']:
+        settings['swarmform']['tasks'] = list(tasks)
+    if channels is not None and settings['swarmform']['models']:
+        settings['swarmform']['channels'] = list(channels)
+    if swarmform_harness != 'native' and settings['swarmform']['models']:
+        settings['swarmform']['harness'] = swarmform_harness
     if scenarios is not None and settings['swarmharm']['models']:
         settings['swarmharm']['scenarios'] = list(scenarios)
     if mechanisms is not None and settings['swarmharm']['models']:
@@ -57,18 +69,21 @@ def plan(base, mapping=None, *, names=None, studies=None, populations=None,
     if not models:
         raise ValueError('No registered model for the selected study. Use scripts/run-swarmform for an arbitrary served model.')
     sf_pops = settings['swarmform']['populations']
+    sf_tasks = settings['swarmform']['tasks']
+    sf_channels = settings['swarmform']['channels']
     sh_pops = settings['swarmharm']['populations']
     sh_scenarios = settings['swarmharm']['scenarios']
     sh_mechanisms = settings['swarmharm']['mechanisms']
     return dict(settings=settings, models=models, api_base=base,
-                cohorts=dict(swarmform=len(settings['swarmform']['models'])*len(defaults.TASKS)*len(defaults.CHANNELS)*len(sf_pops)*defaults.REPEATS,
+                cohorts=dict(swarmform=len(settings['swarmform']['models'])*len(sf_tasks)*len(sf_channels)*len(sf_pops)*defaults.REPEATS,
                              swarmharm=len(settings['swarmharm']['models'])*len(sh_mechanisms)*len(sh_scenarios)*len(sh_pops)*defaults.REPEATS),
                 source_sha256=source_signature())
 
 
 def batch_command(python, study, model, base, output, *, populations=None, judge=False, judge_model=None,
                   scenarios=None, mechanisms=None, coupling='coupled', reasoning_effort=None,
-                  concurrency=None, max_concurrent_agents=None, cohort_seconds=None, archive=False):
+                  concurrency=None, max_concurrent_agents=None, cohort_seconds=None, archive=False,
+                  tasks=None, channels=None, swarmform_harness='native', max_attempts=None):
     script = 'rollouts/run_matrix.py' if study == 'swarmform' else 'swarmharm/run_matrix.py'
     resolved_pops = populations or defaults.POPULATIONS
     args = [python, str(REPO/script), '--model', model['model'], '--served-model', model['served_model'],
@@ -76,7 +91,14 @@ def batch_command(python, study, model, base, output, *, populations=None, judge
             '--repeats', str(defaults.REPEATS), '--api-protocol', 'chat-completions',
             '--execute', '--out', str(output)]
     if study == 'swarmform':
-        args += ['--harness', model['harness'], '--tasks', *defaults.TASKS]
+        resolved_harness = 'chat-completions' if swarmform_harness == 'chat-completions' else model['harness']
+        args += ['--harness', resolved_harness, '--tasks', *(tasks or defaults.TASKS)]
+        if channels is not None:
+            args += ['--channels', *channels]
+        if reasoning_effort is not None:
+            args += ['--thinking-level', reasoning_effort]
+        if max_attempts is not None:
+            args += ['--max-attempts', str(max_attempts)]
         if concurrency is not None:
             args += ['--concurrency', str(concurrency)]
         if max_concurrent_agents is not None:
@@ -90,6 +112,8 @@ def batch_command(python, study, model, base, output, *, populations=None, judge
                  '--mechanisms', *(mechanisms or defaults.MECHANISMS)]
         if reasoning_effort is not None:
             args += ['--reasoning-effort', reasoning_effort]
+        if max_attempts is not None:
+            args += ['--max-attempts', str(max_attempts)]
         if concurrency is not None:
             args += ['--concurrency', str(concurrency)]
         if coupling != 'coupled':
@@ -229,7 +253,11 @@ def execute(args, expected, config):
                                         concurrency=getattr(args, 'concurrency', None),
                                         max_concurrent_agents=getattr(args, 'max_concurrent_agents', None),
                                         cohort_seconds=getattr(args, 'cohort_seconds', None),
-                                        archive=getattr(args, 'archive', False))
+                                        archive=getattr(args, 'archive', False),
+                                        tasks=expected['settings']['swarmform'].get('tasks'),
+                                        channels=expected['settings']['swarmform'].get('channels'),
+                                        swarmform_harness=expected['settings']['swarmform'].get('harness', 'native'),
+                                        max_attempts=getattr(args, 'max_attempts', None))
                     code, interrupted = run_process(cmd, cwd=REPO, env=study_env, stdout=log, stderr=subprocess.STDOUT)
                 record.update(status='complete' if code == 0 and not interrupted else 'incomplete', returncode=code)
                 if interrupted: record['interrupted'] = interrupted
@@ -248,9 +276,17 @@ def main():
     parser.add_argument('--key-file', type=Path, default=os.environ.get('OPENAI_API_KEY_FILE'))
     parser.add_argument('--model-map', type=Path, help='Optional provider ID spelling; all selected models remain bound')
     parser.add_argument('--models', nargs='+', choices=tuple(defaults.MODELS),
-                        help='Optional subset of lineup names (e.g. deepseek glm kimi luna terra sol)')
+                        help='Optional subset of lineup names (e.g. opus sol argon kimi glm deepseek)')
+    parser.add_argument('--all-swarmform-models', action='store_true',
+                        help='Run SwarmForm across all 11 registered lineup models instead of Terra alone')
     parser.add_argument('--studies', nargs='+', choices=('swarmform', 'swarmharm'),
                         help='Optional study subset (default: both)')
+    parser.add_argument('--tasks', nargs='+', choices=(*defaults.TASKS, *defaults.SPECIAL_TASKS),
+                        help='Optional SwarmForm task subset (active software tasks and/or navier-stokes-3d-possible)')
+    parser.add_argument('--channels', nargs='+', choices=tuple(defaults.CHANNELS),
+                        help='Optional SwarmForm communication channel subset')
+    parser.add_argument('--swarmform-harness', choices=('native', 'chat-completions'), default='native',
+                        help='SwarmForm agent harness: native (registered codex/claude-code/pi-sdk) or direct chat-completions')
     parser.add_argument('--populations', nargs='+', type=int,
                         help='Optional population list override (SwarmHarm supports 1 for single-agent baseline, plus 4 8 16 32)')
     parser.add_argument('--scenarios', nargs='+', choices=tuple(defaults.SCENARIOS),
@@ -259,8 +295,10 @@ def main():
                         help='Optional SwarmHarm mechanism subset')
     parser.add_argument('--coupling', choices=('coupled', 'uncoupled'), default='coupled',
                         help='SwarmHarm coupling mode (coupled default, or matched uncoupled baseline)')
-    parser.add_argument('--reasoning-effort', choices=('medium', 'high'), default=None,
-                        help='Override SwarmHarm reasoning effort (use medium to match the collected N=4,8,16,32 bucket)')
+    parser.add_argument('--reasoning-effort', choices=('low', 'medium', 'high'), default=None,
+                        help='Override reasoning effort (SwarmHarm supports medium/high; SwarmForm forwards as --thinking-level)')
+    parser.add_argument('--max-attempts', type=int, default=None,
+                        help='Maximum retry attempts per cohort on transient provider failures')
     parser.add_argument('--skip-api-check', action='store_true',
                         help='Skip initial N=4 API check when routes are already verified')
     parser.add_argument('--judge', action='store_true', help='Run SwarmHarm transcript judge automatically on each collected cohort')
@@ -274,6 +312,8 @@ def main():
     parser.add_argument('--execute', action='store_true')
     args = parser.parse_args()
     active_studies = set(args.studies) if args.studies else {'swarmform', 'swarmharm'}
+    if args.reasoning_effort == 'low' and 'swarmharm' in active_studies:
+        parser.error('SwarmHarm supports --reasoning-effort medium or high (low is SwarmForm-only)')
     if args.populations:
         if min(args.populations) < 1:
             parser.error('--populations requires positive integers')
@@ -286,7 +326,8 @@ def main():
     try:
         expected = plan(base, args.model_map, names=args.models, studies=args.studies, populations=args.populations,
                         scenarios=args.scenarios, mechanisms=args.mechanisms, coupling=args.coupling,
-                        reasoning_effort=args.reasoning_effort)
+                        reasoning_effort=args.reasoning_effort, tasks=args.tasks, channels=args.channels,
+                        all_swarmform_models=args.all_swarmform_models, swarmform_harness=args.swarmform_harness)
     except ValueError as error:
         parser.error(str(error))
     if not args.execute:

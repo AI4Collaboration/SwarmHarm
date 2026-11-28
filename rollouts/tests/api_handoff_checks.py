@@ -798,7 +798,48 @@ class APIHandoffChecks(unittest.TestCase):
         self.assertEqual(_classify_native_error(RuntimeError("usageLimitExceeded")), "provider_rejected")
         self.assertEqual(_classify_native_error(RuntimeError("HTTP Error 429: Too Many Requests")), "provider_unavailable")
         self.assertEqual(_classify_native_error(RuntimeError("HTTP Error 522: Connection timed out")), "provider_unavailable")
+        self.assertEqual(_classify_native_error(RuntimeError("Claude provider rate limit reached; session held")), "provider_unavailable")
         self.assertEqual(_classify_native_error(ValueError("Provider must return positive token usage")), "participant_error")
+
+    def test_finish_reason_length_recovers_without_aborting_cohort(self):
+        import time
+        import httpx
+        from swarmform.__main__ import Cohort
+
+        async def check(out):
+            seen = []
+
+            def respond(request):
+                seen.append(json.loads(request.content)["messages"])
+                if len(seen) == 1:
+                    return httpx.Response(200, json={
+                        "choices": [{"message": {
+                            "role": "assistant", "content": "Partial long derivation...",
+                            "tool_calls": [{"id": "c_trunc", "type": "function",
+                                            "function": {"name": "bash", "arguments": '{"command": "echo'}}],
+                        }, "finish_reason": "length"}],
+                        "usage": {"total_tokens": 25},
+                    })
+                cohort.stop("cohort_deadline")
+                return httpx.Response(200, json={
+                    "choices": [{"message": {"role": "assistant", "content": "Continued."}, "finish_reason": "stop"}],
+                    "usage": {"total_tokens": 10},
+                })
+
+            args = SimpleNamespace(task="planning-possible", channel="direct", population=2,
+                                   model="fixture", base_url="http://localhost/v1")
+            async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+                cohort = Cohort(args, client, out)
+                cohort.start = time.monotonic()
+                actor = next(iter(cohort.visible["startup"]))
+                await cohort.participant(actor)
+                self.assertEqual(cohort.errors, {})
+                self.assertEqual(len(seen), 2)
+                self.assertNotIn("tool_calls", seen[1][-2])
+                self.assertIn("output length limit", seen[1][-1]["content"])
+
+        with TemporaryDirectory() as folder:
+            asyncio.run(check(Path(folder)))
 
     def test_rate_limited_matrix_preserves_failed_attempt_and_resumes_once(self):
         import argparse
@@ -1290,6 +1331,61 @@ class NativeEventChecks(unittest.IsolatedAsyncioTestCase):
                 await participate(cohort, "one")
             self.assertIn("positive token usage", cohort.errors["one"])
             cohort.stop.assert_called_with("participant_error")
+
+    async def test_native_participant_handles_malformed_tool_args_and_bounds_output(self):
+        from swarmform.__main__ import API_TOOL_OUTPUT_CHARS, Cohort
+        with TemporaryDirectory() as directory:
+            agent = Mock()
+            cohort = SimpleNamespace(
+                args=SimpleNamespace(
+                    harness="claude-code", model="anthropic/claude-opus-5.5",
+                    base_url="http://localhost/v1", _api_key="fixture",
+                    api_protocol="chat-completions", served_model=None,
+                    seconds=30, channel="socket",
+                ),
+                station=SimpleNamespace(stations={"one": Mock()}),
+                out=Path(directory), stopping=threading.Event(),
+                usage={}, errors={}, returns={}, active_tools=set(), actor_tool={},
+                trace=Mock(), stop=Mock(),
+                tool=Mock(return_value=({"stdout": "x" * 50_000, "exit_code": 0}, None)),
+                tool_completed=Mock(),
+                manifest={"effective_settings": {"native_workstation_permissions": inputs.WORKSTATION_PERMISSIONS}},
+                visible={"tools": [], "prompts": {"one": ("task",)}},
+            )
+            cohort.deadline = None
+            cohort.active = Cohort.active.__get__(cohort)
+            cohort.remaining = Cohort.remaining.__get__(cohort)
+            cohort.run_tool = Cohort.run_tool.__get__(cohort)
+            cohort.prompts = Cohort.prompts.__get__(cohort)
+            cohort.tool_reply = Cohort.tool_reply.__get__(cohort)
+            cohort.api_tool_reply = Cohort.api_tool_reply.__get__(cohort)
+            cohort.continue_research = Cohort.continue_research.__get__(cohort)
+            agent.prompt.side_effect = lambda *texts: (
+                cohort.stopping.set() if any(t.startswith("Progress report recorded.") for t in texts) else None
+            )
+
+            def create(kind, actor, events, **kwargs):
+                bad_call = {"type": "function_call", "name": "bash", "call_id": "bad1", "arguments": '{"command":'}
+                good_call = {"type": "function_call", "name": "bash", "call_id": "ok1", "arguments": '{"command":"big"}'}
+                kwargs["on_transport_response"]({"model": "anthropic/claude-opus-5.5", "usage": {"prompt_tokens": 10, "completion_tokens": 5}})
+                for message in [
+                    {"type": "ready", "cwd": directory},
+                    {"type": "response_update", "response": {"output": [bad_call, good_call]}},
+                    {"type": "tool_call", "id": "r1", "call_id": "bad1"},
+                    {"type": "tool_call", "id": "r2", "call_id": "ok1"},
+                    {"type": "settled", "text": "done"},
+                ]:
+                    events.put((actor, message))
+                return agent
+
+            with patch("swarmform.native_participant.model_session.create", side_effect=create):
+                await participate(cohort, "one")
+            self.assertEqual(cohort.errors, {})
+            self.assertEqual(cohort.usage["one"]["tokens"], 15)
+            replies = [json.loads(c.kwargs["output"]) for c in agent.reply.call_args_list]
+            self.assertIn("error", replies[0])
+            self.assertTrue(replies[1]["provider_context_truncated"])
+            self.assertLessEqual(len(replies[1]["stdout"]), API_TOOL_OUTPUT_CHARS)
 
 if __name__ == "__main__":
     unittest.main()
