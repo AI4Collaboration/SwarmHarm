@@ -89,6 +89,7 @@ scripts/run-swarmform --tasks pb-ctags-possible --channels filesystem --populati
 
 Omit `--execute` to preview. For all 480 software cohorts, run `scripts/run-swarmform --execute --out ../swarmform-main`. The model and input settings are recorded with every cohort. [SwarmForm guide](swarmform/README.md#running)
 
+<a id="registered-lineup"></a>
 ### SwarmHarm & registered lineup
 
 To set up dependencies on a fresh host, run `bash scripts/setup-defaults` and set `OPENAI_BASE_URL` / `OPENAI_API_KEY` (or `OPENROUTER_API_KEY`). For SwarmHarm, **do not re-run the already-collected `N = 4, 8, 16, 32` matrix**; run only the pending 133 runs listed in the handoff box at the top of this page (or pass explicit `--populations`, `--models`, `--scenarios`, `--mechanisms` for a targeted study). [SwarmHarm guide](swarmharm/README.md) · [Installation and collection](docs/running-evals.md) · [Model names](docs/model-lineup.md)

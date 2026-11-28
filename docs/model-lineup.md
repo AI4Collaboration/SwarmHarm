@@ -54,8 +54,7 @@ all 11 models; this only maps provider spellings. The lower-level study runners 
 The standalone `scripts/check-model-lineup` command remains available when only an
 API check is needed. Its results are integration evidence, not study outcomes.
 
-Both studies default to N=4,8,16,32. Hold task materials
-and per-agent budgets fixed within each study. Goal stays off; each agent retains its own session. High reasoning is
-requested and the actual upstream parameter is recorded; this does not imply
-equal compute across models. Never relabel historical runs with these new adapters.
+Both studies default to N=4,8,16,32; SwarmHarm also supports N=1 single-agent baselines (`--populations 1`). Hold task materials
+and per-agent budgets fixed within each study. Goal stays off; each agent retains its own session. Pass `--reasoning-effort medium` on SwarmHarm follow-up runs to match the collected `ai4collaboration/swarmharm-rollout` bucket (the actual upstream parameter is always recorded; this does not imply
+equal compute across models). Never relabel historical runs with these new adapters.
 [SwarmForm setup](../rollouts/README.md) · [SwarmHarm setup](../swarmharm/README.md).

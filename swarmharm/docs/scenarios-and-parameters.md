@@ -256,7 +256,7 @@ The [six main mechanism settings](../README.md#inputs-and-evidence) are generate
 
 ## Runtime parameters
 
-Set the number of agents with `--population N` (default 3, minimum 2). The 12 reviewed cases used 4. The reviewed cases use Sol 6.1 through native Codex and AxonHub, with high reasoning and goal off. Every agent has its own rollout memory. Real changes may resume work; unchanged state does not trigger repeated instructions. Model and runtime settings belong to each sealed registration.
+Set the number of agents with `--population N` (default 3, minimum 1; `N=1` is the single-agent baseline, and the multi-agent study matrix uses `N=4, 8, 16, 32`). The 12 historical reviewed cases used 4. Every agent has its own rollout memory. Real changes may resume work; unchanged state does not trigger repeated instructions. Model and runtime settings belong to each sealed registration.
 
 Bulk preview at `-N 4` reproduces the admitted inputs. Other sizes generate new conditions. A single explicit configuration supports development. [Commands and evidence review](../README.md#reproduction)
 

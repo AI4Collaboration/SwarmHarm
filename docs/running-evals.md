@@ -2,18 +2,15 @@
 
 The [direct SwarmForm API runner](../README.md#swarmform-with-your-own-api) builds FFmpeg and the checksum-pinned ProgramBench executables on first collection. Its Python environment and image ID are cached under `../eval-readiness` (override with `SWARMHARM_READINESS`). To prepare or rebuild them separately, run `bash scripts/setup-defaults swarmform-api`. Setup needs internet access for the public build inputs. A local endpoint without authentication can leave `OPENAI_API_KEY` unset. Existing output directories resume with the same plan.
 
-The [registered lineup runner](../README.md#registered-lineup) runs Terra 6.1 for SwarmForm and all 11 models for SwarmHarm. Both use N=4/8/16/32 with one repeat. After `bash scripts/setup-defaults`, set
-one `OPENAI_BASE_URL` and `OPENAI_API_KEY`, then run `python3.12 scripts/run-evals --execute`.
-It performs the N=4 API check first and saves everything under `../swarm-runs/`.
+The [registered lineup runner](../README.md#registered-lineup) runs Terra 6.1 for SwarmForm (`N=4/8/16/32`) and all 11 models for SwarmHarm (`N=4/8/16/32` multi-agent plus `N=1` single-agent baseline). After `bash scripts/setup-defaults`, set one `OPENAI_BASE_URL` and `OPENAI_API_KEY`, then run only the pending collections listed in the [root README handoff](../README.md) (do **not** re-run the already-collected `N=4/8/16/32` SwarmHarm matrix in `ai4collaboration/swarmharm-rollout`).
 
-- `api-check/`: startup, tool-result reuse and native-record checks for all 11 models.
+- `api-check/`: startup, tool-result reuse and native-record checks for all 11 models (skippable via `--skip-api-check` once verified).
 - `swarmform/terra/`: 480 cohorts (30 active software tasks × 4 communication settings × 4 populations). Run `navier-stokes-3d-possible` separately with `--tasks navier-stokes-3d-possible` (1800s default horizon; the 30 software tasks default to 600s at N=4/8 and 1200s at N=16/32, overridable via `--cohort-seconds`).
-- `swarmharm/<model>/`: 48 cohorts per model, 528 across the lineup.
-- Root `plan.json` and `index.json`: frozen default settings and model/study progress.
+- `swarmharm/<model>/`: 48 multi-agent cohorts (`N=4/8/16/32`) plus 12 single-agent baseline cohorts (`N=1`) per model (660 total across the 11-model lineup).
+- Root `plan.json` and `index.json`: frozen run settings and model/study progress.
 
 Within each model/study directory, the batch stores its own plan, index and cohort
-logs. Cohorts run sequentially by default, with concurrent participants; SwarmForm also accepts `--concurrency K` and `--max-concurrent-agents M` (for example `--concurrency 8 --max-concurrent-agents 32`) plus optional `--archive` to compact completed cohorts automatically. The same command
-preserves completed and partial attempts; `--out` selects a fresh root for a new run.
+logs. Cohorts run sequentially by default, with concurrent participants; both studies accept `--concurrency K` (`-j K`) to run cohorts in parallel (for example `--populations 1 --concurrency 12` for SwarmHarm single-agent baselines, where git registration commits remain serialized, or `--concurrency 8 --max-concurrent-agents 32` for SwarmForm plus optional `--archive`). SwarmHarm also supports `--reasoning-effort {medium,high}` (use `medium` to match the existing bucket), `--scenarios`, `--mechanisms`, and `--coupling uncoupled`. The same command preserves completed and partial attempts; `--out` selects a fresh root for a new run.
 Native harnesses require a key; a placeholder is sufficient for an unauthenticated
 local server. No separate Claude or OpenAI credential is needed.
 

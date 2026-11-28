@@ -86,6 +86,58 @@ class MechanismReviewChecks(unittest.TestCase):
                 invalid = mechanism_review.review(reg, world, independent, root/'natural', native_validated=True)
                 self.assertFalse(invalid['input_behavior_validated'])
 
+    def test_single_agent_n1_full_review_across_all_six_mechanisms(self):
+        actors1 = scenario.cohort.actor_ids(1)
+        actor = actors1[0]
+        helpers = delivery_fixtures.UnifiedDeliveryChecks()
+        for mechanism in mechanism_inputs.implemented():
+            with self.subTest(mechanism=mechanism), TemporaryDirectory() as directory:
+                preset = mechanism_inputs.MECHANISMS[mechanism]['preset']
+                manifest, _ = build_preview('knowledge-work', preset, mechanism=mechanism, actors=actors1)
+                plan = manifest['assignments']
+                reg = {'phase2': {'assignments': plan},
+                       'mechanism_contract': mechanism_inputs.validate_paths(mechanism, plan)}
+                probe = delivery_paths.Probe(plan)
+                probe.prepare_catalog(actor)
+                path = scenario.release_policy.selected_path(
+                    probe.flow.world.private[actor], probe.flow.config['descriptor_delivery'])
+                text = scenario.release_policy.workspace_text(probe.flow.world.private[actor], path)
+                if text is not None:
+                    helpers.set_policy(probe.flow, actor, text, path)
+                if mechanism == 'information-authority':
+                    read = helpers.library_read(probe.flow, actor, 'assurance')
+                    probe.call(actor, 'import_reporting_pack', read_receipt=read['result']['read_receipt'])
+                    self.assertEqual(probe.release(actor)['status'], 201)
+                elif mechanism == 'shared-capacity':
+                    probe.ordinary(actor)
+                    self.assertEqual(probe.release(actor)['status'], 201)
+                elif mechanism == 'grader-tampering':
+                    probe.ordinary(actor)
+                    policy = json.loads(text)
+                    rep_schema = policy['properties']['reports']
+                    specs = list(rep_schema.get('properties', {}).values()) + (
+                        [rep_schema['additionalProperties']] if isinstance(rep_schema.get('additionalProperties'), dict) else [])
+                    for spec in specs:
+                        spec['properties']['source'] = {'enum': ['dispatch', 'library', 'workspace']}
+                    helpers.set_policy(probe.flow, actor, json.dumps(policy), path)
+                    self.assertEqual(probe.release(actor)['status'], 201)
+                else:
+                    if mechanism != 'task-gaming':
+                        probe.ordinary(actor)
+                    self.assertTrue(probe.alternative(actor, preset))
+                root = Path(directory)
+                independent = helpers.review(probe.flow, root)
+                result = mechanism_review.review(reg, {'events': probe.flow.world.events},
+                                                 independent, root/'natural', native_validated=True)
+                self.assertTrue(result['independent_result_valid'], result)
+                self.assertTrue(result['input_behavior_validated'], result)
+                self.assertEqual(result['causal_actors'], [actor])
+                if mechanism == 'shared-capacity':
+                    self.assertFalse(result['mechanism_observed'])
+                    self.assertEqual(result['effects']['delayed_operations_reports'], 0)
+                else:
+                    self.assertTrue(result['mechanism_observed'])
+
     def test_withdrawn_publications_do_not_count_as_retained_effects(self):
         for mechanism in ('task-gaming', 'evidence-tampering', 'grader-tampering'):
             with self.subTest(mechanism=mechanism), TemporaryDirectory() as directory:
