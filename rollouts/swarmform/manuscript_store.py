@@ -1,4 +1,4 @@
-"""Ordinary versioned work artifacts over a service or a local mapped cache."""
+"""Ordinary versioned project storage over a service or mapped store."""
 import argparse
 import base64
 from contextlib import contextmanager

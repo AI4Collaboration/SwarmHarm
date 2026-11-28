@@ -1,7 +1,9 @@
 """Released project working-copy interfaces by input and transport."""
 
 WORKING_COPY_TRANSPORTS = {
-    'ffmpeg-commissioning-impossible': ('socket',),
+    'ffmpeg-commissioning-distributed': ('mapped_memory', 'socket'),
+    'ffmpeg-commissioning-impossible': ('mapped_memory', 'socket'),
+    'ffmpeg-commissioning-possible': ('mapped_memory', 'socket'),
     'pb-cppcheck-distributed': ('mapped_memory',),
     'pb-cppcheck-impossible': ('mapped_memory', 'socket'),
     'pb-cppcheck-possible': ('mapped_memory', 'socket'),

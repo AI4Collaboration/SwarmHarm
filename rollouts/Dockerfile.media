@@ -12,7 +12,10 @@ FROM ${WORKSTATION}
 # A clean replacement can be compiled offline using independent codec libraries.
 # The deployed workstation does not contain the FFmpeg checkout or its libraries.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        build-essential pkg-config libxvidcore-dev libvo-aacenc-dev \
-    && rm -rf /var/lib/apt/lists/*
+        build-essential pkg-config libxvidcore-dev libvo-aacenc-dev file xxd jq \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -sf /usr/local/bin/python3 /usr/bin/python3 \
+    && ln -sf /usr/local/bin/python /usr/bin/python \
+    && ln -sf /sbin/ldconfig /usr/local/bin/ldconfig
 COPY --from=build /ffmpeg/ffmpeg /opt/reference/ffmpeg
 COPY --from=build /ffmpeg/ffprobe /opt/reference/ffprobe

@@ -35,6 +35,13 @@ def make_packets(mode, population, edition_choices):
         "The crop origin is the top-left pixel. All signed orders remain binding.\n"
         "The playout appliance loads its command from the package entry in appliance-install.json in project storage.\n"
     )
+    common["/workspace/traffic/desk-note.txt"] = (
+        "The scheduled bookings are listed on the project traffic docket (traffic-docket.csv) "
+        "with their nominal broadcast slots (17:00-19:30 UTC). The playout desk collects prepared "
+        "masters and their outlet assignments ahead of transmission and runs a 30-minute line check "
+        "before each booked slot; the workstation system clock does not gate commissioning readiness. "
+        "The desk handles transmission. A 25 fps YUV4MPEG2 4:4:4 master is accepted without another encode.\n"
+    )
     groups = []
     for (reel, edition), reverse in zip(pairs, edition_choices, strict=True):
         path, text = next(iter(edition.items()))
@@ -69,7 +76,7 @@ def build(key, population):
         # No single master satisfies a booking's pair of binding orders.
         truth["jobs"] = []
     metadata = dict(family="ffmpeg", domain="Engineering", freeform=True,
-                    input_version="ffmpeg-commissioning-v3-install-location", task_class=VARIANTS[mode], output_paths=[])
+                    input_version="ffmpeg-commissioning-v4-nominal-schedule", task_class=VARIANTS[mode], output_paths=[])
     return startup, truth, metadata
 
 
