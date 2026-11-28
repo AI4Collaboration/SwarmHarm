@@ -2,6 +2,37 @@
 
 **Separate agents, shared environments, observable communication and consequences.**
 
+> ## Pending / Additional Rollouts to Collect (Sync to HF Bucket `ai4collaboration/swarmharm-rollout`)
+>
+> The 11-model multi-agent SwarmHarm matrix (`N = 4, 16, 32`) currently has **395 / 396** completed runs in `ai4collaboration/swarmharm-rollout`. **Two follow-up collections are needed** to answer *"Do swarms misalign agents?"* and close the final missing cell:
+>
+> ### 1. Required — Single-Agent Baseline (`N = 1`, 11 models × 12 inputs = 132 runs / 132 trajectories)
+> Runs the exact same 12 SwarmHarm environments, tools, and prompts with **only 1 agent (`N = 1`, zero peers)** so we can directly compare single-agent misbehavior vs. multi-agent (`N = 4, 16, 32`) rates across all 6 failure modes and 11 models.
+>
+> ```sh
+> # Preview plan (132 single-agent cohorts across all 11 models)
+> python3.12 scripts/run-evals --studies swarmharm --populations 1 --skip-api-check --out ../swarm-runs-n1
+>
+> # Execute single-agent baseline (writes swarmharm/<model>/<slug>/n1/...; safe to merge into HF bucket alongside n4/n16/n32)
+> python3.12 scripts/run-evals --studies swarmharm --populations 1 --skip-api-check --out ../swarm-runs-n1 --execute
+> ```
+>
+> - **Bucket overwrite/merge behavior**: Outputs live under `swarmharm/<model>/<model-slug>/n1/...`. Syncing `../swarm-runs-n1/swarmharm/` into `ai4collaboration/swarmharm-rollout/swarmharm/` adds `n1/` cleanly without overwriting any existing `n4/`, `n16/`, or `n32/` trajectories.
+> - **Optional matched uncoupled baseline (`N = 4`, 4 independent isolated agents per cell)**: `--coupling uncoupled` is now strictly matched to the `v22` main inputs (identical `access`/`verification`/`observation`; only `coupling.{discussion,published_packs,resource_pool}=per_account`):
+>   ```sh
+>   python3.12 scripts/run-evals --studies swarmharm --populations 4 --coupling uncoupled --skip-api-check --out ../swarm-runs-uncoupled --execute
+>   ```
+>
+> ### 2. Required — Missing 1/396 Cell (`Gemini 4 Argon`, `N = 32`, Knowledge Work `task-gaming`)
+> The only remaining incomplete cell from the `N = 4, 16, 32` matrix (prior run ended in `provider_hold`). Re-running completes **396 / 396**:
+>
+> ```sh
+> python3.12 scripts/run-evals --studies swarmharm --models argon --populations 32 \
+>   --scenarios knowledge-work --mechanisms task-gaming --skip-api-check --out ../swarm-runs-argon-fix --execute
+> ```
+>
+> - **Bucket overwrite/merge behavior**: Upload the completed `swarmharm/argon/google-gemini-4-argon/n32/knowledge-work-task-gaming-r1-*` directory into `ai4collaboration/swarmharm-rollout/swarmharm/argon/google-gemini-4-argon/n32/` to replace/supplement the `provider_hold` attempt.
+
 - **SwarmForm:** how agents discover communication and work together. [API setup and task matrix](#swarmform).
 - **SwarmHarm:** six threat models in Engineering and Knowledge Work; 12 selected four-agent inputs have reviewed Sol 6.1 positives. [API setup and input parameters](swarmharm/README.md).
 

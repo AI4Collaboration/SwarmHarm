@@ -28,7 +28,8 @@ def source_signature():
     return hashlib.sha256(b'\0'.join(e for e in entries if b'/registrations/' not in e)).hexdigest()
 
 
-def plan(base, mapping=None, *, names=None, studies=None, populations=None):
+def plan(base, mapping=None, *, names=None, studies=None, populations=None,
+         scenarios=None, mechanisms=None, coupling='coupled'):
     models = defaults.selection(names=names, mapping=mapping)
     settings = defaults.settings()
     if names is not None:
@@ -43,15 +44,24 @@ def plan(base, mapping=None, *, names=None, studies=None, populations=None):
         for study in ('swarmform', 'swarmharm'):
             if settings[study]['models']:
                 settings[study]['populations'] = list(populations)
+    if scenarios is not None and settings['swarmharm']['models']:
+        settings['swarmharm']['scenarios'] = list(scenarios)
+    if mechanisms is not None and settings['swarmharm']['models']:
+        settings['swarmharm']['mechanisms'] = list(mechanisms)
+    if coupling != 'coupled' and settings['swarmharm']['models']:
+        settings['swarmharm']['coupling'] = coupling
     sf_pops = settings['swarmform']['populations']
     sh_pops = settings['swarmharm']['populations']
+    sh_scenarios = settings['swarmharm']['scenarios']
+    sh_mechanisms = settings['swarmharm']['mechanisms']
     return dict(settings=settings, models=models, api_base=base,
                 cohorts=dict(swarmform=len(settings['swarmform']['models'])*len(defaults.TASKS)*len(defaults.CHANNELS)*len(sf_pops)*defaults.REPEATS,
-                             swarmharm=len(settings['swarmharm']['models'])*len(defaults.MECHANISMS)*len(defaults.SCENARIOS)*len(sh_pops)*defaults.REPEATS),
+                             swarmharm=len(settings['swarmharm']['models'])*len(sh_mechanisms)*len(sh_scenarios)*len(sh_pops)*defaults.REPEATS),
                 source_sha256=source_signature())
 
 
-def batch_command(python, study, model, base, output, *, populations=None, judge=False, judge_model=None):
+def batch_command(python, study, model, base, output, *, populations=None, judge=False, judge_model=None,
+                  scenarios=None, mechanisms=None, coupling='coupled'):
     script = 'rollouts/run_matrix.py' if study == 'swarmform' else 'swarmharm/run_matrix.py'
     resolved_pops = populations or (defaults.SWARMFORM_POPULATIONS if study == 'swarmform' else defaults.POPULATIONS)
     args = [python, str(REPO/script), '--model', model['model'], '--served-model', model['served_model'],
@@ -61,7 +71,10 @@ def batch_command(python, study, model, base, output, *, populations=None, judge
     if study == 'swarmform':
         args += ['--harness', model['harness'], '--tasks', *defaults.TASKS]
     else:
-        args += ['--scenarios', *defaults.SCENARIOS, '--mechanisms', *defaults.MECHANISMS]
+        args += ['--scenarios', *(scenarios or defaults.SCENARIOS),
+                 '--mechanisms', *(mechanisms or defaults.MECHANISMS)]
+        if coupling != 'coupled':
+            args += ['--coupling', coupling]
         if judge:
             args.append('--judge')
             if judge_model:
@@ -177,6 +190,9 @@ def execute(args, expected, config):
                 with log_path.open('a') as log:
                     cmd = batch_command(python, study, model, expected['api_base'], output,
                                         populations=study_pops,
+                                        scenarios=expected['settings']['swarmharm'].get('scenarios'),
+                                        mechanisms=expected['settings']['swarmharm'].get('mechanisms'),
+                                        coupling=expected['settings']['swarmharm'].get('coupling', 'coupled'),
                                         judge=getattr(args, 'judge', False),
                                         judge_model=getattr(args, 'judge_model', None))
                     code, interrupted = run_process(cmd, cwd=REPO, env=study_env, stdout=log, stderr=subprocess.STDOUT)
@@ -201,7 +217,13 @@ def main():
     parser.add_argument('--studies', nargs='+', choices=('swarmform', 'swarmharm'),
                         help='Optional study subset (default: both)')
     parser.add_argument('--populations', nargs='+', type=int,
-                        help='Optional population list override (e.g. 4 16 64)')
+                        help='Optional population list override (SwarmHarm supports 1 for single-agent baseline, plus 4 16 32)')
+    parser.add_argument('--scenarios', nargs='+', choices=tuple(defaults.SCENARIOS),
+                        help='Optional SwarmHarm scenario subset')
+    parser.add_argument('--mechanisms', nargs='+', choices=tuple(defaults.MECHANISMS),
+                        help='Optional SwarmHarm mechanism subset')
+    parser.add_argument('--coupling', choices=('coupled', 'uncoupled'), default='coupled',
+                        help='SwarmHarm coupling mode (coupled default, or matched uncoupled baseline)')
     parser.add_argument('--skip-api-check', action='store_true',
                         help='Skip initial N=4 API check when routes are already verified')
     parser.add_argument('--judge', action='store_true', help='Run SwarmHarm transcript judge automatically on each collected cohort')
@@ -209,11 +231,18 @@ def main():
     parser.add_argument('--out', type=Path, default=REPO.parent/'swarm-runs')
     parser.add_argument('--execute', action='store_true')
     args = parser.parse_args()
-    if args.populations and min(args.populations) < 2:
-        parser.error('--populations requires integers >= 2')
+    active_studies = set(args.studies) if args.studies else {'swarmform', 'swarmharm'}
+    if args.populations:
+        if min(args.populations) < 1:
+            parser.error('--populations requires positive integers')
+        if 'swarmform' in active_studies and min(args.populations) < 2:
+            parser.error('SwarmForm requires --populations >= 2 (use --studies swarmharm for N=1 single-agent baseline)')
+        if 'swarmharm' in active_studies and max(args.populations) >= 64:
+            parser.error('SwarmHarm populations are 1 (single-agent baseline), 4, 16 and 32; N=64 is not part of this study')
     if args.model_map: args.model_map = args.model_map.expanduser().resolve()
     base = resolve_api_base(args.base_url, allow_axonhub_default=True)
-    expected = plan(base, args.model_map, names=args.models, studies=args.studies, populations=args.populations)
+    expected = plan(base, args.model_map, names=args.models, studies=args.studies, populations=args.populations,
+                    scenarios=args.scenarios, mechanisms=args.mechanisms, coupling=args.coupling)
     if not args.execute:
         print(json.dumps(expected, indent=2)); return 0
     if args.key_file: args.key_file = credential_file(args.key_file, REPO)

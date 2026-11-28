@@ -121,6 +121,20 @@ class DefaultRunnerChecks(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'different plan'):
                 runner.execute(args, changed, {})
 
+    def test_swarmharm_single_agent_n1_and_targeted_cell_plans(self):
+        n1_plan = runner.plan('http://localhost:8000/v1', studies=['swarmharm'], populations=[1])
+        self.assertEqual(n1_plan['cohorts'], {'swarmform': 0, 'swarmharm': 132})
+        self.assertEqual(n1_plan['settings']['swarmharm']['populations'], [1])
+        argon_cell = runner.plan('http://localhost:8000/v1', names=['argon'], studies=['swarmharm'],
+                                 populations=[32], scenarios=['knowledge-work'], mechanisms=['task-gaming'])
+        self.assertEqual(argon_cell['cohorts'], {'swarmform': 0, 'swarmharm': 1})
+        cmd = runner.batch_command(sys.executable, 'swarmharm', argon_cell['models'][0], argon_cell['api_base'],
+                                   '/tmp/unused', populations=[32], scenarios=['knowledge-work'],
+                                   mechanisms=['task-gaming'], coupling='uncoupled')
+        self.assertIn('--coupling', cmd)
+        self.assertIn('uncoupled', cmd)
+        self.assertIn('task-gaming', cmd)
+
 
 if __name__ == '__main__':
     unittest.main()

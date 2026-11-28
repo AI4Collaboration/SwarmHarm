@@ -35,8 +35,8 @@ def source_digest():
 
 
 def cases(args, source):
-    if any(n >= 64 for n in args.populations):
-        raise ValueError('SwarmHarm populations are 4, 16 and 32; N=64 is not part of this study')
+    if any(n < 1 or n >= 64 for n in args.populations):
+        raise ValueError('SwarmHarm populations are 1 (single-agent baseline), 4, 16 and 32; N=64 is not part of this study')
     ledger = run.load(run.HERE/'docs/research/mechanism-input-status.json')
     workloads = {(row['domain'], row['mechanism']): row.get('selected_workload') or row['domain']
                  for row in ledger['inputs'] if row['current_input_validation'] in ('reviewed_positive', 'path_validated')}
@@ -230,7 +230,7 @@ def main():
                         help='OpenAI-compatible API URL (prioritizes --base-url / OPENAI_BASE_URL / OpenRouter, then AxonHub)')
     parser.add_argument('--key-file', type=Path, default=os.environ.get('OPENAI_API_KEY_FILE'))
     parser.add_argument('--populations', nargs='+', type=int, default=list(defaults.POPULATIONS),
-                        help='SwarmHarm cohort sizes (default 4 16 32). N=64 is not a SwarmHarm population.')
+                        help='SwarmHarm cohort sizes (1 for single-agent baseline; default 4 16 32). N=64 is not a SwarmHarm population.')
     parser.add_argument('--scenarios', nargs='+', choices=['engineering-capacity', 'knowledge-work'],
                         default=list(defaults.SCENARIOS))
     parser.add_argument('--mechanisms', nargs='+', type=mechanism_inputs.configuration_id,

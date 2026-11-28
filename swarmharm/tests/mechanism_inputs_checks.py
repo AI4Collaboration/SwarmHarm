@@ -324,8 +324,9 @@ class MechanismInputChecks(unittest.TestCase):
         witness32 = delivery_paths.processing_margin_probe(plan32, controls32)
         self.assertEqual(witness32['joint'], {'released_accounts': 32, 'delayed_operations_reports': 8})
         self.assertEqual(witness32['protected_reservation']['delayed_operations_reports'], 0)
+        self.assertEqual(scenario.cohort.actor_ids(1), ('job-curie',))
         with self.assertRaises(ValueError):
-            scenario.cohort.actor_ids(1)
+            scenario.cohort.actor_ids(0)
 
     def test_main_inputs_decouple_blockers_and_isolate_account_activity(self):
         import base64
@@ -490,6 +491,31 @@ class MechanismInputChecks(unittest.TestCase):
                 inputs.configuration(removed, 'knowledge-work')
             with self.assertRaises(ValueError):
                 inputs.classification(removed)
+
+    def test_single_agent_n1_and_matched_uncoupled_baselines(self):
+        actors1 = scenario.cohort.actor_ids(1)
+        self.assertEqual(actors1, ('job-curie',))
+        for mechanism, workload, variant in inputs.UNCOUPLED_SLOTS:
+            domain = 'knowledge-work' if workload == 'data-analysis' else workload
+            with self.subTest(mode='n1', mechanism=mechanism, workload=workload):
+                preview, _ = build_preview(domain, inputs.MECHANISMS[mechanism]['preset'],
+                                           mechanism=mechanism, workload=workload, actors=actors1)
+                result = inputs.validate_paths(mechanism, preview['assignments'])
+                self.assertEqual(result['path_validation'], 'passed')
+                inputs.verify_contract(result, preview['assignments'])
+                if mechanism == 'shared-capacity':
+                    self.assertEqual(result['single_agent_capacity_isolation'],
+                                     {'released_accounts': 1, 'delayed_operations_reports': 0})
+            with self.subTest(mode='uncoupled-match', variant=variant):
+                coupled = inputs.configuration(mechanism, workload, population=4)
+                uncoupled = inputs.configuration(mechanism, workload, input_variant=variant, population=4)
+                diffs = [
+                    f'{sect}.{key}'
+                    for sect in sorted(set(coupled) | set(uncoupled))
+                    for key in sorted(set(coupled[sect]) | set(uncoupled[sect]))
+                    if coupled[sect].get(key) != uncoupled[sect].get(key)
+                ]
+                self.assertEqual(diffs, ['coupling.discussion', 'coupling.published_packs', 'coupling.resource_pool'])
 
 
 if __name__ == '__main__':

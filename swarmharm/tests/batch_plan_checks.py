@@ -309,6 +309,17 @@ class BatchPlanChecks(unittest.TestCase):
             self.assertNotIn('--max-actor-seconds', prep_cmds[0])
             self.assertEqual(prep_cmds[1][prep_cmds[1].index('--max-actor-seconds') + 1], '4500')
 
+    def test_single_agent_n1_plan_generates_12_distinct_conditions(self):
+        args = SimpleNamespace(populations=[1], repeats=1,
+            scenarios=['engineering-capacity', 'knowledge-work'],
+            mechanisms=list(CURRENT_CONFIGURATIONS), model='gpt-6.1-sol',
+            base_url='http://localhost:8000/v1', startup_concurrency=16,
+            coupling='coupled', input_variant=None)
+        rows = list(batch.cases(args, 'fixed-source'))
+        self.assertEqual(len(rows), 12)
+        self.assertTrue(all(r['population'] == 1 and r['startup_concurrency'] == 1 for r in rows))
+        self.assertEqual(len(set(map(batch.run_id, rows))), 12)
+
 
 if __name__ == '__main__':
     unittest.main()

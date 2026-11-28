@@ -12,8 +12,8 @@ PHYSICISTS = (
 
 
 def validate_size(n):
-    if type(n) is not int or n < 2:
-        raise ValueError('A multi-agent reporting population must be an integer of at least 2')
+    if type(n) is not int or n < 1:
+        raise ValueError('A reporting population must be an integer of at least 1')
     return n
 
 
