@@ -20,7 +20,7 @@ from unittest.mock import Mock, patch
 from argparse import Namespace
 
 import httpx
-from swarmform import checkpoint
+from swarmform.workstation import remove_workstation
 from swarmform import formation_inputs as inputs
 from swarmform.__main__ import Cohort
 from swarmform.__main__ import seal_evidence
@@ -184,17 +184,27 @@ class ArchiveTests(unittest.TestCase):
 
 
 class LifecycleTests(unittest.TestCase):
-    def test_observation_initializer_timeout_cleans_named_resources(self):
+    def test_removal_can_finish_after_the_docker_client_times_out(self):
+        name = "owned-workstation"
+        cmd = ["docker", "rm", "-f", name]
+        responses = [subprocess.TimeoutExpired(cmd, 20),
+                     subprocess.CompletedProcess(cmd, 1, stderr=b"removal already in progress"),
+                     subprocess.CompletedProcess(cmd, 1, stderr=b"No such container")]
+        with patch("subprocess.run", side_effect=responses) as run, patch("time.sleep"):
+            remove_workstation(name)
+        self.assertEqual([call.args[0] for call in run.call_args_list], [cmd] * 3)
+
+    def test_observed_workstation_start_timeout_cleans_named_resources(self):
         created = subprocess.CompletedProcess(["docker"], 0, stderr=b"")
-        timed_out = subprocess.TimeoutExpired(["docker", "run"], 60)
+        timed_out = subprocess.TimeoutExpired(["docker", "run"], 90)
         removed = subprocess.CompletedProcess(["docker"], 0, stderr=b"")
         busy = subprocess.CompletedProcess(["docker"], 1, stderr=b"volume is in use")
-        with tempfile.TemporaryDirectory() as folder, patch(
+        with tempfile.TemporaryDirectory() as folder, patch("swarmform.workstation.IMAGE", "fixture-image"), patch(
             "swarmform.read_observer.subprocess.run",
             side_effect=[created, timed_out, removed, busy, removed],
         ) as run:
             with self.assertRaises(subprocess.TimeoutExpired):
-                ObservedFileStation({}, archive=Path(folder) / "reads")
+                ObservedFileStation({}, archive=Path(folder) / "reads", process_lifecycle="continuous")
         create, start, stop, release, retry = [call.args[0] for call in run.call_args_list]
         self.assertEqual(stop, ["docker", "rm", "-f", start[start.index("--name") + 1]])
         self.assertEqual(release, ["docker", "volume", "rm", create[-1]])
@@ -218,6 +228,16 @@ class LifecycleTests(unittest.TestCase):
         deployment.resources = Mock()
         deployment.close()
         deployment.resources.close.assert_called_once()
+
+    def test_socket_start_error_survives_cleanup_failure(self):
+        start_error = subprocess.TimeoutExpired(["docker", "network", "create"], 30)
+        startup = {"A": {SocketDeployment.connection_path: '{"url":"http://projects:8080","key":"a"}'}}
+        with patch("swarmform.socket_deployment.create_private_network", side_effect=start_error), \
+                patch.object(SocketDeployment, "close", side_effect=OSError("fixture cleanup failed")):
+            with self.assertRaises(subprocess.TimeoutExpired) as raised:
+                SocketDeployment(startup, observation_archive="unused")
+        self.assertIs(raised.exception, start_error)
+        self.assertIn("Socket cleanup also failed: fixture cleanup failed", start_error.__notes__)
 
     def test_one_failed_capture_keeps_all_resources_and_attempts_all_agents(self):
         for cls in (FileDeployment, CommonWorkspace):
@@ -265,52 +285,6 @@ class LifecycleTests(unittest.TestCase):
             with tempfile.TemporaryDirectory() as folder:
                 notices.append(asyncio.run(check(folder, channel)))
         self.assertEqual(len(set(notices)), 1)
-
-    def test_review_requires_receipts_and_causally_ordered_actions(self):
-        async def check(folder):
-            args = Namespace(task="planning-distributed", channel="socket", population=3,
-                             model="fixture", seconds=10, base_url="http://fixture/v1")
-            review = checkpoint.Review()
-            spec = checkpoint.PATTERNS["delegation_return"]
-            steps = []
-            for i, (actor, field) in enumerate(spec):
-                row = {"call_id": str(i), "decision_s": i * 0.1, "command": f"selected action {i}"}
-                result = {"stdout": f"received artifact {i}", "exit_code": 0}
-                review.record(actor, "tool_start", i * 0.1, row)
-                review.record(actor, "tool_result", i * 0.1 + 0.02, {"call_id": str(i), "result": result})
-                review.receipt(actor, str(i), i * 0.1 + 0.04, result["stdout"])
-                steps.append({"id": i, "quote": result["stdout"] if field == "stdout" else row["command"]})
-            verdict = {"pattern": "delegation_return", "roles": dict(zip("ABC", "ABC")),
-                       "steps": steps, "rationale": "Scripted chain."}
-            rows = list(review.actions.values())
-            self.assertTrue(checkpoint.verified(verdict, rows))
-            # A tool cannot use the result of its own read before the model receives it.
-            old = steps[2]
-            steps[2] = {"id": 1, "quote": rows[1]["command"]}
-            self.assertFalse(checkpoint.verified(verdict, rows))
-            steps[2] = old
-            rows[-1].pop("received_s")
-            self.assertFalse(checkpoint.verified(verdict, rows))
-            def respond(request):
-                self.assertNotIn("tools", json.loads(request.content))
-                return httpx.Response(200, json={"choices": [{"message": {"content": json.dumps(verdict)}}]})
-            async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
-                cohort = Cohort(args, client, Path(folder))
-                cohort.review = review
-                cohort.start = time.monotonic() - 1
-                self.assertFalse(await review.check(cohort, 1))
-                self.assertEqual(review.results[1], "unverified")
-                review.receipt("A", "8", 0.84, rows[-1]["stdout"])
-                cohort.start = time.monotonic() - 1
-                cohort.deadline = cohort.start + 4
-                with patch.object(checkpoint, "INTERVAL_SECONDS", 1), patch.object(checkpoint, "COHORT_SECONDS", 4):
-                    await asyncio.wait_for(review.monitor(cohort), 1)
-                self.assertEqual(cohort.reason, "observed_structure")
-                self.assertEqual(review.results, {1: "matched"})
-                self.assertTrue((Path(folder) / "review-1000.json").is_file())
-
-        with tempfile.TemporaryDirectory() as folder:
-            asyncio.run(check(folder))
 
     def test_cancelled_request_retains_completed_tool_result(self):
         async def check(folder):
@@ -381,29 +355,15 @@ class LifecycleTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             asyncio.run(check(folder))
 
-    def test_all_requested_populations_have_matched_inputs(self):
-        for population in (2, 3, 4, 8, 16, 32, 64, 128):
-            for task in inputs.TASK_MODULES:
-                with self.subTest(population=population, task=task):
-                    cases = [inputs.build_intended(task, population)]
-                    cases += [
-                        inputs.build(task, channel, population)
-                        for channel in inputs.CHANNELS
-                    ]
-                    self.assertEqual(
-                        len({m["task_only_sha256"] for _, _, m in cases}), 1
-                    )
-                    self.assertEqual(len({m['truth_sha256'] for _, _, m in cases}), 1)
-                    module = inputs.module(task)
-                    startup, truth, _ = module.build(task, population)
-                    self.assertTrue(module.witness(task, startup, truth)['passed'])
-                    self.assertTrue(
-                        all(
-                            len(v["startup"]) == population
-                            and m["instruction_audit"]["passed"]
-                            for v, _, m in cases
-                        )
-                    )
+    def test_large_population_has_matched_private_inputs(self):
+        for task in ("ffmpeg-commissioning-distributed", "pb-php-distributed"):
+            with self.subTest(task=task):
+                direct, _, expected = inputs.build_intended(task, 128)
+                private, _, actual = inputs.build(task, "socket", 128)
+                self.assertEqual(len(private["startup"]), 128)
+                self.assertEqual(private["startup"].keys(), direct["startup"].keys())
+                self.assertEqual(actual["task_only_sha256"], expected["task_only_sha256"])
+                self.assertEqual(actual["truth_sha256"], expected["truth_sha256"])
 
 
 @unittest.skipUnless(

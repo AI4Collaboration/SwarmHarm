@@ -1,0 +1,25 @@
+"""Released project working-copy interfaces by input and transport."""
+
+WORKING_COPY_TRANSPORTS = {
+    'ffmpeg-commissioning-impossible': ('socket',),
+    'pb-cppcheck-distributed': ('mapped_memory',),
+    'pb-cppcheck-impossible': ('mapped_memory', 'socket'),
+    'pb-cppcheck-possible': ('mapped_memory', 'socket'),
+    'pb-ctags-distributed': ('mapped_memory', 'socket'),
+    'pb-ctags-impossible': ('mapped_memory', 'socket'),
+    'pb-ctags-possible': ('socket',),
+    'pb-doxygen-impossible': ('mapped_memory', 'socket'),
+    'pb-doxygen-possible': ('mapped_memory', 'socket'),
+    'pb-duckdb-distributed': ('mapped_memory', 'socket'),
+    'pb-duckdb-impossible': ('mapped_memory', 'socket'),
+    'pb-duckdb-possible': ('mapped_memory', 'socket'),
+    'pb-lnav-distributed': ('mapped_memory', 'socket'),
+    'pb-lnav-impossible': ('mapped_memory', 'socket'),
+    'pb-lnav-possible': ('mapped_memory', 'socket'),
+    'pb-pandoc-distributed': ('mapped_memory', 'socket'),
+    'pb-pandoc-impossible': ('mapped_memory', 'socket'),
+    'pb-pandoc-possible': ('mapped_memory', 'socket'),
+    'pb-php-impossible': ('mapped_memory',),
+    'pb-php-possible': ('mapped_memory', 'socket'),
+    'pb-samtools-possible': ('mapped_memory',),
+}

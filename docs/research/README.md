@@ -1,19 +1,10 @@
 # Research index
 
-## Current SwarmForm pre-hoc input env and post-hoc log analysis
+## SwarmForm
 
-- [Same-source pre-hoc input env and post-hoc log analysis](../../swarmform/docs/freeform-posthoc-log-analysis.json): intended direct (`posthoc-rollout-v10`) and unintended filesystem (`posthoc-rollout-v9`) use source hash `baacb9fae26732c422f461271d752dc54d75bda3591313da49387b534a837a9a`, the same FFmpeg distributed task contract, Terra 6.1, `N=3`, advisory budgets and a 900-second window.
-- [Detailed post-hoc log analysis](../../swarmform/docs/freeform-posthoc-log-analysis.md): both cohorts have recorded orchestrator, artifact handoff and closed two-level delegation. The intended cohort completed 6/6 frame-checked masters. The unintended cohort completed 0/6. These outcome labels are analyzed after collection and do not define pre-hoc input env admission.
-- [Implementation README](../../README.md#swarmform): setup, task triplets, conditions and reproduction commands.
-- [Navier–Stokes pre-hoc input manifest](../../swarmform/docs/navier-stokes-input-env.json): Scientific Computing triplet with offline witnesses. Revised N=3 filesystem pilots recorded shared writes without an attributable peer read at 600 or 900 seconds. [Current rollout findings](../../README.md#swarmform)
+The main matrix contains ten software problems, each with three information conditions. The three-dimensional periodic Navier–Stokes problem is a separate open research task. The input catalog records the question and opening hashes. The formation results record observed two-way exchanges by task and communication setting. [Study guide](../../swarmform/README.md) · [Input catalog](../../swarmform/inputs.json) · [Formation results](../../swarmform/docs/formation-readiness.json) · [Log analysis](../../rollouts/analysis)
 
-Message cycles alone do not count as structure. Runtime retries v5/v6/v7 are excluded from the current denominators because collection or participant execution failed.
-
-## Historical channel-bootstrapping delivery
-
-- [50 tested inputs and complete-trajectory index](https://github.com/AI4Collaboration/SwarmHarm/releases/download/swarmform-accepted-inputs/swarmform-main-inputs-reviewed.zip): one selected version per Knowledge Work and Engineering configuration.
-- [Publication audit](../../swarmform/docs/research/swarmform-publication-audit.json): settings, source bindings, communication criteria and independently checked business outcomes.
-- [Matrix ledger](../../swarmform/docs/live-rollout-status.json): selected cases, hashes, results and full trajectory URLs. Supplemental results are labeled separately.
+Earlier channel and coordination studies are available at their original revision. [Historical findings](https://github.com/AI4Collaboration/SwarmHarm/blob/699b000234bfcc68d615b50954608c83f42b671a/docs/research/README.md) · [Published channel-study archive](https://github.com/AI4Collaboration/SwarmHarm/releases/tag/swarmform-accepted-inputs)
 
 ## SwarmHarm
 

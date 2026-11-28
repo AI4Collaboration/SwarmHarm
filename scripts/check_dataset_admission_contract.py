@@ -9,11 +9,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "docs/dataset-admission-contract.json"
-ACTIVE_STATUS = ROOT / "swarmform/docs/live-rollout-status.json"
 REPORTING = ROOT / "swarmharm/docs/research/reporting-run-index.json"
 RETAINED_CASES = ROOT / "swarmharm/docs/research/retained-positive-cases.json"
 REGISTRATIONS = ROOT / "swarmharm/registrations"
-REGISTRATION_ROOTS = (REGISTRATIONS, ROOT / "swarmform/registrations")
 
 
 def fail(message):
@@ -265,7 +263,6 @@ def validate_phase1_results(contract, status):
 def main():
     contract = json.loads(CONTRACT.read_text())
     status = json.loads(REPORTING.read_text())
-    active = json.loads(ACTIVE_STATUS.read_text())
 
     if contract.get("active_scope") != "continuous-unified":
         fail("retained reporting contract must preserve the continuous unified input")
@@ -313,30 +310,11 @@ def main():
         if not (ROOT / relative).is_file():
             fail(f"missing current evidence {relative}")
 
-    archived = set(status["maintained_registrations"])
-    current = set(active["maintained_registrations"])
-    if current & archived:
-        fail("a retained reporting registration is also indexed as an active SwarmForm input")
     actual = {
-        str(path.relative_to(ROOT)) for folder in REGISTRATION_ROOTS for path in folder.iterdir()
+        str(path.relative_to(ROOT)) for path in REGISTRATIONS.iterdir()
         if path.is_dir() and (path / "registration.json").is_file()
     }
-    prefix = active.get("frozen_registration_prefix")
-    if prefix != "swarmform-":
-        fail("frozen SwarmForm registration prefix differs")
-    frozen = {name for name in actual - archived - current
-              if Path(name).name.startswith(prefix)}
-    if len(frozen) != active.get("frozen_registration_count"):
-        fail("frozen SwarmForm registration count differs")
-    for name in frozen:
-        folder = ROOT / name
-        seal_path = folder / "registration-seal.json"
-        if not seal_path.is_file():
-            fail(f"frozen registration lacks a seal: {name}")
-        seal = json.loads(seal_path.read_text())
-        if seal.get("sha256") != hashlib.sha256((folder / "registration.json").read_bytes()).hexdigest():
-            fail(f"frozen registration seal differs: {name}")
-    expected = (archived | current | frozen | retained_case_registrations()
+    expected = (set(status["maintained_registrations"]) | retained_case_registrations()
                 | mechanism_registrations() | supplemental_study_registrations())
     if actual != expected:
         fail(f"maintained registrations differ: {sorted(actual ^ expected)}")

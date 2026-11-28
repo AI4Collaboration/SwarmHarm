@@ -1,5 +1,6 @@
 """Replay the expansion's release records against the pinned ProgramBench executables."""
 import argparse
+from hashlib import sha256
 import json
 import os
 from pathlib import Path
@@ -19,7 +20,9 @@ def replay(item):
     with tempfile.TemporaryDirectory() as folder:
         root = Path(folder)
         for path, text in job['files'].items():
-            (root / path).write_text(text)
+            target = root / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(text)
         args = ['/opt/programbench/invoke',instance,*job['argv']]
         environment = dict(os.environ, HOME=folder, TZ='UTC', LC_ALL='C', TERM='xterm-256color', OMP_NUM_THREADS='1')
         stdin = (root/job['stdin']).read_bytes() if job['stdin'] else b''
@@ -63,6 +66,10 @@ def check(image, families, register=False):
     for (family, receipt), result in zip(archived, replayed[len(labels):], strict=True):
         if result != {"sha256": receipt["sha256"], "bytes": receipt["bytes"]}:
             failures[family] = f"Archived {receipt['consumer']} output did not reproduce"
+        elif retained := receipt.get("retained_file"):
+            product = catalog[family]["operational_archive"]["products"][retained].encode()
+            if sha256(product).hexdigest() != result["sha256"]:
+                failures[family] = f"Stored reference product {retained} differs from pinned output"
 
     for family in families:
         editions = [results[family,i,j] for i in range(3) for j in range(2)]

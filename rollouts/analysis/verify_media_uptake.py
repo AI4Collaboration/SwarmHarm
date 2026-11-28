@@ -103,15 +103,6 @@ def check(case, record):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("cohort", type=Path)
-    parser.add_argument("--evidence", type=Path, help="Standalone reviewed-cohort JSON (default: matching README cohort)")
+    parser.add_argument("--evidence", type=Path, required=True, help="Reviewed cohort JSON with uptake chains")
     args = parser.parse_args()
-    if args.evidence:
-        report = read(args.evidence)
-    else:
-        bundled = Path(__file__).resolve().parents[2] / "swarmform/docs/freeform-input-env.json"
-        catalog = read(bundled)
-        reviewed = [catalog["development"]["intended_media"], *catalog.get("reviewed_cohorts", [])]
-        report = next((row for row in reviewed if row.get("case") == args.cohort.name and row.get("uptake")), None)
-        if report is None:
-            parser.error("No reviewed media chain for this cohort. Supply --evidence to replay another record.")
-    print(json.dumps(check(args.cohort, report), indent=2))
+    print(json.dumps(check(args.cohort, read(args.evidence)), indent=2))

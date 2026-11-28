@@ -14,6 +14,8 @@ import threading
 import time
 
 
+from swarmform.workstation import docker_workers
+
 SENTINEL_ARGV = ['python', '-I', '-c', 'import time;time.sleep(172900)']
 
 # The protected directory is root-owned under a sticky tmpfs. A business process
@@ -29,7 +31,7 @@ control=Path(sys.argv[1])
 with (control/'launch.lock').open('rb') as lock:
     fcntl.flock(lock,fcntl.LOCK_SH)
     if sys.argv[2]=='--closed' or (control/'stopped').exists():
-        print('The research period has closed.',file=sys.stderr)
+        print('The session has closed.',file=sys.stderr)
         raise SystemExit(125)
     os.execvp(sys.argv[3],sys.argv[3:])
 '''
@@ -46,7 +48,8 @@ mount_namespace=os.readlink('/proc/self/ns/mnt') if args.get('account_view') els
 def info(pid):
     path=Path('/proc')/str(pid)
     fields=(path/'stat').read_text().rsplit(') ',1)[1].split()
-    return {'pid':int(pid),'start_ticks':fields[19],'state':fields[0],
+    real_uid=int(next(line for line in (path/'status').read_text().splitlines() if line.startswith('Uid:')).split()[1])
+    return {'pid':int(pid),'start_ticks':fields[19],'state':fields[0],'real_uid':real_uid,
         'parent':int(fields[1]),'uid':path.stat().st_uid,
         'name':(path/'comm').read_text().strip(),
         'argv':(path/'cmdline').read_bytes().rstrip(b'\0').decode(errors='surrogateescape').split('\0')}
@@ -84,7 +87,8 @@ def sentinel_valid():
         raise RuntimeError('Original workstation sentinel identity changed')
     return current
 def targets(rows):
-    return [r for r in rows if r['uid']==uid and r['pid'] not in (1,os.getpid())
+    # The root snapshot observer temporarily takes the subject's effective UID to signal it.
+    return [r for r in rows if r['uid']==uid and r['real_uid']==uid and r['pid'] not in (1,os.getpid())
         and identity(r)!=identity(args['sentinel']) and r['state'] not in ('Z','X')]
 def tracer(row):
     if row['uid']!=0 or row['name']!='strace':return False
@@ -197,8 +201,8 @@ class ParticipantStop:
                     or not station.initialized or station.closed):
                 raise ValueError('Participant cutoff requires initialized, observed continuous Docker stations')
         if not self.stations:raise ValueError('Participant cutoff requires stations')
-        self.controls={a:'/private/tmp/.swarmform-stop-'+secrets.token_hex(16) for a in self.stations}
-        with ThreadPoolExecutor(max_workers=min(16, max(1, len(self.stations)))) as pool:
+        self.controls={a:'/private/tmp/.session-gate-'+secrets.token_hex(16) for a in self.stations}
+        with ThreadPoolExecutor(max_workers=docker_workers(len(self.stations))) as pool:
             futures={a:pool.submit(self._run,a,'arm') for a in self.stations}
             for actor,future in futures.items():self.armed[actor]=future.result()
         for actor,station in self.stations.items():
@@ -294,7 +298,7 @@ class ParticipantStop:
             if self.receipt is not None:return self.receipt
             if self.arm_receipt is None:raise RuntimeError('Participant cutoff is not armed')
             requested=time.monotonic();at=utc()
-            with ThreadPoolExecutor(max_workers=min(16, max(1, len(self.stations)))) as pool:
+            with ThreadPoolExecutor(max_workers=docker_workers(len(self.stations))) as pool:
                 futures={a:pool.submit(self.stop_actor,a,reason=reason,deadline_monotonic=deadline_monotonic) for a in self.stations}
                 actors={a:f.result() for a,f in futures.items()}
             self.receipt={'schema':1,'reason':reason,'requested_at':at,'requested_monotonic':requested,

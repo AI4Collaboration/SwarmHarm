@@ -16,11 +16,12 @@ class ServiceWorkstation(DockerWorkstation):
     def __init__(self,initial_files,*,archive,**kwargs):
         self.service_archive=Path(archive).resolve();self.service_archive.mkdir(parents=True,exist_ok=False)
         self.service_capture_count=0
+        self.terminal_captured=False
         initial=dict(initial_files)
         initial['/workspace/.service-observer.py']=base64.b64encode(Path(workstation.__file__).with_name('workstation_observer.py').read_bytes()).decode()
         super().__init__(initial,**kwargs)
 
-    def capture_frozen(self,phase):
+    def capture_frozen(self,phase,*,resume_inline=False):
         code=Path(__file__).with_name('service_capture.py').read_text()
         self.service_capture_count+=1
         raw_path=self.service_archive/f'{self.service_capture_count:06d}.bin'
@@ -54,11 +55,19 @@ class ServiceWorkstation(DockerWorkstation):
         if self.observation_sink is not None:values['observation_reference']=self.observation_sink(phase,values)
         return values
 
+    def capture_terminal(self):
+        if self.initialized and not self.terminal_captured:
+            self.capture_frozen('terminal')
+            self.terminal_captured = True
+
+    def retire(self):
+        if self.closed:
+            return
+        if self.initialized and not self.terminal_captured:
+            raise RuntimeError('Service terminal capture missing; originals retained')
+        workstation.remove_workstation(self.name)
+        self.closed = True
+
     def close(self):
-        if self.closed:return
-        if not self.initialized:return super().close()
-        # A failed capture must retain the service, not remove its only original state.
-        self.capture_frozen('terminal')
-        removed=subprocess.run(['docker','rm','-f',self.name],capture_output=True,timeout=20)
-        if removed.returncode and b'No such container' not in removed.stderr:raise RuntimeError('Service removal unconfirmed')
-        self.closed=True
+        self.capture_terminal()
+        self.retire()

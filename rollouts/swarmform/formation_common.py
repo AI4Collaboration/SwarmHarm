@@ -15,11 +15,11 @@ from swarmform.formation_inputs import PROJECT
 from swarmform.participant_stop import ParticipantStop
 from swarmform.population import account_ids
 from swarmform.read_observer import ObservedFileStation
-from swarmform.workstation import HYDRATE, IMAGE, native_cwd_alias_code
+from swarmform.workstation import HYDRATE, IMAGE, WORKSTATION_PIDS, docker_workers, native_cwd_alias_code, remove_volume, remove_workstation
 
 
 def run(argv, data=None):
-    result = subprocess.run(argv, input=data, capture_output=True, text=True, timeout=45)
+    result = subprocess.run(argv, input=data, capture_output=True, text=True, timeout=90)
     if result.returncode:
         raise RuntimeError(f"Common workspace operation failed ({result.returncode}): {result.stderr[-1500:]}")
     return result.stdout.strip()
@@ -92,17 +92,23 @@ class CommonWorkspace(FileDeployment):
             security = json.loads(run(['docker', 'info', '--format', '{{json .SecurityOptions}}']))
             self.apparmor_mounts = any(option.split(',')[0] == 'name=apparmor' for option in (security or []))
             run(['docker', 'volume', 'create', *label, volume])
-            self.resources.callback(run, ['docker', 'volume', 'rm', volume])
+            self.resources.callback(remove_volume, volume)
             project_volume = self.name + '-project'
             run(['docker', 'volume', 'create', *label, project_volume])
-            self.resources.callback(run, ['docker', 'volume', 'rm', project_volume])
-            run(self.container_args(n, label, volume))
-            self.resources.callback(run, ['docker', 'rm', '-f', self.name])
+            self.resources.callback(remove_volume, project_volume)
+            try:
+                run(self.container_args(n, label, volume))
+            except subprocess.TimeoutExpired:
+                remove_workstation(self.name)
+                raise
+            self.resources.callback(remove_workstation, self.name)
             ids = account_ids(n)
             root = ['docker', 'exec', '-i', self.name]
             mail = EXPORTS + '/messages'
             run([*root, 'mkdir', '-p', PROJECT, mail + '/all'])
-            run([*root, 'chmod', '1777', PROJECT, mail + '/all', EXPORTS])
+            run([*root, 'chmod', '1777', mail + '/all', EXPORTS])
+            # A freeform project is an editable worktree, including its seeded files.
+            run([*root, 'chmod', '777' if self.freeform else '1777', PROJECT])
             run([*root, 'chmod', '755', mail])
             if registration.get('closed_mail_receipts'):
                 run([*root, 'mkdir', '-m', '711', mail + '/.closed'])
@@ -144,7 +150,7 @@ for actor, gid in json.load(sys.stdin):
                 return actor, station, binding
             acct_pairs = list(zip(startup.items(), ids))
             if len(acct_pairs) >= 4:
-                with ThreadPoolExecutor(max_workers=min(16, len(acct_pairs))) as pool:
+                with ThreadPoolExecutor(max_workers=docker_workers(len(acct_pairs))) as pool:
                     built_accts = list(pool.map(_setup_account, acct_pairs))
             else:
                 built_accts = [_setup_account(p) for p in acct_pairs]
@@ -163,7 +169,7 @@ for actor, gid in json.load(sys.stdin):
         return ['docker', 'run', '-d', '--rm', '--pull=never', '--name', self.name, *label,
                 '--network=none', '--init', '--read-only', '--cap-drop=ALL', '--cap-add=SYS_ADMIN',
                 '--cap-add=SYS_CHROOT', '--cap-add=SYS_PTRACE', '--cap-add=SETUID', '--cap-add=SETGID', '--cap-add=DAC_READ_SEARCH',
-                '--security-opt=no-new-privileges', *apparmor, '--cpu-period=100000', f'--cpu-quota={100000*n}', f'--memory={512*n}m', f'--pids-limit={64*n}',
+                '--security-opt=no-new-privileges', *apparmor, '--cpu-period=100000', f'--cpu-quota={100000*n}', f'--memory={512*n}m', f'--pids-limit={WORKSTATION_PIDS*n}',
                 '-e', 'HOME=/workspace', '--mount', f'type=volume,src={volume},dst=/var/log/workstation',
                 '--tmpfs', '/run/formation:rw,nosuid,nodev,size=1m,mode=0700',
                 '--tmpfs', '/workspace:rw,nosuid,nodev,size=1m,mode=0700',
@@ -174,7 +180,7 @@ for actor, gid in json.load(sys.stdin):
     def verify_access(self, startup, properties):
         n = len(startup)
         conf = properties['HostConfig']
-        if (conf['CpuPeriod'], conf['CpuQuota'], conf['Memory'], conf['PidsLimit']) != (100000, n*100000, n*512*2**20, n*64):
+        if (conf['CpuPeriod'], conf['CpuQuota'], conf['Memory'], conf['PidsLimit']) != (100000, n*100000, n*512*2**20, n*WORKSTATION_PIDS):
             raise RuntimeError('Aggregate resource budget differs')
         nonce = secrets.token_hex(12)
         # Probe foreign sources as the participant, including a real intake record when present.
@@ -210,7 +216,7 @@ print(json.dumps({'installed':{f:digest(f) for f in spec['own']},'denied':denied
             digest_val = sha256(content.encode()).hexdigest()
             return p_file, m_file, digest_val
         st_items = list(self.stations.items())
-        workers = min(16, max(1, len(st_items)))
+        workers = docker_workers(len(st_items))
         with ThreadPoolExecutor(max_workers=workers) as pool:
             for p_file, m_file, d_val in pool.map(_write_probe, st_items):
                 project[p_file] = d_val

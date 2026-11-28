@@ -12,6 +12,7 @@ from swarmform.read_observer import ObservedFileStation, trace_blocks
 from swarmform.service_workstation import ServiceWorkstation
 from swarmform.participant_stop import ParticipantStop
 from swarmform.memory_capture import capture_memory
+from swarmform import tool_archive
 
 
 def main():
@@ -62,6 +63,7 @@ def main():
     out.mkdir(parents=True, exist_ok=False)
     atomic_json(out / "physical-stop.json", stop)
     failures = {}
+    tool_journal_notes = {}
     try:
         for actor, binding in bindings["participants"].items():
             try:
@@ -91,6 +93,17 @@ def main():
                             pass
             except Exception as error:
                 failures[actor] = repr(error)
+        registration = run / "registration.json"
+        if registration.is_file() and json.loads(registration.read_bytes()).get("channel") in ("mapped_memory", "socket"):
+            for actor in bindings["participants"]:
+                try:
+                    actor_file = actor + ".jsonl.gz"
+                    notes = {}
+                    tool_archive.finish(run / actor_file, output=out / actor_file, recovered=out / actor / "reads", notes=notes)
+                    if notes:
+                        tool_journal_notes[actor] = notes
+                except Exception as error:
+                    failures[actor + "_tool_result"] = repr(error)
         if bindings.get("service"):
             try:
                 service = ServiceWorkstation.__new__(ServiceWorkstation)
@@ -121,6 +134,7 @@ def main():
                 "complete": not failures,
                 "errors": failures,
                 "scope": "Post-stop evidence recovery. Original scores and cutoff are unchanged.",
+                "tool_journal_notes": tool_journal_notes,
                 "original_manifest_sha256": (
                     hashlib.sha256(
                         (run / "evidence-manifest.json").read_bytes()

@@ -11,7 +11,7 @@ import subprocess
 import threading
 import time
 
-from swarmform.workstation import DockerWorkstation, IMAGE
+from swarmform.workstation import DockerWorkstation, docker_workers, remove_volume
 
 EXPORTS = "/var/tmp/exports"
 WORKSTATION_ENVIRONMENT = {"HOME": "/workspace"}
@@ -22,8 +22,13 @@ def install_project_files(container, artifacts):
 from pathlib import Path
 project = Path('/var/tmp/exports/project')
 project.mkdir(exist_ok=True)
+os.umask(0)
 for name, body in json.load(sys.stdin).items():
-    dest = project / name
+    relative = Path(name)
+    if relative.is_absolute() or ".." in relative.parts:
+        raise ValueError(f"Expected a project-relative artifact path: {name}")
+    dest = project / relative
+    dest.parent.mkdir(mode=0o777, parents=True, exist_ok=True)
     dest.write_text(body)
     dest.chmod(0o666)
 """
@@ -32,6 +37,9 @@ for name, body in json.load(sys.stdin).items():
 
 
 class FileStation(DockerWorkstation):
+    # A participant must be able to launch the programs it builds.
+    executable_workdirs = ("/workspace", "/tmp", "/private/tmp")
+
     def prepare_continuous_command(self, shared):
         if shared:
             raise ValueError(
@@ -99,6 +107,7 @@ class FileDeployment:
                     environment=WORKSTATION_ENVIRONMENT,
                     registry_enabled=False,
                     named_volumes=((volume, EXPORTS),),
+                    fresh_project_root=EXPORTS,
                     **extra,
                 )
                 with self._res_lock:
@@ -106,7 +115,7 @@ class FileDeployment:
                 return actor, volume, station
             items = list(startup.items())
             if len(items) >= 4:
-                with ThreadPoolExecutor(max_workers=min(16, len(items))) as pool:
+                with ThreadPoolExecutor(max_workers=docker_workers(len(items))) as pool:
                     built = list(pool.map(_start_one, items))
             else:
                 built = [_start_one(item) for item in items]
@@ -137,42 +146,21 @@ class FileDeployment:
         )
         with getattr(self, "_res_lock", threading.Lock()):
             self.resources.callback(self._remove_volume, name)
-        subprocess.run(
-            [
-                "docker",
-                "run",
-                "--rm",
-                "--pull=never",
-                "--network=none",
-                "--read-only",
-                "--cap-drop=ALL",
-                "--mount",
-                f"type=volume,src={name},dst={EXPORTS}",
-                IMAGE,
-                "python",
-                "-I",
-                "-c",
-                f"import os; os.chmod({EXPORTS!r}, 0o1777); os.mkdir({(EXPORTS + '/project')!r}, 0o777); "
-                f"os.chmod({(EXPORTS + '/project')!r}, 0o777)",
-            ],
-            check=True,
-            capture_output=True,
-            timeout=20,
-        )
         return name
 
     def _remove_volume(self, name):
+        removed = getattr(self, "_removed_volumes", None)
+        if removed is not None and name in removed:
+            return
         if any(
             not station.closed and self.volumes.get(actor) == name
             for actor, station in self.stations.items()
         ):
             return
-        subprocess.run(
-            ["docker", "volume", "rm", name],
-            check=True,
-            capture_output=True,
-            timeout=20,
-        )
+        remove_volume(name)
+        if removed is not None:
+            with getattr(self, "_res_lock", threading.Lock()):
+                removed.add(name)
 
     def inspect_bindings(self, shared):
         result = {}
@@ -242,17 +230,20 @@ class FileDeployment:
         with self.locks[actor]:
             acquired = time.monotonic()
             result, snapshot = self.stations[actor].execute(command, {})
-            snapshot["workstation_service_timing"] = {
-                "lock_requested": requested,
-                "lock_acquired": acquired,
-                "service_finished": time.monotonic(),
-                "scope": "Workstation service includes command execution and evidence capture.",
-            }
-            return result, snapshot
+        archive_result = snapshot.pop("archive_result", None)
+        if archive_result is not None:
+            snapshot["command_observation"] = archive_result()
+        snapshot["workstation_service_timing"] = {
+            "lock_requested": requested,
+            "lock_acquired": acquired,
+            "service_finished": time.monotonic(),
+            "scope": "Workstation service includes command execution and evidence capture.",
+        }
+        return result, snapshot
 
     def capture_terminal(self):
         errors = []
-        with ThreadPoolExecutor(max_workers=min(16, max(1, len(self.stations)))) as pool:
+        with ThreadPoolExecutor(max_workers=docker_workers(len(self.stations))) as pool:
             futures = [
                 pool.submit(station.capture_terminal)
                 for station in self.stations.values()
@@ -273,8 +264,16 @@ class FileDeployment:
             self.capture_terminal()
             stations = [s for s in self.stations.values() if not getattr(s, "closed", False)]
             if len(stations) >= 4:
-                with ThreadPoolExecutor(max_workers=min(16, len(stations))) as pool:
+                with ThreadPoolExecutor(max_workers=docker_workers(len(stations))) as pool:
                     list(pool.map(lambda s: s.close(), stations))
+            else:
+                for station in stations:
+                    station.close()
+            self._removed_volumes = getattr(self, "_removed_volumes", set())
+            vols = [v for v in set(getattr(self, "volumes", {}).values()) if v not in self._removed_volumes]
+            if len(vols) >= 4:
+                with ThreadPoolExecutor(max_workers=docker_workers(len(vols))) as pool:
+                    list(pool.map(self._remove_volume, vols))
             self.resources.close()
             self.closed = True
 

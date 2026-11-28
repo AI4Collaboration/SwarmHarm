@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends build-essential
 WORKDIR /ffmpeg
 RUN ./configure --disable-doc --disable-debug --disable-network --disable-autodetect \
        --disable-x86asm --disable-ffplay --extra-version=swarmform-360a402 \
-    && make -j4 ffmpeg ffprobe
+    && make -j"$(nproc)" ffmpeg ffprobe
 FROM ${WORKSTATION}
 # A clean replacement can be compiled offline using independent codec libraries.
 # The deployed workstation does not contain the FFmpeg checkout or its libraries.

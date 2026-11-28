@@ -1,4 +1,5 @@
 """Offline indicators of information transfer, with references into the trace."""
+import ast
 import base64
 from collections import Counter
 import gzip
@@ -6,6 +7,7 @@ import hashlib
 import json
 import re
 
+from formatted_mail import SENDER_LINE, resolve_inbox
 from review_socket import contact
 from mapped_processes import observed_operations
 from swarmform import media_batch
@@ -36,6 +38,10 @@ def file_evidence(case, seeds, direct):
         for path in files.keys() | metadata.keys():
             if not path.startswith("/var/tmp/exports/") or path == "/var/tmp/exports/project":
                 continue
+            # Directory metadata has no content hash; it is not a file version.
+            # Do not require kind=file: older captures may omit the kind field.
+            if metadata.get(path, {}).get("kind") == "directory":
+                continue
             if direct and path.startswith("/var/tmp/exports/messages/"):
                 if path in files and path.endswith(".json"):
                     try:
@@ -49,7 +55,7 @@ def file_evidence(case, seeds, direct):
             sha = metadata.get(path, {}).get("sha256")
             size = metadata.get(path, {}).get("bytes")
             if (not sha or size is None) and path in files:
-                payload = base64.b64decode(files[path], validate=True)
+                payload = content_bytes(files[path], case / "reads" / event["actor"])
                 sha = sha or hashlib.sha256(payload).hexdigest()
                 size = len(payload)
             if sha and path.startswith("/var/tmp/exports/project/") and seeds.get(path.removeprefix("/var/tmp/exports/project/")) == sha:
@@ -96,12 +102,14 @@ def mapped_records(case, service, seeds, media_truth=None):
 
 def mapped_operations(command, output):
     """Classify actual utility receipts, including calls made inside draft tools."""
-    direct = set(re.findall(r"\bprojects\.py\s+(list|read|write)\b", command))
+    direct = set(re.findall(r"\bprojects\.py\s+(list|read|write|checkout|save|work|commit|update)\b", command))
     keep = re.search(r"\brelease_check\.py\b[^\n;&|]*\s--keep(?:\s|=)", command)
     select = re.search(r"\bsubmit\.py\s+(?:--assessment\s+)?[\"']?project:", command)
     preview = re.search(r"\brelease_check\.py\s+(?:--assessment\s+)?[\"']?project:", command)
     if not (direct or keep or select or preview):
         return
+    can_read = bool(direct & {"read", "checkout", "work", "update"})
+    can_write = bool(direct & {"write", "save", "commit", "work"})
     for line in output.splitlines():
         try:
             value = json.loads(line)
@@ -115,11 +123,14 @@ def mapped_operations(command, output):
                 yield "write", retained, "release_check"
         elif "list" in direct and isinstance(value.get("artifacts"), list):
             yield "list", value, "projects"
+        elif "update" in direct and "updated" in value and {"version", "sha256"} <= value.keys():
+            yield "read", {**value, "name": value["updated"]}, "projects"
         elif {"name", "version", "sha256"} <= value.keys():
             read = "text" in value or "saved_to" in value
             op = "read" if read else "write"
-            if op in direct or (read and (select or preview)):
-                via = "projects" if op in direct else "submission" if select else "project_preview"
+            allowed = can_read if read else can_write
+            if allowed or (read and (select or preview)):
+                via = "projects" if allowed else "submission" if select else "project_preview"
                 yield op, value, via
 
 
@@ -155,10 +166,10 @@ def trace_actor(path, actor, prompt, reg):
                 if user and all(isinstance(part, str) for part in user):
                     opening = user
         if kind == "tool_start":
-            commands[event["call_id"]] = event["command"]
+            commands[event["call_id"]] = (event["command"], event.get("s"))
         if kind != "tool_result":
             continue
-        cmd = commands.get(event["call_id"], "")
+        cmd, started = commands.get(event["call_id"], ("", None))
         reference = dict(actor=actor, call_id=event["call_id"], seconds=event["s"])
         if reg["channel"] == "mapped_memory":
             # A later command (e.g. diff) can exit nonzero after the store returned a receipt.
@@ -176,15 +187,24 @@ def trace_actor(path, actor, prompt, reg):
                     sent[(actor, match[1])] = {
                         "call_id": event["call_id"],
                         "seconds": event["s"],
+                        "started_seconds": started,
                     }
         # A compound command can issue both reads and writes. Classify by the returned fields.
         if not inbox:
             continue
-        for line in event["result"].get("stdout", "").splitlines():
+        stdout = event["result"].get("stdout", "")
+        if SENDER_LINE.search(stdout):
+            receipts.append((None, dict(**reference, inbox_stdout=stdout, inbox_command=cmd)))
+        for line in stdout.splitlines():
             try:
                 value = json.loads(line)
             except ValueError:
-                continue
+                if not line.startswith("{'") or "'id':" not in line:
+                    continue
+                try:
+                    value = ast.literal_eval(line)
+                except (ValueError, SyntaxError):
+                    continue
             if not isinstance(value, dict):
                 continue
             if isinstance(value.get("id"), str):
@@ -210,7 +230,7 @@ def channel_evidence(case, reg, actor_names, receipts, store_ops, sent, media_tr
         users = {actor: str(binding.get("user", "")).split(":")[0] for actor, binding in bindings.items()}
         unique_users = Counter(users.values())
         first = {}
-        for value, ref in receipts:
+        for value, ref in resolve_inbox(case, receipts, catalog):
             author, target = value.get("sender"), value.get("recipient")
             archived = catalog.get(value["id"])
             if (not archived or value != archived[0] or author not in actor_names or author == ref["actor"]
@@ -218,6 +238,9 @@ def channel_evidence(case, reg, actor_names, receipts, store_ops, sent, media_tr
                 continue
             owner_uid = str(archived[1])
             send_call = sent.get((author, value["id"]))
+            if ref.get("display_format") and (not send_call or users.get(author) != owner_uid or unique_users[owner_uid] != 1):
+                pending = True
+                continue
             if not send_call and not (users.get(author) == owner_uid and unique_users[owner_uid] == 1):
                 pending = True
                 continue
@@ -227,20 +250,29 @@ def channel_evidence(case, reg, actor_names, receipts, store_ops, sent, media_tr
             else:
                 sender_call_id = send_call["call_id"]
                 sender_seconds = send_call["seconds"]
+            # A shell command can keep running after the recipient has read its message.
+            started = send_call.get("started_seconds") if send_call else None
+            bounds = [started, min(sender_seconds, ref["seconds"])] if started is not None else None
             first.setdefault((ref["actor"], value["id"]), dict(**ref, author=author,
                              message_id=value["id"], address=target, text=value["text"],
                              mailbox_capture_sequence=archived[2], file_owner_uid=archived[1],
-                             sender_call_id=sender_call_id, sender_seconds=sender_seconds))
+                             sender_call_id=sender_call_id, sender_seconds=sender_seconds,
+                             publication_bounds_seconds=bounds))
         transfers = sorted(first.values(), key=lambda x: x["seconds"])
     elif channel == "socket":
         service = json.loads((case / "service.json").read_bytes())
+        archive = case / "reads" / "_service"
+        workspace = service["/workspace"]
+        for path in ("/workspace/access.jsonl", "/workspace/project-seeds.json"):
+            if isinstance(workspace.get(path), dict):
+                workspace[path] = base64.b64encode(content_bytes(workspace[path], archive)).decode()
         result = contact(service)
         if media_truth:
             path = "/workspace/project-store.json"
             encoded = service["/workspace"].get(path)
             if encoded is None and path in service.get("file_metadata", {}):
                 raise ValueError("Socket project store is listed but missing from the terminal observation")
-            scopes = json.loads(base64.b64decode(encoded, validate=True)) if encoded else {}
+            scopes = json.loads(content_bytes(encoded, archive)) if encoded else {}
             masters = []
             for scope, store in scopes.items():
                 for name, versions in store["objects"].items():
@@ -253,6 +285,10 @@ def channel_evidence(case, reg, actor_names, receipts, store_ops, sent, media_tr
             evidence["recorded_project_masters"] = masters
         evidence["socket_operations"] = result["operations"]
         transfers = [event for event in result["events"] if event["kind"] == "peer_read"]
+        if result["operations"].get("materialize"):
+            from socket_worktree_reads import worktree_receipts
+            journal = base64.b64decode(workspace["/workspace/access.jsonl"], validate=True)
+            transfers.extend(worktree_receipts(case, reg, journal))
         evidence["first_write"] = next((event for event in result["events"] if event["kind"] == "first_write"), None)
     elif channel == "mapped_memory":
         states = mapped_records(case, json.loads((case / "service.json").read_bytes()), seeds, media_truth)
@@ -277,6 +313,9 @@ def channel_evidence(case, reg, actor_names, receipts, store_ops, sent, media_tr
         extra = [op for op in bound if operation_key(op) not in printed]
         if extra:
             evidence["mapped_client_process_operations"] = extra
+        write_acks = [op for op in bound if op["operation"] == "write" and operation_key(op) in printed]
+        if write_acks:
+            evidence["mapped_write_acknowledgements"] = write_acks
         store_ops = [op for op in store_ops if operation_key(op) not in authenticated] + bound
         writers = {}
         for op in store_ops:
@@ -291,6 +330,10 @@ def channel_evidence(case, reg, actor_names, receipts, store_ops, sent, media_tr
             owners = writers.get(key, set())
             if op["operation"] == "read" and len(owners) == 1 and op["actor"] not in owners:
                 transfers.append(dict(**op, author=next(iter(owners))))
+        if bound and any(event.get("saved_to") for event in transfers):
+            from mapped_checkout_reads import displayed_copies
+            later = list(displayed_copies(case, transfers, origin, reg["cohort_deadline_seconds"], events))
+            transfers.extend(later)
     else:
         raise ValueError(f"Unknown communication channel {channel}")
     status = "verified_receipt" if transfers else "needs_attribution" if pending else "no_receipt_verified"

@@ -29,25 +29,20 @@ def make_packets(mode, population, edition_choices):
     common["/workspace/task.md"] = TASK
     common["/workspace/archive/engineering-note.txt"] = (
         "The reference programs are /opt/reference/ffmpeg and /opt/reference/ffprobe. "
-        "Their built-in help is available locally. The clean appliance has neither binary. "
+        "Their built-in help is available locally. The production replacement must run without bundling or invoking either reference binary. "
         "The commissioning workstation has a C toolchain and Xvid and VisualOn AAC development libraries. "
         "Feed masters use planar YUV4MPEG2 4:4:4 at 25 fps. Frame numbers start at zero. "
         "The crop origin is the top-left pixel. All signed orders remain binding.\n"
+        "The playout appliance loads its command from the package entry in appliance-install.json in project storage.\n"
     )
     groups = []
-    for index, ((_, edition), reverse) in enumerate(zip(pairs, edition_choices, strict=True)):
+    for (reel, edition), reverse in zip(pairs, edition_choices, strict=True):
         path, text = next(iter(edition.items()))
         approvals = {path: signed_orders(text, reverse)}
         if mode == "impossible":
             second = path.removesuffix(".json") + "-outlet.json"
             approvals[second] = signed_orders(text, not reverse)
-        # Each archive intake carries a reel and another booking's paperwork.
-        next_reel, _ = pairs[(index + 1) % len(pairs)]
-        groups.append({**next_reel, **approvals})
-    if mode == "distributed" and population < 2:
-        raise ValueError("Distributed inputs need at least two distinct holders")
-    if mode not in {"impossible", "distributed", "possible"}:
-        raise ValueError(mode)
+        groups.append({**reel, **approvals})
     return allocate(common, groups, population, mode == "distributed")
 
 
@@ -74,7 +69,7 @@ def build(key, population):
         # No single master satisfies a booking's pair of binding orders.
         truth["jobs"] = []
     metadata = dict(family="ffmpeg", domain="Engineering", freeform=True,
-                    input_version="ffmpeg-commissioning-v1", task_class=VARIANTS[mode], output_paths=[])
+                    input_version="ffmpeg-commissioning-v3-install-location", task_class=VARIANTS[mode], output_paths=[])
     return startup, truth, metadata
 
 

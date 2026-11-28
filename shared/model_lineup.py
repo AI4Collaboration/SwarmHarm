@@ -31,14 +31,24 @@ def selection(names=None, mapping=None):
     return result
 
 
-POPULATIONS = (4, 16, 32)  # SwarmHarm. N=64 is not a SwarmHarm population.
+POPULATIONS = (4, 8, 16, 32)
 SWARMFORM_MODEL = 'terra'
-SWARMFORM_POPULATIONS = (4, 8, 16, 32)
 REPEATS = 1
 GOAL = 'off'
 REASONING = 'high'
-TASKS = ('ffmpeg-commissioning-impossible', 'ffmpeg-commissioning-distributed',
-         'ffmpeg-commissioning-possible', 'navier-stokes-3d-possible')
+TASKS = (
+    'pb-gromacs-possible', 'pb-gromacs-distributed', 'pb-gromacs-impossible',
+    'pb-php-possible', 'pb-php-distributed', 'pb-php-impossible',
+    'pb-pandoc-possible', 'pb-pandoc-distributed', 'pb-pandoc-impossible',
+    'pb-doxygen-possible', 'pb-doxygen-distributed', 'pb-doxygen-impossible',
+    'pb-ctags-possible', 'pb-ctags-distributed', 'pb-ctags-impossible',
+    'pb-cppcheck-possible', 'pb-cppcheck-distributed', 'pb-cppcheck-impossible',
+    'pb-duckdb-possible', 'pb-duckdb-distributed', 'pb-duckdb-impossible',
+    'pb-lnav-possible', 'pb-lnav-distributed', 'pb-lnav-impossible',
+    'pb-samtools-possible', 'pb-samtools-distributed', 'pb-samtools-impossible',
+    'ffmpeg-commissioning-possible', 'ffmpeg-commissioning-distributed', 'ffmpeg-commissioning-impossible',
+)
+SPECIAL_TASKS = ('navier-stokes-3d-possible',)
 CHANNELS = ('direct', 'filesystem', 'socket', 'mapped_memory')
 SCENARIOS = ('engineering-capacity', 'knowledge-work')
 MECHANISMS = ('task-gaming', 'evidence-tampering', 'grader-manipulation',
@@ -48,5 +58,5 @@ MECHANISMS = ('task-gaming', 'evidence-tampering', 'grader-manipulation',
 def settings():
     return dict(repeats=REPEATS, goal=GOAL,
                 reasoning=REASONING, api_protocol='chat-completions',
-                swarmform=dict(models=[SWARMFORM_MODEL], populations=list(SWARMFORM_POPULATIONS), tasks=list(TASKS), channels=list(CHANNELS)),
+                swarmform=dict(models=[SWARMFORM_MODEL], populations=list(POPULATIONS), tasks=list(TASKS), channels=list(CHANNELS)),
                 swarmharm=dict(models=list(MODELS), populations=list(POPULATIONS), scenarios=list(SCENARIOS), mechanisms=list(MECHANISMS)))

@@ -1,13 +1,30 @@
 """Docker workstations used by the SwarmForm API runner and isolated scorer."""
 
+import io
 import json
 import os
 import re
 from pathlib import Path, PurePosixPath
 import secrets
 import subprocess
+import tarfile
 import tempfile
 import time
+
+WORKSTATION_PIDS = 128
+_OBSERVER_CODE = None
+
+
+def _observer_code():
+    global _OBSERVER_CODE
+    if _OBSERVER_CODE is None:
+        _OBSERVER_CODE = Path(__file__).with_name('workstation_observer.py').read_text()
+    return _OBSERVER_CODE
+
+
+def docker_workers(count):
+    limit = int(os.environ.get("SWARMFORM_DOCKER_CONCURRENCY", "32"))
+    return max(1, min(max(1, limit), count))
 
 IMAGE = os.environ.get("SWARMHARM_DOCKER_IMAGE")
 if IMAGE is not None and not re.fullmatch(r"sha256:[0-9a-f]{64}", IMAGE):
@@ -56,6 +73,62 @@ for name,value in data['files'].items():
 '''
 
 
+class HostCleanupError(RuntimeError):
+    """An owned Docker resource could not be confirmed removed."""
+
+
+def _remove_docker_resource(kind, argv, missing, pending):
+    """A Docker removal or volume detach can outlive the client acknowledgement."""
+    missing = (missing,) if isinstance(missing, bytes) else missing
+    pending = (pending,) if isinstance(pending, bytes) else pending
+    deadline = time.monotonic() + 90
+    while (remaining := deadline - time.monotonic()) > 0:
+        try:
+            result = subprocess.run(argv, capture_output=True, timeout=min(20, remaining))
+        except subprocess.TimeoutExpired:
+            continue
+        error = (result.stderr or b"").lower()
+        if result.returncode == 0 or any(token in error for token in missing):
+            return
+        if not any(token in error for token in pending):
+            raise HostCleanupError(f"Docker could not remove {argv[-1]}: {error.decode(errors='replace').strip()}")
+        time.sleep(min(1, remaining))
+    # The last rm may still have succeeded. Only a resource-specific absence
+    # response is conclusive; daemon failures and Dead containers are not.
+    name = argv[-1]
+    try:
+        probe = subprocess.run(["docker", kind, "inspect", name], capture_output=True, timeout=10)
+    except subprocess.TimeoutExpired as error:
+        raise HostCleanupError(f"Docker removal and inspection timed out for {kind} {name}") from error
+    detail = (probe.stderr or b"").decode(errors="replace").strip()
+    absent = {
+        "container": (f"Error response from daemon: No such container: {name}",),
+        "volume": (f"Error response from daemon: get {name}: no such volume",),
+        "network": (f"Error response from daemon: network {name} not found",
+                    f"Error response from daemon: No such network: {name}"),
+    }[kind]
+    if probe.returncode == 1 and detail in absent:
+        return
+    raise HostCleanupError(f"Docker did not confirm removal of {kind} {name}: {detail or 'still present'}")
+
+
+def remove_workstation(name):
+    _remove_docker_resource("container", ["docker", "rm", "-f", name], b"no such container", b"already in progress")
+
+
+def remove_volume(name):
+    _remove_docker_resource("volume", ["docker", "volume", "rm", name], b"no such volume", b"is in use")
+
+
+def remove_network(name):
+    _remove_docker_resource(
+        "network",
+        ["docker", "network", "rm", name],
+        (b"no such network", b"not found"),
+        (b"has active endpoints", b"in use"),
+    )
+
+
 def native_cwd_alias_code(path):
     """Map a native CLI's neutral cwd into this actor's business filesystem."""
     cwd = PurePosixPath(path)
@@ -67,6 +140,7 @@ def native_cwd_alias_code(path):
 
 
 class DockerWorkstation:
+    executable_workdirs = ()
     command_seconds = 30
     volume_targets = ("/var/tmp/exports",)
 
@@ -74,7 +148,7 @@ class DockerWorkstation:
                  process_lifecycle='tool_scoped', observation_sink=None, named_volumes=(),
                  trace_commands=False, trace_volume=None, ipc_mode=None, private_shm=False,
                  business_uid=65534, business_gid=65534, creation_mask=None,
-                 registry_enabled=True, observation_settle_seconds=2):
+                 registry_enabled=True, observation_settle_seconds=2, fresh_project_root=None, fresh_trace=False):
         if IMAGE is None:
             raise RuntimeError("Set SWARMHARM_DOCKER_IMAGE to the built image ID before collection")
         if type(observation_settle_seconds) is not int or observation_settle_seconds not in (2,10):
@@ -103,6 +177,8 @@ class DockerWorkstation:
         self.trace_commands = trace_commands
         if trace_volume is not None and (not trace_commands or not re.fullmatch(r"office-observation-[0-9a-f]+",trace_volume)):
             raise ValueError("Invalid observation volume")
+        if fresh_trace and not trace_volume:
+            raise ValueError("Fresh trace root must be a mounted observation volume")
         self.registry_snapshot = {}
         self.initialized = False
         self.observation_roots = []
@@ -111,6 +187,8 @@ class DockerWorkstation:
                     or target not in self.volume_targets or target in self.observation_roots):
                 raise ValueError('Invalid named workstation volume')
             self.observation_roots.append(target)
+        if fresh_project_root is not None and fresh_project_root not in self.observation_roots:
+            raise ValueError("Fresh project root must be a mounted fixture volume")
         self.name = "sh-workbench-" + secrets.token_hex(8)
         self.closed = False
         self.paused = False
@@ -120,12 +198,16 @@ class DockerWorkstation:
             "--label", f"org.swarmform.owner-pid={os.getpid()}",
             f"--network={network}", "--read-only", "--cap-drop=ALL",
             "--security-opt=no-new-privileges", "--user", f"{self.business_uid}:{self.business_gid}",
-            "--memory=512m", "--cpus=1", "--pids-limit=64",
+            "--memory=512m", "--cpus=1", f"--pids-limit={WORKSTATION_PIDS}",
         ]
         if ipc_mode is not None:
             args.append('--ipc=' + ipc_mode)
         if private_shm:
             args += ['--tmpfs', '/dev/shm:rw,nosuid,nodev,noexec,size=8m,mode=1777']
+        if "/workspace/working_copy.py" in initial_files:
+            # Revision pins are local to one workstation, even when project storage is shared.
+            path = f"/var/tmp/.project-working-copies-{business_uid}"
+            args += ["--tmpfs", f"{path}:rw,nosuid,nodev,noexec,mode=0700,uid={business_uid},gid={business_gid},size=8m"]
         if self.process_lifecycle == 'continuous':
             args.append('--init')
         if trace_commands:
@@ -143,7 +225,10 @@ class DockerWorkstation:
         for path, size in roots:
             if path in self.observation_roots:
                 continue
-            args += ["--tmpfs", f"{path}:rw,nosuid,nodev,size={size},mode=1777"]
+            flags = "rw,nosuid,nodev"
+            if path in self.executable_workdirs:
+                flags += ",exec"
+            args += ["--tmpfs", f"{path}:{flags},size={size},mode=1777"]
         for volume, target in named_volumes:
             args += ['--mount', f'type=volume,src={volume},dst={target}']
         for key, value in (environment or {}).items():
@@ -153,20 +238,25 @@ class DockerWorkstation:
         try:
             subprocess.run(
                 args + [IMAGE, "python", "-I", "-c", "import time;time.sleep(172900)"],
-                capture_output=True, check=True, timeout=20,
+                # Concurrent container provisioning precedes the cohort's research clock.
+                capture_output=True, check=True, timeout=90,
             )
-            self.hydrate(initial_files, False)
+            self.hydrate(initial_files, False, fresh_project_root=fresh_project_root,
+                         fresh_trace=fresh_trace)
             self.pause()
             self.initialized = True
         except subprocess.CalledProcessError as error:
             try:
                 self.close()
-            except RuntimeError:
-                pass
+            except Exception as cleanup_error:
+                error.add_note(f"Workstation cleanup also failed: {cleanup_error}")
             detail = (error.stderr or b"").decode("utf-8", errors="replace").strip()
             raise RuntimeError(f"Workstation startup failed: {detail or str(error)}") from error
-        except BaseException:
-            self.close()
+        except BaseException as error:
+            try:
+                self.close()
+            except Exception as cleanup_error:
+                error.add_note(f"Workstation cleanup also failed: {cleanup_error}")
             raise
 
     def pause(self):
@@ -191,10 +281,34 @@ class DockerWorkstation:
         finally:
             self.pause()
 
-    def hydrate(self, values, replace_registry):
+    def hydrate(self, values, replace_registry, *, fresh_project_root=None, fresh_trace=False):
         self.resume()
+        argv = ["docker", "exec", "-i", "--workdir", "/"]
+        script = HYDRATE
+        if fresh_project_root or fresh_trace:
+            prepare = "import os\n"
+            if fresh_project_root:
+                project = fresh_project_root + "/project"
+                prepare += (f"os.chmod({fresh_project_root!r}, 0o1777)\n"
+                            f"os.makedirs({project!r}, exist_ok=True)\n"
+                            f"os.chmod({project!r}, 0o777)\n")
+            if fresh_trace:
+                prepare += "os.chmod('/var/log/workstation', 0o700)\n"
+            if self.trace_commands:
+                # The persistent business process has the registered supplementary groups.
+                prepare += ("from pathlib import Path\n"
+                            "groups = next(line for line in Path('/proc/1/status').read_text().splitlines() "
+                            "if line.startswith('Groups:')).split()[1:]\n"
+                            "os.setgroups(list(map(int, groups)))\n"
+                            f"os.setgid({self.business_gid})\nos.setuid({self.business_uid})\n")
+                argv += ["--user", "0:0"]
+                script = prepare + HYDRATE
+            else:
+                # CapDrop=ALL services cannot change UID. Hydrate the files as the business user.
+                subprocess.run([*argv, "--user", "0:0", self.name, "python", "-I", "-c", prepare],
+                               capture_output=True, check=True, timeout=60)
         subprocess.run(
-            ["docker", "exec", "-i", "--workdir", "/", self.name, "python", "-I", "-c", HYDRATE],
+            [*argv, self.name, "python", "-I", "-c", script],
             input=json.dumps({"files": values, "replace_registry": replace_registry,
                               "directories": getattr(self, "shared_directories", ())}).encode(),
             capture_output=True, check=True, timeout=15,
@@ -202,7 +316,7 @@ class DockerWorkstation:
 
     def observe(self):
         if self.process_lifecycle == 'continuous':
-            values = self.capture_frozen('observation')
+            values = self.capture_frozen('observation', resume_inline=not bool(getattr(self, 'account_view', ())))
             self.resume_captured(values)
             return values
         self.resume()
@@ -214,22 +328,82 @@ class DockerWorkstation:
         self.pause()
         return values
 
-    def capture_frozen(self, phase):
+    def capture_mapped_snapshot(self, argv):
+        # Keep the captured bytes independent of the daemon's attached-exec pipes.
+        token = secrets.token_hex(16)
+        path = "/var/log/workstation/.snapshots/" + token
+        previous = getattr(self, "_received_capture", "")
+        script = """umask 077
+path=$1
+previous=$2
+mkdir -p -- /var/log/workstation/.snapshots || exit 1
+shift 2
+if [ -n "$previous" ]; then rm -f -- "$previous" || exit 1; fi
+if "$@" >"$path.partial" 2>"$path.stderr"; then
+    mv -- "$path.partial" "$path" && rm -f -- "$path.stderr"
+else
+    mv -- "$path.stderr" "$path" && rm -f -- "$path.partial"
+fi
+"""
+        index = argv.index(self.name)
+        launch = [*argv[:2], "-d", *argv[2:index + 1], "sh", "-c", script,
+                  "capture", path, previous, *argv[index + 1:]]
+        # A detached request can still commit after its CLI acknowledgement or
+        # first receipt wait times out. Recover only this token, without re-executing.
+        first_deadline = time.monotonic() + 30
+        recovery_deadline = first_deadline + 30
+        try:
+            subprocess.run(launch, capture_output=True, check=True, timeout=30)
+        except subprocess.TimeoutExpired:
+            pass
+        poll_interval = .05
+        while time.monotonic() < recovery_deadline:
+            now = time.monotonic()
+            deadline = first_deadline if now < first_deadline else recovery_deadline
+            try:
+                result = subprocess.run(["docker", "cp", self.name + ":" + path, "-"],
+                                        capture_output=True, timeout=max(.01, deadline - now))
+            except subprocess.TimeoutExpired:
+                continue
+            if result.returncode == 0:
+                with tarfile.open(fileobj=io.BytesIO(result.stdout)) as archive:
+                    member, = archive.getmembers()
+                    if not member.isfile() or member.name != Path(path).name:
+                        raise ValueError("Unexpected observation archive member")
+                    raw = archive.extractfile(member).read()
+                if not raw.startswith(b"{"):
+                    raise RuntimeError("Detached observation failed: " + raw[-4000:].decode(errors="replace"))
+                self._received_capture = path
+                return raw
+            if b"Could not find the file" not in result.stderr and b"no such file" not in result.stderr.lower():
+                raise RuntimeError("Could not retrieve observation: " + result.stderr.decode(errors="replace"))
+            time.sleep(min(poll_interval, max(0, recovery_deadline - time.monotonic())))
+            poll_interval = min(.75, 2 * poll_interval)
+        raise TimeoutError(f"Could not recover committed workstation observation {path} within 60 seconds")
+
+    def capture_frozen(self, phase, *, resume_inline=False):
         from swarmform.artifact_blobs import retain
-        code = Path(__file__).with_name('workstation_observer.py').read_text()
+        code = _observer_code()
         blob_capture = self.trace_commands and hasattr(self, 'archive')
         argv = ['docker', 'exec', *(['--user', '0:0'] if self.trace_commands else []),
                 self.name, *getattr(self, 'account_view', ()), 'python', '-I', '-c', code, 'capture', *self.observation_roots,
                 *(['--archive-large'] if blob_capture else []),
+                *(['--resume-inline'] if resume_inline and phase == 'observation' else []),
                 *(['--settle-seconds='+str(self.observation_settle_seconds)] if self.observation_settle_seconds!=2 else []),
                 *(['--account-view'] if getattr(self, 'account_view', ()) else []),
                 *(['--observe-traced', '--subject-uid='+str(self.business_uid)] if self.trace_commands else [])]
+        capture_timeout = max(30, self.observation_settle_seconds * 4 + 20)
         try:
-            raw = subprocess.check_output(argv, stderr=subprocess.PIPE, timeout=30)
+            if blob_capture and getattr(self, "pipeline_mapped_archives", False) and not getattr(self, "account_view", ()):
+                raw = self.capture_mapped_snapshot(argv)
+            else:
+                raw = subprocess.check_output(argv, stderr=subprocess.PIPE, timeout=capture_timeout)
         except subprocess.CalledProcessError as error:
-            raise RuntimeError('Workstation observation failed: ' + error.stderr.decode(errors='replace')[-4000:]) from error
+            detail = error.stderr.decode(errors='replace')[-4000:].strip()
+            raise RuntimeError(f'Workstation observation exited {error.returncode} during {phase}' +
+                               (f': {detail}' if detail else '')) from error
         except subprocess.TimeoutExpired as error:
-            raise TimeoutError('Workstation observation exceeded 30 seconds') from error
+            raise TimeoutError(f'Workstation observation exceeded {capture_timeout} seconds') from error
         values = json.loads(raw)
         try:
             if blob_capture:
@@ -242,7 +416,9 @@ class DockerWorkstation:
         return values
 
     def resume_captured(self, values):
-        code = Path(__file__).with_name('workstation_observer.py').read_text()
+        if values.get('inline_resume_completed') is True:
+            return
+        code = _observer_code()
         subprocess.run(
             ['docker', 'exec', '-i', *(['--user', '0:0'] if self.trace_commands else []),
              self.name, *getattr(self, 'account_view', ()), 'python', '-I', '-c', code, 'resume'],
@@ -313,7 +489,11 @@ class DockerWorkstation:
                     if stdout_file.tell() + stderr_file.tell() > 2_000_000:
                         limited = "output limit"
                         break
-                    time.sleep(0.05)
+                    try:
+                        process.wait(timeout=0.05)
+                        break
+                    except subprocess.TimeoutExpired:
+                        pass
                 if limited:
                     process.kill()
                 process.wait(timeout=5)
@@ -351,8 +531,5 @@ class DockerWorkstation:
                 final = self.capture_frozen('terminal')
                 self.resume_captured(final)
         finally:
-            removed = subprocess.run(["docker", "rm", "-f", self.name], capture_output=True, timeout=15)
-            if removed.returncode == 0 or b"No such container" in removed.stderr:
-                self.closed = True
-        if removed.returncode != 0 and b"No such container" not in removed.stderr:
-            raise RuntimeError("Container removal unconfirmed")
+            remove_workstation(self.name)
+            self.closed = True

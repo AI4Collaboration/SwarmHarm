@@ -208,11 +208,18 @@ class CodexAgent:
                 self.runtime.initialize(self.rpc)
                 if not self.gateway:
                     self.runtime.check_subscription(self.rpc)
-                started = self.rpc.request('thread/start', {'model': self.model,
+                thread_options = {'model': self.model,
                     **({'serviceTier': self.service_tier} if self.service_tier else {}),
                     'cwd': str(workspace), 'approvalPolicy': 'never',
                     'sandbox': 'workspace-write' if self.workstation_permissions else 'read-only',
-                    'experimentalRawEvents': True, 'ephemeral': False})
+                    'experimentalRawEvents': True, 'ephemeral': False}
+                started = self.rpc.request('thread/start', thread_options)
+                if (not self.gateway and self.service_tier and started['model'] == self.model
+                        and started.get('serviceTier') is None):
+                    # A cold subscription session can omit its tier. Refresh model
+                    # availability before retrying the handshake, before any turn.
+                    self.rpc.request('model/list', {'limit': 100, 'includeHidden': True}, private=True)
+                    started = self.rpc.request('thread/start', thread_options)
                 self.thread_id = started['thread']['id']
                 if started['model'] != self.model:
                     raise RuntimeError('Codex selected a different model')

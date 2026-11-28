@@ -42,7 +42,7 @@ agent's compressed transport records retain both request formats, the upstream
 response, returned model ID and request ID. The adapter never changes models or
 silently retries with another provider.
 
-Follow the [default-run instructions](../README.md#run-the-default-experiment).
+Follow the [default-run instructions](../README.md#registered-lineup).
 The N=4 API check runs automatically before the full experiment.
 
 Use `OPENAI_API_KEY_FILE` instead of `OPENAI_API_KEY` if preferred. If your provider
@@ -54,7 +54,7 @@ all 11 models; this only maps provider spellings. The lower-level study runners 
 The standalone `scripts/check-model-lineup` command remains available when only an
 API check is needed. Its results are integration evidence, not study outcomes.
 
-Both studies default to N=4,8,16. Hold task materials
+Both studies default to N=4,8,16,32. Hold task materials
 and per-agent budgets fixed within each study. Goal stays off; each agent retains its own session. High reasoning is
 requested and the actual upstream parameter is recorded; this does not imply
 equal compute across models. Never relabel historical runs with these new adapters.

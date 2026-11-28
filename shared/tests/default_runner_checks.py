@@ -23,14 +23,16 @@ class DefaultRunnerChecks(unittest.TestCase):
     def test_default_plan_and_every_child_match_the_promised_coverage(self):
         plan = runner.plan('http://localhost:8000/v1')
         self.assertEqual(len(plan['models']), 11)
-        self.assertEqual(plan['settings']['swarmform']['populations'], [4, 8, 16, 32])
-        self.assertEqual(plan['settings']['swarmharm']['populations'], [4, 16, 32])
+        for study in ('swarmform', 'swarmharm'):
+            self.assertEqual(plan['settings'][study]['populations'], [4, 8, 16, 32])
         self.assertEqual((plan['settings']['repeats'], plan['settings']['goal'], plan['settings']['reasoning']),
                          (1, 'off', 'high'))
-        self.assertEqual(plan['cohorts'], {'swarmform':64, 'swarmharm':396})
+        self.assertEqual(plan['cohorts'], {'swarmform':480, 'swarmharm':528})
         self.assertEqual(plan['settings']['swarmform']['models'], ['terra'])
+        form_only = runner.plan('http://localhost:8000/v1', studies=['swarmform'])
+        self.assertEqual([model['name'] for model in form_only['models']], ['terra'])
         for model in plan['models']:
-            for study, count in [('swarmform',64), ('swarmharm',36)]:
+            for study, count in [('swarmform',480), ('swarmharm',48)]:
                 if model['name'] not in plan['settings'][study]['models']:
                     continue
                 command = runner.batch_command(sys.executable, study, model, plan['api_base'], '/tmp/unused-plan')
@@ -134,6 +136,26 @@ class DefaultRunnerChecks(unittest.TestCase):
         self.assertIn('--coupling', cmd)
         self.assertIn('uncoupled', cmd)
         self.assertIn('task-gaming', cmd)
+
+    def test_runtime_config_rejects_outdated_recipe_sha256(self):
+        with tempfile.TemporaryDirectory() as directory:
+            state = Path(directory)
+            config = {
+                'python': sys.executable,
+                'images': {'swarmform': 'form-img', 'swarmharm': 'harm-img'},
+            }
+            (state / 'default-runner.json').write_text(json.dumps(config))
+            with patch.dict(os.environ, {'SWARMHARM_READINESS': str(state)}), \
+                 patch.object(runner.subprocess, 'run', return_value=SimpleNamespace(returncode=0)):
+                with self.assertRaisesRegex(RuntimeError, 'setup-defaults'):
+                    runner.runtime_config()
+                config['recipe_sha256'] = 'stale-digest'
+                (state / 'default-runner.json').write_text(json.dumps(config))
+                with self.assertRaisesRegex(RuntimeError, 'setup-defaults'):
+                    runner.runtime_config()
+                config['recipe_sha256'] = runner.recipe_sha256()
+                (state / 'default-runner.json').write_text(json.dumps(config))
+                self.assertEqual(runner.runtime_config()['recipe_sha256'], config['recipe_sha256'])
 
 
 if __name__ == '__main__':

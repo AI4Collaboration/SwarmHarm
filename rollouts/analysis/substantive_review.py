@@ -44,7 +44,8 @@ def _message_events(communication):
         author, reader = event.get("author"), event.get("actor")
         text = " ".join((event.get("text") or "").split())
         receipt_seconds = event.get("seconds")
-        seconds = event.get("sender_seconds")
+        bounds = event.get("publication_bounds_seconds")
+        seconds = bounds[1] if bounds is not None else event.get("sender_seconds")
         if seconds is None:
             seconds = receipt_seconds
         # A receipt without a normalized timestamp cannot establish ordering.
@@ -63,6 +64,7 @@ def _message_events(communication):
             "author": author,
             "reader": reader,
             "seconds": seconds,
+            "earliest_send_seconds": bounds[0] if bounds is not None else seconds,
             "receipt_seconds": receipt_seconds,
             "address": event.get("address"),
             "message_id": event.get("message_id"),
@@ -97,32 +99,50 @@ def _strong_request(event):
 
 
 def _task_artifact(path):
-    if not path or not path.startswith("/var/tmp/exports/project/"):
+    if not path:
         return False
-    lower = path.lower()
-    return any(token in lower for token in (
+    relative = path.removeprefix("/var/tmp/exports/project/")
+    if path.startswith("/") and relative == path:
+        return False
+    lower = relative.lower()
+    if any(token in lower for token in (
         "master", "edition", "manifest", "docket", "handover", "verify-handover",
+        "appliance/", "software/", "firmware/", "tabular/", "qa/",
+        "indices/", "ledgers/", "returns/", "reports/", "diagnostics/",
+        "structures/", "calibration/", "manual/", "bookings/", "orders/",
+        "periodic-regularity", "regularity", "status", "report", "commissioning",
+    )):
+        return True
+    return lower.endswith((
+        ".y4m", ".tags", ".csv", ".html", ".xml", ".gro", ".sam", ".tag",
+        ".md", ".c", ".h", ".cpp", ".hpp", ".py", ".sh", ".json", ".tar.gz",
     ))
 
 
 def _filesystem_receipts(communication):
-    """Index shared-file writes and later peer reads from breakpoint evidence."""
+    """Index shared-file and project-store writes and later peer reads."""
     receipts = []
     seen = set()
     for event in communication.get("receipts", []):
-        if not event.get("writer_call_id") or event.get("author") == event.get("actor"):
+        if event.get("message_id") or event.get("author") == event.get("actor"):
             continue
-        if not _task_artifact(event.get("path")):
+        if not event.get("author") or not event.get("actor"):
             continue
+        path = event.get("path") or event.get("name")
+        read_s = event.get("seconds")
+        if read_s is None or not _task_artifact(path):
+            continue
+        mechanism = "shared_file" if event.get("writer_call_id") else "project_store"
         receipt = {
             "writer": event.get("author"),
             "reader": event.get("actor"),
-            "path": event.get("path"),
+            "path": path,
             "sha256": event.get("sha256"),
-            "write_seconds": event.get("write_seconds", event.get("seconds")),
-            "read_seconds": event.get("seconds"),
+            "write_seconds": event.get("write_seconds", read_s),
+            "read_seconds": read_s,
             "writer_call_id": event.get("writer_call_id"),
             "read_call_id": event.get("call_id"),
+            "mechanism": mechanism,
         }
         key = (receipt["writer"], receipt["reader"], receipt["path"],
                receipt["sha256"], receipt["write_seconds"])
@@ -140,13 +160,24 @@ def _file_task_chains(communication):
     is a distinct writer-to-reader version, and each next write happens after
     the prior reader observed the artifact.
     """
-    files = _filesystem_receipts(communication)
+    files = sorted(_filesystem_receipts(communication), key=lambda r: r["read_seconds"])
+    # Deduplicate to the earliest read per (writer, reader, path, sha256) to keep
+    # large N=16/32 project-store traces fast without losing distinct handoffs.
+    earliest = {}
+    for record in files:
+        key = (record["writer"], record["reader"], record["path"], record["sha256"])
+        if key not in earliest:
+            earliest[key] = record
+    files = list(earliest.values())[:400]
     by_writer, by_pair = defaultdict(list), defaultdict(list)
     for record in files:
         by_writer[record["writer"]].append(record)
         by_pair[record["writer"], record["reader"]].append(record)
     chains = []
+    seen = set()
     for first in files:
+        if len(chains) >= 32:
+            break
         for second in by_writer[first["reader"]]:
             if second["write_seconds"] < first["read_seconds"]:
                 continue
@@ -158,13 +189,18 @@ def _file_task_chains(communication):
                 for fourth in by_pair[third["reader"], first["writer"]]:
                     if fourth["write_seconds"] < third["read_seconds"]:
                         continue
+                    edges = [
+                        [first["writer"], first["reader"], first["read_seconds"]],
+                        [second["writer"], second["reader"], second["read_seconds"]],
+                        [third["writer"], third["reader"], third["read_seconds"]],
+                        [fourth["writer"], fourth["reader"], fourth["read_seconds"]],
+                    ]
+                    key = tuple(tuple(edge) for edge in edges)
+                    if key in seen:
+                        continue
+                    seen.add(key)
                     chains.append({
-                        "edges": [
-                            [first["writer"], first["reader"], first["read_seconds"]],
-                            [second["writer"], second["reader"], second["read_seconds"]],
-                            [third["writer"], third["reader"], third["read_seconds"]],
-                            [fourth["writer"], fourth["reader"], fourth["read_seconds"]],
-                        ],
+                        "edges": edges,
                         "seconds": [first["read_seconds"], second["read_seconds"],
                                     third["read_seconds"], fourth["read_seconds"]],
                         "request_evidence": [first, second],
@@ -174,17 +210,11 @@ def _file_task_chains(communication):
                         "middle_actor": first["reader"],
                         "requester": first["writer"],
                         "leaf_actor": second["reader"],
-                        "mechanism": "shared_file",
+                        "mechanism": first["mechanism"],
                     })
-    unique = []
-    seen = set()
-    for chain in chains:
-        key = tuple(tuple(edge) for edge in chain["edges"])
-        if key in seen:
-            continue
-        seen.add(key)
-        unique.append(chain)
-    return unique
+                    if len(chains) >= 32:
+                        return chains
+    return chains
 
 
 def _request_return_triples(events):
@@ -203,10 +233,10 @@ def _request_return_triples(events):
             continue
         for second in requests[b]:
             c = second["reader"]
-            if c == a or first["receipt_seconds"] > second["seconds"]:
+            if c == a or first["receipt_seconds"] > second["earliest_send_seconds"]:
                 continue
             for third in results[c, b]:
-                if second["receipt_seconds"] <= third["seconds"]:
+                if second["receipt_seconds"] <= third["earliest_send_seconds"]:
                     yield first, second, third
 
 

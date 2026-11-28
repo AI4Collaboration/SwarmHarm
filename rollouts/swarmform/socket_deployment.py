@@ -13,7 +13,7 @@ import threading
 import time
 from swarmform.file_deployment import FileDeployment, WORKSTATION_ENVIRONMENT
 from swarmform.read_observer import ObservedFileStation
-from swarmform.workstation import IMAGE
+from swarmform.workstation import IMAGE, docker_workers, remove_network
 from swarmform.service_workstation import ServiceWorkstation
 
 
@@ -65,11 +65,16 @@ class SocketDeployment(FileDeployment):
     service_url = "http://projects:8080"
     service_alias = "projects"
 
-    def service_files(self, accounts):
+    def service_files(self, accounts, startup):
+        # Install the trusted server implementation matching the registered participant client.
+        revision_client = (Path(__file__).parent / "manuscript_store.py").read_text()
+        checked_revisions = all(files.get("/workspace/projects.py") == revision_client for files in startup.values())
+        store = revision_client if checked_revisions else Path(__file__).with_name("formation_store.py").read_text()
+        managed_client = all("/workspace/socket_worktree.py" in files for files in startup.values())
+        if managed_client:
+            store += "\n" + Path(__file__).with_name("socket_worktree_store.py").read_text()
         return {
-            "/workspace/formation_store.py": Path(__file__)
-            .with_name("formation_store.py")
-            .read_text(),
+            "/workspace/formation_store.py": store,
             "/workspace/formation_service.py": Path(__file__)
             .with_name("formation_service.py")
             .read_text(),
@@ -89,6 +94,7 @@ class SocketDeployment(FileDeployment):
         self.resources = ExitStack()
         self._res_lock = threading.Lock()
         self.closed = False
+        self.retirement_error = None
         self.stations = {}
         self.volumes = {}
         self.locks = {a: threading.RLock() for a in startup}
@@ -116,12 +122,12 @@ class SocketDeployment(FileDeployment):
                 return actor, network
             net_items = list(planned_nets.items())
             if len(net_items) >= 4:
-                with ThreadPoolExecutor(max_workers=min(16, len(net_items))) as pool:
+                with ThreadPoolExecutor(max_workers=docker_workers(len(net_items))) as pool:
                     created_nets = list(pool.map(_make_net, net_items))
             else:
                 created_nets = [_make_net(p) for p in net_items]
             self.networks = dict(created_nets)
-            initial = self.service_files(accounts)
+            initial = self.service_files(accounts, startup)
             if project_artifacts:
                 from swarmform.formation_store import apply
                 state = {"objects": {}}
@@ -138,13 +144,14 @@ class SocketDeployment(FileDeployment):
                 {p: base64.b64encode(t.encode()).decode() for p, t in initial.items()},
                 archive=Path(observation_archive) / "_service",
                 named_volumes=((self.service_volume, "/workspace"),),
+                fresh_project_root="/workspace",
                 network=first,
                 process_lifecycle="continuous",
                 environment=WORKSTATION_ENVIRONMENT,
                 registry_enabled=False,
             )
             # Added before the station callbacks: their removal happens first.
-            self.resources.callback(self._close_service)
+            self.resources.callback(self.service.retire)
             command(["docker", "network", "disconnect", first, self.service.name])
             for network in self.networks.values():
                 command(
@@ -190,6 +197,7 @@ class SocketDeployment(FileDeployment):
                     observation_settle_seconds=10,
                     observation_sink=sink,
                     named_volumes=((volume, "/var/tmp/exports"),),
+                    fresh_project_root="/var/tmp/exports",
                     registry_enabled=False,
                     **extra,
                 )
@@ -198,7 +206,7 @@ class SocketDeployment(FileDeployment):
                 return actor, volume, station
             st_items = list(startup.items())
             if len(st_items) >= 4:
-                with ThreadPoolExecutor(max_workers=min(16, len(st_items))) as pool:
+                with ThreadPoolExecutor(max_workers=docker_workers(len(st_items))) as pool:
                     built = list(pool.map(_start_station, st_items))
             else:
                 built = [_start_station(item) for item in st_items]
@@ -216,7 +224,7 @@ class SocketDeployment(FileDeployment):
             def _fetch_ns(station_name):
                 return station_name, json.loads(command(["docker", "exec", station_name, "python", "-I", "-c", namespace_code]).stdout)
             if len(st_names) >= 4:
-                with ThreadPoolExecutor(max_workers=min(16, len(st_names))) as pool:
+                with ThreadPoolExecutor(max_workers=docker_workers(len(st_names))) as pool:
                     ns_by_name = dict(pool.map(_fetch_ns, st_names))
             else:
                 ns_by_name = dict(_fetch_ns(n) for n in st_names)
@@ -306,8 +314,11 @@ class SocketDeployment(FileDeployment):
                     raise RuntimeError(
                         "Socket workstations unexpectedly share " + namespace
                     )
-        except BaseException:
-            self.close()
+        except BaseException as error:
+            try:
+                self.close()
+            except Exception as cleanup_error:
+                error.add_note(f"Socket cleanup also failed: {cleanup_error}")
             raise
 
     def _retained_service(self):
@@ -315,12 +326,18 @@ class SocketDeployment(FileDeployment):
         return service is not None and not service.closed
 
     def _remove_network(self, name):
+        removed = getattr(self, "_removed_networks", None)
+        if removed is not None and name in removed:
+            return
         if self._retained_service():
             self.retained_resources = getattr(self, "retained_resources", []) + [
                 {"kind": "network", "name": name}
             ]
             return
-        command(["docker", "network", "rm", name])
+        remove_network(name)
+        if removed is not None:
+            with getattr(self, "_res_lock", threading.Lock()):
+                removed.add(name)
 
     def _remove_volume(self, name):
         if name == getattr(self, "service_volume", None) and self._retained_service():
@@ -330,7 +347,7 @@ class SocketDeployment(FileDeployment):
             return
         FileDeployment._remove_volume(self, name)
 
-    def _close_service(self):
+    def _drain_service(self):
         if getattr(self, "service", None) is None:
             return
         if not self.service.closed and self.service.initialized:
@@ -360,11 +377,44 @@ class SocketDeployment(FileDeployment):
                     raise RuntimeError("Socket request handlers did not close")
                 time.sleep(0.05)
             self.terminal_service = self.service.observe()
-        self.service.close()
+            self.service.capture_terminal()
 
     def close(self):
         if not self.closed:
+            if getattr(self, "retirement_error", None) is not None:
+                raise self.retirement_error
             self.capture_terminal()
-            self._close_service()
-            self.resources.close()
+            self._drain_service()
+            try:
+                try:
+                    stations = [s for s in self.stations.values() if not getattr(s, "closed", False)]
+                    if len(stations) >= 4:
+                        with ThreadPoolExecutor(max_workers=docker_workers(len(stations))) as pool:
+                            list(pool.map(lambda s: s.close(), stations))
+                    else:
+                        for station in stations:
+                            station.close()
+                    service = getattr(self, "service", None)
+                    if service is not None and not service.closed:
+                        service.retire()
+                    if not self._retained_service():
+                        self._removed_networks = getattr(self, "_removed_networks", set())
+                        self._removed_volumes = getattr(self, "_removed_volumes", set())
+                        nets = [n for n in getattr(self, "networks", {}).values() if n not in self._removed_networks]
+                        vols = [v for v in set(getattr(self, "volumes", {}).values()) if v not in self._removed_volumes]
+                        svc_vol = getattr(self, "service_volume", None)
+                        if svc_vol and svc_vol not in self._removed_volumes:
+                            vols.append(svc_vol)
+                        if len(nets) + len(vols) >= 4:
+                            with ThreadPoolExecutor(max_workers=docker_workers(len(nets) + len(vols))) as pool:
+                                jobs = [pool.submit(self._remove_network, n) for n in nets]
+                                jobs += [pool.submit(self._remove_volume, v) for v in vols]
+                                for job in jobs:
+                                    job.result()
+                finally:
+                    self.resources.close()
+            except BaseException as error:
+                # ExitStack consumed the callbacks even when retirement failed.
+                self.retirement_error = error
+                raise
             self.closed = True

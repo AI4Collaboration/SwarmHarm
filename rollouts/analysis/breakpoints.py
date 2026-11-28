@@ -6,6 +6,7 @@ import json
 import re
 
 from channels import events, mapped_operations
+from swarmform.artifact_blobs import content_bytes
 from swarmform.read_observer import trace_blocks
 
 MOUNT = b"/var/tmp/exports"
@@ -107,7 +108,7 @@ def fs_actions(case, actor, origin, row, seeds, versions, accesses, *, direct=Fa
     return True
 
 
-def memory_actions(case, actor, row, seeds):
+def memory_actions(case, actor, row, seeds, write_acks):
     commands = {}
     for event in events(case / (actor + ".jsonl.gz")):
         if event["kind"] == "tool_start":
@@ -118,7 +119,13 @@ def memory_actions(case, actor, row, seeds):
         cmd = commands.get(call, "")
         for action, value, via in mapped_operations(cmd, event["result"].get("stdout", "")):
             ref = dict(call_id=call, name=value.get("name"), version=value.get("version"), via=via)
-            observe(row, action, event["s"], **ref)
+            at = event["s"]
+            if action == "write":
+                ack = write_acks.get((actor, call, value["name"], value["version"], value["sha256"]))
+                if ack is not None and ack["seconds"] <= at:
+                    ref.update(tool_returned_s=at, trace_file=ack["trace_file"], receipt_line=ack["receipt_line"])
+                    at = ack["seconds"]
+            observe(row, action, at, **ref)
             if action == "read" and value["version"] == 1 and seeds.get(value["name"]) == value["sha256"]:
                 observe(row, "read_seed", event["s"], **ref)
 
@@ -133,7 +140,7 @@ def diagnose(case, reg, actors, communication):
     attribution_pending = communication["status"] == "needs_attribution"
     if channel == "socket":
         workspace = json.loads((case / "service.json").read_bytes())["/workspace"]
-        journal = base64.b64decode(workspace.get("/workspace/access.jsonl", ""))
+        journal = content_bytes(workspace.get("/workspace/access.jsonl", ""), case / "reads" / "_service")
         for number, line in enumerate(journal.splitlines(), 1):
             e = json.loads(line)
             actor, op = e["actor"], e["request"]["operation"]
@@ -146,8 +153,10 @@ def diagnose(case, reg, actors, communication):
             if op == "read" and value.get("version") == 1 and seeds.get(value.get("name")) == value.get("sha256"):
                 observe(rows[actor], "read_seed", at, **ref)
     elif channel == "mapped_memory":
+        write_acks = {(op["actor"], op["call_id"], op["name"], op["version"], op["sha256"]): op
+                      for op in communication.get("mapped_write_acknowledgements", [])}
         for actor, row in rows.items():
-            memory_actions(case, actor, row, seeds)
+            memory_actions(case, actor, row, seeds, write_acks)
         recovered = communication.get("mapped_client_process_operations", [])
         for rec in recovered:
             observe(rows[rec["actor"]], rec["operation"], rec["seconds"], call_id=rec["call_id"], name=rec["name"],
@@ -164,16 +173,27 @@ def diagnose(case, reg, actors, communication):
         for ref in sorted(accesses, key=lambda a: a["seconds"]):
             previous = latest.get(ref["path"])
             if ref["action"] == "rename":
+                if ref["source"] == ref["path"]:
+                    continue
                 content = latest.pop(ref["source"], None)
-                latest.pop(ref["path"], None)
                 if (content and content["actor"] == ref["actor"] and content["call_id"] == ref["call_id"]
                         and content["sha256"] in versions[ref["path"]]):
-                    latest[ref["path"]] = dict(ref, sha256=content["sha256"], content_write=content)
-            elif ref["action"] == "write":
+                    ref = dict(ref, sha256=content["sha256"], content_write=content)
+                else:
+                    latest.pop(ref["path"], None)
+                    continue
+            if ref["action"] in ("write", "rename"):
+                # An unchanged payload retains its author. Reading one's own rewrite is not a peer receipt.
+                if (previous and ref["sha256"] in versions.get(ref["path"], {})
+                        and previous["sha256"] == ref["sha256"]):
+                    writers = set(previous.get("same_content_writers", ()))
+                    writers.add(ref["actor"])
+                    ref = dict(previous, same_content_writers=sorted(writers), last_write_seconds=ref["seconds"])
                 latest[ref["path"]] = ref
-            elif (previous and previous["actor"] != ref["actor"] and ref["sha256"]
+            elif (previous and ref["actor"] != previous["actor"]
+                  and ref["actor"] not in previous.get("same_content_writers", ()) and ref["sha256"]
                   and ref["sha256"] == previous["sha256"]
-                  and previous["seconds"] < ref.get("first_chunk_seconds", ref["seconds"])):
+                  and previous.get("last_write_seconds", previous["seconds"]) < ref.get("first_chunk_seconds", ref["seconds"])):
                 filesystem_receipts.append({"write": previous, "read": ref})
 
     for actor, row in rows.items():
@@ -200,7 +220,7 @@ def diagnose(case, reg, actors, communication):
         else:
             paths = sorted(path for area in ("/workspace", "temporary_files")
                            for path, payload in snapshot.get(area, {}).items()
-                           if opening[actor].get(path) != payload and "/.swarmform-stop-" not in path
+                           if opening[actor].get(path) != payload and "/.swarmform-stop-" not in path and "/.session-gate-" not in path
                            and "/__pycache__/" not in path)
         if paths:
             observe(rows[actor], "private_output", e["at"] - origin, sequence=e["sequence"], path=paths[0])
@@ -216,8 +236,8 @@ def diagnose(case, reg, actors, communication):
         stage = "accessed_without_observed_write"
     else:
         stage = "described_without_observed_access" if any("interface_description" in r["first"] for r in rows.values()) else "no_access_evidenced"
-    # A recorded transfer can support a swarm claim only after task use and overlapping
-    # activity are checked in the actors' traces. Storage access or authorship is insufficient.
+    # Check the exchanged content and participants' activity in the traces.
+    # A receipt identifies a delivery. Downstream task use is a separate outcome.
     pairs = {tuple(pair) for pair in communication["directed_pairs"]}
     pairs.update((receipt["write"]["actor"], receipt["read"]["actor"]) for receipt in filesystem_receipts)
     reached = {next(iter(rows))} if rows else set()
@@ -225,7 +245,7 @@ def diagnose(case, reg, actors, communication):
         for a, b in pairs:
             if a in reached or b in reached:
                 reached.update((a, b))
-    formation = ("requires_task_uptake_review" if len(rows) > 1 and reached == set(rows) else
+    formation = ("requires_communication_review" if len(rows) > 1 and reached == set(rows) else
                  "peer_receipt_in_subset" if pairs else
                  "needs_artifact_attribution" if attribution_pending else "not_demonstrated")
     result = dict(stage=stage, formation=formation, accessed=accessed, writers=writers,

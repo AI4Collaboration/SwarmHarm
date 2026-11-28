@@ -43,6 +43,25 @@ def signal_process(process, sig):
             os.seteuid(caller)
 
 
+def stop_traced_threads(item, tracer):
+    """Stop each runnable thread while its managed ptrace controller is stopped."""
+    pending = []
+    for path in (Path('/proc') / str(item['pid']) / 'task').iterdir():
+        try:
+            status = dict(line.split(':', 1) for line in (path / 'status').read_text().splitlines())
+        except (FileNotFoundError, ProcessLookupError):
+            continue
+        state = status['State'].strip()[0]
+        controller = int(status['TracerPid'])
+        if state in ('T', 'Z', 'X') or (state == 't' and controller == tracer['pid']):
+            continue
+        tid = int(path.name)
+        pending.append((tid, state, controller))
+    if pending:
+        signal_process(item, signal.SIGSTOP)
+    return pending
+
+
 def resume(processes):
     denied = []
     for item in processes:
@@ -58,14 +77,17 @@ def resume(processes):
         raise PermissionError(f'Workstation processes could not be resumed: {denied}')
 
 
-def freeze(observe_traced=False, subject_uid=None, settle_seconds=2, *, account_view=False):
+def freeze(observe_traced=False, subject_uid=None, settle_seconds=2, *, account_view=False, hard_deadline=None):
     if type(settle_seconds) is not int or settle_seconds not in (2, 10):
         raise ValueError('Unregistered observation settling allowance')
     stopped, observed = {}, {}
     subject_uid = (65534 if observe_traced else os.getuid()) if subject_uid is None else subject_uid
     if type(subject_uid) is not int or not 0<=subject_uid<2**32-1:raise ValueError('Invalid observed account')
     deadline = time.monotonic() + settle_seconds
+    if hard_deadline is not None:
+        deadline = min(deadline, hard_deadline)
     final_check = False
+    nudged = {}
     mount_namespace = os.readlink('/proc/self/ns/mnt') if account_view else None
     try:
         while True:
@@ -93,8 +115,51 @@ def freeze(observe_traced=False, subject_uid=None, settle_seconds=2, *, account_
                         continue
                     key = (item['pid'], item['start_ticks'])
                     observed.setdefault(key, item)
+                    if observe_traced and item['tracer_pid'] and item['state'] not in ('D', 'Z', 'X'):
+                        tracer = process_info(item['tracer_pid'])
+                        if (tracer['uid'] == 0 and tracer['name'] == 'strace' and tracer['state'] == 'T'
+                                and (not account_view or os.readlink(Path('/proc') / str(tracer['pid']) / 'ns/mnt') == mount_namespace)):
+                            busy_threads = stop_traced_threads(item, tracer)
+                            if busy_threads:
+                                stopped.setdefault(key, item)
+                                pending.extend(busy_threads)
+                                since = nudged.setdefault(key, time.monotonic())
+                                tracer_key = (tracer['pid'], tracer['start_ticks'])
+                                if time.monotonic() - since >= .03 and tracer_key in stopped:
+                                    # The controller must service pending ptrace events before
+                                    # a tracee in exec or group-stop can acknowledge SIGSTOP.
+                                    resume([stopped.pop(tracer_key)])
+                                    time.sleep(.05)
+                                    nudged.pop(key, None)
+                                    break
+                            else:
+                                nudged.pop(key, None)
+                            continue
                     if item['state'] in ('T', 'Z', 'X'):
                         continue
+                    if observe_traced and item['state'] == 'D' and item['tracer_pid']:
+                        try:
+                            tracer = process_info(item['tracer_pid'])
+                            managed = tracer['uid'] == 0 and tracer['name'] == 'strace'
+                            if managed and account_view:
+                                managed = os.readlink(Path('/proc') / str(tracer['pid']) / 'ns/mnt') == mount_namespace
+                        except (FileNotFoundError, ProcessLookupError):
+                            managed = False
+                        if managed:
+                            # A vfork parent may need both its child and tracer
+                            # to run before it can process a stop.
+                            resume(stopped.values())
+                            stopped.clear()
+                            pending.append((item['pid'], 'D', tracer['pid']))
+                            while time.monotonic() < deadline:
+                                time.sleep(.005)
+                                try:
+                                    current = process_info(item['pid'])
+                                except (FileNotFoundError, ProcessLookupError):
+                                    break
+                                if (current['start_ticks'], current['state'], current['tracer_pid']) != (item['start_ticks'], 'D', tracer['pid']):
+                                    break
+                            break
                     if item['state'] == 't':
                         if not observe_traced:
                             continue
@@ -164,8 +229,15 @@ def snapshot(extra_roots=(), observe_traced=False, subject_uid=None, settle_seco
         try:
             # A traced process can remain blocked while another process is stopped.
             # Release an unsuccessful freeze before retrying; never call D/S/R quiescent.
-            stopped, processes = (freeze(observe_traced,subject_uid, account_view=True) if account_view
-                                  else freeze(observe_traced,subject_uid))
+            if observe_traced and settle_seconds == 10 and len(retries) == 2:
+                # The last attempt uses the remaining registered allowance after
+                # earlier attempts released all subjects and the tracer.
+                stopped, processes = freeze(observe_traced, subject_uid, settle_seconds,
+                                            account_view=account_view,
+                                            hard_deadline=before_freeze + settle_seconds)
+            else:
+                stopped, processes = (freeze(observe_traced,subject_uid, account_view=True) if account_view
+                                      else freeze(observe_traced,subject_uid))
             break
         except ObservationNotSettled as error:
             if settle_seconds==2 or len(retries)>=2 or time.monotonic()-before_freeze>settle_seconds-2.05:
@@ -239,6 +311,25 @@ def snapshot(extra_roots=(), observe_traced=False, subject_uid=None, settle_seco
         raise
 
 
+def emit_snapshot(values, *, resume_inline=False):
+    """Only fully inlined observations may release their own frozen processes here."""
+    areas = ('/workspace', '/registry', '/var/tmp/exports', 'temporary_files')
+    try:
+        eligible = resume_inline and all(
+            isinstance(value, str)
+            for area in areas for value in values.get(area, {}).values())
+        if eligible:
+            values['inline_resume_completed'] = True
+        # Finish serialization before release: no mutable guest files are needed afterward.
+        output = json.dumps(values)
+        if eligible:
+            resume(values['resume_processes'])
+        print(output)
+    except BaseException:
+        resume(values['resume_processes'])
+        raise
+
+
 if __name__ == '__main__':
     if sys.argv[1] == 'resume':
         resume(json.load(sys.stdin))
@@ -249,4 +340,5 @@ if __name__ == '__main__':
         allowances=[int(arg.split('=',1)[1]) for arg in args if arg.startswith('--settle-seconds=')]
         if len(uids)>1:raise ValueError('Duplicate observed account')
         if len(allowances)>1:raise ValueError('Duplicate settling allowance')
-        print(json.dumps(snapshot([arg for arg in args if arg not in ('--observe-traced', '--account-view', '--archive-large') and not arg.startswith(('--subject-uid=','--settle-seconds='))], traced, uids[0] if uids else None, allowances[0] if allowances else 2, account_view='--account-view' in args, archive_large='--archive-large' in args)))
+        values = snapshot([arg for arg in args if arg not in ('--observe-traced', '--account-view', '--archive-large', '--resume-inline') and not arg.startswith(('--subject-uid=','--settle-seconds='))], traced, uids[0] if uids else None, allowances[0] if allowances else 2, account_view='--account-view' in args, archive_large='--archive-large' in args)
+        emit_snapshot(values, resume_inline='--resume-inline' in args and '--account-view' not in args)

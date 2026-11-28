@@ -8,7 +8,25 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "shared"))
 import model_session
-from .checkpoint import output_text
+
+
+def _classify_native_error(error):
+    text = str(error).lower()
+    if any(marker in text for marker in (
+        "usagelimitexceeded", "insufficient_quota", "insufficient_credits",
+        "http error 401", "http error 402", "http error 403",
+        "status 401", "status 402", "status 403", "401 unauthorized", "402 payment", "403 forbidden",
+    )):
+        return "provider_rejected"
+    if any(marker in text for marker in (
+        "http error 429", "status 429", "rate_limit", "too many requests",
+        "http error 500", "http error 502", "http error 503", "http error 504",
+        "http error 520", "http error 521", "http error 522", "http error 524", "http error 529",
+        "status 500", "status 502", "status 503", "status 504", "status 529",
+        "timed out", "connection reset", "service unavailable", "bad gateway", "gateway timeout",
+    )):
+        return "provider_unavailable"
+    return "participant_error"
 
 
 async def participate(cohort, actor):
@@ -17,6 +35,9 @@ async def participate(cohort, actor):
     agent = None
     calls = {}
     prompt_start = 0.0
+    idle_streak = 0
+    from .__main__ import idle_continuation_delay, max_idle_continuations
+    idle_cap = max_idle_continuations()
     usage = cohort.usage[actor] = {"responses": 0, "tools": 0, "tokens": 0}
     try:
         tools = cohort.visible["tools"]
@@ -62,22 +83,18 @@ async def participate(cohort, actor):
                 return
             kind = message["type"]
             event_time = cohort.trace(actor, "native_event", event=message)
+            if kind == "native_transport_error" and message.get("code") == "usageLimitExceeded":
+                cohort.errors[actor] = "Codex subscription quota exhausted (usageLimitExceeded)"
+                cohort.stop("provider_rejected")
+                return
             if kind == "ready":
+                if args.harness == "codex":
+                    await asyncio.to_thread(cohort.station.stations[actor].bind_native_cwd, message["cwd"])
+                    if not cohort.active():
+                        return
                 prompt_start = event_time
                 agent.prompt(*cohort.prompts(actor))
             elif kind == "request" and args.api_protocol in ("native", "subscription"):
-                payload = message.get("payload", {})
-                # Pi exposes the provider request; SDK controllers expose their input projection.
-                # Use only tool outputs explicitly present in the current request history.
-                items = payload.get("input", [])
-                if isinstance(items, list):
-                    with cohort.lock:
-                        for item in reversed(items):
-                            if item.get("type") == "function_call" or item.get("role") == "assistant":
-                                break
-                            if item.get("type") == "function_call_output":
-                                cohort.review.receipt(actor, item.get("call_id"), event_time,
-                                                      output_text(item.get("output")))
                 prompt_start = event_time
             elif kind in ("transport_response", "provider_response", "response_update"):
                 response = (
@@ -115,6 +132,7 @@ async def participate(cohort, actor):
                         )
                     usage["tokens"] += count
             elif kind == "tool_call":
+                idle_streak = 0
                 usage["tools"] += 1
                 call_id = message["call_id"].split("|")[0]
                 call = calls[call_id]
@@ -131,18 +149,9 @@ async def participate(cohort, actor):
                         command=arguments["command"],
                         decision_s=prompt_start,
                     )
-                    task = asyncio.create_task(
-                        asyncio.to_thread(
-                            cohort.tool, actor, arguments["command"], call_id
-                        )
-                    )
-                    cohort.active_tools.add(task)
-                    task.add_done_callback(
-                        lambda done, call_id=call_id: cohort.tool_completed(
-                            done, actor, call_id
-                        )
-                    )
-                    result, _ = await asyncio.shield(task)
+                    result = await cohort.run_tool(actor, arguments["command"], call_id)
+                    if not cohort.active():
+                        return
                 result = cohort.tool_reply(actor, result)
                 agent.reply(message["id"], output=json.dumps(result))
                 if getattr(cohort, "allowance_exhausted", lambda _: False)(actor):
@@ -154,6 +163,16 @@ async def participate(cohort, actor):
                 if getattr(cohort, "allowance_exhausted", lambda _: False)(actor):
                     await cohort.retire_actor(actor)
                     return
+                idle_streak += 1
+                if idle_cap and idle_streak > idle_cap:
+                    if hasattr(cohort, "park_idle_actor"):
+                        await cohort.park_idle_actor(actor, idle_streak)
+                    return
+                delay = idle_continuation_delay(idle_streak)
+                if delay > 0 and hasattr(cohort, "wait_idle_backoff"):
+                    await cohort.wait_idle_backoff(delay)
+                    if not cohort.active():
+                        return
                 prompt_start = event_time
                 agent.prompt(cohort.continue_research(actor))
             elif kind in ("fatal", "exited", "closed"):
@@ -163,7 +182,7 @@ async def participate(cohort, actor):
         raise
     except Exception as error:
         cohort.errors[actor] = f"{type(error).__name__}: {error}"
-        cohort.stop("participant_error")
+        cohort.stop(_classify_native_error(error))
     finally:
         if agent is not None:
             # The coordinator can cancel a participant that is already closing

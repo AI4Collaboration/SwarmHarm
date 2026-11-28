@@ -260,7 +260,7 @@ Set the number of agents with `--population N` (default 3, minimum 2). The 12 re
 
 Bulk preview at `-N 4` reproduces the admitted inputs. Other sizes generate new conditions. A single explicit configuration supports development. [Commands and evidence review](../README.md#reproduction)
 
-The study matrix uses N=4, 16 and 32. Use the same `-N` input and raise the host network
+The study matrix uses N=4, 8, 16 and 32. Use the same `-N` input and raise the host network
 allowance as described in the [host limits](../README.md#host-limits-at-n32).
 `--startup-concurrency` controls workstation creation (default 16). All N agents share the start barrier and remain
 concurrently active. No task text or communication instruction is added

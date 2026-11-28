@@ -1,6 +1,7 @@
 """Single-model SwarmForm component. Use scripts/run-evals for the full default lineup."""
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 import fcntl
 import hashlib
@@ -8,7 +9,9 @@ import json
 import os
 from pathlib import Path
 import re
+import signal
 import tarfile
+import threading
 import time
 import subprocess
 import sys
@@ -18,8 +21,10 @@ import model_lineup as defaults
 from guardrails import resolve_api_base
 from process_control import run_process
 
+_DEFAULT_RUN_PROCESS = run_process
+
 from swarmform.__main__ import CHANNELS, ROOT, request_limit, resolve_harness, source_digest, write_json
-from swarmform.formation_inputs import TASK_MODULES
+from swarmform.formation_inputs import add_task_selection
 from swarmform import checkpoint
 
 
@@ -42,8 +47,20 @@ def sealed_summary(directory):
         return None
 
 
+def finalized_summary(directory):
+    try:
+        summary = json.loads((directory / "summary.json").read_bytes())
+    except (OSError, ValueError):
+        return None
+    if isinstance(summary, dict) and summary.get("schema") == "swarmform-completion-v1":
+        if type(summary.get("complete")) is bool and type(summary.get("physical_stop_verified")) is bool:
+            return summary
+        return None
+    return sealed_summary(directory)
+
+
 def completed_evidence(directory):
-    summary = sealed_summary(directory)
+    summary = finalized_summary(directory)
     return bool(summary and summary.get("complete") and summary.get("physical_stop_verified"))
 
 
@@ -51,6 +68,12 @@ def resume_details(summary):
     if not summary or summary.get("complete") or not summary.get("physical_stop_verified"):
         return {}
     reason = summary.get("reason")
+    # Older Codex cohorts recorded the native quota rejection as a participant error.
+    if reason == "participant_error" and any(
+        "Codex error: usageLimitExceeded (native/" in str(error)
+        for error in summary.get("errors", {}).values()
+    ):
+        reason = "provider_rejected"
     if reason not in ("operator_interrupt", "provider_unavailable", "provider_rejected"):
         return {}
     if set(summary.get("errors", {})) - set(summary.get("usage", {})):
@@ -127,7 +150,7 @@ def cases(args):
                            if getattr(args, "harness", "chat-completions") == "chat-completions" else {}),
                         thinking_level=getattr(args, "thinking_level", None),
                         **({"service_tier": args.service_tier} if getattr(args, "service_tier", None) else {}),
-                        **checkpoint.registration(args),
+                        **checkpoint.cohort_registration(args, task=task, population=population),
                         entry_window_seconds=getattr(args, "entry_window_seconds", 0),
                         **({"closed_mail_receipts": True} if getattr(args, "closed_mail_receipts", False) and channel == "direct" else {}),
                         **({"enforce_personal_limits": True} if getattr(args, "enforce_personal_limits", False) else {}),
@@ -170,14 +193,12 @@ def main():
         "--populations",
         nargs="+",
         type=int,
-        default=list(defaults.SWARMFORM_POPULATIONS),
+        default=list(defaults.POPULATIONS),
     )
     parser.add_argument(
         "--key-file", type=Path, default=os.environ.get("OPENAI_API_KEY_FILE")
     )
-    parser.add_argument(
-        "--tasks", nargs="+", choices=TASK_MODULES, default=list(defaults.TASKS)
-    )
+    add_task_selection(parser, list(defaults.TASKS))
     parser.add_argument("--channels", nargs="+", choices=CHANNELS, default=list(CHANNELS),
                         help="Limit collection to these communication conditions")
     parser.add_argument("--entry-window-seconds", type=int, default=0,
@@ -186,7 +207,6 @@ def main():
     parser.add_argument("--closed-mail-receipts", action="store_true",
                         help="Mark directed sends to a permanently closed direct-mail session")
     parser.add_argument("--cohort-seconds", type=int, default=None)
-    parser.add_argument("--review-interval-seconds", type=int, default=None)
     parser.add_argument("--enforce-personal-limits", action="store_true")
     parser.add_argument("--max-responses", type=int, default=None)
     parser.add_argument("--max-tools", type=int, default=None)
@@ -195,11 +215,18 @@ def main():
                         help="Native reasoning effort; opt in for compatible Chat Completions endpoints")
     parser.add_argument("--service-tier", choices=("priority", "ultrafast"),
                         help="Request this tier only on an endpoint that supports it")
-    parser.add_argument("--review-model", default=None)
     parser.add_argument("--seconds", type=int, default=600, help="Per-request transport timeout")
     parser.add_argument("--repeats", type=int, default=defaults.REPEATS)
+    parser.add_argument("--max-attempts", type=int, default=2,
+                        help="Maximum new attempts per cohort on transient provider failures (default: 2)")
+    parser.add_argument("--concurrency", "-j", type=int, default=1,
+                        help="Run up to this many cohorts concurrently (default: 1)")
+    parser.add_argument("--max-concurrent-agents", type=int, default=None,
+                        help="Cap total simultaneous agents across parallel cohorts (e.g. 32 runs 8xN=4, 4xN=8, 2xN=16, 1xN=32)")
+    parser.add_argument("--archive", action="store_true",
+                        help="Verify, compress and remove raw directories for completed cohorts automatically")
     parser.add_argument(
-        "--execute", action="store_true", help="Run planned rows sequentially"
+        "--execute", action="store_true", help="Run planned cohorts"
     )
     parser.add_argument(
         "--out", type=Path, help="Parent directory outside the repository"
@@ -210,12 +237,18 @@ def main():
     resolve_harness(args)
     if not (
         1 <= args.seconds <= 600 and args.repeats >= 1 and min(args.populations) >= 1
+        and args.max_attempts >= 1 and args.concurrency >= 1
+        and (args.max_concurrent_agents is None or args.max_concurrent_agents >= 1)
     ):
         parser.error(
-            "Use N >= 1, repeats >= 1 and a request timeout of 1 to 600 seconds"
+            "Use N >= 1, repeats >= 1, max-attempts >= 1, concurrency >= 1 and a request timeout of 1 to 600 seconds"
         )
-    horizon_s = args.cohort_seconds or checkpoint.COHORT_SECONDS
-    if not 0 <= args.entry_window_seconds < horizon_s:
+    min_horizon = min(
+        args.cohort_seconds or checkpoint.default_cohort_seconds(task, pop)
+        for task in args.tasks
+        for pop in args.populations
+    )
+    if not 0 <= args.entry_window_seconds < min_horizon:
         parser.error("Entry offsets must precede the common cohort deadline.")
     if args.api_protocol == "subscription" and args.harness != "codex":
         parser.error("Subscription transport requires --harness codex.")
@@ -253,6 +286,92 @@ def main():
         return execute_rows(args, rows, parser)
 
 
+def _cohort_base_dir(args, row):
+    encoded = json.dumps(row, sort_keys=True)
+    cohort_id = hashlib.sha256(encoded.encode()).hexdigest()[:16]
+    slug = re.sub(r"[^\w.-]+", "-", args.model).strip(".-") or "model"
+    return (
+        args.out.resolve()
+        / slug
+        / f"n{row['population']}"
+        / f"{row['task']}-{row['channel']}-r{row['replicate']}-{cohort_id}"
+    )
+
+
+def _archive_completed(directory, archive_index, record):
+    archived = subprocess.run(
+        [sys.executable, str(ROOT.parent / "scripts/archive-trajectories"),
+         str(directory), "--remove-source"],
+        cwd=ROOT.parent, capture_output=True, text=True,
+    )
+    if archived.returncode == 0:
+        record.update(archived_evidence(archive_index))
+    else:
+        record["archive_error"] = (archived.stderr or archived.stdout).strip()[-500:]
+
+
+def _execute_one(args, row, *, launch, mark_running, stop_event, acquire_agents=None):
+    base = _cohort_base_dir(args, row)
+    directory = base
+    previous = []
+    new_attempts = 0
+    interrupted = None
+    max_attempts = getattr(args, "max_attempts", 2)
+    while True:
+        if previous:
+            directory = base.with_name(f"{base.name}-attempt-{len(previous) + 1:03d}")
+        record = {**row, "output": str(directory)}
+        if previous:
+            record["prior_attempts"] = list(previous)
+        log = directory.with_name(directory.name + ".log")
+        archive_index = directory.with_name(directory.name + ".archive.json")
+        if directory.exists():
+            summary = finalized_summary(directory)
+            complete = summary and summary.get("complete") and summary.get("physical_stop_verified")
+            record.update(status="complete" if complete else "incomplete", **resume_details(summary))
+        elif archive_index.exists():
+            record.update(archived_evidence(archive_index))
+        elif log.exists():
+            record.update(status="incomplete", log=str(log))
+        else:
+            if stop_event.is_set():
+                return (previous[-1] if previous else None), interrupted
+            if previous:
+                delay = previous[-1]["retry_not_before"] - time.time()
+                if delay > 0 and stop_event.wait(delay):
+                    return previous[-1], interrupted
+            if acquire_agents is not None:
+                with acquire_agents(row["population"]) as granted:
+                    if not granted:
+                        return (previous[-1] if previous else None), interrupted
+                    code, interrupted = _launch_attempt(args, row, directory, log, record, mark_running, launch)
+            else:
+                code, interrupted = _launch_attempt(args, row, directory, log, record, mark_running, launch)
+            new_attempts += 1
+            summary = finalized_summary(directory)
+            complete = summary and summary["complete"] and summary.get("physical_stop_verified")
+            record.update(status="complete" if complete else "incomplete", returncode=code, log=str(log))
+            record.update(resume_details(summary))
+            if complete and getattr(args, "archive", False):
+                _archive_completed(directory, archive_index, record)
+            if record.get("retry_reason") in ("operator_interrupt", "provider_rejected"):
+                break
+        if interrupted or not record.get("retry_reason") or new_attempts >= max_attempts:
+            break
+        previous.append({key: value for key, value in record.items()
+                         if key in ("output", "status", "retry_reason", "retry_not_before", "log", "archive")})
+    return record, interrupted
+
+
+def _launch_attempt(args, row, directory, log, record, mark_running, launch):
+    command = cohort_command(args, row, directory)
+    mark_running({**record, "status": "running"})
+    print("Starting", directory, flush=True)
+    directory.parent.mkdir(parents=True, exist_ok=True)
+    with log.open("x") as stream:
+        return launch(command, stream)
+
+
 def execute_rows(args, rows, parser):
     root = args.out.resolve()
     if (root / "plan.json").exists() and json.loads(
@@ -260,76 +379,142 @@ def execute_rows(args, rows, parser):
     ) != rows:
         parser.error("This output root contains a different plan; choose a fresh --out")
     write_json(root / "plan.json", rows)
-    failures = 0
-    records = []
-    for row in rows:
-        encoded = json.dumps(row, sort_keys=True)
-        cohort_id = hashlib.sha256(encoded.encode()).hexdigest()[:16]
-        slug = re.sub(r"[^\w.-]+", "-", args.model).strip(".-") or "model"
-        directory = (
-            args.out.resolve()
-            / slug
-            / f"n{row['population']}"
-            / (f"{row['task']}-{row['channel']}-r{row['replicate']}-{cohort_id}")
-        )
-        base = directory
-        previous = []
-        new_attempts = 0
-        interrupted = None
-        while True:
-            if previous:
-                directory = base.with_name(f"{base.name}-attempt-{len(previous) + 1:03d}")
-            record = {**row, "output": str(directory)}
-            if previous:
-                record["prior_attempts"] = list(previous)
-            log = directory.with_name(directory.name + ".log")
-            archive_index = directory.with_name(directory.name + ".archive.json")
-            if directory.exists():
-                summary = sealed_summary(directory)
-                complete = summary and summary.get("complete") and summary.get("physical_stop_verified")
-                record.update(status="complete" if complete else "incomplete", **resume_details(summary))
-            elif archive_index.exists():
-                record.update(archived_evidence(archive_index))
-            elif log.exists():
-                record.update(status="incomplete", log=str(log))
-            else:
-                if previous:
-                    delay = previous[-1]["retry_not_before"] - time.time()
-                    if delay > 0:
-                        time.sleep(delay)
-                command = cohort_command(args, row, directory)
-                new_attempts += 1
-                write_json(root / "index.json",
-                           {"study": "swarmform", "runs": [*records, {**record, "status": "running"}]})
-                print("Starting", directory, flush=True)
-                directory.parent.mkdir(parents=True, exist_ok=True)
-                with log.open("x") as stream:
-                    code, interrupted = run_process(command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT)
-                record.update(status="complete" if code == 0 and not interrupted else "incomplete",
-                              returncode=code, log=str(log))
-                if directory.exists():
-                    record["raw_bytes"] = sum(p.stat().st_size for p in directory.rglob("*") if p.is_file())
-                if record["status"] == "incomplete":
-                    record.update(resume_details(sealed_summary(directory)))
-                if record.get("retry_reason") in ("operator_interrupt", "provider_rejected"):
-                    break
-            if interrupted or not record.get("retry_reason") or new_attempts >= 2:
+    concurrency = getattr(args, "concurrency", 1)
+    max_agents = getattr(args, "max_concurrent_agents", None)
+    if concurrency <= 1:
+        failures = 0
+        records = []
+        stop_event = threading.Event()
+        for row in rows:
+            record, interrupted = _execute_one(
+                args,
+                row,
+                launch=lambda command, stream: run_process(
+                    command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT
+                ),
+                mark_running=lambda running: write_json(
+                    root / "index.json", {"study": "swarmform", "runs": [*records, running]}
+                ),
+                stop_event=stop_event,
+            )
+            if record is None:
                 break
-            previous.append({key: value for key, value in record.items()
-                             if key in ("output", "status", "retry_reason", "retry_not_before", "log", "archive")})
-        failures += int(record["status"] not in ("complete", "archived"))
-        records.append(record)
-        write_json(root / "index.json", {"study": "swarmform", "runs": records})
-        if interrupted or record.get("retry_reason") in ("operator_interrupt", "provider_rejected", "provider_unavailable"):
-            break
+            failures += int(record["status"] not in ("complete", "archived"))
+            records.append(record)
+            write_json(root / "index.json", {"study": "swarmform", "runs": records})
+            if interrupted or record.get("retry_reason") in ("operator_interrupt", "provider_rejected", "provider_unavailable"):
+                break
+        return int(failures != 0)
+
+    state_lock = threading.Lock()
+    budget_cond = threading.Condition(state_lock)
+    slots = [None] * len(rows)
+    active_agents = 0
+    active_children = set()
+    interrupted_sig = [None]
+    stop_event = threading.Event()
+
+    def flush_index():
+        write_json(root / "index.json", {"study": "swarmform", "runs": [r for r in slots if r is not None]})
+
+    @contextmanager
+    def acquire_agents(population):
+        nonlocal active_agents
+        with budget_cond:
+            while (
+                not stop_event.is_set()
+                and max_agents is not None
+                and active_agents > 0
+                and active_agents + population > max_agents
+            ):
+                budget_cond.wait(timeout=0.5)
+            if stop_event.is_set():
+                yield False
+                return
+            active_agents += population
+        try:
+            yield True
+        finally:
+            with budget_cond:
+                active_agents -= population
+                budget_cond.notify_all()
+
+    def launch_parallel(command, stream):
+        if run_process is not _DEFAULT_RUN_PROCESS:
+            return run_process(command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT)
+        with subprocess.Popen(command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT) as child:
+            with budget_cond:
+                active_children.add(child)
+                pending_sig = interrupted_sig[0]
+            if pending_sig is not None and child.poll() is None:
+                try:
+                    child.send_signal(getattr(signal, pending_sig))
+                except ProcessLookupError:
+                    pass
+            try:
+                code = child.wait()
+            finally:
+                with budget_cond:
+                    active_children.discard(child)
+            return code, interrupted_sig[0]
+
+    previous_handlers = {}
+    if threading.current_thread() is threading.main_thread():
+        def handle_signal(signum, frame):
+            interrupted_sig[0] = signal.Signals(signum).name
+            stop_event.set()
+            with budget_cond:
+                children = list(active_children)
+                budget_cond.notify_all()
+            for child in children:
+                if child.poll() is None:
+                    try:
+                        child.send_signal(signum)
+                    except ProcessLookupError:
+                        pass
+
+        for sig in (signal.SIGINT, signal.SIGTERM):
+            previous_handlers[sig] = signal.signal(sig, handle_signal)
+
+    def run_indexed(idx, row):
+        def mark_running(running):
+            with state_lock:
+                slots[idx] = running
+                flush_index()
+
+        record, interrupted = _execute_one(
+            args,
+            row,
+            launch=launch_parallel,
+            mark_running=mark_running,
+            stop_event=stop_event,
+            acquire_agents=acquire_agents,
+        )
+        with budget_cond:
+            if record is not None:
+                slots[idx] = record
+                flush_index()
+            if interrupted or (record and record.get("retry_reason") in ("operator_interrupt", "provider_rejected", "provider_unavailable")):
+                stop_event.set()
+                budget_cond.notify_all()
+
+    try:
+        with ThreadPoolExecutor(max_workers=min(concurrency, max(1, len(rows)))) as pool:
+            futures = [pool.submit(run_indexed, idx, row) for idx, row in enumerate(rows)]
+            for future in futures:
+                future.result()
+    finally:
+        for sig, handler in previous_handlers.items():
+            signal.signal(sig, handler)
+
+    records = [r for r in slots if r is not None]
+    failures = sum(r["status"] not in ("complete", "archived") for r in records)
+    if len(records) < len(rows):
+        failures += len(rows) - len(records)
     return int(failures != 0)
 
 
 def cohort_command(args, row, directory):
-    if source_digest() != row["source_sha256"]:
-        raise RuntimeError(
-            "Source changed during the batch; use a fresh output root"
-        )
     command = [
         sys.executable,
         "-m",
@@ -366,8 +551,6 @@ def cohort_command(args, row, directory):
         command.append("--closed-mail-receipts")
     if args.cohort_seconds:
         command.extend(["--cohort-seconds", str(args.cohort_seconds)])
-    if args.review_interval_seconds:
-        command.extend(["--review-interval-seconds", str(args.review_interval_seconds)])
     if row.get("enforce_personal_limits"):
         command.append("--enforce-personal-limits")
     for flag, key in (("--max-responses", "max_responses"), ("--max-tools", "max_tools"), ("--max-tokens", "max_tokens")):
@@ -377,8 +560,6 @@ def cohort_command(args, row, directory):
         command.extend(["--thinking-level", args.thinking_level])
     if row.get("service_tier"):
         command.extend(["--service-tier", row["service_tier"]])
-    if getattr(args, "review_model", None):
-        command.extend(["--review-model", args.review_model])
     if args.revision:
         command.extend(["--revision", args.revision])
     if args.key_file:

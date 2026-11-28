@@ -32,12 +32,9 @@ class CheckSelectionChecks(unittest.TestCase):
                 self.assertTrue(plan['docker'])
         self.assertFalse(ENTRY['uses_docker']('domain_runtime'))
         for path in ('swarmharm/tests/local_source_checks.py',
-                     'swarmharm/tests/unified_delivery_checks.py',
-                     'swarmform/tests/native_context_checks.py',
-                     'swarmform/tests/swarmform_archive_native_checks.py'):
+                     'swarmharm/tests/unified_delivery_checks.py'):
             with self.subTest(path=path):
                 self.assertIn('codex', select([path])['harnesses'])
-        self.assertTrue(select(['swarmform/tests/swarmform_archive_native_checks.py'])['docker'])
 
     def test_reporting_observation_changes_select_minimalist_core_contracts(self):
         for name in ('unified_delivery', 'world_config'):
@@ -73,136 +70,20 @@ class CheckSelectionChecks(unittest.TestCase):
                 self.assertEqual(plan['harnesses'], expected)
                 self.assertTrue(plan['docker'])
 
-    def test_collection_suite_declares_its_native_workstation_dependencies(self):
-        plan=select(['swarmform/tests/swarmform_collection_checks.py'])
-        self.assertEqual(plan['tests'],['tests.swarmform_collection_checks'])
-        self.assertEqual(plan['harnesses'],['codex'])
-        self.assertTrue(plan['docker'])
-
-    def test_structure_operator_observations_need_no_native_model_runtime(self):
-        for name in ('communication_inventory','artifact_use_timeline','exact_source_use','shared_content_inventory','source_pool_review','common_problem_review'):
-            plan=select([f'swarmform/structure/{name}.py'])
-            self.assertEqual(plan['tests'],['tests.structure_observations_checks'])
-            self.assertFalse(plan['docker'])
-            self.assertEqual(plan['harnesses'],[])
-
-    def test_structure_runtime_has_its_native_and_temporal_checks(self):
-        plan=select(['swarmform/scripts/run_swarmform_structure.py',
-                     'swarmform/swarmform/structure_collection.py'])
-        self.assertEqual(plan['tests'],['tests.publication_updates_checks', 'tests.research_latency_checks', 'tests.structure_native_checks','tests.structure_timeline_checks',
-                                       'tests.sustained_research_checks', 'tests.swarmform_structure_checks'])
-        self.assertTrue(plan['docker'])
-        self.assertEqual(plan['harnesses'],['codex'])
-
     def test_documentation_and_pause_notes_need_no_runtime(self):
         plan = select(['README.md', 'AGENTS.md', 'swarmharm/README.md',
                        'swarmharm/phase1/README.md', 'swarmharm/phase2/README.md',
                        'swarmharm/registrations/README.md',
-                       'swarmform/docs/research/swarmform-input-archives.json'])
+                       'swarmform/docs/formation-readiness.json'])
         self.assertEqual(plan['checks'], ['syntax', 'inventory'])
         self.assertEqual(plan['tests'], [])
         self.assertFalse(plan['dependencies'])
         self.assertFalse(plan['docker'])
         self.assertEqual(plan['harnesses'], [])
 
-    def test_operator_edits_do_not_replay_history_or_build_inputs(self):
-        plan = select(['swarmform/scripts/check_swarmform_ipc_inputs.py', 'swarmform/scripts/swarmform_service_witness_codecs.py'])
-        self.assertEqual(plan['tests'], ['tests.swarmform_input_runner_checks'])
-        self.assertNotIn('catalog', plan['checks'])
-        self.assertNotIn('wording', plan['checks'])
-        self.assertFalse(plan['docker'])
-        self.assertEqual(plan['harnesses'], [])
-
-    def test_input_changes_keep_relevant_contract_and_wording_checks(self):
-        plan = select(['swarmform/swarmform/inputs.py'])
-        self.assertIn('catalog', plan['checks'])
-        self.assertIn('wording', plan['checks'])
-        self.assertIn('tests.swarmform_registration_checks', plan['tests'])
-        self.assertTrue(plan['docker'])
-        self.assertEqual(plan['harnesses'], [])
-
     def test_worker_markdown_is_not_treated_as_operator_documentation(self):
         plan = select(['swarmharm/instruction.md'])
         self.assertTrue(plan['tests'])
-
-    def test_job_service_edits_check_its_api_and_source_binding(self):
-        plan = select(['swarmform/swarmform/job_service.py'])
-        self.assertEqual(plan['tests'], ['tests.swarmform_job_service_checks',
-                                         'tests.swarmform_registration_checks'])
-        self.assertIn('wording', plan['checks'])
-        self.assertFalse(plan['docker'])
-        self.assertEqual(plan['harnesses'], [])
-
-    def test_endpoint_service_edits_keep_delivery_input_and_registration_checks(self):
-        plan = select(['swarmform/swarmform/endpoint_service.py'])
-        self.assertEqual(plan['tests'], ['tests.swarmform_delivery_state_checks',
-            'tests.swarmform_domain_checks', 'tests.swarmform_job_service_checks',
-            'tests.swarmform_package_checks',
-            'tests.swarmform_registration_checks'])
-        for check in ('inputs', 'catalog', 'wording'):
-            self.assertIn(check, plan['checks'])
-        self.assertTrue(plan['docker'])
-        self.assertEqual(plan['harnesses'], [])
-
-    def test_archive_policy_binding_keeps_registration_without_unrelated_harnesses(self):
-        for stem in ('archive_deployment',):
-            plan=select([f'swarmform/swarmform/{stem}.py'])
-            self.assertEqual(plan['tests'],['tests.swarmform_archive_outcome_checks',
-                'tests.swarmform_archive_policy_checks','tests.swarmform_collection_checks',
-                'tests.swarmform_input_runner_checks','tests.swarmform_registration_checks'])
-            for check in ('inputs','catalog','wording'):
-                self.assertIn(check,plan['checks'])
-            self.assertTrue(plan['docker'])
-            self.assertEqual(plan['harnesses'],['codex'])
-
-    def test_job_policy_binding_keeps_its_collection_dependencies(self):
-        plan=select(['swarmform/swarmform/job_deployment.py',
-                     'swarmform/swarmform/deployments.py'])
-        self.assertEqual(plan['tests'],['tests.swarmform_collection_checks',
-            'tests.swarmform_input_runner_checks','tests.swarmform_job_service_checks',
-            'tests.swarmform_registration_checks','tests.swarmform_service_cleanup_checks'])
-        for check in ('inputs','catalog','wording'):
-            self.assertIn(check,plan['checks'])
-        self.assertTrue(plan['docker'])
-        self.assertEqual(plan['harnesses'],['codex'])
-
-    def test_archive_service_edits_do_not_select_unrelated_harnesses(self):
-        plan = select(['swarmform/swarmform/base_archive.py',
-                       'swarmform/swarmform/profile_archive.py'])
-        self.assertEqual(plan['tests'], ['tests.swarmform_archive_outcome_checks',
-                                         'tests.swarmform_archive_policy_checks'])
-        self.assertIn('wording', plan['checks'])
-        self.assertFalse(plan['docker'])
-        self.assertEqual(plan['harnesses'], [])
-
-    def test_ipc_policy_and_binding_select_narrow_suites(self):
-        plan=select(['swarmform/swarmform/ipc_policy.py',
-                     'swarmform/swarmform/ipc_deployment.py'])
-        self.assertEqual(plan['tests'],['tests.swarmform_collection_checks',
-            'tests.swarmform_input_runner_checks','tests.swarmform_registration_checks'])
-        for check in ('inputs','catalog','wording'):
-            self.assertIn(check,plan['checks'])
-        self.assertTrue(plan['docker'])
-        self.assertEqual(plan['harnesses'],['codex'])
-
-    def test_ipc_business_helpers_check_inputs_without_unrelated_docker_suites(self):
-        for helper in ('ipc_status', 'ipc_queue', 'ipc_processor'):
-            with self.subTest(helper=helper):
-                plan = select([f'swarmform/swarmform/{helper}.py'])
-                self.assertEqual(plan['tests'], ['tests.swarmform_input_runner_checks',
-                                                 'tests.swarmform_registration_checks'])
-                self.assertIn('wording', plan['checks'])
-                self.assertFalse(plan['docker'])
-                self.assertEqual(plan['harnesses'], [])
-
-    def test_service_client_edits_keep_http_and_input_checks_without_docker(self):
-        for client in ('archive_client', 'job_client', 'endpoint_client', 'endpoint_inventory', 'endpoint_release_notes'):
-            plan = select([f'swarmform/swarmform/{client}.py'])
-            self.assertEqual(plan['tests'], ['tests.swarmform_input_runner_checks',
-                'tests.swarmform_job_service_checks', 'tests.swarmform_registration_checks'])
-            self.assertIn('wording', plan['checks'])
-            self.assertFalse(plan['docker'])
-            self.assertEqual(plan['harnesses'], [])
 
     def test_shared_runtime_is_minimalist_and_full_keeps_complete_coverage(self):
         minimal = select(['shared/workstation.py', 'shared/launch_capacity.py', 'shared/export_atif.py'])
@@ -214,17 +95,8 @@ class CheckSelectionChecks(unittest.TestCase):
         self.assertTrue(complete['docker'])
         self.assertEqual(complete['harnesses'], ['claude', 'codex', 'pi'])
         self.assertIn('tests.review_checks', complete['tests'])
-        self.assertIn('tests.swarmform_collection_checks', complete['tests'])
+        self.assertIn('tests.api_collect_checks', complete['tests'])
         self.assertIn('tests.unified_delivery_checks', complete['tests'])
-
-    def test_delivery_archive_edits_keep_business_checks_without_native_sessions(self):
-        for helper in ('delivery_archive', 'delivered_outcome'):
-            plan = select([f'swarmform/swarmform/{helper}.py'])
-            self.assertEqual(plan['tests'], ['tests.swarmform_archive_outcome_checks',
-                'tests.swarmform_delivery_state_checks', 'tests.swarmform_domain_checks',
-                'tests.swarmform_package_checks'])
-            self.assertTrue(plan['docker'])
-            self.assertEqual(plan['harnesses'], [])
 
     def test_overlapping_selections_execute_each_suite_once(self):
         plan = select(['scripts/check-ci', 'shared/tests/check_selection_checks.py',
@@ -232,7 +104,7 @@ class CheckSelectionChecks(unittest.TestCase):
         self.assertEqual(len(plan['tests']), len(set(plan['tests'])))
         self.assertEqual(plan['checks'].count('format'), 1)
         self.assertNotIn('tests.format_checks', plan['tests'])
-        self.assertEqual(plan['checks'].count('inputs'), 1)
+        self.assertEqual(plan['checks'].count('catalog'), 1)
         self.assertEqual(plan['tests'].count('tests.check_selection_checks'), 1)
 
     def test_check_infrastructure_can_test_itself_without_installation(self):

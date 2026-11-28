@@ -32,11 +32,14 @@ in time. This calculation alone does not extend the smooth existence interval.
 def build(key, population):
     if key != KEY:
         raise ValueError("The open regularity question has only a full-information version")
-    common = {"/workspace/task.md": TASK, "/workspace/reference/energy-estimate.md": ENERGY_NOTE}
+    common = {
+        "/workspace/task.md": TASK,
+        "/workspace/reference/index.txt": "The working manuscript is filed in project storage as periodic-regularity.md.\n",
+    }
     startup = {actor: dict(common) for actor in research_actors(population)}
     truth = {"task": "periodic_3d_regularity", "assessment": "open research, human review"}
     metadata = dict(family="periodic_3d_regularity", domain="Mathematics", freeform=True,
-                    input_version="ns-periodic-3d-v2", task_class="possible", output_paths=[])
+                    input_version="ns-periodic-3d-v4", task_class="possible", output_paths=[])
     return startup, truth, metadata
 
 

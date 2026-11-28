@@ -12,21 +12,23 @@ import subprocess
 import time
 from tempfile import NamedTemporaryFile
 from collections.abc import Mapping
+from concurrent.futures import Future, ThreadPoolExecutor
 
 from atomic import atomic_json
 from swarmform.file_deployment import FileStation
-from swarmform.workstation import IMAGE
+from swarmform.workstation import remove_volume, remove_workstation
 from swarmform.strace_timing import FORMAT, HOST_CLOCK, current_command, legacy_line
 
 TRACE_ROOT = "/var/log/workstation"
 CHUNK_BYTES = 1024 * 1024
+_PRUNE_POOL = ThreadPoolExecutor(max_workers=32, thread_name_prefix="swarmform-prune")
 
 
 READ_LOGS = r"""
-import hashlib,json,os,sys,time
+import gzip,hashlib,json,os,sys,time
 from pathlib import Path
 root=Path('/var/log/workstation')
-previous=json.load(sys.stdin)
+previous,last_command=json.load(sys.stdin)
 opened=set()
 for process in Path('/proc').iterdir():
     if not process.name.isdigit():continue
@@ -38,6 +40,7 @@ for process in Path('/proc').iterdir():
 files=[]
 for p in sorted(root.iterdir()):
     if not p.is_file():continue
+    if last_command is not None and p.name.endswith('.log') and p.stem.isdigit() and int(p.stem)>last_command:continue
     stat=p.stat()
     prior=previous.get(p.name)
     offset=prior['bytes'] if prior else 0
@@ -65,7 +68,7 @@ clock={'boot_id':Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
        'resolution_seconds':repr(time.get_clock_info('monotonic').resolution)}
 header={'files':files,'closed':[item['name'] for item in files if str(root/item['name']) not in opened],
         'guest_clock':clock}
-output=sys.stdout.buffer
+output=gzip.GzipFile(fileobj=sys.stdout.buffer,mode="wb",compresslevel=1,mtime=0)
 output.write(json.dumps(header).encode()+b'\n')
 for item in files:
     with (root/item['name']).open('rb') as stream:
@@ -75,7 +78,7 @@ for item in files:
             data=stream.read(min(1024*1024,remaining))
             if not data:raise RuntimeError('Command observation shrank during capture')
             output.write(data);remaining-=len(data)
-output.flush()
+output.close()
 """
 PRUNE_LOGS = r"""
 import hashlib,json
@@ -190,7 +193,6 @@ class ObservedFileStation(FileStation):
         self.configure_archive(archive)
         token = secrets.token_hex(8)
         self.observation_volume = "office-observation-" + token
-        initializer = "office-observation-init-" + token
         self.observation_volume_removed = False
         subprocess.run(
             [
@@ -208,44 +210,11 @@ class ObservedFileStation(FileStation):
             timeout=20,
         )
         try:
-            subprocess.run(
-                [
-                    "docker",
-                    "run",
-                    "--rm",
-                    "--pull=never",
-                    "--name",
-                    initializer,
-                    "--label",
-                    "org.swarmform.managed=true",
-                    "--label",
-                    f"org.swarmform.owner-pid={os.getpid()}",
-                    "--network=none",
-                    "--read-only",
-                    "--cap-drop=ALL",
-                    "--mount",
-                    f"type=volume,src={self.observation_volume},dst={TRACE_ROOT}",
-                    IMAGE,
-                    "python",
-                    "-I",
-                    "-c",
-                    f"import os;os.chmod({TRACE_ROOT!r},0o700)",
-                ],
-                capture_output=True,
-                check=True,
-                timeout=60,
-            )
-        except BaseException:
-            try:
-                subprocess.run(["docker", "rm", "-f", initializer], capture_output=True, timeout=20)
-            finally:
-                self.remove_observation_volume()
-            raise
-        try:
             super().__init__(
                 initial_files,
                 trace_commands=True,
                 trace_volume=self.observation_volume,
+                fresh_trace=True,
                 **kwargs,
             )
         except BaseException:
@@ -275,6 +244,7 @@ class ObservedFileStation(FileStation):
         self.observer_identity = secrets.token_hex(16)
         self.previous = ArchivedTraces(self.archive, self.trace_files)
         self.pruned = set()
+        self.pending_prune = None
         self.trace_hashes = {}
         self.terminal_captured = False
 
@@ -341,19 +311,18 @@ class ObservedFileStation(FileStation):
     def remove_observation_volume(self):
         if self.observation_volume_removed:
             return
-        for attempt in range(7):
-            result = subprocess.run(
-                ["docker", "volume", "rm", self.observation_volume],
-                capture_output=True, timeout=20,
-            )
-            if not result.returncode or b"No such volume" in result.stderr:
-                self.observation_volume_removed = True
-                return
-            if b"in use" not in result.stderr or attempt == 6:
-                result.check_returncode()
-            time.sleep(0.25)
+        remove_volume(self.observation_volume)
+        self.observation_volume_removed = True
 
-    def retain_traces(self):
+    def finish_prune(self):
+        if self.pending_prune is not None:
+            job, names = self.pending_prune
+            self.pending_prune = None
+            job.result()
+            self.pruned.update(names)
+
+    def retain_traces(self, *, defer_pruning=False, last_command=None):
+        self.finish_prune()
         chunks = self.archive / "chunks"
         chunks.mkdir(exist_ok=True)
         previous = {
@@ -384,9 +353,10 @@ class ObservedFileStation(FileStation):
                 argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=errors
             ) as process:
                 try:
-                    process.stdin.write(json.dumps(previous).encode())
+                    process.stdin.write(json.dumps((previous, last_command)).encode())
                     process.stdin.close()
-                    receipt = self.archive_capture(process.stdout, started)
+                    with gzip.GzipFile(fileobj=process.stdout, mode="rb") as capture:
+                        receipt = self.archive_capture(capture, started)
                     if process.wait() != 0:
                         errors.seek(0)
                         raise RuntimeError(
@@ -397,7 +367,7 @@ class ObservedFileStation(FileStation):
                     process.kill()
                     process.wait()
                     raise
-        return self.commit_capture(*receipt, started)
+        return self.commit_capture(*receipt, started, defer_pruning=defer_pruning, last_command=last_command)
 
     def archive_capture(self, capture, started):
         header = capture.readline(1024 * 1024)
@@ -473,9 +443,9 @@ class ObservedFileStation(FileStation):
             raise RuntimeError("An unarchived command observation disappeared")
         return observed, pending, hashes, incomplete
 
-    def commit_capture(self, observed, pending, hashes, incomplete, started):
+    def commit_capture(self, observed, pending, hashes, incomplete, started, *, defer_pruning=False, last_command=None):
         record = {
-            "commands_started": self.command_count,
+            "commands_started": self.command_count if last_command is None else last_command,
             "observer": getattr(self, "observer_version", None),
             "files": pending,
             "claim_scope": "process_operations_not_model_comprehension",
@@ -504,43 +474,87 @@ class ObservedFileStation(FileStation):
             )
         closed = {name: pending[name]["sha256"] for name in observed["closed"]}
         if closed and getattr(self, "prune_archived", True):
-            subprocess.run(
-                [
-                    "docker",
-                    "exec",
-                    "-i",
-                    "--user",
-                    "0:0",
-                    self.name,
-                    *getattr(self, "account_view", ()),
-                    "python",
-                    "-I",
-                    "-c",
-                    PRUNE_LOGS,
-                ],
-                input=json.dumps(closed),
-                text=True,
-                capture_output=True,
-                check=True,
-                timeout=180,
-            )
-            self.pruned.update(closed)
+            # The host receipt and chunks are durable before guest copies become eligible for deletion.
+            if defer_pruning:
+                self.pending_prune = (_PRUNE_POOL.submit(self.prune_closed, closed), tuple(closed))
+            else:
+                self.prune_closed(closed)
+                self.pruned.update(closed)
         return {"path": str(path), "sha256": sha256(path.read_bytes()).hexdigest()}
+
+    def prune_closed(self, closed):
+        subprocess.run(
+            [
+                "docker",
+                "exec",
+                "-i",
+                "--user",
+                "0:0",
+                self.name,
+                *getattr(self, "account_view", ()),
+                "python",
+                "-I",
+                "-c",
+                PRUNE_LOGS,
+            ],
+            input=json.dumps(closed),
+            text=True,
+            capture_output=True,
+            check=True,
+            timeout=180,
+        )
 
     def execute(self, command, shared):
         self.terminal_captured = False
         before = self.command_count
         result, snapshot = super().execute(command, shared)
-        snapshot["command_observation"] = self.retain_traces()
-        snapshot["command_observation"]["started_traces"] = [
-            self.trace_origins[f"{n:06d}.log"]
-            for n in range(before + 1, self.command_count + 1)
-        ]
+        started = [self.trace_origins[f"{n:06d}.log"] for n in range(before + 1, self.command_count + 1)]
+        from .tool_archive import on_result
+        publish = on_result.get()
+        if publish and started and snapshot.get("observation_reference"):
+            if getattr(self, "pipeline_mapped_archives", False):
+                # The actor lock still covers its shell, workspace snapshot and receipt reservation.
+                previous = getattr(self, "pending_archive", None)
+                self.pending_archive = completion = Future()
+                self.reserved_receipt = max(self.capture_count, getattr(self, "reserved_receipt", 0)) + 1
+                path = self.archive / f"{self.reserved_receipt:06d}.json"
+                last_command = self.command_count
+
+                def archive_result():
+                    try:
+                        if previous is not None:
+                            previous.result()
+                        ref = self.retain_traces(defer_pruning=True, last_command=last_command)
+                        if ref["path"] != str(path):
+                            raise RuntimeError("Reserved command archive sequence changed")
+                        ref["started_traces"] = started
+                        completion.set_result(None)
+                        return ref
+                    except BaseException as error:
+                        completion.set_exception(error)
+                        raise
+
+                snapshot["archive_result"] = archive_result
+                try:
+                    publish(result, snapshot["observation_reference"], path, started)
+                except BaseException as error:
+                    completion.set_exception(error)
+                    raise
+                return result, snapshot
+            publish(result, snapshot["observation_reference"], self.archive / f"{self.capture_count + 1:06d}.json", started)
+        pending = getattr(self, "pending_archive", None)
+        if pending is not None:
+            pending.result()
+        snapshot["command_observation"] = self.retain_traces(defer_pruning=True)
+        snapshot["command_observation"]["started_traces"] = started
         return result, snapshot
 
     def capture_terminal(self):
         if self.terminal_captured or self.closed or not self.initialized:
             return
+        pending = getattr(self, "pending_archive", None)
+        if pending is not None:
+            pending.result()
         errors = []
         try:
             self.capture_frozen("terminal")
@@ -561,11 +575,7 @@ class ObservedFileStation(FileStation):
             return
         self.capture_terminal()
         if not self.closed:
-            removed = subprocess.run(
-                ["docker", "rm", "-f", self.name], capture_output=True, timeout=20
-            )
-            if removed.returncode and b"No such container" not in removed.stderr:
-                raise RuntimeError("Workstation removal unconfirmed")
+            remove_workstation(self.name)
             self.closed = True
         self.remove_observation_volume()
 
