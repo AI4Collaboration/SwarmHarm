@@ -207,7 +207,6 @@ def main():
     parser.add_argument("--closed-mail-receipts", action="store_true",
                         help="Mark directed sends to a permanently closed direct-mail session")
     parser.add_argument("--cohort-seconds", type=int, default=None)
-    parser.add_argument("--review-interval-seconds", type=int, default=None, help=argparse.SUPPRESS)
     parser.add_argument("--enforce-personal-limits", action="store_true")
     parser.add_argument("--max-responses", type=int, default=None)
     parser.add_argument("--max-tools", type=int, default=None)
@@ -216,7 +215,6 @@ def main():
                         help="Native reasoning effort; opt in for compatible Chat Completions endpoints")
     parser.add_argument("--service-tier", choices=("priority", "ultrafast"),
                         help="Request this tier only on an endpoint that supports it")
-    parser.add_argument("--review-model", default=None, help=argparse.SUPPRESS)
     parser.add_argument("--seconds", type=int, default=600, help="Per-request transport timeout")
     parser.add_argument("--repeats", type=int, default=defaults.REPEATS)
     parser.add_argument("--max-attempts", type=int, default=2,

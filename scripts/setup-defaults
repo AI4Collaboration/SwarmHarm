@@ -36,7 +36,7 @@ docker tag "$harm_image" "$base_tag"
 docker build --build-arg "WORKSTATION=$base_tag" -t swarmform-media:360a402 - < "$repo/rollouts/Dockerfile.media"
 "$runtime/bin/python" "$repo/rollouts/programbench-build/build.py" --workstation swarmform-media:360a402 --tag swarmform-programbench:ten
 form_image=$(docker image inspect --format '{{.Id}}' swarmform-programbench:ten)
-docker run --rm --network none "$form_image" /opt/reference/ffmpeg -version
+docker run --rm --network none "$form_image" sh -ec '/opt/reference/ffmpeg -version && git --version && test -x /opt/programbench/invoke'
 "$runtime/bin/python" - "$repo" "$state" "$mode" "$runtime" "$harm_image" "$form_image" <<'PY'
 import importlib.util, json, os, pathlib, sys, tempfile
 repo, state, mode, runtime, harm, form = sys.argv[1:]
@@ -44,9 +44,10 @@ spec = importlib.util.spec_from_file_location('pb_build', pathlib.Path(repo) / '
 pb_build = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(pb_build)
 python = str(pathlib.Path(runtime).resolve() / 'bin/python')
-filename, config = (('swarmform-api.json', {'python': python, 'image': form, 'recipe_sha256': pb_build.recipe_sha256(repo)})
+recipe = pb_build.recipe_sha256(repo)
+filename, config = (('swarmform-api.json', {'python': python, 'image': form, 'recipe_sha256': recipe})
                     if mode == 'swarmform-api'
-                    else ('default-runner.json', {'python': python, 'images': {'swarmharm': harm, 'swarmform': form}}))
+                    else ('default-runner.json', {'python': python, 'images': {'swarmharm': harm, 'swarmform': form}, 'recipe_sha256': recipe}))
 with tempfile.NamedTemporaryFile(mode='w', dir=state, delete=False) as handle:
     json.dump(config, handle)
 os.replace(handle.name, pathlib.Path(state) / filename)

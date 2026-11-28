@@ -23,6 +23,22 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class APIHandoffChecks(unittest.TestCase):
+    def test_run_swarmform_rejects_mismatched_harness_and_retired_flags(self):
+        bad_harness = subprocess.run(
+            [str(ROOT / "scripts/run-swarmform"), "--base-url", "http://localhost:8000/v1",
+             "--model", "demo", "--harness", "codex"],
+            capture_output=True, text=True, cwd=ROOT,
+        )
+        self.assertNotEqual(bad_harness.returncode, 0)
+        self.assertIn("chat-completions only", bad_harness.stderr)
+        retired = subprocess.run(
+            [sys.executable, str(ROOT / "rollouts/run_matrix.py"),
+             "--model", "demo", "--review-interval-seconds", "60"],
+            capture_output=True, text=True, cwd=ROOT,
+        )
+        self.assertNotEqual(retired.returncode, 0)
+        self.assertIn("unrecognized arguments", retired.stderr)
+
     def test_programbench_recipe_sha256_is_stable_and_detects_edits(self):
         import importlib.util
         import shutil

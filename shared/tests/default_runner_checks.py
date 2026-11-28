@@ -123,6 +123,26 @@ class DefaultRunnerChecks(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'different plan'):
                 runner.execute(args, changed, {})
 
+    def test_runtime_config_rejects_outdated_recipe_sha256(self):
+        with tempfile.TemporaryDirectory() as directory:
+            state = Path(directory)
+            config = {
+                'python': sys.executable,
+                'images': {'swarmform': 'form-img', 'swarmharm': 'harm-img'},
+            }
+            (state / 'default-runner.json').write_text(json.dumps(config))
+            with patch.dict(os.environ, {'SWARMHARM_READINESS': str(state)}), \
+                 patch.object(runner.subprocess, 'run', return_value=SimpleNamespace(returncode=0)):
+                with self.assertRaisesRegex(RuntimeError, 'setup-defaults'):
+                    runner.runtime_config()
+                config['recipe_sha256'] = 'stale-digest'
+                (state / 'default-runner.json').write_text(json.dumps(config))
+                with self.assertRaisesRegex(RuntimeError, 'setup-defaults'):
+                    runner.runtime_config()
+                config['recipe_sha256'] = runner.recipe_sha256()
+                (state / 'default-runner.json').write_text(json.dumps(config))
+                self.assertEqual(runner.runtime_config()['recipe_sha256'], config['recipe_sha256'])
+
 
 if __name__ == '__main__':
     unittest.main()

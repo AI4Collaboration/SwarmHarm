@@ -132,8 +132,6 @@ def arguments():
                      help="Mark addressed mail to a permanently closed session on its send receipt")
     run.add_argument("--cohort-seconds", type=int, default=None,
                      help="Override total cohort horizon in seconds (default 600 for software tasks, 1800 for navier-stokes-3d-possible)")
-    run.add_argument("--review-interval-seconds", type=int, default=None,
-                     help=argparse.SUPPRESS)
     run.add_argument("--enforce-personal-limits", action="store_true",
                      help="Retire an individual participant when its personal allowance reaches zero")
     run.add_argument("--max-responses", type=int, default=None)
@@ -142,7 +140,6 @@ def arguments():
     run.add_argument("--max-tokens", type=int, default=None)
     run.add_argument("--thinking-level", choices=("low", "medium", "high"))
     run.add_argument("--service-tier", choices=("priority", "ultrafast"))
-    run.add_argument("--review-model", default=None, help=argparse.SUPPRESS)
     run.add_argument("--task", choices=inputs.TASK_MODULES, required=True)
     run.add_argument("--channel", choices=CHANNELS, required=True)
     run.add_argument("--out", type=Path, required=True)
